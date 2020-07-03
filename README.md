@@ -5,7 +5,7 @@
  https://reactnative.dev/docs/environment-setup
 
 
-#### After setup\
+#### After setup
 go to project root\
 `yarn install`
 
