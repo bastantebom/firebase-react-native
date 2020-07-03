@@ -6,10 +6,11 @@
 
 
 #### After setup
-> yarn install
+##### go to project root
+#### `yarn install`
 
 #### If using android device/emulator
-> npx react-native run-android
+#### `npx react-native run-android`
 
 #### If using iOS device/emulator
 #### `cd ios`
