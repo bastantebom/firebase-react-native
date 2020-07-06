@@ -27,4 +27,4 @@ git pull origin master
 git checkout <your-branch-name>
 git rebase master
 
-this will resolve the conflict on your branch.
+this will resolve the conflict on your branch instead of resolving the conflicts on master branch.
