@@ -1,10 +1,3 @@
-//import * as React from 'react';
-//import {Button} from 'react-native-paper';
-
-//export default function AppButton(props) {
-//return <Button theme={{fonts: {medium: 'Open Sans'}}} {...props} />;
-//}
-
 import React from 'react';
 import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
 
@@ -14,39 +7,50 @@ const AppButton = ({
   text,
   onPress,
   type = 'filled',
-  bordered = false,
   size = 'large',
+  height = 'xs',
 }) => {
   const large = width / 1.3;
   const small = width / 2;
   const btnSize = size === 'large' ? large : small;
-  const btnBgColor = type === 'filled' ? '#3f51b5' : 'transparent';
-  const btnTextColor = type === 'filled' ? '#ffffff' : '#6371c2';
-  const btnBorderRadius = bordered ? 30 : 5;
+  const btnBgColor = type === 'filled' ? '#FFD400' : 'transparent';
+  const btnTextColor = '#2E3034';
+  const btnBorderRadius = 3;
+  const btnHeight =
+    height === 'xs'
+      ? 2
+      : height === 's'
+      ? 3
+      : height === 'm'
+      ? 4
+      : height === 'l'
+      ? 5
+      : 6;
 
   const containerCommonStyle = {
     backgroundColor: btnBgColor,
-    paddingVertical: 8,
+    paddingVertical: btnHeight,
     width: btnSize,
     borderRadius: btnBorderRadius,
   };
 
   const textCommonStyle = {
     color: btnTextColor,
-    fontSize: 16,
-    textTransform: 'uppercase',
+    fontSize: 14,
     textAlign: 'center',
   };
 
   const border = type === 'outlined' && {
-    borderColor: '#e7e7e7',
-    borderWidth: 2,
+    borderColor: '#2E3034',
+    borderWidth: 1.5,
   };
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View style={[containerCommonStyle, border]}>
-        <Text style={[textCommonStyle]}> {text} </Text>
+        <Text style={[textCommonStyle]}>
+          {text.charAt(0).toUpperCase() + text.slice(1)}
+        </Text>
       </View>
     </TouchableOpacity>
   );
