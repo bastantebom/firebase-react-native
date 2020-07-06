@@ -28,5 +28,6 @@ git checkout <your-branch-name>
 git rebase master
 
 this will resolve the conflict on your branch instead of resolving the conflicts on master branch.
+
 #### Notes about react-native-sass-transformer
 Scss is supported but nested classes are not supported. 
