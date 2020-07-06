@@ -19,3 +19,5 @@ go to project root\
 or if using Xcode click the run button
 
 
+#### Notes about react-native-sass-transformer
+Scss is supported but nested classes are not supported. 
