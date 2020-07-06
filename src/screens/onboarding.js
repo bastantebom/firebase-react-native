@@ -1,22 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-import { 
-  Text, 
-  View
-} from 'react-native';
-
-function Onboarding() {
-
-  return (
-    <View>
-      <Text>Onboarding</Text>
-    </View>
-  );
-}
-
-
-export default Onboarding;
-=======
 import { View, Text} from 'react-native';
 
 const Onboarding = () => {
@@ -43,4 +25,3 @@ const Onboarding = () => {
 }
 
 export default Onboarding
->>>>>>> onboarding text contents
