@@ -24,6 +24,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import SplashScreen from 'react-native-splash-screen';
+import stylesx from "./App.scss";
 
 const App: () => React$Node = () => {
 
@@ -58,8 +59,8 @@ const App: () => React$Node = () => {
                 <ReloadInstructions />
               </Text>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
+            <View style={stylesx.myClass}>
+              <Text style={stylesx.myClass}>Debug</Text>
               <Text style={styles.sectionDescription}>
                 <DebugInstructions />
               </Text>
