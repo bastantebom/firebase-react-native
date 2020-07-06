@@ -19,3 +19,12 @@ go to project root\
 or if using Xcode click the run button
 
 
+#### Notes about git rebase
+If you are working on a branch that you want to merge on master make sure to rebase first to avoid merge conflicts.
+
+git checkout master
+git pull origin master
+git checkout <your-branch-name>
+git rebase master
+
+this will resolve the conflict on your branch.
