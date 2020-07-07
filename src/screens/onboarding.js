@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
 })
 
 const Onboarding = () => {
+
+  console.log("hello")
+  console.log(Colors.primaryYellow)
+
   return (
     <Swiper>
       <View style={styles.slideHolder}>
@@ -51,4 +55,12 @@ const Onboarding = () => {
   )
 }
 
+const styles = StyleSheet.create({
+  sample: {
+    fontFamily: "MPLUSRounded1c-Light"
+  }
+});
+
 export default Onboarding
+
+
