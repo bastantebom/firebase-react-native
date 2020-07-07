@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text} from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
+import AppText from '../components/AppText/AppText'
 
 const Onboarding = () => {
   return (
     <View>
       <View>
-        <Text>Welcome to Servbees!</Text>
+        <AppText textStyle="display6" > Hello from app text </AppText> 
+        <Text style={styles.sample}>Welcome to Servbees!</Text>
         <Text>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</Text>
       </View>
       <View>
@@ -24,4 +26,12 @@ const Onboarding = () => {
   )
 }
 
+const styles = StyleSheet.create({
+  sample: {
+    fontFamily: "MPLUSRounded1c-Light"
+  }
+});
+
 export default Onboarding
+
+
