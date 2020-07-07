@@ -8,15 +8,17 @@ import {
 import Swiper from 'react-native-swiper'
 import AppButton from '../components/AppButton';
 import SlidePanel from '../components/SlidingPanel';
-import { View, Text, StyleSheet} from 'react-native';
 import AppText from '../components/AppText/AppText';
 import Colors from '../globals/Colors' 
 
 const styles = StyleSheet.create({
+sample: {
+  fontFamily: "MPLUSRounded1c-Light"
+},
  slideHolder: {
    flex: 1,
    justifyContent: 'center',
-   alignItems: 'center',
+   alignItems: 'center'
  },
  title: {
     marginBottom: 20,
@@ -26,6 +28,19 @@ const styles = StyleSheet.create({
  text: {
     maxWidth: '80%',
     textAlign: 'center'
+ },
+ dot: {
+  backgroundColor:'#fff', 
+  width: 8, 
+  height: 8, 
+  borderRadius: 4, 
+  marginLeft: 3, 
+  marginRight: 3, 
+  marginTop: 3, 
+  marginBottom: 3
+ },
+ dotActive: {
+   backgroundColor: '#1f1A54'
  }
 })
 
@@ -56,12 +71,6 @@ const Onboarding = () => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  sample: {
-    fontFamily: "MPLUSRounded1c-Light"
-  }
-});
 
 export default Onboarding
 
