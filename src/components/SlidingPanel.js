@@ -10,7 +10,8 @@ const styles = {
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    // position: 'absolute'
   },
   panel: {
     flex: 1,
@@ -39,12 +40,11 @@ const styles = {
 
 // view should have flex prop <View style={{flex: 1, flexGrow: 1}}>
 
-const SlidePanel = ({ children }) => { 
-
-  let _panel = React.useRef(null);
+const SlidePanel = ({ children, content, _panel = React.useRef(null) }) => {  
 
   return (
     <View style={styles.container}>
+      {content}
       {/* <Text onPress={() => _panel.current.show()}>Show panel</Text> */}
       <SlidingUpPanel
         ref={_panel}

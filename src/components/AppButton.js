@@ -16,6 +16,7 @@ const AppButton = ({
   type = 'filled',
   bordered = false,
   size = 'large',
+  style
 }) => {
   const large = width / 1.3;
   const small = width / 2;
@@ -45,7 +46,7 @@ const AppButton = ({
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <View style={[containerCommonStyle, border]}>
+      <View style={[containerCommonStyle, border, style]}>
         <Text style={[textCommonStyle]}> {text} </Text>
       </View>
     </TouchableOpacity>
