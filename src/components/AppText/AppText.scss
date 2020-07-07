@@ -1,0 +1,110 @@
+%regular {
+    font-family: "MPLUSRounded1c-Regular";
+}
+
+%medium {
+    font-family: "MPLUSRounded1c-Medium";
+}
+
+%light {
+    font-family: "MPLUSRounded1c-Light";
+}
+
+
+.display1 {
+    @extend %light;
+    font-size: 56px;
+    letter-spacing: -1.5px;
+}
+
+.display2 {
+    @extend %light;
+    font-size: 48px;
+    letter-spacing: -0.5px;
+}
+
+.display3 {
+    @extend %regular;
+    font-size: 40px;
+    letter-spacing: 0px;
+}
+
+.display4 {
+    @extend %regular;
+    font-size: 32px;
+    letter-spacing: 0.25px;
+}
+
+.display5 {
+    @extend %regular;
+    font-size: 24px;
+    letter-spacing: 0px;
+}
+
+.display6 {
+    @extend %medium;
+    font-size: 20px;
+    letter-spacing: 0.15px;
+}
+
+.subtitle1 {
+    @extend %medium;
+    font-size: 18px;
+    letter-spacing: 0.15px;
+}
+
+.subtitle1 {
+    @extend %medium;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+}
+
+.body1 {
+    @extend %regular;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.body2 {
+    @extend %regular;
+    font-size: 14px;
+    letter-spacing: 0.25px;
+}
+
+.body3 {
+    @extend %medium;
+    font-size: 14px;
+    letter-spacing: 0.25px;
+}
+
+.button1 {
+    @extend %medium;
+    font-size: 14px;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+}
+
+.button2 {
+    @extend %medium;
+    font-size: 14px;
+    letter-spacing: 1.25px;
+}
+
+.caption {
+    @extend %regular;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+}
+
+.eyebrow1 {
+    @extend %regular;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.eyebrow2 {
+    @extend %regular;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+}
