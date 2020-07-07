@@ -14,6 +14,7 @@ import SplashScreen from 'react-native-splash-screen';
 const App: () => React$Node = () => {
 
   useEffect(() => {
+    // for splashscreen
     SplashScreen.hide();
   }, []);
 
@@ -21,4 +22,5 @@ const App: () => React$Node = () => {
     <Routes/>
   )
 }
+
 export default App;

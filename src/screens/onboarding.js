@@ -8,6 +8,9 @@ import {
 import Swiper from 'react-native-swiper'
 import AppButton from '../components/AppButton';
 import SlidePanel from '../components/SlidingPanel';
+import { View, Text, StyleSheet} from 'react-native';
+import AppText from '../components/AppText/AppText';
+import Colors from '../globals/Colors' 
 
 const styles = StyleSheet.create({
  slideHolder: {
@@ -27,43 +30,39 @@ const styles = StyleSheet.create({
 })
 
 const Onboarding = () => {
+
+  console.log("hello")
+  console.log(Colors.primaryYellow)
+
   return (
-      <SlidePanel
-        content={
-          <>
-            <Swiper>
-              <View style={styles.slideHolder}>
-                <Image source={require('../images/onboarding-img1.png')} />
-                <Text style={styles.title}>Welcome to Servbees!</Text>
-                <Text style={styles.text}>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</Text>
-              </View>
-              <View style={styles.slideHolder}>
-                <Image source={require('../images/onboarding-img2.png')} />
-                <Text style={styles.title}>Discover and Buy</Text>
-                <Text style={styles.text}>Looking for something in particular? Discover nearby options and get the best deals for goods and services.</Text>
-              </View>
-              <View style={styles.slideHolder}>
-                <Image source={require('../images/onboarding-img3.png')} />
-                <Text style={styles.title}>Offer and Sell</Text>
-                <Text style={styles.text}>Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!</Text>
-              </View>
-              <View style={styles.slideHolder}>
-                <Image source={require('../images/onboarding-img4.png')} />
-                <Text style={styles.title}>Join a Hive</Text>
-                <Text style={styles.text}>Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!</Text>
-              </View>
-            </Swiper>
-            <AppButton
-              // style={{ position: 'absolute', bottom: 50, left: 0, right: 0 }}
-              text={'Login'}
-              onPress={() => _panel.current.show()}
-            />
-          </>
-        }
-      >
-        <Text>content inside slider</Text>
-      </SlidePanel>
+    <View>
+      <View>
+        <AppText textStyle="display6" > Hello from app text </AppText> 
+        <Text style={styles.sample}>Welcome to Servbees!</Text>
+        <Text>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</Text>
+      </View>
+      <View>
+        <Text>Discover and Buy</Text>
+        <Text>Looking for something in particular? Discover nearby options and get the best deals for goods and services.</Text>
+      </View>
+      <View>
+        <Text>Offer and Sell</Text>
+        <Text>Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!</Text>
+      </View>
+      <View>
+        <Text>Join a Hive</Text>
+        <Text>Join our Hives to connect with people with the same interests and needs. Create your own HIves to organize your offers!</Text>
+      </View>
+    </View>
   )
 }
 
+const styles = StyleSheet.create({
+  sample: {
+    fontFamily: "MPLUSRounded1c-Light"
+  }
+});
+
 export default Onboarding
+
+

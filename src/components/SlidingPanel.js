@@ -40,7 +40,9 @@ const styles = {
 
 // view should have flex prop <View style={{flex: 1, flexGrow: 1}}>
 
-const SlidePanel = ({ children, content, _panel = React.useRef(null) }) => {  
+const SlidePanel = ({ children, content, }) => {  
+
+  let _panel = React.useRef(null)
 
   return (
     <View style={styles.container}>
