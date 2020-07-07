@@ -1,8 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet} from 'react-native';
-import AppText from '../components/AppText/AppText'
+import AppText from '../components/AppText/AppText';
+import Colors from '../globals/Colors' 
 
 const Onboarding = () => {
+
+  console.log("hello")
+  console.log(Colors.primaryYellow)
+
   return (
     <View>
       <View>
