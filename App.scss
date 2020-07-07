@@ -1,0 +1,12 @@
+%blue {
+    color: blue;
+}
+.myClass {
+    @extend %blue;
+}
+.myOtherClass {
+    color: red;
+}
+.my-dashed-class {
+    color: green;
+}
