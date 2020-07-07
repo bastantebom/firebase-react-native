@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
  slideHolder: {
    flex: 1,
    justifyContent: 'center',
-   alignItems: 'center',
+   alignItems: 'center'
  },
  title: {
     marginBottom: 20,
@@ -21,12 +21,32 @@ const styles = StyleSheet.create({
  text: {
     maxWidth: '80%',
     textAlign: 'center'
+ },
+ dot: {
+  backgroundColor:'#fff', 
+  width: 8, 
+  height: 8, 
+  borderRadius: 4, 
+  marginLeft: 3, 
+  marginRight: 3, 
+  marginTop: 3, 
+  marginBottom: 3
+ },
+ dotActive: {
+   backgroundColor: '#1f1A54'
  }
 })
 
 const Onboarding = () => {
   return (
-    <Swiper>
+    <Swiper
+      dot ={
+        <View style={styles.dot} />
+      }
+      activeDot ={
+        <View style={[styles.dot, styles.dotActive]} />
+      }
+    >
       <View style={styles.slideHolder}>
         <Image source={require('../images/onboarding-img1.png')} />
         <Text style={styles.title}>Welcome to Servbees!</Text>
