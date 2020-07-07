@@ -1,31 +1,48 @@
+import React from 'react';
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
+import Swiper from 'react-native-swiper';
+
+import AppText from '../components/AppText/AppText';
+import Colors from '../globals/Colors';
 
 const styles = StyleSheet.create({
- slideHolder: {
+  slideHolder: {
    flex: 1,
-   justifyContent: 'center',
-   alignItems: 'center'
+   alignItems: 'center',
+   textAlign: 'center',
+   backgroundColor: Colors.primaryMidnightBlue, 
  },
- title: {
-    marginBottom: 20,
-    fontSize: 20,
-    textAlign: 'center'
-  },
- text: {
-    maxWidth: '80%',
-    textAlign: 'center'
+ link: {
+  alignSelf: 'flex-end',
+  padding: 20
+ },
+ textHolder: {
+  padding: 15,
+  // textAlign: 'center'
  },
  dot: {
-  backgroundColor:'#fff', 
+  backgroundColor: Colors.neutralsWhite, 
   width: 8, 
   height: 8, 
-  borderRadius: 4, 
+  borderRadius: 100, 
   marginLeft: 3, 
   marginRight: 3, 
   marginTop: 3, 
-  marginBottom: 3
+  marginBottom: 120
  },
  dotActive: {
-   backgroundColor: '#1f1A54'
+   backgroundColor: Colors.primaryMidnightBlue
+ },
+ image: {
+   position: 'absolute',
+   top: -100,
+   width: '100%',
  }
 })
 
@@ -40,24 +57,48 @@ const Onboarding = () => {
       }
     >
       <View style={styles.slideHolder}>
+        <Image source={require('../images/polygon.png')} style={styles.image} />
+        <TouchableOpacity onPress={() => null} style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
         <Image source={require('../images/onboarding-img1.png')} />
-        <Text style={styles.title}>Welcome to Servbees!</Text>
-        <Text style={styles.text}>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</Text>
+        <AppText textStyle="display6">Welcome to Servbees!</AppText> 
+        <View style={styles.textHolder}>
+          <AppText textStyle="body2">Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</AppText>
+        </View>
       </View>
       <View style={styles.slideHolder}>
+        <Image source={require('../images/polygon.png')} style={styles.image} />
+        <TouchableOpacity onPress={() => null} style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
         <Image source={require('../images/onboarding-img2.png')} />
-        <Text style={styles.title}>Discover and Buy</Text>
-        <Text style={styles.text}>Looking for something in particular? Discover nearby options and get the best deals for goods and services.</Text>
+        <AppText textStyle="display6">Discover and Buy</AppText> 
+        <View style={styles.textHolder}>
+          <AppText textStyle="body2">Looking for something in particular? Discover nearby options and get the best deals for goods and services.</AppText>
+        </View>
       </View>
       <View style={styles.slideHolder}>
+        <Image source={require('../images/polygon.png')} style={styles.image} />
+        <TouchableOpacity onPress={() => null} style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
         <Image source={require('../images/onboarding-img3.png')} />
-        <Text style={styles.title}>Offer and Sell</Text>
-        <Text style={styles.text}>Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!</Text>
+        <AppText textStyle="display6">Offer and Sell</AppText> 
+        <View style={styles.textHolder}>
+          <AppText textStyle="body2">Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!</AppText>
+        </View>
       </View>
       <View style={styles.slideHolder}>
+        <Image source={require('../images/polygon.png')} style={styles.image} />
+        <TouchableOpacity onPress={() => null} style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
         <Image source={require('../images/onboarding-img4.png')} />
-        <Text style={styles.title}>Join a Hive</Text>
-        <Text style={styles.text}>Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!</Text>
+        <AppText textStyle="display6">Join a Hive</AppText> 
+        <View style={styles.textHolder}>
+          <AppText textStyle="body2">Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!</AppText>
+        </View>
       </View>
     </Swiper>
   )
