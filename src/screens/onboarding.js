@@ -14,10 +14,7 @@ const Onboarding = () => {
 
         <Button icon={require('../assets/images/icons/bag.png')}>
           Press me
-</Button>
-        <Button icon="account">
-          Press me
-</Button>
+        </Button>
         <Text style={styles.sample}>Welcome to Servbees!</Text>
         <Text>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</Text>
       </View>
