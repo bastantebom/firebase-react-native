@@ -8,6 +8,9 @@ import {
 import Swiper from 'react-native-swiper'
 
 const styles = StyleSheet.create({
+sample: {
+  fontFamily: "MPLUSRounded1c-Light"
+},
  slideHolder: {
    flex: 1,
    justifyContent: 'center',
@@ -72,3 +75,5 @@ const Onboarding = () => {
 }
 
 export default Onboarding
+
+
