@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 import AppText from '../components/AppText/AppText';
@@ -21,10 +15,10 @@ const styles = StyleSheet.create({
   },
   link: {
     alignSelf: 'flex-end',
-    padding: 20
+    padding: 20,
   },
   textHolder: {
-    padding: 15
+    padding: 15,
   },
   dot: {
     backgroundColor: Colors.neutralsWhite,
@@ -37,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: 200
   },
   dotActive: {
-    backgroundColor: Colors.primaryMidnightBlue
+    backgroundColor: Colors.primaryMidnightBlue,
   },
   image: {
     position: 'absolute',
@@ -118,6 +112,7 @@ const Onboarding = () => {
       <View style={styles.btnHolder}>
         <AppButton
           text="Login"
+          type="tertiary"
           size="sm"
           height="xl"
           borderColor="primary"
@@ -135,4 +130,4 @@ const Onboarding = () => {
   )
 }
 
-export default Onboarding
+export default Onboarding;
