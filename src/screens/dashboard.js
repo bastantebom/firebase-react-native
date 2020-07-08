@@ -1,16 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   View,
-  Image,
-  Text,
   StyleSheet,
-  TouchableOpacity
 } from 'react-native';
-import Swiper from 'react-native-swiper';
 
 import AppText from '../components/AppText/AppText';
 import AppButton from '../components/AppButton';
-import Colors from '../globals/Colors';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -20,7 +16,8 @@ const styles = StyleSheet.create({
  }
 })
 
-const Dashboard = ({ navigation }) => {
+function Dashboard ({ navigation }) {
+
   return (
     <View style={styles.container}>
       <AppText textStyle="body1" > Sample Dashboard </AppText>
@@ -34,4 +31,4 @@ const Dashboard = ({ navigation }) => {
   )
 }
 
-export default Dashboard
+export default Dashboard;

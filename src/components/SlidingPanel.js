@@ -1,6 +1,5 @@
-import React, { useRef } from 'react'
-import {Text, View, Dimensions, SafeAreaView} from 'react-native'
-import { Surface } from 'react-native-paper';
+import React, { forwardRef } from 'react'
+import { View, Dimensions } from 'react-native'
 
 import SlidingUpPanel from 'rn-sliding-up-panel'
 
@@ -40,16 +39,13 @@ const styles = {
 
 // view should have flex prop <View style={{flex: 1, flexGrow: 1}}>
 
-const SlidePanel = ({ children, content, }) => {  
-
-  let _panel = React.useRef(null)
+const SlidePanel = forwardRef(( props, ref ) => {  
 
   return (
     <View style={styles.container}>
-      {content}
-      {/* <Text onPress={() => _panel.current.show()}>Show panel</Text> */}
+      {props.content}
       <SlidingUpPanel
-        ref={_panel}
+        ref={ref}
         draggableRange={{top: height - 25, bottom: 0}}
         showBackdrop={false}
       >
@@ -57,11 +53,12 @@ const SlidePanel = ({ children, content, }) => {
           <View style={styles.panelHandle} />
         </View>
         <View style={styles.panel}>
-          {children}
+          {props.children}
         </View>
       </SlidingUpPanel>
     </View>
   )
-}
+})
+
 
 export default SlidePanel;
