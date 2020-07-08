@@ -18,8 +18,8 @@ const App: () => React$Node = () => {
     SplashScreen.hide();
   }, []);
 
-  return(
-    <Routes/>
+  return (
+    <Routes />
   )
 }
 export default App;
