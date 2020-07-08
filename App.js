@@ -22,4 +22,5 @@ const App: () => React$Node = () => {
     <Routes/>
   )
 }
+
 export default App;

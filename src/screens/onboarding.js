@@ -23,8 +23,7 @@ const styles = StyleSheet.create({
   padding: 20
  },
  textHolder: {
-  padding: 15,
-  // textAlign: 'center'
+  padding: 15
  },
  dot: {
   backgroundColor: Colors.neutralsWhite, 
@@ -105,5 +104,3 @@ const Onboarding = () => {
 }
 
 export default Onboarding
-
-
