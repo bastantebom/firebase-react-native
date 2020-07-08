@@ -1,17 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import AppText from '../components/AppText/AppText';
-import Colors from '../globals/Colors' 
+
+import Colors from '../globals/Colors'
+import { Button, Image } from 'react-native-paper'
 
 const Onboarding = () => {
-
-  console.log("hello")
-  console.log(Colors.primaryYellow)
 
   return (
     <View>
       <View>
-        <AppText textStyle="display6" > Hello from app text </AppText> 
+        <AppText textStyle="display6" customStyle={styles.sample} > Hello from app text </AppText>
+
+        <Button icon={require('../assets/images/icons/bag.png')}>
+          Press me
+        </Button>
         <Text style={styles.sample}>Welcome to Servbees!</Text>
         <Text>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</Text>
       </View>
@@ -33,7 +36,12 @@ const Onboarding = () => {
 
 const styles = StyleSheet.create({
   sample: {
-    fontFamily: "MPLUSRounded1c-Light"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    borderWidth: 1,
+    flexDirection: 'column',
+    textAlign: "center"
   }
 });
 
