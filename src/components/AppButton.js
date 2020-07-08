@@ -1,53 +1,50 @@
-//import * as React from 'react';
-//import {Button} from 'react-native-paper';
-
-//export default function AppButton(props) {
-//return <Button theme={{fonts: {medium: 'Open Sans'}}} {...props} />;
-//}
-
 import React from 'react';
-import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
+import AppText from './AppText/AppText';
+import AppColor from '../globals/Colors';
 
 const width = Dimensions.get('window').width;
 
-const AppButton = ({
-  text,
-  onPress,
-  type = 'filled',
-  bordered = false,
-  size = 'large',
-  style
-}) => {
+const AppButton = ({text, onPress, type, size, height}) => {
   const large = width / 1.3;
-  const small = width / 2;
-  const btnSize = size === 'large' ? large : small;
-  const btnBgColor = type === 'filled' ? '#3f51b5' : 'transparent';
-  const btnTextColor = type === 'filled' ? '#ffffff' : '#6371c2';
-  const btnBorderRadius = bordered ? 30 : 5;
+  const small = width / 2.5;
+  const btnSize = size === 'sm' ? small : large;
+  const btnBgColor =
+    type === 'primary' ? AppColor.primaryYellow : 'transparent';
+  const btnBorderColor =
+    type === 'primary' ? AppColor.primaryYellow : AppColor.contentEbony;
+  const btnBorderRadius = 3;
+  const btnHeight =
+    height === 'xs'
+      ? 2
+      : height === 'sm'
+      ? 4
+      : height === 'md'
+      ? 8
+      : height === 'lg'
+      ? 10
+      : 14;
 
   const containerCommonStyle = {
     backgroundColor: btnBgColor,
-    paddingVertical: 8,
+    paddingVertical: btnHeight,
     width: btnSize,
+    borderWidth: 1.5,
+    borderColor: btnBorderColor,
     borderRadius: btnBorderRadius,
-  };
-
-  const textCommonStyle = {
-    color: btnTextColor,
-    fontSize: 16,
-    textTransform: 'uppercase',
-    textAlign: 'center',
-  };
-
-  const border = type === 'outlined' && {
-    borderColor: '#e7e7e7',
-    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <View style={[containerCommonStyle, border, style]}>
-        <Text style={[textCommonStyle]}> {text} </Text>
+      <View style={[containerCommonStyle]}>
+        <AppText textStyle="button2">{text}</AppText>
       </View>
     </TouchableOpacity>
   );
