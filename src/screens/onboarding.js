@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
  }
 })
 
-const Onboarding = () => {
+import Colors from '../globals/Colors'
+import { Button, Image } from 'react-native-paper'
 
-  console.log("hello")
-  console.log(Colors.primaryYellow)
+const Onboarding = () => {
 
   return (
     <Swiper>
@@ -57,7 +57,12 @@ const Onboarding = () => {
 
 const styles = StyleSheet.create({
   sample: {
-    fontFamily: "MPLUSRounded1c-Light"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    borderWidth: 1,
+    flexDirection: 'column',
+    textAlign: "center"
   }
 });
 
