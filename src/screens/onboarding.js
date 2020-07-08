@@ -42,10 +42,13 @@ const styles = StyleSheet.create({
    position: 'absolute',
    top: -100,
    width: '100%',
+ },
+ text: {
+  textAlign: 'center'
  }
 })
 
-const Onboarding = () => {
+const Onboarding = ({ navigation }) => {
   return (
     <Swiper
       dot ={
@@ -57,13 +60,13 @@ const Onboarding = () => {
     >
       <View style={styles.slideHolder}>
         <Image source={require('../images/polygon.png')} style={styles.image} />
-        <TouchableOpacity onPress={() => null} style={styles.link}>
+        <TouchableOpacity onPress={() => navigation.push('Dashboard')} style={styles.link}>
           <AppText textStyle="body2">Skip</AppText>
         </TouchableOpacity>
         <Image source={require('../images/onboarding-img1.png')} />
         <AppText textStyle="display6">Welcome to Servbees!</AppText> 
         <View style={styles.textHolder}>
-          <AppText textStyle="body2">Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</AppText>
+          <AppText textStyle="body2" customStyle={styles.text}>Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!</AppText>
         </View>
       </View>
       <View style={styles.slideHolder}>

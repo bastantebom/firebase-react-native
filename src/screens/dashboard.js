@@ -27,8 +27,8 @@ const Dashboard = ({ navigation }) => {
       <AppButton
         text="Go back to onboarding"
         onPress={() => navigation.goBack()}
-        bordered = {true}
-        size = 'small'
+        type="primary"
+        size="sm"
       />
     </View>
   )
