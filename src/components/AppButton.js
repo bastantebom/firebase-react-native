@@ -67,7 +67,7 @@ const AppButton = ({text, size, type, height, onPress}) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View style={[containerCommonStyle]}>
-        <AppText customStyle={[textSyle]}>{text}</AppText>
+        <AppText customStyle={textSyle}>{text}</AppText>
       </View>
     </TouchableOpacity>
   );
