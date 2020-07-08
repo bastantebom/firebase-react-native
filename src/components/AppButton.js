@@ -10,7 +10,7 @@ import AppColor from '../globals/Colors';
 
 const width = Dimensions.get('window').width;
 
-const AppButton = ({text, onPress, type, size, height}) => {
+const AppButton = ({ text, onPress, type, size, height }) => {
   const large = width / 1.3;
   const small = width / 2.5;
   const btnSize = size === 'sm' ? small : large;
@@ -23,12 +23,12 @@ const AppButton = ({text, onPress, type, size, height}) => {
     height === 'xs'
       ? 2
       : height === 'sm'
-      ? 4
-      : height === 'md'
-      ? 8
-      : height === 'lg'
-      ? 10
-      : 14;
+        ? 4
+        : height === 'md'
+          ? 8
+          : height === 'lg'
+            ? 10
+            : 14;
 
   const containerCommonStyle = {
     backgroundColor: btnBgColor,
