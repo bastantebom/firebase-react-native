@@ -128,10 +128,10 @@ const Onboarding = ({ navigation }) => {
             <View style={styles.btnHolder}>
               <AppButton
                 text="Login"
+                type="tertiary"
                 size="sm"
                 height="xl"
                 borderColor="primary"
-                // onPress={() => Alert.alert('log in')}
                 onPress={() => {clickHandler(); setAuthType('login')}}
               />
               <AppButton
