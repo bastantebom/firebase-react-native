@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
   },
   btnHolder: {
     position: 'absolute',
-    bottom: '10%',
+    top: height - 130,
+    // bottom: '10%',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -65,13 +66,13 @@ const styles = StyleSheet.create({
 
 const Onboarding = ({ navigation }) => {
 
-  const [ authType, setAuthType ] = useState('signup')  
+  const [authType, setAuthType] = useState('signup')
   const _panel = useRef(null);
 
   const clickHandler = () => {
     _panel.current.show()
   }
-  
+
   const [slideInfo] = useState([
     {
       image: require('../images/onboarding-img1.png'),
@@ -132,22 +133,22 @@ const Onboarding = ({ navigation }) => {
                 size="sm"
                 height="xl"
                 borderColor="primary"
-                onPress={() => {clickHandler(); setAuthType('login')}}
+                onPress={() => { clickHandler(); setAuthType('login') }}
               />
               <AppButton
                 text="Sign Up"
                 size="sm"
                 height="xl"
                 borderColor="primary"
-                onPress={() => {clickHandler(); setAuthType('signup')}}
+                onPress={() => { clickHandler(); setAuthType('signup') }}
               />
             </View>
           </>
         }
       >
-        { authType === 'signup' ?
+        {authType === 'signup' ?
           <AppText textStyle="body1">Sign up</AppText>
-        :
+          :
           <AppText textStyle="body1">Log in</AppText>
         }
       </SlidePanel>
