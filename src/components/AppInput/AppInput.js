@@ -29,7 +29,7 @@ const AppInput = (props) => {
   };
 
   return (
-    <View style={[inputContainer]}>
+    <View style={{...inputContainer, ...props.propsInputCustomStyle}}>
       <TextInput
         onBlur={onBlur}
         onFocus={onFocus}

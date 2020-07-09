@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> chore: add typography component using AppText
 <dict>
 	<key>UIAppFonts</key>
 	<array>
@@ -35,11 +31,6 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
-<<<<<<< HEAD
-=======
->>>>>>> chore: typography WIP
-=======
->>>>>>> chore: add typography component using AppText
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
@@ -52,10 +43,6 @@
 			</dict>
 		</dict>
 	</dict>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> chore: add typography component using AppText
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>UILaunchStoryboardName</key>
@@ -73,9 +60,4 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
-<<<<<<< HEAD
-=======
->>>>>>> chore: typography WIP
-=======
->>>>>>> chore: add typography component using AppText
 </plist>
