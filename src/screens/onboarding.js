@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Image,
@@ -9,11 +9,13 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
-import AppText from '../components/AppText/AppText';
-import AppButton from '../components/AppButton';
-import Colors from '../globals/Colors';
-import SlidePanel from '../components/SlidingPanel';
-import SignUp from './SignUp';
+import AppText from '@/components/AppText/AppText';
+import AppButton from '@/components/AppButton';
+import SlidePanel from '@/components/SlidingPanel';
+import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
+
+import SignUp from '@/screens/SignUp';
+import Colors from '@/globals/Colors';
 
 const height = Dimensions.get('window').height;
 
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Onboarding = ({navigation}) => {
+const Onboarding = ({ navigation }) => {
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
 
@@ -132,6 +134,9 @@ const Onboarding = ({navigation}) => {
                 );
               })}
             </Swiper>
+
+
+
             <View style={styles.btnHolder}>
               <AppButton
                 text="Login"
@@ -162,8 +167,8 @@ const Onboarding = ({navigation}) => {
         {authType === 'signup' ? (
           <SignUp />
         ) : (
-          <AppText textStyle="body1">Log in</AppText>
-        )}
+            <AppText textStyle="body1">Log in</AppText>
+          )}
       </SlidePanel>
     </>
   );
