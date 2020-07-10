@@ -7,7 +7,7 @@
  */
 
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Routes from './Routes';
 import SplashScreen from 'react-native-splash-screen';
 
@@ -17,8 +17,6 @@ const App: () => React$Node = () => {
     SplashScreen.hide();
   }, []);
 
-  return (
-    <Routes />
-  )
-}
+  return <Routes />;
+};
 export default App;

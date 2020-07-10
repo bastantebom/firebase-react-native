@@ -18,7 +18,7 @@ const AppInput = (props) => {
     setIsActive(false);
   };
 
-  const borderColor = isActive ? AppColor.contentOcean : AppColor.contentEbony;
+  const borderColor = isActive ? AppColor.contentOcean : AppColor.neutralGray;
 
   const inputContainer = {
     borderRadius: 4,
