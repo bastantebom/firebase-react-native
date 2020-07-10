@@ -3,19 +3,22 @@ import { View, Dimensions } from 'react-native'
 
 import SlidingUpPanel from 'rn-sliding-up-panel'
 
-const {height} = Dimensions.get('window')
+const { height } = Dimensions.get('window')
 
 const styles = {
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    height: '100%'
     // position: 'absolute'
   },
   panel: {
     flex: 1,
     backgroundColor: '#fff',
     elevation: 20,
+    // position: 'absolute'
   },
   panelHeader: {
     width: '100%',
@@ -44,18 +47,18 @@ const SlidePanel = forwardRef(( props, ref ) => {
   return (
     <View style={styles.container}>
       {props.content}
-      <SlidingUpPanel
-        ref={ref}
-        draggableRange={{top: height - 25, bottom: 0}}
-        showBackdrop={false}
-      >
-        <View style={styles.panelHeader}>
-          <View style={styles.panelHandle} />
-        </View>
-        <View style={styles.panel}>
-          {props.children}
-        </View>
-      </SlidingUpPanel>
+        <SlidingUpPanel
+          ref={ref}
+          draggableRange={{top: height - 25, bottom: 0}}
+          showBackdrop={false}
+        >
+          <View style={styles.panelHeader}>
+            <View style={styles.panelHandle} />
+          </View>
+          <View style={styles.panel}>
+            {props.children}
+          </View>
+        </SlidingUpPanel>
     </View>
   )
 })
