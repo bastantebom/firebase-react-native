@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import styles from './AppViewContainer.scss';
 
 /**
@@ -19,17 +19,29 @@ import styles from './AppViewContainer.scss';
  */
 
 
-const AppViewContainer = ({children, paddingSize, horizonal, vertical, customStyle}) => {
-  
+const AppViewContainer = ({ children, paddingSize, marginSize, customStyle }) => {
 
-  if (customStyle) {
-    computedTextStyle = {
-      ...computedTextStyle,
-      ...customStyle,
-    };
-  }
+    let computedStyles = StyleSheet.create({
+        padding: 0,
+        margin: 0
+    })
 
-  return <View style={computedTextStyle}>{children}</View>;
+    // compute padding size
+    computedStyles.padding = paddingSize ? paddingSize === "xs" ? 4 : paddingSize * 8 : 0;
+
+    // compute margin size
+    computedStyles.margin = marginSize ? marginSize === "xs" ? 4 : marginSize * 8 : 0;
+
+    // Apply custom style if there is any. 
+    if (customStyle) {
+        computedStyles = {
+            ...computedStyles,
+            ...customStyle
+        }
+    }
+
+    return <View style={computedStyles}>{children}</View>;
 };
 
 export default AppViewContainer;
+

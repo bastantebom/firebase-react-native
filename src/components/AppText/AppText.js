@@ -12,8 +12,6 @@ const AppText = ({children, textStyle, customStyle}) => {
     };
   }
 
-  console.log(customStyle)
-
   return <Text style={computedTextStyle}>{children}</Text>;
 };
 
