@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 //screens
 import Onboarding from './src/screens/onboarding';
 import Dashboard from './src/screens/dashboard';
+import ResetPassword from './src/screens/resetPassword';
 
 const AuthStack = createStackNavigator();
 
@@ -20,6 +21,10 @@ function AuthStackScreen() {
       <AuthStack.Screen
         name="Dashboard"
         component={Dashboard}
+      />
+      <AuthStack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
       />
     </AuthStack.Navigator>
   )
