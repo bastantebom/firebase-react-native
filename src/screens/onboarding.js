@@ -16,6 +16,7 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 
 import SignUp from '@/screens/SignUp';
 import Colors from '@/globals/Colors';
+import Login from './login';
 
 import Polygon from '@/assets/images/polygon.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   btnHolder: {
     position: 'absolute',
     top: height - 130,
-    zIndex: 2,
+    // zIndex: 2,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -172,7 +173,7 @@ const Onboarding = ({ navigation, illustration }) => {
         {authType === 'signup' ? (
           <SignUp />
         ) : (
-            <AppText textStyle="body1">Log in</AppText>
+            <Login />
           )}
       </SlidePanel>
     </>
