@@ -23,11 +23,11 @@ import IllustTwo from '@/assets/images/onboarding-img2.svg';
 import IllustThree from '@/assets/images/onboarding-img3.svg';
 import IllustFour from '@/assets/images/onboarding-img4.svg';
 
-import Polygon from '../assets/images/polygon.svg';
-import IllustOne from '../assets/images/onboarding-img1.svg';
-import IllustTwo from '../assets/images/onboarding-img2.svg';
-import IllustThree from '../assets/images/onboarding-img3.svg';
-import IllustFour from '../assets/images/onboarding-img4.svg';
+import Polygon from '@/assets/images/polygon.svg';
+import IllustOne from '@/assets/images/onboarding-img1.svg';
+import IllustTwo from '@/assets/images/onboarding-img2.svg';
+import IllustThree from '@/assets/images/onboarding-img3.svg';
+import IllustFour from '@/assets/images/onboarding-img4.svg';
 
 const height = Dimensions.get('window').height;
 
