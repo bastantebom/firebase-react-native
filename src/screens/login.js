@@ -5,29 +5,42 @@ import AppInput from '../components/AppInput/AppInput'
 import AppButton from '../components/AppButton'
 import Colors from '../globals/Colors';
 import { useNavigation } from '@react-navigation/native';
+import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 
 function Login() {
 
   const navigation = useNavigation();
 
   return (
-    <KeyboardAvoidingView
-      behavior={"padding"}
-      style={{ flex: 1 }}
+    <AppViewContainer 
+      paddingSize={3}
     >
       <View style={styles.container}>
         <AppText textStyle="display5">Welcome back!</AppText>
-        <AppText textStyle="caption">Log in to get going, Buzzybee.</AppText>
+        <AppText textStyle="caption" customStyle={styles.caption}>Log in to get going, Buzzybee.</AppText>
         <AppInput 
           label="Email or Mobile Number" 
         />
         <AppInput
           label="Password"
         />
+        <TouchableOpacity>
+          <AppText textStyle="caption" customStyle={styles.caption}>Forgot Password?</AppText>
+        </TouchableOpacity>
         <AppButton
           text="Log In"
           type="primary"
           onPress={() => navigation.navigate('Dashboard')}
+        />
+        <AppButton
+          text="Log In with Facebook"
+          type="primary"
+          propsButtonCustomStyle={styles.customButton}
+        />
+        <AppButton
+          text="Sign up with Google"
+          type="primary"
+          propsButtonCustomStyle={styles.customButton}
         />
         <View style={styles.cta}>
           <AppText textStyle="button2">New to Servbees? </AppText>
@@ -36,16 +49,16 @@ function Login() {
           </TouchableOpacity>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </AppViewContainer>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 24
-  },
   link: {
     color: Colors.contentOcean
+  },
+  caption: {
+    color: Colors.contentPlaceholder
   },
   cta: {
     flexDirection: 'row',
@@ -55,6 +68,11 @@ const styles = StyleSheet.create({
     fontFamily: 'MPLUSRounded1c-Regular',
     fontSize: 25,
     letterSpacing: .5,
+  },
+  customButton: {
+    //change button color 
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable
   }
 })
 
