@@ -1,10 +1,15 @@
 //import liraries
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
+//App Specific Component
 import AppColor from '../globals/Colors';
 import AppText from '../components/AppText/AppText';
 import AppInput from '../components/AppInput/AppInput';
 import AppButton from '../components/AppButton';
+//SVG Import
+//import Close from '../assets/images/icons/close.svg';
+//import FBLogo from '../assets/images/icons/close.svg';
+//import GoogleLogo from '../assets/images/icons/close.svg';
 
 // create a component
 const SignUp = (props) => {
