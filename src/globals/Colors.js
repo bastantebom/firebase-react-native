@@ -29,10 +29,11 @@ export default {
   neutralsGainsboro: '#E8E8E8',
   neutralsWhitesmoke: '#FBFBFB',
   neutralsWhite: '#FFFFFF',
+  neutralGray: '#DADCE0',
 
   contentOcean: '#3781FC',
   contentEbony: '#2E3034',
-  contentPlaceholder: '#8C8B97',
+  contentPlaceholder: '#8C8B98',
 
   buttonDisable: '#F6F6F6',
 };

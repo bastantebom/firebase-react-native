@@ -1,48 +1,79 @@
 //import liraries
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+//App Specific Component
 import AppColor from '../globals/Colors';
 import AppText from '../components/AppText/AppText';
 import AppInput from '../components/AppInput/AppInput';
 import AppButton from '../components/AppButton';
+//SVG Import
+import Close from '../assets/images/icons/close.svg';
 
 // create a component
 const SignUp = (props) => {
-  const textCaption = {
-    color: AppColor.contentPlaceholder,
-  };
-
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.contentWrapper}>
+        <View style={styles.closeIconWrapper}>
+          <Close width={14} height={14} />
+        </View>
         <AppText textStyle="display5">Sign Up</AppText>
-        <AppText textStyle="caption" customStyle={textCaption}>
+        <AppText textStyle="caption" customStyle={styles.textCaption}>
           Join Servbees today. It’s free!
         </AppText>
         <View style={styles.formWrapper}>
           <AppInput
             label="Email or Mobile Number"
-            propsInputCustomStyle={styles.customInputStyle}
+            customStyle={styles.customInputStyle}
           />
-          <AppInput
-            label="Full Name"
-            propsInputCustomStyle={styles.customInputStyle}
-          />
+          <AppInput label="Full Name" customStyle={styles.customInputStyle} />
           <AppInput
             label="Password"
             secureTextEntry
             password
-            propsInputCustomStyle={styles.customInputStyle}
+            customStyle={styles.customInputStyle}
           />
+        </View>
 
+        <View>
           <AppButton
-            text="Next"
+            text="Sign up"
             type="primary"
-            size="lg"
             height="xl"
-            propsButtonCustomStyle={styles.customButtonStyle}
+            customStyle={styles.customButtonStyle}
             //onPress={}
           />
+        </View>
+        <View style={styles.orCopyWrapper}>
+          <AppText>or</AppText>
+        </View>
+        <View style={styles.otherLoginWrapper}>
+          <AppButton
+            text="Log in with Facebook"
+            type="primary"
+            height="md"
+            icon="fb"
+            customStyle={styles.customButtonStyle}
+            //onPress={}
+          />
+          <AppButton
+            text="Sign up with Google"
+            type="primary"
+            height="md"
+            icon="g"
+            customStyle={styles.customButtonStyle}
+            //onPress={}
+          />
+        </View>
+
+        <View style={styles.loginLinkCopy}>
+          <AppText>Already have an account?</AppText>
+          <TouchableOpacity
+            onPress={() => {
+              alert('Link Press');
+            }}>
+            <AppText customStyle={styles.underLineText}>Login</AppText>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -53,7 +84,7 @@ const SignUp = (props) => {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
-    padding: 20,
+    padding: 24,
   },
 
   contentWrapper: {
@@ -62,21 +93,51 @@ const styles = StyleSheet.create({
     backgroundColor: AppColor.neutralsWhite,
   },
 
+  closeIconWrapper: {
+    marginBottom: 16,
+  },
+
   formWrapper: {
     justifyContent: 'space-around',
     marginTop: 32,
-    marginBottom: 32,
+  },
+
+  textCaption: {
+    color: AppColor.contentPlaceholder,
   },
 
   customInputStyle: {
     marginBottom: 16,
+    //borderColor: AppColor.neutralGray,
+  },
+
+  forgotPasswordLink: {
+    marginTop: 4,
+    marginBottom: 24,
   },
 
   customButtonStyle: {
     backgroundColor: AppColor.buttonDisable,
     borderWidth: 1.5,
     borderColor: AppColor.buttonDisable,
-    alignSelf: 'stretch',
+    marginBottom: 16,
+  },
+
+  orCopyWrapper: {
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+
+  underLineText: {
+    color: AppColor.contentOcean,
+    paddingLeft: 4,
+  },
+
+  loginLinkCopy: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 24,
+    marginTop: 8,
   },
 });
 

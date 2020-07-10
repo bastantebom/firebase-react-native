@@ -18,7 +18,7 @@ const AppInput = (props) => {
     setIsActive(false);
   };
 
-  const borderColor = isActive ? AppColor.contentOcean : AppColor.contentEbony;
+  const borderColor = isActive ? AppColor.contentOcean : AppColor.neutralGray;
 
   const inputContainer = {
     borderRadius: 4,
@@ -29,7 +29,7 @@ const AppInput = (props) => {
   };
 
   return (
-    <View style={{...inputContainer, ...props.propsInputCustomStyle}}>
+    <View style={{...inputContainer, ...props.customStyle}}>
       <TextInput
         onBlur={onBlur}
         onFocus={onFocus}

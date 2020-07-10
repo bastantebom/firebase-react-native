@@ -1,26 +1,18 @@
 import React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
+import {View, TouchableOpacity, Dimensions, Text} from 'react-native';
 import AppText from './AppText/AppText';
 import AppColor from '../globals/Colors';
 
+import FB from '../assets/images/icons/fb.svg';
+import G from '../assets/images/icons/G.svg';
+
 const width = Dimensions.get('window').width;
 
-const AppButton = ({
-  text,
-  size,
-  type,
-  height,
-  onPress,
-  propsButtonCustomStyle,
-}) => {
-  const large = width / 1.119;
+const AppButton = ({text, type, height, size, onPress, customStyle, icon}) => {
+  //const large = width / 1.119;
   const small = width / 2.5;
-  const btnSize = size === 'sm' ? small : large;
+  const btnSize = size === 'sm' ? small : '';
+
   const btnBgColor =
     type === 'primary'
       ? AppColor.primaryYellow
@@ -50,33 +42,43 @@ const AppButton = ({
 
   const btnHeight =
     height === 'xs'
-      ? 2
+      ? 24
       : height === 'sm'
-      ? 4
+      ? 32
       : height === 'md'
-      ? 8
+      ? 40
       : height === 'lg'
-      ? 10
-      : 15;
+      ? 48
+      : 56;
 
   const containerCommonStyle = {
+    //flex: 1,
+    flexDirection: 'row',
     backgroundColor: btnBgColor,
-    paddingVertical: btnHeight,
-    width: btnSize,
+    height: btnHeight,
     borderWidth: 1.5,
     borderColor: btnBorderColor,
     borderRadius: btnBorderRadius,
     justifyContent: 'center',
     alignItems: 'center',
+    textAlignVertical: 'center',
   };
+
+  if (size === 'sm') {
+    containerCommonStyle.width = btnSize;
+  }
 
   const textSyle = {
     color: btnTextColor,
   };
-  //console.log({...containerCommonStyle, ...propsButtonCustomStyle});
+
+  const buttonIcon =
+    icon && icon === 'fb' ? <FB /> : icon && icon === 'g' ? <G /> : '';
+
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <View style={{...containerCommonStyle, ...propsButtonCustomStyle}}>
+      <View style={{...containerCommonStyle, ...customStyle}}>
+        <Text>{buttonIcon}</Text>
         <AppText customStyle={textSyle}>{text}</AppText>
       </View>
     </TouchableOpacity>
