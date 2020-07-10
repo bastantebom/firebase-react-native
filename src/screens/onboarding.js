@@ -12,10 +12,11 @@ import Swiper from 'react-native-swiper';
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
 import SlidePanel from '@/components/SlidingPanel';
-import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
+import AppViewContainer from '@/components/AppViewContainer';
 
 import SignUp from '@/screens/SignUp';
 import Colors from '@/globals/Colors';
+import Login from './login';
 
 import Polygon from '@/assets/images/polygon.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
@@ -172,7 +173,7 @@ const Onboarding = ({ navigation, illustration }) => {
         {authType === 'signup' ? (
           <SignUp />
         ) : (
-            <AppText textStyle="body1">Log in</AppText>
+            <Login />
           )}
       </SlidePanel>
     </>
