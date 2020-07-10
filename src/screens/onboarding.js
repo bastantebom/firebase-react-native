@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
-import AppText from '../components/AppText/AppText';
-import AppButton from '../components/AppButton';
-import Colors from '../globals/Colors';
-import SlidePanel from '../components/SlidingPanel';
-import SignUp from './SignUp';
+import AppText from '@/components/AppText/AppText';
+import AppButton from '@/components/AppButton';
+import SlidePanel from '@/components/SlidingPanel';
+
+import SignUp from '@/screens/SignUp';
+import Colors from '@/globals/Colors';
 
 const height = Dimensions.get('window').height;
 
@@ -132,6 +133,8 @@ const Onboarding = ({navigation}) => {
                 );
               })}
             </Swiper>
+            
+
             <View style={styles.btnHolder}>
               <AppButton
                 text="Login"

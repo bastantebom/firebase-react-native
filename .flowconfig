@@ -27,6 +27,9 @@ node_modules/react-native/flow/
 [options]
 emoji=true
 
+[options]
+module.name_mapper='^{rootPathPrefix}/\(.*\)$' -> '<PROJECT_ROOT>/{rootPathSuffix}/\1'
+
 esproposal.optional_chaining=enable
 esproposal.nullish_coalescing=enable
 
