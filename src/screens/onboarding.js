@@ -13,6 +13,7 @@ import AppText from '../components/AppText/AppText';
 import AppButton from '../components/AppButton';
 import Colors from '../globals/Colors';
 import SlidePanel from '../components/SlidingPanel';
+import Login from './login';
 
 const height = Dimensions.get('window').height;
 
@@ -149,7 +150,7 @@ const Onboarding = ({ navigation }) => {
         {authType === 'signup' ?
           <AppText textStyle="body1">Sign up</AppText>
           :
-          <AppText textStyle="body1">Log in</AppText>
+          <Login/>
         }
       </SlidePanel>
     </>
