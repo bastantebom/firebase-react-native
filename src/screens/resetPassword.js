@@ -1,54 +1,73 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
-import AppButton from '@/components/AppButton'
+import AppButton from '@/components/AppButton';
+import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 
-import ResetPasswordLock from '@/images/reset-password.svg'
-import CloseIcon from '@/images/close.svg'
+import ResetPasswordLock from '@/images/reset-password.svg';
+import CloseIcon from '@/images/close.svg';
 
 const ResetPassword = () => {
     return (
-        <View style={styles.container}>
-            <View style={styles.closeIconContainer}>
-                <CloseIcon width={24} height={24} />
-            </View>
+        <SafeAreaView style={styles.container}>
+            <AppViewContainer paddingSize={3} customStyle={styles.container}>
 
-            <ResetPasswordLock width={80} height={80} />
-            <AppText>Reset Password</AppText>
+                <AppViewContainer customStyle={styles.closeIconContainer} >
+                    <CloseIcon width={24} height={24} />
+                </AppViewContainer>
 
-            <AppText>No worries, it happens to the best of us!</AppText>
+                <AppViewContainer customStyle={styles.resetPasswordContainer}>
+                    <ResetPasswordLock width={80} height={80} />
+                </AppViewContainer>
 
-            <AppInput
-                label="Email or Mobile Number"
-            />
+                <AppText customStyle={styles.resetPasswordText} textStyle="display5" >Reset Password</AppText>
 
-            <AppButton
-                text="Login"
-                type="tertiary"
-                size="sm"
-                height="xl"
-                borderColor="primary"
-                propsButtonCustomStyle=""
-                onPress={() => {
-                    console.log("clicked")    
-                }}
-            />
-        </View>
+                <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">No worries, it happens to the best of us!</AppText>
+                <AppInput
+                    label="Email or Mobile Number" propsInputCustomStyle={styles.inputBox}
+                />
+
+                <AppButton
+                    text="Send"
+                    type="tertiary"
+                    height="xl"
+                    borderColor="primary"
+                    propsButtonCustomStyle={styles.nextButton}
+                    onPress={() => {
+                        console.log("clicked")
+                    }}
+                />
+            </AppViewContainer>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "red",
         flex: 1
     },
     closeIconContainer: {
-        backgroundColor: "blue",
-        alignItems: "flex-end"
+        alignItems: "flex-end",
+        marginBottom: 32
+    },
+    resetPasswordContainer: {
+        marginBottom: 16,
+        justifyContent: "center"
+    },
+    resetPasswordText: {
+        marginBottom: 8
+    },
+    resetPasswordSubText: {
+        marginBottom: 32
+    },
+    nextButton: {
+        width: "100%"
+    },
+    inputBox: {
+        marginBottom: 16
     }
-
 })
 
 export default ResetPassword;
