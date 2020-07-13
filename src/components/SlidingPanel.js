@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react'
 import { View, Dimensions } from 'react-native'
 
 import SlidingUpPanel from 'rn-sliding-up-panel'
+import Colors from '@/globals/Colors'
 
 const { height } = Dimensions.get('window')
 
@@ -16,13 +17,13 @@ const styles = {
   },
   panel: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsWhite,
     elevation: 20,
     // position: 'absolute'
   },
   panelHeader: {
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsWhite,
     alignItems: 'center',
     justifyContent: 'center',
     borderTopRightRadius: 10,
