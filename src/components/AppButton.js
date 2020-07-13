@@ -72,13 +72,21 @@ const AppButton = ({text, type, height, size, onPress, customStyle, icon}) => {
     color: btnTextColor,
   };
 
+  const iconWrapper = {
+    position: 'absolute',
+    alignItems: 'flex-start',
+    left: 16,
+  };
+
   const buttonIcon =
     icon && icon === 'fb' ? <FB /> : icon && icon === 'g' ? <G /> : '';
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View style={{...containerCommonStyle, ...customStyle}}>
-        <Text>{buttonIcon}</Text>
+        <View style={iconWrapper}>
+          <Text>{buttonIcon}</Text>
+        </View>
         <AppText customStyle={textSyle}>{text}</AppText>
       </View>
     </TouchableOpacity>
