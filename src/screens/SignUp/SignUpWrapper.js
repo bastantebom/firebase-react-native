@@ -3,10 +3,13 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import APIConfig from '@/api/Globals';
 
+import {useNavigation} from '@react-navigation/native';
+
 import SignUp from '@/screens/SignUp/SignUp';
 import Login from '@/screens/login';
 // create a component
 const SignUpWrapper = () => {
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [authType, setAuthType] = useState('signup');
@@ -21,6 +24,7 @@ const SignUpWrapper = () => {
         setTimeout(() => {
           setIsLoading(false);
           setData(response.data);
+          navigation.navigate('VerifyAccount');
         }, 2000);
       })
       .catch((error) => {
