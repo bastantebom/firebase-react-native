@@ -14,7 +14,6 @@ import Colors from '../globals/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
-import SignUp from './SignUp'
 import Close from '../assets/images/icons/close.svg';
 
 function Divider() {
@@ -49,10 +48,10 @@ function Login() {
             </AppText>
             <AppViewContainer
               paddingSize={4}
-              customStyle={{paddingHorizontal: 0}}>
+              customStyle={{ paddingHorizontal: 0, paddingBottom: 0 }}>
               <AppInput
                 label="Email or Mobile Number"
-                propsInputCustomStyle={styles.inputText}
+                customStyle={styles.inputText}
               />
               <AppInput
                 label="Password"
