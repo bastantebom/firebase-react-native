@@ -68,9 +68,11 @@ const SignUp = (props) => {
         </View>
 
         <View style={styles.loginLinkCopy}>
-          <AppText>Already have an account?</AppText>
+          <AppText textStyle="button2">Already have an account?</AppText>
           <TouchableOpacity onPress={props.loginClick}>
-            <AppText customStyle={styles.underLineText}>Login</AppText>
+            <AppText textStyle="button2" customStyle={styles.underLineText}>
+              Login
+            </AppText>
           </TouchableOpacity>
         </View>
       </View>
