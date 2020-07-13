@@ -2,12 +2,12 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 //App Specific Component
-import AppColor from '../globals/Colors';
-import AppText from '../components/AppText/AppText';
-import AppInput from '../components/AppInput/AppInput';
-import AppButton from '../components/AppButton';
+import AppColor from '@/globals/Colors';
+import AppText from '@/components/AppText/AppText';
+import AppInput from '@/components/AppInput/AppInput';
+import AppButton from '@/components/AppButton';
 //SVG Import
-import Close from '../assets/images/icons/close.svg';
+import Close from '@/assets/images/icons/close.svg';
 
 // create a component
 const SignUp = (props) => {
@@ -41,7 +41,8 @@ const SignUp = (props) => {
             type="primary"
             height="xl"
             customStyle={styles.customButtonStyle}
-            //onPress={}
+            onPress={signUpEmail}
+            loading={props.loading}
           />
         </View>
         <View style={styles.orCopyWrapper}>
@@ -68,10 +69,7 @@ const SignUp = (props) => {
 
         <View style={styles.loginLinkCopy}>
           <AppText>Already have an account?</AppText>
-          <TouchableOpacity
-            onPress={() => {
-              alert('Link Press');
-            }}>
+          <TouchableOpacity onPress={props.loginClick}>
             <AppText customStyle={styles.underLineText}>Login</AppText>
           </TouchableOpacity>
         </View>

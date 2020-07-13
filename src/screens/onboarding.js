@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Image,
@@ -14,9 +14,9 @@ import AppButton from '@/components/AppButton';
 import SlidePanel from '@/components/SlidingPanel';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 
-import SignUp from '@/screens/SignUp';
+import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';
-import Login from './login';
+import Login from '@/screens/login';
 
 import Polygon from '@/assets/images/polygon.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   bgImageHolder: {
     position: 'absolute',
     top: -150,
-    transform: [{ rotate: "15deg" }]
+    transform: [{rotate: '15deg'}],
   },
   text: {
     textAlign: 'center',
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Onboarding = ({ navigation, illustration }) => {
+const Onboarding = ({navigation, illustration}) => {
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
 
@@ -126,7 +126,9 @@ const Onboarding = ({ navigation, illustration }) => {
                     <View style={styles.bgImageHolder}>
                       <Polygon />
                     </View>
-                    <TouchableOpacity onPress={() => navigation.push('Dashboard')} style={styles.link}>
+                    <TouchableOpacity
+                      onPress={() => navigation.push('Dashboard')}
+                      style={styles.link}>
                       <AppText textStyle="body2">Skip</AppText>
                     </TouchableOpacity>
                     <View>{item.illustration}</View>
@@ -140,8 +142,6 @@ const Onboarding = ({ navigation, illustration }) => {
                 );
               })}
             </Swiper>
-
-
 
             <View style={styles.btnHolder}>
               <AppButton
@@ -170,11 +170,7 @@ const Onboarding = ({ navigation, illustration }) => {
             </View>
           </>
         }>
-        {authType === 'signup' ? (
-          <SignUp />
-        ) : (
-            <Login />
-          )}
+        {authType === 'signup' ? <SignUpWrapper /> : <Login />}
       </SlidePanel>
     </>
   );

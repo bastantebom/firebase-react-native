@@ -1,14 +1,29 @@
 import React from 'react';
-import {View, TouchableOpacity, Dimensions, Text} from 'react-native';
-import AppText from './AppText/AppText';
-import AppColor from '../globals/Colors';
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
+import AppText from '@/components/AppText/AppText';
+import AppColor from '@/globals/Colors';
 
-import FB from '../assets/images/icons/fb.svg';
-import G from '../assets/images/icons/G.svg';
+import FB from '@/assets/images/icons/fb.svg';
+import G from '@/assets/images/icons/G.svg';
 
 const width = Dimensions.get('window').width;
 
-const AppButton = ({text, type, height, size, onPress, customStyle, icon}) => {
+const AppButton = ({
+  text,
+  type,
+  height,
+  size,
+  onPress,
+  customStyle,
+  icon,
+  loading,
+}) => {
   //const large = width / 1.119;
   const small = width / 2.5;
   const btnSize = size === 'sm' ? small : '';
@@ -84,10 +99,19 @@ const AppButton = ({text, type, height, size, onPress, customStyle, icon}) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View style={{...containerCommonStyle, ...customStyle}}>
-        <View style={iconWrapper}>
-          <Text>{buttonIcon}</Text>
-        </View>
-        <AppText customStyle={textSyle}>{text}</AppText>
+        <View style={iconWrapper}>{!loading && <Text>{buttonIcon}</Text>}</View>
+        {!loading && (
+          <AppText customStyle={textSyle} textStyle="button2">
+            {text}
+          </AppText>
+        )}
+        {loading && (
+          <ActivityIndicator
+            animating={loading}
+            size="small"
+            color={AppColor.contentEbony}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
