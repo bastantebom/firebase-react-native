@@ -5,6 +5,17 @@ var svgTransformer = require("react-native-svg-transformer");
 
 module.exports.transform = function({ src, filename, options }) {
   if (filename.endsWith(".scss") || filename.endsWith(".sass")) {
+    var opts = Object.assign(options, {
+      sassOptions: {
+        functions: {
+          "rem($px)": px => {
+            px.setValue(px.getValue() / 16);
+            px.setUnit("rem");
+            return px;
+          }
+        }
+      }
+    });
     return sassTransformer.transform({ src, filename, options });
   } else if (filename.endsWith(".svg")) {
     return svgTransformer.transform({ src, filename, options });
