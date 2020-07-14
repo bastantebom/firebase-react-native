@@ -6,8 +6,8 @@ import AppInput from '@/components/AppInput/AppInput';
 import AppButton from '@/components/AppButton';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 
-import ResetPasswordLock from '@/images/reset-password.svg';
-import CloseIcon from '@/images/close.svg';
+import ResetPasswordLock from '@/assets/images/reset-password.svg';
+import CloseIcon from '@/assets/images/icons/close.svg';
 
 const ResetPassword = () => {
     return (
