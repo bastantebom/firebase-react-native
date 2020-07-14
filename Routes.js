@@ -6,7 +6,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Onboarding from './src/screens/onboarding';
 import VerifyAccount from '@/screens/SignUp/VerifyAccount';
 import Dashboard from './src/screens/dashboard';
-import ResetPassword from './src/screens/resetPassword';
+import ResetPassword from '@/screens/resetPassword';
 
 const AuthStack = createStackNavigator();
 
