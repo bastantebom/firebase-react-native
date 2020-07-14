@@ -1,6 +1,6 @@
 //import liraries
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
 import AppText from '@/components/AppText/AppText';
@@ -14,7 +14,7 @@ const SignUp = (props) => {
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.contentWrapper}>
-        <View style={styles.closeIconWrapper}>
+        <View style={styles.closeIconWrapper} onPress={props.closePanel}>
           <Close width={14} height={14} />
         </View>
         <AppText textStyle="display5">Sign Up</AppText>
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
     padding: 24,
+    flexDirection: 'column',
   },
 
   contentWrapper: {
@@ -94,7 +95,12 @@ const styles = StyleSheet.create({
   },
 
   closeIconWrapper: {
-    marginBottom: 16,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    backgroundColor: 'red',
+    paddingBottom: 16,
   },
 
   formWrapper: {

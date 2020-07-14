@@ -97,6 +97,10 @@ const Onboarding = ({ navigation, illustration }) => {
     }).start();
   }
 
+  const clickClosePanelHandler = () => {
+    _panel.current.hide();
+  };
+
   const [slideInfo] = useState([
     {
       illustration: <IllustOne />,
@@ -187,7 +191,11 @@ const Onboarding = ({ navigation, illustration }) => {
             </View>
           </>
         }>
-        {authType === 'signup' ? <SignUpWrapper /> : <Login />}
+        {authType === 'signup' ? (
+          <SignUpWrapper closePanel={clickClosePanelHandler} />
+        ) : (
+          <Login />
+        )}
       </SlidePanel>
     </>
   );
