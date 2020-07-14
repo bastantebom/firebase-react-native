@@ -1,8 +1,8 @@
 //import liraries
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {TextInput} from 'react-native-paper';
-import AppColor from '../../globals/Colors';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import AppColor from '@/globals/Colors';
 
 // create a component
 const AppInput = (props) => {
@@ -29,7 +29,7 @@ const AppInput = (props) => {
   };
 
   return (
-    <View style={{...inputContainer, ...props.customStyle}}>
+    <View style={{ ...inputContainer, ...props.customStyle }}>
       <TextInput
         onBlur={onBlur}
         onFocus={onFocus}
@@ -39,6 +39,9 @@ const AppInput = (props) => {
           colors: {
             primary: AppColor.contentOcean,
           },
+          fonts: {
+            medium: 'RoundedMplus1c-Medium'
+          }
         }}
       />
     </View>
@@ -51,7 +54,7 @@ const styles = StyleSheet.create({
     height: 55,
     overflow: 'hidden',
     backgroundColor: AppColor.neutralWhite,
-    fontSize: 16,
+    fontSize: 16
   },
 });
 
