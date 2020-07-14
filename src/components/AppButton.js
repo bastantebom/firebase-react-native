@@ -26,6 +26,7 @@ const AppButton = ({
   customStyle,
   icon,
   loading,
+  disabled
 }) => {
   //const large = width / 1.119;
   const small = width / 2.5;
@@ -100,7 +101,7 @@ const AppButton = ({
     icon && icon === 'fb' ? <FB /> : icon && icon === 'g' ? <G /> : '';
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} disabled={disabled}>
       <View style={{...containerCommonStyle, ...customStyle}}>
         <View style={iconWrapper}>{!loading && <Text>{buttonIcon}</Text>}</View>
         {!loading && (
