@@ -77,8 +77,13 @@ const styles = StyleSheet.create({
   },
 });
 
+<<<<<<< HEAD
 const Onboarding = ({ navigation, illustration }) => {
   const [authType, setAuthType] = useState('signup');
+=======
+const Onboarding = ({navigation, illustration}) => {
+  const [authType, setAuthType] = useState('');
+>>>>>>> initial verification screen
   const _panel = useRef(null);
   const clickHandler = () => {
     _panel.current.show();

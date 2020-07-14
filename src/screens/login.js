@@ -82,11 +82,10 @@ function Login() {
     <>
       {authType === 'login' ? (
         <AppViewContainer paddingSize={3}>
-          <AppViewContainer 
+          <AppViewContainer
             paddingSize={3}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
-          >
-            <Close/>
+            customStyle={{paddingTop: 0, paddingHorizontal: 0}}>
+            <Close />
           </AppViewContainer>
           <View style={styles.container}>
             <AppText textStyle="display5">Welcome back!</AppText>
@@ -95,19 +94,14 @@ function Login() {
             </AppText>
             <AppViewContainer
               paddingSize={4}
-              customStyle={{ paddingHorizontal: 0, paddingBottom: 0 }}>
+              customStyle={{paddingHorizontal: 0, paddingBottom: 0}}>
               <AppInput
                 label="Email or Mobile Number"
                 customStyle={styles.inputText}
               />
-              <AppInput
-                label="Password"
-              />
+              <AppInput label="Password" />
               <TouchableOpacity>
-                <AppText 
-                  textStyle="caption" 
-                  customStyle={styles.caption}
-                >
+                <AppText textStyle="caption" customStyle={styles.caption}>
                   Forgot Password?
                 </AppText>
               </TouchableOpacity>
@@ -119,7 +113,7 @@ function Login() {
                 onPress={() => navigation.navigate('Dashboard')}
               />
             </AppViewContainer>
-            <Divider/>
+            <Divider />
             <AppButton
               text={"Log in with Facebook"}
               type="primary"
@@ -177,7 +171,7 @@ const styles = StyleSheet.create({
   },
   caption: {
     color: Colors.contentPlaceholder,
-    marginTop: 5
+    marginTop: 5,
   },
   cta: {
     flexDirection: 'row',
@@ -187,16 +181,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   customSpacing: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   customButton: {
     //change button color
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
-    marginBottom: 16
+    marginBottom: 16,
   },
   customLogin: {
-    marginTop: 25
+    marginTop: 25,
   },
   // divider: {
   //   position: 'relative',
@@ -210,8 +204,8 @@ const styles = StyleSheet.create({
     // top: -12,
     // width: 75,
     textAlign: 'center',
-    marginVertical: 16
-  }
-})
+    marginVertical: 16,
+  },
+});
 
 export default Login;

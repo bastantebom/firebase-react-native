@@ -6,6 +6,7 @@ import AppColor from '@/globals/Colors';
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
 import AppButton from '@/components/AppButton';
+import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 //SVG Import
 import Close from '@/assets/images/icons/close.svg';
 
@@ -14,9 +15,13 @@ const SignUp = (props) => {
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.contentWrapper}>
-        <View style={styles.closeIconWrapper} onPress={props.closePanel}>
-          <Close width={14} height={14} />
-        </View>
+        <TouchableOpacity
+          style={styles.closeIconWrapper}
+          onPress={() => {
+            props.closePanelUI();
+          }}>
+          <Close height={24} width={24} />
+        </TouchableOpacity>
         <AppText textStyle="display5">Sign Up</AppText>
         <AppText textStyle="caption" customStyle={styles.textCaption}>
           Join Servbees today. It’s free!
@@ -96,11 +101,8 @@ const styles = StyleSheet.create({
 
   closeIconWrapper: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    backgroundColor: 'red',
-    paddingBottom: 16,
+    marginBottom: 13,
+    paddingBottom: 24,
   },
 
   formWrapper: {

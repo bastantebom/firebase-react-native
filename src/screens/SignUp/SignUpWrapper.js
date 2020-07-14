@@ -13,6 +13,7 @@ const SignUpWrapper = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [authType, setAuthType] = useState('signup');
+  //const _panel = useRef(null);
 
   signUpEmail = () => {
     setIsLoading(true);
@@ -44,7 +45,7 @@ const SignUpWrapper = (props) => {
           loading={isLoading}
           signUpEmail={signUpEmail}
           loginClick={loginClick}
-          closePanel={props.closePanel}
+          closePanelUI={props.closePanel}
         />
       ) : (
         <Login />
