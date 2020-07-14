@@ -3,9 +3,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 //screens
-import Onboarding from './src/screens/onboarding';
+import Onboarding from '@/screens/onboarding';
 import VerifyAccount from '@/screens/SignUp/VerifyAccount';
-import Dashboard from './src/screens/dashboard';
+import Dashboard from '@/screens/dashboard';
 import ResetPassword from '@/screens/resetPassword';
 
 const AuthStack = createStackNavigator();

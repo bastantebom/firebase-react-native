@@ -4,8 +4,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import AppText from '../components/AppText/AppText';
-import AppButton from '../components/AppButton';
+import AppText from '@/components/AppText/AppText';
+import AppButton from '@/components/AppButton';
 
 import ResetPasswordScreen from '@/screens/resetPassword';
 
