@@ -39,7 +39,6 @@ const AppViewContainer = ({ children, paddingSize, marginSize, customStyle }) =>
             ...customStyle
         }
     }
-    console.log(computedStyles)
 
     return (
         <SafeAreaView style={computedStyles}>

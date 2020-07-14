@@ -24,9 +24,11 @@ const ResetPassword = ({ navigation }) => {
 
     const onEmailChange = (text) => {
         setEmail(text);
+        setButtonDisabled(false)
         setButtonState('active');
 
         if (text === '') {
+            setButtonDisabled(true)
             setButtonState('dark');
         }
     }
@@ -36,6 +38,7 @@ const ResetPassword = ({ navigation }) => {
             setTimeout(() => {
                 resolve('Email sent');
                 setButtonLoading(false)
+                setButtonDisabled(false)
                 setButtonText('Resend the link')
             }, 2000);
         });
@@ -77,8 +80,10 @@ const ResetPassword = ({ navigation }) => {
                 height="lg"
                 customStyle={styles[buttonState]}
                 loading={buttonLoading}
+                disabled={buttonDisabled}
                 onPress={() => {
                     setButtonLoading(true)
+                    setButtonDisabled(true)
                     sendEmail()
                     Keyboard.dismiss()
                     console.log(email)
