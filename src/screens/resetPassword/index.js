@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Keyboard } from 'react-native';
+import { View, TouchableOpacity, Keyboard, StyleSheet } from 'react-native';
 
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
@@ -9,12 +9,16 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import ResetPasswordLock from '@/assets/images/reset-password.svg';
 import CloseIcon from '@/assets/images/icons/close.svg';
 
-import styles from './resetPassword.scss';
+import stylesImport from './resetPassword.scss';
+
+const styles = StyleSheet.create(stylesImport);
 
 const ResetPassword = ({ navigation }) => {
 
-    const [buttonState, setButtonState] = useState('dark')
     const [email, setEmail] = useState('')
+
+    const [buttonDisabled, setButtonDisabled] = useState(true)
+    const [buttonState, setButtonState] = useState('dark')
     const [buttonLoading, setButtonLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Send')
 
@@ -47,9 +51,9 @@ const ResetPassword = ({ navigation }) => {
     }
 
     return (
-        <AppViewContainer paddingSize={3} customStyle={{ ...styles.container }}>
+        <AppViewContainer paddingSize={3} customStyle={styles.container}>
 
-            <View style={styles.closeIconContainer} >
+            <View style={styles.closeIconContainer}  >
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <CloseIcon width={24} height={24} />
                 </TouchableOpacity>
