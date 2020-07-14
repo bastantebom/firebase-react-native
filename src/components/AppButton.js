@@ -9,8 +9,11 @@ import {
 import AppText from '@/components/AppText/AppText';
 import AppColor from '@/globals/Colors';
 
-import FB from '@/assets/images/icons/fb.svg';
-import G from '@/assets/images/icons/G.svg';
+// import FB from '../assets/images/icons/facebook.svg';
+// import G from '../assets/images/icons/google.svg';
+
+import FB from '@/assets/images/icons/facebook.svg';
+import G from '@/assets/images/icons/google.svg';
 
 const width = Dimensions.get('window').width;
 
