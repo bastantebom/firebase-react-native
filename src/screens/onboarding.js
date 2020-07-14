@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     backgroundColor: Colors.primaryMidnightBlue,
+    overflow: 'hidden'
   },
   link: {
     alignSelf: 'flex-end',
