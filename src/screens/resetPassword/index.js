@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, TouchableOpacity, Keyboard, StyleSheet } from 'react-native';
 
 import AppText from '@/components/AppText/AppText';
@@ -11,9 +11,12 @@ import CloseIcon from '@/assets/images/icons/close.svg';
 
 import stylesImport from './resetPassword.scss';
 
+import { Context } from "@/context";
+
 const styles = StyleSheet.create(stylesImport);
 
 const ResetPassword = ({ navigation }) => {
+    const { sampleState, sampleFunction} = useContext(Context);
 
     const [email, setEmail] = useState('')
 
@@ -66,7 +69,7 @@ const ResetPassword = ({ navigation }) => {
                 <ResetPasswordLock width={80} height={80} />
             </View>
 
-            <AppText customStyle={styles.resetPasswordText} textStyle="display5" >Reset Password</AppText>
+            <AppText customStyle={styles.resetPasswordText} textStyle="display5" >{sampleState} Reset Password</AppText>
 
             <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">No worries, it happens to the best of us!</AppText>
 
