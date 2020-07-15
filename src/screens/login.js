@@ -16,12 +16,8 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Close from '../assets/images/icons/close.svg';
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-community/google-signin';
+import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
-
-GoogleSignin.configure({
-  webClientId: '717890893531-4cvrbrnmfq1gb5j4kt6ug7vu7t2gdqda.apps.googleusercontent.com',
-});
 
 function Divider() {
   return (
@@ -39,6 +35,10 @@ function Login() {
   const [authType, setAuthType] = useState('login');
   const [setUserInfo] = useState(null);
 
+  GoogleSignin.configure({
+    webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
+  });
+
   async function facebookSignIn() {
     const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
     if (result.isCancelled) {
@@ -54,28 +54,29 @@ function Login() {
   }
 
   async function googleLogin() {
-    // await GoogleSignin.hasPlayServices();
-    const { idToken } = GoogleSignin.signIn();
+     // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
     return auth().signInWithCredential(googleCredential);
+    // try {
+    //   await GoogleSignin.hasPlayServices();
+    //   const userInfo = await GoogleSignin.signIn();
+    // } catch (error) {
+    //   if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+    //     // user cancelled the login flow
+    //   } else if (error.code === statusCodes.IN_PROGRESS) {
+    //     // operation (e.g. sign in) is in progress already
+    //   } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+    //     // play services not available or outdated
+    //   } else {
+    //     // some other error happened
+    //   }
+    // }
   };
-
-  async function isGoogleSignedIn() {
-    await GoogleSignin.isSignedIn();
-  };
-
-  async function googleSignOut() {
-    try {
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    isGoogleSignedIn();
-  }, [])
 
   return (
     <>
@@ -150,6 +151,7 @@ function Login() {
               height="md"
               icon="g"
               customStyle={styles.customButton}
+              // onPress={console.log('PRESS')}
               onPress={() => googleLogin().then(() => console.log('Signed in with Google!'))}
             />
             <View style={styles.cta}>
