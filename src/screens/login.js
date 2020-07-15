@@ -7,17 +7,17 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import AppText from '../components/AppText/AppText';
-import AppInput from '../components/AppInput/AppInput';
-import AppButton from '../components/AppButton';
-import Colors from '../globals/Colors';
+import AppText from '@/components/AppText/AppText';
+import AppInput from '@/components/AppInput/AppInput';
+import AppButton from '@/components/AppButton';
+import Colors from '@/globals/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
-import Close from '../assets/images/icons/close.svg';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
+import Close from '@/assets/images/icons/close.svg';
 
 function Divider() {
   return (

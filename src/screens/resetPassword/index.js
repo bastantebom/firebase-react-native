@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Keyboard } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, TouchableOpacity, Keyboard, StyleSheet } from 'react-native';
 
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
@@ -9,20 +9,29 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import ResetPasswordLock from '@/assets/images/reset-password.svg';
 import CloseIcon from '@/assets/images/icons/close.svg';
 
-import styles from './resetPassword.scss';
+import stylesImport from './resetPassword.scss';
+
+import { Context } from "@/context";
+
+const styles = StyleSheet.create(stylesImport);
 
 const ResetPassword = ({ navigation }) => {
+    const { sampleState, sampleFunction} = useContext(Context);
 
-    const [buttonState, setButtonState] = useState('dark')
     const [email, setEmail] = useState('')
+
+    const [buttonDisabled, setButtonDisabled] = useState(true)
+    const [buttonState, setButtonState] = useState('dark')
     const [buttonLoading, setButtonLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Send')
 
     const onEmailChange = (text) => {
         setEmail(text);
+        setButtonDisabled(false)
         setButtonState('active');
 
         if (text === '') {
+            setButtonDisabled(true)
             setButtonState('dark');
         }
     }
@@ -32,6 +41,7 @@ const ResetPassword = ({ navigation }) => {
             setTimeout(() => {
                 resolve('Email sent');
                 setButtonLoading(false)
+                setButtonDisabled(false)
                 setButtonText('Resend the link')
             }, 2000);
         });
@@ -47,9 +57,9 @@ const ResetPassword = ({ navigation }) => {
     }
 
     return (
-        <AppViewContainer paddingSize={3} customStyle={{ ...styles.container }}>
+        <AppViewContainer paddingSize={3} customStyle={styles.container}>
 
-            <View style={styles.closeIconContainer} >
+            <View style={styles.closeIconContainer}  >
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <CloseIcon width={24} height={24} />
                 </TouchableOpacity>
@@ -59,7 +69,7 @@ const ResetPassword = ({ navigation }) => {
                 <ResetPasswordLock width={80} height={80} />
             </View>
 
-            <AppText customStyle={styles.resetPasswordText} textStyle="display5" >Reset Password</AppText>
+            <AppText customStyle={styles.resetPasswordText} textStyle="display5" >{sampleState} Reset Password</AppText>
 
             <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">No worries, it happens to the best of us!</AppText>
 
@@ -73,8 +83,10 @@ const ResetPassword = ({ navigation }) => {
                 height="lg"
                 customStyle={styles[buttonState]}
                 loading={buttonLoading}
+                disabled={buttonDisabled}
                 onPress={() => {
                     setButtonLoading(true)
+                    setButtonDisabled(true)
                     sendEmail()
                     Keyboard.dismiss()
                     console.log(email)
