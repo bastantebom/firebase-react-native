@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-  Easing
+  Easing,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     backgroundColor: Colors.primaryMidnightBlue,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   link: {
     alignSelf: 'flex-end',
@@ -60,14 +60,14 @@ const styles = StyleSheet.create({
   },
   bgImageHolder: {
     position: 'absolute',
-    bottom: height * .15,
+    bottom: height * 0.15,
   },
   text: {
     textAlign: 'center',
   },
   btnHolder: {
     position: 'absolute',
-    top: height * .85,
+    top: height * 0.85,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Onboarding = ({ navigation, illustration }) => {
+const Onboarding = ({navigation, illustration}) => {
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
   const clickHandler = () => {
@@ -87,15 +87,21 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const rotation = animation.interpolate({
     inputRange: [0, 1, 2, 3],
-    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg']
+    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg'],
   });
 
   const onSwipe = (index) => {
     Animated.timing(animation, {
-      toValue: index, duration: 200, easing: Easing.linear,
-      useNativeDriver: true
+      toValue: index,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
     }).start();
-  }
+  };
+
+  const clickClosePanelHandler = () => {
+    _panel.current.hide();
+  };
 
   const [slideInfo] = useState([
     {
@@ -139,8 +145,10 @@ const Onboarding = ({ navigation, illustration }) => {
                 return (
                   <View key={i} style={styles.slideHolder}>
                     <Animated.View
-                      style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}
-                    >
+                      style={[
+                        {transform: [{rotate: rotation}]},
+                        styles.bgImageHolder,
+                      ]}>
                       <Polygon />
                     </Animated.View>
                     <TouchableOpacity
@@ -187,7 +195,11 @@ const Onboarding = ({ navigation, illustration }) => {
             </View>
           </>
         }>
-        {authType === 'signup' ? <SignUpWrapper /> : <Login />}
+        {authType === 'signup' ? (
+          <SignUpWrapper closePanel={clickClosePanelHandler} />
+        ) : (
+          <Login />
+        )}
       </SlidePanel>
     </>
   );

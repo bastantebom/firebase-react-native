@@ -1,11 +1,12 @@
 //import liraries
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
 import AppButton from '@/components/AppButton';
+import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 //SVG Import
 import Close from '@/assets/images/icons/close.svg';
 
@@ -14,9 +15,13 @@ const SignUp = (props) => {
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.contentWrapper}>
-        <View style={styles.closeIconWrapper}>
-          <Close width={14} height={14} />
-        </View>
+        <TouchableOpacity
+          style={styles.closeIconWrapper}
+          onPress={() => {
+            props.closePanelUI();
+          }}>
+          <Close height={24} width={24} />
+        </TouchableOpacity>
         <AppText textStyle="display5">Sign Up</AppText>
         <AppText textStyle="caption" customStyle={styles.textCaption}>
           Join Servbees today. It’s free!
@@ -68,9 +73,11 @@ const SignUp = (props) => {
         </View>
 
         <View style={styles.loginLinkCopy}>
-          <AppText>Already have an account?</AppText>
+          <AppText textStyle="button2">Already have an account?</AppText>
           <TouchableOpacity onPress={props.loginClick}>
-            <AppText customStyle={styles.underLineText}>Login</AppText>
+            <AppText textStyle="button2" customStyle={styles.underLineText}>
+              Login
+            </AppText>
           </TouchableOpacity>
         </View>
       </View>
@@ -83,6 +90,7 @@ const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
     padding: 24,
+    flexDirection: 'column',
   },
 
   contentWrapper: {
@@ -92,7 +100,9 @@ const styles = StyleSheet.create({
   },
 
   closeIconWrapper: {
-    marginBottom: 16,
+    flex: 1,
+    marginBottom: 13,
+    paddingBottom: 24,
   },
 
   formWrapper: {

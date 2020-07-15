@@ -1,7 +1,6 @@
 export default {
-  //DEV
-  apiUrl: 'https://jsonplaceholder.typicode.com/',
-
-  //PROD
-  apiUrl: 'https://jsonplaceholder.typicode.com/',
+  //DEV Render
+  apiUrlDev: 'https://servbees-api.onrender.com/',
+  //Demo
+  apiUrlDemo: 'https://jsonplaceholder.typicode.com/',
 };

@@ -94,6 +94,7 @@ const AppButton = ({
   const iconWrapper = {
     position: 'absolute',
     alignItems: 'flex-start',
+    justifyContent: 'center',
     left: 16,
   };
 
