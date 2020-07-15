@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform } from 'react-native';
 import styles from './AppViewContainer.scss';
 
 /**
@@ -40,10 +40,11 @@ const AppViewContainer = ({ children, paddingSize, marginSize, customStyle }) =>
         }
     }
 
+
     return (
         <SafeAreaView style={computedStyles}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={computedStyles}>{children}</View>
+                <View style={Platform.OS === 'ios' ? computedStyles: {}}>{children}</View>
             </TouchableWithoutFeedback>
         </SafeAreaView>
     );
