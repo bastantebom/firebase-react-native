@@ -87,7 +87,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const rotation = animation.interpolate({
     inputRange: [0, 1, 2, 3],
-    outputRange: ['15deg', '97.93deg', '60deg', '74.35deg']
+    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg']
   });
 
   const onSwipe = (index) => {
