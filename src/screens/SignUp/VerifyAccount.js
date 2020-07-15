@@ -140,6 +140,7 @@ const VerifyAccount = () => {
               autoFocus={index === 0 ? true : undefined}
               ref={textInputRef}
               value={verifyArray[index]}
+              key={index}
             />
           ),
         )}

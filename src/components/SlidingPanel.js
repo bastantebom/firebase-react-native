@@ -49,7 +49,7 @@ const SlidePanel = forwardRef((props, ref) => {
       {props.content}
       <SlidingUpPanel
         ref={ref}
-        draggableRange={{top: height - 250, bottom: 0}}
+        draggableRange={{top: height - 50, bottom: 0}}
         showBackdrop={false}>
         <View style={styles.panelHeader}>
           <View style={styles.panelHandle} />
