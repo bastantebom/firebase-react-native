@@ -35,15 +35,6 @@ static void InitializeFlipper(UIApplication *application) {
 #if DEBUG
   InitializeFlipper(application);
 #endif
-  
-  for (NSString* family in [UIFont familyNames])
-  {
-    NSLog(@"%@", family);
-    for (NSString* name in [UIFont fontNamesForFamilyName: family])
-    {
-      NSLog(@" %@", name);
-    }
-  }
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
@@ -58,6 +49,8 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [RNSplashScreen show];
+
+ 
   return YES;
 }
 
