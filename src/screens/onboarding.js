@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Animated,
+  Easing
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
@@ -58,16 +60,14 @@ const styles = StyleSheet.create({
   },
   bgImageHolder: {
     position: 'absolute',
-    top: -150,
-    transform: [{rotate: '15deg'}],
+    bottom: height * .15,
   },
   text: {
     textAlign: 'center',
   },
   btnHolder: {
     position: 'absolute',
-    top: height - 130,
-    // zIndex: 2,
+    top: height * .85,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -77,13 +77,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const Onboarding = ({navigation, illustration}) => {
+const Onboarding = ({ navigation, illustration }) => {
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
-
   const clickHandler = () => {
     _panel.current.show();
   };
+  const animation = new Animated.Value(0);
+
+  const rotation = animation.interpolate({
+    inputRange: [0, 1, 2, 3],
+    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg']
+  });
+
+  const onSwipe = (index) => {
+    Animated.timing(animation, {
+      toValue: index, duration: 200, easing: Easing.linear,
+      useNativeDriver: true
+    }).start();
+  }
 
   const [slideInfo] = useState([
     {
@@ -120,13 +132,17 @@ const Onboarding = ({navigation, illustration}) => {
           <>
             <Swiper
               dot={<View style={styles.dot} />}
-              activeDot={<View style={[styles.dot, styles.dotActive]} />}>
+              activeDot={<View style={[styles.dot, styles.dotActive]} />}
+              loop={false}
+              onIndexChanged={onSwipe}>
               {slideInfo.map((item, i) => {
                 return (
                   <View key={i} style={styles.slideHolder}>
-                    <View style={styles.bgImageHolder}>
+                    <Animated.View
+                      style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}
+                    >
                       <Polygon />
-                    </View>
+                    </Animated.View>
                     <TouchableOpacity
                       onPress={() => navigation.push('Dashboard')}
                       style={styles.link}>
