@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,9 @@ import {useNavigation} from '@react-navigation/native';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Close from '../assets/images/icons/close.svg';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-community/google-signin';
+import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
 
 function Divider() {
   return (
@@ -30,6 +33,50 @@ function Divider() {
 function Login() {
   const navigation = useNavigation();
   const [authType, setAuthType] = useState('login');
+  const [setUserInfo] = useState(null);
+
+  GoogleSignin.configure({
+    webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
+  });
+
+  async function facebookSignIn() {
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+    const data = await AccessToken.getCurrentAccessToken();
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+    return auth().signInWithCredential(facebookCredential);
+  }
+
+  async function googleLogin() {
+     // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+    // try {
+    //   await GoogleSignin.hasPlayServices();
+    //   const userInfo = await GoogleSignin.signIn();
+    // } catch (error) {
+    //   if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+    //     // user cancelled the login flow
+    //   } else if (error.code === statusCodes.IN_PROGRESS) {
+    //     // operation (e.g. sign in) is in progress already
+    //   } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+    //     // play services not available or outdated
+    //   } else {
+    //     // some other error happened
+    //   }
+    // }
+  };
 
   return (
     <>
@@ -74,18 +121,38 @@ function Login() {
             </AppViewContainer>
             <Divider/>
             <AppButton
-              text="Log in with Facebook"
+              text={"Log in with Facebook"}
               type="primary"
               height="md"
               icon="fb"
               customStyle={styles.customButton}
+              onPress={() => facebookSignIn()}
             />
+            <LoginButton
+            onLoginFinished={
+              (error, result) => {
+                if (error) {
+                  console.log("login has error: " + result.error);
+                } else if (result.isCancelled) {
+                  console.log("login is cancelled.");
+                } else {
+                  AccessToken.getCurrentAccessToken().then(
+                    (data) => {
+                      console.log(data.accessToken.toString())
+                    }
+                  )
+                }
+              }
+            }
+            onLogoutFinished={() => console.log("logout.")}/>
             <AppButton
-              text="Sign up with Google"
+              text={"Sign up with Google"}
               type="primary"
               height="md"
               icon="g"
               customStyle={styles.customButton}
+              // onPress={console.log('PRESS')}
+              onPress={() => googleLogin().then(() => console.log('Signed in with Google!'))}
             />
             <View style={styles.cta}>
               <AppText textStyle="button2">Don't have an account? </AppText>

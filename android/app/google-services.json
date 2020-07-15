@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "717890893531",
+    "firebase_url": "https://pixles-servbees.firebaseio.com",
+    "project_id": "pixles-servbees",
+    "storage_bucket": "pixles-servbees.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717890893531:android:04cd940956ce362d2e7efe",
+        "android_client_info": {
+          "package_name": "com.servbees"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717890893531-4cvrbrnmfq1gb5j4kt6ug7vu7t2gdqda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.servbees",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbxxW5ZFvoOzy_aK44CiwBTFLrR1M6fU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
