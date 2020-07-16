@@ -9,10 +9,12 @@ import VerifyIcon from '@/assets/images/verify.svg';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import AppText from '@/components/AppText/AppText';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+//import {set} from 'react-native-reanimated';
 
 // create a component
-const VerifyAccount = () => {
+const VerifyAccount = (route) => {
   const navigation = useNavigation();
+  //const {login} = route.params;
   const firstTextInput = useRef(null);
   const secondTextInput = useRef(null);
   const thirdTextInput = useRef(null);
@@ -20,6 +22,33 @@ const VerifyAccount = () => {
 
   const [inputStyle, setInputStyle] = useState([]);
   const [verifyArray, setVerifyArray] = useState(['', '', '', '']);
+
+  //const [initialTime, setInitialTime] = useState({minutes: 10, seconds: 0});
+  const [seconds, setSeconds] = useState(10);
+  const [minutes, setMinutes] = useState(9);
+
+  //const [timeLeft, setTimeLeft] = useState(seconds);
+
+  useEffect(() => {
+    // exit early when we reach 0
+    if (!seconds && !minutes) return;
+
+    // save intervalId to clear the interval when the
+    // component re-renders
+    const intervalId = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      } else {
+        setMinutes(minutes - 1);
+        setSeconds(59);
+      }
+    }, 1000);
+
+    // clear interval on re-render to avoid memory leaks
+    return () => clearInterval(intervalId);
+    // add timeLeft as a dependency to re-rerun the effect
+    // when we update it
+  }, [seconds]);
 
   const onVerifyChange = (index) => {
     return (value) => {
@@ -110,14 +139,14 @@ const VerifyAccount = () => {
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           An email with the 4-digit code has been sent to{' '}
           <AppText textStyle="subtitle1" customStyle={styles.bodyContent}>
-            demo@demo.com
+            {route.route.params.formValues.login}
           </AppText>
         </AppText>
       </AppViewContainer>
       <AppViewContainer
         customStyle={{...styles.timerWrapper, ...styles.spacingBottom}}>
         <AppText textStyle="body2" customStyle={styles.timerText}>
-          9:50
+          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
         </AppText>
       </AppViewContainer>
       <View style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>

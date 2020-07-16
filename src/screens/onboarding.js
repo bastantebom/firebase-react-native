@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-  Easing
+  Easing,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   contentHolder: {
     position: 'relative',
     flex: 1,
-    backgroundColor: Colors.primaryMidnightBlue
+    backgroundColor: Colors.primaryMidnightBlue,
   },
   swiperHolder: {
     flex: 3,
@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     textAlign: 'center',
-    backgroundColor: "transparent",
-    overflow: 'hidden'
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
   },
   link: {
     alignSelf: 'flex-end',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     height: 8,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height * .22,
+    marginBottom: height * 0.22,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
@@ -71,25 +71,25 @@ const styles = StyleSheet.create({
   bgImageHolder: {
     position: 'absolute',
     bottom: 65,
-    right: -width * .4
+    right: -width * 0.4,
   },
   text: {
     textAlign: 'center',
   },
   btnHolder: {
     position: 'absolute',
-    top: height * .85,
+    top: height * 0.85,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignContent: 'center',
     width: '100%',
     paddingHorizontal: 30,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
 });
 
-const Onboarding = ({ navigation, illustration }) => {
+const Onboarding = ({navigation, illustration}) => {
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
   const clickHandler = () => {
@@ -99,15 +99,17 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const rotation = animation.interpolate({
     inputRange: [0, 1, 2, 3],
-    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg']
+    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg'],
   });
 
   const onSwipe = (index) => {
     Animated.timing(animation, {
-      toValue: index, duration: 200, easing: Easing.linear,
-      useNativeDriver: true
+      toValue: index,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
     }).start();
-  }
+  };
 
   const [slideInfo] = useState([
     {
@@ -143,8 +145,7 @@ const Onboarding = ({ navigation, illustration }) => {
         content={
           <View style={styles.contentHolder}>
             <Animated.View
-              style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}
-            >
+              style={[{transform: [{rotate: rotation}]}, styles.bgImageHolder]}>
               <Polygon height={height * 1.2} />
             </Animated.View>
             <View style={styles.swiperHolder}>
@@ -161,7 +162,7 @@ const Onboarding = ({ navigation, illustration }) => {
                         style={styles.link}>
                         <AppText textStyle="body2">Skip</AppText>
                       </TouchableOpacity>
-                      <View style={{ zIndex: 100 }}>{item.illustration}</View>
+                      <View style={{zIndex: 100}}>{item.illustration}</View>
                       <AppText textStyle="display6">{item.title}</AppText>
                       <View style={styles.textHolder}>
                         <AppText textStyle="body2" customStyle={styles.text}>
@@ -200,11 +201,7 @@ const Onboarding = ({ navigation, illustration }) => {
             </View>
           </View>
         }>
-        {authType === 'signup' ? (
-          <SignUpWrapper />
-        ) : (
-          <Login />
-        )}
+        {authType === 'signup' ? <SignUpWrapper /> : <Login />}
       </SlidePanel>
     </>
   );

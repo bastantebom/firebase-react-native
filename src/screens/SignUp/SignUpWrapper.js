@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import SignUpService from '@/services/SignUpService';
 
 import {useNavigation} from '@react-navigation/native';
@@ -8,22 +8,24 @@ import SignUp from '@/screens/SignUp/SignUp';
 import Login from '@/screens/login';
 // create a component
 const SignUpWrapper = (props) => {
+  const ref = useRef(null);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [authType, setAuthType] = useState('signup');
-  //const _panel = useRef(null);
 
-  signUpEmail = () => {
+  const [authType, setAuthType] = useState('signup');
+
+  signUpEmail = (formValues) => {
     setIsLoading(true);
-    SignUpService.getAll()
+    console.log(JSON.stringify(formValues));
+    SignUpService.createUser(JSON.stringify(formValues))
       .then((response) => {
-        setTimeout(() => {
-          setIsLoading(false);
-          setData(response.data);
-          props.closePanel();
-          navigation.navigate('VerifyAccount');
-        }, 1500);
+        setIsLoading(false);
+        console.log('success firebase api call');
+        console.log(response);
+        console.log('success firebase api call end');
+        //props.closePanel();
+        ref.current.cleanSignUpForm();
+        navigation.navigate('VerifyAccount', {formValues});
       })
       .catch((error) => {
         console.log('With Error in the API SignUp ' + error);
@@ -38,6 +40,7 @@ const SignUpWrapper = (props) => {
     <>
       {authType === 'signup' ? (
         <SignUp
+          ref={ref}
           loading={isLoading}
           signUpEmail={signUpEmail}
           loginClick={loginClick}
