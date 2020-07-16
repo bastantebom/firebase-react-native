@@ -4,9 +4,10 @@ const createUser = (payload) => {
   return BaseAPI({
     url: 'user/create',
     method: 'POST',
-    data: {
-      payload,
+    headers: {
+      'Content-Type': 'application/json',
     },
+    data: payload,
   });
 };
 

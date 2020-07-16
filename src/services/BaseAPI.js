@@ -1,8 +1,8 @@
 import axios from 'axios';
-import APIURL from '@/api/Globals';
+import APIURL from '@/services/Config';
 
 const client = axios.create({
-  baseURL: APIURL.apiUrlDemo,
+  baseURL: APIURL.apiUrlDev,
 });
 
 const BaseAPI = function (options) {

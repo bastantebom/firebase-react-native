@@ -1,17 +1,127 @@
 //import liraries
-import React from 'react';
+import React, {useState, forwardRef, useImperativeHandle} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
 import AppButton from '@/components/AppButton';
-import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
+//import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 //SVG Import
 import Close from '@/assets/images/icons/close.svg';
 
 // create a component
-const SignUp = (props) => {
+const SignUp = forwardRef((props, ref) => {
+  const [email, setEmail] = useState('');
+  const [emailBorder, setEmailBorder] = useState({});
+  const [isValidEmail, setIsValidEmail] = useState(false);
+
+  const [name, setName] = useState('');
+  const [nameBorder, setNameBorder] = useState({});
+
+  const [password, setPassword] = useState('');
+  const [passwordBorder, setPasswordBorder] = useState({});
+
+  const [signUpForm, setSignUpForm] = useState({});
+
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: AppColor.buttonDisable,
+    borderColor: AppColor.buttonDisable,
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [buttonText, setButtonText] = useState('Sign up');
+
+  const cleanSignUpForm = () => {
+    setEmail('');
+    setEmailBorder({});
+    setIsValidEmail(false);
+
+    setName('');
+    setNameBorder({});
+
+    setPassword('');
+    setPasswordBorder({});
+
+    setSignUpForm({});
+
+    setButtonStyle({
+      backgroundColor: AppColor.buttonDisable,
+      borderColor: AppColor.buttonDisable,
+    });
+
+    setButtonDisabled(true);
+    setButtonText('Sign up');
+  };
+
+  useImperativeHandle(ref, () => {
+    return {
+      cleanSignUpForm: cleanSignUpForm,
+    };
+  });
+
+  const validateEmail = (email) => {
+    //console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      console.log('Email is Not Correct');
+      //setEmailBorder({borderColor: AppColor.neutralGray});
+      setEmail(email);
+      return false;
+    } else {
+      setEmail(email);
+      setEmailBorder({borderColor: AppColor.contentEbony});
+      console.log('Email is Correct');
+      return true;
+    }
+  };
+
+  const onEmailChange = (email) => {
+    if (validateEmail(email)) {
+      setButtonText('Next');
+      setIsValidEmail(true);
+    } else {
+      setEmailBorder({borderColor: AppColor.neutralGray});
+      setIsValidEmail(false);
+      setButtonText('Sign up');
+    }
+    const newKeyValue = {login: email};
+    setSignUpForm({...signUpForm, ...newKeyValue});
+    checkInputComplete();
+  };
+
+  const onNameChange = (name) => {
+    setName(name);
+    setNameBorder({borderColor: AppColor.contentEbony});
+    const newKeyValue = {full_name: name};
+    setSignUpForm({...signUpForm, ...newKeyValue});
+    checkInputComplete();
+  };
+
+  const onPasswordChange = (password) => {
+    setPassword(password);
+    setPasswordBorder({borderColor: AppColor.contentEbony});
+    const newKeyValue = {password: password};
+    setSignUpForm({...signUpForm, ...newKeyValue});
+    checkInputComplete();
+  };
+
+  const checkInputComplete = () => {
+    //console.log(name.length);
+    //console.log(password.length);
+    if (isValidEmail && name.length > 1 && password.length > 1) {
+      //onsole.log('VALID FORM');
+      setButtonStyle({});
+      setButtonDisabled(false);
+    } else {
+      //console.log('INVALID FORM');
+      setButtonStyle({
+        backgroundColor: AppColor.buttonDisable,
+        borderColor: AppColor.buttonDisable,
+      });
+      setButtonDisabled(true);
+    }
+  };
+
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.contentWrapper}>
@@ -28,25 +138,40 @@ const SignUp = (props) => {
         </AppText>
         <View style={styles.formWrapper}>
           <AppInput
-            label="Email or Mobile Number"
-            customStyle={styles.customInputStyle}
+            label="Email"
+            value={email}
+            keyboardType="email-address"
+            customStyle={{...styles.customInputStyle, ...emailBorder}}
+            onChangeText={(email) => onEmailChange(email)}
           />
-          <AppInput label="Full Name" customStyle={styles.customInputStyle} />
+          <AppInput
+            label="Full Name"
+            value={name}
+            keyboardType="default"
+            customStyle={{...styles.customInputStyle, ...nameBorder}}
+            onChangeText={(name) => onNameChange(name)}
+          />
           <AppInput
             label="Password"
             secureTextEntry
             password
-            customStyle={styles.customInputStyle}
+            value={password}
+            keyboardType="default"
+            customStyle={{...styles.customInputStyle, ...passwordBorder}}
+            onChangeText={(password) => onPasswordChange(password)}
           />
         </View>
 
         <View>
           <AppButton
-            text="Sign up"
+            text={buttonText}
             type="primary"
             height="xl"
-            customStyle={styles.customButtonStyle}
-            onPress={signUpEmail}
+            disabled={buttonDisabled}
+            customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+            onPress={() => {
+              signUpEmail(signUpForm);
+            }}
             loading={props.loading}
           />
         </View>
@@ -55,11 +180,11 @@ const SignUp = (props) => {
         </View>
         <View style={styles.otherLoginWrapper}>
           <AppButton
-            text="Log in with Facebook"
+            text="Sign up with Facebook"
             type="primary"
             height="md"
             icon="fb"
-            customStyle={styles.customButtonStyle}
+            customStyle={styles.disableButton}
             //onPress={}
           />
           <AppButton
@@ -67,7 +192,7 @@ const SignUp = (props) => {
             type="primary"
             height="md"
             icon="g"
-            customStyle={styles.customButtonStyle}
+            customStyle={styles.disableButton}
             //onPress={}
           />
         </View>
@@ -83,7 +208,7 @@ const SignUp = (props) => {
       </View>
     </View>
   );
-};
+});
 
 // define your styles
 const styles = StyleSheet.create({
@@ -125,10 +250,15 @@ const styles = StyleSheet.create({
   },
 
   customButtonStyle: {
-    backgroundColor: AppColor.buttonDisable,
     borderWidth: 1.5,
-    borderColor: AppColor.buttonDisable,
     marginBottom: 16,
+  },
+
+  disableButton: {
+    borderWidth: 1.5,
+    marginBottom: 16,
+    backgroundColor: AppColor.buttonDisable,
+    borderColor: AppColor.buttonDisable,
   },
 
   orCopyWrapper: {
