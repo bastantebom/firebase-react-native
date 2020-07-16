@@ -23,7 +23,7 @@ const SignUpWrapper = (props) => {
         console.log('success firebase api call');
         console.log(response);
         console.log('success firebase api call end');
-        props.closePanel();
+        //props.closePanel();
         ref.current.cleanSignUpForm();
         navigation.navigate('VerifyAccount', {formValues});
       })
