@@ -3,13 +3,18 @@ import React, { createContext, useState} from 'react'
 export const Context = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [sampleState, setSampleState] = useState('hello')
+  const [sliderState, setSliderState] = useState('')
 
-  const sampleFunction = () => {
-    setSampleState("bang")
+  const closeSlider = () => {
+    setSliderState("close")
   }
+
+  const openSlider = () => {
+    setSliderState("open")
+  }
+
   return (
-    <Context.Provider value={{ sampleState, sampleFunction  }} >
+    <Context.Provider value={{ sliderState, closeSlider, openSlider  }} >
       {children}
     </Context.Provider>
   )
