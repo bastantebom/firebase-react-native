@@ -200,6 +200,11 @@ const Onboarding = ({ navigation, illustration }) => {
             </View>
           </View>
         }>
+        {authType === 'signup' ? (
+          <SignUpWrapper />
+        ) : (
+          <Login />
+        )}
       </SlidePanel>
     </>
   );
