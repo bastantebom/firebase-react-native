@@ -33,7 +33,8 @@ function Divider() {
 function Login() {
   const navigation = useNavigation();
   const [authType, setAuthType] = useState('login');
-  const [setUserInfo] = useState(null);
+  const [emailAddress, setEmailAddress] = useState('');
+  const [password, setPassword] = useState('');
 
   GoogleSignin.configure({
     webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
@@ -54,38 +55,32 @@ function Login() {
   }
 
   async function googleLogin() {
-     // Get the users ID token
     const { idToken } = await GoogleSignin.signIn();
-
-    // Create a Google credential with the token
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-    // Sign-in the user with the credential
     return auth().signInWithCredential(googleCredential);
-    // try {
-    //   await GoogleSignin.hasPlayServices();
-    //   const userInfo = await GoogleSignin.signIn();
-    // } catch (error) {
-    //   if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-    //     // user cancelled the login flow
-    //   } else if (error.code === statusCodes.IN_PROGRESS) {
-    //     // operation (e.g. sign in) is in progress already
-    //   } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-    //     // play services not available or outdated
-    //   } else {
-    //     // some other error happened
-    //   }
-    // }
   };
+
+  const handleLogin = () => {
+    auth()
+    .signInWithEmailAndPassword(emailAddress, password)
+    .then(() => {
+      console.log('User signed in!');
+      navigation.push('Dashboard');
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }
 
   return (
     <>
       {authType === 'login' ? (
-        <AppViewContainer paddingSize={3}>
-          <AppViewContainer
-            paddingSize={3}
-            customStyle={{paddingTop: 0, paddingHorizontal: 0}}>
-            <Close />
+        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
+          <AppViewContainer 
+            paddingSize={2}
+            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
+          >
+            <Close/>
           </AppViewContainer>
           <View style={styles.container}>
             <AppText textStyle="display5">Welcome back!</AppText>
@@ -93,13 +88,19 @@ function Login() {
               Log in to get going, Buzzybee.
             </AppText>
             <AppViewContainer
-              paddingSize={4}
-              customStyle={{paddingHorizontal: 0, paddingBottom: 0}}>
+              paddingSize={2}
+              customStyle={{ paddingHorizontal: 0, paddingBottom: 0 }}>
               <AppInput
                 label="Email or Mobile Number"
                 customStyle={styles.inputText}
+                onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+                value={emailAddress}
               />
-              <AppInput label="Password" />
+              <AppInput
+                label="Password"
+                onChangeText={password => setPassword(password)}
+                value={password}
+              />
               <TouchableOpacity>
                 <AppText textStyle="caption" customStyle={styles.caption}>
                   Forgot Password?
@@ -110,7 +111,8 @@ function Login() {
                 type="primary"
                 height="xl"
                 customStyle={styles.customLogin}
-                onPress={() => navigation.navigate('Dashboard')}
+                // onPress={() => navigation.navigate('Dashboard')}
+                onPress={() => handleLogin()}
               />
             </AppViewContainer>
             <Divider />
@@ -122,23 +124,6 @@ function Login() {
               customStyle={styles.customButton}
               onPress={() => facebookSignIn()}
             />
-            <LoginButton
-            onLoginFinished={
-              (error, result) => {
-                if (error) {
-                  console.log("login has error: " + result.error);
-                } else if (result.isCancelled) {
-                  console.log("login is cancelled.");
-                } else {
-                  AccessToken.getCurrentAccessToken().then(
-                    (data) => {
-                      console.log(data.accessToken.toString())
-                    }
-                  )
-                }
-              }
-            }
-            onLogoutFinished={() => console.log("logout.")}/>
             <AppButton
               text={"Sign up with Google"}
               type="primary"
