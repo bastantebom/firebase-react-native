@@ -1,10 +1,10 @@
-import React, {forwardRef} from 'react';
+import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 import {View, Dimensions} from 'react-native';
 
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import Colors from '@/globals/Colors';
 
-const {height} = Dimensions.get('window');
+// const {height} = Dimensions.get('window');
 
 const styles = {
   container: {
@@ -13,13 +13,12 @@ const styles = {
     justifyContent: 'center',
     width: '100%',
     height: '100%',
-    // position: 'absolute'
   },
   panel: {
     flex: 1,
     backgroundColor: Colors.neutralsWhite,
+    // backgroundColor: Colors.neutralsWhite,
     elevation: 20,
-    // position: 'absolute'
   },
   panelHeader: {
     width: '100%',
@@ -41,20 +40,45 @@ const styles = {
   },
 };
 
+const useComponentSize = () => {
+  const [size, setSize] = useState(null);
+
+  const onLayout = useCallback(event => {
+    const { width, height } = event.nativeEvent.layout;
+    setSize({ width, height });
+  }, []);
+
+  return [size, onLayout];
+};
+
 // view should have flex prop <View style={{flex: 1, flexGrow: 1}}>
 
 const SlidePanel = forwardRef((props, ref) => {
+
+  const [size, onLayout] = useComponentSize();
+
+  useEffect(() => {
+    console.log(size, onLayout)
+  }, [])
+
   return (
-    <View style={styles.container}>
+    <View 
+      style={styles.container}
+    >
       {props.content}
       <SlidingUpPanel
         ref={ref}
-        draggableRange={{top: height - 50, bottom: 0}}
+        // draggableRange={{top: size, bottom: 0}}
         showBackdrop={false}>
         <View style={styles.panelHeader}>
           <View style={styles.panelHandle} />
         </View>
-        <View style={styles.panel}>{props.children}</View>
+        <View 
+          style={styles.panel}
+          onLayout={onLayout}
+        >
+          {props.children}
+        </View>
       </SlidingUpPanel>
     </View>
   );
