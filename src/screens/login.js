@@ -77,10 +77,11 @@ function Login() {
   return (
     <>
       {authType === 'login' ? (
-        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
+        <AppViewContainer paddingSize={3} customStyle={{ paddingTop: 5 }}>
           <AppViewContainer 
-            paddingSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
+            paddingSize={3}
+            marginSize={2}
+            customStyle={{ paddingTop: 0, paddingHorizontal: 0, marginBottom: 0, marginHorizontal: 0 }}
           >
             <Close/>
           </AppViewContainer>
@@ -90,8 +91,9 @@ function Login() {
               Log in to get going, Buzzybee.
             </AppText>
             <AppViewContainer
-              paddingSize={2}
-              customStyle={{ paddingHorizontal: 0, paddingBottom: 0 }}>
+              marginSize={3}
+              customStyle={{ marginHorizontal: 0, marginBottom: 0 }}
+            >
               <AppInput
                 label="Email or Mobile Number"
                 customStyle={styles.inputText}
@@ -99,17 +101,18 @@ function Login() {
                 value={emailAddress}
                 keyboardType={"email-address"}
               />
-              <AppInput
-                label="Password"
-                onChangeText={password => setPassword(password)}
-                value={password}
-                secureTextEntry={isVisble ? true : false}
-                customStyle={{ position: 'relative' }}
-              />
-              <View style={styles.passwordToggle}>
-                <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
-                  { isVisble ? <EyeDark/> : <EyeLight/> }
-                </TouchableOpacity>
+              <View style={{ position: 'relative'}}>
+                <AppInput
+                  label="Password"
+                  onChangeText={password => setPassword(password)}
+                  value={password}
+                  secureTextEntry={isVisble ? true : false}
+                />
+                <View style={styles.passwordToggle}>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
+                    { isVisble ? <EyeDark/> : <EyeLight/> }
+                  </TouchableOpacity>
+                </View>
               </View>
               <TouchableOpacity onPress={() => navigation.push('ResetPassword')}>
                 <AppText textStyle="caption" customStyle={styles.caption}>
@@ -203,9 +206,7 @@ const styles = StyleSheet.create({
   passwordToggle: {
     position: 'absolute',
     right: 10,
-    top: 105,
-    bottom: 0,
-    // backgroundColor: 'black'
+    top: 18
   }
 });
 
