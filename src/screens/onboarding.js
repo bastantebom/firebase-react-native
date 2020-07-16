@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-  Easing,
+  Easing
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
@@ -27,14 +27,23 @@ import IllustThree from '@/assets/images/onboarding-img3.svg';
 import IllustFour from '@/assets/images/onboarding-img4.svg';
 
 const height = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
+  contentHolder: {
+    position: 'relative',
+    flex: 1,
+    backgroundColor: Colors.primaryMidnightBlue
+  },
+  swiperHolder: {
+    flex: 3,
+  },
   slideHolder: {
     flex: 1,
     alignItems: 'center',
     textAlign: 'center',
-    backgroundColor: Colors.primaryMidnightBlue,
-    overflow: 'hidden',
+    backgroundColor: "transparent",
+    overflow: 'hidden'
   },
   link: {
     alignSelf: 'flex-end',
@@ -47,37 +56,40 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   dot: {
-    backgroundColor: Colors.neutralsWhite,
+    zIndex: 5,
     width: 8,
     height: 8,
-    borderRadius: 100,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height - 590,
+    marginBottom: height * .22,
+    backgroundColor: Colors.neutralsWhite,
+    borderRadius: 100,
   },
   dotActive: {
     backgroundColor: Colors.primaryMidnightBlue,
   },
   bgImageHolder: {
     position: 'absolute',
-    bottom: height * 0.15,
+    bottom: 65,
+    right: -width * .4
   },
   text: {
     textAlign: 'center',
   },
   btnHolder: {
     position: 'absolute',
-    top: height * 0.85,
+    top: height * .85,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignContent: 'center',
     width: '100%',
     paddingHorizontal: 30,
+    backgroundColor: 'transparent'
   },
 });
 
-const Onboarding = ({navigation, illustration}) => {
+const Onboarding = ({ navigation, illustration }) => {
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
   const clickHandler = () => {
@@ -87,21 +99,15 @@ const Onboarding = ({navigation, illustration}) => {
 
   const rotation = animation.interpolate({
     inputRange: [0, 1, 2, 3],
-    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg'],
+    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg']
   });
 
   const onSwipe = (index) => {
     Animated.timing(animation, {
-      toValue: index,
-      duration: 200,
-      easing: Easing.linear,
-      useNativeDriver: true,
+      toValue: index, duration: 200, easing: Easing.linear,
+      useNativeDriver: true
     }).start();
-  };
-
-  const clickClosePanelHandler = () => {
-    _panel.current.hide();
-  };
+  }
 
   const [slideInfo] = useState([
     {
@@ -135,39 +141,38 @@ const Onboarding = ({navigation, illustration}) => {
       <SlidePanel
         ref={_panel}
         content={
-          <>
-            <Swiper
-              dot={<View style={styles.dot} />}
-              activeDot={<View style={[styles.dot, styles.dotActive]} />}
-              loop={false}
-              onIndexChanged={onSwipe}>
-              {slideInfo.map((item, i) => {
-                return (
-                  <View key={i} style={styles.slideHolder}>
-                    <Animated.View
-                      style={[
-                        {transform: [{rotate: rotation}]},
-                        styles.bgImageHolder,
-                      ]}>
-                      <Polygon />
-                    </Animated.View>
-                    <TouchableOpacity
-                      onPress={() => navigation.push('Dashboard')}
-                      style={styles.link}>
-                      <AppText textStyle="body2">Skip</AppText>
-                    </TouchableOpacity>
-                    <View>{item.illustration}</View>
-                    <AppText textStyle="display6">{item.title}</AppText>
-                    <View style={styles.textHolder}>
-                      <AppText textStyle="body2" customStyle={styles.text}>
-                        {item.description}
-                      </AppText>
+          <View style={styles.contentHolder}>
+            <Animated.View
+              style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}
+            >
+              <Polygon height={height * 1.2} />
+            </Animated.View>
+            <View style={styles.swiperHolder}>
+              <Swiper
+                dot={<View style={styles.dot} />}
+                activeDot={<View style={[styles.dot, styles.dotActive]} />}
+                loop={false}
+                onIndexChanged={onSwipe}>
+                {slideInfo.map((item, i) => {
+                  return (
+                    <View key={i} style={styles.slideHolder}>
+                      <TouchableOpacity
+                        onPress={() => navigation.push('Dashboard')}
+                        style={styles.link}>
+                        <AppText textStyle="body2">Skip</AppText>
+                      </TouchableOpacity>
+                      <View style={{ zIndex: 100 }}>{item.illustration}</View>
+                      <AppText textStyle="display6">{item.title}</AppText>
+                      <View style={styles.textHolder}>
+                        <AppText textStyle="body2" customStyle={styles.text}>
+                          {item.description}
+                        </AppText>
+                      </View>
                     </View>
-                  </View>
-                );
-              })}
-            </Swiper>
-
+                  );
+                })}
+              </Swiper>
+            </View>
             <View style={styles.btnHolder}>
               <AppButton
                 text="Login"
@@ -193,13 +198,8 @@ const Onboarding = ({navigation, illustration}) => {
                 }}
               />
             </View>
-          </>
+          </View>
         }>
-        {authType === 'signup' ? (
-          <SignUpWrapper closePanel={clickClosePanelHandler} />
-        ) : (
-          <Login />
-        )}
       </SlidePanel>
     </>
   );
