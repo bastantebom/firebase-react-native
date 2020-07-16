@@ -14,7 +14,6 @@ import Colors from '@/globals/Colors';
 import {useNavigation} from '@react-navigation/native';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
-import Close from '@/assets/images/icons/close.svg';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
@@ -76,9 +75,9 @@ function Login() {
   return (
     <>
       {authType === 'login' ? (
-        <AppViewContainer paddingSize={3}>
+        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
           <AppViewContainer 
-            paddingSize={3}
+            paddingSize={2}
             customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
           >
             <Close/>
@@ -89,7 +88,7 @@ function Login() {
               Log in to get going, Buzzybee.
             </AppText>
             <AppViewContainer
-              paddingSize={4}
+              paddingSize={2}
               customStyle={{ paddingHorizontal: 0, paddingBottom: 0 }}>
               <AppInput
                 label="Email or Mobile Number"
@@ -102,8 +101,6 @@ function Login() {
                 onChangeText={password => setPassword(password)}
                 value={password}
               />
-              <AppText>{emailAddress}</AppText>
-              <AppText>{password}</AppText>
               <TouchableOpacity>
                 <AppText 
                   textStyle="caption" 
@@ -129,24 +126,6 @@ function Login() {
               icon="fb"
               customStyle={styles.customButton}
               onPress={() => facebookSignIn()}
-            />
-            <LoginButton
-              onLoginFinished={
-                (error, result) => {
-                  if (error) {
-                    console.log("login has error: " + result.error);
-                  } else if (result.isCancelled) {
-                    console.log("login is cancelled.");
-                  } else {
-                    AccessToken.getCurrentAccessToken().then(
-                      (data) => {
-                        console.log(data.accessToken.toString())
-                      }
-                    )
-                  }
-                }
-              }
-              onLogoutFinished={() => console.log("logout.")}
             />
             <AppButton
               text={"Sign up with Google"}
