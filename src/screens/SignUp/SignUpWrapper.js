@@ -1,7 +1,6 @@
 //import liraries
 import React, {useState} from 'react';
-import axios from 'axios';
-import APIConfig from '@/api/Globals';
+import SignUpService from '@/services/SignUpService';
 
 import {useNavigation} from '@react-navigation/native';
 
@@ -17,11 +16,8 @@ const SignUpWrapper = (props) => {
 
   signUpEmail = () => {
     setIsLoading(true);
-    console.log(APIConfig.apiUrlDemo + 'users');
-    axios
-      .get(APIConfig.apiUrlDemo + 'users')
+    SignUpService.getAll()
       .then((response) => {
-        //console.log('getting data from axios', response.data);
         setTimeout(() => {
           setIsLoading(false);
           setData(response.data);
