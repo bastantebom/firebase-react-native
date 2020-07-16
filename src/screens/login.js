@@ -23,6 +23,8 @@ import EyeLight from '@/assets/images/icons/eye-light.svg';
 
 import { Context } from '@/context';
 
+import { Context } from '@/context';
+
 function Divider() {
   return (
     <View style={styles.dividerWrapper}>
@@ -44,6 +46,8 @@ function Login() {
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [isVisble, setIsVisible] = useState(false);
+
+  const { closeSlider } = useContext(Context);
 
   const { closeSlider } = useContext(Context);
 
@@ -86,11 +90,10 @@ function Login() {
   return (
     <>
       {authType === 'login' ? (
-        <AppViewContainer paddingSize={3} customStyle={{ paddingTop: 5 }}>
-          <AppViewContainer 
-            paddingSize={3}
-            marginSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0, marginBottom: 0, marginHorizontal: 0 }}
+        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
+          <AppViewContainer
+            paddingSize={2}
+            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
           >
             <TouchableOpacity onPress={closeSlider}>
               <Close />
