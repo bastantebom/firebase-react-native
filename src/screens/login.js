@@ -11,13 +11,15 @@ import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
 import AppButton from '@/components/AppButton';
 import Colors from '@/globals/Colors';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
 import Close from '@/assets/images/icons/close.svg';
+import EyeDark from '@/assets/images/icons/eye-dark.svg';
+import EyeLight from '@/assets/images/icons/eye-light.svg';
 
 function Divider() {
   return (
@@ -30,15 +32,16 @@ function Divider() {
   );
 }
 
+GoogleSignin.configure({
+  webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
+});
+
 function Login() {
   const navigation = useNavigation();
   const [authType, setAuthType] = useState('login');
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
-
-  GoogleSignin.configure({
-    webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
-  });
+  const [isVisble, setIsVisible] = useState(false);
 
   async function facebookSignIn() {
     const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
@@ -65,7 +68,6 @@ function Login() {
     .signInWithEmailAndPassword(emailAddress, password)
     .then(() => {
       console.log('User signed in!');
-      navigation.push('Dashboard');
     })
     .catch(error => {
       console.error(error);
@@ -75,10 +77,11 @@ function Login() {
   return (
     <>
       {authType === 'login' ? (
-        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
+        <AppViewContainer paddingSize={3} customStyle={{ paddingTop: 5 }}>
           <AppViewContainer 
-            paddingSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
+            paddingSize={3}
+            marginSize={2}
+            customStyle={{ paddingTop: 0, paddingHorizontal: 0, marginBottom: 0, marginHorizontal: 0 }}
           >
             <Close/>
           </AppViewContainer>
@@ -88,20 +91,30 @@ function Login() {
               Log in to get going, Buzzybee.
             </AppText>
             <AppViewContainer
-              paddingSize={2}
-              customStyle={{ paddingHorizontal: 0, paddingBottom: 0 }}>
+              marginSize={3}
+              customStyle={{ marginHorizontal: 0, marginBottom: 0 }}
+            >
               <AppInput
                 label="Email or Mobile Number"
                 customStyle={styles.inputText}
                 onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
                 value={emailAddress}
+                keyboardType={"email-address"}
               />
-              <AppInput
-                label="Password"
-                onChangeText={password => setPassword(password)}
-                value={password}
-              />
-              <TouchableOpacity>
+              <View style={{ position: 'relative'}}>
+                <AppInput
+                  label="Password"
+                  onChangeText={password => setPassword(password)}
+                  value={password}
+                  secureTextEntry={isVisble ? true : false}
+                />
+                <View style={styles.passwordToggle}>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
+                    { isVisble ? <EyeDark/> : <EyeLight/> }
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => navigation.push('ResetPassword')}>
                 <AppText textStyle="caption" customStyle={styles.caption}>
                   Forgot Password?
                 </AppText>
@@ -111,7 +124,6 @@ function Login() {
                 type="primary"
                 height="xl"
                 customStyle={styles.customLogin}
-                // onPress={() => navigation.navigate('Dashboard')}
                 onPress={() => handleLogin()}
               />
             </AppViewContainer>
@@ -191,6 +203,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 16,
   },
+  passwordToggle: {
+    position: 'absolute',
+    right: 10,
+    top: 18
+  }
 });
 
 export default Login;
