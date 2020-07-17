@@ -42,7 +42,7 @@ const AppViewContainer = ({ children, paddingSize, marginSize, customStyle }) =>
 
 
     return (
-        <SafeAreaView style={Platform.OS === 'ios' ? {}: computedStyles}>
+        <SafeAreaView style={computedStyles}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={Platform.OS === 'ios' ? computedStyles: {}}>{children}</View>
             </TouchableWithoutFeedback>

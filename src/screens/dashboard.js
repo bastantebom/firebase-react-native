@@ -6,7 +6,6 @@ import {
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
 import auth from '@react-native-firebase/auth';
-import ResetPasswordScreen from '@/screens/resetPassword';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,6 +41,13 @@ function Dashboard({ navigation }) {
       <AppButton
         text="Go to profile"
         onPress={() => navigation.push('Profile')}
+        type="primary"
+        size="sm"
+      />
+
+      <AppButton
+        text="Go to Reset Password screen"
+        onPress={() => navigation.push('ResetPassword')}
         type="primary"
         size="sm"
       />
