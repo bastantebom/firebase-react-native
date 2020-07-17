@@ -1,5 +1,10 @@
 //import liraries
-import React, {useState, forwardRef, useImperativeHandle, useContext} from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useContext,
+} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
@@ -10,7 +15,7 @@ import AppButton from '@/components/AppButton';
 //SVG Import
 import Close from '@/assets/images/icons/close.svg';
 
-import { Context } from '@/context';
+import {Context} from '@/context';
 
 // create a component
 const SignUp = forwardRef((props, ref) => {
@@ -123,15 +128,13 @@ const SignUp = forwardRef((props, ref) => {
       setButtonDisabled(true);
     }
   };
-  
-  const { closeSlider } = useContext(Context);
+
+  const {closeSlider} = useContext(Context);
 
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.contentWrapper}>
-        <TouchableOpacity
-          style={styles.closeIconWrapper}
-          onPress={closeSlider}>
+        <TouchableOpacity style={styles.closeIconWrapper} onPress={closeSlider}>
           <Close height={24} width={24} />
         </TouchableOpacity>
         <AppText textStyle="display5">Sign Up</AppText>

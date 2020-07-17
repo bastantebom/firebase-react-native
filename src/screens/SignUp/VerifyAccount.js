@@ -9,12 +9,16 @@ import VerifyIcon from '@/assets/images/verify.svg';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import AppText from '@/components/AppText/AppText';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+
+import auth from '@react-native-firebase/auth';
+
+import VerifyService from '@/services/VerifyService';
 //import {set} from 'react-native-reanimated';
 
 // create a component
 const VerifyAccount = (route) => {
   const navigation = useNavigation();
-  //const {login} = route.params;
+  //const verify = route.params;
   const firstTextInput = useRef(null);
   const secondTextInput = useRef(null);
   const thirdTextInput = useRef(null);
@@ -24,7 +28,7 @@ const VerifyAccount = (route) => {
   const [verifyArray, setVerifyArray] = useState(['', '', '', '']);
 
   //const [initialTime, setInitialTime] = useState({minutes: 10, seconds: 0});
-  const [seconds, setSeconds] = useState(10);
+  const [seconds, setSeconds] = useState(59);
   const [minutes, setMinutes] = useState(9);
 
   //const [timeLeft, setTimeLeft] = useState(seconds);
@@ -67,10 +71,8 @@ const VerifyAccount = (route) => {
 
       // auto focus to next InputText if value is not blank
       if (value !== '') {
+        sendVerification(verifyArrayCopy);
         if (index === 0) {
-          //console.log(firstTextInput.current);
-          //firstTextInput.current.style.borderColor = AppColor.contentOcean;
-
           secondTextInput.current.focus();
         } else if (index === 1) {
           //secondTextInput.current.style.borderColor = AppColor.contentOcean;
@@ -80,8 +82,9 @@ const VerifyAccount = (route) => {
           fourthTextInput.current.focus();
         } else if (index === 3) {
           //fourthTextInput.current.style.borderColor = AppColor.contentOcean;
-          alert('Submit Verification Code');
           Keyboard.dismiss();
+          //navigation.navigate('Dashboard');
+          //console.log();
         }
       }
     };
@@ -120,6 +123,68 @@ const VerifyAccount = (route) => {
     };
   };
 
+  const sendVerification = (code) => {
+    if (code.join('').length === 4) {
+      const nCode = parseInt(code.join(''));
+      console.log('SEND VERIFICATION');
+      console.log(route?.route?.params?.uid);
+      console.log(nCode);
+
+      VerifyService.verifyCode({
+        uid: route?.route?.params?.uid,
+        verification_code: nCode,
+      })
+        .then((response) => {
+          if (response.success) {
+            auth()
+              .signInWithCustomToken(response.custom_token)
+              .then(() => {
+                navigation.push('Dashboard');
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log('With Error in the API SignUp ' + error);
+        });
+    } else {
+      return;
+    }
+    /*VerifyService.verifyCode({
+      uid: route?.route?.params?.uid,
+      verification_code: 1234,
+    })
+      .then((response) => {
+        if (response.success) {
+          //navigation.navigate('VerifyAccount', {...response, ...formValues});
+        } else {
+          //navigation.navigate('Onboarding');
+        }
+      })
+      .catch((error) => {
+        console.log('With Error in the API SignUp ' + error);
+      });
+      */
+  };
+
+  const resendCodeHandler = () => {
+    VerifyService.resendCode({
+      uid: route?.route?.params?.uid,
+      provider: 'email',
+    })
+      .then((response) => {
+        if (response.success) {
+          alert('Code has been sent');
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log('With Error in the API SignUp ' + error);
+      });
+  };
+
   //const handleBorderColor = (index) => {
   //console.log(inputState);
   // return inputState[index] ? AppColor.contentOcean : AppColor.neutralGray;
@@ -139,7 +204,7 @@ const VerifyAccount = (route) => {
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           An email with the 4-digit code has been sent to{' '}
           <AppText textStyle="subtitle1" customStyle={styles.bodyContent}>
-            {route.route.params.formValues.login}
+            {route?.route?.params?.login}
           </AppText>
         </AppText>
       </AppViewContainer>
@@ -184,7 +249,8 @@ const VerifyAccount = (route) => {
       <TouchableOpacity
         customStyle={styles.defaultStyle}
         onPress={() => {
-          alert('Resend Code');
+          resendCodeHandler();
+          //navigation.navigate('Dashboard', 'Jayson Ilagan');
         }}>
         <AppText
           textStyle="body2"
