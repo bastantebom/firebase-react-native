@@ -6,26 +6,31 @@ import {useNavigation} from '@react-navigation/native';
 
 import SignUp from '@/screens/SignUp/SignUp';
 import Login from '@/screens/login';
+//import {set} from 'react-native-reanimated';
 // create a component
 const SignUpWrapper = (props) => {
   const ref = useRef(null);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState({});
+  const [passForm, setPassForm] = useState({});
+  //const [uid, setUid] = useState('');
 
   const [authType, setAuthType] = useState('signup');
 
   signUpEmail = (formValues) => {
+    //setPassForm(formValues);
     setIsLoading(true);
-    console.log(JSON.stringify(formValues));
+    //console.log(JSON.stringify(formValues));
     SignUpService.createUser(JSON.stringify(formValues))
       .then((response) => {
         setIsLoading(false);
-        console.log('success firebase api call');
-        console.log(response);
-        console.log('success firebase api call end');
-        //props.closePanel();
         ref.current.cleanSignUpForm();
-        navigation.navigate('VerifyAccount', {formValues});
+        if (response.success) {
+          navigation.navigate('VerifyAccount', {...response, ...formValues});
+        } else {
+          navigation.navigate('Onboarding');
+        }
       })
       .catch((error) => {
         console.log('With Error in the API SignUp ' + error);
@@ -44,7 +49,6 @@ const SignUpWrapper = (props) => {
           loading={isLoading}
           signUpEmail={signUpEmail}
           loginClick={loginClick}
-          closePanelUI={props.closePanel}
         />
       ) : (
         <Login />
