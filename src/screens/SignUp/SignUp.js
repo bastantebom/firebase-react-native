@@ -70,14 +70,14 @@ const SignUp = forwardRef((props, ref) => {
     //console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(email) === false) {
-      console.log('Email is Not Correct');
+      //console.log('Email is Not Correct');
       //setEmailBorder({borderColor: AppColor.neutralGray});
       setEmail(email);
       return false;
     } else {
       setEmail(email);
       setEmailBorder({borderColor: AppColor.contentEbony});
-      console.log('Email is Correct');
+      //console.log('Email is Correct');
       return true;
     }
   };
