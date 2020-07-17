@@ -38,4 +38,5 @@ export default {
   buttonDisable: '#F6F6F6',
 
   errColor: '#EA4336',
+  yellow2: '#FFD200'
 };
