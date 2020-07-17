@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TouchableOpacity, Keyboard, StyleSheet, Dimensions, Text } from 'react-native';
+import { View, TouchableOpacity, Keyboard, StyleSheet, Dimensions, Text, Platform } from 'react-native';
 
 import AppText from '@/components/AppText/AppText';
 import AppInput from '@/components/AppInput/AppInput';
@@ -85,7 +85,7 @@ const ResetPassword = ({ navigation }) => {
     return (
         <>
             {notificationState === 'open' ?
-                <PaddingView paddingSize={2} customStyle={styles.notificationContainer}>
+                <PaddingView paddingSize={2} customStyle={stylesheet.notificationContainer}>
                     <CircleTick />
                     {notificationMessage}
                     <TouchableOpacity onPress={() => setNotificationState('close')}>
@@ -132,5 +132,17 @@ const ResetPassword = ({ navigation }) => {
         </>
     );
 };
+
+const stylesheet = StyleSheet.create({
+    notificationContainer: {
+        zIndex: 1,
+        backgroundColor: '#FFD200',
+        width: '100%',
+        position: 'absolute',
+        top: Platform.OS === "ios" ? 34 : 0,
+        flexDirection: 'row',
+    }
+    
+})
 
 export default ResetPassword;
