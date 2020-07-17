@@ -147,7 +147,7 @@ function Login() {
               onPress={() => facebookSignIn()}
             />
             <AppButton
-              text={"Sign up with Google"}
+              text={"Log in with Google"}
               type="primary"
               height="md"
               icon="g"

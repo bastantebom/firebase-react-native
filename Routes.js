@@ -37,6 +37,7 @@ function AuthStackScreen() {
             <AuthStack.Screen name="Onboarding" component={Onboarding} />
             <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
             <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+            <AuthStack.Screen name="Dashboard" component={Dashboard} />
           </>
         ) : (
           <>
