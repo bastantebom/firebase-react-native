@@ -20,9 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const ResetPassword = ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [notificationState, setNotificationState] = useState('close')
-    const [notificationMessage, setNotificationMessage] = useState(
-
-    )
+    const [notificationMessage, setNotificationMessage] = useState()
 
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [buttonState, setButtonState] = useState('dark')
@@ -48,22 +46,25 @@ const ResetPassword = ({ navigation }) => {
         return new Promise(resolve => {
             setTimeout(() => {
                 ForgotPasswordService.forgotEmail(payload).then(res => {
-                    // console.log(res)
-                    resolve(JSON.stringify(res));
-
                     if (res?.success) {
-                        console.log("its true")
+                        resolve(
+                            <AppText textStyle="body2" customStyle={styles.notificationText}>
+                                We sent an email to <AppText customStyle={styles.email}>{email}.</AppText> Click the link in the email to reset your password.
+                            </AppText>
+                        )
                     }
                     else {
-                        console.log('its false')
-                        resolve('The email may not be linked to any account. Please try again.')
+                        resolve(
+                            <AppText textStyle="body2" customStyle={styles.notificationText}>
+                                The email <AppText customStyle={styles.email}>{email}</AppText> may not be linked to any account. Please try again.
+                            </AppText>
+                        )
                     }
                 })
 
                 setButtonLoading(false)
                 setButtonDisabled(false)
                 setButtonText('Resend the link')
-                setNotificationState('open')
                 closeNotification()
             }, 2000);
         });
@@ -71,7 +72,8 @@ const ResetPassword = ({ navigation }) => {
 
     async function sendEmail() {
         const msg = await sendResetPasswordEmail();
-        console.log('Message:', msg);
+        setNotificationMessage(msg);
+        setNotificationState('open');
     }
 
     const closeNotification = () => {
@@ -85,9 +87,7 @@ const ResetPassword = ({ navigation }) => {
             {notificationState === 'open' ?
                 <PaddingView paddingSize={2} customStyle={styles.notificationContainer}>
                     <CircleTick />
-                    <AppText textStyle="body2" customStyle={styles.notificationText}>
-                        We sent an email to <AppText customStyle={styles.email}>{email}.</AppText> Click the link in the email to reset your password.
-                    </AppText>
+                    {notificationMessage}
                     <TouchableOpacity onPress={() => setNotificationState('close')}>
                         <CloseDark />
                     </TouchableOpacity>
@@ -126,7 +126,6 @@ const ResetPassword = ({ navigation }) => {
                         setButtonDisabled(true)
                         sendEmail()
                         Keyboard.dismiss()
-                        console.log(email)
                     }}
                 />
             </AppViewContainer>
