@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import {
   View,
   Image,
@@ -25,6 +25,8 @@ import IllustOne from '@/assets/images/onboarding-img1.svg';
 import IllustTwo from '@/assets/images/onboarding-img2.svg';
 import IllustThree from '@/assets/images/onboarding-img3.svg';
 import IllustFour from '@/assets/images/onboarding-img4.svg';
+
+import { Context } from "@/context";
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     height: 8,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height * 0.22,
+    marginBottom: height > 700 ? height * .3 : height * .18,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
@@ -89,12 +91,30 @@ const styles = StyleSheet.create({
   },
 });
 
-const Onboarding = ({navigation, illustration}) => {
+const Onboarding = ({ navigation, illustration }) => {
+  // console.log(height);
+  const { sliderState, closeSlider, openSlider } = useContext(Context);
+
   const [authType, setAuthType] = useState('signup');
   const _panel = useRef(null);
+  
+
+  if (sliderState === 'close') {
+    _panel?.current.hide()
+  } else {
+    console.log('open or unopened')
+  }
+
   const clickHandler = () => {
+    openSlider();
     _panel.current.show();
   };
+
+  const closeHandler = () => {
+    openSlider();
+    _panel.current.hide();
+  };
+
   const animation = new Animated.Value(0);
 
   const rotation = animation.interpolate({

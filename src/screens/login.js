@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,8 @@ import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
 import Close from '@/assets/images/icons/close.svg';
 import EyeDark from '@/assets/images/icons/eye-dark.svg';
 import EyeLight from '@/assets/images/icons/eye-light.svg';
+
+import { Context } from '@/context';
 
 function Divider() {
   return (
@@ -43,6 +45,12 @@ function Login() {
   const [password, setPassword] = useState('');
   const [isVisble, setIsVisible] = useState(false);
 
+  const { closeSlider } = useContext(Context);
+
+  GoogleSignin.configure({
+    webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
+  });
+
   async function facebookSignIn() {
     const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
     if (result.isCancelled) {
@@ -65,25 +73,27 @@ function Login() {
 
   const handleLogin = () => {
     auth()
-    .signInWithEmailAndPassword(emailAddress, password)
-    .then(() => {
-      console.log('User signed in!');
-    })
-    .catch(error => {
-      console.error(error);
-    });
+      .signInWithEmailAndPassword(emailAddress, password)
+      .then(() => {
+        console.log('User signed in!');
+        navigation.push('Dashboard');
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   return (
     <>
       {authType === 'login' ? (
-        <AppViewContainer paddingSize={3} customStyle={{ paddingTop: 5 }}>
-          <AppViewContainer 
-            paddingSize={3}
-            marginSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0, marginBottom: 0, marginHorizontal: 0 }}
+        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
+          <AppViewContainer
+            paddingSize={2}
+            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
           >
-            <Close/>
+            <TouchableOpacity onPress={closeSlider}>
+              <Close />
+            </TouchableOpacity>
           </AppViewContainer>
           <View style={styles.container}>
             <AppText textStyle="display5">Welcome back!</AppText>
@@ -156,8 +166,8 @@ function Login() {
           </View>
         </AppViewContainer>
       ) : (
-        <SignUpWrapper />
-      )}
+          <SignUpWrapper />
+        )}
     </>
   );
 }

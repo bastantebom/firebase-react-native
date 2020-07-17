@@ -69,7 +69,7 @@ const ResetPassword = ({ navigation }) => {
                 <ResetPasswordLock width={80} height={80} />
             </View>
 
-            <AppText customStyle={styles.resetPasswordText} textStyle="display5" >{sampleState} Reset Password</AppText>
+            <AppText customStyle={styles.resetPasswordText} textStyle="display5" >Reset Password</AppText>
 
             <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">No worries, it happens to the best of us!</AppText>
 
