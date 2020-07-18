@@ -81,13 +81,11 @@ const ResetPassword = ({ navigation }) => {
     async function sendEmail() {
         const msg = await sendResetPasswordEmail();
         setNotificationMessage(msg);
-        // setNotificationState('open');
         openNotification();
     }
 
     const closeNotificationTimer = () => {
         setTimeout(() => {
-            // setNotificationState('close')
             closeNotification();
         }, 5000)
     }
@@ -131,17 +129,5 @@ const ResetPassword = ({ navigation }) => {
         </AppViewContainer>
     );
 };
-
-const stylesheet = StyleSheet.create({
-    notificationContainer: {
-        zIndex: 1,
-        backgroundColor: '#FFD200',
-        width: '100%',
-        position: 'absolute',
-        top: Platform.OS === "ios" ? 34 : 0,
-        flexDirection: 'row',
-    }
-
-})
 
 export default ResetPassword;

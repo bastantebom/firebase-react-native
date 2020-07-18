@@ -6,7 +6,7 @@ import PaddingView from '@/components/AppViewContainer/PaddingView';
 import CloseDark from '@/assets/images/icons/close-dark.svg';
 import CircleTick from '@/assets/images/icons/circle-tick.svg';
 
-import { Context } from '@/context'
+import { Context } from '@/context';
 
 /**
  * 
