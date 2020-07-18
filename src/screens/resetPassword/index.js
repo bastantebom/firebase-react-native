@@ -6,6 +6,7 @@ import AppInput from '@/components/AppInput/AppInput';
 import AppButton from '@/components/AppButton';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import PaddingView from '@/components/AppViewContainer/PaddingView';
+import Notification from '@/components/Notification'
 
 import ResetPasswordLock from '@/assets/images/reset-password.svg';
 import CloseIcon from '@/assets/images/icons/close.svg';
@@ -94,7 +95,9 @@ const ResetPassword = ({ navigation }) => {
                 </PaddingView>
                 : <></>
             }
+            
             <AppViewContainer paddingSize={3} customStyle={styles.container}>
+            <Notification />
 
                 <View style={styles.closeIconContainer}  >
                     <TouchableOpacity onPress={() => navigation.goBack()}>
