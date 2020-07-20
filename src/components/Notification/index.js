@@ -3,8 +3,10 @@ import { StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
 import PaddingView from '@/components/AppViewContainer/PaddingView';
 
-import CloseDark from '@/assets/images/icons/close-dark.svg';
-import CircleTick from '@/assets/images/icons/circle-tick.svg';
+// import CloseDark from '@/assets/images/icons/close-dark.svg';
+// import CircleTick from '@/assets/images/icons/circle-tick.svg';
+
+import { CloseDark, CircleTick } from '@/assets/images/icons';
 
 import { Context } from '@/context';
 
@@ -20,7 +22,7 @@ const Notification = ({ message, type }) => {
     const { notificationState, closeNotification } = useContext(Context);
 
     const width = Dimensions.get('window').width;
-    
+
     const styles = StyleSheet.create({
         container: {
             width: width,
@@ -29,7 +31,7 @@ const Notification = ({ message, type }) => {
             left: 0,
             flexDirection: 'row',
             zIndex: 1,
-            backgroundColor: type === 'success' ? '#FFD200': 'red'
+            backgroundColor: type === 'success' ? '#FFD200' : 'red'
         }
     })
 

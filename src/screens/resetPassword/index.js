@@ -9,9 +9,8 @@ import PaddingView from '@/components/AppViewContainer/PaddingView';
 import Notification from '@/components/Notification'
 
 import ResetPasswordLock from '@/assets/images/reset-password.svg';
-import CloseIcon from '@/assets/images/icons/close.svg';
-import CloseDark from '@/assets/images/icons/close-dark.svg';
-import CircleTick from '@/assets/images/icons/circle-tick.svg';
+
+import { Close } from '@/assets/images/icons';
 
 import ForgotPasswordService from '@/services/ForgotPassword';
 
@@ -96,7 +95,7 @@ const ResetPassword = ({ navigation }) => {
 
             <View style={styles.closeIconContainer}  >
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <CloseIcon width={24} height={24} />
+                    <Close width={24} height={24} />
                 </TouchableOpacity>
             </View>
 
