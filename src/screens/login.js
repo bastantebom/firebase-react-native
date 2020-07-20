@@ -20,6 +20,7 @@ import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
 import Close from '@/assets/images/icons/close.svg';
 import EyeDark from '@/assets/images/icons/eye-dark.svg';
 import EyeLight from '@/assets/images/icons/eye-light.svg';
+import { PaddingView } from '@/components'
 
 import { Context } from '@/context';
 
@@ -86,92 +87,87 @@ function Login() {
   }
 
   return (
-    <>
-      {authType === 'login' ? (
-        <AppViewContainer paddingSize={2} customStyle={{ paddingTop: 5 }}>
-          <AppViewContainer
-            paddingSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
-          >
-            <TouchableOpacity onPress={closeSlider}>
-              <Close />
-            </TouchableOpacity>
-          </AppViewContainer>
-          <View style={styles.container}>
-            <AppText textStyle="display5">Welcome back!</AppText>
-            <AppText textStyle="caption" customStyle={styles.caption}>
-              Log in to get going, Buzzybee.
+
+    <PaddingView paddingSize={2} style={{ paddingTop: 5, paddingBottom: 100 }}>
+      <AppViewContainer
+        paddingSize={2}
+        customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
+      >
+        <TouchableOpacity onPress={closeSlider}>
+          <Close />
+        </TouchableOpacity>
+      </AppViewContainer>
+      <View style={styles.container}>
+        <AppText textStyle="display5">Welcome back!</AppText>
+        <AppText textStyle="caption" customStyle={styles.caption}>
+          Log in to get going, Buzzybee.
             </AppText>
-            <AppViewContainer
-              marginSize={3}
-              customStyle={{ marginHorizontal: 0, marginBottom: 0 }}
-            >
-              <AppInput
-                label="Email or Mobile Number"
-                customStyle={styles.inputText}
-                onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-                value={emailAddress}
-                keyboardType={"email-address"}
-              />
-              <View style={{ position: 'relative'}}>
-                <AppInput
-                  label="Password"
-                  onChangeText={password => setPassword(password)}
-                  value={password}
-                  secureTextEntry={!isVisble ? true : false}
-                />
-                <View style={styles.passwordToggle}>
-                  <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
-                    { !isVisble ? <EyeDark/> : <EyeLight/> }
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <TouchableOpacity onPress={() => navigation.push('ResetPassword')}>
-                <AppText textStyle="caption" customStyle={styles.caption}>
-                  Forgot Password?
-                </AppText>
-              </TouchableOpacity>
-              <AppButton
-                text="Log In"
-                type="primary"
-                height="xl"
-                customStyle={styles.customLogin}
-                onPress={() => handleLogin()}
-              />
-            </AppViewContainer>
-            <Divider />
-            <AppButton
-              text={"Log in with Facebook"}
-              type="primary"
-              height="md"
-              icon="fb"
-              customStyle={styles.customButton}
-              onPress={() => facebookSignIn()}
+        <AppViewContainer
+          marginSize={3}
+          customStyle={{ marginHorizontal: 0, marginBottom: 0 }}
+        >
+          <AppInput
+            label="Email or Mobile Number"
+            customStyle={styles.inputText}
+            onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+            value={emailAddress}
+            keyboardType={"email-address"}
+          />
+          <View style={{ position: 'relative' }}>
+            <AppInput
+              label="Password"
+              onChangeText={password => setPassword(password)}
+              value={password}
+              secureTextEntry={!isVisble ? true : false}
             />
-            <AppButton
-              text={"Log in with Google"}
-              type="primary"
-              height="md"
-              icon="g"
-              customStyle={styles.customButton}
-              // onPress={console.log('PRESS')}
-              onPress={() => googleLogin().then(() => console.log('Signed in with Google!'))}
-            />
-            <View style={styles.cta}>
-              <AppText textStyle="button2">Don't have an account? </AppText>
-              <TouchableOpacity onPress={() => setAuthType('signup')}>
-                <AppText textStyle="button2" customStyle={styles.link}>
-                  Sign up
-                </AppText>
+            <View style={styles.passwordToggle}>
+              <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
+                {!isVisble ? <EyeDark /> : <EyeLight />}
               </TouchableOpacity>
             </View>
           </View>
+          <TouchableOpacity onPress={() => navigation.push('ResetPassword')}>
+            <AppText textStyle="caption" customStyle={styles.caption}>
+              Forgot Password?
+                </AppText>
+          </TouchableOpacity>
+          <AppButton
+            text="Log In"
+            type="primary"
+            height="xl"
+            customStyle={styles.customLogin}
+            onPress={() => handleLogin()}
+          />
         </AppViewContainer>
-      ) : (
-          <SignUpWrapper />
-        )}
-    </>
-  );
+        <Divider />
+        <AppButton
+          text={"Log in with Facebook"}
+          type="primary"
+          height="md"
+          icon="fb"
+          customStyle={styles.customButton}
+          onPress={() => facebookSignIn()}
+        />
+        <AppButton
+          text={"Log in with Google"}
+          type="primary"
+          height="md"
+          icon="g"
+          customStyle={styles.customButton}
+          // onPress={console.log('PRESS')}
+          onPress={() => googleLogin().then(() => console.log('Signed in with Google!'))}
+        />
+        <View style={styles.cta}>
+          <AppText textStyle="button2">Don't have an account? </AppText>
+          <TouchableOpacity onPress={() => setAuthType('signup')}>
+            <AppText textStyle="button2" customStyle={styles.link}>
+              Sign up
+                </AppText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </PaddingView>
+  )
 }
 
 const styles = StyleSheet.create({
