@@ -1,6 +1,7 @@
 //import liraries
 import React, {useState, useRef} from 'react';
 import SignUpService from '@/services/SignUpService';
+import LoginService from '@/services/LoginService';
 
 import {useNavigation} from '@react-navigation/native';
 
@@ -22,6 +23,9 @@ const SignUpWrapper = (props) => {
     //setPassForm(formValues);
     setIsLoading(true);
     //console.log(JSON.stringify(formValues));
+    console.log(formValues);
+    //console.log(isEmail);
+    /* if (isEmail) { */
     SignUpService.createUser(JSON.stringify(formValues))
       .then((response) => {
         setIsLoading(false);
@@ -35,6 +39,21 @@ const SignUpWrapper = (props) => {
       .catch((error) => {
         console.log('With Error in the API SignUp ' + error);
       });
+    /*} else {
+      LoginService.loginMobile(JSON.stringify(formValues))
+        .then((response) => {
+          setIsLoading(false);
+          ref.current.cleanSignUpForm();
+          if (response.success) {
+            navigation.navigate('VerifyAccount', {...response, ...formValues});
+          } else {
+            navigation.navigate('Onboarding');
+          }
+        })
+        .catch((error) => {
+          console.log('With Error in the API SignUp ' + error);
+        });
+    }*/
   };
 
   const loginClick = () => {
