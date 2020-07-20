@@ -41,7 +41,9 @@ GoogleSignin.configure({
 function Login() {
   const navigation = useNavigation();
   const [authType, setAuthType] = useState('login');
+
   const [emailAddress, setEmailAddress] = useState('');
+
   const [password, setPassword] = useState('');
   const [isVisble, setIsVisible] = useState(false);
 
@@ -116,11 +118,11 @@ function Login() {
                   label="Password"
                   onChangeText={password => setPassword(password)}
                   value={password}
-                  secureTextEntry={isVisble ? true : false}
+                  secureTextEntry={!isVisble ? true : false}
                 />
                 <View style={styles.passwordToggle}>
                   <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
-                    { isVisble ? <EyeDark/> : <EyeLight/> }
+                    { !isVisble ? <EyeDark/> : <EyeLight/> }
                   </TouchableOpacity>
                 </View>
               </View>
