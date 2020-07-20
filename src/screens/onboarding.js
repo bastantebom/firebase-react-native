@@ -101,9 +101,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
   if (sliderState === 'close') {
     _panel?.current.hide()
-  } else {
-    console.log('open or unopened')
-  }
+  } 
 
   const clickHandler = () => {
     openSlider();

@@ -29,6 +29,7 @@ const AppViewContainer = ({ children, paddingSize, marginSize, customStyle }) =>
     // compute padding size
     computedStyles.padding = paddingSize ? paddingSize === "xs" ? 4 : paddingSize * 8 : 0;
 
+
     // compute margin size
     computedStyles.margin = marginSize ? marginSize === "xs" ? 4 : marginSize * 8 : 0;
 
@@ -42,9 +43,9 @@ const AppViewContainer = ({ children, paddingSize, marginSize, customStyle }) =>
 
 
     return (
-        <SafeAreaView style={computedStyles}>
+        <SafeAreaView style={Platform.OS === 'android'? customStyle: computedStyles}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={Platform.OS === 'ios' ? computedStyles: {}}>{children}</View>
+                <View style={computedStyles}>{children}</View>
             </TouchableWithoutFeedback>
         </SafeAreaView>
     );

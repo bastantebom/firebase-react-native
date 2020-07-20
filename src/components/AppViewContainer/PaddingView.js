@@ -19,7 +19,7 @@ import styles from './AppViewContainer.scss';
  */
 
 
-const PaddingView = ({ children, paddingSize, customStyle }) => {
+const PaddingView = ({ children, paddingSize, style }) => {
 
     let computedStyles = StyleSheet.create({
         padding: 0
@@ -28,10 +28,10 @@ const PaddingView = ({ children, paddingSize, customStyle }) => {
     // compute padding size
     computedStyles.padding = paddingSize ? paddingSize === "xs" ? 4 : paddingSize * 8 : 0;
 
-    if (customStyle) {
+    if (style) {
         computedStyles = {
             ...computedStyles,
-            ...customStyle
+            ...style
         }
     }
 
