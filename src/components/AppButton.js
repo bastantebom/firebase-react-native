@@ -105,7 +105,6 @@ const AppButton = ({
   };
 
   const buttonIcon = () => {
-    console.log(icon)
     if (icon === "Facebook") {
       return (
         <View>

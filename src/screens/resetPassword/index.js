@@ -42,6 +42,13 @@ const ResetPassword = ({ navigation }) => {
         }
     }
 
+    const notificationErrorTextStyle = {
+        flex: 1,
+        marginLeft: 12,
+        marginRight: 12,
+        color: "white"
+    }
+
     function sendResetPasswordEmail() {
         let payload = {
             email: email
@@ -61,8 +68,8 @@ const ResetPassword = ({ navigation }) => {
                     else {
                         setNotificationType('error')
                         resolve(
-                            <AppText textStyle="body2" customStyle={styles.notificationText}>
-                                The email <AppText customStyle={styles.email}>{email}</AppText> may not be linked to any account. Please try again.
+                            <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
+                                Verification code wasn’t sent. The email <AppText customStyle={styles.email}>{email}</AppText> does not exist in our database.
                             </AppText>
                         )
                     }

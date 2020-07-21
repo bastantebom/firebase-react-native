@@ -6,7 +6,8 @@ import PaddingView from '@/components/AppViewContainer/PaddingView';
 // import CloseDark from '@/assets/images/icons/close-dark.svg';
 // import CircleTick from '@/assets/images/icons/circle-tick.svg';
 
-import { CloseDark, CircleTick } from '@/assets/images/icons';
+import { CloseDark, CloseLight, CircleTick, Warning,  } from '@/assets/images/icons';
+import Colors from '@/globals/Colors'
 
 import { Context } from '@/context';
 
@@ -31,17 +32,17 @@ const Notification = ({ message, type }) => {
             left: 0,
             flexDirection: 'row',
             zIndex: 1,
-            backgroundColor: type === 'success' ? '#FFD200' : 'red'
+            backgroundColor: type === 'success' ? Colors.yellow2 : Colors.secondaryBrinkPink
         }
     })
 
     if (notificationState === 'open') {
         return (
             <PaddingView paddingSize={2} style={styles.container}>
-                {type === 'success' ? <CircleTick /> : <CloseDark />}
+                {type === 'success' ? <CircleTick /> : <Warning />}
                 {message}
                 <TouchableOpacity onPress={() => closeNotification()}>
-                    <CloseDark />
+                    {type === 'success' ? <CloseDark />: <CloseLight />}
                 </TouchableOpacity>
             </PaddingView>
         )
