@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-community/google-signin';
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
@@ -28,7 +26,9 @@ import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Close from '@/assets/images/icons/close.svg';
 import EyeDark from '@/assets/images/icons/eye-dark.svg';
 import EyeLight from '@/assets/images/icons/eye-light.svg';
-import { PaddingView } from '@/components'
+import { PaddingView } from '@/components';
+
+import LoginService from "@/services/LoginService";
 
 import { Context } from '@/context';
 
@@ -43,10 +43,6 @@ function Divider() {
   );
 }
 
-GoogleSignin.configure({
-  webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
-});
-
 function Login() {
   const navigation = useNavigation();
   // const [authType, setAuthType] = useState('login');
@@ -57,30 +53,6 @@ function Login() {
   const [isVisble, setIsVisible] = useState(false);
 
   const { closeSlider, authType, setAuthType } = useContext(Context);
-
-  GoogleSignin.configure({
-    webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
-  });
-
-  async function facebookSignIn() {
-    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-    if (result.isCancelled) {
-      throw 'User cancelled the login process';
-    }
-    const data = await AccessToken.getCurrentAccessToken();
-    if (!data) {
-      throw 'Something went wrong obtaining access token';
-    }
-
-    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
-    return auth().signInWithCredential(facebookCredential);
-  }
-
-  async function googleLogin() {
-    const { idToken } = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    return auth().signInWithCredential(googleCredential);
-  };
 
   const handleLogin = () => {
     auth()
@@ -160,7 +132,7 @@ function Login() {
               icon="Facebook"
               iconPosition="left"
               customStyle={styles.customButton}
-              onPress={() => facebookSignIn()}
+              onPress={() => LoginService.facebookSignIn()}
             />
             <AppButton
               text={"Log in with Google"}
@@ -170,7 +142,7 @@ function Login() {
               iconPosition="left"
               customStyle={styles.customButton}
               // onPress={console.log('PRESS')}
-              onPress={() => googleLogin().then(() => console.log('Signed in with Google!'))}
+              onPress={() => LoginService.googleLogin().then(() => console.log('Signed in with Google!'))}
             />
             <View style={styles.cta}>
               <AppText textStyle="button2">Don't have an account? </AppText>
