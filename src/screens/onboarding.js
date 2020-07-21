@@ -98,7 +98,7 @@ const Onboarding = ({ navigation, illustration }) => {
   const { sliderState, closeSlider, openSlider } = useContext(Context);
   const [authType, setAuthType] = useState('');
 
-  const _panel = useRef(null);
+  // const _panel = useRef(null);
   let bottomSheetRef = createRef()
 
   const renderHeader = () => {
