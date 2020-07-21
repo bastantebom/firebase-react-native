@@ -144,7 +144,8 @@ function Login() {
           text={"Log in with Facebook"}
           type="primary"
           height="md"
-          icon="fb"
+          icon="Facebook"
+          iconPosition="left"
           customStyle={styles.customButton}
           onPress={() => facebookSignIn()}
         />
@@ -152,7 +153,8 @@ function Login() {
           text={"Log in with Google"}
           type="primary"
           height="md"
-          icon="g"
+          icon="Google"
+          iconPosition="left"
           customStyle={styles.customButton}
           // onPress={console.log('PRESS')}
           onPress={() => googleLogin().then(() => console.log('Signed in with Google!'))}

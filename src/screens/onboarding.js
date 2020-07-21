@@ -174,7 +174,6 @@ const Onboarding = ({ navigation, illustration }) => {
             size="sm"
             height="xl"
             borderColor="primary"
-            propsButtonCustomStyle=""
             onPress={() => {
               clickHandler();
               setAuthType('login');

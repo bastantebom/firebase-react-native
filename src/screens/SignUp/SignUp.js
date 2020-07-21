@@ -373,7 +373,8 @@ const SignUp = forwardRef((props, ref) => {
             text="Sign up with Facebook"
             type="primary"
             height="md"
-            icon="fb"
+            icon="Facebook"
+            iconPosition="left"
             customStyle={styles.disableButton}
           //onPress={}
           />
@@ -381,7 +382,8 @@ const SignUp = forwardRef((props, ref) => {
             text="Sign up with Google"
             type="primary"
             height="md"
-            icon="g"
+            icon="Google"
+            iconPosition="left"
             customStyle={styles.disableButton}
           //onPress={}
           />
