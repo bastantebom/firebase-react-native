@@ -8,6 +8,7 @@ import {
   Dimensions,
   Animated,
   Easing,
+  Platform,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -229,7 +230,6 @@ const styles = StyleSheet.create({
   },
   swiperHolder: {
     flex: 3,
-    
   },
   slideHolder: {
     flex: 1,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   },
   link: {
     alignSelf: 'flex-end',
-    paddingVertical: 40,
+    paddingVertical: Platform.OS === "ios" ? 40 : 16,
     paddingHorizontal: 30,
   },
   textHolder: {
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     height: 8,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height > 700 ? height * .3 : height * .13,
+    marginBottom: height > 700 ? height * .3 : height * .18,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
