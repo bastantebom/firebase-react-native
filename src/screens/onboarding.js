@@ -33,73 +33,12 @@ import { Context } from "@/context";
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
-const styles = StyleSheet.create({
-  contentHolder: {
-    position: 'relative',
-    flex: 1,
-    backgroundColor: Colors.primaryMidnightBlue,
-  },
-  swiperHolder: {
-    flex: 3,
-  },
-  slideHolder: {
-    flex: 1,
-    alignItems: 'center',
-    textAlign: 'center',
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
-  },
-  link: {
-    alignSelf: 'flex-end',
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-  },
-  textHolder: {
-    position: 'relative',
-    zIndex: 5,
-    padding: 15,
-  },
-  dot: {
-    zIndex: 5,
-    width: 8,
-    height: 8,
-    marginLeft: 3,
-    marginRight: 3,
-    marginBottom: height > 700 ? height * .3 : height * .18,
-    backgroundColor: Colors.neutralsWhite,
-    borderRadius: 100,
-  },
-  dotActive: {
-    backgroundColor: Colors.primaryMidnightBlue,
-  },
-  bgImageHolder: {
-    position: 'absolute',
-    bottom: 65,
-    right: -width * 0.4,
-  },
-  text: {
-    textAlign: 'center',
-  },
-  btnHolder: {
-    position: 'absolute',
-    top: height * 0.85,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'center',
-    width: '100%',
-    paddingHorizontal: 30,
-    backgroundColor: 'transparent',
-  },
-});
+let bottomSheetRef = createRef();
 
 const Onboarding = ({ navigation, illustration }) => {
-  // console.log(height);
   const { sliderState, closeSlider, openSlider } = useContext(Context);
   const [authType, setAuthType] = useState('');
-
-  // const _panel = useRef(null);
-  let bottomSheetRef = createRef()
+  
 
   const renderHeader = () => {
     return (
@@ -127,8 +66,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
 
   if (sliderState === 'close') {
-    // _panel?.current.hide()
-    bottomSheetRef?.current.snapTo(1)
+    bottomSheetRef?.current.snapTo(2)
   }
 
   const clickHandler = () => {
@@ -244,7 +182,7 @@ const Onboarding = ({ navigation, illustration }) => {
               clickHandler();
               setAuthType('signup');
               bottomSheetRef.current.snapTo(0)
-
+              console.log(bottomSheetRef)
             }}
           />
         </View>
@@ -263,5 +201,66 @@ const Onboarding = ({ navigation, illustration }) => {
     </>
   );
 };
+
+
+const styles = StyleSheet.create({
+  contentHolder: {
+    position: 'relative',
+    flex: 1,
+    backgroundColor: Colors.primaryMidnightBlue,
+  },
+  swiperHolder: {
+    flex: 3,
+  },
+  slideHolder: {
+    flex: 1,
+    alignItems: 'center',
+    textAlign: 'center',
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
+  },
+  link: {
+    alignSelf: 'flex-end',
+    paddingVertical: 40,
+    paddingHorizontal: 30,
+  },
+  textHolder: {
+    position: 'relative',
+    zIndex: 5,
+    padding: 15,
+  },
+  dot: {
+    zIndex: 5,
+    width: 8,
+    height: 8,
+    marginLeft: 3,
+    marginRight: 3,
+    marginBottom: height > 700 ? height * .3 : height * .18,
+    backgroundColor: Colors.neutralsWhite,
+    borderRadius: 100,
+  },
+  dotActive: {
+    backgroundColor: Colors.primaryMidnightBlue,
+  },
+  bgImageHolder: {
+    position: 'absolute',
+    bottom: 65,
+    right: -width * 0.4,
+  },
+  text: {
+    textAlign: 'center',
+  },
+  btnHolder: {
+    position: 'absolute',
+    top: height * 0.85,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    width: '100%',
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+  },
+});
 
 export default Onboarding;
