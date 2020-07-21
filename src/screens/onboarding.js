@@ -127,17 +127,20 @@ const Onboarding = ({ navigation, illustration }) => {
 
 
   if (sliderState === 'close') {
-    _panel?.current.hide()
+    // _panel?.current.hide()
+    bottomSheetRef?.current.snapTo(1)
   }
 
   const clickHandler = () => {
     openSlider();
-    _panel.current.show();
+    // _panel.current.show();
+    bottomSheetRef?.current.snapTo(0)
   };
 
   const closeHandler = () => {
     openSlider();
-    _panel.current.hide();
+    // _panel.current.hide();
+    bottomSheetRef?.current.snapTo(1)
   };
 
   const animation = new Animated.Value(0);
@@ -225,7 +228,7 @@ const Onboarding = ({ navigation, illustration }) => {
             borderColor="primary"
             propsButtonCustomStyle=""
             onPress={() => {
-              // clickHandler();
+              clickHandler();
               setAuthType('login');
               bottomSheetRef.current.snapTo(0)
             }}
@@ -237,7 +240,7 @@ const Onboarding = ({ navigation, illustration }) => {
             borderColor="primary"
             propsButtonCustomStyle=""
             onPress={() => {
-              // clickHandler();
+              clickHandler();
               setAuthType('signup');
               bottomSheetRef.current.snapTo(0)
 
