@@ -6,7 +6,7 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
 import AppText from '@/components/AppText/AppText';
@@ -280,125 +280,127 @@ const SignUp = forwardRef((props, ref) => {
   const { closeSlider, setAuthType } = useContext(Context);
 
   return (
-    <View style={styles.mainWrapper}>
-      <View style={styles.contentWrapper}>
-        <TouchableOpacity style={styles.closeIconWrapper} onPress={closeSlider}>
-          <Close height={24} width={24} />
-        </TouchableOpacity>
-        <AppText textStyle="display5">Sign Up</AppText>
-        <AppText textStyle="caption" customStyle={styles.textCaption}>
-          Join Servbees today. It’s free!
-        </AppText>
-        <View style={styles.formWrapper}>
-          <AppInput
-            label="Email or Mobile Number"
-            value={email}
-            onBlur={onBlurEmail}
-            onFocus={onFocusEmail}
-            keyboardType="email-address"
-            customStyle={{ ...styles.customInputStyle, ...emailBorder }}
-            onChangeText={(email) => onEmailChange(email)}
-          />
-          {!isValidLogin ? (
-            <AppText textStyle="caption" customStyle={styles.errorCopy}>
-              Enter a valid {loginUse}
-            </AppText>
-          ) : (
-              <AppText
-                textStyle="caption"
-                customStyle={styles.emptyErrorCopy}></AppText>
-            )}
-
-          <AppInput
-            label="Full Name"
-            value={name}
-            onBlur={onBlurName}
-            onFocus={onFocusName}
-            keyboardType="default"
-            customStyle={{ ...styles.customInputStyle, ...nameBorder }}
-            onChangeText={(name) => onNameChange(name)}
-          />
-          {!isValidName ? (
-            <AppText textStyle="caption" customStyle={styles.errorCopy}>
-              Don’t add special character(s)
-            </AppText>
-          ) : (
-              <AppText
-                textStyle="caption"
-                customStyle={styles.emptyErrorCopy}></AppText>
-            )}
-
-          {!isValidMobileNumber ? (
-            <AppInput
-              label="Password"
-              onBlur={onBlurPassword}
-              onFocus={onFocusPassword}
-              secureTextEntry
-              password
-              value={password}
-              keyboardType="default"
-              customStyle={{ ...styles.customInputStyle, ...passwordBorder }}
-              onChangeText={(password) => onPasswordChange(password)}
-            />
-          ) : null}
-          {!isValidPassword ? (
-            <AppText textStyle="caption" customStyle={styles.errorCopy}>
-              Must be at least 6 characters
-            </AppText>
-          ) : (
-              <AppText
-                textStyle="caption"
-                customStyle={styles.emptyErrorCopy}></AppText>
-            )}
-        </View>
-
-        <View>
-          <AppButton
-            text={buttonText}
-            type="primary"
-            height="xl"
-            disabled={buttonDisabled}
-            customStyle={{ ...styles.customButtonStyle, ...buttonStyle }}
-            onPress={() => {
-              signUpEmail(signUpForm);
-            }}
-            loading={props.loading}
-          />
-        </View>
-        <View style={styles.orCopyWrapper}>
-          <AppText>or</AppText>
-        </View>
-        <View style={styles.otherLoginWrapper}>
-          <AppButton
-            text="Sign up with Facebook"
-            type="primary"
-            height="md"
-            icon="Facebook"
-            iconPosition="left"
-            customStyle={styles.disableButton}
-          //onPress={}
-          />
-          <AppButton
-            text="Sign up with Google"
-            type="primary"
-            height="md"
-            icon="Google"
-            iconPosition="left"
-            customStyle={styles.disableButton}
-          //onPress={}
-          />
-        </View>
-
-        <View style={styles.loginLinkCopy}>
-          <AppText textStyle="button2">Already have an account?</AppText>
-          <TouchableOpacity onPress={() => setAuthType('login')}>
-            <AppText textStyle="button2" customStyle={styles.underLineText}>
-              Login
-            </AppText>
+    <ScrollView>
+      <View style={styles.mainWrapper}>
+        <View style={styles.contentWrapper}>
+          <TouchableOpacity style={styles.closeIconWrapper} onPress={closeSlider}>
+            <Close height={24} width={24} />
           </TouchableOpacity>
+          <AppText textStyle="display5">Sign Up</AppText>
+          <AppText textStyle="caption" customStyle={styles.textCaption}>
+            Join Servbees today. It’s free!
+        </AppText>
+          <View style={styles.formWrapper}>
+            <AppInput
+              label="Email or Mobile Number"
+              value={email}
+              onBlur={onBlurEmail}
+              onFocus={onFocusEmail}
+              keyboardType="email-address"
+              customStyle={{ ...styles.customInputStyle, ...emailBorder }}
+              onChangeText={(email) => onEmailChange(email)}
+            />
+            {!isValidLogin ? (
+              <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                Enter a valid {loginUse}
+              </AppText>
+            ) : (
+                <AppText
+                  textStyle="caption"
+                  customStyle={styles.emptyErrorCopy}></AppText>
+              )}
+
+            <AppInput
+              label="Full Name"
+              value={name}
+              onBlur={onBlurName}
+              onFocus={onFocusName}
+              keyboardType="default"
+              customStyle={{ ...styles.customInputStyle, ...nameBorder }}
+              onChangeText={(name) => onNameChange(name)}
+            />
+            {!isValidName ? (
+              <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                Don’t add special character(s)
+              </AppText>
+            ) : (
+                <AppText
+                  textStyle="caption"
+                  customStyle={styles.emptyErrorCopy}></AppText>
+              )}
+
+            {!isValidMobileNumber ? (
+              <AppInput
+                label="Password"
+                onBlur={onBlurPassword}
+                onFocus={onFocusPassword}
+                secureTextEntry
+                password
+                value={password}
+                keyboardType="default"
+                customStyle={{ ...styles.customInputStyle, ...passwordBorder }}
+                onChangeText={(password) => onPasswordChange(password)}
+              />
+            ) : null}
+            {!isValidPassword ? (
+              <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                Must be at least 6 characters
+              </AppText>
+            ) : (
+                <AppText
+                  textStyle="caption"
+                  customStyle={styles.emptyErrorCopy}></AppText>
+              )}
+          </View>
+
+          <View>
+            <AppButton
+              text={buttonText}
+              type="primary"
+              height="xl"
+              disabled={buttonDisabled}
+              customStyle={{ ...styles.customButtonStyle, ...buttonStyle }}
+              onPress={() => {
+                signUpEmail(signUpForm);
+              }}
+              loading={props.loading}
+            />
+          </View>
+          <View style={styles.orCopyWrapper}>
+            <AppText>or</AppText>
+          </View>
+          <View style={styles.otherLoginWrapper}>
+            <AppButton
+              text="Sign up with Facebook"
+              type="primary"
+              height="md"
+              icon="Facebook"
+              iconPosition="left"
+              customStyle={styles.disableButton}
+            //onPress={}
+            />
+            <AppButton
+              text="Sign up with Google"
+              type="primary"
+              height="md"
+              icon="Google"
+              iconPosition="left"
+              customStyle={styles.disableButton}
+            //onPress={}
+            />
+          </View>
+
+          <View style={styles.loginLinkCopy}>
+            <AppText textStyle="button2">Already have an account?</AppText>
+            <TouchableOpacity onPress={() => setAuthType('login')}>
+              <AppText textStyle="button2" customStyle={styles.underLineText}>
+                Login
+            </AppText>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 });
 

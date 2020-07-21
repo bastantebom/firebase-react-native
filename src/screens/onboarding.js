@@ -40,13 +40,17 @@ const Onboarding = ({ navigation, illustration }) => {
   // const [authType, setAuthType] = useState('');
 
   useEffect(() => {
-    bottomSheetRef?.current.snapTo(2)
+    if (authType === '') {
+      return bottomSheetRef?.current.snapTo(1)
+    }
+
+    bottomSheetRef?.current.snapTo(1)
 
     setTimeout(() => {
       bottomSheetRef?.current.snapTo(0)
-    }, 1000)
-    
-  }, [authType])
+    }, 1500)
+
+  }, [authType, setAuthType])
 
 
   const renderHeader = () => {
@@ -65,17 +69,19 @@ const Onboarding = ({ navigation, illustration }) => {
         </View>
       );
     }
-    return (
-      <View style={{ backgroundColor: "white", height: "100%" }}>
-        <Login />
-      </View>
-    );
+    if (authType === 'login') {
+      return (
+        <View style={{ backgroundColor: "white", height: "100%" }}>
+          <Login />
+        </View>
+      );
+    }
   }
 
 
 
   if (sliderState === 'close') {
-    bottomSheetRef?.current.snapTo(2)
+    bottomSheetRef?.current.snapTo(1)
   }
 
   const clickHandler = () => {
@@ -108,30 +114,32 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const [slideInfo] = useState([
     {
-      illustration: <IllustOne />,
+      illustration: <IllustOne width={width} height={width * .8} />,
       title: 'Welcome to Servbees!',
       description:
         'Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!',
     },
     {
-      illustration: <IllustTwo />,
+      illustration: <IllustTwo width={width} height={width * .8}  />,
       title: 'Discover and Buy',
       description:
         'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
     },
     {
-      illustration: <IllustThree />,
+      illustration: <IllustThree width={width} height={width * .8}  />,
       title: 'Offer and Sell',
       description:
         'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
     },
     {
-      illustration: <IllustFour />,
+      illustration: <IllustFour width={width} height={width * .8}  />,
       title: 'Join a Hive',
       description:
         'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
     },
   ]);
+
+  console.log("Auth Type: " + authType)
 
   return (
     <>
@@ -155,7 +163,9 @@ const Onboarding = ({ navigation, illustration }) => {
               return (
                 <View key={i} style={styles.slideHolder}>
 
-                  <View style={{ zIndex: 100 }}>{item.illustration}</View>
+                  <View style={{ zIndex: 100, width: "100%"}}>
+                    {item.illustration}
+                  </View>
                   <AppText textStyle="display6">{item.title}</AppText>
                   <View style={styles.textHolder}>
                     <AppText textStyle="body2" customStyle={styles.text}>
@@ -198,7 +208,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={['90%', '75%', '0%']}
+        snapPoints={['85%', '0%']}
         renderContent={renderContent}
         renderHeader={renderHeader}
         initialSnap={1}
@@ -219,6 +229,7 @@ const styles = StyleSheet.create({
   },
   swiperHolder: {
     flex: 3,
+    
   },
   slideHolder: {
     flex: 1,
@@ -243,7 +254,7 @@ const styles = StyleSheet.create({
     height: 8,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height > 700 ? height * .3 : height * .18,
+    marginBottom: height > 700 ? height * .3 : height * .13,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
