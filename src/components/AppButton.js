@@ -92,6 +92,8 @@ const AppButton = ({
 
   const textSyle = {
     color: btnTextColor,
+    flex: 1,
+    textAlign: 'center',
   };
 
   const iconWrapper = {
@@ -136,7 +138,7 @@ const AppButton = ({
         {iconPosition === 'left' ? buttonIcon() : iconSpacer()}
 
         {!loading && (
-          <AppText customStyle={textSyle, { flex: 1, textAlign: 'center', }} textStyle="button2">
+          <AppText customStyle={textSyle} textStyle="button2">
             {text}
           </AppText>
         )}
