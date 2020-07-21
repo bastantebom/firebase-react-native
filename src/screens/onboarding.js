@@ -103,7 +103,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const renderHeader = () => {
     return (
-      <View style={{ backgroundColor: "white", borderTopLeftRadius: 10, borderTopRightRadius: 10, alignItems: "center"}}>
+      <View style={{ backgroundColor: "white", borderTopLeftRadius: 10, borderTopRightRadius: 10, alignItems: "center" }}>
         <View style={{ backgroundColor: "#EAEAEA", width: 40, height: 5, marginVertical: 8 }} />
       </View>
     );
@@ -193,6 +193,11 @@ const Onboarding = ({ navigation, illustration }) => {
           style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}>
           <Polygon height={height * 1.2} />
         </Animated.View>
+        <TouchableOpacity
+          onPress={() => navigation.push('Dashboard')}
+          style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
         <View style={styles.swiperHolder}>
           <Swiper
             dot={<View style={styles.dot} />}
@@ -202,11 +207,7 @@ const Onboarding = ({ navigation, illustration }) => {
             {slideInfo.map((item, i) => {
               return (
                 <View key={i} style={styles.slideHolder}>
-                  <TouchableOpacity
-                    onPress={() => navigation.push('Dashboard')}
-                    style={styles.link}>
-                    <AppText textStyle="body2">Skip</AppText>
-                  </TouchableOpacity>
+
                   <View style={{ zIndex: 100 }}>{item.illustration}</View>
                   <AppText textStyle="display6">{item.title}</AppText>
                   <View style={styles.textHolder}>
