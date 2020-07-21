@@ -41,14 +41,14 @@ GoogleSignin.configure({
 
 function Login() {
   const navigation = useNavigation();
-  const [authType, setAuthType] = useState('login');
+  // const [authType, setAuthType] = useState('login');
 
   const [emailAddress, setEmailAddress] = useState('');
 
   const [password, setPassword] = useState('');
   const [isVisble, setIsVisible] = useState(false);
 
-  const { closeSlider } = useContext(Context);
+  const { closeSlider, authType, setAuthType } = useContext(Context);
 
   GoogleSignin.configure({
     webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
@@ -162,7 +162,7 @@ function Login() {
           <TouchableOpacity onPress={() => setAuthType('signup')}>
             <AppText textStyle="button2" customStyle={styles.link}>
               Sign up
-                </AppText>
+            </AppText>
           </TouchableOpacity>
         </View>
       </View>

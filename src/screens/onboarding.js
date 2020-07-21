@@ -10,7 +10,7 @@ import {
   Easing,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import BottomSheet from 'reanimated-bottom-sheet'
+import BottomSheet from 'reanimated-bottom-sheet';
 
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
@@ -36,9 +36,18 @@ const width = Dimensions.get('window').width;
 let bottomSheetRef = createRef();
 
 const Onboarding = ({ navigation, illustration }) => {
-  const { sliderState, closeSlider, openSlider } = useContext(Context);
-  const [authType, setAuthType] = useState('');
-  
+  const { sliderState, closeSlider, openSlider, authType, setAuthType } = useContext(Context);
+  // const [authType, setAuthType] = useState('');
+
+  useEffect(() => {
+    bottomSheetRef?.current.snapTo(2)
+
+    setTimeout(() => {
+      bottomSheetRef?.current.snapTo(0)
+    }, 1000)
+    
+  }, [authType])
+
 
   const renderHeader = () => {
     return (

@@ -6,7 +6,7 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
 import AppText from '@/components/AppText/AppText';
@@ -16,7 +16,7 @@ import AppButton from '@/components/AppButton';
 //SVG Import
 import Close from '@/assets/images/icons/close.svg';
 
-import {Context} from '@/context';
+import { Context } from '@/context';
 
 // create a component
 const SignUp = forwardRef((props, ref) => {
@@ -85,9 +85,9 @@ const SignUp = forwardRef((props, ref) => {
   useEffect(() => {
     // exit early when we reach 0
     if (email.length === 11) {
-      setSignUpForm({login: '+63' + email.substr(1)});
+      setSignUpForm({ login: '+63' + email.substr(1) });
     } else {
-      setSignUpForm({login: email});
+      setSignUpForm({ login: email });
     }
 
     //console.log(signUpForm);
@@ -108,7 +108,7 @@ const SignUp = forwardRef((props, ref) => {
       //console.log(isValidMobileNumber);
       setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
       //console.log(isValidMobileNumber);
-      setEmailBorder({borderColor: AppColor.contentEbony});
+      setEmailBorder({ borderColor: AppColor.contentEbony });
       return true;
     } else {
       //console.log('Pumasok sa else');
@@ -122,7 +122,7 @@ const SignUp = forwardRef((props, ref) => {
         return false;
       } else {
         setEmail(email);
-        setEmailBorder({borderColor: AppColor.contentEbony});
+        setEmailBorder({ borderColor: AppColor.contentEbony });
         return true;
       }
     }
@@ -135,8 +135,8 @@ const SignUp = forwardRef((props, ref) => {
       //console.log('After Validate');
       //console.log(isValidMobileNumber);
       setLoginUse('');
-      const newKeyValue = {login: email};
-      setSignUpForm({...signUpForm, ...newKeyValue});
+      const newKeyValue = { login: email };
+      setSignUpForm({ ...signUpForm, ...newKeyValue });
       checkInputComplete();
     } else {
       //console.log('Pumasok sa else On Chnage');
@@ -146,7 +146,7 @@ const SignUp = forwardRef((props, ref) => {
         setLoginUse('email');
       }
 
-      setEmailBorder({borderColor: AppColor.neutralGray});
+      setEmailBorder({ borderColor: AppColor.neutralGray });
       setIsValidEmail(false);
       setButtonText('Sign up');
     }
@@ -154,18 +154,18 @@ const SignUp = forwardRef((props, ref) => {
 
   const onNameChange = (name) => {
     setName(name);
-    setNameBorder({borderColor: AppColor.contentEbony});
-    const newKeyValue = {full_name: name};
-    setSignUpForm({...signUpForm, ...newKeyValue});
+    setNameBorder({ borderColor: AppColor.contentEbony });
+    const newKeyValue = { full_name: name };
+    setSignUpForm({ ...signUpForm, ...newKeyValue });
     //console.log(signUpForm);
     checkInputComplete();
   };
 
   const onPasswordChange = (password) => {
     setPassword(password);
-    setPasswordBorder({borderColor: AppColor.contentEbony});
-    const newKeyValue = {password: password};
-    setSignUpForm({...signUpForm, ...newKeyValue});
+    setPasswordBorder({ borderColor: AppColor.contentEbony });
+    const newKeyValue = { password: password };
+    setSignUpForm({ ...signUpForm, ...newKeyValue });
     checkInputComplete();
   };
 
@@ -208,7 +208,7 @@ const SignUp = forwardRef((props, ref) => {
     if (loginUse === 'email') {
       console.log('Invalid Email');
       setIsValidLogin(false);
-      setEmailBorder({borderColor: AppColor.errorInput});
+      setEmailBorder({ borderColor: AppColor.errorInput });
       setButtonStyle({
         backgroundColor: AppColor.buttonDisable,
         borderColor: AppColor.buttonDisable,
@@ -218,7 +218,7 @@ const SignUp = forwardRef((props, ref) => {
     if (loginUse === 'mobile number') {
       console.log('invalid mobile');
       setIsValidLogin(false);
-      setEmailBorder({borderColor: AppColor.errorInput});
+      setEmailBorder({ borderColor: AppColor.errorInput });
       setButtonStyle({
         backgroundColor: AppColor.buttonDisable,
         borderColor: AppColor.buttonDisable,
@@ -240,7 +240,7 @@ const SignUp = forwardRef((props, ref) => {
     if (nameReg.test(name)) {
       setIsValidName(true);
     } else if (name.length > 1) {
-      setNameBorder({borderColor: AppColor.errorInput});
+      setNameBorder({ borderColor: AppColor.errorInput });
       setIsValidName(false);
       setButtonStyle({
         backgroundColor: AppColor.buttonDisable,
@@ -260,7 +260,7 @@ const SignUp = forwardRef((props, ref) => {
     if (password.length > 5) {
       setIsValidPassword(true);
     } else if (password.length > 1) {
-      setPasswordBorder({borderColor: AppColor.errorInput});
+      setPasswordBorder({ borderColor: AppColor.errorInput });
       setIsValidPassword(false);
       setButtonStyle({
         backgroundColor: AppColor.buttonDisable,
@@ -276,7 +276,8 @@ const SignUp = forwardRef((props, ref) => {
     setIsValidPassword(true);
   };
 
-  const {closeSlider} = useContext(Context);
+  // const { closeSlider } = useContext(Context);
+  const { closeSlider, setAuthType } = useContext(Context);
 
   return (
     <View style={styles.mainWrapper}>
@@ -295,7 +296,7 @@ const SignUp = forwardRef((props, ref) => {
             onBlur={onBlurEmail}
             onFocus={onFocusEmail}
             keyboardType="email-address"
-            customStyle={{...styles.customInputStyle, ...emailBorder}}
+            customStyle={{ ...styles.customInputStyle, ...emailBorder }}
             onChangeText={(email) => onEmailChange(email)}
           />
           {!isValidLogin ? (
@@ -303,10 +304,10 @@ const SignUp = forwardRef((props, ref) => {
               Enter a valid {loginUse}
             </AppText>
           ) : (
-            <AppText
-              textStyle="caption"
-              customStyle={styles.emptyErrorCopy}></AppText>
-          )}
+              <AppText
+                textStyle="caption"
+                customStyle={styles.emptyErrorCopy}></AppText>
+            )}
 
           <AppInput
             label="Full Name"
@@ -314,7 +315,7 @@ const SignUp = forwardRef((props, ref) => {
             onBlur={onBlurName}
             onFocus={onFocusName}
             keyboardType="default"
-            customStyle={{...styles.customInputStyle, ...nameBorder}}
+            customStyle={{ ...styles.customInputStyle, ...nameBorder }}
             onChangeText={(name) => onNameChange(name)}
           />
           {!isValidName ? (
@@ -322,10 +323,10 @@ const SignUp = forwardRef((props, ref) => {
               Don’t add special character(s)
             </AppText>
           ) : (
-            <AppText
-              textStyle="caption"
-              customStyle={styles.emptyErrorCopy}></AppText>
-          )}
+              <AppText
+                textStyle="caption"
+                customStyle={styles.emptyErrorCopy}></AppText>
+            )}
 
           {!isValidMobileNumber ? (
             <AppInput
@@ -336,7 +337,7 @@ const SignUp = forwardRef((props, ref) => {
               password
               value={password}
               keyboardType="default"
-              customStyle={{...styles.customInputStyle, ...passwordBorder}}
+              customStyle={{ ...styles.customInputStyle, ...passwordBorder }}
               onChangeText={(password) => onPasswordChange(password)}
             />
           ) : null}
@@ -345,10 +346,10 @@ const SignUp = forwardRef((props, ref) => {
               Must be at least 6 characters
             </AppText>
           ) : (
-            <AppText
-              textStyle="caption"
-              customStyle={styles.emptyErrorCopy}></AppText>
-          )}
+              <AppText
+                textStyle="caption"
+                customStyle={styles.emptyErrorCopy}></AppText>
+            )}
         </View>
 
         <View>
@@ -357,7 +358,7 @@ const SignUp = forwardRef((props, ref) => {
             type="primary"
             height="xl"
             disabled={buttonDisabled}
-            customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+            customStyle={{ ...styles.customButtonStyle, ...buttonStyle }}
             onPress={() => {
               signUpEmail(signUpForm);
             }}
@@ -374,7 +375,7 @@ const SignUp = forwardRef((props, ref) => {
             height="md"
             icon="fb"
             customStyle={styles.disableButton}
-            //onPress={}
+          //onPress={}
           />
           <AppButton
             text="Sign up with Google"
@@ -382,13 +383,13 @@ const SignUp = forwardRef((props, ref) => {
             height="md"
             icon="g"
             customStyle={styles.disableButton}
-            //onPress={}
+          //onPress={}
           />
         </View>
 
         <View style={styles.loginLinkCopy}>
           <AppText textStyle="button2">Already have an account?</AppText>
-          <TouchableOpacity onPress={props.loginClick}>
+          <TouchableOpacity onPress={() => setAuthType('login')}>
             <AppText textStyle="button2" customStyle={styles.underLineText}>
               Login
             </AppText>

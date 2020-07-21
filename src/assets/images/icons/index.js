@@ -19,4 +19,6 @@ import Google from '@/assets/images/icons/google.svg';
 import NavigationArrow from '@/assets/images/icons/navigation-arrow.svg';
 import NavigationPin from '@/assets/images/icons/navigation-pin.svg';
 
+
+
 export { CircleTick, Close, CloseDark, EyeDark, EyeLight, Facebook, Google, NavigationArrow, NavigationPin };
