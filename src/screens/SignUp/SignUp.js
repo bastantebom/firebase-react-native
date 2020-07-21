@@ -402,7 +402,7 @@ const SignUp = forwardRef((props, ref) => {
 // define your styles
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 1,
+    // flex: 1,
     padding: 24,
     flexDirection: 'column',
   },

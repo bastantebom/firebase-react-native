@@ -20,6 +20,7 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';
 import Login from '@/screens/login';
+import SignUp from '@/screens/SignUp/SignUp';
 
 import Polygon from '@/assets/images/polygon.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
@@ -111,13 +112,13 @@ const Onboarding = ({ navigation, illustration }) => {
   const renderContent = () => {
     if (authType === 'signup') {
       return (
-        <View style={{ backgroundColor: "white" }}>
-          <SignUpWrapper />
+        <View style={{ backgroundColor: "white", height: "100%" }}>
+          <SignUp />
         </View>
       );
     }
     return (
-      <View style={{ backgroundColor: "white" }}>
+      <View style={{ backgroundColor: "white", height: "100%" }}>
         <Login />
       </View>
     );
@@ -247,7 +248,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={['75%', '0%']}
+        snapPoints={['90%', '75%', '0%']}
         renderContent={renderContent}
         renderHeader={renderHeader}
         initialSnap={1}
