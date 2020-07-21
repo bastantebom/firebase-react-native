@@ -3,8 +3,9 @@ import React, { createContext, useState } from 'react'
 export const Context = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [sliderState, setSliderState] = useState('')
-  const [notificationState, setNotificationState] = useState('')
+  const [sliderState, setSliderState] = useState('');
+  const [notificationState, setNotificationState] = useState('');
+  const [authType, setAuthType] = useState('');
 
   const closeSlider = () => {
     setSliderState("close")
@@ -23,7 +24,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ sliderState, notificationState, closeSlider, openSlider, openNotification, closeNotification }} >
+    <Context.Provider value={{ sliderState, notificationState, closeSlider, openSlider, openNotification, closeNotification, authType, setAuthType }} >
       {children}
     </Context.Provider>
   )

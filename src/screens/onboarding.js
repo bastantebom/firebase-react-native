@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
+import React, { useRef, createRef, useState, useEffect, useContext } from 'react';
 import {
   View,
   Image,
@@ -10,6 +10,7 @@ import {
   Easing,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
+import BottomSheet from 'reanimated-bottom-sheet';
 
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
@@ -19,6 +20,7 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';
 import Login from '@/screens/login';
+import SignUp from '@/screens/SignUp/SignUp';
 
 import Polygon from '@/assets/images/polygon.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
@@ -30,6 +32,184 @@ import { Context } from "@/context";
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
+
+let bottomSheetRef = createRef();
+
+const Onboarding = ({ navigation, illustration }) => {
+  const { sliderState, closeSlider, openSlider, authType, setAuthType } = useContext(Context);
+  // const [authType, setAuthType] = useState('');
+
+  useEffect(() => {
+    bottomSheetRef?.current.snapTo(2)
+
+    setTimeout(() => {
+      bottomSheetRef?.current.snapTo(0)
+    }, 1000)
+    
+  }, [authType])
+
+
+  const renderHeader = () => {
+    return (
+      <View style={{ backgroundColor: "white", borderTopLeftRadius: 10, borderTopRightRadius: 10, alignItems: "center" }}>
+        <View style={{ backgroundColor: "#EAEAEA", width: 40, height: 5, marginVertical: 8 }} />
+      </View>
+    );
+  }
+
+  const renderContent = () => {
+    if (authType === 'signup') {
+      return (
+        <View style={{ backgroundColor: "white", height: "100%" }}>
+          <SignUp />
+        </View>
+      );
+    }
+    return (
+      <View style={{ backgroundColor: "white", height: "100%" }}>
+        <Login />
+      </View>
+    );
+  }
+
+
+
+  if (sliderState === 'close') {
+    bottomSheetRef?.current.snapTo(2)
+  }
+
+  const clickHandler = () => {
+    openSlider();
+    // _panel.current.show();
+    bottomSheetRef?.current.snapTo(0)
+  };
+
+  const closeHandler = () => {
+    openSlider();
+    // _panel.current.hide();
+    bottomSheetRef?.current.snapTo(1)
+  };
+
+  const animation = new Animated.Value(0);
+
+  const rotation = animation.interpolate({
+    inputRange: [0, 1, 2, 3],
+    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg'],
+  });
+
+  const onSwipe = (index) => {
+    Animated.timing(animation, {
+      toValue: index,
+      duration: 200,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const [slideInfo] = useState([
+    {
+      illustration: <IllustOne />,
+      title: 'Welcome to Servbees!',
+      description:
+        'Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!',
+    },
+    {
+      illustration: <IllustTwo />,
+      title: 'Discover and Buy',
+      description:
+        'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
+    },
+    {
+      illustration: <IllustThree />,
+      title: 'Offer and Sell',
+      description:
+        'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
+    },
+    {
+      illustration: <IllustFour />,
+      title: 'Join a Hive',
+      description:
+        'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
+    },
+  ]);
+
+  return (
+    <>
+      <View style={styles.contentHolder}>
+        <Animated.View
+          style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}>
+          <Polygon height={height * 1.2} />
+        </Animated.View>
+        <TouchableOpacity
+          onPress={() => navigation.push('Dashboard')}
+          style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
+        <View style={styles.swiperHolder}>
+          <Swiper
+            dot={<View style={styles.dot} />}
+            activeDot={<View style={[styles.dot, styles.dotActive]} />}
+            loop={false}
+            onIndexChanged={onSwipe}>
+            {slideInfo.map((item, i) => {
+              return (
+                <View key={i} style={styles.slideHolder}>
+
+                  <View style={{ zIndex: 100 }}>{item.illustration}</View>
+                  <AppText textStyle="display6">{item.title}</AppText>
+                  <View style={styles.textHolder}>
+                    <AppText textStyle="body2" customStyle={styles.text}>
+                      {item.description}
+                    </AppText>
+                  </View>
+                </View>
+              );
+            })}
+          </Swiper>
+        </View>
+        <View style={styles.btnHolder}>
+          <AppButton
+            text="Login"
+            type="tertiary"
+            size="sm"
+            height="xl"
+            borderColor="primary"
+            onPress={() => {
+              clickHandler();
+              setAuthType('login');
+              bottomSheetRef.current.snapTo(0)
+            }}
+          />
+          <AppButton
+            text="Sign Up"
+            size="sm"
+            height="xl"
+            borderColor="primary"
+            propsButtonCustomStyle=""
+            onPress={() => {
+              clickHandler();
+              setAuthType('signup');
+              bottomSheetRef.current.snapTo(0)
+              console.log(bottomSheetRef)
+            }}
+          />
+        </View>
+      </View>
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={['90%', '75%', '0%']}
+        renderContent={renderContent}
+        renderHeader={renderHeader}
+        initialSnap={1}
+      />
+
+      {/* {authType === 'signup' ? <SignUpWrapper /> : <Login />} */}
+
+    </>
+  );
+};
+
 
 const styles = StyleSheet.create({
   contentHolder: {
@@ -90,139 +270,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 });
-
-const Onboarding = ({ navigation, illustration }) => {
-  // console.log(height);
-  const { sliderState, closeSlider, openSlider } = useContext(Context);
-
-  const [authType, setAuthType] = useState('signup');
-  const _panel = useRef(null);
-  
-
-  if (sliderState === 'close') {
-    _panel?.current.hide()
-  } 
-
-  const clickHandler = () => {
-    openSlider();
-    _panel.current.show();
-  };
-
-  const closeHandler = () => {
-    openSlider();
-    _panel.current.hide();
-  };
-
-  const animation = new Animated.Value(0);
-
-  const rotation = animation.interpolate({
-    inputRange: [0, 1, 2, 3],
-    outputRange: ['15deg', '60deg', '74.35deg', '97.93deg'],
-  });
-
-  const onSwipe = (index) => {
-    Animated.timing(animation, {
-      toValue: index,
-      duration: 200,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const [slideInfo] = useState([
-    {
-      illustration: <IllustOne />,
-      title: 'Welcome to Servbees!',
-      description:
-        'Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!',
-    },
-    {
-      illustration: <IllustTwo />,
-      title: 'Discover and Buy',
-      description:
-        'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
-    },
-    {
-      illustration: <IllustThree />,
-      title: 'Offer and Sell',
-      description:
-        'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
-    },
-    {
-      illustration: <IllustFour />,
-      title: 'Join a Hive',
-      description:
-        'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
-    },
-  ]);
-
-  return (
-    <>
-      <SlidePanel
-        ref={_panel}
-        content={
-          <View style={styles.contentHolder}>
-            <Animated.View
-              style={[{transform: [{rotate: rotation}]}, styles.bgImageHolder]}>
-              <Polygon height={height * 1.2} />
-            </Animated.View>
-            <View style={styles.swiperHolder}>
-              <Swiper
-                dot={<View style={styles.dot} />}
-                activeDot={<View style={[styles.dot, styles.dotActive]} />}
-                loop={false}
-                onIndexChanged={onSwipe}>
-                {slideInfo.map((item, i) => {
-                  return (
-                    <View key={i} style={styles.slideHolder}>
-                      <TouchableOpacity
-                        onPress={() => navigation.push('Dashboard')}
-                        style={styles.link}>
-                        <AppText textStyle="body2">Skip</AppText>
-                      </TouchableOpacity>
-                      <View style={{zIndex: 100}}>{item.illustration}</View>
-                      <AppText textStyle="display6">{item.title}</AppText>
-                      <View style={styles.textHolder}>
-                        <AppText textStyle="body2" customStyle={styles.text}>
-                          {item.description}
-                        </AppText>
-                      </View>
-                    </View>
-                  );
-                })}
-              </Swiper>
-            </View>
-            <View style={styles.btnHolder}>
-              <AppButton
-                text="Login"
-                type="tertiary"
-                size="sm"
-                height="xl"
-                borderColor="primary"
-                propsButtonCustomStyle=""
-                onPress={() => {
-                  clickHandler();
-                  setAuthType('login');
-                }}
-              />
-              <AppButton
-                text="Sign Up"
-                size="sm"
-                height="xl"
-                borderColor="primary"
-                propsButtonCustomStyle=""
-                onPress={() => {
-                  clickHandler();
-                  setAuthType('signup');
-                }}
-              />
-            </View>
-          </View>
-        }>
-        {authType === 'signup' ? <SignUpWrapper /> : <Login />}
-      </SlidePanel>
-    </>
-  );
-};
 
 export default Onboarding;
