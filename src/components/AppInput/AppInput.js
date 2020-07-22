@@ -22,7 +22,7 @@ const AppInput = (props) => {
 
   const inputContainer = {
     borderRadius: 4,
-    height: 56,
+    height: 53,
     overflow: 'hidden',
     borderColor: borderColor,
     borderWidth: 1,

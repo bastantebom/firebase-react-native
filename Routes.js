@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 
 //screens
 import Onboarding from '@/screens/onboarding';
-import VerifyAccount from '@/screens/SignUp/VerifyAccount';
+import VerifyAccount from '@/screens/VerifyAccount';
 import ResetPassword from '@/screens/resetPassword';
 import Dashboard from '@/screens/dashboard';
 import Profile from '@/screens/profile';
@@ -13,7 +13,6 @@ import Profile from '@/screens/profile';
 const AuthStack = createStackNavigator();
 
 function AuthStackScreen() {
-
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
 
@@ -31,21 +30,19 @@ function AuthStackScreen() {
 
   return (
     <AuthStack.Navigator headerMode="none">
-      { !user ? 
-        (
-          <>
-            <AuthStack.Screen name="Onboarding" component={Onboarding} />
-            <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
-            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-          </>
-        ) : (
-          <>
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-            <AuthStack.Screen name="Profile" component={Profile} />
-          </>
-        )
-      }
+      {!user ? (
+        <>
+          <AuthStack.Screen name="Onboarding" component={Onboarding} />
+          <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
+          <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+          <AuthStack.Screen name="Dashboard" component={Dashboard} />
+        </>
+      ) : (
+        <>
+          <AuthStack.Screen name="Dashboard" component={Dashboard} />
+          <AuthStack.Screen name="Profile" component={Profile} />
+        </>
+      )}
     </AuthStack.Navigator>
   );
 }
