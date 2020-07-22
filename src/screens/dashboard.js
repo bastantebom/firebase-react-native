@@ -18,13 +18,10 @@ const styles = StyleSheet.create({
 function Dashboard({ navigation }) {
 
   const signOut = () => {
-
-
     auth()
       .signOut()
       .then(() => console.log('User signed out!'))
       .catch(() => navigation.goBack());
-
   }
 
   const currentUser = auth()?.currentUser?.email ? auth().currentUser.email : "guest";

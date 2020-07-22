@@ -30,6 +30,10 @@ import NavigationPin from '@/assets/images/icons/navigation-pin.svg';
 import Filter from '@/assets/images/icons/filter.svg';
 import JarHeart from '@/assets/images/icons/jar-heart.svg';
 
+// Posts
+import Verified from '@/assets/images/icons/verified.svg';
+import StarRating from '@/assets/images/icons/star-rating.svg';
+
 
 // For bottom navigation
 import NotificationDot from '@/assets/images/icons/notification-red-dot.svg';
@@ -58,6 +62,7 @@ export {
     BellActive,
     Hive,
     HiveActive,
+    Verified,
     ServbeesAlt,
     ServbeesAltActive,
     UserAlt,
@@ -73,4 +78,5 @@ export {
     NavigationArrow, 
     NavigationPin, 
     Warning,
+    StarRating
 };
