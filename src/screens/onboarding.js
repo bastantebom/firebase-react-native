@@ -1,4 +1,4 @@
-import React, { useRef, createRef, useState, useEffect, useContext } from 'react';
+import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
 import {
   View,
   Image,
@@ -9,7 +9,7 @@ import {
   Animated,
   Easing,
   Platform,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -22,7 +22,7 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';
 import Login from '@/screens/login';
-import SignUp from '@/screens/SignUp/SignUp';
+import SignUp from '@/screens/SignUp';
 
 import Polygon from '@/assets/images/polygon.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
@@ -30,72 +30,87 @@ import IllustTwo from '@/assets/images/onboarding-img2.svg';
 import IllustThree from '@/assets/images/onboarding-img3.svg';
 import IllustFour from '@/assets/images/onboarding-img4.svg';
 
-import { Context } from "@/context";
+import {Context} from '@/context';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
 let bottomSheetRef = createRef();
 
-const Onboarding = ({ navigation, illustration }) => {
-  const { sliderState, closeSlider, openSlider, authType, setAuthType } = useContext(Context);
+const Onboarding = ({navigation, illustration}) => {
+  const {
+    sliderState,
+    closeSlider,
+    openSlider,
+    authType,
+    setAuthType,
+  } = useContext(Context);
   // const [authType, setAuthType] = useState('');
 
   useEffect(() => {
     if (authType === '') {
-      return bottomSheetRef?.current.snapTo(1)
+      return bottomSheetRef?.current.snapTo(1);
     }
 
-    bottomSheetRef?.current.snapTo(1)
+    bottomSheetRef?.current.snapTo(1);
 
     setTimeout(() => {
-      bottomSheetRef?.current.snapTo(0)
-    }, 1200)
-
-  }, [authType, setAuthType])
-
+      bottomSheetRef?.current.snapTo(0);
+    }, 1200);
+  }, [authType, setAuthType]);
 
   const renderHeader = () => {
     return (
-      <View style={{ backgroundColor: "white", borderTopLeftRadius: 10, borderTopRightRadius: 10, alignItems: "center" }}>
-        <View style={{ backgroundColor: "#EAEAEA", width: 40, height: 5, marginVertical: 8 }} />
+      <View
+        style={{
+          backgroundColor: 'white',
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            backgroundColor: '#EAEAEA',
+            width: 40,
+            height: 5,
+            marginVertical: 8,
+          }}
+        />
       </View>
     );
-  }
+  };
 
   const renderContent = () => {
     if (authType === 'signup') {
       return (
-        <View style={{ backgroundColor: "white", height: "100%" }}>
+        <View style={{backgroundColor: 'white', height: '100%'}}>
           <SignUp />
         </View>
       );
     }
     if (authType === 'login') {
       return (
-        <View style={{ backgroundColor: "white", height: "100%" }}>
+        <View style={{backgroundColor: 'white', height: '100%'}}>
           <Login />
         </View>
       );
     }
-  }
-
-
+  };
 
   if (sliderState === 'close') {
-    bottomSheetRef?.current.snapTo(1)
+    bottomSheetRef?.current.snapTo(1);
   }
 
   const clickHandler = () => {
     openSlider();
     // _panel.current.show();
-    bottomSheetRef?.current.snapTo(0)
+    bottomSheetRef?.current.snapTo(0);
   };
 
   const closeHandler = () => {
     openSlider();
     // _panel.current.hide();
-    bottomSheetRef?.current.snapTo(1)
+    bottomSheetRef?.current.snapTo(1);
   };
 
   const animation = new Animated.Value(0);
@@ -116,39 +131,39 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const [slideInfo] = useState([
     {
-      illustration: <IllustOne width={width} height={width * .8} />,
+      illustration: <IllustOne width={width} height={width * 0.8} />,
       title: 'Welcome to Servbees!',
       description:
         'Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!',
     },
     {
-      illustration: <IllustTwo width={width} height={width * .8} />,
+      illustration: <IllustTwo width={width} height={width * 0.8} />,
       title: 'Discover and Buy',
       description:
         'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
     },
     {
-      illustration: <IllustThree width={width} height={width * .8} />,
+      illustration: <IllustThree width={width} height={width * 0.8} />,
       title: 'Offer and Sell',
       description:
         'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
     },
     {
-      illustration: <IllustFour width={width} height={width * .8} />,
+      illustration: <IllustFour width={width} height={width * 0.8} />,
       title: 'Join a Hive',
       description:
         'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
     },
   ]);
 
-  console.log("Auth Type: " + authType)
+  console.log('Auth Type: ' + authType);
 
   return (
     <>
       <TouchableWithoutFeedback onPress={closeHandler}>
         <View style={styles.contentHolder}>
           <Animated.View
-            style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}>
+            style={[{transform: [{rotate: rotation}]}, styles.bgImageHolder]}>
             <Polygon height={height * 1.2} />
           </Animated.View>
           <TouchableOpacity
@@ -165,8 +180,7 @@ const Onboarding = ({ navigation, illustration }) => {
               {slideInfo.map((item, i) => {
                 return (
                   <View key={i} style={styles.slideHolder}>
-
-                    <View style={{ zIndex: 100, width: "100%" }}>
+                    <View style={{zIndex: 100, width: '100%'}}>
                       {item.illustration}
                     </View>
                     <AppText textStyle="display6">{item.title}</AppText>
@@ -190,7 +204,7 @@ const Onboarding = ({ navigation, illustration }) => {
               onPress={() => {
                 clickHandler();
                 setAuthType('login');
-                bottomSheetRef.current.snapTo(0)
+                bottomSheetRef.current.snapTo(0);
               }}
             />
             <AppButton
@@ -202,8 +216,8 @@ const Onboarding = ({ navigation, illustration }) => {
               onPress={() => {
                 clickHandler();
                 setAuthType('signup');
-                bottomSheetRef.current.snapTo(0)
-                console.log(bottomSheetRef)
+                bottomSheetRef.current.snapTo(0);
+                console.log(bottomSheetRef);
               }}
             />
           </View>
@@ -218,11 +232,9 @@ const Onboarding = ({ navigation, illustration }) => {
       />
 
       {/* {authType === 'signup' ? <SignUpWrapper /> : <Login />} */}
-
     </>
   );
 };
-
 
 const styles = StyleSheet.create({
   contentHolder: {
@@ -242,7 +254,7 @@ const styles = StyleSheet.create({
   },
   link: {
     alignSelf: 'flex-end',
-    paddingVertical: Platform.OS === "ios" ? 40 : 16,
+    paddingVertical: Platform.OS === 'ios' ? 40 : 16,
     paddingHorizontal: 30,
   },
   textHolder: {
@@ -256,7 +268,7 @@ const styles = StyleSheet.create({
     height: 8,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height > 700 ? height * .3 : height * .18,
+    marginBottom: height > 700 ? height * 0.3 : height * 0.18,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
