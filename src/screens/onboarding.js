@@ -9,6 +9,7 @@ import {
   Animated,
   Easing,
   Platform,
+  TouchableWithoutFeedback
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -49,7 +50,7 @@ const Onboarding = ({ navigation, illustration }) => {
 
     setTimeout(() => {
       bottomSheetRef?.current.snapTo(0)
-    }, 1500)
+    }, 1200)
 
   }, [authType, setAuthType])
 
@@ -121,19 +122,19 @@ const Onboarding = ({ navigation, illustration }) => {
         'Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!',
     },
     {
-      illustration: <IllustTwo width={width} height={width * .8}  />,
+      illustration: <IllustTwo width={width} height={width * .8} />,
       title: 'Discover and Buy',
       description:
         'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
     },
     {
-      illustration: <IllustThree width={width} height={width * .8}  />,
+      illustration: <IllustThree width={width} height={width * .8} />,
       title: 'Offer and Sell',
       description:
         'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
     },
     {
-      illustration: <IllustFour width={width} height={width * .8}  />,
+      illustration: <IllustFour width={width} height={width * .8} />,
       title: 'Join a Hive',
       description:
         'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
@@ -144,69 +145,70 @@ const Onboarding = ({ navigation, illustration }) => {
 
   return (
     <>
-      <View style={styles.contentHolder}>
-        <Animated.View
-          style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}>
-          <Polygon height={height * 1.2} />
-        </Animated.View>
-        <TouchableOpacity
-          onPress={() => navigation.push('Dashboard')}
-          style={styles.link}>
-          <AppText textStyle="body2">Skip</AppText>
-        </TouchableOpacity>
-        <View style={styles.swiperHolder}>
-          <Swiper
-            dot={<View style={styles.dot} />}
-            activeDot={<View style={[styles.dot, styles.dotActive]} />}
-            loop={false}
-            onIndexChanged={onSwipe}>
-            {slideInfo.map((item, i) => {
-              return (
-                <View key={i} style={styles.slideHolder}>
+      <TouchableWithoutFeedback onPress={closeHandler}>
+        <View style={styles.contentHolder}>
+          <Animated.View
+            style={[{ transform: [{ rotate: rotation }] }, styles.bgImageHolder]}>
+            <Polygon height={height * 1.2} />
+          </Animated.View>
+          <TouchableOpacity
+            onPress={() => navigation.push('Dashboard')}
+            style={styles.link}>
+            <AppText textStyle="body2">Skip</AppText>
+          </TouchableOpacity>
+          <View style={styles.swiperHolder}>
+            <Swiper
+              dot={<View style={styles.dot} />}
+              activeDot={<View style={[styles.dot, styles.dotActive]} />}
+              loop={false}
+              onIndexChanged={onSwipe}>
+              {slideInfo.map((item, i) => {
+                return (
+                  <View key={i} style={styles.slideHolder}>
 
-                  <View style={{ zIndex: 100, width: "100%"}}>
-                    {item.illustration}
+                    <View style={{ zIndex: 100, width: "100%" }}>
+                      {item.illustration}
+                    </View>
+                    <AppText textStyle="display6">{item.title}</AppText>
+                    <View style={styles.textHolder}>
+                      <AppText textStyle="body2" customStyle={styles.text}>
+                        {item.description}
+                      </AppText>
+                    </View>
                   </View>
-                  <AppText textStyle="display6">{item.title}</AppText>
-                  <View style={styles.textHolder}>
-                    <AppText textStyle="body2" customStyle={styles.text}>
-                      {item.description}
-                    </AppText>
-                  </View>
-                </View>
-              );
-            })}
-          </Swiper>
+                );
+              })}
+            </Swiper>
+          </View>
+          <View style={styles.btnHolder}>
+            <AppButton
+              text="Login"
+              type="tertiary"
+              size="sm"
+              height="xl"
+              borderColor="primary"
+              onPress={() => {
+                clickHandler();
+                setAuthType('login');
+                bottomSheetRef.current.snapTo(0)
+              }}
+            />
+            <AppButton
+              text="Sign Up"
+              size="sm"
+              height="xl"
+              borderColor="primary"
+              propsButtonCustomStyle=""
+              onPress={() => {
+                clickHandler();
+                setAuthType('signup');
+                bottomSheetRef.current.snapTo(0)
+                console.log(bottomSheetRef)
+              }}
+            />
+          </View>
         </View>
-        <View style={styles.btnHolder}>
-          <AppButton
-            text="Login"
-            type="tertiary"
-            size="sm"
-            height="xl"
-            borderColor="primary"
-            onPress={() => {
-              clickHandler();
-              setAuthType('login');
-              bottomSheetRef.current.snapTo(0)
-            }}
-          />
-          <AppButton
-            text="Sign Up"
-            size="sm"
-            height="xl"
-            borderColor="primary"
-            propsButtonCustomStyle=""
-            onPress={() => {
-              clickHandler();
-              setAuthType('signup');
-              bottomSheetRef.current.snapTo(0)
-              console.log(bottomSheetRef)
-            }}
-          />
-        </View>
-      </View>
-
+      </TouchableWithoutFeedback>
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={['85%', '0%']}
