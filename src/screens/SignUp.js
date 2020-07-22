@@ -17,7 +17,7 @@ import AppButton from '@/components/AppButton';
 //import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 //SVG Import
 import SignUpService from '@/services/SignUpService';
-import LoginServices from '@/services/LoginService';
+import LoginService from '@/services/LoginService';
 import {Close, EyeDark, EyeLight} from '@/assets/images/icons/';
 
 import {Context} from '@/context';
@@ -455,7 +455,7 @@ const SignUp = (props) => {
                 iconPosition="left"
                 customStyle={styles.disableButton}
                 onPress={() => {
-                  LoginServices.facebookLogin();
+                  LoginService.facebookSignIn();
                 }}
               />
               <AppButton
@@ -465,9 +465,11 @@ const SignUp = (props) => {
                 icon="Google"
                 iconPosition="left"
                 customStyle={styles.disableButton}
-                onPress={() => {
-                  LoginServices.googleLogin();
-                }}
+                onPress={() =>
+                  LoginService.googleLogin().then(() =>
+                    console.log('Signed in with Google!'),
+                  )
+                }
               />
             </View>
 
