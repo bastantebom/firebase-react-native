@@ -43,6 +43,7 @@ function AuthStackScreen() {
           <>
             <AuthStack.Screen name="Dashboard" component={Dashboard} />
             <AuthStack.Screen name="Profile" component={Profile} />
+            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
           </>
         )
       }

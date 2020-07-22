@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,34 +17,51 @@ const styles = StyleSheet.create({
 
 function Dashboard({ navigation }) {
 
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (initializing) return null;
+
   const signOut = () => {
-
-
-    auth()
+    if (user) {
+      auth()
       .signOut()
       .then(() => console.log('User signed out!'))
-      .catch(() => navigation.goBack());
-
+    } else {
+      navigation.goBack();
+    }
   }
 
   const currentUser = auth()?.currentUser?.email ? auth().currentUser.email : "guest";
 
   return (
+    
     <View style={styles.container}>
-      <AppText textStyle="body1" > Sample Dashboard </AppText>
+      <AppText textStyle="body1" > {!user ? "Guest" : "Member"} Dashboard </AppText>
       <AppButton
-        text="Sign out"
+        text={!user ? "Go back" : "Sign out"}
         onPress={() => signOut()}
         type="primary"
         size="sm"
       />
-      <AppButton
-        text="Go to profile"
-        onPress={() => navigation.push('Profile')}
-        type="primary"
-        size="sm"
-      />
-
+      {user ? (
+        <AppButton
+          text="Go to profile"
+          onPress={() => navigation.push('Profile')}
+          type="primary"
+          size="sm"
+        />
+      ) : <></>}
       <AppButton
         text="Go to Reset Password screen"
         onPress={() => navigation.push('ResetPassword')}

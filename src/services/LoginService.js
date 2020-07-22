@@ -1,5 +1,6 @@
 import BaseAPI from '@/services/BaseAPI';
 
+import auth from '@react-native-firebase/auth';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { GoogleSignin } from '@react-native-community/google-signin';
 
