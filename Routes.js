@@ -30,7 +30,7 @@ function AuthStackScreen() {
 
   return (
     <AuthStack.Navigator headerMode="none">
-      {!user ? (
+      { !user ? (
         <>
           <AuthStack.Screen name="Onboarding" component={Onboarding} />
           <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
@@ -41,6 +41,7 @@ function AuthStackScreen() {
         <>
           <AuthStack.Screen name="Dashboard" component={Dashboard} />
           <AuthStack.Screen name="Profile" component={Profile} />
+          <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
         </>
       )}
     </AuthStack.Navigator>

@@ -1164,10 +1164,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-8.2.0.tgz#dc64b2fb1138a713ea15ab1ed4cffd273f1f70ed"
   integrity sha512-zsLL2hSrhsIhmtf3/VGxbHYPlBvfULd8mK1mObKuSIZlMW6gpokyIaAjfuQ0x6r7NWYjtcPP4QBX95kk3Ztutg==
 
-"@react-navigation/bottom-tabs@^5.6.1":
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.7.0.tgz#2c61abe9d08fc4a4c51294d7738dd54d26eef011"
-  integrity sha512-MNtwahAC+fXkRlRLYMy5ErjhaRGYzOsz7O5O9znIRFQb2xf/DRUhvUF6/IPYBsG09J4m3Ztnnfs+PG10vE+zlA==
+"@react-navigation/bottom-tabs@^5.7.2":
+  version "5.7.2"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.7.2.tgz#330c8ade026030830fce7806ce53cbae97a36e28"
+  integrity sha512-MVU6HrZ4pErzDToD5wRqKoJZITQqBXrexS5rioT3PBxzxaFT9eR0XPXe5D/fz9o1NWMpRN5BoRfLcGc72mtpAQ==
   dependencies:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
@@ -6337,6 +6337,11 @@ react-native-gesture-handler@^1.6.1:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-image-crop-picker@^0.32.2:
+  version "0.32.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.32.2.tgz#862bddc99f7a8e17b7f584846a0c46bfad233917"
+  integrity sha512-x1rwdpVKL6v1AY38rLNYUkLEJIxOK/3C8ipmNbcYFUKunVcmsEvhGLX2ll9kMjp/q+vGOmx4YO38eGp0axYoxg==
 
 react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
