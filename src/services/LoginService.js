@@ -3,7 +3,6 @@ import BaseAPI from '@/services/BaseAPI';
 import auth from '@react-native-firebase/auth';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { GoogleSignin } from '@react-native-community/google-signin';
-import auth from '@react-native-firebase/auth';
 
 GoogleSignin.configure({
   webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',

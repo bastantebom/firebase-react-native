@@ -11,17 +11,11 @@ import VerifyAccount from '@/screens/VerifyAccount';
 import ResetPassword from '@/screens/resetPassword';
 import { Dashboard } from '@/screens/Dashboard';
 import Profile from '@/screens/profile';
-<<<<<<< HEAD
 import Hives from '@/screens/hive';
 import Post from '@/screens/post';
 import Activity from '@/screens/activity';
 
 import { ServbeesAlt, Hive, Bell, UserAlt, PostBG, PostPlus } from '@/assets/images/icons';
-=======
-import Hive from '@/screens/hive';
-import Post from '@/screens/post';
-import Activity from '@/screens/activity';
->>>>>>> WIP: bottom navigation
 
 const AuthStack = createStackNavigator();
 
@@ -43,7 +37,6 @@ function AuthStackScreen() {
 
   return (
     <AuthStack.Navigator headerMode="none">
-<<<<<<< HEAD
       {!user ? (
         <>
           <AuthStack.Screen name="Onboarding" component={Onboarding} />
@@ -52,22 +45,9 @@ function AuthStackScreen() {
           <AuthStack.Screen name="Dashboard" component={Dashboard} />
         </>
       ) : (
-=======
-      {!user ?
-        (
-          <>
-            <AuthStack.Screen name="Onboarding" component={Onboarding} />
-            <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
-            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-          </>
-        ) : (
->>>>>>> WIP: bottom navigation
           <>
             <AuthStack.Screen name="Dashboard" component={Dashboard} />
             <AuthStack.Screen name="Profile" component={Profile} />
-            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-
           </>
         )}
     </AuthStack.Navigator>
@@ -92,11 +72,7 @@ function DashboardStackScreen() {
 function HiveStackScreen() {
   return (
     <HiveStack.Navigator headerMode="none">
-<<<<<<< HEAD
       <PostStack.Screen name="Hive" component={Hives} />
-=======
-      <PostStack.Screen name="Hive" component={Hive} />
->>>>>>> WIP: bottom navigation
     </HiveStack.Navigator>
   );
 }
@@ -125,7 +101,6 @@ function ProfileStackScreen() {
   );
 }
 
-<<<<<<< HEAD
 function TabStack() {
   return (
     <Tab.Navigator>
@@ -185,8 +160,6 @@ function TabStack() {
   )
 }
 
-=======
->>>>>>> WIP: bottom navigation
 function Routes() {
 
   const [initializing, setInitializing] = useState(true);
@@ -206,27 +179,14 @@ function Routes() {
 
   return (
     <NavigationContainer>
-<<<<<<< HEAD
       {!user ? (
         <AuthStackScreen />
       ) : (
           <TabStack />
         )}
-=======
-      <Tab.Navigator>
-        <Tab.Screen name="Servbees" component={DashboardStackScreen} />
-        <Tab.Screen name="Hive" component={HiveStackScreen} />
-        <Tab.Screen name="Post" component={PostStackScreen} />
-        <Tab.Screen name="Activity" component={ActivityStackScreen} />
-        <Tab.Screen name="You" component={ProfileStackScreen} />
-      </Tab.Navigator>
->>>>>>> WIP: bottom navigation
     </NavigationContainer>
   );
 }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> WIP: bottom navigation
 export default Routes;
