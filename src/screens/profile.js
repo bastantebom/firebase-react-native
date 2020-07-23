@@ -32,8 +32,8 @@ function Profile({ navigation }) {
         size="sm"
       />
       <AppText>Welcome, {currentUser}</AppText>
-      <ProfileImageUpload/>
-      <PostFilter/>
+      {/* <ProfileImageUpload/>
+      <PostFilter/> */}
     </View>
   )
 }
