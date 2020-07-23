@@ -35,8 +35,8 @@ function Dashboard({ navigation }) {
   const signOut = () => {
     if (user) {
       auth()
-      .signOut()
-      .then(() => console.log('User signed out!'))
+        .signOut()
+        .then(() => console.log('User signed out!'))
     } else {
       navigation.navigate('Onboarding');
     }
@@ -45,7 +45,7 @@ function Dashboard({ navigation }) {
   const currentUser = auth()?.currentUser?.email ? auth().currentUser.email : "guest";
 
   return (
-    
+
     <View style={styles.container}>
       <AppText textStyle="body1" > {!user ? "Guest" : "Member"} Dashboard </AppText>
       <AppButton
