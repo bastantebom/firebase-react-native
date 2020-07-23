@@ -110,56 +110,59 @@ function Dashboard({ navigation }) {
         <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.container}>
 
-                <PaddingView paddingSize={2} style={{ flex: 1 }}>
 
-                    <View style={[GlobalStyle.rowCenter, { flex: 1 }]}>
-                        <View style={{ flex: 3 }}>
-                            <AppInput
-                                label="Start your search"
-                            />
-                        </View>
-                        <TouchableOpacity onPress={toggleModal}>
-                            <View style={styles.circleButton}>
-                                <Filter />
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <View style={styles.circleButton}>
-                                <JarHeart />
-                            </View>
-                        </TouchableOpacity>
+
+                <View style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginTop: 16, paddingBottom: 8}]}>
+                    <View style={{ flex: 1 }}>
+                        <AppInput
+                            label="Start your search"
+                        />
                     </View>
-
-                    <View style={[GlobalStyle.rowCenter, { flex: 1, marginTop: 16 }]}>
-                        <View style={{ flexDirection: "row"}}>
-                            <NavigationPinRed width={24} height={24} />
-                            <View style={{ marginLeft: 8 }} >
-                                <AppText>Your location</AppText>
-                                <AppText>Pioneer Woodlands</AppText>
-                            </View>
+                    <TouchableOpacity onPress={toggleModal}>
+                        <View style={styles.circleButton}>
+                            <Filter />
                         </View>
-
-                        <ScrollView horizontal={true} style={{ marginLeft: 40 }}>
-                            <View style={styles.locationOption}>
-                                <NavigationArrow width={16} height={16} />
-                                <AppText>Nearest</AppText>
-                            </View>
-                            <View style={styles.locationOption}>
-                                <NavigationArrow width={16} height={16} />
-                                <AppText>Popular</AppText>
-                            </View>
-                            <View style={styles.locationOption}>
-                                <NavigationArrow width={16} height={16} />
-                                <AppText>NearNear</AppText>
-                            </View>
-                        </ScrollView>
-                    </View>
-
-                </PaddingView>
-
-                <View style={{ flex: 5 }}>
-                    <Posts data={DummyData} />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <View style={styles.circleButton}>
+                            <JarHeart />
+                        </View>
+                    </TouchableOpacity>
                 </View>
+
+                <ScrollView>
+                    <PaddingView paddingSize={2} style={{ flex: 1 }}>
+                        <View style={[GlobalStyle.rowCenter, { flex: 1, marginTop: 16 }]}>
+                            <View style={{ flexDirection: "row" }}>
+                                <NavigationPinRed width={24} height={24} />
+                                <View style={{ marginLeft: 8 }} >
+                                    <AppText>Your location</AppText>
+                                    <AppText>Pioneer Woodlands</AppText>
+                                </View>
+                            </View>
+
+                            <ScrollView horizontal={true} style={{ marginLeft: 40 }}>
+                                <View style={styles.locationOption}>
+                                    <NavigationArrow width={16} height={16} />
+                                    <AppText>Nearest</AppText>
+                                </View>
+                                <View style={styles.locationOption}>
+                                    <NavigationArrow width={16} height={16} />
+                                    <AppText>Popular</AppText>
+                                </View>
+                                <View style={styles.locationOption}>
+                                    <NavigationArrow width={16} height={16} />
+                                    <AppText>NearNear</AppText>
+                                </View>
+                            </ScrollView>
+                        </View>
+
+                    </PaddingView>
+
+                    <View style={{ flex: 5 }}>
+                        <Posts data={DummyData} />
+                    </View>
+                </ScrollView>
                 <Modal
                     isVisible={modalState}
                     animationIn="slideInRight"

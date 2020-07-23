@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Platform } from 'react-native';
+import { Text, Dimensions, Platform } from 'react-native';
 import styles from './AppText.scss';
 
 /**
@@ -15,6 +15,11 @@ const AppText = ({ children, textStyle, customStyle }) => {
       ...computedTextStyle,
       ...customStyle,
     };
+  }
+
+  if (Platform.OS === 'android') { 
+    console.log(Dimensions.get('window').height) 
+    console.log(Dimensions.get('window').width)
   }
 
   return <Text style={computedTextStyle}>{children}</Text>;
