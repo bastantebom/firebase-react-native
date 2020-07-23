@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
-  ScrollView
+  Button
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
@@ -30,6 +30,21 @@ function Profile({ navigation }) {
 
   const currentUser = auth().currentUser.email;
 
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (initializing) return null;
+
   const signOut = () => {
     if (user) {
       auth()
@@ -40,25 +55,22 @@ function Profile({ navigation }) {
     }
   }
 
+
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={styles.container}>
-        <AppText textStyle="body1" > Sample Profile </AppText>
-        <AppButton
-          text={!user ? "Back to onboarding" : "Sign out"}
-          onPress={() => signOut()}
-          type="primary"
-          size="sm"
-        />
+    <View style={styles.container}>
+      <AppText textStyle="body1" > Sample Profile </AppText>
+      <AppButton
+        text="Go back to dashboard"
+        onPress={() => navigation.goBack()}
+        type="primary"
+        size="sm"
+      />
+      <AppText>Welcome, {currentUser}</AppText>
+      <ImageUpload />
+      <HexagonBorder />
 
-        <AppText>Welcome, {currentUser}</AppText>
-
-        <View style={{ alignSelf: 'stretch', justifyContent: 'center' }}>
-          <ProfileImageUpload/>
-          <PostFilter/>
-        </View>
-      </View>
-    </ScrollView>
+      <Button title="hello" onPress={signOut} />
+    </View>
   )
 }
 
