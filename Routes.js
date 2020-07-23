@@ -37,19 +37,23 @@ function AuthStackScreen() {
 
   return (
     <AuthStack.Navigator headerMode="none">
-      {!user ? (
-        <>
-          <AuthStack.Screen name="Onboarding" component={Onboarding} />
-          <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
-          <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-          <AuthStack.Screen name="Dashboard" component={Dashboard} />
-        </>
-      ) : (
+      {!user ?
+        (
+          <>
+            <AuthStack.Screen name="Onboarding" component={Onboarding} />
+            <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
+            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+            <AuthStack.Screen name="Dashboard" component={Dashboard} />
+          </>
+        ) : (
           <>
             <AuthStack.Screen name="Dashboard" component={Dashboard} />
             <AuthStack.Screen name="Profile" component={Profile} />
+            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+
           </>
-        )}
+        )
+      }
     </AuthStack.Navigator>
   );
 }
@@ -179,14 +183,15 @@ function Routes() {
 
   return (
     <NavigationContainer>
-      {!user ? (
-        <AuthStackScreen />
-      ) : (
-          <TabStack />
-        )}
+      <Tab.Navigator>
+        <Tab.Screen name="Servbees" component={DashboardStackScreen} />
+        <Tab.Screen name="Hive" component={HiveStackScreen} />
+        <Tab.Screen name="Post" component={PostStackScreen} />
+        <Tab.Screen name="Activity" component={ActivityStackScreen} />
+        <Tab.Screen name="You" component={ProfileStackScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
-
 
 export default Routes;
