@@ -20,36 +20,12 @@ import { ServbeesAlt, Hive, Bell, UserAlt, PostBG, PostPlus } from '@/assets/ima
 const AuthStack = createStackNavigator();
 
 function AuthStackScreen() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
-
   return (
     <AuthStack.Navigator headerMode="none">
-      {!user ? (
-        <>
-          <AuthStack.Screen name="Onboarding" component={Onboarding} />
-          <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
-          <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-          <AuthStack.Screen name="Dashboard" component={Dashboard} />
-        </>
-      ) : (
-          <>
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-            <AuthStack.Screen name="Profile" component={Profile} />
-          </>
-        )}
+      <AuthStack.Screen name="Onboarding" component={Onboarding} />
+      <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
+      <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+      <AuthStack.Screen name="Dashboard" component={Dashboard} />
     </AuthStack.Navigator>
   );
 }
@@ -72,7 +48,7 @@ function DashboardStackScreen() {
 function HiveStackScreen() {
   return (
     <HiveStack.Navigator headerMode="none">
-      <PostStack.Screen name="Hive" component={Hives} />
+      <PostStack.Screen name="Hives" component={Hives} />
     </HiveStack.Navigator>
   );
 }
@@ -187,6 +163,5 @@ function Routes() {
     </NavigationContainer>
   );
 }
-
 
 export default Routes;
