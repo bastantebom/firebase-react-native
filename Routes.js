@@ -11,9 +11,11 @@ import VerifyAccount from '@/screens/VerifyAccount';
 import ResetPassword from '@/screens/resetPassword';
 import { Dashboard } from '@/screens/Dashboard';
 import Profile from '@/screens/profile';
-import Hive from '@/screens/hive';
+import Hives from '@/screens/hive';
 import Post from '@/screens/post';
 import Activity from '@/screens/activity';
+
+import { ServbeesAlt, Hive, Bell, UserAlt, PostBG, PostPlus } from '@/assets/images/icons';
 
 const AuthStack = createStackNavigator();
 
@@ -70,7 +72,7 @@ function DashboardStackScreen() {
 function HiveStackScreen() {
   return (
     <HiveStack.Navigator headerMode="none">
-      <PostStack.Screen name="Hive" component={Hive} />
+      <PostStack.Screen name="Hive" component={Hives} />
     </HiveStack.Navigator>
   );
 }
@@ -99,18 +101,92 @@ function ProfileStackScreen() {
   );
 }
 
+function TabStack() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Servbees"
+        component={DashboardStackScreen}
+        options={{
+          tabBarIcon: () => (
+            <ServbeesAlt />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Hives"
+        component={HiveStackScreen}
+        options={{
+          tabBarIcon: () => (
+            <Hive />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Post"
+        component={PostStackScreen}
+        options={{
+          tabBarIcon: () => (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 15 }}>
+              <View style={{ position: 'relative' }}>
+                <PostBG />
+              </View>
+              <View style={{ position: 'absolute' }}>
+                <PostPlus />
+              </View>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Activity"
+        component={ActivityStackScreen}
+        options={{
+          tabBarIcon: () => (
+            <Bell />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="You"
+        component={ProfileStackScreen}
+        options={{
+          tabBarIcon: () => (
+            <UserAlt />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  )
+}
+
 function Routes() {
+
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (initializing) return null;
+
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Servbees" component={DashboardStackScreen} />
-        <Tab.Screen name="Hive" component={HiveStackScreen} />
-        <Tab.Screen name="Post" component={PostStackScreen} />
-        <Tab.Screen name="Activity" component={ActivityStackScreen} />
-        <Tab.Screen name="You" component={ProfileStackScreen} />
-      </Tab.Navigator>
+      {!user ? (
+        <AuthStackScreen />
+      ) : (
+          <TabStack />
+        )}
     </NavigationContainer>
   );
 }
+
 
 export default Routes;
