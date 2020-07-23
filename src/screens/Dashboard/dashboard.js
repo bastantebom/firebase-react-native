@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginRight: 8,
-
         flexDirection: "row"
     }
 

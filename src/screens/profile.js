@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
+  Button
 } from 'react-native';
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
@@ -21,6 +22,32 @@ function Profile({ navigation }) {
 
   const currentUser = auth().currentUser.email;
 
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (initializing) return null;
+
+  const signOut = () => {
+    if (user) {
+      auth()
+        .signOut()
+        .then(() => console.log('User signed out!'))
+    } else {
+      navigation.navigate('Onboarding');
+    }
+  }
+
+
   return (
     <View style={styles.container}>
       <AppText textStyle="body1" > Sample Profile </AppText>
@@ -31,8 +58,10 @@ function Profile({ navigation }) {
         size="sm"
       />
       <AppText>Welcome, {currentUser}</AppText>
-      <ImageUpload/>
-      <HexagonBorder/>
+      <ImageUpload />
+      <HexagonBorder />
+
+      <Button title="hello" onPress={signOut} />
     </View>
   )
 }
