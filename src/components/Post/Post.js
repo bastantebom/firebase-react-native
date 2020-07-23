@@ -2,19 +2,22 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Divider } from 'react-native-paper';
-import Colors from '@/globals/Colors';
+import { Colors, GlobalStyle } from '@/globals';
 
 import { PaddingView, AppText } from '@/components'
 import { Verified, JarHeart, StarRating, NavigationPinRed, NavigationArrow, TransportationBox } from '@/assets/images/icons';
+import GlobalStyles from '@/globals/GlobalStyle';
 
 const Post = ({ data }) => {
     const {
+        userImage,
         name,
         username,
         rating,
         createdAt,
         isVerified,
         postType,
+        postImage,
         postName,
         postPrice,
         postServiceAddress,
@@ -30,7 +33,9 @@ const Post = ({ data }) => {
         <PaddingView paddingSize={2} style={styles.container}>
             <View style={styles.userInfoContainer}>
                 <View style={styles.userInfoImageContainer}>
-                    <Image style={styles.userInfoImage} source={require('@/assets/images/profile.png')} />
+                    <Image style={GlobalStyle.image} source={{
+                        uri: userImage,
+                    }} />
                 </View>
                 <View style={styles.userInfoDetailsContainer}>
                     <View style={styles.userInfoDetailsNameContainer}>
@@ -55,28 +60,30 @@ const Post = ({ data }) => {
 
             <View style={styles.postContainer}>
                 <View style={styles.postImageContainer}>
-                    <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('@/assets/images/burger.jpg')} />
+                    <Image style={GlobalStyle.image} source={{
+                        uri: postImage,
+                    }}/>
                 </View>
                 <View style={styles.postDetailContainer}>
-                    <AppText textStyle="body2" customStyle={{marginBottom: 8}} >{postName}</AppText>
-                    <AppText textStyle="price" customStyle={{ color: Colors.secondaryMountainMeadow, marginBottom: 8 }}>
+                    <AppText textStyle="body2" customStyle={GlobalStyle.marginBottom1} >{postName}</AppText>
+                    <AppText textStyle="price" customStyle={styles.priceText}>
                         ₱ {postPrice.minimum} - ₱ {postPrice.maximum}
                     </AppText>
 
-                    <Divider style={{ backgroundColor: Colors.neutralsZirconLight, width: "100%", marginBottom: 8 }} />
+                    <Divider style={styles.dividerStyle} />
 
-                    <View style={{ flexDirection: "row", marginBottom: 8 }}>
-                        <View style={{ flexDirection: "row",  alignItems: "center" }}>
+                    <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
+                        <View style={GlobalStyle.rowCenter}>
                             <NavigationPinRed width={16} height={16} />
                             <AppText>{postServiceAddress}</AppText>
                         </View>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
                             <NavigationArrow width={12} height={12} />
                             <AppText>{postServiceRadius}</AppText>
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View style={GlobalStyle.rowCenter}>
                         <TransportationBox width={16} height={16} />
                         <AppText>{postDeliveryMethod}</AppText>
                     </View>
@@ -90,6 +97,9 @@ const styles = StyleSheet.create({
     container: {
         // backgroundColor: "red"
         // backgroundColor: 'red'
+        borderStyle: "solid",
+        borderColor: Colors.neutralsZircon,
+        borderBottomWidth: 1,
     },
     userInfoContainer: {
         // backgroundColor: "blue",
@@ -143,6 +153,15 @@ const styles = StyleSheet.create({
     postDetailContainer: {
         flex: 1,
         marginLeft: 8,
+    },
+    dividerStyle: {
+        backgroundColor: Colors.neutralsZirconLight,
+        width: "100%",
+        marginBottom: 8
+    },
+    priceText: {
+        color: Colors.secondaryMountainMeadow,
+        marginBottom: 8
     }
 
 })
