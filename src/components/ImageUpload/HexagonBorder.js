@@ -15,27 +15,31 @@ import {
 } from 'react-native-svg';
 
 const HexagonBorder = ({ imgSrc }) => {
+
   return (
-    <View>
-      <Svg height="360" width="340" viewBox="0 0 100 100">
+    <View >
+      <Svg height="500" width="500" viewBox="0 0 100 100">
         <Defs>
           <ClipPath id="clip">
             <Polygon
-              // points='25,0, 75,0, 100,50, 75,100, 25,100, 0,50'
-              points="25,0, 75,0, 100,50, 75,100, 25,100, 0,50"
-              // points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018"
-              onPress={() => Alert.alert('press polygon')}
+              points="71.65063509461098,62.5 50,75 28.349364905389038,62.50000000000001 28.34936490538903,37.50000000000001 49.99999999999999,25 71.65063509461098,37.50000000000001"
+              // cx="100%" 
+              // cy="100%"
             />
           </ClipPath>
         </Defs>
         <Image
+          // x="0"
+          // y="0"
           width="100%"
           height="100%"
+          // preserveAspectRatio="xMidYMid slice"
           opacity="1"
           href={imgSrc}
           clipPath="url(#clip)"
         />
       </Svg>
+      <Text>hi</Text>
     </View>
   )
 }
