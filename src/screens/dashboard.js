@@ -64,7 +64,7 @@ function Dashboard({ navigation }) {
       ) : <></>}
       <AppButton
         text="Go to Reset Password screen"
-        onPress={() => navigation.push('ResetPassword')}
+        onPress={() => navigation.navigate('ResetPassword')}
         type="primary"
         size="sm"
       />
