@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { Divider } from 'react-native-paper';
+import Colors from '@/globals/Colors';
+
 import { PaddingView, AppText } from '@/components'
-import { Verified, JarHeart, StarRating } from '@/assets/images/icons';
+import { Verified, JarHeart, StarRating, NavigationPinRed, NavigationArrow, TransportationBox } from '@/assets/images/icons';
 
 const Post = ({ data }) => {
     const {
@@ -19,6 +22,10 @@ const Post = ({ data }) => {
         postDeliveryMethod
     } = data;
 
+    const VerifiedBadge = () => {
+        return isVerified ? <Verified /> : <></>;
+    }
+
     return (
         <PaddingView paddingSize={2} style={styles.container}>
             <View style={styles.userInfoContainer}>
@@ -28,7 +35,7 @@ const Post = ({ data }) => {
                 <View style={styles.userInfoDetailsContainer}>
                     <View style={styles.userInfoDetailsNameContainer}>
                         <AppText textStyle="caption" customStyle={styles.userInfoDetailsName} >{name}</AppText>
-                        <Verified />
+                        <VerifiedBadge />
                     </View>
                     <View style={styles.userInfoDetailsUsernameContainer}>
                         <AppText textStyle="eyebrow2">@{username}</AppText>
@@ -48,7 +55,31 @@ const Post = ({ data }) => {
 
             <View style={styles.postContainer}>
                 <View style={styles.postImageContainer}>
-                    <Image style={{flex: 1, width: undefined, height: undefined}} source={require('@/assets/images/burger.jpg')} />
+                    <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('@/assets/images/burger.jpg')} />
+                </View>
+                <View style={styles.postDetailContainer}>
+                    <AppText textStyle="body2" customStyle={{marginBottom: 8}} >{postName}</AppText>
+                    <AppText textStyle="price" customStyle={{ color: Colors.secondaryMountainMeadow, marginBottom: 8 }}>
+                        ₱ {postPrice.minimum} - ₱ {postPrice.maximum}
+                    </AppText>
+
+                    <Divider style={{ backgroundColor: Colors.neutralsZirconLight, width: "100%", marginBottom: 8 }} />
+
+                    <View style={{ flexDirection: "row", marginBottom: 8 }}>
+                        <View style={{ flexDirection: "row",  alignItems: "center" }}>
+                            <NavigationPinRed width={16} height={16} />
+                            <AppText>{postServiceAddress}</AppText>
+                        </View>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <NavigationArrow width={12} height={12} />
+                            <AppText>{postServiceRadius}</AppText>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <TransportationBox width={16} height={16} />
+                        <AppText>{postDeliveryMethod}</AppText>
+                    </View>
                 </View>
             </View>
         </PaddingView>
@@ -58,6 +89,7 @@ const Post = ({ data }) => {
 const styles = StyleSheet.create({
     container: {
         // backgroundColor: "red"
+        // backgroundColor: 'red'
     },
     userInfoContainer: {
         // backgroundColor: "blue",
@@ -96,15 +128,21 @@ const styles = StyleSheet.create({
     },
 
     postContainer: {
+        width: "100%",
         paddingTop: 8,
         paddingBottom: 16,
+        flexDirection: "row"
     },
 
     postImageContainer: {
-        width: "100%",
+        width: 122,
         height: 126,
         borderRadius: 8,
         overflow: "hidden"
+    },
+    postDetailContainer: {
+        flex: 1,
+        marginLeft: 8,
     }
 
 })
