@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import {
   View,
   StyleSheet,
+  ScrollView
 } from 'react-native';
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
@@ -32,7 +33,6 @@ function Profile({ navigation }) {
       />
       <AppText>Welcome, {currentUser}</AppText>
       <ImageUpload/>
-      <HexagonBorder/>
     </View>
   )
 }
