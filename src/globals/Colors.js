@@ -41,4 +41,8 @@ export default {
   yellow2: '#FFD200',
 
   errorInput: '#E05454',
+
+  promoCopy: '#393B4D',
+
+  //switchDisable: '#CACBCC';
 };
