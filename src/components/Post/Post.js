@@ -62,12 +62,12 @@ const Post = ({ data }) => {
                 <View style={styles.postImageContainer}>
                     <Image style={GlobalStyle.image} source={{
                         uri: postImage,
-                    }}/>
+                    }} />
                 </View>
                 <View style={styles.postDetailContainer}>
                     <AppText textStyle="body2" customStyle={GlobalStyle.marginBottom1} >{postName}</AppText>
                     <AppText textStyle="price" customStyle={styles.priceText}>
-                        ₱ {postPrice.minimum} - ₱ {postPrice.maximum}
+                        ₱ {postPrice}
                     </AppText>
 
                     <Divider style={styles.dividerStyle} />
@@ -75,17 +75,17 @@ const Post = ({ data }) => {
                     <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
                         <View style={GlobalStyle.rowCenter}>
                             <NavigationPinRed width={16} height={16} />
-                            <AppText>{postServiceAddress}</AppText>
+                            <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentPlaceholder, marginLeft: 4 }}>{postServiceAddress}</AppText>
                         </View>
                         <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
                             <NavigationArrow width={12} height={12} />
-                            <AppText>{postServiceRadius}</AppText>
+                            <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentPlaceholder, marginLeft: 4 }}>{postServiceRadius}</AppText>
                         </View>
                     </View>
 
                     <View style={GlobalStyle.rowCenter}>
                         <TransportationBox width={16} height={16} />
-                        <AppText>{postDeliveryMethod}</AppText>
+                        <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>{postDeliveryMethod}</AppText>
                     </View>
                 </View>
             </View>
