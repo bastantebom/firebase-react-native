@@ -12,6 +12,7 @@ import {
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
 import Post from '@/components/Post/Post';
+import Posts from '@/components/Post/Posts';
 
 import auth from '@react-native-firebase/auth';
 import Modal from 'react-native-modal';
@@ -77,23 +78,13 @@ function Dashboard({ navigation }) {
         }
     ]
 
-    const renderItem = ({ item }) => (
-        <Post data={item} />
-    );
-
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={toggleModal}>
                 <AppText>Hello</AppText>
             </TouchableOpacity>
-            {/* <Post data={DummyData[0]} />
-            <Post data={DummyData[1]} /> */}
-
-            <FlatList
-                data={DummyData}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-            />
+            
+            <Posts data={DummyData}/>
 
             <Modal
                 isVisible={modalState}
