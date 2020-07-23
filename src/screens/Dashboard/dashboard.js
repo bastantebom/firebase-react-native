@@ -1,7 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    SafeAreaView
 } from 'react-native';
 
 import AppText from '@/components/AppText/AppText';
@@ -9,18 +13,25 @@ import AppButton from '@/components/AppButton';
 import Post from '@/components/Post/Post';
 
 import auth from '@react-native-firebase/auth';
-
+import Modal from 'react-native-modal';
 
 
 function Dashboard({ navigation }) {
-    const signOut = () => {
-        auth()
-            .signOut()
-            .then(() => console.log('User signed out!'))
-            .catch(() => navigation.goBack());
-    }
+    const [modalState, setModalState] = useState(false)
 
-    const currentUser = auth()?.currentUser?.email ? auth().currentUser.email : "guest";
+    const toggleModal = () => {
+        setModalState(!modalState);
+    };
+
+    function WrapperComponent() {
+        return (
+            <View style={{ flex: 1, backgroundColor: "red", paddingTop: 50 }}>
+                <TouchableOpacity onPress={() => setModalState(false)}>
+                    <Text>I am the modal content!</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
 
     const DummyData = [
         {
@@ -36,7 +47,7 @@ function Dashboard({ navigation }) {
                 minimum: 199,
                 maximum: 499
             },
-            postServiceAddress: "#8 Atis Street" ,
+            postServiceAddress: "#8 Atis Street",
             postServiceRadius: "500m",
             postDeliveryMethod: "Delivery and Pickup"
         },
@@ -45,6 +56,7 @@ function Dashboard({ navigation }) {
             username: "Markee",
             rating: 4.5,
             createdAt: "2 weeks ago",
+            isVerified: true,
 
             postType: "Service",
             postName: "Haircut Service every Sat & Sun",
@@ -52,7 +64,7 @@ function Dashboard({ navigation }) {
                 minimum: 199,
                 maximum: 499
             },
-            postServiceAddress: "#8 Kaimito Street" ,
+            postServiceAddress: "#8 Kaimito Street",
             postServiceRadius: "1000m",
             postDeliveryMethod: "Home Service"
         }
@@ -60,8 +72,27 @@ function Dashboard({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <AppText>Hello</AppText>
+            <TouchableOpacity onPress={toggleModal}>
+                <AppText>Hello</AppText>
+            </TouchableOpacity>
             <Post data={DummyData[0]} />
+
+            <Modal
+                isVisible={modalState}
+                animationIn="slideInRight"
+                animationInTiming={1000}
+                animationOut="slideOutRight"
+                animationOutTiming={1000}
+                onSwipeComplete={toggleModal}
+                swipeDirection="right"
+                customBackdrop={
+                    <TouchableWithoutFeedback onPress={toggleModal}>
+                        <View style={{ flex: 1, backgroundColor: "black" }} />
+                    </TouchableWithoutFeedback>
+                }
+            >
+                <WrapperComponent />
+            </Modal>
         </View>
     )
 }
@@ -69,7 +100,8 @@ function Dashboard({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "white",
+        paddingTop: 50
     }
 })
 
