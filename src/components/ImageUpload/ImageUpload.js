@@ -11,7 +11,7 @@ const ImageUpload = () => {
 
   const handleSelect = () => {
     ImagePicker.openPicker({
-      width: 300,
+      width: 400,
       height: 400,
       cropping: true,
       includeBase64: true,
@@ -31,12 +31,15 @@ const ImageUpload = () => {
         size="sm"
       />
       { imageSource !== null ? (
-        <Image 
-          style={{ width: 200, height: 200, resizeMode: 'cover' }}
-          source={{
-            uri: imageSource
-          }} 
-        />
+        <>
+          <Image 
+            style={{ width: 200, height: 200, resizeMode: 'cover' }}
+            source={{
+              uri: imageSource
+            }} 
+          />
+          <HexagonBorder imgSrc={imageSource} />
+        </>
       ) : (
         null
       )}
