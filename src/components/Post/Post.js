@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Divider } from 'react-native-paper';
-import { Colors, GlobalStyle } from '@/globals';
+import { Colors, GlobalStyle, Utils } from '@/globals';
 
 import { PaddingView, AppText } from '@/components'
 import { Verified, JarHeart, StarRating, NavigationPinRed, NavigationArrow, TransportationBox } from '@/assets/images/icons';
-import GlobalStyles from '@/globals/GlobalStyle';
+
 
 const Post = ({ data }) => {
     const {
@@ -27,6 +27,10 @@ const Post = ({ data }) => {
 
     const VerifiedBadge = () => {
         return isVerified ? <Verified /> : <></>;
+    }
+
+    let timeAgo = (time) => {
+        return "• " + Utils.secondsToDhms(time) + " ago"
     }
 
     return (
@@ -50,7 +54,7 @@ const Post = ({ data }) => {
                             <AppText textStyle="eyebrow2">{rating}</AppText>
                         </View>
 
-                        <AppText textStyle="eyebrow2">• {createdAt}</AppText>
+                        <AppText textStyle="eyebrow2">{timeAgo(createdAt)}</AppText>
                     </View>
                 </View>
                 <TouchableOpacity>

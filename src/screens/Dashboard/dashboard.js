@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     SafeAreaView,
-    ScrollView
+    ScrollView,
+    Dimensions
 } from 'react-native';
 
 import { Posts, PaddingView, AppInput, AppText } from '@/components';
@@ -25,7 +26,7 @@ function Dashboard({ navigation }) {
 
     function WrapperComponent() {
         return (
-            <View style={{ flex: 1, backgroundColor: "red", paddingTop: 50 }}>
+            <View style={{ backgroundColor: "red", paddingTop: 50, height: Dimensions.get('window').height }}>
                 <TouchableOpacity onPress={() => setModalState(false)}>
                     <Text>I am the modal content!</Text>
                 </TouchableOpacity>
@@ -40,7 +41,7 @@ function Dashboard({ navigation }) {
             name: "Pia Samson",
             username: "Piasamson",
             rating: 3.5,
-            createdAt: "1 week ago",
+            createdAt: 8088,
             isVerified: true,
 
             postType: "need",
@@ -57,7 +58,7 @@ function Dashboard({ navigation }) {
             name: "Mark Santiago",
             username: "Markee",
             rating: 4.5,
-            createdAt: "2 weeks ago",
+            createdAt: 5575482,
             isVerified: true,
 
             postType: "Service",
@@ -74,7 +75,7 @@ function Dashboard({ navigation }) {
             name: "Mark Santiago",
             username: "Markee",
             rating: 4.5,
-            createdAt: "2 weeks ago",
+            createdAt: 53482,
             isVerified: true,
 
             postType: "Service",
@@ -91,7 +92,7 @@ function Dashboard({ navigation }) {
             name: "Mark Santiago",
             username: "Markee",
             rating: 4.5,
-            createdAt: "2 weeks ago",
+            createdAt: 777482,
             isVerified: true,
 
             postType: "Service",
