@@ -20,40 +20,12 @@ import { ServbeesAlt, Hive, Bell, UserAlt, PostBG, PostPlus } from '@/assets/ima
 const AuthStack = createStackNavigator();
 
 function AuthStackScreen() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
-
   return (
     <AuthStack.Navigator headerMode="none">
-      {!user ?
-        (
-          <>
-            <AuthStack.Screen name="Onboarding" component={Onboarding} />
-            <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
-            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-          </>
-        ) : (
-          <>
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-            <AuthStack.Screen name="Profile" component={Profile} />
-            <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-
-          </>
-        )
-      }
+      <AuthStack.Screen name="Onboarding" component={Onboarding} />
+      <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
+      <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+      <AuthStack.Screen name="Dashboard" component={Dashboard} />
     </AuthStack.Navigator>
   );
 }
@@ -183,13 +155,11 @@ function Routes() {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Servbees" component={DashboardStackScreen} />
-        <Tab.Screen name="Hive" component={HiveStackScreen} />
-        <Tab.Screen name="Post" component={PostStackScreen} />
-        <Tab.Screen name="Activity" component={ActivityStackScreen} />
-        <Tab.Screen name="You" component={ProfileStackScreen} />
-      </Tab.Navigator>
+      {!user ? (
+        <AuthStackScreen />
+      ) : (
+          <TabStack />
+        )}
     </NavigationContainer>
   );
 }
