@@ -77,7 +77,7 @@ function HiveStackScreen() {
   return (
     <HiveStack.Navigator headerMode="none">
       <PostStack.Screen name="Hive" component={Hives} />
-    </HiveStack.Navigator>
+    </HiveStack.Navigator >
   );
 }
 
