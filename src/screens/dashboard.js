@@ -38,7 +38,7 @@ function Dashboard({ navigation }) {
       .signOut()
       .then(() => console.log('User signed out!'))
     } else {
-      navigation.goBack();
+      navigation.navigate('Onboarding');
     }
   }
 
@@ -49,7 +49,7 @@ function Dashboard({ navigation }) {
     <View style={styles.container}>
       <AppText textStyle="body1" > {!user ? "Guest" : "Member"} Dashboard </AppText>
       <AppButton
-        text={!user ? "Go back" : "Sign out"}
+        text={!user ? "Back to onboarding" : "Sign out"}
         onPress={() => signOut()}
         type="primary"
         size="sm"
@@ -57,7 +57,7 @@ function Dashboard({ navigation }) {
       {user ? (
         <AppButton
           text="Go to profile"
-          onPress={() => navigation.push('Profile')}
+          onPress={() => navigation.navigate('Profile')}
           type="primary"
           size="sm"
         />
