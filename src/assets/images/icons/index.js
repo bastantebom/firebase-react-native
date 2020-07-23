@@ -25,10 +25,16 @@ import Google from '@/assets/images/icons/google.svg';
 // navigation/maps
 import NavigationArrow from '@/assets/images/icons/navigation-arrow.svg';
 import NavigationPin from '@/assets/images/icons/navigation-pin.svg';
+import NavigationPinRed from '@/assets/images/icons/navigation-pin-red.svg';
 
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg';
 import JarHeart from '@/assets/images/icons/jar-heart.svg';
+
+// Posts
+import Verified from '@/assets/images/icons/verified.svg';
+import StarRating from '@/assets/images/icons/star-rating.svg';
+import TransportationBox from '@/assets/images/icons/transportation-box.svg';
 
 
 // For bottom navigation
@@ -58,19 +64,23 @@ export {
     BellActive,
     Hive,
     HiveActive,
+    Verified,
     ServbeesAlt,
     ServbeesAltActive,
+    TransportationBox,
     UserAlt,
     UserAltActive,
     CircleTick,
-    Close, 
-    CloseDark, 
+    Close,
+    CloseDark,
     CloseLight,
-    EyeDark, 
-    EyeLight, 
-    Facebook, 
-    Google, 
-    NavigationArrow, 
-    NavigationPin, 
+    EyeDark,
+    EyeLight,
+    Facebook,
+    Google,
+    NavigationArrow,
+    NavigationPin,
+    NavigationPinRed,
     Warning,
+    StarRating
 };
