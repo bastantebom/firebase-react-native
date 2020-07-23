@@ -33,11 +33,16 @@ function Profile({ navigation }) {
       />
       <AppText>Welcome, {currentUser}</AppText>
 <<<<<<< HEAD
+<<<<<<< HEAD
       {/* <ProfileImageUpload/>
       <PostFilter/> */}
 =======
       <ImageUpload/>
 >>>>>>> apply hexagon border to image upload
+=======
+      <ProfileImageUpload/>
+      <PostFilter/>
+>>>>>>> update hexagon profile image upload
     </View>
   )
 }
