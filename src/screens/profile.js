@@ -7,8 +7,8 @@ import {
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
 import auth from '@react-native-firebase/auth';
-import ImageUpload from '@/components/ImageUpload/ImageUpload';
-import HexagonBorder from '@/components/ImageUpload/HexagonBorder';
+import ProfileImageUpload from '@/components/ImageUpload/ProfileImageUpload';
+import PostFilter from '@/components/PostFilter/PostFilter';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,7 +32,8 @@ function Profile({ navigation }) {
         size="sm"
       />
       <AppText>Welcome, {currentUser}</AppText>
-      <ImageUpload/>
+      <ProfileImageUpload/>
+      <PostFilter/>
     </View>
   )
 }
