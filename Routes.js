@@ -15,7 +15,7 @@ import Hives from '@/screens/hive';
 import Post from '@/screens/post';
 import Activity from '@/screens/activity';
 
-import { ServbeesAlt, Hive, Bell, UserAlt, PostBG, PostPlus } from '@/assets/images/icons';
+import { ServbeesAlt, ServbeesAltActive, Hive, HiveActive, Bell, BellActive, UserAlt, UserAltActive, PostBG, PostPlus } from '@/assets/images/icons';
 
 const AuthStack = createStackNavigator();
 
@@ -48,8 +48,11 @@ function DashboardStackScreen() {
 function HiveStackScreen() {
   return (
     <HiveStack.Navigator headerMode="none">
-      <PostStack.Screen name="Hives" component={Hives} />
-    </HiveStack.Navigator>
+      <PostStack.Screen
+        name="Hives"
+        component={Hives}
+      />
+    </HiveStack.Navigator >
   );
 }
 
@@ -72,30 +75,57 @@ function ActivityStackScreen() {
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator headerMode="none">
-      <ProfileStack.Screen name="You" component={Profile} />
+      <ProfileStack.Screen name="Profile" component={Profile} />
     </ProfileStack.Navigator>
   );
 }
 
 function TabStack() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      tabBarOptions={{
+        tabStyle: {
+          flex: 1,
+          alignItems: 'center',
+        },
+        labelStyle: {
+          fontSize: 12,
+          fontWeight: '700'
+        },
+        inactiveTintColor: '#8C8B98',
+        activeTintColor: '#1F1A54'
+      }}
+    >
       <Tab.Screen
         name="Servbees"
         component={DashboardStackScreen}
         options={{
-          tabBarIcon: () => (
-            <ServbeesAlt />
-          ),
+          tabBarIcon: ({ focused }) => {
+            const icon = focused
+              ? <ServbeesAltActive />
+              : <ServbeesAlt />
+            return (
+              <>
+                {icon}
+              </>
+            )
+          }
         }}
       />
       <Tab.Screen
         name="Hives"
         component={HiveStackScreen}
         options={{
-          tabBarIcon: () => (
-            <Hive />
-          ),
+          tabBarIcon: ({ focused }) => {
+            const icon = focused
+              ? <HiveActive />
+              : <Hive />
+            return (
+              <>
+                {icon}
+              </>
+            )
+          }
         }}
       />
       <Tab.Screen
@@ -118,18 +148,32 @@ function TabStack() {
         name="Activity"
         component={ActivityStackScreen}
         options={{
-          tabBarIcon: () => (
-            <Bell />
-          ),
+          tabBarIcon: ({ focused }) => {
+            const icon = focused
+              ? <BellActive />
+              : <Bell />
+            return (
+              <>
+                {icon}
+              </>
+            )
+          }
         }}
       />
       <Tab.Screen
-        name="You"
+        name="Profile"
         component={ProfileStackScreen}
         options={{
-          tabBarIcon: () => (
-            <UserAlt />
-          ),
+          tabBarIcon: ({ focused }) => {
+            const icon = focused
+              ? <UserAltActive />
+              : <UserAlt />
+            return (
+              <>
+                {icon}
+              </>
+            )
+          }
         }}
       />
     </Tab.Navigator>
