@@ -18,7 +18,7 @@ import {
   NavigationPinRed,
   NavigationArrow,
 } from '@/assets/images/icons';
-import {GlobalStyle, Colors} from '@/globals';
+import {GlobalStyle, Colors, normalize} from '@/globals';
 
 import Modal from 'react-native-modal';
 
@@ -36,13 +36,18 @@ function Dashboard({navigation}) {
     return (
       <View
         style={{
-          backgroundColor: 'red',
-          paddingTop: 50,
+          backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        <TouchableOpacity onPress={() => setModalState(false)}>
-          <Text>I am the modal content!</Text>
-        </TouchableOpacity>
+        <SafeAreaView style={{flex: 1}}>
+          <View style={{flexDirection: "row"}}>
+            <AppText customStyle={{flex: 1}}>Hello</AppText>
+
+            <TouchableOpacity onPress={() => setModalState(false)} style={{justifyContent: "flex-end", backgroundColor: "red"}} >
+              <Text>I am the modal content!</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
       </View>
     );
   }
@@ -256,36 +261,42 @@ function Dashboard({navigation}) {
   };
 
   return (
-    <SafeAreaView style={styles.safeAreaContainer}>
-      <View style={styles.container}>
-        <SearchBarWithFilter />
-        <Location />
+    <>
+      <SafeAreaView style={styles.safeAreaContainer}>
+        <View style={styles.container}>
+          <SearchBarWithFilter />
+          <Location />
 
-        <Posts
-          data={DummyData}
-          hideLocationComponent={hideLocationComponent}
-          showLocationComponent={showLocationComponent}
-          scrollState={scrollState}
-          setScrollState={setScrollState}
-        />
-
-        <Modal
-          isVisible={modalState}
-          animationIn="slideInRight"
-          animationInTiming={1000}
-          animationOut="slideOutRight"
-          animationOutTiming={1000}
-          onSwipeComplete={toggleModal}
-          swipeDirection="right"
-          customBackdrop={
-            <TouchableWithoutFeedback onPress={toggleModal}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
-            </TouchableWithoutFeedback>
-          }>
-          <WrapperComponent />
-        </Modal>
-      </View>
-    </SafeAreaView>
+          <Posts
+            data={DummyData}
+            hideLocationComponent={hideLocationComponent}
+            showLocationComponent={showLocationComponent}
+            scrollState={scrollState}
+            setScrollState={setScrollState}
+          />
+        </View>
+      </SafeAreaView>
+      <Modal
+        isVisible={modalState}
+        animationIn="slideInRight"
+        animationInTiming={1000}
+        animationOut="slideOutRight"
+        animationOutTiming={1000}
+        onSwipeComplete={toggleModal}
+        swipeDirection="right"
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+          marginLeft: normalize(32),
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={toggleModal}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <WrapperComponent />
+      </Modal>
+    </>
   );
 }
 
