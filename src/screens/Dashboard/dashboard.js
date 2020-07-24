@@ -25,6 +25,7 @@ import Modal from 'react-native-modal';
 function Dashboard({navigation}) {
   const [modalState, setModalState] = useState(false);
   const [showLocation, setShowLocation] = useState(true);
+  const [scrollState, setScrollState] = useState(0);
   const [margin, setMargin] = useState(16);
 
   const toggleModal = () => {
@@ -221,22 +222,17 @@ function Dashboard({navigation}) {
     );
   };
 
-  const handleBeginScroll = () => {
+  const hideLocationComponent = () => {
     console.log('hide location');
     setShowLocation(false);
     setMargin(4);
     fadeOut();
   };
 
-  const handleEndScroll = () => {
-    setTimeout(() => {
-      setShowLocation(true);
-      setMargin(16);
-      fadeIn();
-    }, 1000);
-    // setShowLocation(true);
-
-    // setShowLocation(true)
+  const showLocationComponent = (event) => {
+    setShowLocation(true);
+    setMargin(16);
+    fadeIn();
   };
 
   const fadeAnim = useRef(new Animated.Value(34)).current;
@@ -245,7 +241,7 @@ function Dashboard({navigation}) {
     // Will change fadeAnim value to 1 in 5 seconds
     Animated.timing(fadeAnim, {
       toValue: 34,
-      duration: 100,
+      duration: 300,
       useNativeDriver: false,
     }).start();
   };
@@ -267,8 +263,10 @@ function Dashboard({navigation}) {
 
         <Posts
           data={DummyData}
-          beginScrollFunction={handleBeginScroll}
-          endScrollFunction={handleEndScroll}
+          hideLocationComponent={hideLocationComponent}
+          showLocationComponent={showLocationComponent}
+          scrollState={scrollState}
+          setScrollState={setScrollState}
         />
 
         <Modal

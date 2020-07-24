@@ -110,7 +110,7 @@ const Post = ({data}) => {
             }}
           />
         </View>
-        <View style={styles.postDetailContainer}>
+        <View style={[styles.postDetailContainer, {backgroundColor: "red"}]}>
           <AppText textStyle="body2" customStyle={GlobalStyle.marginBottom1}>
             {postName}
           </AppText>
