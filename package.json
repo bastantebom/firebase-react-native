@@ -22,6 +22,8 @@
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-fbsdk": "^2.0.0",
+    "react-native-fluid-animations": "^0.1.1",
+    "react-native-fluid-transitions": "^0.1.1",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-image-crop-picker": "^0.32.2",
     "react-native-keyboard-aware-scrollview": "^2.1.0",
