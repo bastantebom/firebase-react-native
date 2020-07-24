@@ -46,7 +46,7 @@ function Dashboard({ navigation }) {
 
             postType: "need",
             postImage: "https://i.pinimg.com/236x/b3/9d/da/b39dda5fe5fa56de7ca2bdead6d3807c--redneck-airconditioner-homemade-air-conditioner.jpg",
-            postName: "I need someone to do my aircon",
+            postName: "Pasabuy Service - SM Light, Mandaluyong",
             postPrice: 500,
             postServiceAddress: "#8 Atis Street",
             postServiceRadius: "500m",
@@ -63,7 +63,7 @@ function Dashboard({ navigation }) {
 
             postType: "Service",
             postImage: "https://i.pinimg.com/originals/45/7c/16/457c165d41e342f1765e95ac46fb1d9b.jpg",
-            postName: "Haircut Service every Sat & Sun",
+            postName: "Haircut Service every Sat & Sun Haircut Service every",
             postPrice: 20,
             postServiceAddress: "#8 Kaimito Street",
             postServiceRadius: "1000m",
@@ -80,7 +80,7 @@ function Dashboard({ navigation }) {
 
             postType: "Service",
             postImage: "https://i.pinimg.com/originals/45/7c/16/457c165d41e342f1765e95ac46fb1d9b.jpg",
-            postName: "Haircut Service every Sat & Sun",
+            postName: "🍔 Wayne’s Burgers and Smoothies!",
             postPrice: 20,
             postServiceAddress: "#8 Kaimito Street",
             postServiceRadius: "1000m",
@@ -97,7 +97,7 @@ function Dashboard({ navigation }) {
 
             postType: "Service",
             postImage: "https://i.pinimg.com/originals/45/7c/16/457c165d41e342f1765e95ac46fb1d9b.jpg",
-            postName: "Haircut Service every Sat & Sun",
+            postName: "Haircut Service every Sat & Sun Haircut Service every Sat",
             postPrice: 20,
             postServiceAddress: "#8 Kaimito Street",
             postServiceRadius: "1000m",
@@ -109,9 +109,6 @@ function Dashboard({ navigation }) {
     return (
         <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.container}>
-
-
-
                 <View style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginTop: 16, paddingBottom: 8}]}>
                     <View style={{ flex: 1 }}>
                         <AppInput
@@ -156,7 +153,6 @@ function Dashboard({ navigation }) {
                                 </View>
                             </ScrollView>
                         </View>
-
                     </PaddingView>
 
                     <View style={{ flex: 5 }}>
