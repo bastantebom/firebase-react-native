@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
-  Animated
+  Animated,
 } from 'react-native';
 
 import {Posts, PaddingView, AppInput, AppText} from '@/components';
@@ -25,7 +25,7 @@ import Modal from 'react-native-modal';
 function Dashboard({navigation}) {
   const [modalState, setModalState] = useState(false);
   const [showLocation, setShowLocation] = useState(true);
-  const [margin, setMargin] = useState(16)
+  const [margin, setMargin] = useState(16);
 
   const toggleModal = () => {
     setModalState(!modalState);
@@ -180,10 +180,18 @@ function Dashboard({navigation}) {
   };
 
   const Location = () => {
-
     return (
       <Animated.View
-        style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginVertical: margin, height: 34 , overflow: "hidden"}, {height: fadeAnim}]}>
+        style={[
+          GlobalStyle.rowCenter,
+          {
+            marginHorizontal: 16,
+            marginVertical: margin,
+            height: 34,
+            overflow: 'hidden',
+          },
+          {height: fadeAnim},
+        ]}>
         <View style={{flexDirection: 'row'}}>
           <NavigationPinRed width={24} height={24} />
           <View style={{marginLeft: 8}}>
@@ -216,31 +224,30 @@ function Dashboard({navigation}) {
   const handleBeginScroll = () => {
     console.log('hide location');
     setShowLocation(false);
-    setMargin(4)
-    fadeOut()
+    setMargin(4);
+    fadeOut();
   };
 
   const handleEndScroll = () => {
     setTimeout(() => {
       setShowLocation(true);
-      setMargin(16)
-      fadeIn()
+      setMargin(16);
+      fadeIn();
     }, 1000);
     // setShowLocation(true);
-    
 
     // setShowLocation(true)
   };
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(34)).current;
 
   const fadeIn = () => {
     // Will change fadeAnim value to 1 in 5 seconds
     Animated.timing(fadeAnim, {
       toValue: 34,
       duration: 100,
+      useNativeDriver: false,
     }).start();
-
   };
 
   const fadeOut = () => {
@@ -248,6 +255,7 @@ function Dashboard({navigation}) {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 200,
+      useNativeDriver: false,
     }).start();
   };
 

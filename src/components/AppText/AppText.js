@@ -11,13 +11,15 @@ import {Colors, scaleFont, normalize} from '@/globals';
 const AppText = ({children, textStyle, customStyle, color}) => {
   let computedTextStyle = styles[textStyle];
 
-  if (customStyle) {
+  if (customStyle || color) {
     computedTextStyle = {
       ...computedTextStyle,
       ...customStyle,
       color: color ? color : Colors.contentEbony,
     };
   }
+
+  // console.log(color)
 
   return <Text style={computedTextStyle}>{children}</Text>;
 };
