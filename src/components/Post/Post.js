@@ -86,14 +86,14 @@ const Post = ({data}) => {
             <VerifiedBadge />
           </View>
           <View style={styles.userInfoDetailsUsernameContainer}>
-            <AppText textStyle="eyebrow2">@{username}</AppText>
+            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>@{username}</AppText>
 
             <View style={styles.starRatingContainer}>
               <StarRating width={12} height={12} />
-              <AppText textStyle="eyebrow2">{rating}</AppText>
+              <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{rating}</AppText>
             </View>
 
-            <AppText textStyle="eyebrow2">{timeAgo(createdAt)}</AppText>
+            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{timeAgo(createdAt)}</AppText>
           </View>
         </View>
         <TouchableOpacity>
@@ -128,7 +128,8 @@ const Post = ({data}) => {
               <NavigationPinRed width={16} height={16} />
               <AppText
                 textStyle="eyebrow2"
-                customStyle={{color: Colors.contentPlaceholder, marginLeft: 4}}>
+                color={Colors.contentPlaceholder}
+                customStyle={{marginLeft: 4}}>
                 {postServiceAddress}
               </AppText>
             </View>
@@ -136,7 +137,8 @@ const Post = ({data}) => {
               <NavigationArrow width={12} height={12} />
               <AppText
                 textStyle="eyebrow2"
-                customStyle={{color: Colors.contentPlaceholder, marginLeft: 4}}>
+                color={Colors.contentPlaceholder}
+                customStyle={{marginLeft: 4}}>
                 {postServiceRadius}
               </AppText>
             </View>
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: Colors.neutralsZircon,
     borderBottomWidth: 1,
-    paddingBottom: 0
+    paddingBottom: 0,
   },
   userInfoContainer: {
     // backgroundColor: "blue",
