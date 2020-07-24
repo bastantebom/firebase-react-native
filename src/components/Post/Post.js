@@ -58,7 +58,7 @@ const Post = ({ data }) => {
                     </View>
                 </View>
                 <TouchableOpacity>
-                    <JarHeart />
+                    <JarHeart width={20} height={20} />
                 </TouchableOpacity>
             </View>
 
