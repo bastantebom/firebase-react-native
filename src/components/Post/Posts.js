@@ -14,7 +14,6 @@ const Posts = ({data}) => {
             data={data}
             renderItem={renderItem}
             keyExtractor={item => item.id}
-            scrollEnabled={false}
         />
     )
 }
