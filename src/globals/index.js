@@ -1,5 +1,5 @@
 import Colors from '@/globals/Colors';
 import GlobalStyle from '@/globals/GlobalStyle';
-import Utils from '@/globals/Utils';
+import { timePassed, scaleFont, normalize } from '@/globals/Utils';
 
-export { Colors, GlobalStyle, Utils }
+export { Colors, GlobalStyle, timePassed, scaleFont, normalize }
