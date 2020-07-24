@@ -6333,6 +6333,16 @@ react-native-fbsdk@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-fbsdk/-/react-native-fbsdk-2.0.0.tgz#eb041bdb8f9b9180a1696d3bd7d7accee6554262"
   integrity sha512-CyPKoBVt9Y+KznALcnN4lkh6dUNqZjyFS6GbkXXTFf72wR9Dl8bXF2dDj56w/o5/TFoCnNCmQlZgh7P/NiElZQ==
 
+react-native-fluid-animations@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-fluid-animations/-/react-native-fluid-animations-0.1.1.tgz#b934ecdbef3c896094f2ff6955f6a5fbedd874a6"
+  integrity sha512-N9SckAOWtosjN9YqeTBonqZ3T3X2oN2LMVFroxYW1ZgDxlGMkIMUgf7ED5aqJh41L6G4hGxGjqxSEfmJG2f6Rg==
+
+react-native-fluid-transitions@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-fluid-transitions/-/react-native-fluid-transitions-0.1.1.tgz#2603342b4985bc019a1201b66fea89f7fc82ec21"
+  integrity sha512-s1Id+1M6SrMSs0bk+Dx4AVFFy3AEV10uaEsMtmkCCpWyCNSp8WZ4nWV6hGhxLzdJR8PujqoV+7sWJCrHERFgwQ==
+
 react-native-gesture-handler@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.6.1.tgz#678e2dce250ed66e93af409759be22cd6375dd17"
