@@ -202,8 +202,8 @@ function Routes() {
       {!user ? (
         <AuthStackScreen />
       ) : (
-          <TabStack />
-        )}
+        <TabStack />
+      )}
     </NavigationContainer>
   );
 }
