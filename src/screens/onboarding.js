@@ -16,7 +16,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
-import SlidePanel from '@/components/SlidingPanel';
+// import SlidePanel from '@/components/SlidingPanel';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
