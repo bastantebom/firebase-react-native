@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 import {Divider} from 'react-native-paper';
-import {Colors, GlobalStyle, timePassed} from '@/globals';
+import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import {PaddingView, AppText} from '@/components';
@@ -110,7 +110,7 @@ const Post = ({data}) => {
             }}
           />
         </View>
-        <View style={[styles.postDetailContainer, {backgroundColor: "red"}]}>
+        <View style={styles.postDetailContainer}>
           <AppText textStyle="body2" customStyle={GlobalStyle.marginBottom1}>
             {postName}
           </AppText>
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
   },
 
   postImageContainer: {
-    width: 122,
-    height: 126,
+    width: normalize(122),
+    height: normalize(126),
     borderRadius: 8,
     overflow: 'hidden',
   },
