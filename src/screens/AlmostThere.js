@@ -18,7 +18,7 @@ const AlmostThere = () => {
         setIsLocationReady(true);
         //console.log(initialLocation);
       },
-      (error) => Alert.alert('Error', JSON.stringify(error)),
+      (error) => console.log('Error', JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }
@@ -29,6 +29,7 @@ const AlmostThere = () => {
       skipPermissionRequests: true,
       authorizationLevel: 'whenInUse',
     });
+    Geolocation.requestAuthorization();
 
     findCoordinates();
   });
@@ -58,10 +59,9 @@ const AlmostThere = () => {
               initialRegion={{
                 latitude: JSON.parse(initialLocation).latitude,
                 longitude: JSON.parse(initialLocation).longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              zoomEnabled={true}>
+                latitudeDelta: 0.0052,
+                longitudeDelta: 0.0051,
+              }}>
               <Marker
                 coordinate={{
                   latitude: JSON.parse(initialLocation).latitude,
