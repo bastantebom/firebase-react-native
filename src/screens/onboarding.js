@@ -14,10 +14,7 @@ import {
 import Swiper from 'react-native-swiper';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-import AppText from '@/components/AppText/AppText';
-import AppButton from '@/components/AppButton';
-import SlidePanel from '@/components/SlidingPanel';
-import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
+import {AppText, AppButton, SlidePanel, AppViewContainer} from '@/components';
 
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';

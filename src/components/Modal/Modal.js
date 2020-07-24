@@ -2,11 +2,10 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
-import AppButton from '@/components/AppButton';
-import AppText from '../AppText/AppText';
+
 import {ScrollView} from 'react-native-gesture-handler';
-import AppViewContainer from '../AppViewContainer/AppViewContainer';
 import {Close} from '@/assets/images/icons/';
+import {AppButton, AppViewContainer, AppText} from '@/components';
 
 // create a component
 const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {

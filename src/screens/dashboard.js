@@ -3,8 +3,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import AppText from '@/components/AppText/AppText';
-import AppButton from '@/components/AppButton';
+import {AppButton, AppText} from '@/components';
 import auth from '@react-native-firebase/auth';
 
 const styles = StyleSheet.create({

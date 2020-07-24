@@ -7,7 +7,7 @@ import AppText from '@/components/AppText/AppText';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import PaddingView from '@/components/AppViewContainer/PaddingView';
 import Notification from '@/components/Notification';
-import AppButton from '@/components/AppButton';
+import AppButton from '@/components/AppButton/AppButton';
 import SlidingPanel  from '@/components/SlidingPanel';
 import Posts from '@/components/Post/Posts';
 

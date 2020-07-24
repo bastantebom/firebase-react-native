@@ -4,9 +4,8 @@ import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
-import AppText from '@/components/AppText/AppText';
-import AppInput from '@/components/AppInput/AppInput';
-import AppButton from '@/components/AppButton';
+
+import {AppText, AppInput, AppButton} from '@/components';
 
 //import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 //SVG Import

@@ -13,11 +13,10 @@ import auth from '@react-native-firebase/auth';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
-import AppText from '@/components/AppText/AppText';
-import AppInput from '@/components/AppInput/AppInput';
-import AppButton from '@/components/AppButton';
-import Colors from '@/globals/Colors';
+import {AppButton, AppInput, AppText} from '@/components';
 
+
+import Colors from '@/globals/Colors';
 
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';

@@ -6,8 +6,7 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
-import AppText from '@/components/AppText/AppText';
-import AppButton from '@/components/AppButton';
+import {AppText, AppButton} from '@/components';
 import ProfileImageUpload from '@/components/ImageUpload/ProfileImageUpload';
 import PostFilter from '@/components/PostFilter/PostFilter';
 

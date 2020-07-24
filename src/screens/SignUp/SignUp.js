@@ -9,9 +9,7 @@ import React, {
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
-import AppText from '@/components/AppText/AppText';
-import AppInput from '@/components/AppInput/AppInput';
-import AppButton from '@/components/AppButton';
+import {AppButton, AppInput, AppText} from '@/components';
 //import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 //SVG Import
 import Close from '@/assets/images/icons/close.svg';
