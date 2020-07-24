@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Divider } from 'react-native-paper';
 import { Colors, GlobalStyle, Utils } from '@/globals';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import { PaddingView, AppText } from '@/components'
 import { Verified, JarHeart, StarRating, NavigationPinRed, NavigationArrow, TransportationBox } from '@/assets/images/icons';
@@ -34,33 +35,55 @@ const Post = ({ data }) => {
     }
 
     return (
+
         <PaddingView paddingSize={2} style={styles.container}>
-            <View style={styles.userInfoContainer}>
-                <View style={styles.userInfoImageContainer}>
-                    <Image style={GlobalStyle.image} source={{
-                        uri: userImage,
-                    }} />
-                </View>
-                <View style={styles.userInfoDetailsContainer}>
-                    <View style={styles.userInfoDetailsNameContainer}>
-                        <AppText textStyle="caption" customStyle={styles.userInfoDetailsName} >{name}</AppText>
-                        <VerifiedBadge />
-                    </View>
-                    <View style={styles.userInfoDetailsUsernameContainer}>
-                        <AppText textStyle="eyebrow2">@{username}</AppText>
+            <SkeletonContent
+                isLoading={false}
+                containerStyle={styles.userInfoContainer}
+                layout={[
+                    styles.userInfoImageContainer,
+                    {
+                        children: [
+                            {
+                                width: 200,
+                                height: 10
+                            },
+                            {
+                                width: 200,
+                                height: 10
+                            }
+                        ]
+                    }
 
-                        <View style={styles.starRatingContainer}>
-                            <StarRating width={12} height={12} />
-                            <AppText textStyle="eyebrow2">{rating}</AppText>
+                ]}
+            >
+                <View style={styles.userInfoContainer}>
+                    <View style={styles.userInfoImageContainer}>
+                        <Image style={GlobalStyle.image} source={{
+                            uri: userImage,
+                        }} />
+                    </View>
+                    <View style={styles.userInfoDetailsContainer}>
+                        <View style={styles.userInfoDetailsNameContainer}>
+                            <AppText textStyle="caption" customStyle={styles.userInfoDetailsName} >{name}</AppText>
+                            <VerifiedBadge />
                         </View>
+                        <View style={styles.userInfoDetailsUsernameContainer}>
+                            <AppText textStyle="eyebrow2">@{username}</AppText>
 
-                        <AppText textStyle="eyebrow2">{timeAgo(createdAt)}</AppText>
+                            <View style={styles.starRatingContainer}>
+                                <StarRating width={12} height={12} />
+                                <AppText textStyle="eyebrow2">{rating}</AppText>
+                            </View>
+
+                            <AppText textStyle="eyebrow2">{timeAgo(createdAt)}</AppText>
+                        </View>
                     </View>
+                    <TouchableOpacity>
+                        <JarHeart width={20} height={20} />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity>
-                    <JarHeart width={20} height={20} />
-                </TouchableOpacity>
-            </View>
+            </SkeletonContent>
 
             <View style={styles.postContainer}>
                 <View style={styles.postImageContainer}>
