@@ -1,4 +1,4 @@
-import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
+import React, { useRef, createRef, useState, useEffect, useContext } from 'react';
 import {
   View,
   Image,
@@ -14,27 +14,27 @@ import {
 import Swiper from 'react-native-swiper';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-import {AppText, AppButton, SlidePanel, AppViewContainer} from '@/components';
+import {AppText, AppButton, AppViewContainer} from '@/components';
 
 import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';
 import Login from '@/screens/login';
 import SignUp from '@/screens/SignUp';
 
-import Polygon from '@/assets/images/polygon.svg';
+import PolygonStatic from '@/assets/images/polygon-static.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
 import IllustTwo from '@/assets/images/onboarding-img2.svg';
 import IllustThree from '@/assets/images/onboarding-img3.svg';
 import IllustFour from '@/assets/images/onboarding-img4.svg';
 
-import {Context} from '@/context';
+import { Context } from '@/context';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
 let bottomSheetRef = createRef();
 
-const Onboarding = ({navigation, illustration}) => {
+const Onboarding = ({ navigation, illustration }) => {
   const {
     sliderState,
     closeSlider,
@@ -80,14 +80,14 @@ const Onboarding = ({navigation, illustration}) => {
   const renderContent = () => {
     if (authType === 'signup') {
       return (
-        <View style={{backgroundColor: 'white', height: '100%'}}>
+        <View style={{ backgroundColor: 'white', height: '100%' }}>
           <SignUp />
         </View>
       );
     }
     if (authType === 'login') {
       return (
-        <View style={{backgroundColor: 'white', height: '100%'}}>
+        <View style={{ backgroundColor: 'white', height: '100%' }}>
           <Login />
         </View>
       );
@@ -157,69 +157,71 @@ const Onboarding = ({navigation, illustration}) => {
 
   return (
     <>
-      <TouchableWithoutFeedback onPress={closeHandler}>
-        <View style={styles.contentHolder}>
+
+      <View style={styles.contentHolder}>
+        <TouchableWithoutFeedback onPress={closeHandler}>
           <Animated.View
-            style={[{transform: [{rotate: rotation}]}, styles.bgImageHolder]}>
-            <Polygon height={height * 1.2} />
+            style={styles.bgImageHolder}>
+            <PolygonStatic width={width} height={height } />
           </Animated.View>
-          <TouchableOpacity
-            onPress={() => navigation.push('Dashboard')}
-            style={styles.link}>
-            <AppText textStyle="body2">Skip</AppText>
-          </TouchableOpacity>
-          <View style={styles.swiperHolder}>
-            <Swiper
-              dot={<View style={styles.dot} />}
-              activeDot={<View style={[styles.dot, styles.dotActive]} />}
-              loop={false}
-              onIndexChanged={onSwipe}>
-              {slideInfo.map((item, i) => {
-                return (
-                  <View key={i} style={styles.slideHolder}>
-                    <View style={{zIndex: 100, width: '100%'}}>
-                      {item.illustration}
-                    </View>
-                    <AppText textStyle="display6">{item.title}</AppText>
-                    <View style={styles.textHolder}>
-                      <AppText textStyle="body2" customStyle={styles.text}>
-                        {item.description}
-                      </AppText>
-                    </View>
+        </TouchableWithoutFeedback>
+        <TouchableOpacity
+          onPress={() => navigation.push('Dashboard')}
+          style={styles.link}>
+          <AppText textStyle="body2">Skip</AppText>
+        </TouchableOpacity>
+        <View style={styles.swiperHolder}>
+          <Swiper
+            dot={<View style={styles.dot} />}
+            activeDot={<View style={[styles.dot, styles.dotActive]} />}
+            loop={false}
+            onIndexChanged={onSwipe}>
+            {slideInfo.map((item, i) => {
+              return (
+                <View key={i} style={styles.slideHolder}>
+                  <View style={{ zIndex: 100, width: '100%' }}>
+                    {item.illustration}
                   </View>
-                );
-              })}
-            </Swiper>
-          </View>
-          <View style={styles.btnHolder}>
-            <AppButton
-              text="Login"
-              type="tertiary"
-              size="sm"
-              height="xl"
-              borderColor="primary"
-              onPress={() => {
-                clickHandler();
-                setAuthType('login');
-                bottomSheetRef.current.snapTo(0);
-              }}
-            />
-            <AppButton
-              text="Sign Up"
-              size="sm"
-              height="xl"
-              borderColor="primary"
-              propsButtonCustomStyle=""
-              onPress={() => {
-                clickHandler();
-                setAuthType('signup');
-                bottomSheetRef.current.snapTo(0);
-                //console.log(bottomSheetRef);
-              }}
-            />
-          </View>
+                  <AppText textStyle="display6">{item.title}</AppText>
+                  <View style={styles.textHolder}>
+                    <AppText textStyle="body2" customStyle={styles.text}>
+                      {item.description}
+                    </AppText>
+                  </View>
+                </View>
+              );
+            })}
+          </Swiper>
         </View>
-      </TouchableWithoutFeedback>
+        <View style={styles.btnHolder}>
+          <AppButton
+            text="Login"
+            type="tertiary"
+            size="sm"
+            height="xl"
+            borderColor="primary"
+            onPress={() => {
+              clickHandler();
+              setAuthType('login');
+              bottomSheetRef.current.snapTo(0);
+            }}
+          />
+          <AppButton
+            text="Sign Up"
+            size="sm"
+            height="xl"
+            borderColor="primary"
+            propsButtonCustomStyle=""
+            onPress={() => {
+              clickHandler();
+              setAuthType('signup');
+              bottomSheetRef.current.snapTo(0);
+              console.log(bottomSheetRef);
+            }}
+          />
+        </View>
+      </View>
+
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={['85%', '0%']}
@@ -274,8 +276,9 @@ const styles = StyleSheet.create({
   },
   bgImageHolder: {
     position: 'absolute',
-    bottom: 65,
-    right: -width * 0.4,
+    top: -50,
+    width: width
+
   },
   text: {
     textAlign: 'center',
