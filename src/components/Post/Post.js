@@ -9,6 +9,32 @@ import { PaddingView, AppText } from '@/components'
 import { Verified, JarHeart, StarRating, NavigationPinRed, NavigationArrow, TransportationBox } from '@/assets/images/icons';
 
 
+const LoadingSkeleton = ({ isLoading, children }) => {
+    return (
+        <SkeletonContent
+            isLoading={false}
+            containerStyle={styles.userInfoContainer}
+            layout={[
+                styles.userInfoImageContainer,
+                {
+                    children: [
+                        {
+                            width: 200,
+                            height: 10
+                        },
+                        {
+                            width: 200,
+                            height: 10
+                        }
+                    ]
+                }
+            ]}
+        >
+            {children}
+        </SkeletonContent>
+    )
+}
+
 const Post = ({ data }) => {
     const {
         userImage,
@@ -37,86 +63,66 @@ const Post = ({ data }) => {
     return (
 
         <PaddingView paddingSize={2} style={styles.container}>
-            <SkeletonContent
-                isLoading={false}
-                containerStyle={styles.userInfoContainer}
-                layout={[
-                    styles.userInfoImageContainer,
-                    {
-                        children: [
-                            {
-                                width: 200,
-                                height: 10
-                            },
-                            {
-                                width: 200,
-                                height: 10
-                            }
-                        ]
-                    }
 
-                ]}
-            >
-                <View style={styles.userInfoContainer}>
-                    <View style={styles.userInfoImageContainer}>
-                        <Image style={GlobalStyle.image} source={{
-                            uri: userImage,
-                        }} />
-                    </View>
-                    <View style={styles.userInfoDetailsContainer}>
-                        <View style={styles.userInfoDetailsNameContainer}>
-                            <AppText textStyle="caption" customStyle={styles.userInfoDetailsName} >{name}</AppText>
-                            <VerifiedBadge />
-                        </View>
-                        <View style={styles.userInfoDetailsUsernameContainer}>
-                            <AppText textStyle="eyebrow2">@{username}</AppText>
-
-                            <View style={styles.starRatingContainer}>
-                                <StarRating width={12} height={12} />
-                                <AppText textStyle="eyebrow2">{rating}</AppText>
-                            </View>
-
-                            <AppText textStyle="eyebrow2">{timeAgo(createdAt)}</AppText>
-                        </View>
-                    </View>
-                    <TouchableOpacity>
-                        <JarHeart width={20} height={20} />
-                    </TouchableOpacity>
-                </View>
-            </SkeletonContent>
-
-            <View style={styles.postContainer}>
-                <View style={styles.postImageContainer}>
+            <View style={styles.userInfoContainer}>
+                <View style={styles.userInfoImageContainer}>
                     <Image style={GlobalStyle.image} source={{
-                        uri: postImage,
+                        uri: userImage,
                     }} />
                 </View>
-                <View style={styles.postDetailContainer}>
-                    <AppText textStyle="body2" customStyle={GlobalStyle.marginBottom1} >{postName}</AppText>
-                    <AppText textStyle="price" customStyle={styles.priceText}>
-                        ₱ {postPrice}
-                    </AppText>
-
-                    <Divider style={styles.dividerStyle} />
-
-                    <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
-                        <View style={GlobalStyle.rowCenter}>
-                            <NavigationPinRed width={16} height={16} />
-                            <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentPlaceholder, marginLeft: 4 }}>{postServiceAddress}</AppText>
-                        </View>
-                        <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
-                            <NavigationArrow width={12} height={12} />
-                            <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentPlaceholder, marginLeft: 4 }}>{postServiceRadius}</AppText>
-                        </View>
+                <View style={styles.userInfoDetailsContainer}>
+                    <View style={styles.userInfoDetailsNameContainer}>
+                        <AppText textStyle="caption" customStyle={styles.userInfoDetailsName} >{name}</AppText>
+                        <VerifiedBadge />
                     </View>
+                    <View style={styles.userInfoDetailsUsernameContainer}>
+                        <AppText textStyle="eyebrow2">@{username}</AppText>
 
-                    <View style={GlobalStyle.rowCenter}>
-                        <TransportationBox width={16} height={16} />
-                        <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>{postDeliveryMethod}</AppText>
+                        <View style={styles.starRatingContainer}>
+                            <StarRating width={12} height={12} />
+                            <AppText textStyle="eyebrow2">{rating}</AppText>
+                        </View>
+
+                        <AppText textStyle="eyebrow2">{timeAgo(createdAt)}</AppText>
                     </View>
                 </View>
+                <TouchableOpacity>
+                    <JarHeart width={20} height={20} />
+                </TouchableOpacity>
             </View>
-        </PaddingView>
+
+        <View style={styles.postContainer}>
+            <View style={styles.postImageContainer}>
+                <Image style={GlobalStyle.image} source={{
+                    uri: postImage,
+                }} />
+            </View>
+            <View style={styles.postDetailContainer}>
+                <AppText textStyle="body2" customStyle={GlobalStyle.marginBottom1} >{postName}</AppText>
+                <AppText textStyle="price" customStyle={styles.priceText}>
+                    ₱ {postPrice}
+                </AppText>
+
+                <Divider style={styles.dividerStyle} />
+
+                <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
+                    <View style={GlobalStyle.rowCenter}>
+                        <NavigationPinRed width={16} height={16} />
+                        <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentPlaceholder, marginLeft: 4 }}>{postServiceAddress}</AppText>
+                    </View>
+                    <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
+                        <NavigationArrow width={12} height={12} />
+                        <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentPlaceholder, marginLeft: 4 }}>{postServiceRadius}</AppText>
+                    </View>
+                </View>
+
+                <View style={GlobalStyle.rowCenter}>
+                    <TransportationBox width={16} height={16} />
+                    <AppText textStyle="eyebrow2" customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>{postDeliveryMethod}</AppText>
+                </View>
+            </View>
+        </View>
+        </PaddingView >
     )
 }
 
