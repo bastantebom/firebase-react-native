@@ -27,33 +27,6 @@ const VerifyAccount = (route) => {
   const [inputStyle, setInputStyle] = useState([]);
   const [verifyArray, setVerifyArray] = useState(['', '', '', '']);
 
-  //const [initialTime, setInitialTime] = useState({minutes: 10, seconds: 0});
-  const [seconds, setSeconds] = useState(59);
-  const [minutes, setMinutes] = useState(9);
-
-  //const [timeLeft, setTimeLeft] = useState(seconds);
-
-  useEffect(() => {
-    // exit early when we reach 0
-    if (!seconds && !minutes) return;
-
-    // save intervalId to clear the interval when the
-    // component re-renders
-    const intervalId = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      } else {
-        setMinutes(minutes - 1);
-        setSeconds(59);
-      }
-    }, 1000);
-
-    // clear interval on re-render to avoid memory leaks
-    return () => clearInterval(intervalId);
-    // add timeLeft as a dependency to re-rerun the effect
-    // when we update it
-  }, [seconds]);
-
   const onVerifyChange = (index) => {
     return (value) => {
       if (isNaN(Number(value))) {
@@ -126,9 +99,9 @@ const VerifyAccount = (route) => {
   const sendVerification = (code) => {
     if (code.join('').length === 4) {
       const nCode = parseInt(code.join(''));
-      console.log('SEND VERIFICATION');
-      console.log(route?.route?.params?.uid);
-      console.log(nCode);
+      //console.log('SEND VERIFICATION');
+      //console.log(route?.route?.params?.uid);
+      //console.log(nCode);
 
       VerifyService.verifyCode({
         uid: route?.route?.params?.uid,
@@ -152,21 +125,6 @@ const VerifyAccount = (route) => {
     } else {
       return;
     }
-    /*VerifyService.verifyCode({
-      uid: route?.route?.params?.uid,
-      verification_code: 1234,
-    })
-      .then((response) => {
-        if (response.success) {
-          //navigation.navigate('VerifyAccount', {...response, ...formValues});
-        } else {
-          //navigation.navigate('Onboarding');
-        }
-      })
-      .catch((error) => {
-        console.log('With Error in the API SignUp ' + error);
-      });
-      */
   };
 
   const resendCodeHandler = () => {
@@ -184,11 +142,6 @@ const VerifyAccount = (route) => {
         console.log('With Error in the API SignUp ' + error);
       });
   };
-
-  //const handleBorderColor = (index) => {
-  //console.log(inputState);
-  // return inputState[index] ? AppColor.contentOcean : AppColor.neutralGray;
-  //};
 
   return (
     <View style={styles.container}>
@@ -208,12 +161,7 @@ const VerifyAccount = (route) => {
           </AppText>
         </AppText>
       </AppViewContainer>
-      <AppViewContainer
-        customStyle={{...styles.timerWrapper, ...styles.spacingBottom}}>
-        <AppText textStyle="body2" customStyle={styles.timerText}>
-          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-        </AppText>
-      </AppViewContainer>
+
       <View style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
         {[firstTextInput, secondTextInput, thirdTextInput, fourthTextInput].map(
           (textInputRef, index) => (

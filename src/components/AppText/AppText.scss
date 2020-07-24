@@ -1,112 +1,117 @@
 %regular {
-    font-family: "RoundedMplus1c-Regular";
+  font-family: 'RoundedMplus1c-Regular';
 }
 
 %medium {
-    font-family: "RoundedMplus1c-Medium";
+  font-family: 'RoundedMplus1c-Medium';
 }
 
 %light {
-    font-family: "RoundedMplus1c-Light";
+  font-family: 'RoundedMplus1c-Light';
 }
 
-
 .display1 {
-    @extend %light;
-    font-size: 56px;
-    letter-spacing: -1.5px;
+  @extend %light;
+  font-size: 56px;
+  letter-spacing: -1.5px;
 }
 
 .display2 {
-    @extend %light;
-    font-size: 48px;
-    letter-spacing: -0.5px;
+  @extend %light;
+  font-size: 48px;
+  letter-spacing: -0.5px;
 }
 
 .display3 {
-    @extend %regular;
-    font-size: 40px;
-    letter-spacing: 0px;
+  @extend %regular;
+  font-size: 40px;
+  letter-spacing: 0px;
 }
 
 .display4 {
-    @extend %regular;
-    font-size: 32px;
-    letter-spacing: 0.25px;
+  @extend %regular;
+  font-size: 32px;
+  letter-spacing: 0.25px;
 }
 
 .display5 {
-    @extend %regular;
-    font-size: 24px;
-    letter-spacing: 0px;
+  @extend %regular;
+  font-size: 24px;
+  letter-spacing: 0px;
 }
 
 .display6 {
-    @extend %medium;
-    font-size: 20px;
-    letter-spacing: 0.15px;
+  @extend %medium;
+  font-size: 20px;
+  letter-spacing: 0.15px;
 }
 
 .subtitle1 {
-    @extend %medium;
-    font-size: 18px;
-    letter-spacing: 0.15px;
+  @extend %medium;
+  font-size: 18px;
+  letter-spacing: 0.15px;
 }
 
 .subtitle1 {
-    @extend %medium;
-    font-size: 14px;
-    letter-spacing: 0.1px;
+  @extend %medium;
+  font-size: 14px;
+  letter-spacing: 0.1px;
 }
 
 .body1 {
-    @extend %regular;
-    font-size: 16px;
-    letter-spacing: 0.5px;
+  @extend %regular;
+  font-size: 16px;
+  letter-spacing: 0.5px;
 }
 
 .body2 {
-    @extend %regular;
-    font-size: 14px;
-    letter-spacing: 0.25px;
+  @extend %regular;
+  font-size: 14px;
+  letter-spacing: 0.25px;
 }
 
 .body3 {
-    @extend %medium;
-    font-size: 14px;
-    letter-spacing: 0.25px;
+  @extend %medium;
+  font-size: 14px;
+  letter-spacing: 0.25px;
 }
 
 .button1 {
-    @extend %medium;
-    font-size: 14px;
-    letter-spacing: 1.25px;
-    text-transform: uppercase;
+  @extend %medium;
+  font-size: 14px;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
 }
 
 .button2 {
-    @extend %medium;
-    font-size: 14px;
-    letter-spacing: 1.25px;
+  @extend %medium;
+  font-size: 14px;
+  letter-spacing: 1.25px;
 }
 
 .caption {
-    @extend %regular;
-    font-size: 12px;
-    letter-spacing: 0.4px;
+  @extend %regular;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}
+
+.promo {
+  @extend %medium;
+  font-size: 12px;
+  letter-spacing: 0.4px;
 }
 
 .eyebrow1 {
-    @extend %regular;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+  @extend %regular;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
 .eyebrow2 {
-    @extend %regular;
-    font-size: 10px;
-    letter-spacing: 0.8px;
+  @extend %regular;
+  font-size: 10px;
+  letter-spacing: 0.8px;
 }
 
 .price {

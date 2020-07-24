@@ -1,12 +1,6 @@
 //import liraries
-import React, {
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  useContext,
-  useEffect,
-} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 //App Specific Component
 import AppColor from '@/globals/Colors';
@@ -21,9 +15,29 @@ import LoginService from '@/services/LoginService';
 import {Close, EyeDark, EyeLight} from '@/assets/images/icons/';
 
 import {Context} from '@/context';
+import SwitchComponent from '@/components/Switch/Switch';
+import {ScrollView} from 'react-native-gesture-handler';
+
+import ModalComponent from '@/components/Modal/Modal';
 
 // create a component
 const SignUp = (props) => {
+  const [isPromo, setIsPromo] = useState(false);
+  const [modalContentNumber, setModalContentNumber] = useState(0);
+  const toggleSwitch = () => {
+    setIsPromo((previousState) => !previousState);
+  };
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible((previousState) => !previousState);
+    //alert(clickLink);
+    //setModalContentNumber(contentNum);
+  };
+
+  const modalContent = (contentNum) => setModalContentNumber(contentNum);
+
   const [isVisible, setIsVisible] = useState(false);
 
   const [loginUse, setLoginUse] = useState('');
@@ -43,7 +57,10 @@ const SignUp = (props) => {
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [passwordBorder, setPasswordBorder] = useState({});
 
-  const [signUpForm, setSignUpForm] = useState({});
+  const [signUpForm, setSignUpForm] = useState({
+    terms_conditions: true,
+    receive_updates: false,
+  });
 
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: AppColor.buttonDisable,
@@ -51,14 +68,9 @@ const SignUp = (props) => {
   });
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [buttonText, setButtonText] = useState('Sign up');
-  //const ref = useRef(null);
+
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
-  //const [data, setData] = useState({});
-  //const [passForm, setPassForm] = useState({});
-  //const [uid, setUid] = useState('');
-
-  //const [authType, setAuthType] = useState('signup');
 
   const cleanSignUpForm = () => {
     setLoginUse('');
@@ -77,7 +89,10 @@ const SignUp = (props) => {
     setIsValidPassword(true);
     setPasswordBorder({});
 
-    setSignUpForm({});
+    setSignUpForm({
+      terms_conditions: true,
+      receive_updates: false,
+    });
 
     setButtonStyle({
       backgroundColor: AppColor.buttonDisable,
@@ -92,13 +107,10 @@ const SignUp = (props) => {
 
   useEffect(() => {
     // exit early when we reach 0
-    if (email.length === 11) {
-      setSignUpForm({login: '+63' + email.substr(1)});
-    } else {
-      setSignUpForm({login: email});
-    }
-
-    //console.log(signUpForm);
+    const newKeyValue = {
+      login: email.length === 11 ? '+63' + email.substr(1) : email,
+    };
+    setSignUpForm({...signUpForm, ...newKeyValue});
     checkInputComplete();
   }, [isValidMobileNumber]);
 
@@ -107,33 +119,30 @@ const SignUp = (props) => {
     setIsValidName(() => isValidName);
   }, [isValidName]);
 
+  useEffect(() => {
+    // exit early when we reach 0
+    const newKeyValue = {receive_updates: isPromo};
+    setSignUpForm({...signUpForm, ...newKeyValue});
+  }, [isPromo]);
+
   const validateEmail = (email) => {
     let mobileReg = /^(09|\+639)\d{9}$/;
-    //console.log(mobileReg.test(email) + '&&' + email.length)
-
     if (
       mobileReg.test(email) === true &&
       ((email.substring(0, 1) === '0' && email.length === 11) ||
         (email.length === 13 && email.substring(0, 1) === '+'))
     ) {
       setEmail(email);
-      //console.log('Mobile number validation');
-      //console.log(isValidMobileNumber);
       setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
-      //console.log(isValidMobileNumber);
-      //setEmailBorder({borderColor: AppColor.contentEbony});
       return true;
     } else {
-      //console.log('Pumasok sa else');
       setIsValidMobileNumber(false);
-
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
       if (reg.test(email) === false) {
         setEmail(email);
         return false;
       } else {
         setEmail(email);
-        //setEmailBorder({borderColor: AppColor.contentEbony});
         return true;
       }
     }
@@ -143,14 +152,11 @@ const SignUp = (props) => {
     if (validateEmail(email)) {
       setButtonText('Next');
       setIsValidEmail(true);
-      //console.log('After Validate');
-      //console.log(isValidMobileNumber);
-      //setLoginUse('');
       const newKeyValue = {login: email};
       setSignUpForm({...signUpForm, ...newKeyValue});
+      //console.log(signUpForm);
       checkInputComplete();
     } else {
-      //console.log('Pumasok sa else On Chnage');
       if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
         setLoginUse(() => {
           setLoginUse('mobile number');
@@ -161,7 +167,6 @@ const SignUp = (props) => {
         });
       }
 
-      //setEmailBorder({borderColor: AppColor.neutralGray});
       setIsValidEmail(false);
       setButtonText('Sign up');
     }
@@ -172,20 +177,19 @@ const SignUp = (props) => {
     if (nameReg.test(name)) {
       setName(name);
       setIsValidName(true);
-      //setNameBorder({borderColor: AppColor.contentEbony});
+
       const newKeyValue = {full_name: name};
       setSignUpForm({...signUpForm, ...newKeyValue});
+      //console.log('Password Valid');
       //console.log(signUpForm);
       checkInputComplete();
     } else {
       setName(name);
       setIsValidName(false);
-      //setNameBorder({borderColor: AppColor.errorCopy});
     }
 
     if (name.length === 0) {
       setIsValidName(true);
-      //setNameBorder({borderColor: AppColor.errorCopy});
     }
   };
 
@@ -193,12 +197,13 @@ const SignUp = (props) => {
     if (password.length > 5) {
       setIsValidPassword(true);
       setPassword(password);
-      //setPasswordBorder({borderColor: AppColor.contentEbony});
+
       const newKeyValue = {password: password};
       setSignUpForm({...signUpForm, ...newKeyValue});
+      //console.log('Password Valid');
+      //console.log(signUpForm);
       checkInputComplete();
     } else {
-      //setPasswordBorder({borderColor: AppColor.errorInput});
       setPassword(password);
       setIsValidPassword(false);
       setButtonStyle({
@@ -210,14 +215,10 @@ const SignUp = (props) => {
   };
 
   const checkInputComplete = () => {
-    //console.log('On Check Complete');
-    //console.log(isValidMobileNumber);
-    //console.log(signUpForm);
     if (isValidMobileNumber && name.length > 1) {
       setButtonStyle({});
       setButtonDisabled(false);
     } else {
-      //console.log('Pumasok sa else Complete');
       if (
         !isValidMobileNumber &&
         isValidEmail &&
@@ -243,35 +244,25 @@ const SignUp = (props) => {
   };
 
   const onBlurEmail = () => {
-    //alert('Blur');
-    //setIsActive(false);
     setEmailBorder({});
     if (loginUse === 'email') {
       if (!isValidEmail) {
-        console.log('Invalid Email');
         setIsValidLogin(false);
-        //setEmailBorder({borderColor: AppColor.errorInput});
         setButtonStyle({
           backgroundColor: AppColor.buttonDisable,
           borderColor: AppColor.buttonDisable,
         });
         setButtonDisabled(true);
-      } else if (isValidEmail) {
-        //setEmailBorder({borderColor: AppColor.contentEbony});
       }
     }
     if (loginUse === 'mobile number') {
       if (!isValidMobileNumber) {
-        console.log('invalid mobile');
         setIsValidLogin(false);
-        //setEmailBorder({borderColor: AppColor.errorInput});
         setButtonStyle({
           backgroundColor: AppColor.buttonDisable,
           borderColor: AppColor.buttonDisable,
         });
         setButtonDisabled(true);
-      } else if (isValidMobileNumber) {
-        //setEmailBorder({borderColor: AppColor.contentEbony});
       }
     }
     if (email.length === 0) {
@@ -280,7 +271,6 @@ const SignUp = (props) => {
   };
 
   const onFocusEmail = () => {
-    //alert('Focus');
     setIsValidLogin(true);
     setEmailBorder({borderColor: AppColor.contentOcean});
   };
@@ -290,7 +280,6 @@ const SignUp = (props) => {
   };
 
   const onFocusName = () => {
-    //setIsValidName(true);
     setNameBorder({borderColor: AppColor.contentOcean});
   };
 
@@ -299,19 +288,15 @@ const SignUp = (props) => {
   };
 
   const onFocusPassword = () => {
-    //alert('Focus');
     setPasswordBorder({borderColor: AppColor.contentOcean});
     setIsValidPassword(true);
   };
 
-  // const { closeSlider } = useContext(Context);
   const {closeSlider, authType, setAuthType} = useContext(Context);
 
-  signUpEmail = (formValues) => {
-    setIsLoading(true);
-
+  const signUpEmail = (formValues) => {
     //console.log(formValues);
-
+    setIsLoading(true);
     SignUpService.createUser(JSON.stringify(formValues))
       .then((response) => {
         setIsLoading(false);
@@ -327,10 +312,92 @@ const SignUp = (props) => {
       });
   };
 
+  const TandC = () => {
+    return (
+      <>
+        <View style={styles.terms}>
+          <AppText
+            textStyle="caption"
+            customStyle={{color: AppColor.promoCopy}}>
+            By signing up, I agree to Servbees’{' '}
+          </AppText>
+          <TouchableOpacity
+            onPress={() => {
+              modalContent(0);
+              toggleModal();
+            }}>
+            <AppText
+              textStyle="promo"
+              customStyle={{
+                color: AppColor.promoCopy,
+                textDecorationLine: 'underline',
+              }}>
+              Terms of Service
+            </AppText>
+          </TouchableOpacity>
+          <AppText
+            textStyle="caption"
+            customStyle={{color: AppColor.promoCopy}}>
+            ,{' '}
+          </AppText>
+          <TouchableOpacity
+            onPress={() => {
+              modalContent(1);
+              toggleModal();
+            }}>
+            <AppText
+              textStyle="promo"
+              customStyle={{
+                color: AppColor.promoCopy,
+                textDecorationLine: 'underline',
+              }}>
+              Payments Terms of Servbees
+            </AppText>
+          </TouchableOpacity>
+          <AppText
+            textStyle="caption"
+            customStyle={{color: AppColor.promoCopy}}>
+            , and{' '}
+          </AppText>
+          <TouchableOpacity
+            onPress={() => {
+              modalContent(2);
+              toggleModal();
+            }}>
+            <AppText
+              textStyle="promo"
+              customStyle={{
+                color: AppColor.promoCopy,
+                textDecorationLine: 'underline',
+              }}>
+              Privacy Policy
+            </AppText>
+            <AppText
+              textStyle="caption"
+              customStyle={{color: AppColor.promoCopy}}>
+              .
+            </AppText>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.promos}>
+          <View style={styles.promoCopy}>
+            <AppText
+              textStyle="caption"
+              customStyle={{color: AppColor.promoCopy}}>
+              I want to receive offers, promos, and updates from Servbees.
+            </AppText>
+          </View>
+          <View style={styles.promoSwitch}>
+            <SwitchComponent onValueChange={toggleSwitch} value={isPromo} />
+          </View>
+        </View>
+      </>
+    );
+  };
+
   return (
-    ////////////////////
     <>
-      {authType === 'signup' ? (
+      <ScrollView>
         <View style={styles.mainWrapper}>
           <View style={styles.contentWrapper}>
             <TouchableOpacity
@@ -389,35 +456,30 @@ const SignUp = (props) => {
                 </AppText>
               ) : null}
               <View style={{position: 'relative'}}>
-                {!isValidMobileNumber ? (
-                  <AppInput
-                    label="Password"
-                    onBlur={onBlurPassword}
-                    onFocus={onFocusPassword}
-                    secureTextEntry={!isVisible ? true : false}
-                    password
-                    value={password}
-                    keyboardType="default"
-                    customStyle={{
-                      ...styles.customInputStyle,
-                      ...(!isValidPassword && password.length > 0
-                        ? styles.withError
-                        : isValidPassword && password.length > 0
-                        ? styles.withoutError
-                        : styles.defaultBorder),
-                      ...passwordBorder,
-                    }}
-                    onChangeText={(password) => onPasswordChange(password)}
-                  />
-                ) : null}
-
-                {!isValidMobileNumber ? (
-                  <View style={styles.passwordToggle}>
-                    <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
-                      {!isVisible ? <EyeDark /> : <EyeLight />}
-                    </TouchableOpacity>
-                  </View>
-                ) : null}
+                <AppInput
+                  label="Password"
+                  onBlur={onBlurPassword}
+                  onFocus={onFocusPassword}
+                  secureTextEntry={!isVisible ? true : false}
+                  password
+                  value={password}
+                  keyboardType="default"
+                  customStyle={{
+                    ...styles.customInputStyle,
+                    ...(!isValidPassword && password.length > 0
+                      ? styles.withError
+                      : isValidPassword && password.length > 0
+                      ? styles.withoutError
+                      : styles.defaultBorder),
+                    ...passwordBorder,
+                  }}
+                  onChangeText={(password) => onPasswordChange(password)}
+                />
+                <View style={styles.passwordToggle}>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                    {!isVisible ? <EyeDark /> : <EyeLight />}
+                  </TouchableOpacity>
+                </View>
               </View>
               {!isValidPassword ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
@@ -429,6 +491,13 @@ const SignUp = (props) => {
                   customStyle={styles.emptyErrorCopy}></AppText>
               )}
             </View>
+
+            <TandC />
+            <ModalComponent
+              isModalVisible={isModalVisible}
+              onClose={toggleModal}
+              modalContentNumber={modalContentNumber}
+            />
 
             <View>
               <AppButton
@@ -483,9 +552,7 @@ const SignUp = (props) => {
             </View>
           </View>
         </View>
-      ) : (
-        <Login />
-      )}
+      </ScrollView>
     </>
   );
 };
@@ -493,7 +560,6 @@ const SignUp = (props) => {
 // define your styles
 const styles = StyleSheet.create({
   mainWrapper: {
-    // flex: 1,
     padding: 24,
     flexDirection: 'column',
   },
@@ -521,7 +587,6 @@ const styles = StyleSheet.create({
 
   customInputStyle: {
     marginBottom: 4,
-    //borderColor: AppColor.neutralGray,
   },
 
   forgotPasswordLink: {
@@ -582,6 +647,31 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 18,
+  },
+
+  terms: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    //justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+
+  promos: {
+    flex: 1,
+    flexDirection: 'row',
+    //justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+
+  promoCopy: {
+    width: '80%',
+  },
+  promoSwitch: {
+    width: '20%',
+    alignItems: 'flex-end',
   },
 });
 

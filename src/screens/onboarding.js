@@ -217,7 +217,7 @@ const Onboarding = ({navigation, illustration}) => {
                 clickHandler();
                 setAuthType('signup');
                 bottomSheetRef.current.snapTo(0);
-                console.log(bottomSheetRef);
+                //console.log(bottomSheetRef);
               }}
             />
           </View>
