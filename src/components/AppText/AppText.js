@@ -19,8 +19,6 @@ const AppText = ({children, textStyle, customStyle, color}) => {
     };
   }
 
-  console.log("normalize: " + normalize)
-
   return <Text style={computedTextStyle}>{children}</Text>;
 };
 
