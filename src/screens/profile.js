@@ -4,20 +4,12 @@ import {
   StyleSheet,
   ScrollView
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
+
 import AppText from '@/components/AppText/AppText';
 import AppButton from '@/components/AppButton';
-import auth from '@react-native-firebase/auth';
 import ProfileImageUpload from '@/components/ImageUpload/ProfileImageUpload';
 import PostFilter from '@/components/PostFilter/PostFilter';
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%'
-  }
-})
 
 function Profile({ navigation }) {
 
@@ -71,3 +63,12 @@ function Profile({ navigation }) {
 }
 
 export default Profile;
+
+const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%'
+  }
+})

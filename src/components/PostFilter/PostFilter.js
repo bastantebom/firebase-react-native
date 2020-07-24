@@ -1,38 +1,32 @@
 import React, { useState } from 'react'
-import AppText from '@/components/AppText/AppText'
-import ImagePicker from 'react-native-image-crop-picker';
-import AppButton from '@/components/AppButton';
-import { View, Text, Alert, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { Chip } from 'react-native-paper';
 import Fluid from "react-native-fluid-transitions";
-import AppColor from '@/globals/Colors';
 
-import Search from '@/assets/images/icons/search.svg';
+import AppColor from '@/globals/Colors';
 import AppInput from '@/components/AppInput/AppInput';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Colors from '@/globals/Colors';
+import AppText from '@/components/AppText/AppText'
+import Search from '@/assets/images/icons/search.svg';
 
 const PostFilter = () => {
 
-  const [selected, setSelected] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const onChangeSearch = query => setSearchQuery(query);
+  const deviceWidth = Dimensions.get('window').width;
+
+  const [selected, setSelected] = useState(true);
 
   const [active, setActive] = useState(false);
   const toggle = () => setActive(a => !a);
 
   const filterTabs = [
-    { name: 'All', selected: true },
-    { name: 'Services', selected: false },
-    { name: 'Sell', selected: false },
-    { name: 'Need', selected: false },
+    { name: 'All',  },
+    { name: 'Services' },
+    { name: 'Sell' },
+    { name: 'Need' },
   ] 
 
-  const deviceWidth = Dimensions.get('window').width;
-
   const handleFilter = (item, i) => {
-    // setSelected(!selected)
-    Alert.alert(item.name, JSON.stringify(item.selected))
+    i => setSelected(!selected)
+    console.log(item.name, JSON.stringify(i))
   }
 
   return (
