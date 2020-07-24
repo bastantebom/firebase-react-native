@@ -31,6 +31,10 @@ const Post = () => {
             setColor(colorArray[x]);
             setPage(pageArray[x]);
           }}
+          containerCustomStyle={{
+            transform: [{ scaleX: -1 }]
+          }}
+          onScroll={(e)=> console.log(e.contentOffset)}
           data={[
             {
               title: 'hello',
