@@ -54,7 +54,11 @@
 			</dict>
 		</dict>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string></string>
+		<string>$(PRODUCT_NAME) would like to access your location.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>$(PRODUCT_NAME) would like to access your location.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>$(PRODUCT_NAME) would like to access your location.</string>
 		<key>UIAppFonts</key>
 		<array>
 			<string>RoundedMplus1c-Light.ttf</string>

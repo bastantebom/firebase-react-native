@@ -323,8 +323,9 @@ const SignUp = (props) => {
           </AppText>
           <TouchableOpacity
             onPress={() => {
-              modalContent(0);
-              toggleModal();
+              //modalContent(0);
+              //toggleModal();
+              navigation.navigate('AlmostThere');
             }}>
             <AppText
               textStyle="promo"
