@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Animated
 } from 'react-native';
 
 import {Posts, PaddingView, AppInput, AppText} from '@/components';
@@ -23,6 +24,8 @@ import Modal from 'react-native-modal';
 
 function Dashboard({navigation}) {
   const [modalState, setModalState] = useState(false);
+  const [showLocation, setShowLocation] = useState(true);
+  const [margin, setMargin] = useState(16)
 
   const toggleModal = () => {
     setModalState(!modalState);
@@ -117,6 +120,42 @@ function Dashboard({navigation}) {
       postServiceRadius: '1000m',
       postDeliveryMethod: 'Home Service',
     },
+    {
+      id: 5,
+      userImage: 'https://reactnative.dev/img/tiny_logo.png',
+      name: 'Mark Santiago',
+      username: 'Markee',
+      rating: 4.5,
+      createdAt: 53482,
+      isVerified: true,
+
+      postType: 'Service',
+      postImage:
+        'https://i.pinimg.com/originals/45/7c/16/457c165d41e342f1765e95ac46fb1d9b.jpg',
+      postName: '🍔 Wayne’s Burgers and Smoothies!',
+      postPrice: 20,
+      postServiceAddress: '#8 Kaimito Street',
+      postServiceRadius: '1000m',
+      postDeliveryMethod: 'Home Service',
+    },
+    {
+      id: 6,
+      userImage: 'https://reactnative.dev/img/tiny_logo.png',
+      name: 'Mark Santiago',
+      username: 'Markee',
+      rating: 4.5,
+      createdAt: 53482,
+      isVerified: true,
+
+      postType: 'Service',
+      postImage:
+        'https://i.pinimg.com/originals/45/7c/16/457c165d41e342f1765e95ac46fb1d9b.jpg',
+      postName: '🍔 Wayne’s Burgers and Smoothies!',
+      postPrice: 20,
+      postServiceAddress: '#8 Kaimito Street',
+      postServiceRadius: '1000m',
+      postDeliveryMethod: 'Home Service',
+    },
   ];
 
   const SearchBarWithFilter = () => {
@@ -141,9 +180,10 @@ function Dashboard({navigation}) {
   };
 
   const Location = () => {
+
     return (
-      <View
-        style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginTop: 16}]}>
+      <Animated.View
+        style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginVertical: margin, height: 34 , overflow: "hidden"}, {height: fadeAnim}]}>
         <View style={{flexDirection: 'row'}}>
           <NavigationPinRed width={24} height={24} />
           <View style={{marginLeft: 8}}>
@@ -152,11 +192,10 @@ function Dashboard({navigation}) {
           </View>
         </View>
 
-        <ScrollView 
-          horizontal={true} 
+        <ScrollView
+          horizontal={true}
           style={{marginLeft: 40}}
-          showsHorizontalScrollIndicator={false}
-        >
+          showsHorizontalScrollIndicator={false}>
           <View style={styles.locationOption}>
             <NavigationArrow width={16} height={16} />
             <AppText>Nearest</AppText>
@@ -170,8 +209,46 @@ function Dashboard({navigation}) {
             <AppText>NearNear</AppText>
           </View>
         </ScrollView>
-      </View>
+      </Animated.View>
     );
+  };
+
+  const handleBeginScroll = () => {
+    console.log('hide location');
+    setShowLocation(false);
+    setMargin(4)
+    fadeOut()
+  };
+
+  const handleEndScroll = () => {
+    setTimeout(() => {
+      setShowLocation(true);
+      setMargin(16)
+      fadeIn()
+    }, 1000);
+    // setShowLocation(true);
+    
+
+    // setShowLocation(true)
+  };
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 34,
+      duration: 100,
+    }).start();
+
+  };
+
+  const fadeOut = () => {
+    // Will change fadeAnim value to 0 in 5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+    }).start();
   };
 
   return (
@@ -180,7 +257,11 @@ function Dashboard({navigation}) {
         <SearchBarWithFilter />
         <Location />
 
-        <Posts data={DummyData} />
+        <Posts
+          data={DummyData}
+          beginScrollFunction={handleBeginScroll}
+          endScrollFunction={handleEndScroll}
+        />
 
         <Modal
           isVisible={modalState}
