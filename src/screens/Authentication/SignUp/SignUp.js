@@ -17,7 +17,7 @@ import {Context} from '@/context';
 import SwitchComponent from '@/components/Switch/Switch';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import ModalComponent from '@/components/Modal/Modal';
+import ModalComponent from '@/screens/Authentication/SignUp/components/Modal';
 
 // create a component
 const SignUp = (props) => {
