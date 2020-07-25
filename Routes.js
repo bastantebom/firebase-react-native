@@ -6,15 +6,15 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Button, Text, View} from 'react-native';
 
 //screens
-import Onboarding from '@/screens/onboarding';
-import VerifyAccount from '@/screens/VerifyAccount';
+import Onboarding from '@/screens/Onboarding/onboarding';
+import VerifyAccount from '@/screens/Authentication/SignUp/VerifyAccount';
 import AlmostThere from '@/screens/Onboarding/AlmostThere';
 import ResetPassword from '@/screens/Authentication/ResetPassword';
 import {Dashboard} from '@/screens/Dashboard';
-import Profile from '@/screens/profile';
-import Hives from '@/screens/hive';
-import Post from '@/screens/post';
-import Activity from '@/screens/activity';
+import Profile from '@/screens/Profile/profile';
+import Hives from '@/screens/Hive/hive';
+import Post from '@/screens/Post/post';
+import Activity from '@/screens/Activity/activity';
 
 import {
   ServbeesAlt,

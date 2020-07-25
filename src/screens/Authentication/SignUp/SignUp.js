@@ -1,21 +1,44 @@
-import React, {
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  useContext,
-  useEffect,
-} from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
-
+//import liraries
+import React, {useState, useContext, useEffect} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+//App Specific Component
 import AppColor from '@/globals/Colors';
-import {AppButton, AppInput, AppText} from '@/components';
 
-import Close from '@/assets/images/icons/close.svg';
+import {AppText, AppInput, AppButton} from '@/components';
 
-import { Context } from '@/context';
+//import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
+//SVG Import
+import SignUpService from '@/services/SignUpService';
+import LoginService from '@/services/LoginService';
+import {Close, EyeDark, EyeLight} from '@/assets/images/icons/';
+
+import {Context} from '@/context';
+import SwitchComponent from '@/components/Switch/Switch';
+import {ScrollView} from 'react-native-gesture-handler';
+
+import ModalComponent from '@/components/Modal/Modal';
 
 // create a component
-const SignUp = forwardRef((props, ref) => {
+const SignUp = (props) => {
+  const [isPromo, setIsPromo] = useState(false);
+  const [modalContentNumber, setModalContentNumber] = useState(0);
+  const toggleSwitch = () => {
+    setIsPromo((previousState) => !previousState);
+  };
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible((previousState) => !previousState);
+    //alert(clickLink);
+    //setModalContentNumber(contentNum);
+  };
+
+  const modalContent = (contentNum) => setModalContentNumber(contentNum);
+
+  const [isVisible, setIsVisible] = useState(false);
+
   const [loginUse, setLoginUse] = useState('');
   const [isValidLogin, setIsValidLogin] = useState(true);
 
@@ -33,7 +56,10 @@ const SignUp = forwardRef((props, ref) => {
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [passwordBorder, setPasswordBorder] = useState({});
 
-  const [signUpForm, setSignUpForm] = useState({});
+  const [signUpForm, setSignUpForm] = useState({
+    terms_conditions: true,
+    receive_updates: false,
+  });
 
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: AppColor.buttonDisable,
@@ -41,6 +67,9 @@ const SignUp = forwardRef((props, ref) => {
   });
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [buttonText, setButtonText] = useState('Sign up');
+
+  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const cleanSignUpForm = () => {
     setLoginUse('');
@@ -59,7 +88,10 @@ const SignUp = forwardRef((props, ref) => {
     setIsValidPassword(true);
     setPasswordBorder({});
 
-    setSignUpForm({});
+    setSignUpForm({
+      terms_conditions: true,
+      receive_updates: false,
+    });
 
     setButtonStyle({
       backgroundColor: AppColor.buttonDisable,
@@ -72,53 +104,44 @@ const SignUp = forwardRef((props, ref) => {
     setIsValidMobileNumber(false);
   };
 
-  useImperativeHandle(ref, () => {
-    return {
-      cleanSignUpForm: cleanSignUpForm,
-    };
-  });
-
   useEffect(() => {
     // exit early when we reach 0
-    if (email.length === 11) {
-      setSignUpForm({ login: '+63' + email.substr(1) });
-    } else {
-      setSignUpForm({ login: email });
-    }
-
-    //console.log(signUpForm);
+    const newKeyValue = {
+      login: email.length === 11 ? '+63' + email.substr(1) : email,
+    };
+    setSignUpForm({...signUpForm, ...newKeyValue});
     checkInputComplete();
   }, [isValidMobileNumber]);
 
+  useEffect(() => {
+    // exit early when we reach 0
+    setIsValidName(() => isValidName);
+  }, [isValidName]);
+
+  useEffect(() => {
+    // exit early when we reach 0
+    const newKeyValue = {receive_updates: isPromo};
+    setSignUpForm({...signUpForm, ...newKeyValue});
+  }, [isPromo]);
+
   const validateEmail = (email) => {
     let mobileReg = /^(09|\+639)\d{9}$/;
-    //console.log(mobileReg.test(email) + '&&' + email.length)
-
     if (
       mobileReg.test(email) === true &&
       ((email.substring(0, 1) === '0' && email.length === 11) ||
         (email.length === 13 && email.substring(0, 1) === '+'))
     ) {
       setEmail(email);
-      //console.log('Mobile number validation');
-      //console.log(isValidMobileNumber);
       setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
-      //console.log(isValidMobileNumber);
-      setEmailBorder({ borderColor: AppColor.contentEbony });
       return true;
     } else {
-      //console.log('Pumasok sa else');
       setIsValidMobileNumber(false);
-      setName('');
-      setPassword('');
-
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
       if (reg.test(email) === false) {
         setEmail(email);
         return false;
       } else {
         setEmail(email);
-        setEmailBorder({ borderColor: AppColor.contentEbony });
         return true;
       }
     }
@@ -128,52 +151,73 @@ const SignUp = forwardRef((props, ref) => {
     if (validateEmail(email)) {
       setButtonText('Next');
       setIsValidEmail(true);
-      //console.log('After Validate');
-      //console.log(isValidMobileNumber);
-      setLoginUse('');
-      const newKeyValue = { login: email };
-      setSignUpForm({ ...signUpForm, ...newKeyValue });
+      const newKeyValue = {login: email};
+      setSignUpForm({...signUpForm, ...newKeyValue});
+      //console.log(signUpForm);
       checkInputComplete();
     } else {
-      //console.log('Pumasok sa else On Chnage');
       if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
-        setLoginUse('mobile number');
+        setLoginUse(() => {
+          setLoginUse('mobile number');
+        });
       } else {
-        setLoginUse('email');
+        setLoginUse(() => {
+          setLoginUse('email');
+        });
       }
 
-      setEmailBorder({ borderColor: AppColor.neutralGray });
       setIsValidEmail(false);
       setButtonText('Sign up');
     }
   };
 
   const onNameChange = (name) => {
-    setName(name);
-    setNameBorder({ borderColor: AppColor.contentEbony });
-    const newKeyValue = { full_name: name };
-    setSignUpForm({ ...signUpForm, ...newKeyValue });
-    //console.log(signUpForm);
-    checkInputComplete();
+    let nameReg = /^[a-z ,.'-]+$/i;
+    if (nameReg.test(name)) {
+      setName(name);
+      setIsValidName(true);
+
+      const newKeyValue = {full_name: name};
+      setSignUpForm({...signUpForm, ...newKeyValue});
+      //console.log('Password Valid');
+      //console.log(signUpForm);
+      checkInputComplete();
+    } else {
+      setName(name);
+      setIsValidName(false);
+    }
+
+    if (name.length === 0) {
+      setIsValidName(true);
+    }
   };
 
   const onPasswordChange = (password) => {
-    setPassword(password);
-    setPasswordBorder({ borderColor: AppColor.contentEbony });
-    const newKeyValue = { password: password };
-    setSignUpForm({ ...signUpForm, ...newKeyValue });
-    checkInputComplete();
+    if (password.length > 5) {
+      setIsValidPassword(true);
+      setPassword(password);
+
+      const newKeyValue = {password: password};
+      setSignUpForm({...signUpForm, ...newKeyValue});
+      //console.log('Password Valid');
+      //console.log(signUpForm);
+      checkInputComplete();
+    } else {
+      setPassword(password);
+      setIsValidPassword(false);
+      setButtonStyle({
+        backgroundColor: AppColor.buttonDisable,
+        borderColor: AppColor.buttonDisable,
+      });
+      setButtonDisabled(true);
+    }
   };
 
   const checkInputComplete = () => {
-    //console.log('On Check Complete');
-    //console.log(isValidMobileNumber);
-    //console.log(signUpForm);
     if (isValidMobileNumber && name.length > 1) {
       setButtonStyle({});
       setButtonDisabled(false);
     } else {
-      //console.log('Pumasok sa else Complete');
       if (
         !isValidMobileNumber &&
         isValidEmail &&
@@ -199,211 +243,323 @@ const SignUp = forwardRef((props, ref) => {
   };
 
   const onBlurEmail = () => {
-    //alert('Blur');
-    //setIsActive(false);
+    setEmailBorder({});
     if (loginUse === 'email') {
-      console.log('Invalid Email');
-      setIsValidLogin(false);
-      setEmailBorder({ borderColor: AppColor.errorInput });
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-      setButtonDisabled(true);
+      if (!isValidEmail) {
+        setIsValidLogin(false);
+        setButtonStyle({
+          backgroundColor: AppColor.buttonDisable,
+          borderColor: AppColor.buttonDisable,
+        });
+        setButtonDisabled(true);
+      }
     }
     if (loginUse === 'mobile number') {
-      console.log('invalid mobile');
+      if (!isValidMobileNumber) {
+        setIsValidLogin(false);
+        setButtonStyle({
+          backgroundColor: AppColor.buttonDisable,
+          borderColor: AppColor.buttonDisable,
+        });
+        setButtonDisabled(true);
+      }
+    }
+    if (email.length === 0) {
       setIsValidLogin(false);
-      setEmailBorder({ borderColor: AppColor.errorInput });
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-      setButtonDisabled(true);
     }
   };
 
   const onFocusEmail = () => {
-    //alert('Focus');
     setIsValidLogin(true);
-    //setEmailBorder({borderColor: AppColor.contentOcean});
+    setEmailBorder({borderColor: AppColor.contentOcean});
   };
 
   const onBlurName = () => {
-    //alert('Blur');
-    //setIsActive(false);
-    let nameReg = /^[a-z ,.'-]+$/i;
-    if (nameReg.test(name)) {
-      setIsValidName(true);
-    } else if (name.length > 1) {
-      setNameBorder({ borderColor: AppColor.errorInput });
-      setIsValidName(false);
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-      setButtonDisabled(true);
-    }
+    setNameBorder({});
   };
 
   const onFocusName = () => {
-    //alert('Focus');
-    setIsValidName(true);
-    //setNameBorder({borderColor: AppColor.contentOcean});
+    setNameBorder({borderColor: AppColor.contentOcean});
   };
 
   const onBlurPassword = () => {
-    if (password.length > 5) {
-      setIsValidPassword(true);
-    } else if (password.length > 1) {
-      setPasswordBorder({ borderColor: AppColor.errorInput });
-      setIsValidPassword(false);
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-      setButtonDisabled(true);
-    }
+    setPasswordBorder({});
   };
 
   const onFocusPassword = () => {
-    //alert('Focus');
-    //setPasswordBorder({borderColor: AppColor.contentOcean});
+    setPasswordBorder({borderColor: AppColor.contentOcean});
     setIsValidPassword(true);
   };
 
-  // const { closeSlider } = useContext(Context);
-  const { closeSlider, setAuthType } = useContext(Context);
+  const {closeSlider, authType, setAuthType} = useContext(Context);
 
-  return (
-    <ScrollView>
-      <View style={styles.mainWrapper}>
-        <View style={styles.contentWrapper}>
-          <TouchableOpacity style={styles.closeIconWrapper} onPress={closeSlider}>
-            <Close height={24} width={24} />
-          </TouchableOpacity>
-          <AppText textStyle="display5">Sign Up</AppText>
-          <AppText textStyle="caption" customStyle={styles.textCaption}>
-            Join Servbees today. It’s free!
-        </AppText>
-          <View style={styles.formWrapper}>
-            <AppInput
-              label="Email or Mobile Number"
-              value={email}
-              onBlur={onBlurEmail}
-              onFocus={onFocusEmail}
-              keyboardType="email-address"
-              customStyle={{ ...styles.customInputStyle, ...emailBorder }}
-              onChangeText={(email) => onEmailChange(email)}
-            />
-            {!isValidLogin ? (
-              <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                Enter a valid {loginUse}
-              </AppText>
-            ) : (
-                <AppText
-                  textStyle="caption"
-                  customStyle={styles.emptyErrorCopy}></AppText>
-              )}
+  const signUpEmail = (formValues) => {
+    //console.log(formValues);
+    setIsLoading(true);
+    SignUpService.createUser(JSON.stringify(formValues))
+      .then((response) => {
+        setIsLoading(false);
+        cleanSignUpForm();
+        if (response.success) {
+          navigation.navigate('VerifyAccount', {...response, ...formValues});
+        } else {
+          navigation.navigate('Onboarding');
+        }
+      })
+      .catch((error) => {
+        console.log('With Error in the API SignUp ' + error);
+      });
+  };
 
-            <AppInput
-              label="Full Name"
-              value={name}
-              onBlur={onBlurName}
-              onFocus={onFocusName}
-              keyboardType="default"
-              customStyle={{ ...styles.customInputStyle, ...nameBorder }}
-              onChangeText={(name) => onNameChange(name)}
-            />
-            {!isValidName ? (
-              <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                Don’t add special character(s)
-              </AppText>
-            ) : (
-                <AppText
-                  textStyle="caption"
-                  customStyle={styles.emptyErrorCopy}></AppText>
-              )}
-
-            {!isValidMobileNumber ? (
-              <AppInput
-                label="Password"
-                onBlur={onBlurPassword}
-                onFocus={onFocusPassword}
-                secureTextEntry
-                password
-                value={password}
-                keyboardType="default"
-                customStyle={{ ...styles.customInputStyle, ...passwordBorder }}
-                onChangeText={(password) => onPasswordChange(password)}
-              />
-            ) : null}
-            {!isValidPassword ? (
-              <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                Must be at least 6 characters
-              </AppText>
-            ) : (
-                <AppText
-                  textStyle="caption"
-                  customStyle={styles.emptyErrorCopy}></AppText>
-              )}
-          </View>
-
-          <View>
-            <AppButton
-              text={buttonText}
-              type="primary"
-              height="xl"
-              disabled={buttonDisabled}
-              customStyle={{ ...styles.customButtonStyle, ...buttonStyle }}
-              onPress={() => {
-                signUpEmail(signUpForm);
-              }}
-              loading={props.loading}
-            />
-          </View>
-          <View style={styles.orCopyWrapper}>
-            <AppText>or</AppText>
-          </View>
-          <View style={styles.otherLoginWrapper}>
-            <AppButton
-              text="Sign up with Facebook"
-              type="primary"
-              height="md"
-              icon="Facebook"
-              iconPosition="left"
-              customStyle={styles.disableButton}
-            //onPress={}
-            />
-            <AppButton
-              text="Sign up with Google"
-              type="primary"
-              height="md"
-              icon="Google"
-              iconPosition="left"
-              customStyle={styles.disableButton}
-            //onPress={}
-            />
-          </View>
-
-          <View style={styles.loginLinkCopy}>
-            <AppText textStyle="button2">Already have an account?</AppText>
-            <TouchableOpacity onPress={() => setAuthType('login')}>
-              <AppText textStyle="button2" customStyle={styles.underLineText}>
-                Login
+  const TandC = () => {
+    return (
+      <>
+        <View style={styles.terms}>
+          <AppText
+            textStyle="caption"
+            customStyle={{color: AppColor.promoCopy}}>
+            By signing up, I agree to Servbees’{' '}
+          </AppText>
+          <TouchableOpacity
+            onPress={() => {
+              //modalContent(0);
+              //toggleModal();
+              navigation.navigate('AlmostThere');
+            }}>
+            <AppText
+              textStyle="promo"
+              customStyle={{
+                color: AppColor.promoCopy,
+                textDecorationLine: 'underline',
+              }}>
+              Terms of Service
             </AppText>
-            </TouchableOpacity>
+          </TouchableOpacity>
+          <AppText
+            textStyle="caption"
+            customStyle={{color: AppColor.promoCopy}}>
+            ,{' '}
+          </AppText>
+          <TouchableOpacity
+            onPress={() => {
+              modalContent(1);
+              toggleModal();
+            }}>
+            <AppText
+              textStyle="promo"
+              customStyle={{
+                color: AppColor.promoCopy,
+                textDecorationLine: 'underline',
+              }}>
+              Payments Terms of Servbees
+            </AppText>
+          </TouchableOpacity>
+          <AppText
+            textStyle="caption"
+            customStyle={{color: AppColor.promoCopy}}>
+            , and{' '}
+          </AppText>
+          <TouchableOpacity
+            onPress={() => {
+              modalContent(2);
+              toggleModal();
+            }}>
+            <AppText
+              textStyle="promo"
+              customStyle={{
+                color: AppColor.promoCopy,
+                textDecorationLine: 'underline',
+              }}>
+              Privacy Policy
+            </AppText>
+            <AppText
+              textStyle="caption"
+              customStyle={{color: AppColor.promoCopy}}>
+              .
+            </AppText>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.promos}>
+          <View style={styles.promoCopy}>
+            <AppText
+              textStyle="caption"
+              customStyle={{color: AppColor.promoCopy}}>
+              I want to receive offers, promos, and updates from Servbees.
+            </AppText>
+          </View>
+          <View style={styles.promoSwitch}>
+            <SwitchComponent onValueChange={toggleSwitch} value={isPromo} />
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <ScrollView>
+        <View style={styles.mainWrapper}>
+          <View style={styles.contentWrapper}>
+            <TouchableOpacity
+              style={styles.closeIconWrapper}
+              onPress={closeSlider}>
+              <Close height={24} width={24} />
+            </TouchableOpacity>
+            <AppText textStyle="display5">Sign Up</AppText>
+            <AppText textStyle="caption" customStyle={styles.textCaption}>
+              Join Servbees today. It’s free!
+            </AppText>
+            <View style={styles.formWrapper}>
+              <AppInput
+                label="Email or Mobile Number"
+                value={email}
+                onBlur={onBlurEmail}
+                onFocus={onFocusEmail}
+                keyboardType="email-address"
+                customStyle={{
+                  ...styles.customInputStyle,
+                  ...(!isValidLogin && email.length > 0
+                    ? styles.withError
+                    : isValidLogin && email.length > 0
+                    ? styles.withoutError
+                    : styles.defaultBorder),
+                  ...emailBorder,
+                }}
+                onChangeText={(email) => onEmailChange(email)}
+              />
+              {!isValidLogin && email.length > 0 ? (
+                <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                  Enter a valid {loginUse}
+                </AppText>
+              ) : null}
+
+              <AppInput
+                label="Full Name"
+                value={name}
+                onBlur={onBlurName}
+                onFocus={onFocusName}
+                keyboardType="default"
+                customStyle={{
+                  ...styles.customInputStyle,
+                  ...(!isValidName && name.length > 0
+                    ? styles.withError
+                    : isValidName && name.length > 0
+                    ? styles.withoutError
+                    : styles.defaultBorder),
+                  ...nameBorder,
+                }}
+                onChangeText={(name) => onNameChange(name)}
+              />
+              {!isValidName ? (
+                <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                  Don’t add special character(s)
+                </AppText>
+              ) : null}
+              <View style={{position: 'relative'}}>
+                <AppInput
+                  label="Password"
+                  onBlur={onBlurPassword}
+                  onFocus={onFocusPassword}
+                  secureTextEntry={!isVisible ? true : false}
+                  password
+                  value={password}
+                  keyboardType="default"
+                  customStyle={{
+                    ...styles.customInputStyle,
+                    ...(!isValidPassword && password.length > 0
+                      ? styles.withError
+                      : isValidPassword && password.length > 0
+                      ? styles.withoutError
+                      : styles.defaultBorder),
+                    ...passwordBorder,
+                  }}
+                  onChangeText={(password) => onPasswordChange(password)}
+                />
+                <View style={styles.passwordToggle}>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                    {!isVisible ? <EyeDark /> : <EyeLight />}
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {!isValidPassword ? (
+                <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                  Must be at least 6 characters
+                </AppText>
+              ) : (
+                <AppText
+                  textStyle="caption"
+                  customStyle={styles.emptyErrorCopy}></AppText>
+              )}
+            </View>
+
+            <TandC />
+            <ModalComponent
+              isModalVisible={isModalVisible}
+              onClose={toggleModal}
+              modalContentNumber={modalContentNumber}
+            />
+
+            <View>
+              <AppButton
+                text={buttonText}
+                type="primary"
+                height="xl"
+                disabled={buttonDisabled}
+                customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+                onPress={() => {
+                  signUpEmail(signUpForm);
+                }}
+                loading={isLoading}
+              />
+            </View>
+            <View style={styles.orCopyWrapper}>
+              <AppText>or</AppText>
+            </View>
+            <View style={styles.otherLoginWrapper}>
+              <AppButton
+                text="Sign up with Facebook"
+                type="primary"
+                height="md"
+                icon="Facebook"
+                iconPosition="left"
+                customStyle={styles.disableButton}
+                onPress={() => {
+                  LoginService.facebookSignIn();
+                }}
+              />
+              <AppButton
+                text="Sign up with Google"
+                type="primary"
+                height="md"
+                icon="Google"
+                iconPosition="left"
+                customStyle={styles.disableButton}
+                onPress={() =>
+                  LoginService.googleLogin().then(() =>
+                    console.log('Signed in with Google!'),
+                  )
+                }
+              />
+            </View>
+
+            <View style={styles.loginLinkCopy}>
+              <AppText textStyle="button2">Already have an account?</AppText>
+              <TouchableOpacity onPress={() => setAuthType('login')}>
+                <AppText textStyle="button2" customStyle={styles.underLineText}>
+                  Login
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </>
   );
-});
+};
 
 // define your styles
 const styles = StyleSheet.create({
   mainWrapper: {
-    // flex: 1,
     padding: 24,
     flexDirection: 'column',
   },
@@ -431,7 +587,6 @@ const styles = StyleSheet.create({
 
   customInputStyle: {
     marginBottom: 4,
-    //borderColor: AppColor.neutralGray,
   },
 
   forgotPasswordLink: {
@@ -470,12 +625,53 @@ const styles = StyleSheet.create({
 
   errorCopy: {
     color: AppColor.errorInput,
+    marginBottom: 12,
+  },
+
+  withError: {
+    marginBottom: 4,
+    borderColor: AppColor.errorInput,
+  },
+
+  withoutError: {
+    marginBottom: 16,
+    borderColor: AppColor.contentEbony,
+  },
+
+  defaultBorder: {
+    marginBottom: 16,
+    borderColor: AppColor.neutralGray,
+  },
+
+  passwordToggle: {
+    position: 'absolute',
+    right: 10,
+    top: 18,
+  },
+
+  terms: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    //justifyContent: 'center',
+    alignItems: 'flex-start',
     marginBottom: 16,
   },
 
-  emptyErrorCopy: {
-    color: AppColor.errorInput,
-    marginBottom: 12,
+  promos: {
+    flex: 1,
+    flexDirection: 'row',
+    //justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+
+  promoCopy: {
+    width: '80%',
+  },
+  promoSwitch: {
+    width: '20%',
+    alignItems: 'flex-end',
   },
 });
 

@@ -18,7 +18,7 @@ import {AppText, AppButton, AppViewContainer} from '@/components';
 
 import Colors from '@/globals/Colors';
 import Login from '@/screens/Authentication/Login/login';
-import SignUp from '@/screens/SignUp';
+import SignUp from '@/screens/Authentication/SignUp/SignUp';
 
 import PolygonStatic from '@/assets/images/polygon-static.svg';
 import IllustOne from '@/assets/images/onboarding-img1.svg';
