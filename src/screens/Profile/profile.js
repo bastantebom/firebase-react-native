@@ -9,7 +9,7 @@ import auth from '@react-native-firebase/auth';
 import {AppText, AppButton} from '@/components';
 import ImageUpload from '@/components/ImageUpload/ProfileImageUpload';
 import HexagonBorder from '@/components/ImageUpload/HexagonBorder'
-import PostFilter from '@/components/PostFilter/PostFilter';
+import PostFilter from '@/components/Post/PostFilter';
 
 function Profile({ navigation }) {
 

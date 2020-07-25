@@ -6,10 +6,9 @@ import AppInput from '@/components/AppInput/AppInput';
 import AppText from '@/components/AppText/AppText';
 import {AppViewContainer, PaddingView} from '@/components/AppViewContainer';
 import {HexagonBorder, ProfileImageUpload} from '@/components/ImageUpload';
-
 import Notification from '@/components/Notification';
-
-import Posts from '@/components/Post/Posts';
+import {Post, Posts, PostFilter} from '@/components/Post';
+import Switch from '@/components/Switch/Switch';
 
 export {
   AppInput,
@@ -19,4 +18,9 @@ export {
   Notification,
   AppButton,
   Posts,
+  HexagonBorder,
+  ProfileImageUpload,
+  Post,
+  PostFilter,
+  Switch
 };
