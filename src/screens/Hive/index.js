@@ -1,3 +1,3 @@
-import Hive from './hive';
+import Hives from './hive';
 
-export {Hive};
+export {Hives};
