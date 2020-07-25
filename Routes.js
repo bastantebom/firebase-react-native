@@ -8,8 +8,8 @@ import {Button, Text, View} from 'react-native';
 //screens
 import Onboarding from '@/screens/onboarding';
 import VerifyAccount from '@/screens/VerifyAccount';
-import AlmostThere from '@/screens/AlmostThere';
-import ResetPassword from '@/screens/resetPassword';
+import AlmostThere from '@/screens/Onboarding/AlmostThere';
+import ResetPassword from '@/screens/Authentication/ResetPassword';
 import {Dashboard} from '@/screens/Dashboard';
 import Profile from '@/screens/profile';
 import Hives from '@/screens/hive';

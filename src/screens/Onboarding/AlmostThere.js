@@ -67,7 +67,7 @@ const AlmostThere = () => {
                   latitude: JSON.parse(initialLocation).latitude,
                   longitude: JSON.parse(initialLocation).longitude,
                 }}
-                image={require('../assets/images/icons/Navigation.png')}></Marker>
+                image={require('@/assets/images/icons/Navigation.png')}></Marker>
             </MapView>
           </View>
         </View>
