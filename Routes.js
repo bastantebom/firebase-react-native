@@ -18,7 +18,7 @@ import {
   ResetPassword,
 } from '@/screens/Authentication';
 
-import { normalize } from '@/globals'
+import {normalize} from '@/globals';
 
 import {
   ServbeesAlt,

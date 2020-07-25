@@ -1,78 +1,38 @@
 //import liraries
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-//import LocationPin from '@/assets/images/icons/';
+import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import AppColor from '@/globals/Colors';
+
+import {AppViewContainer, AppButton, AppText} from '@/components';
+
+import {Close} from '@/assets/images/icons';
+import LocationImage from '@/assets/images/location.svg';
 
 // create a component
 const AlmostThere = () => {
-  const [initialLocation, setInitialLocation] = useState();
-  const [isLocationReady, setIsLocationReady] = useState(false);
-
-  function findCoordinates() {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const initialPosition = JSON.stringify(position.coords);
-        setInitialLocation(initialPosition);
-        setIsLocationReady(true);
-        //console.log(initialLocation);
-      },
-      (error) => console.log('Error', JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  }
-
-  useEffect(() => {
-    // exit early when we reach 0
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: true,
-      authorizationLevel: 'whenInUse',
-    });
-    Geolocation.requestAuthorization();
-
-    findCoordinates();
-  });
-
   return (
-    <>
-      {isLocationReady ? (
-        <View style={{flex: 1}}>
-          <View
-            style={{
-              marginTop: 50,
-              paddingTop: 50,
-              paddingLeft: 10,
-              paddingRight: 10,
-            }}>
-            <Text>{JSON.parse(initialLocation).latitude}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <MapView
-              style={{
-                left: 0,
-                top: 0,
-                bottom: 0,
-                right: 0,
-                position: 'absolute',
-              }}
-              initialRegion={{
-                latitude: JSON.parse(initialLocation).latitude,
-                longitude: JSON.parse(initialLocation).longitude,
-                latitudeDelta: 0.0052,
-                longitudeDelta: 0.0051,
-              }}>
-              <Marker
-                coordinate={{
-                  latitude: JSON.parse(initialLocation).latitude,
-                  longitude: JSON.parse(initialLocation).longitude,
-                }}
-                image={require('@/assets/images/icons/Navigation.png')}></Marker>
-            </MapView>
-          </View>
-        </View>
-      ) : null}
-    </>
+    <AppViewContainer paddingSize={3} customStyle={styles.container}>
+      <View style={styles.skipContainer}>
+        <TouchableOpacity>
+          <AppText textStyle="body1" customStyle={styles.skipLink}>
+            Skip
+          </AppText>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.resetPasswordContainer}>
+        <LocationImage width={80} height={80} />
+      </View>
+
+      <AppText customStyle={styles.resetPasswordText} textStyle="display5">
+        Almost there!
+      </AppText>
+
+      <AppText textStyle="body2">
+        Let us know your current location so we can show you services and goods
+        nearby. You may change this later on.
+      </AppText>
+    </AppViewContainer>
   );
 };
 
@@ -80,9 +40,12 @@ const AlmostThere = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
+  },
+  skipContainer: {
+    alignItems: 'flex-end',
+  },
+  skipLink: {
+    color: AppColor.contentOcean,
   },
 });
 
