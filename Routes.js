@@ -3,21 +3,22 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Button, Text, View} from 'react-native';
+import {View} from 'react-native';
 
 //screens
 import {Onboarding} from '@/screens/Onboarding';
 import {Dashboard} from '@/screens/Dashboard';
-import Profile from '@/screens/Profile/profile';
-import Hives from '@/screens/Hive/hive';
-import Post from '@/screens/Post/post';
-import Activity from '@/screens/Activity/activity';
-
+import {Profile} from '@/screens/Profile';
+import {Hives} from '@/screens/Hive';
+import {Post} from '@/screens/Post';
+import {Activity} from '@/screens/Activity';
 import {
   AlmostThere,
   VerifyAccount,
   ResetPassword,
 } from '@/screens/Authentication';
+
+import { normalize } from '@/globals'
 
 import {
   ServbeesAlt,
@@ -102,7 +103,7 @@ function TabStack() {
           alignItems: 'center',
         },
         labelStyle: {
-          fontSize: 12,
+          fontSize: normalize(12),
           fontWeight: '700',
         },
         inactiveTintColor: '#8C8B98',
