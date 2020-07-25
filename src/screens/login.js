@@ -19,7 +19,7 @@ import {AppButton, AppInput, AppText} from '@/components';
 import Colors from '@/globals/Colors';
 
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
+// import SignUpWrapper from '@/screens/Authentication/SignUp/SignUpWrapper';
 
 
 import Close from '@/assets/images/icons/close.svg';

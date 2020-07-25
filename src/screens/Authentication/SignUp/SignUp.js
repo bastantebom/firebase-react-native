@@ -1,4 +1,3 @@
-//import liraries
 import React, {
   useState,
   forwardRef,
@@ -7,11 +6,10 @@ import React, {
   useEffect,
 } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
-//App Specific Component
+
 import AppColor from '@/globals/Colors';
 import {AppButton, AppInput, AppText} from '@/components';
-//import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-//SVG Import
+
 import Close from '@/assets/images/icons/close.svg';
 
 import { Context } from '@/context';

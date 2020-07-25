@@ -1,4 +1,4 @@
-import React, { useRef, createRef, useState, useEffect, useContext } from 'react';
+import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
 import {
   View,
   Image,
@@ -16,7 +16,6 @@ import BottomSheet from 'reanimated-bottom-sheet';
 
 import {AppText, AppButton, AppViewContainer} from '@/components';
 
-import SignUpWrapper from '@/screens/SignUp/SignUpWrapper';
 import Colors from '@/globals/Colors';
 import Login from '@/screens/login';
 import SignUp from '@/screens/SignUp';
@@ -27,14 +26,14 @@ import IllustTwo from '@/assets/images/onboarding-img2.svg';
 import IllustThree from '@/assets/images/onboarding-img3.svg';
 import IllustFour from '@/assets/images/onboarding-img4.svg';
 
-import { Context } from '@/context';
+import {Context} from '@/context';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
 let bottomSheetRef = createRef();
 
-const Onboarding = ({ navigation, illustration }) => {
+const Onboarding = ({navigation, illustration}) => {
   const {
     sliderState,
     closeSlider,
@@ -80,14 +79,14 @@ const Onboarding = ({ navigation, illustration }) => {
   const renderContent = () => {
     if (authType === 'signup') {
       return (
-        <View style={{ backgroundColor: 'white', height: '100%' }}>
+        <View style={{backgroundColor: 'white', height: '100%'}}>
           <SignUp />
         </View>
       );
     }
     if (authType === 'login') {
       return (
-        <View style={{ backgroundColor: 'white', height: '100%' }}>
+        <View style={{backgroundColor: 'white', height: '100%'}}>
           <Login />
         </View>
       );
@@ -157,12 +156,10 @@ const Onboarding = ({ navigation, illustration }) => {
 
   return (
     <>
-
       <View style={styles.contentHolder}>
         <TouchableWithoutFeedback onPress={closeHandler}>
-          <Animated.View
-            style={styles.bgImageHolder}>
-            <PolygonStatic width={width} height={height } />
+          <Animated.View style={styles.bgImageHolder}>
+            <PolygonStatic width={width} height={height} />
           </Animated.View>
         </TouchableWithoutFeedback>
         <TouchableOpacity
@@ -179,7 +176,7 @@ const Onboarding = ({ navigation, illustration }) => {
             {slideInfo.map((item, i) => {
               return (
                 <View key={i} style={styles.slideHolder}>
-                  <View style={{ zIndex: 100, width: '100%' }}>
+                  <View style={{zIndex: 100, width: '100%'}}>
                     {item.illustration}
                   </View>
                   <AppText textStyle="display6">{item.title}</AppText>
@@ -229,8 +226,6 @@ const Onboarding = ({ navigation, illustration }) => {
         renderHeader={renderHeader}
         initialSnap={1}
       />
-
-      {/* {authType === 'signup' ? <SignUpWrapper /> : <Login />} */}
     </>
   );
 };
@@ -277,8 +272,7 @@ const styles = StyleSheet.create({
   bgImageHolder: {
     position: 'absolute',
     top: -50,
-    width: width
-
+    width: width,
   },
   text: {
     textAlign: 'center',
