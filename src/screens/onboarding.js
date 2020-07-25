@@ -17,7 +17,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import {AppText, AppButton, AppViewContainer} from '@/components';
 
 import Colors from '@/globals/Colors';
-import Login from '@/screens/login';
+import Login from '@/screens/Authentication/Login/login';
 import SignUp from '@/screens/SignUp';
 
 import PolygonStatic from '@/assets/images/polygon-static.svg';
