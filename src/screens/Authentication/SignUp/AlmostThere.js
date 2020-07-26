@@ -11,8 +11,11 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import {useNavigation} from '@react-navigation/native';
 
+import Config from '@/services/Config';
+import SignUpService from '@/services/SignUpService';
+
 // create a component
-const AlmostThere = () => {
+const AlmostThere = (route) => {
   const navigation = useNavigation();
   const [initialLocation, setInitialLocation] = useState({});
   const [isLocationReady, setIsLocationReady] = useState(false);
@@ -21,7 +24,7 @@ const AlmostThere = () => {
 
   const getStringAddress = (location) => {
     //console.log(location);
-    Geocoder.init('AIzaSyCu10vZtdRHmJ7bxnebSSj7u1LFeMV4GUs');
+    Geocoder.init(Config.apiKey);
     Geocoder.from(JSON.parse(location).latitude, JSON.parse(location).longitude)
       .then((json) => {
         const addressComponent = json.results[1].formatted_address;
@@ -41,11 +44,12 @@ const AlmostThere = () => {
       //console.log(stringAddress);
       //"altitude":0,"altitudeAccuracy":-1,"latitude":13.749014,"accuracy":5,"longitude":121.072939,"heading":-1,"speed":-1
       const toPassString = {
+        uid: route?.route?.params?.uid,
         address: stringAddress,
         latitude: JSON.parse(initialLocation).latitude,
         longitude: JSON.parse(initialLocation).longitude,
       };
-      console.log(toPassString);
+      //console.log(toPassString);
       navigation.navigate('AlmostThereMap', {...toPassString});
     }
   };
@@ -78,6 +82,29 @@ const AlmostThere = () => {
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }
+
+  const saveLocationHandler = (address) => {
+    SignUpService.saveLocation({
+      uid: route?.route?.params?.uid,
+      location: address,
+    })
+      .then((response) => {
+        if (response.success) {
+          //auth()
+          //  .signInWithCustomToken(response.custom_token)
+          //  .then(() => {
+          navigation.push('Dashboard');
+          //  })
+          // .catch((err) => {
+          //   console.log(err);
+          // });
+        }
+      })
+      .catch((error) => {
+        console.log('With Error in the API SignUp ' + error);
+      });
+  };
+
   useEffect(() => {
     // exit early when we reach 0
     if (Platform.OS === 'ios') {
@@ -100,10 +127,12 @@ const AlmostThere = () => {
       //console.log(isLocationReady);
       //console.log(stringAddress);
       if (!isAllowed) {
+        console.log(route?.route?.params?.uid);
         console.log(
           'API Call to save current location which is default (LUNETA PARK)',
         );
-        navigation.push('Dashboard');
+
+        saveLocationHandler(stringAddress);
       }
     }
   }, [isAllowed, isLocationReady]);
@@ -112,9 +141,14 @@ const AlmostThere = () => {
     <>
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
         <View style={styles.skipContainer}>
-          <TouchableOpacity>
-            <AppText textStyle="body2">Skip</AppText>
-          </TouchableOpacity>
+          {isLocationReady ? (
+            <TouchableOpacity
+              onPress={() => {
+                saveLocationHandler(stringAddress);
+              }}>
+              <AppText textStyle="body2">Skip</AppText>
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         <View style={styles.almostThereImageContainer}>

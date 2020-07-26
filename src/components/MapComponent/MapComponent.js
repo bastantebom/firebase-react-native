@@ -16,9 +16,31 @@ const MapComponent = ({latitude, longitude}) => {
       initialRegion={{
         latitude: latitude,
         longitude: longitude,
-        latitudeDelta: 0.062,
-        longitudeDelta: 0.061,
-      }}>
+        latitudeDelta: 0.025,
+        longitudeDelta: 0.025,
+      }}
+      mapType={'standard'}
+      zoomEnabled={true}
+      scrollEnabled={true}
+      showsScale={true}>
+      <MapView.Circle
+        key={(longitude + latitude).toString()}
+        center={{latitude: latitude, longitude: longitude}}
+        radius={500}
+        strokeWidth={0.1}
+        strokeColor={'rgba(255, 212, 0,0.18)'}
+        fillColor={'rgba(255, 212, 0,0.18)'}
+        //onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
+      />
+      <MapView.Circle
+        key={(longitude + latitude + 10).toString()}
+        center={{latitude: latitude, longitude: longitude}}
+        radius={1000}
+        strokeWidth={0.1}
+        strokeColor={'rgba(255, 212, 0,0.1)'}
+        fillColor={'rgba(255, 212, 0,0.1)'}
+        //onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
+      />
       <Marker
         coordinate={{
           latitude: latitude,

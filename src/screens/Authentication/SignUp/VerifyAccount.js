@@ -109,14 +109,18 @@ const VerifyAccount = (route) => {
       })
         .then((response) => {
           if (response.success) {
-            auth()
-              .signInWithCustomToken(response.custom_token)
-              .then(() => {
-                navigation.push('Dashboard');
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            //auth()
+            //  .signInWithCustomToken(response.custom_token)
+            //  .then(() => {
+            navigation.push('AlmostThere', {
+              ...{
+                uid: route?.route?.params?.uid,
+              },
+            });
+            //  })
+            // .catch((err) => {
+            //   console.log(err);
+            // });
           }
         })
         .catch((error) => {

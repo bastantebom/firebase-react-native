@@ -11,6 +11,17 @@ const createUser = (payload) => {
   });
 };
 
+const saveLocation = (payload) => {
+  return BaseAPI({
+    url: '/user/location',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const getAll = () => {
   return BaseAPI({
     url: 'users',
@@ -21,6 +32,7 @@ const getAll = () => {
 const SignUpService = {
   createUser,
   getAll,
+  saveLocation,
 };
 
 export default SignUpService;
