@@ -2,103 +2,134 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Platform} from 'react-native';
 
-import Geolocation from '@react-native-community/geolocation';
+//import Geolocation from '@react-native-community/geolocation';
 import MapComponent from '@/components/MapComponent/MapComponent';
-import Geocoder from 'react-native-geocoding';
+import {AppViewContainer, AppText, AppInput, AppButton} from '@/components';
+import {Colors} from '@/globals';
+
+import {NavigationArrow, NavigationPin, Close} from '@/assets/images/icons';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+
+import {useNavigation} from '@react-navigation/native';
+//import Geocoder from 'react-native-geocoding';
 //import LocationPin from '@/assets/images/icons/';
 
 // create a component
-const AlmostThereMap = () => {
-  const [initialLocation, setInitialLocation] = useState({});
-  const [isLocationReady, setIsLocationReady] = useState(false);
-  const [stringAddress, setStringAddress] = useState('');
-
-  const getStringAddress = (location) => {
-    //console.log(location);
-    Geocoder.init('AIzaSyCu10vZtdRHmJ7bxnebSSj7u1LFeMV4GUs');
-    Geocoder.from(JSON.parse(location).latitude, JSON.parse(location).longitude)
-      .then((json) => {
-        const addressComponent = json.results[2].formatted_address;
-        console.log(json);
-        setStringAddress(addressComponent);
-        setIsLocationReady(true);
-      })
-      .catch((error) => console.warn(error));
-  };
-
-  function findCoordinates() {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const initialPosition = JSON.stringify(position.coords);
-        setInitialLocation(initialPosition);
-        getStringAddress(initialPosition);
-
-        //console.log(initialLocation);
-      },
-      (error) => {
-        console.log('Error', JSON.stringify(error));
-        //set to LUNETA PARK IF Permission Denied
-        const initialPosition = JSON.stringify({
-          altitude: 0,
-          altitudeAccuracy: -1,
-          latitude: 14.5831,
-          accuracy: 5,
-          longitude: 120.9794,
-          heading: -1,
-          speed: -1,
-        });
-        setInitialLocation(initialPosition);
-        getStringAddress(initialPosition);
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  }
-
-  useEffect(() => {
-    // exit early when we reach 0
-    if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization();
-      Geolocation.setRNConfiguration({
-        skipPermissionRequests: false,
-        authorizationLevel: 'whenInUse',
-      });
-    } else {
-    }
-    findCoordinates();
-  });
-
+const AlmostThereMap = (route) => {
+  const navigation = useNavigation();
   return (
     <>
-      {isLocationReady ? (
-        <View style={{flex: 1}}>
-          <View
-            style={{
-              marginTop: 50,
-              paddingTop: 50,
-              paddingLeft: 10,
-              paddingRight: 10,
-            }}>
-            <Text>{stringAddress}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <MapComponent
-              latitude={JSON.parse(initialLocation).latitude}
-              longitude={JSON.parse(initialLocation).longitude}
-            />
+      <View style={{flex: 1}}>
+        <View style={styles.header}>
+          <View style={styles.headerWrapper}>
+            <View style={styles.headerClose}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}>
+                <Close width={24} height={24} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.headerText}>
+              <AppText textStyle="body2">Use current location</AppText>
+            </View>
+            <View style={styles.headerSkip}>
+              <TouchableOpacity>
+                <AppText textStyle="promo">Skip</AppText>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      ) : null}
+        <View style={{flex: 1, position: 'relative'}}>
+          {route?.route?.params.address ? (
+            <>
+              <View style={styles.textInputWrapper}>
+                <View style={styles.navIcon}>
+                  <NavigationPin width={24} height={24} />
+                </View>
+                <AppInput
+                  customStyle={styles.textInput}
+                  placeholder="Enter street address or city"
+                  value={route?.route?.params.address}
+                />
+              </View>
+              <MapComponent
+                latitude={route?.route?.params.latitude}
+                longitude={route?.route?.params.longitude}
+              />
+              <View style={styles.buttonWrapper}>
+                <AppButton
+                  text="Confirm"
+                  type="primary"
+                  height="xl"
+                  //customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+                  onPress={() => {
+                    //signUpEmail(signUpForm);
+                  }}
+                  //loading={isLoading}
+                />
+              </View>
+            </>
+          ) : null}
+        </View>
+      </View>
     </>
   );
 };
 
 // define your styles
 const styles = StyleSheet.create({
-  container: {
+  header: {
+    height: 88,
+  },
+  headerWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    flexDirection: 'row',
+    padding: 16,
+  },
+
+  headerClose: {
     flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+
+  headerText: {
+    flex: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2c3e50',
+  },
+
+  headerSkip: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+
+  textInputWrapper: {
+    width: '100%',
+    position: 'absolute',
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+  },
+
+  buttonWrapper: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 24,
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+  },
+
+  textInput: {backgroundColor: Colors.neutralsWhite, paddingLeft: 32},
+  navIcon: {
+    position: 'absolute',
+    left: 40,
+    top: 40,
+    zIndex: 101,
   },
 });
 

@@ -156,8 +156,8 @@ const VerifyAccount = (route) => {
         customStyle={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           An email with the 4-digit code has been sent to{' '}
-          <AppText textStyle="subtitle2" customStyle={styles.bodyContent}>
-            {route?.route?.params?.login}
+          <AppText textStyle="subtitle1" customStyle={styles.bodyContent}>
+            {route?.route?.params?.login.toLowerCase()}
           </AppText>
         </AppText>
       </AppViewContainer>
