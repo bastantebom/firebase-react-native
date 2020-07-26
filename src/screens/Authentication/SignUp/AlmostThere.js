@@ -1,6 +1,11 @@
 //import liraries
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {Colors} from '@/globals';
 
 import {AppViewContainer, AppText, AppInput} from '@/components';
@@ -84,25 +89,31 @@ const AlmostThere = (route) => {
   }
 
   const saveLocationHandler = (address) => {
-    SignUpService.saveLocation({
-      uid: route?.route?.params?.uid,
-      location: address,
-    })
-      .then((response) => {
-        if (response.success) {
-          //auth()
-          //  .signInWithCustomToken(response.custom_token)
-          //  .then(() => {
-          navigation.push('Dashboard');
-          //  })
-          // .catch((err) => {
-          //   console.log(err);
-          // });
-        }
+    if (route?.route?.params?.uid) {
+      SignUpService.saveLocation({
+        uid: route?.route?.params?.uid,
+        location: address,
       })
-      .catch((error) => {
-        console.log('With Error in the API SignUp ' + error);
-      });
+        .then((response) => {
+          console.log('AFTER SAVE LOCATION');
+          console.log(response);
+          if (response.success) {
+            //auth()
+            //  .signInWithCustomToken(response.custom_token)
+            //  .then(() => {
+            navigation.push('Dashboard');
+            //  })
+            // .catch((err) => {
+            //   console.log(err);
+            // });
+          }
+        })
+        .catch((error) => {
+          console.log('With Error in the API SignUp ' + error);
+        });
+    } else {
+      navigation.push('Dashboard');
+    }
   };
 
   useEffect(() => {
@@ -131,7 +142,6 @@ const AlmostThere = (route) => {
         console.log(
           'API Call to save current location which is default (LUNETA PARK)',
         );
-
         saveLocationHandler(stringAddress);
       }
     }
@@ -148,7 +158,13 @@ const AlmostThere = (route) => {
               }}>
               <AppText textStyle="body2">Skip</AppText>
             </TouchableOpacity>
-          ) : null}
+          ) : (
+            <ActivityIndicator
+              animating={true}
+              size="small"
+              color={Colors.contentEbony}
+            />
+          )}
         </View>
 
         <View style={styles.almostThereImageContainer}>
@@ -173,25 +189,34 @@ const AlmostThere = (route) => {
             placeholder="Enter street address or city"
           />
         </View>
-
-        <View style={styles.currentLocationContainer}>
-          <NavigationArrow width={24} height={24} />
-          <AppText textStyle="promo" customStyle={styles.currentLocationLabel}>
-            Your current location
-          </AppText>
-        </View>
-        <View>
-          {isLocationReady ? (
-            <TouchableOpacity
-              onPress={() => {
-                onChangeAddressHandler();
-              }}>
-              <AppText textStyle="body3" customStyle={styles.currentAddress}>
-                {stringAddress}
+        {isLocationReady ? (
+          <>
+            <View style={styles.currentLocationContainer}>
+              <NavigationArrow width={24} height={24} />
+              <AppText
+                textStyle="promo"
+                customStyle={styles.currentLocationLabel}>
+                Your current location
               </AppText>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  onChangeAddressHandler();
+                }}>
+                <AppText textStyle="body3" customStyle={styles.currentAddress}>
+                  {stringAddress}
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={Colors.contentEbony}
+          />
+        )}
       </AppViewContainer>
     </>
   );
