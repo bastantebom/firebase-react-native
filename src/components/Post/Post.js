@@ -46,7 +46,7 @@ const Post = ({data}) => {
     name,
     username,
     rating,
-    createdAt,
+    postedAt,
     isVerified,
     postType,
     postImage,
@@ -93,7 +93,7 @@ const Post = ({data}) => {
               <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{rating}</AppText>
             </View>
 
-            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{timeAgo(createdAt)}</AppText>
+            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{timeAgo(postedAt)}</AppText>
           </View>
         </View>
         <TouchableOpacity>

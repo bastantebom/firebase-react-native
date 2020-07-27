@@ -40,10 +40,12 @@ function Dashboard({navigation}) {
           height: Dimensions.get('window').height,
         }}>
         <SafeAreaView style={{flex: 1}}>
-          <View style={{flexDirection: "row"}}>
+          <View style={{flexDirection: 'row'}}>
             <AppText customStyle={{flex: 1}}>Hello</AppText>
 
-            <TouchableOpacity onPress={() => setModalState(false)} style={{justifyContent: "flex-end", backgroundColor: "red"}} >
+            <TouchableOpacity
+              onPress={() => setModalState(false)}
+              style={{justifyContent: 'flex-end', backgroundColor: 'red'}}>
               <Text>I am the modal content!</Text>
             </TouchableOpacity>
           </View>
@@ -60,8 +62,9 @@ function Dashboard({navigation}) {
       name: 'Pia Samson',
       username: 'Piasamson',
       rating: 3.5,
-      createdAt: 8088,
+      postedAt: 8088,
       isVerified: true,
+      isLiked: false,
 
       postType: 'need',
       postImage:
@@ -78,8 +81,9 @@ function Dashboard({navigation}) {
       name: 'Mark Santiago',
       username: 'Markee',
       rating: 4.5,
-      createdAt: 5575482,
+      postedAt: 5575482,
       isVerified: true,
+      isLiked: false,
 
       postType: 'Service',
       postImage:
@@ -96,8 +100,9 @@ function Dashboard({navigation}) {
       name: 'Mark Santiago',
       username: 'Markee',
       rating: 4.5,
-      createdAt: 53482,
+      postedAt: 53482,
       isVerified: true,
+      isLiked: false,
 
       postType: 'Service',
       postImage:
@@ -114,8 +119,9 @@ function Dashboard({navigation}) {
       name: 'Mark Santiago',
       username: 'Markee',
       rating: 4.5,
-      createdAt: 777482,
+      postedAt: 777482,
       isVerified: true,
+      isLiked: false,
 
       postType: 'Service',
       postImage:
@@ -132,8 +138,9 @@ function Dashboard({navigation}) {
       name: 'Mark Santiago',
       username: 'Markee',
       rating: 4.5,
-      createdAt: 53482,
+      postedAt: 53482,
       isVerified: true,
+      isLiked: false,
 
       postType: 'Service',
       postImage:
@@ -150,8 +157,9 @@ function Dashboard({navigation}) {
       name: 'Mark Santiago',
       username: 'Markee',
       rating: 4.5,
-      createdAt: 53482,
+      postedAt: 53482,
       isVerified: true,
+      isLiked: false,
 
       postType: 'Service',
       postImage:
