@@ -86,7 +86,7 @@ const Post = ({data}) => {
             <VerifiedBadge />
           </View>
           <View style={styles.userInfoDetailsUsernameContainer}>
-            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>@{username}</AppText>
+            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>@{username.toLowerCase()}</AppText>
 
             <View style={styles.starRatingContainer}>
               <StarRating width={12} height={12} />
