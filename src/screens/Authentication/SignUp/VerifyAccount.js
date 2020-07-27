@@ -219,22 +219,20 @@ const VerifyAccount = (route) => {
     <View style={styles.container}>
       <Notification message={notificationMessage} type={notificationType} />
       <TransitionIndicator loading={isScreenLoading} />
-      <AppViewContainer customStyle={styles.defaultStyle}>
+      <View style={styles.defaultStyle}>
         <VerifyIcon />
-      </AppViewContainer>
-      <AppViewContainer
-        customStyle={{...styles.defaultStyle, ...styles.spacingBottom}}>
+      </View>
+      <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
         <AppText textStyle="display5">Enter Your Verification</AppText>
-      </AppViewContainer>
-      <AppViewContainer
-        customStyle={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
+      </View>
+      <View style={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           An email with the 4-digit code has been sent to{' '}
           <AppText textStyle="subtitle1" customStyle={styles.bodyContent}>
             {route?.route?.params?.login.toLowerCase()}
           </AppText>
         </AppText>
-      </AppViewContainer>
+      </View>
 
       <View style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
         {[firstTextInput, secondTextInput, thirdTextInput, fourthTextInput].map(
@@ -262,12 +260,11 @@ const VerifyAccount = (route) => {
         )}
       </View>
 
-      <AppViewContainer
-        customStyle={{...styles.defaultStyle, ...styles.spacingBottom}}>
+      <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           Didn’t receive a code?
         </AppText>
-      </AppViewContainer>
+      </View>
       <TouchableOpacity
         customStyle={styles.defaultStyle}
         onPress={() => {
