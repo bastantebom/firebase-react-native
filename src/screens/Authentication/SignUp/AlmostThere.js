@@ -1,77 +1,324 @@
 //import liraries
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {Colors} from '@/globals';
+
+import {
+  AppViewContainer,
+  AppText,
+  AppInput,
+  AppButton,
+  TransitionIndicator,
+} from '@/components';
+
+import {NavigationArrow, NavigationPin} from '@/assets/images/icons';
+import LocationImage from '@/assets/images/location.svg';
 import Geolocation from '@react-native-community/geolocation';
-//import LocationPin from '@/assets/images/icons/';
+import Geocoder from 'react-native-geocoding';
+import {useNavigation} from '@react-navigation/native';
+
+import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
+
+import Config from '@/services/Config';
+import SignUpService from '@/services/SignUpService';
+
+import auth from '@react-native-firebase/auth';
 
 // create a component
-const AlmostThere = () => {
-  const [initialLocation, setInitialLocation] = useState();
+const AlmostThere = (route) => {
+  const navigation = useNavigation();
+  const [initialLocation, setInitialLocation] = useState({});
   const [isLocationReady, setIsLocationReady] = useState(false);
+  const [stringAddress, setStringAddress] = useState('');
+  const [searchStringAddress, setSearchStringAddress] = useState('');
+  const [isAllowed, setIsAllowed] = useState();
+  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable,
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  const getStringAddress = (location) => {
+    //console.log(location);
+    Geocoder.init(Config.apiKey);
+    Geocoder.from(JSON.parse(location).latitude, JSON.parse(location).longitude)
+      .then((json) => {
+        const addressComponent = json.results[1].formatted_address;
+        //console.log(json);
+        setStringAddress(addressComponent);
+        setIsLocationReady(true);
+        //console.log('is location allowed ' + isAllowed);
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const getLongLatFromString = () => {
+    Geocoder.init(Config.apiKey);
+    Geocoder.from(searchStringAddress)
+      .then((json) => {
+        const location = json.results[0].geometry.location;
+        console.log('NEW LONG LAT');
+        console.log(location);
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const onChangeAddressHandler = () => {
+    if (isAllowed && isLocationReady) {
+      //console.log('isAllowed in Use Effect ' + isAllowed);
+      //console.log(initialLocation);
+      //console.log(isLocationReady);
+      //console.log(stringAddress);
+      //"altitude":0,"altitudeAccuracy":-1,"latitude":13.749014,"accuracy":5,"longitude":121.072939,"heading":-1,"speed":-1
+      const toPassString = {
+        uid: route?.route?.params?.uid,
+        address: stringAddress,
+        latitude: JSON.parse(initialLocation).latitude,
+        longitude: JSON.parse(initialLocation).longitude,
+      };
+      //console.log(toPassString);
+      navigation.navigate('AlmostThereMap', {...toPassString});
+    }
+  };
 
   function findCoordinates() {
     Geolocation.getCurrentPosition(
       (position) => {
         const initialPosition = JSON.stringify(position.coords);
         setInitialLocation(initialPosition);
-        setIsLocationReady(true);
+        setIsAllowed(true);
+        getStringAddress(initialPosition);
         //console.log(initialLocation);
       },
-      (error) => console.log('Error', JSON.stringify(error)),
+      (error) => {
+        console.log('Error', JSON.stringify(error));
+        //set to LUNETA PARK IF Permission Denied
+        const initialPosition = JSON.stringify({
+          altitude: 0,
+          altitudeAccuracy: -1,
+          latitude: 14.5831,
+          accuracy: 5,
+          longitude: 120.9794,
+          heading: -1,
+          speed: -1,
+        });
+        setInitialLocation(initialPosition);
+        setIsAllowed(false);
+        getStringAddress(initialPosition);
+      },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }
 
+  const saveLocationHandler = (address) => {
+    setIsScreenLoading(true);
+    if (route?.route?.params?.uid) {
+      SignUpService.saveLocation({
+        uid: route?.route?.params?.uid,
+        location: address,
+      })
+        .then((response) => {
+          if (response.success) {
+            signInAfterSaveLocation();
+          }
+        })
+        .catch((error) => {
+          setIsScreenLoading(false);
+          console.log('With Error in the API SignUp ' + error);
+        });
+    } else {
+      setIsScreenLoading(false);
+      navigation.push('Dashboard');
+    }
+  };
+
+  const signInAfterSaveLocation = () => {
+    if (route?.route?.params?.custom_token) {
+      auth()
+        .signInWithCustomToken(route?.route?.params?.custom_token)
+        .then(() => {
+          setIsScreenLoading(false);
+          navigation.push('Dashboard');
+        })
+        .catch((err) => {
+          setIsScreenLoading(false);
+          console.log(err);
+        });
+    } else {
+      setIsScreenLoading(false);
+      navigation.push('Dashboard');
+    }
+  };
+
   useEffect(() => {
     // exit early when we reach 0
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: true,
-      authorizationLevel: 'whenInUse',
-    });
-    Geolocation.requestAuthorization();
-
+    if (Platform.OS === 'ios') {
+      Geolocation.requestAuthorization();
+      Geolocation.setRNConfiguration({
+        skipPermissionRequests: false,
+        authorizationLevel: 'whenInUse',
+      });
+    } else {
+    }
     findCoordinates();
-  });
+  }, []);
+
+  useEffect(() => {
+    if (isAllowed !== undefined && isLocationReady) {
+      if (!isAllowed) {
+        console.log(route?.route?.params?.uid);
+        console.log(
+          'API Call to save current location which is default (LUNETA PARK)',
+        );
+        saveLocationHandler(stringAddress);
+      }
+    }
+  }, [isAllowed, isLocationReady]);
 
   return (
     <>
-      {isLocationReady ? (
-        <View style={{flex: 1}}>
-          <View
-            style={{
-              marginTop: 50,
-              paddingTop: 50,
-              paddingLeft: 10,
-              paddingRight: 10,
-            }}>
-            <Text>{JSON.parse(initialLocation).latitude}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <MapView
-              style={{
-                left: 0,
-                top: 0,
-                bottom: 0,
-                right: 0,
-                position: 'absolute',
-              }}
-              initialRegion={{
-                latitude: JSON.parse(initialLocation).latitude,
-                longitude: JSON.parse(initialLocation).longitude,
-                latitudeDelta: 0.0052,
-                longitudeDelta: 0.0051,
+      <AppViewContainer paddingSize={3} customStyle={styles.container}>
+        <TransitionIndicator loading={isScreenLoading} />
+        <View style={styles.skipContainer}>
+          {isLocationReady ? (
+            <TouchableOpacity
+              onPress={() => {
+                saveLocationHandler(stringAddress);
               }}>
-              <Marker
-                coordinate={{
-                  latitude: JSON.parse(initialLocation).latitude,
-                  longitude: JSON.parse(initialLocation).longitude,
-                }}
-                image={require('@/assets/images/icons/Navigation.png')}></Marker>
-            </MapView>
-          </View>
+              <AppText textStyle="body2">Skip</AppText>
+            </TouchableOpacity>
+          ) : (
+            <ActivityIndicator
+              animating={true}
+              size="small"
+              color={Colors.contentEbony}
+            />
+          )}
         </View>
-      ) : null}
+
+        <View style={styles.almostThereImageContainer}>
+          <LocationImage width={80} height={80} />
+        </View>
+
+        <AppText customStyle={styles.almostThereText} textStyle="display5">
+          Almost there!
+        </AppText>
+
+        <AppText customStyle={styles.almostThereSubText} textStyle="body2">
+          Let us know your current location so we can show you services and
+          goods nearby. You may change this later on.
+        </AppText>
+
+        <View style={styles.textInputWrapper}>
+          <View style={styles.navIcon}>
+            <NavigationPin width={24} height={24} />
+          </View>
+          {/* <AppInput
+            customStyle={styles.textInput}
+            placeholder="Enter street address or city"
+          /> */}
+          <GooglePlacesAutocomplete
+            placeholder="Enter street address or city"
+            query={{
+              key: Config.apiKey,
+              language: 'en', // language of the results
+            }}
+            onPress={(data, details = null) => {
+              //let coordinates = data.geometry.location;
+              console.log(JSON.stringify(details.description));
+              setSearchStringAddress(details.description);
+              setButtonDisabled(false);
+              setButtonStyle({});
+              //sendCoordinates(coordinates, {data, details});
+            }}
+            onFail={(error) => console.error(error)}
+            styles={{
+              container: {
+                marginTop: -10,
+                marginBottom: 50,
+              },
+              listView: {
+                color: Colors.contentEbony, //To see where exactly the list is
+                zIndex: 1100, //To popover the component outwards
+                elevation: 1100,
+                position: 'absolute',
+                top: 45,
+                backgroundColor: Colors.neutralsWhite,
+                marginLeft: 10,
+                marginRight: 10,
+              },
+              textInputContainer: {
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderTopWidth: 0,
+                borderBottomWidth: 0,
+                flex: 1,
+              },
+              textInput: {
+                borderColor: Colors.neutralGray,
+                borderWidth: 1,
+                paddingLeft: 40,
+                paddingRight: 39,
+
+                fontSize: 16,
+                height: 54,
+                color: Colors.contentEbony,
+              },
+              predefinedPlacesDescription: {
+                color: Colors.contentEbony,
+              },
+              poweredContainer: {display: 'none'},
+            }}
+          />
+        </View>
+
+        {isLocationReady ? (
+          <>
+            <View style={styles.currentLocationContainer}>
+              <NavigationArrow width={24} height={24} />
+              <AppText
+                textStyle="promo"
+                customStyle={styles.currentLocationLabel}>
+                Your current location
+              </AppText>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  onChangeAddressHandler();
+                }}>
+                <AppText textStyle="body3" customStyle={styles.currentAddress}>
+                  {stringAddress}
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={Colors.contentEbony}
+          />
+        )}
+        <View style={styles.buttonWrapper}>
+          <AppButton
+            text="Next"
+            type="primary"
+            height="xl"
+            disabled={buttonDisabled}
+            customStyle={{...styles.buttonStyle, ...buttonStyle}}
+            onPress={() => {
+              getLongLatFromString();
+            }}
+            //loading={isLoading}
+          />
+        </View>
+      </AppViewContainer>
     </>
   );
 };
@@ -80,10 +327,63 @@ const AlmostThere = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
+    backgroundColor: Colors.neutralsWhite,
   },
+  skipContainer: {
+    alignItems: 'flex-end',
+  },
+  almostThereImageContainer: {marginBottom: 32},
+  almostThereText: {
+    marginBottom: 8,
+  },
+
+  almostThereSubText: {
+    marginBottom: 32,
+  },
+
+  textInputWrapper: {
+    //position: 'relative',
+    marginBottom: 24,
+    zIndex: 9,
+  },
+
+  navIcon: {
+    position: 'absolute',
+    left: 16,
+    top: 13,
+    zIndex: 10,
+    elevation: 10,
+  },
+
+  textInput: {
+    borderColor: Colors.neutralGray,
+    borderWidth: 1,
+    paddingLeft: 40,
+    paddingRight: 39,
+    fontSize: 16,
+  },
+
+  currentLocationLabel: {
+    paddingLeft: 8,
+    zIndex: 1,
+    elevation: 1,
+  },
+
+  currentLocationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 16,
+    zIndex: 0,
+    elevation: 0,
+  },
+
+  currentAddress: {
+    paddingLeft: 48,
+    zIndex: 1,
+    elevation: 1,
+  },
+
+  buttonWrapper: {flex: 1, justifyContent: 'flex-end', marginBottom: 0},
 });
 
 //make this component available to the app

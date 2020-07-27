@@ -14,11 +14,12 @@ import {Post} from '@/screens/Post';
 import {Activity} from '@/screens/Activity';
 import {
   AlmostThere,
+  AlmostThereMap,
   VerifyAccount,
   ResetPassword,
 } from '@/screens/Authentication';
 
-import { normalize } from '@/globals'
+import {normalize} from '@/globals';
 
 import {
   ServbeesAlt,
@@ -41,6 +42,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="Onboarding" component={Onboarding} />
       <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
       <AuthStack.Screen name="AlmostThere" component={AlmostThere} />
+      <AuthStack.Screen name="AlmostThereMap" component={AlmostThereMap} />
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
       <AuthStack.Screen name="Dashboard" component={Dashboard} />
     </AuthStack.Navigator>

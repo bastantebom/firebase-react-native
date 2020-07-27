@@ -1,22 +1,24 @@
 //import liraries
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useContext} from 'react';
 import {View, TextInput, StyleSheet, Keyboard} from 'react-native';
 import AppColor from '@/globals/Colors';
 import {useNavigation} from '@react-navigation/native';
-//import AppButton from '@/components/AppButton';
-
 import VerifyIcon from '@/assets/images/verify.svg';
-import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-import AppText from '@/components/AppText/AppText';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-import auth from '@react-native-firebase/auth';
+import {Context} from '@/context';
 
+import {
+  AppViewContainer,
+  AppText,
+  TransitionIndicator,
+  Notification,
+} from '@/components';
 import VerifyService from '@/services/VerifyService';
-//import {set} from 'react-native-reanimated';
 
 // create a component
 const VerifyAccount = (route) => {
+  const {openNotification, closeNotification} = useContext(Context);
   const navigation = useNavigation();
   //const verify = route.params;
   const firstTextInput = useRef(null);
@@ -24,8 +26,13 @@ const VerifyAccount = (route) => {
   const thirdTextInput = useRef(null);
   const fourthTextInput = useRef(null);
 
+  const [notificationMessage, setNotificationMessage] = useState();
+  const [notificationType, setNotificationType] = useState();
+
   const [inputStyle, setInputStyle] = useState([]);
   const [verifyArray, setVerifyArray] = useState(['', '', '', '']);
+
+  const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const onVerifyChange = (index) => {
     return (value) => {
@@ -99,6 +106,7 @@ const VerifyAccount = (route) => {
   const sendVerification = (code) => {
     if (code.join('').length === 4) {
       const nCode = parseInt(code.join(''));
+      setIsScreenLoading(true);
       //console.log('SEND VERIFICATION');
       //console.log(route?.route?.params?.uid);
       //console.log(nCode);
@@ -109,17 +117,24 @@ const VerifyAccount = (route) => {
       })
         .then((response) => {
           if (response.success) {
-            auth()
-              .signInWithCustomToken(response.custom_token)
-              .then(() => {
-                navigation.push('Dashboard');
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            setIsScreenLoading(false);
+            //auth()
+            //  .signInWithCustomToken(response.custom_token)
+            //  .then(() => {
+            navigation.push('AlmostThere', {
+              ...{
+                uid: route?.route?.params?.uid,
+                custom_token: response.custom_token,
+              },
+            });
+            //  })
+            // .catch((err) => {
+            //   console.log(err);
+            // });
           }
         })
         .catch((error) => {
+          setIsScreenLoading(false);
           console.log('With Error in the API SignUp ' + error);
         });
     } else {
@@ -127,40 +142,97 @@ const VerifyAccount = (route) => {
     }
   };
 
+  const closeNotificationTimer = () => {
+    setTimeout(() => {
+      closeNotification();
+    }, 5000);
+  };
+
   const resendCodeHandler = () => {
+    setIsScreenLoading(true);
+    if (route?.route?.params?.login) {
+      var newProvider = route?.route?.params?.login;
+      var providerText = 'mobile';
+      if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
+        providerText = 'email';
+      }
+    }
     VerifyService.resendCode({
       uid: route?.route?.params?.uid,
-      provider: 'email',
+      provider: providerText,
     })
       .then((response) => {
         if (response.success) {
-          alert('Code has been sent');
+          setNotificationType('success');
+          setNotificationMessage(
+            <AppText textStyle="body2" customStyle={notificationText}>
+              Verification code has been sent to your {providerText}{' '}
+              {route?.route?.params?.login}
+            </AppText>,
+          );
+          openNotification();
+          setIsScreenLoading(false);
+          closeNotificationTimer();
+          //alert('Code has been sent');
         } else {
+          setNotificationType('error');
+          setNotificationMessage(
+            <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
+              Failed resend verification code {providerText}{' '}
+              {route?.route?.params?.login}
+            </AppText>,
+          );
+          openNotification();
+          setIsScreenLoading(false);
+          closeNotificationTimer();
         }
       })
       .catch((error) => {
-        console.log('With Error in the API SignUp ' + error);
+        setNotificationType('error');
+        setNotificationMessage(
+          'Failed verification ' +
+            providerText +
+            ' ' +
+            route?.route?.params?.login,
+        );
+        openNotification();
+        setIsScreenLoading(false);
+        closeNotificationTimer();
+        //console.log('With Error in the API SignUp ' + error);
       });
+  };
+
+  const notificationErrorTextStyle = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    color: 'white',
+  };
+
+  const notificationText = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
   };
 
   return (
     <View style={styles.container}>
-      <AppViewContainer customStyle={styles.defaultStyle}>
+      <Notification message={notificationMessage} type={notificationType} />
+      <TransitionIndicator loading={isScreenLoading} />
+      <View style={styles.defaultStyle}>
         <VerifyIcon />
-      </AppViewContainer>
-      <AppViewContainer
-        customStyle={{...styles.defaultStyle, ...styles.spacingBottom}}>
+      </View>
+      <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
         <AppText textStyle="display5">Enter Your Verification</AppText>
-      </AppViewContainer>
-      <AppViewContainer
-        customStyle={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
+      </View>
+      <View style={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           An email with the 4-digit code has been sent to{' '}
-          <AppText textStyle="subtitle2" customStyle={styles.bodyContent}>
-            {route?.route?.params?.login}
+          <AppText textStyle="subtitle1" customStyle={styles.bodyContent}>
+            {route?.route?.params?.login.toLowerCase()}
           </AppText>
         </AppText>
-      </AppViewContainer>
+      </View>
 
       <View style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
         {[firstTextInput, secondTextInput, thirdTextInput, fourthTextInput].map(
@@ -188,12 +260,11 @@ const VerifyAccount = (route) => {
         )}
       </View>
 
-      <AppViewContainer
-        customStyle={{...styles.defaultStyle, ...styles.spacingBottom}}>
+      <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           Didn’t receive a code?
         </AppText>
-      </AppViewContainer>
+      </View>
       <TouchableOpacity
         customStyle={styles.defaultStyle}
         onPress={() => {
