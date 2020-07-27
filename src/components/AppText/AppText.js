@@ -14,8 +14,8 @@ const AppText = ({children, textStyle, customStyle, color}) => {
   if (customStyle || color) {
     computedTextStyle = {
       ...computedTextStyle,
-      ...customStyle,
       color: color ? color : Colors.contentEbony,
+      ...customStyle,
     };
   }
 
@@ -103,6 +103,11 @@ const styles = StyleSheet.create({
     lineHeight: (18),
   },
   subtitle1: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(18),
+    letterSpacing: (0.15),
+  },
+  subtitle2: {
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(14),
     letterSpacing: (0.1),

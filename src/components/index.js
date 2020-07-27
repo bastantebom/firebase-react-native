@@ -9,6 +9,8 @@ import {HexagonBorder, ProfileImageUpload} from '@/components/ImageUpload';
 import Notification from '@/components/Notification';
 import {Post, Posts, PostFilter} from '@/components/Post';
 import Switch from '@/components/Switch/Switch';
+import AppRadio from '@/components/AppRadio/Radio';
+import AppCheckbox from '@/components/AppCheckbox/Checkbox';
 
 export {
   AppInput,
@@ -22,5 +24,7 @@ export {
   ProfileImageUpload,
   Post,
   PostFilter,
-  Switch
+  Switch,
+  AppRadio,
+  AppCheckbox,
 };

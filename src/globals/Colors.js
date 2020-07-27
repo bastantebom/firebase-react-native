@@ -44,5 +44,8 @@ export default {
 
   promoCopy: '#393B4D',
 
+  checkboxBorderDefault: '#91919C',
+  checkboxBorderActive: '#F7A80F'
+
   //switchDisable: '#CACBCC';
 };

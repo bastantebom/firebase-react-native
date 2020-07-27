@@ -46,7 +46,7 @@ const Post = ({data}) => {
     name,
     username,
     rating,
-    createdAt,
+    postedAt,
     isVerified,
     postType,
     postImage,
@@ -86,14 +86,14 @@ const Post = ({data}) => {
             <VerifiedBadge />
           </View>
           <View style={styles.userInfoDetailsUsernameContainer}>
-            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>@{username}</AppText>
+            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>@{username.toLowerCase()}</AppText>
 
             <View style={styles.starRatingContainer}>
               <StarRating width={12} height={12} />
               <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{rating}</AppText>
             </View>
 
-            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{timeAgo(createdAt)}</AppText>
+            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>{timeAgo(postedAt)}</AppText>
           </View>
         </View>
         <TouchableOpacity>
