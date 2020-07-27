@@ -85,6 +85,10 @@ const MapComponent = ({latitude, longitude}) => {
     },
   ];
 
+  const onRegionChange = (region) => {
+    console.log(region);
+  };
+
   return (
     <MapView
       provider={PROVIDER_GOOGLE}
@@ -103,6 +107,7 @@ const MapComponent = ({latitude, longitude}) => {
       }}
       customMapStyle={mapStyle}
       zoomEnabled={true}
+      onRegionChangeComplete={onRegionChange}
       scrollEnabled={true}
       showsScale={true}>
       <MapView.Circle
@@ -112,7 +117,6 @@ const MapComponent = ({latitude, longitude}) => {
         strokeWidth={0.1}
         strokeColor={'rgba(255, 212, 0,0.18)'}
         fillColor={'rgba(255, 212, 0,0.18)'}
-        //onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
       />
       <MapView.Circle
         key={(longitude + latitude + 10).toString()}
