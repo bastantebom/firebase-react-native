@@ -1,3 +1,4 @@
 import Profile from './profile';
+import ProfileHives from './hives';
 
-export {Profile};
+export {Profile, ProfileHives};
