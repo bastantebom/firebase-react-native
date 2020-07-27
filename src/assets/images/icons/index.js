@@ -1,7 +1,7 @@
 /**
- * Usage: 
+ * Usage:
  * import { Close } from '@/assets/images/icons';
- * 
+ *
  * <Close />
  */
 
@@ -36,7 +36,6 @@ import Verified from '@/assets/images/icons/verified.svg';
 import StarRating from '@/assets/images/icons/star-rating.svg';
 import TransportationBox from '@/assets/images/icons/transportation-box.svg';
 
-
 // For bottom navigation
 import NotificationDot from '@/assets/images/icons/notification-red-dot.svg';
 import PostBG from '@/assets/images/icons/post-bg.svg';
@@ -58,41 +57,52 @@ import FilterNeeds from './filter-needs.svg';
 import FilterSeller from './filter-seller.svg';
 import FilterServices from './filter-services.svg';
 
+import SortHighLow from './sort-high-low.svg';
+import SortLowHigh from './sort-low-high.svg';
+import SortPopular from './sort-popular.svg';
+import SortRecent from './sort-recent.svg';
+import SortNearest from './sort-nearest.svg';
+
 import CheckboxCheck from './checkbox-check.svg';
 import RadioDot from './radiobutton-dot.svg';
 
 export {
-    FilterNeeds,
-    FilterSeller,
-    FilterServices,
-    Filter,
-    JarHeart,
-    NotificationDot,
-    PostBG,
-    PostPlus,
-    Bell,
-    BellActive,
-    Hive,
-    HiveActive,
-    Verified,
-    ServbeesAlt,
-    ServbeesAltActive,
-    TransportationBox,
-    UserAlt,
-    UserAltActive,
-    CircleTick,
-    Close,
-    CloseDark,
-    CloseLight,
-    EyeDark,
-    EyeLight,
-    Facebook,
-    Google,
-    NavigationArrow,
-    NavigationPin,
-    NavigationPinRed,
-    Warning,
-    StarRating,
-    CheckboxCheck,
-    RadioDot
+  SortHighLow,
+  SortLowHigh,
+  SortPopular,
+  SortRecent,
+  SortNearest,
+  FilterNeeds,
+  FilterSeller,
+  FilterServices,
+  Filter,
+  JarHeart,
+  NotificationDot,
+  PostBG,
+  PostPlus,
+  Bell,
+  BellActive,
+  Hive,
+  HiveActive,
+  Verified,
+  ServbeesAlt,
+  ServbeesAltActive,
+  TransportationBox,
+  UserAlt,
+  UserAltActive,
+  CircleTick,
+  Close,
+  CloseDark,
+  CloseLight,
+  EyeDark,
+  EyeLight,
+  Facebook,
+  Google,
+  NavigationArrow,
+  NavigationPin,
+  NavigationPinRed,
+  Warning,
+  StarRating,
+  CheckboxCheck,
+  RadioDot,
 };

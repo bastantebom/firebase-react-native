@@ -15,9 +15,14 @@ import {
   FilterServices,
   FilterSeller,
   FilterNeeds,
+  SortRecent,
+  SortPopular,
+  SortLowHigh,
+  SortHighLow,
+  SortNearest
 } from '@/assets/images/icons';
 
-const FilterSlider = () => {
+const FilterSlider = ({modalToggler}) => {
   const [checkboxServices, setCheckboxServices] = useState(false);
   const [checkboxSeller, setCheckboxSeller] = useState(false);
   const [checkboxNeeds, setCheckboxNeeds] = useState(false);
@@ -48,6 +53,24 @@ const FilterSlider = () => {
 
   const checkboxNeedsHandler = () => {
     setCheckboxNeeds(!checkboxNeeds);
+  };
+
+  const resetFilters = () => {
+    setCheckboxServices(false);
+    setCheckboxSeller(false);
+    setCheckboxNeeds(false);
+    setRadioButtons({
+      Popular: false,
+      Recent: false,
+      Nearest: false,
+      HighLow: false,
+      LowHigh: false,
+    });
+  };
+
+  const applyFilters = () => {
+    // Api call
+    modalToggler();
   };
 
   const radioHandler = (label) => {
@@ -111,7 +134,7 @@ const FilterSlider = () => {
         backgroundColor: 'white',
         height: Dimensions.get('window').height,
       }}>
-      <ScrollView style={{ paddingTop: 24}}>
+      <ScrollView style={{paddingTop: 24}}>
         <AppViewContainer marginSize={3}>
           <View style={{flexDirection: 'row', marginBottom: 40}}>
             <View style={{flex: 1}}>
@@ -122,7 +145,7 @@ const FilterSlider = () => {
             </View>
 
             <TouchableOpacity
-              onPress={() => setModalState(false)}
+              onPress={() => modalToggler()}
               style={{justifyContent: 'flex-start'}}>
               <CloseDark width={normalize(24)} height={normalize(24)} />
             </TouchableOpacity>
@@ -167,7 +190,7 @@ const FilterSlider = () => {
             </AppText>
             <AppRadio
               Icon={() => {
-                return <FilterNeeds />;
+                return <SortPopular />;
               }}
               label="Popular"
               name="Popular"
@@ -177,7 +200,7 @@ const FilterSlider = () => {
             />
             <AppRadio
               Icon={() => {
-                return <FilterNeeds />;
+                return <SortRecent />;
               }}
               label="Recent"
               name="Recent"
@@ -187,7 +210,7 @@ const FilterSlider = () => {
             />
             <AppRadio
               Icon={() => {
-                return <FilterNeeds />;
+                return <SortNearest />;
               }}
               label="Nearest"
               name="Nearest"
@@ -197,7 +220,7 @@ const FilterSlider = () => {
             />
             <AppRadio
               Icon={() => {
-                return <FilterNeeds />;
+                return <SortHighLow />;
               }}
               label="Price High to Low"
               name="HighLow"
@@ -207,7 +230,7 @@ const FilterSlider = () => {
             />
             <AppRadio
               Icon={() => {
-                return <FilterNeeds />;
+                return <SortLowHigh />;
               }}
               label="Price Low to High"
               name="LowHigh"
@@ -228,12 +251,12 @@ const FilterSlider = () => {
             flexDirection: 'row',
             justifyContent: 'space-evenly',
           }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={resetFilters}>
             <View style={styles.buttonWhite}>
               <AppText textStyle="button2">Reset</AppText>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={applyFilters}>
             <View style={styles.buttonYellow}>
               <AppText textStyle="button2">Apply</AppText>
             </View>
@@ -250,7 +273,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderColor: Colors.contentEbony,
     borderWidth: 1.5,
-    borderRadius: 4
+    borderRadius: 4,
   },
   buttonYellow: {
     paddingHorizontal: 40,
@@ -258,7 +281,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primaryYellow,
     backgroundColor: Colors.primaryYellow,
     borderWidth: 1.5,
-    borderRadius: 4
+    borderRadius: 4,
   },
 });
 

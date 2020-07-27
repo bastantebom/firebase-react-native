@@ -282,7 +282,7 @@ function Dashboard({navigation}) {
             <View style={{flex: 1, backgroundColor: 'black'}} />
           </TouchableWithoutFeedback>
         }>
-        <FilterSlider />
+        <FilterSlider modalToggler={toggleModal} />
       </Modal>
     </>
   );
