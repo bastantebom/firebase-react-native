@@ -4,16 +4,17 @@ import {View, TouchableOpacity} from 'react-native';
 import {AppText} from '@/components';
 import {normalize, Colors} from '@/globals';
 
-import {FilterServices, CheckboxCheck} from '@/assets/images/icons';
+import {CheckboxCheck} from '@/assets/images/icons';
 
 const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
   return (
-    <TouchableOpacity onPress={valueChangeHandler}>
+    <TouchableOpacity onPress={() => valueChangeHandler()}>
       <View
         style={{
           // backgroundColor: 'blue',
           flexDirection: 'row',
-          paddingHorizontal: 16,
+          paddingLeft: 16,
+          paddingRight: 8,
           paddingVertical: 8,
           backgroundColor: value
             ? Colors.primaryCream
@@ -35,7 +36,7 @@ const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
             height: normalize(20),
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 4,
+            borderRadius: normalize(4),
             borderWidth: 1.2,
             borderColor: value
               ? Colors.checkboxBorderActive

@@ -59,6 +59,7 @@ import FilterSeller from './filter-seller.svg';
 import FilterServices from './filter-services.svg';
 
 import CheckboxCheck from './checkbox-check.svg';
+import RadioDot from './radiobutton-dot.svg';
 
 export {
     FilterNeeds,
@@ -92,5 +93,6 @@ export {
     NavigationPinRed,
     Warning,
     StarRating,
-    CheckboxCheck
+    CheckboxCheck,
+    RadioDot
 };

@@ -1,11 +1,5 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, TouchableOpacity, Dimensions, StyleSheet} from 'react-native';
 
 import {AppText, AppViewContainer, AppRadio, AppCheckbox} from '@/components';
 import {normalize, Colors} from '@/globals';
@@ -22,18 +16,88 @@ const FilterSlider = () => {
   const [checkboxSeller, setCheckboxSeller] = useState(false);
   const [checkboxNeeds, setCheckboxNeeds] = useState(false);
 
+  const [radioButtons, setRadioButtons] = useState({
+    Popular: false,
+    Recent: false,
+    Nearest: false,
+    HighLow: false,
+    LowHigh: false,
+  });
+
+  useEffect(() => {
+    // console.log('Filter options: ', [
+    //   checkboxServices,
+    //   checkboxSeller,
+    //   checkboxNeeds,
+    // ]);
+  }, [checkboxServices, checkboxSeller, checkboxNeeds, radioButtons]);
+
   const checkboxServicesHandler = () => {
-    setCheckboxServices(!checkboxServices)
-  }
+    setCheckboxServices(!checkboxServices);
+  };
 
   const checkboxSellerHandler = () => {
-    setCheckboxSeller(!checkboxSeller)
-  }
+    setCheckboxSeller(!checkboxSeller);
+  };
 
   const checkboxNeedsHandler = () => {
-    setCheckboxNeeds(!checkboxNeeds)
-  }
+    setCheckboxNeeds(!checkboxNeeds);
+  };
 
+  const radioHandler = (label) => {
+    console.log(radioButtons);
+    console.log('label return: ', label);
+
+    switch (label) {
+      case 'Popular':
+        setRadioButtons({
+          Popular: true,
+          Recent: false,
+          Nearest: false,
+          HighLow: false,
+          LowHigh: false,
+        });
+        break;
+      case 'Recent':
+        setRadioButtons({
+          Popular: false,
+          Recent: true,
+          Nearest: false,
+          HighLow: false,
+          LowHigh: false,
+        });
+        break;
+      case 'Nearest':
+        setRadioButtons({
+          Popular: false,
+          Recent: false,
+          Nearest: true,
+          HighLow: false,
+          LowHigh: false,
+        });
+        break;
+      case 'HighLow':
+        setRadioButtons({
+          Popular: false,
+          Recent: false,
+          Nearest: false,
+          HighLow: true,
+          LowHigh: false,
+        });
+        break;
+      case 'LowHigh':
+        setRadioButtons({
+          Popular: false,
+          Recent: false,
+          Nearest: false,
+          HighLow: false,
+          LowHigh: true,
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <View
@@ -90,10 +154,95 @@ const FilterSlider = () => {
           />
         </View>
 
-        <AppRadio></AppRadio>
+        <View>
+          <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+            Sort by
+          </AppText>
+          <AppRadio
+            Icon={() => {
+              return <FilterNeeds />;
+            }}
+            label="Popular"
+            name="Popular"
+            value={radioButtons.Popular}
+            valueChangeHandler={radioHandler}
+            style={{marginBottom: 16}}
+          />
+          <AppRadio
+            Icon={() => {
+              return <FilterNeeds />;
+            }}
+            label="Recent"
+            name="Recent"
+            value={radioButtons.Recent}
+            valueChangeHandler={radioHandler}
+            style={{marginBottom: 16}}
+          />
+          <AppRadio
+            Icon={() => {
+              return <FilterNeeds />;
+            }}
+            label="Nearest"
+            name="Nearest"
+            value={radioButtons.Nearest}
+            valueChangeHandler={radioHandler}
+            style={{marginBottom: 16}}
+          />
+          <AppRadio
+            Icon={() => {
+              return <FilterNeeds />;
+            }}
+            label="Price High to Low"
+            name="HighLow"
+            value={radioButtons.HighLow}
+            valueChangeHandler={radioHandler}
+            style={{marginBottom: 16}}
+          />
+          <AppRadio
+            Icon={() => {
+              return <FilterNeeds />;
+            }}
+            label="Price Low to High"
+            name="LowHigh"
+            value={radioButtons.LowHigh}
+            valueChangeHandler={radioHandler}
+            style={{marginBottom: 16}}
+          />
+        </View>
       </AppViewContainer>
+
+      <View
+        style={{
+          marginBottom: 40,
+          borderTopWidth: 1,
+          borderTopColor: Colors.neutralsZircon,
+          paddingTop: 24,
+          paddingHorizontal: 24,
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+        }}>
+        <TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <AppText>Reset</AppText>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <AppText>Apply</AppText>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    paddingHorizontal: 40,
+    paddingVertical: 8,
+    borderColor: Colors.contentEbony,
+    borderWidth: 1,
+  },
+});
 
 export default FilterSlider;

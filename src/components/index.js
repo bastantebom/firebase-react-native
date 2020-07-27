@@ -26,5 +26,5 @@ export {
   PostFilter,
   Switch,
   AppRadio,
-  AppCheckbox
+  AppCheckbox,
 };

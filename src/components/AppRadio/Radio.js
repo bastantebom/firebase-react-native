@@ -1,13 +1,66 @@
-import React from 'react';
-import {View} from 'react-native';
+import React, {useState} from 'react';
+import {View, TouchableOpacity} from 'react-native';
 
 import {AppText} from '@/components';
+import {normalize, Colors} from '@/globals';
 
-const Radio = ({Icon, label, style}) => {
+import {RadioDot} from '@/assets/images/icons';
+
+const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
+
   return (
-    <View>
-      <AppText>Radio</AppText>
-    </View>
+    <TouchableOpacity
+      onPress={() => {
+        valueChangeHandler(name);
+      }}>
+      <View
+        style={{
+          // backgroundColor: 'blue',
+          flexDirection: 'row',
+          paddingLeft: 16,
+          paddingRight: 8,
+          paddingVertical: 8,
+          backgroundColor: value
+            ? Colors.primaryCream
+            : Colors.neutralsWhitesmoke,
+          ...style,
+          justifyContent: 'space-between',
+        }}>
+        <View style={{flexDirection: 'row'}}>
+          {Icon ? <Icon /> : <></>}
+          <AppText textStyle="body3" customStyle={{marginLeft: 8}}>
+            {label}
+          </AppText>
+        </View>
+
+        <View
+          style={{
+            width: normalize(20),
+            height: normalize(20),
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              width: normalize(18),
+              height: normalize(18),
+              borderRadius: normalize(20 / 2),
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1.2,
+              borderColor: value
+                ? Colors.checkboxBorderActive
+                : Colors.checkboxBorderDefault,
+            }}>
+            {value ? (
+              <RadioDot width={normalize(6)} height={normalize(6)} />
+            ) : (
+              <></>
+            )}
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
