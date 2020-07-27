@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import {Colors} from '@/globals';
 
-import {AppViewContainer, AppText, AppInput} from '@/components';
+import {
+  AppViewContainer,
+  AppText,
+  AppInput,
+  TransitionIndicator,
+} from '@/components';
 
 import {NavigationArrow, NavigationPin} from '@/assets/images/icons';
 import LocationImage from '@/assets/images/location.svg';
@@ -28,6 +33,7 @@ const AlmostThere = (route) => {
   const [isLocationReady, setIsLocationReady] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
   const [isAllowed, setIsAllowed] = useState();
+  const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const getStringAddress = (location) => {
     //console.log(location);
@@ -91,22 +97,26 @@ const AlmostThere = (route) => {
   }
 
   const saveLocationHandler = (address) => {
+    setIsScreenLoading(true);
     if (route?.route?.params?.uid) {
       SignUpService.saveLocation({
         uid: route?.route?.params?.uid,
         location: address,
       })
         .then((response) => {
-          console.log('AFTER SAVE LOCATION');
-          console.log(response);
+          //console.log('AFTER SAVE LOCATION');
+          //console.log(response);
+
           if (response.success) {
             signInAfterSaveLocation();
           }
         })
         .catch((error) => {
+          setIsScreenLoading(false);
           console.log('With Error in the API SignUp ' + error);
         });
     } else {
+      setIsScreenLoading(false);
       navigation.push('Dashboard');
     }
   };
@@ -116,12 +126,15 @@ const AlmostThere = (route) => {
       auth()
         .signInWithCustomToken(route?.route?.params?.custom_token)
         .then(() => {
+          setIsScreenLoading(false);
           navigation.push('Dashboard');
         })
         .catch((err) => {
+          setIsScreenLoading(false);
           console.log(err);
         });
     } else {
+      setIsScreenLoading(false);
       navigation.push('Dashboard');
     }
   };
@@ -160,6 +173,7 @@ const AlmostThere = (route) => {
   return (
     <>
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
+        <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.skipContainer}>
           {isLocationReady ? (
             <TouchableOpacity
@@ -201,24 +215,24 @@ const AlmostThere = (route) => {
         </View>
         {isLocationReady ? (
           <>
-            <TouchableOpacity
-              onPress={() => {
-                onChangeAddressHandler();
-              }}>
-              <View style={styles.currentLocationContainer}>
-                <NavigationArrow width={24} height={24} />
-                <AppText
-                  textStyle="promo"
-                  customStyle={styles.currentLocationLabel}>
-                  Your current location
-                </AppText>
-              </View>
-              <View>
+            <View style={styles.currentLocationContainer}>
+              <NavigationArrow width={24} height={24} />
+              <AppText
+                textStyle="promo"
+                customStyle={styles.currentLocationLabel}>
+                Your current location
+              </AppText>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  onChangeAddressHandler();
+                }}>
                 <AppText textStyle="body3" customStyle={styles.currentAddress}>
                   {stringAddress}
                 </AppText>
-              </View>{' '}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           </>
         ) : (
           <ActivityIndicator
