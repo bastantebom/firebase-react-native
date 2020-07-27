@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ImagePicker from 'react-native-image-crop-picker';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Alert } from 'react-native';
 import {
   Svg,
   Polygon,
@@ -8,37 +8,105 @@ import {
   ClipPath,
   Image,
 } from 'react-native-svg';
+import { utils } from '@react-native-firebase/app';
+import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
+import { ProgressBar } from 'react-native-paper';
 
 import UploadIcon from '@/assets/images/icons/profile-upload.svg';
+import AppButton from '../AppButton/AppButton';
+import AppText from '../AppText/AppText';
+import HexagonBorder from '@/components/ImageUpload/HexagonBorder'
 
 
-const ProfileImageUpload = () => {
+const ProfileImageUpload = ({ size }) => {
+
+  const currentUser = auth().currentUser;
+
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+  const [isVisible, setIsVisible] = useState(true);
 
   const [imageSource, setImageSource] = useState(null);
-  const [isVisible, setIsVisible] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [transferred, setTransferred] = useState(0);
+
 
   const handleSelect = () => {
     ImagePicker.openPicker({
       width: 500,
       height: 500,
       cropping: true,
-      includeBase64: true,
-    }).then(image => {
-      const uri = image.path;
-      setImageSource(uri)
+      // includeBase64: true,
+    }).then(response => {
+      const source = { uri: response.path };
+      console.log(source);
+      setImageSource(source);
+
+      // const uri = image.path;
+      // setImageSource(uri)
+      // console.log(image.filename)
+
       setIsVisible(false)
     }).catch(e => {
       console.log(e)
     });
   }
 
+  const uploadImage = async () => {
+    const { uri } = imageSource;
+    const filename = uri.substring(uri.lastIndexOf('/') + 1);
+    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+  
+    setUploading(true);
+    setTransferred(0);
+  
+    const task = storage()
+      .ref(filename)
+      .putFile(uploadUri);
+  
+    // set progress state
+    task.on('state_changed', snapshot => {
+      setTransferred(
+        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000
+      );
+    });
+  
+    try {
+      await task;
+    } catch (e) {
+      console.error(e);
+    }
+  
+    setUploading(false);
+  
+    Alert.alert(
+      'Photo uploaded!',
+      'Your photo has been uploaded to Firebase Cloud Storage!'
+    );
+  
+    setImageSource(null);
+  };
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (initializing) return null;
+
   return (
     <View>
       <TouchableOpacity onPress={() => handleSelect()} style={{ display : isVisible ? 'flex' : 'none' }}>
-        <UploadIcon height="240" width="240"/>
+        <UploadIcon height={size} width={size}/>
       </TouchableOpacity>
       <View style={{ display : !isVisible ? 'flex' : 'none' }}>
-        <Svg height="240" width="240" viewBox="0 0 100 100">
+        <Svg height={size} width={size} viewBox="0 0 100 100">
           <Defs>
             <ClipPath id="clip">
               <Polygon
@@ -56,7 +124,23 @@ const ProfileImageUpload = () => {
           />
         </Svg>
       </View>
-      {/* <HexagonBorder imgSrc={imageSource} /> */}
+      <AppButton
+        text="Save"
+        onPress={() => uploadImage()}
+      />
+
+      {uploading ? (
+        <View>
+          <ProgressBar progress={transferred} />
+        </View>
+      ) : (
+        null
+      )}
+
+      {/* {imageSource !== null ? (
+        <HexagonBorder imgSrc={{uri: imageSource.uri}} />
+        // <Image source={{ uri: image.uri }} style={styles.imageBox} />
+      ) : null} */}
     </View>
   )
 }

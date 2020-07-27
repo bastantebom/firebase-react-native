@@ -65,8 +65,14 @@ function Profile({ navigation }) {
         type="primary"
         size="sm"
       />
+      {/* <AppButton
+        text="Hives"
+        onPress={() => navigation.navigate('ProfileHives')}
+        type="tertiary"
+        size="sm"
+      /> */}
       <AppText>Welcome, {currentUser}</AppText>
-      <ImageUpload />
+      <ImageUpload size={120} />
       <HexagonBorder />
 
       <Button title="hello" onPress={signOut} />
