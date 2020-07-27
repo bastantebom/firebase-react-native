@@ -19,6 +19,8 @@ import {useNavigation} from '@react-navigation/native';
 import Config from '@/services/Config';
 import SignUpService from '@/services/SignUpService';
 
+import auth from '@react-native-firebase/auth';
+
 // create a component
 const AlmostThere = (route) => {
   const navigation = useNavigation();
@@ -98,18 +100,26 @@ const AlmostThere = (route) => {
           console.log('AFTER SAVE LOCATION');
           console.log(response);
           if (response.success) {
-            //auth()
-            //  .signInWithCustomToken(response.custom_token)
-            //  .then(() => {
-            navigation.push('Dashboard');
-            //  })
-            // .catch((err) => {
-            //   console.log(err);
-            // });
+            signInAfterSaveLocation();
           }
         })
         .catch((error) => {
           console.log('With Error in the API SignUp ' + error);
+        });
+    } else {
+      navigation.push('Dashboard');
+    }
+  };
+
+  const signInAfterSaveLocation = () => {
+    if (route?.route?.params?.custom_token) {
+      auth()
+        .signInWithCustomToken(route?.route?.params?.custom_token)
+        .then(() => {
+          navigation.push('Dashboard');
+        })
+        .catch((err) => {
+          console.log(err);
         });
     } else {
       navigation.push('Dashboard');
@@ -191,24 +201,24 @@ const AlmostThere = (route) => {
         </View>
         {isLocationReady ? (
           <>
-            <View style={styles.currentLocationContainer}>
-              <NavigationArrow width={24} height={24} />
-              <AppText
-                textStyle="promo"
-                customStyle={styles.currentLocationLabel}>
-                Your current location
-              </AppText>
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  onChangeAddressHandler();
-                }}>
+            <TouchableOpacity
+              onPress={() => {
+                onChangeAddressHandler();
+              }}>
+              <View style={styles.currentLocationContainer}>
+                <NavigationArrow width={24} height={24} />
+                <AppText
+                  textStyle="promo"
+                  customStyle={styles.currentLocationLabel}>
+                  Your current location
+                </AppText>
+              </View>
+              <View>
                 <AppText textStyle="body3" customStyle={styles.currentAddress}>
                   {stringAddress}
                 </AppText>
-              </TouchableOpacity>
-            </View>
+              </View>{' '}
+            </TouchableOpacity>
           </>
         ) : (
           <ActivityIndicator

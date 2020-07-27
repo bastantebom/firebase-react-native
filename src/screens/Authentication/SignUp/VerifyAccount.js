@@ -10,7 +10,7 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import AppText from '@/components/AppText/AppText';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-import auth from '@react-native-firebase/auth';
+//import auth from '@react-native-firebase/auth';
 
 import VerifyService from '@/services/VerifyService';
 //import {set} from 'react-native-reanimated';
@@ -115,6 +115,7 @@ const VerifyAccount = (route) => {
             navigation.push('AlmostThere', {
               ...{
                 uid: route?.route?.params?.uid,
+                custom_token: response.custom_token,
               },
             });
             //  })
