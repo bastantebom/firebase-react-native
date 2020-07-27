@@ -7,8 +7,10 @@ import {
   Dimensions,
 } from 'react-native';
 
-import {AppText} from '@/components';
+import {AppText, AppViewContainer} from '@/components';
 import {normalize} from '@/globals';
+
+import {AppRadio, AppCheckbox} from '@/components';
 
 const FilterSlider = () => {
   return (
@@ -17,7 +19,7 @@ const FilterSlider = () => {
         backgroundColor: 'white',
         height: Dimensions.get('window').height,
       }}>
-      <SafeAreaView style={{flex: 1}}>
+      <AppViewContainer paddingSize={3}>
         <View style={{flexDirection: 'row'}}>
           <AppText customStyle={{flex: 1}}>Hello</AppText>
 
@@ -27,7 +29,11 @@ const FilterSlider = () => {
             <Text>I am the modal content!</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+
+        <AppRadio></AppRadio>
+
+        <AppCheckbox />
+      </AppViewContainer>
     </View>
   );
 };

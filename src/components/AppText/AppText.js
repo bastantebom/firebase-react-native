@@ -14,8 +14,8 @@ const AppText = ({children, textStyle, customStyle, color}) => {
   if (customStyle || color) {
     computedTextStyle = {
       ...computedTextStyle,
-      ...customStyle,
       color: color ? color : Colors.contentEbony,
+      ...customStyle,
     };
   }
 

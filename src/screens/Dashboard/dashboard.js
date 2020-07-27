@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 
 import {Posts, PaddingView, AppInput, AppText} from '@/components';
+import FilterSlider from './components/FilterSlider';
+
 import {
   Filter,
   JarHeart,
@@ -31,28 +33,6 @@ function Dashboard({navigation}) {
   const toggleModal = () => {
     setModalState(!modalState);
   };
-
-  function WrapperComponent() {
-    return (
-      <View
-        style={{
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <SafeAreaView style={{flex: 1}}>
-          <View style={{flexDirection: 'row'}}>
-            <AppText customStyle={{flex: 1}}>Hello</AppText>
-
-            <TouchableOpacity
-              onPress={() => setModalState(false)}
-              style={{justifyContent: 'flex-end', backgroundColor: 'red'}}>
-              <Text>I am the modal content!</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </View>
-    );
-  }
 
   const DummyData = [
     {
@@ -302,7 +282,7 @@ function Dashboard({navigation}) {
             <View style={{flex: 1, backgroundColor: 'black'}} />
           </TouchableWithoutFeedback>
         }>
-        <WrapperComponent />
+        <FilterSlider />
       </Modal>
     </>
   );
