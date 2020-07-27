@@ -1,11 +1,93 @@
 //import liraries
 import React from 'react';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
 // create a component
 const MapComponent = ({latitude, longitude}) => {
+  const mapStyle = [
+    {
+      featureType: 'administrative',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#444444',
+        },
+      ],
+    },
+    {
+      featureType: 'landscape',
+      elementType: 'all',
+      stylers: [
+        {
+          color: '#f2f2f2',
+        },
+      ],
+    },
+    {
+      featureType: 'poi',
+      elementType: 'all',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'all',
+      stylers: [
+        {
+          saturation: -100,
+        },
+        {
+          lightness: 45,
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'all',
+      stylers: [
+        {
+          visibility: 'simplified',
+        },
+      ],
+    },
+    {
+      featureType: 'road.arterial',
+      elementType: 'labels.icon',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'all',
+      stylers: [
+        {
+          visibility: 'off',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'all',
+      stylers: [
+        {
+          color: '#46bcec',
+        },
+        {
+          visibility: 'on',
+        },
+      ],
+    },
+  ];
+
   return (
     <MapView
+      provider={PROVIDER_GOOGLE}
       style={{
         left: 0,
         top: 0,
@@ -19,7 +101,7 @@ const MapComponent = ({latitude, longitude}) => {
         latitudeDelta: 0.025,
         longitudeDelta: 0.025,
       }}
-      mapType={'standard'}
+      customMapStyle={mapStyle}
       zoomEnabled={true}
       scrollEnabled={true}
       showsScale={true}>
