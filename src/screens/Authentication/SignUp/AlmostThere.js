@@ -12,6 +12,7 @@ import {
   AppViewContainer,
   AppText,
   AppInput,
+  AppButton,
   TransitionIndicator,
 } from '@/components';
 
@@ -20,6 +21,8 @@ import LocationImage from '@/assets/images/location.svg';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import {useNavigation} from '@react-navigation/native';
+
+import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
 
 import Config from '@/services/Config';
 import SignUpService from '@/services/SignUpService';
@@ -32,8 +35,14 @@ const AlmostThere = (route) => {
   const [initialLocation, setInitialLocation] = useState({});
   const [isLocationReady, setIsLocationReady] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
+  const [searchStringAddress, setSearchStringAddress] = useState('');
   const [isAllowed, setIsAllowed] = useState();
   const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable,
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const getStringAddress = (location) => {
     //console.log(location);
@@ -45,6 +54,17 @@ const AlmostThere = (route) => {
         setStringAddress(addressComponent);
         setIsLocationReady(true);
         //console.log('is location allowed ' + isAllowed);
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const getLongLatFromString = () => {
+    Geocoder.init(Config.apiKey);
+    Geocoder.from(searchStringAddress)
+      .then((json) => {
+        const location = json.results[0].geometry.location;
+        console.log('NEW LONG LAT');
+        console.log(location);
       })
       .catch((error) => console.warn(error));
   };
@@ -104,9 +124,6 @@ const AlmostThere = (route) => {
         location: address,
       })
         .then((response) => {
-          //console.log('AFTER SAVE LOCATION');
-          //console.log(response);
-
           if (response.success) {
             signInAfterSaveLocation();
           }
@@ -153,13 +170,7 @@ const AlmostThere = (route) => {
   }, []);
 
   useEffect(() => {
-    //console.log('isAllowed in Use Effect ' + isAllowed);
-    //setIsAllowed(() => isAllowed);
     if (isAllowed !== undefined && isLocationReady) {
-      //console.log('isAllowed in Use Effect ' + isAllowed);
-      //console.log(initialLocation);
-      //console.log(isLocationReady);
-      //console.log(stringAddress);
       if (!isAllowed) {
         console.log(route?.route?.params?.uid);
         console.log(
@@ -208,11 +219,64 @@ const AlmostThere = (route) => {
           <View style={styles.navIcon}>
             <NavigationPin width={24} height={24} />
           </View>
-          <AppInput
+          {/* <AppInput
             customStyle={styles.textInput}
             placeholder="Enter street address or city"
+          /> */}
+          <GooglePlacesAutocomplete
+            placeholder="Enter street address or city"
+            query={{
+              key: Config.apiKey,
+              language: 'en', // language of the results
+            }}
+            onPress={(data, details = null) => {
+              //let coordinates = data.geometry.location;
+              console.log(JSON.stringify(details.description));
+              setSearchStringAddress(details.description);
+              setButtonDisabled(false);
+              setButtonStyle({});
+              //sendCoordinates(coordinates, {data, details});
+            }}
+            onFail={(error) => console.error(error)}
+            styles={{
+              container: {
+                marginTop: -10,
+                marginBottom: 50,
+              },
+              listView: {
+                color: Colors.contentEbony, //To see where exactly the list is
+                zIndex: 1100, //To popover the component outwards
+                elevation: 1100,
+                position: 'absolute',
+                top: 45,
+                backgroundColor: Colors.neutralsWhite,
+                marginLeft: 10,
+                marginRight: 10,
+              },
+              textInputContainer: {
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderTopWidth: 0,
+                borderBottomWidth: 0,
+                flex: 1,
+              },
+              textInput: {
+                borderColor: Colors.neutralGray,
+                borderWidth: 1,
+                paddingLeft: 40,
+                paddingRight: 39,
+
+                fontSize: 16,
+                height: 54,
+                color: Colors.contentEbony,
+              },
+              predefinedPlacesDescription: {
+                color: Colors.contentEbony,
+              },
+              poweredContainer: {display: 'none'},
+            }}
           />
         </View>
+
         {isLocationReady ? (
           <>
             <View style={styles.currentLocationContainer}>
@@ -241,6 +305,19 @@ const AlmostThere = (route) => {
             color={Colors.contentEbony}
           />
         )}
+        <View style={styles.buttonWrapper}>
+          <AppButton
+            text="Next"
+            type="primary"
+            height="xl"
+            disabled={buttonDisabled}
+            customStyle={{...styles.buttonStyle, ...buttonStyle}}
+            onPress={() => {
+              getLongLatFromString();
+            }}
+            //loading={isLoading}
+          />
+        </View>
       </AppViewContainer>
     </>
   );
@@ -250,6 +327,7 @@ const AlmostThere = (route) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.neutralsWhite,
   },
   skipContainer: {
     alignItems: 'flex-end',
@@ -264,14 +342,17 @@ const styles = StyleSheet.create({
   },
 
   textInputWrapper: {
-    position: 'relative',
+    //position: 'relative',
     marginBottom: 24,
+    zIndex: 9,
   },
 
   navIcon: {
     position: 'absolute',
     left: 16,
-    top: 15,
+    top: 13,
+    zIndex: 10,
+    elevation: 10,
   },
 
   textInput: {
@@ -282,23 +363,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  currentLocation: {
-    marginTop: 24,
-  },
-
   currentLocationLabel: {
     paddingLeft: 8,
+    zIndex: 1,
+    elevation: 1,
   },
 
   currentLocationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 16,
+    zIndex: 0,
+    elevation: 0,
   },
 
   currentAddress: {
     paddingLeft: 48,
+    zIndex: 1,
+    elevation: 1,
   },
+
+  buttonWrapper: {flex: 1, justifyContent: 'flex-end', marginBottom: 0},
 });
 
 //make this component available to the app

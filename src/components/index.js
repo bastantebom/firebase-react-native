@@ -13,6 +13,7 @@ import AppRadio from '@/components/AppRadio/Radio';
 import AppCheckbox from '@/components/AppCheckbox/Checkbox';
 import MapComponent from '@/components/MapComponent/MapComponent';
 import TransitionIndicator from '@/components/TransitionIndicator/TransitionIndicator';
+import GooglePlaces from '@/components/LocationSearchInput';
 
 export {
   AppInput,
@@ -31,4 +32,5 @@ export {
   AppCheckbox,
   MapComponent,
   TransitionIndicator,
+  GooglePlaces,
 };
