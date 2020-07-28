@@ -1,19 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  Button
+  Button,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
-import {AppText, AppButton} from '@/components';
-import ImageUpload from '@/components/ImageUpload/ProfileImageUpload';
-import HexagonBorder from '@/components/ImageUpload/HexagonBorder'
+import {
+  AppText,
+  AppButton,
+  ProfileImageUpload,
+  HexagonBorder,
+  TransparentHeader,
+} from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 
-function Profile({ navigation }) {
+import {ProfileHeaderDefault} from '@/assets/images';
+import {normalize} from '@/globals';
 
+function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
   // const [user, setUser] = useState();
 
@@ -55,11 +64,11 @@ function Profile({ navigation }) {
     if (user) {
       auth()
         .signOut()
-        .then(() => console.log('User signed out!'))
+        .then(() => console.log('User signed out!'));
     } else {
       navigation.navigate('Onboarding');
     }
-  }
+  };
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -96,9 +105,12 @@ export default Profile;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
+    backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%'
-  }
-})
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    position: 'relative'
+    // justifyContent: 'center',
+  },
+});

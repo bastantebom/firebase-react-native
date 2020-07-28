@@ -13,6 +13,8 @@ import OnboardingIllustration4 from './onboarding-img4.svg';
 
 import PolygonStatic from './polygon-static.svg';
 
+import ProfileHeaderDefault from './profile-header-default.svg';
+
 export {
   Location,
   ResetPassword,
@@ -22,4 +24,5 @@ export {
   OnboardingIllustration3,
   OnboardingIllustration4,
   PolygonStatic,
+  ProfileHeaderDefault
 };
