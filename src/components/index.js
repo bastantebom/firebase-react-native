@@ -14,6 +14,7 @@ import AppCheckbox from '@/components/AppCheckbox/Checkbox';
 import MapComponent from '@/components/MapComponent/MapComponent';
 import TransitionIndicator from '@/components/TransitionIndicator/TransitionIndicator';
 import GooglePlaces from '@/components/LocationSearchInput';
+import TransparentHeader from '@/components/TransparentHeader/TransparentHeader'
 
 export {
   AppInput,
@@ -33,4 +34,5 @@ export {
   MapComponent,
   TransitionIndicator,
   GooglePlaces,
+  TransparentHeader
 };
