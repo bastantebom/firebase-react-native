@@ -41,6 +41,13 @@ function Profile({navigation}) {
   const currentUser = auth().currentUser;
 
   const [initializing, setInitializing] = useState(true);
+  const [ellipsisState, setEllipsisState] = useState(false);
+
+  const toggleEllipsisState = () => {
+    console.log('close open')
+    setEllipsisState(!ellipsisState);
+  };
+
   const [user, setUser] = useState();
   const [profileImageUrl, setProfileImageUrl] = useState('')
 
@@ -79,26 +86,33 @@ function Profile({navigation}) {
 
 
   return (
-    <View style={styles.container}>
-      <AppText textStyle="body1" > Sample Profile </AppText>
-      <AppButton
-        text="Go back to dashboard"
-        onPress={() => navigation.goBack()}
-        type="primary"
-        size="sm"
-      />
-      {/* <AppButton
-        text="Hives"
-        onPress={() => navigation.navigate('ProfileHives')}
-        size="sm"
-      /> */}
-      <AppText>Welcome, {currentUser.email}</AppText>
-      <ImageUpload size={120} />
-      {/* <HexagonBorder imgSrc={profileImageUrl} size={150} /> */}
+    <>
+      <TransparentHeader ellipsisState={ellipsisState} toggleEllipsisState={toggleEllipsisState} />
+      <View style={{backgroundColor: 'red', height: normalize(158)}}>
+        <ProfileHeaderDefault
+          width={normalize(375 * 1.2)}
+          height={normalize(158 * 1.2)}
+        />
+      </View>
+      <ScrollView style={{flex: 1}}>
+        <View style={styles.container}>
+          <AppText textStyle="body1"> Sample Profile </AppText>
+          <AppButton
+            text="Go back to dashboard"
+            onPress={() => navigation.goBack()}
+            type="primary"
+            size="sm"
+          />
+          <AppText>Welcome, {currentUser}</AppText>
+          <ProfileImageUpload />
+          <HexagonBorder />
 
-      <Button title="hello" onPress={signOut} />
-    </View>
-  )
+          <Button title="sign out" onPress={signOut} />
+          <Button title="show bottom modal" onPress={toggleEllipsisState} />
+        </View>
+      </ScrollView>
+    </>
+  );
 }
 
 export default Profile;
