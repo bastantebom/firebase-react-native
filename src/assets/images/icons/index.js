@@ -74,7 +74,14 @@ import HeaderMenu from './header-menu.svg';
 import HeaderQR from './header-qr.svg';
 import HeaderShare from './header-share.svg';
 
+import ProfileBlockRed from './profile-block-red.svg';
+import ProfileMute from './profile-mute.svg';
+import ProfileReport from './profile-report.svg';
+
 export {
+  ProfileBlockRed,
+  ProfileReport,
+  ProfileMute,
   HeaderBack,
   HeaderEllipsis,
   HeaderFollow,

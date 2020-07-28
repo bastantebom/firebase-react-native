@@ -10,6 +10,8 @@ import {
 import Modal from 'react-native-modal';
 
 import {AppText, BottomSheetHeader} from '@/components';
+import EllipsisMenu from './components/EllipsisMenu';
+
 import {
   HeaderBack,
   HeaderShare,
@@ -18,6 +20,9 @@ import {
   HeaderFollowing,
   HeaderFollow,
   HeaderEllipsis,
+  ProfileMute,
+  ProfileReport,
+  ProfileBlockRed,
 } from '@/assets/images/icons';
 import {normalize, GlobalStyle} from '@/globals';
 
@@ -98,18 +103,7 @@ const TransparentHeader = ({toggleEllipsisState, ellipsisState}) => {
           </TouchableWithoutFeedback>
         }>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <View
-          style={{
-            backgroundColor: 'white',
-            paddingBottom: 32,
-            borderTopEndRadius: 8,
-            borderTopStartRadius: 8,
-          }}>
-          <BottomSheetHeader />
-          <AppText>Hello</AppText>
-          <AppText>Hello</AppText>
-          <AppText>Hello</AppText>
-        </View>
+        <EllipsisMenu toggleEllipsisState={toggleEllipsisState} />
       </Modal>
     </>
   );
