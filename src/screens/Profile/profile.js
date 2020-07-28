@@ -43,11 +43,16 @@ function Profile({navigation}) {
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [QR, setQR] = useState(false);
 
   const [headerState, setHeaderState] = useState('own');
 
   const changeHeaderHandler = () => {
     headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
+  };
+
+  const toggleQR = () => {
+    setQR(!QR);
   };
 
   const toggleEllipsisState = () => {
@@ -99,6 +104,8 @@ function Profile({navigation}) {
         toggleMenu={toggleMenu}
         menu={menu}
         signOut={signOut}
+        toggleQR={toggleQR}
+        QR={QR}
       />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault
