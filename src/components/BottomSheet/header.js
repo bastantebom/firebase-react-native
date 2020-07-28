@@ -1,6 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
 
+import {normalize} from '@/globals';
+
 const bottomSheetHeader = () => {
   return (
     <View
@@ -13,9 +15,10 @@ const bottomSheetHeader = () => {
       <View
         style={{
           backgroundColor: '#EAEAEA',
-          width: 40,
+          width: normalize(40),
           height: 5,
           marginVertical: 8,
+          borderRadius: 100
         }}
       />
     </View>

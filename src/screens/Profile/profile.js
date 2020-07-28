@@ -40,6 +40,13 @@ function Profile({navigation}) {
   const currentUser = auth().currentUser.email;
 
   const [initializing, setInitializing] = useState(true);
+  const [ellipsisState, setEllipsisState] = useState(false);
+
+  const toggleEllipsisState = () => {
+    console.log('close open')
+    setEllipsisState(!ellipsisState);
+  };
+
   const [user, setUser] = useState();
 
   function onAuthStateChanged(user) {
@@ -68,7 +75,7 @@ function Profile({navigation}) {
 
   return (
     <>
-      <TransparentHeader />
+      <TransparentHeader ellipsisState={ellipsisState} toggleEllipsisState={toggleEllipsisState} />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault
           width={normalize(375 * 1.2)}
@@ -88,7 +95,8 @@ function Profile({navigation}) {
           <ProfileImageUpload />
           <HexagonBorder />
 
-          <Button title="hello" onPress={signOut} />
+          <Button title="sign out" onPress={signOut} />
+          <Button title="show bottom modal" onPress={toggleEllipsisState} />
         </View>
       </ScrollView>
     </>
