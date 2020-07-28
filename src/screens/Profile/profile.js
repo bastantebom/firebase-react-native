@@ -1,18 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  Button
+  Button,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
-import {AppText, AppButton} from '@/components';
-import ImageUpload from '@/components/ImageUpload/ProfileImageUpload';
-import HexagonBorder from '@/components/ImageUpload/HexagonBorder'
+import {
+  AppText,
+  AppButton,
+  ProfileImageUpload,
+  HexagonBorder,
+  TransparentHeader,
+} from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 
-function Profile({ navigation }) {
+import {ProfileHeaderDefault} from '@/assets/images';
+import {normalize} from '@/globals';
 
+function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
   // const [user, setUser] = useState();
 
@@ -49,38 +58,53 @@ function Profile({ navigation }) {
     if (user) {
       auth()
         .signOut()
-        .then(() => console.log('User signed out!'))
+        .then(() => console.log('User signed out!'));
     } else {
       navigation.navigate('Onboarding');
     }
-  }
+  };
 
+  const width = Dimensions.get('window').width;
 
   return (
-    <View style={styles.container}>
-      <AppText textStyle="body1" > Sample Profile </AppText>
-      <AppButton
-        text="Go back to dashboard"
-        onPress={() => navigation.goBack()}
-        type="primary"
-        size="sm"
-      />
-      <AppText>Welcome, {currentUser}</AppText>
-      <ImageUpload />
-      <HexagonBorder />
+    <>
+      <TransparentHeader />
+      <View style={{backgroundColor: 'red', height: normalize(158)}}>
+        <ProfileHeaderDefault
+          width={normalize(375 * 1.2)}
+          height={normalize(158 * 1.2)}
+        />
+      </View>
+      <ScrollView style={{flex: 1}}>
+        <View style={styles.container}>
+          <AppText textStyle="body1"> Sample Profile </AppText>
+          <AppButton
+            text="Go back to dashboard"
+            onPress={() => navigation.goBack()}
+            type="primary"
+            size="sm"
+          />
+          <AppText>Welcome, {currentUser}</AppText>
+          <ProfileImageUpload />
+          <HexagonBorder />
 
-      <Button title="hello" onPress={signOut} />
-    </View>
-  )
+          <Button title="hello" onPress={signOut} />
+        </View>
+      </ScrollView>
+    </>
+  );
 }
 
 export default Profile;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
+    backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%'
-  }
-})
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    position: 'relative'
+    // justifyContent: 'center',
+  },
+});

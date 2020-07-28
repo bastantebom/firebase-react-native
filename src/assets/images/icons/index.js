@@ -66,7 +66,22 @@ import SortNearest from './sort-nearest.svg';
 import CheckboxCheck from './checkbox-check.svg';
 import RadioDot from './radiobutton-dot.svg';
 
+import HeaderBack from './header-back.svg';
+import HeaderEllipsis from './header-ellipsis';
+import HeaderFollow from './header-follow.svg';
+import HeaderFollowing from './header-following.svg';
+import HeaderMenu from './header-menu.svg';
+import HeaderQR from './header-qr.svg';
+import HeaderShare from './header-share.svg';
+
 export {
+  HeaderBack,
+  HeaderEllipsis,
+  HeaderFollow,
+  HeaderFollowing,
+  HeaderMenu,
+  HeaderQR,
+  HeaderShare,
   SortHighLow,
   SortLowHigh,
   SortPopular,
