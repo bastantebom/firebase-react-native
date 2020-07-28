@@ -67,10 +67,7 @@ import CheckboxCheck from './checkbox-check.svg';
 import RadioDot from './radiobutton-dot.svg';
 
 import HeaderBack from './header-back.svg';
-<<<<<<< HEAD
 import HeaderBackGray from './header-back-gray.svg';
-=======
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
 import HeaderEllipsis from './header-ellipsis';
 import HeaderFollow from './header-follow.svg';
 import HeaderFollowing from './header-following.svg';
@@ -82,7 +79,6 @@ import ProfileBlockRed from './profile-block-red.svg';
 import ProfileMute from './profile-mute.svg';
 import ProfileReport from './profile-report.svg';
 
-<<<<<<< HEAD
 import MenuAddFriend from './MenuAddFriend.svg';
 import MenuArchive from './MenuArchive.svg';
 import MenuBell from './MenuBell.svg';
@@ -105,17 +101,11 @@ export {
   MenuEdit,
   MenuInfo,
   MenuKey,
-=======
-export {
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
   ProfileBlockRed,
   ProfileReport,
   ProfileMute,
   HeaderBack,
-<<<<<<< HEAD
   HeaderBackGray,
-=======
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
   HeaderEllipsis,
   HeaderFollow,
   HeaderFollowing,

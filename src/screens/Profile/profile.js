@@ -43,7 +43,6 @@ function Profile({navigation}) {
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
   const [menu, setMenu] = useState(false);
-<<<<<<< HEAD
   const [QR, setQR] = useState(false);
 
   const [headerState, setHeaderState] = useState('own');
@@ -55,8 +54,6 @@ function Profile({navigation}) {
   const toggleQR = () => {
     setQR(!QR);
   };
-=======
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
 
   const toggleEllipsisState = () => {
     setEllipsisState(!ellipsisState);
@@ -99,23 +96,16 @@ function Profile({navigation}) {
   return (
     <>
       <TransparentHeader
-<<<<<<< HEAD
         type={headerState}
-=======
-        type="own"
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         toggleFollowing={toggleFollowing}
         following={following}
         toggleMenu={toggleMenu}
         menu={menu}
-<<<<<<< HEAD
         signOut={signOut}
         toggleQR={toggleQR}
         QR={QR}
-=======
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
       />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault
@@ -136,10 +126,7 @@ function Profile({navigation}) {
           <ProfileImageUpload />
           <HexagonBorder />
 
-<<<<<<< HEAD
           <Button title="Change header" onPress={changeHeaderHandler} />
-=======
->>>>>>> 6c8c4d3b4a9fff0c4fde1d36df3952433a440e09
           <Button title="sign out" onPress={signOut} />
           <Button title="show bottom modal" onPress={toggleEllipsisState} />
         </View>
