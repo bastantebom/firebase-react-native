@@ -11,6 +11,7 @@ import Modal from 'react-native-modal';
 
 import {AppText, BottomSheetHeader} from '@/components';
 import EllipsisMenu from './components/EllipsisMenu';
+import OwnMenu from './components/OwnMenu';
 
 import {
   HeaderBack,
@@ -26,87 +27,174 @@ import {
 } from '@/assets/images/icons';
 import {normalize, GlobalStyle} from '@/globals';
 
-const TransparentHeader = ({toggleEllipsisState, ellipsisState}) => {
-  return (
-    <>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          position: 'absolute',
-          zIndex: 1,
-          backgroundColor: 'transparent',
-        }}>
-        <View
+const TransparentHeader = ({
+  toggleEllipsisState,
+  ellipsisState,
+  following,
+  toggleFollowing,
+  type,
+  toggleMenu,
+  menu,
+}) => {
+  if (type === 'own')
+    return (
+      <>
+        <SafeAreaView
           style={{
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            paddingHorizontal: 16,
-            width: Dimensions.get('window').width,
-            paddingTop: 4,
+            flex: 1,
+            position: 'absolute',
+            zIndex: 1,
+            backgroundColor: 'transparent',
           }}>
-          {/* Left aligned icons */}
-          <View>
-            <TouchableOpacity activeOpacity={0.7}>
-              <View style={styles.circle}>
-                <HeaderBack width={normalize(16)} height={normalize(16)} />
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Right aligned icons */}
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity activeOpacity={0.7}>
-              <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
-                <HeaderFollow width={normalize(16)} height={normalize(16)} />
-                <AppText
-                  textStyle="button3"
-                  color="white"
-                  customStyle={{marginLeft: 4}}>
-                  Follow
-                </AppText>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity activeOpacity={0.7}>
-              <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                <HeaderShare width={normalize(16)} height={normalize(16)} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity activeOpacity={0.7} onPress={toggleEllipsisState}>
-              <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                <HeaderEllipsis width={normalize(16)} height={normalize(16)} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
-
-      <Modal
-        isVisible={ellipsisState}
-        animationIn="slideInUp"
-        animationInTiming={500}
-        animationOut="slideOutDown"
-        animationOutTiming={500}
-        onSwipeComplete={toggleEllipsisState}
-        swipeDirection="down"
-        style={{
-          justifyContent: 'flex-end',
-          margin: 0,
-        }}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => {
-              toggleEllipsisState();
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              paddingHorizontal: 16,
+              width: Dimensions.get('window').width,
+              paddingTop: 4,
             }}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
-          </TouchableWithoutFeedback>
-        }>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <EllipsisMenu toggleEllipsisState={toggleEllipsisState} />
-      </Modal>
-    </>
-  );
+            {/* Left aligned icons */}
+            <View></View>
+
+            {/* Right aligned icons */}
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity activeOpacity={0.7}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderQR width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderMenu width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+
+        <Modal
+          isVisible={menu}
+          animationIn="slideInUp"
+          animationInTiming={500}
+          animationOut="slideOutDown"
+          animationOutTiming={500}
+          onSwipeComplete={toggleMenu}
+          swipeDirection="down"
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          {/* <FilterSlider modalToggler={toggleModal} /> */}
+          <OwnMenu toggleMenu={toggleMenu} />
+        </Modal>
+      </>
+    );
+
+  if (type === 'other')
+    return (
+      <>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            position: 'absolute',
+            zIndex: 1,
+            backgroundColor: 'transparent',
+          }}>
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              paddingHorizontal: 16,
+              width: Dimensions.get('window').width,
+              paddingTop: 4,
+            }}>
+            {/* Left aligned icons */}
+            <View>
+              <TouchableOpacity activeOpacity={0.7}>
+                <View style={styles.circle}>
+                  <HeaderBack width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Right aligned icons */}
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
+                <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
+                  {following ? (
+                    <HeaderFollowing
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  ) : (
+                    <HeaderFollow
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  )}
+                  <AppText
+                    textStyle="button3"
+                    color="white"
+                    customStyle={{marginLeft: 4}}>
+                    {following ? 'Unfollow' : 'Follow'}
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={toggleEllipsisState}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderEllipsis
+                    width={normalize(16)}
+                    height={normalize(16)}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+
+        <Modal
+          isVisible={ellipsisState}
+          animationIn="slideInUp"
+          animationInTiming={500}
+          animationOut="slideOutDown"
+          animationOutTiming={500}
+          onSwipeComplete={toggleEllipsisState}
+          swipeDirection="down"
+          style={{
+            justifyContent: 'flex-end',
+            margin: 0,
+          }}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              onPress={() => {
+                toggleEllipsisState();
+              }}>
+              <View style={{flex: 1, backgroundColor: 'black'}} />
+            </TouchableWithoutFeedback>
+          }>
+          {/* <FilterSlider modalToggler={toggleModal} /> */}
+          <EllipsisMenu toggleEllipsisState={toggleEllipsisState} />
+        </Modal>
+      </>
+    );
 };
 
 const styles = StyleSheet.create({
