@@ -83,9 +83,9 @@ const TransparentHeader = ({
         <Modal
           isVisible={menu}
           animationIn="slideInUp"
-          animationInTiming={500}
+          animationInTiming={750}
           animationOut="slideOutDown"
-          animationOutTiming={500}
+          animationOutTiming={750}
           onSwipeComplete={toggleMenu}
           swipeDirection="down"
           style={{
