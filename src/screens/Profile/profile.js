@@ -42,10 +42,19 @@ function Profile({navigation}) {
 
   const [initializing, setInitializing] = useState(true);
   const [ellipsisState, setEllipsisState] = useState(false);
+  const [following, setFollowing] = useState(false);
+  const [menu, setMenu] = useState(false);
 
   const toggleEllipsisState = () => {
-    console.log('close open')
     setEllipsisState(!ellipsisState);
+  };
+
+  const toggleFollowing = () => {
+    setFollowing(!following);
+  };
+
+  const toggleMenu = () => {
+    setMenu(!menu);
   };
 
   const [user, setUser] = useState();
@@ -87,7 +96,15 @@ function Profile({navigation}) {
 
   return (
     <>
-      <TransparentHeader ellipsisState={ellipsisState} toggleEllipsisState={toggleEllipsisState} />
+      <TransparentHeader
+        type="own"
+        ellipsisState={ellipsisState}
+        toggleEllipsisState={toggleEllipsisState}
+        toggleFollowing={toggleFollowing}
+        following={following}
+        toggleMenu={toggleMenu}
+        menu={menu}
+      />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault
           width={normalize(375 * 1.2)}
@@ -124,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-    position: 'relative'
+    position: 'relative',
     // justifyContent: 'center',
   },
 });
