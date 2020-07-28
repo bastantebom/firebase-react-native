@@ -34,7 +34,7 @@ const EllipsisMenu = ({toggleEllipsisState}) => {
             </AppText>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => alert('asda')}>
           <View
             style={{
               flexDirection: 'row',

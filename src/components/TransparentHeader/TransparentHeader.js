@@ -12,6 +12,7 @@ import Modal from 'react-native-modal';
 import {AppText, BottomSheetHeader} from '@/components';
 import EllipsisMenu from './components/EllipsisMenu';
 import OwnMenu from './components/OwnMenu';
+import QRScreen from './components/QRScreen';
 
 import {
   HeaderBack,
@@ -35,7 +36,9 @@ const TransparentHeader = ({
   type,
   toggleMenu,
   menu,
-  signOut
+  toggleQR,
+  QR,
+  signOut,
 }) => {
   if (type === 'own')
     return (
@@ -66,7 +69,7 @@ const TransparentHeader = ({
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderQR width={normalize(16)} height={normalize(16)} />
                 </View>
@@ -96,6 +99,23 @@ const TransparentHeader = ({
           }}>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
           <OwnMenu signOut={signOut} toggleMenu={toggleMenu} />
+        </Modal>
+
+        <Modal
+          isVisible={QR}
+          animationIn="slideInUp"
+          animationInTiming={750}
+          animationOut="slideOutDown"
+          animationOutTiming={750}
+          onSwipeComplete={toggleQR}
+          swipeDirection="down"
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          {/* <FilterSlider modalToggler={toggleModal} /> */}
+          <QRScreen  toggleQR={toggleQR} />
         </Modal>
       </>
     );
