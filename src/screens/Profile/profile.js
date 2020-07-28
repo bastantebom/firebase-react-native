@@ -45,6 +45,12 @@ function Profile({navigation}) {
   const [following, setFollowing] = useState(false);
   const [menu, setMenu] = useState(false);
 
+  const [headerState, setHeaderState] = useState('own');
+
+  const changeHeaderHandler = () => {
+    headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
+  };
+
   const toggleEllipsisState = () => {
     setEllipsisState(!ellipsisState);
   };
@@ -98,7 +104,7 @@ function Profile({navigation}) {
   return (
     <>
       <TransparentHeader
-        type="own"
+        type={headerState}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         toggleFollowing={toggleFollowing}
@@ -126,6 +132,7 @@ function Profile({navigation}) {
           <ProfileImageUpload />
           <HexagonBorder />
 
+          <Button title="Change header" onPress={changeHeaderHandler} />
           <Button title="sign out" onPress={signOut} />
           <Button title="show bottom modal" onPress={toggleEllipsisState} />
         </View>
