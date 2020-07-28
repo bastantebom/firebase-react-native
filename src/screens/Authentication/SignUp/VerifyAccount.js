@@ -228,7 +228,7 @@ const VerifyAccount = (route) => {
       <View style={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
         <AppText textStyle="body2" customStyle={styles.bodyContent}>
           An email with the 4-digit code has been sent to{' '}
-          <AppText textStyle="subtitle1" customStyle={styles.bodyContent}>
+          <AppText textStyle="body3" customStyle={styles.bodyContent}>
             {route?.route?.params?.login.toLowerCase()}
           </AppText>
         </AppText>

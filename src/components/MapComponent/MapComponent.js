@@ -1,9 +1,12 @@
 //import liraries
 import React from 'react';
+import {View, StyleSheet} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {MapMarker} from '@/assets/images/icons';
+import {normalize} from '@/globals';
 
 // create a component
-const MapComponent = ({latitude, longitude}) => {
+const MapComponent = ({latitude, longitude, onRegionChange}) => {
   const mapStyle = [
     {
       featureType: 'administrative',
@@ -85,59 +88,52 @@ const MapComponent = ({latitude, longitude}) => {
     },
   ];
 
-  const onRegionChange = (region) => {
-    console.log(region);
-  };
-
   return (
-    <MapView
-      provider={PROVIDER_GOOGLE}
-      style={{
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 0,
-        position: 'absolute',
-      }}
-      initialRegion={{
-        latitude: latitude,
-        longitude: longitude,
-        latitudeDelta: 0.025,
-        longitudeDelta: 0.025,
-      }}
-      customMapStyle={mapStyle}
-      zoomEnabled={true}
-      onRegionChangeComplete={onRegionChange}
-      scrollEnabled={true}
-      showsScale={true}>
-      <MapView.Circle
-        key={(longitude + latitude).toString()}
-        center={{latitude: latitude, longitude: longitude}}
-        radius={500}
-        strokeWidth={0.1}
-        strokeColor={'rgba(255, 212, 0,0.18)'}
-        fillColor={'rgba(255, 212, 0,0.18)'}
-      />
-      <MapView.Circle
-        key={(longitude + latitude + 10).toString()}
-        center={{latitude: latitude, longitude: longitude}}
-        radius={1000}
-        strokeWidth={0.1}
-        strokeColor={'rgba(255, 212, 0,0.1)'}
-        fillColor={'rgba(255, 212, 0,0.1)'}
-        //onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
-      />
-      <Marker
-        coordinate={{
+    <View style={styles.mapContainer}>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={styles.mapView}
+        initialRegion={{
           latitude: latitude,
           longitude: longitude,
+          latitudeDelta: 0.025,
+          longitudeDelta: 0.025,
         }}
-        image={require('@/assets/images/icons/Navigation.png')}></Marker>
-    </MapView>
+        customMapStyle={mapStyle}
+        zoomEnabled={true}
+        onRegionChangeComplete={(region) => {
+          onRegionChange(region);
+        }}
+        scrollEnabled={true}
+        showsScale={true}
+      />
+      <View style={styles.markerFixed}>
+        <MapMarker width={normalize(56)} height={normalize(56)} />
+      </View>
+    </View>
   );
 };
 
 // define your st
-
+const styles = StyleSheet.create({
+  mapContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  mapView: {
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 0,
+    position: 'absolute',
+  },
+  markerFixed: {
+    left: '50%',
+    position: 'absolute',
+    bottom: '50%',
+    marginLeft: -28,
+    marginTop: -48,
+  },
+});
 //make this component available to the app
 export default MapComponent;
