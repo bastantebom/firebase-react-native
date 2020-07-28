@@ -51,6 +51,11 @@ const styles = StyleSheet.create({
     fontSize: normalize(14),
     letterSpacing: 1.25,
   },
+  button3: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(12),
+    letterSpacing: 1.25,
+  },
   caption: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(12),
