@@ -22,7 +22,7 @@ import {
   MenuAddFriend,
 } from '@/assets/images/icons';
 
-const OwnMenu = ({toggleMenu}) => {
+const OwnMenu = ({toggleMenu, signOut}) => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
@@ -161,7 +161,7 @@ const OwnMenu = ({toggleMenu}) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={signOut}>
                 <View style={{flexDirection: 'row'}}>
                   <MenuLogOut width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">

@@ -105,6 +105,7 @@ function Profile({navigation}) {
         following={following}
         toggleMenu={toggleMenu}
         menu={menu}
+        signOut={signOut}
       />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault

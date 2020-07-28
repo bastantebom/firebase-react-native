@@ -35,6 +35,7 @@ const TransparentHeader = ({
   type,
   toggleMenu,
   menu,
+  signOut
 }) => {
   if (type === 'own')
     return (
@@ -94,7 +95,7 @@ const TransparentHeader = ({
             height: Dimensions.get('window').height,
           }}>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <OwnMenu toggleMenu={toggleMenu} />
+          <OwnMenu signOut={signOut} toggleMenu={toggleMenu} />
         </Modal>
       </>
     );
