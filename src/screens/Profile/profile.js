@@ -93,6 +93,7 @@ function Profile({navigation}) {
 
   if (initializing) return null;
 
+  const width = Dimensions.get('window').width;
 
   return (
     <>
