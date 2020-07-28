@@ -7,9 +7,9 @@ import {normalize, Colors} from '@/globals';
 import {RadioDot} from '@/assets/images/icons';
 
 const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
-
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={() => {
         valueChangeHandler(name);
       }}>

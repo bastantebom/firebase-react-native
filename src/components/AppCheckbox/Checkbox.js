@@ -8,7 +8,7 @@ import {CheckboxCheck} from '@/assets/images/icons';
 
 const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
   return (
-    <TouchableOpacity onPress={() => valueChangeHandler()}>
+    <TouchableOpacity activeOpacity={.7} onPress={() => valueChangeHandler()}>
       <View
         style={{
           // backgroundColor: 'blue',
