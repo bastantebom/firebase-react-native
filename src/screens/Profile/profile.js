@@ -41,7 +41,7 @@ function Profile({ navigation }) {
   }
 
   const imageRef = storage()
-    .ref(`${currentUser.uid}/display-photos/`); // get most recent upload
+    .ref(`${currentUser.uid}/display-photos/`); //get current image
       imageRef
         .getDownloadURL()
         .then((url) => {
@@ -85,7 +85,7 @@ function Profile({ navigation }) {
       />
       <AppText>Welcome, {currentUser.email}</AppText>
       <ImageUpload size={120} />
-      <HexagonBorder imgSrc={profileImageUrl} />
+      <HexagonBorder imgSrc={profileImageUrl} size={150} />
 
       <Button title="hello" onPress={signOut} />
     </View>
