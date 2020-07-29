@@ -5,6 +5,7 @@ import {
   Button
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 
 import {AppText, AppButton} from '@/components';
 import ImageUpload from '@/components/ImageUpload/ProfileImageUpload';
@@ -28,23 +29,28 @@ function Profile({ navigation }) {
 
   // if (initializing) return null;
 
-  const currentUser = auth().currentUser.email;
+  const currentUser = auth().currentUser;
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [profileImageUrl, setProfileImageUrl] = useState('')
 
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
-
+  const imageRef = storage()
+    .ref(`${currentUser.uid}/display-photos/`); // get most recent upload
+      imageRef
+        .getDownloadURL()
+        .then((url) => {
+          setProfileImageUrl(url)
+        })
+        .catch((e) => 
+        console.log('Error => ', e)
+      );
+    
   const signOut = () => {
     if (user) {
       auth()
@@ -54,6 +60,13 @@ function Profile({ navigation }) {
       navigation.navigate('Onboarding');
     }
   }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  if (initializing) return null;
 
 
   return (
@@ -65,15 +78,14 @@ function Profile({ navigation }) {
         type="primary"
         size="sm"
       />
-      {/* <AppButton
+      <AppButton
         text="Hives"
         onPress={() => navigation.navigate('ProfileHives')}
-        type="tertiary"
         size="sm"
-      /> */}
-      <AppText>Welcome, {currentUser}</AppText>
+      />
+      <AppText>Welcome, {currentUser.email}</AppText>
       <ImageUpload size={120} />
-      <HexagonBorder />
+      <HexagonBorder imgSrc={profileImageUrl} />
 
       <Button title="hello" onPress={signOut} />
     </View>

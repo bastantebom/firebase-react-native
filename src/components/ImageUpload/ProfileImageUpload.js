@@ -60,11 +60,12 @@ const ProfileImageUpload = ({ size }) => {
   
     setUploading(true);
     setTransferred(0);
-  
+
     const task = storage()
-      .ref(filename)
-      .putFile(uploadUri);
-  
+      // .ref(filename)
+      .ref(`${currentUser.uid}/display-photos/${filename}`)
+      .putFile(uploadUri)
+    
     // set progress state
     task.on('state_changed', snapshot => {
       setTransferred(
@@ -82,9 +83,8 @@ const ProfileImageUpload = ({ size }) => {
   
     Alert.alert(
       'Photo uploaded!',
-      'Your photo has been uploaded to Firebase Cloud Storage!'
+      'Your photo has been uploaded!'
     );
-  
     setImageSource(null);
   };
 
