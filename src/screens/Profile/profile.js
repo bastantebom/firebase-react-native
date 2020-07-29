@@ -40,16 +40,16 @@ function Profile({ navigation }) {
     if (initializing) setInitializing(false);
   }
 
-  const imageRef = storage()
-    .ref(`${currentUser.uid}/display-photos/`); //get current image
-      imageRef
-        .getDownloadURL()
-        .then((url) => {
-          setProfileImageUrl(url)
-        })
-        .catch((e) => 
-        console.log('Error => ', e)
-      );
+  // const imageRef = storage()
+  //   .ref(`${currentUser.uid}/display-photos/`); //get current image
+  //     imageRef
+  //       .getDownloadURL()
+  //       .then((url) => {
+  //         setProfileImageUrl(url)
+  //       })
+  //       .catch((e) => 
+  //       console.log('Error => ', e)
+  //     );
     
   const signOut = () => {
     if (user) {
@@ -78,14 +78,14 @@ function Profile({ navigation }) {
         type="primary"
         size="sm"
       />
-      <AppButton
+      {/* <AppButton
         text="Hives"
         onPress={() => navigation.navigate('ProfileHives')}
         size="sm"
-      />
+      /> */}
       <AppText>Welcome, {currentUser.email}</AppText>
       <ImageUpload size={120} />
-      <HexagonBorder imgSrc={profileImageUrl} size={150} />
+      {/* <HexagonBorder imgSrc={profileImageUrl} size={150} /> */}
 
       <Button title="hello" onPress={signOut} />
     </View>
