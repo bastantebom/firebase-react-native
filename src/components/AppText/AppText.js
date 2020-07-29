@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   subtitle1: {
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(18),
-    letterSpacing: (0.15),
+    letterSpacing: 0.15,
   },
   subtitle2: {
     fontFamily: 'RoundedMplus1c-Medium',
@@ -121,6 +121,12 @@ const styles = StyleSheet.create({
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(12),
     letterSpacing: 0.4,
+  },
+  tabNavigation: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(14),
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
 });
 

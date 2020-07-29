@@ -17,7 +17,10 @@ import GooglePlaces from '@/components/LocationSearchInput';
 import TransparentHeader from '@/components/TransparentHeader/TransparentHeader';
 import BottomSheetHeader from './BottomSheet/header';
 
+import TabNavigation from './TabNavigation/TabNavigation';
+
 export {
+  TabNavigation,
   AppInput,
   AppText,
   AppViewContainer,

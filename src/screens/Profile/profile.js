@@ -15,6 +15,7 @@ import {
   ProfileImageUpload,
   HexagonBorder,
   TransparentHeader,
+  TabNavigation,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 
@@ -115,6 +116,8 @@ function Profile({navigation}) {
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
+          <TabNavigation />
+
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
             text="Go back to dashboard"
