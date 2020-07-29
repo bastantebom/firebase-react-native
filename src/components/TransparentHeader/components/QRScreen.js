@@ -85,7 +85,7 @@ const OwnMenu = ({toggleQR, signOut}) => {
               alignItems: 'center',
               borderRadius: 12,
               shadowColor: 'black',
-              shadowOffset: 2,
+              shadowOffset: 0,
               shadowOpacity: 0.4,
               padding: normalize(66),
               shadowRadius: 12,
