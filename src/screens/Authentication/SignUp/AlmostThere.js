@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {Colors} from '@/globals';
+import {Colors, normalize} from '@/globals';
 
 import {
   AppViewContainer,
@@ -22,7 +22,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import {useNavigation} from '@react-navigation/native';
 
-import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
+import GooglePlacesInput from '@/components/LocationSearchInput';
 
 import Config from '@/services/Config';
 import SignUpService from '@/services/SignUpService';
@@ -59,27 +59,20 @@ const AlmostThere = (route) => {
   };
 
   const getLongLatFromString = () => {
-    Geocoder.init(Config.apiKey);
-    Geocoder.from(searchStringAddress)
-      .then((json) => {
-        const location = json.results[0].geometry.location;
-        console.log('NEW LONG LAT');
-        console.log(location);
-      })
-      .catch((error) => console.warn(error));
+    if (searchStringAddress.trim().length > 0) {
+      console.log(searchStringAddress);
+      saveLocationHandler(searchStringAddress);
+    }
   };
 
-  const onChangeAddressHandler = () => {
+  const onCurrentLocationClick = () => {
     if (isAllowed && isLocationReady) {
-      //console.log('isAllowed in Use Effect ' + isAllowed);
-      //console.log(initialLocation);
-      //console.log(isLocationReady);
-      //console.log(stringAddress);
       //"altitude":0,"altitudeAccuracy":-1,"latitude":13.749014,"accuracy":5,"longitude":121.072939,"heading":-1,"speed":-1
       const toPassString = {
         uid: route?.route?.params?.uid,
         address: stringAddress,
-        latitude: JSON.parse(initialLocation).latitude,
+        latitude:
+          parseFloat(JSON.parse(initialLocation).latitude) + parseFloat(0.001),
         longitude: JSON.parse(initialLocation).longitude,
       };
       //console.log(toPassString);
@@ -94,7 +87,8 @@ const AlmostThere = (route) => {
         setInitialLocation(initialPosition);
         setIsAllowed(true);
         getStringAddress(initialPosition);
-        //console.log(initialLocation);
+        console.log('Almost There Page');
+        console.log(initialPosition);
       },
       (error) => {
         console.log('Error', JSON.stringify(error));
@@ -156,6 +150,24 @@ const AlmostThere = (route) => {
     }
   };
 
+  const onSearchLocationHandler = (data) => {
+    //console.log(JSON.stringify(data));
+    setSearchStringAddress(data);
+    setButtonDisabled(false);
+    setButtonStyle({});
+  };
+
+  const onClearSearchAddress = (textValue) => {
+    if (textValue.trim().length < 1) {
+      setSearchStringAddress('');
+      setButtonDisabled(true);
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    }
+  };
+
   useEffect(() => {
     // exit early when we reach 0
     if (Platform.OS === 'ios') {
@@ -183,7 +195,7 @@ const AlmostThere = (route) => {
 
   return (
     <>
-      <AppViewContainer paddingSize={3} customStyle={styles.container}>
+      <View style={styles.almostContainer}>
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.skipContainer}>
           {isLocationReady ? (
@@ -203,7 +215,7 @@ const AlmostThere = (route) => {
         </View>
 
         <View style={styles.almostThereImageContainer}>
-          <LocationImage width={80} height={80} />
+          <LocationImage width={normalize(80)} height={normalize(80)} />
         </View>
 
         <AppText customStyle={styles.almostThereText} textStyle="display5">
@@ -217,62 +229,18 @@ const AlmostThere = (route) => {
 
         <View style={styles.textInputWrapper}>
           <View style={styles.navIcon}>
-            <NavigationPin width={24} height={24} />
+            <NavigationPin width={normalize(24)} height={normalize(24)} />
           </View>
           {/* <AppInput
             customStyle={styles.textInput}
             placeholder="Enter street address or city"
           /> */}
-          <GooglePlacesAutocomplete
-            placeholder="Enter street address or city"
-            query={{
-              key: Config.apiKey,
-              language: 'en', // language of the results
+          <GooglePlacesInput
+            onResultsClick={(data) => {
+              onSearchLocationHandler(data);
             }}
-            onPress={(data, details = null) => {
-              //let coordinates = data.geometry.location;
-              console.log(JSON.stringify(details.description));
-              setSearchStringAddress(details.description);
-              setButtonDisabled(false);
-              setButtonStyle({});
-              //sendCoordinates(coordinates, {data, details});
-            }}
-            onFail={(error) => console.error(error)}
-            styles={{
-              container: {
-                marginTop: -10,
-                marginBottom: 50,
-              },
-              listView: {
-                color: Colors.contentEbony, //To see where exactly the list is
-                zIndex: 1100, //To popover the component outwards
-                elevation: 1100,
-                position: 'absolute',
-                top: 45,
-                backgroundColor: Colors.neutralsWhite,
-                marginLeft: 10,
-                marginRight: 10,
-              },
-              textInputContainer: {
-                backgroundColor: 'rgba(0,0,0,0)',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-                flex: 1,
-              },
-              textInput: {
-                borderColor: Colors.neutralGray,
-                borderWidth: 1,
-                paddingLeft: 40,
-                paddingRight: 39,
-
-                fontSize: 16,
-                height: 54,
-                color: Colors.contentEbony,
-              },
-              predefinedPlacesDescription: {
-                color: Colors.contentEbony,
-              },
-              poweredContainer: {display: 'none'},
+            onClearInput={(textValue) => {
+              onClearSearchAddress(textValue);
             }}
           />
         </View>
@@ -280,7 +248,7 @@ const AlmostThere = (route) => {
         {isLocationReady ? (
           <>
             <View style={styles.currentLocationContainer}>
-              <NavigationArrow width={24} height={24} />
+              <NavigationArrow width={normalize(24)} height={normalize(24)} />
               <AppText
                 textStyle="promo"
                 customStyle={styles.currentLocationLabel}>
@@ -288,14 +256,20 @@ const AlmostThere = (route) => {
               </AppText>
             </View>
             <View>
-              <TouchableOpacity
-                onPress={() => {
-                  onChangeAddressHandler();
-                }}>
-                <AppText textStyle="body3" customStyle={styles.currentAddress}>
-                  {stringAddress}
-                </AppText>
-              </TouchableOpacity>
+              {searchStringAddress.length > 0 ? (
+                <AppText></AppText>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    onCurrentLocationClick();
+                  }}>
+                  <AppText
+                    textStyle="body3"
+                    customStyle={styles.currentAddress}>
+                    {stringAddress}
+                  </AppText>
+                </TouchableOpacity>
+              )}
             </View>
           </>
         ) : (
@@ -318,16 +292,19 @@ const AlmostThere = (route) => {
             //loading={isLoading}
           />
         </View>
-      </AppViewContainer>
+      </View>
     </>
   );
 };
 
 // define your styles
 const styles = StyleSheet.create({
-  container: {
+  almostContainer: {
     flex: 1,
+    height: '100%',
     backgroundColor: Colors.neutralsWhite,
+    padding: 24,
+    paddingTop: 50,
   },
   skipContainer: {
     alignItems: 'flex-end',

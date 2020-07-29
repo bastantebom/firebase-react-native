@@ -149,7 +149,7 @@ const SignUp = (props) => {
 
   const onEmailChange = (email) => {
     if (validateEmail(email)) {
-      setButtonText('Next');
+      setButtonText('Sign up');
       setIsValidEmail(true);
       const newKeyValue = {login: email};
       setSignUpForm({...signUpForm, ...newKeyValue});

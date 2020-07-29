@@ -1,10 +1,12 @@
 //import liraries
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Platform} from 'react-native';
+import {StyleSheet, View, TextInput, Platform} from 'react-native';
 
 //import Geolocation from '@react-native-community/geolocation';
+import Config from '@/services/Config';
+import Geocoder from 'react-native-geocoding';
 import MapComponent from '@/components/MapComponent/MapComponent';
-import {AppViewContainer, AppText, AppInput, AppButton} from '@/components';
+import {AppViewContainer, AppText, AppButton} from '@/components';
 import {Colors} from '@/globals';
 
 import {NavigationArrow, NavigationPin, Close} from '@/assets/images/icons';
@@ -16,6 +18,32 @@ import {useNavigation} from '@react-navigation/native';
 
 // create a component
 const AlmostThereMap = (route) => {
+  const [changeMapAddress, setChangeMapAddress] = useState('');
+
+  const onRegionChange = (region) => {
+    //console.log('this is in the consumer component');
+    console.log(region);
+    //if (changeMapAddress.length > 0) {
+    console.log('nabago na pala');
+    getStringAddress(region);
+    //}
+  };
+
+  const getStringAddress = (location) => {
+    //console.log(location);
+    Geocoder.init(Config.apiKey);
+    //console.log(location.latitude);
+    Geocoder.from(location.latitude, location.longitude)
+      .then((json) => {
+        const addressComponent = json.results[1].formatted_address;
+        //console.log(json);
+        setChangeMapAddress(addressComponent);
+        //setIsLocationReady(true);
+        //console.log('is location allowed ' + isAllowed);
+      })
+      .catch((error) => console.warn(error));
+  };
+
   const navigation = useNavigation();
   return (
     <>
@@ -47,15 +75,22 @@ const AlmostThereMap = (route) => {
                 <View style={styles.navIcon}>
                   <NavigationPin width={24} height={24} />
                 </View>
-                <AppInput
-                  customStyle={styles.textInput}
+                <TextInput
+                  style={styles.textInput}
                   placeholder="Enter street address or city"
-                  value={route?.route?.params.address}
+                  value={
+                    changeMapAddress.length > 0
+                      ? changeMapAddress
+                      : route?.route?.params.address
+                  }
                 />
               </View>
               <MapComponent
                 latitude={route?.route?.params.latitude}
                 longitude={route?.route?.params.longitude}
+                onRegionChange={(region) => {
+                  onRegionChange(region);
+                }}
               />
               <View style={styles.buttonWrapper}>
                 <AppButton
@@ -124,11 +159,20 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
 
-  textInput: {backgroundColor: Colors.neutralsWhite, paddingLeft: 32},
+  textInput: {
+    backgroundColor: Colors.neutralsWhite,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 40,
+    borderColor: Colors.neutralGray,
+    borderWidth: 1,
+    borderRadius: 4,
+    fontSize: 16,
+  },
   navIcon: {
     position: 'absolute',
     left: 40,
-    top: 40,
+    top: 35,
     zIndex: 101,
   },
 });
