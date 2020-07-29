@@ -135,7 +135,7 @@ const AppButton = ({
         style={{
           ...containerCommonStyle,
           ...customStyle,
-          paddingHorizontal: 16,
+          // paddingHorizontal: 16,
         }}>
         {/* <View style={iconWrapper}>{!loading && <Text> {buttonIcon}</Text>}</View> */}
 
