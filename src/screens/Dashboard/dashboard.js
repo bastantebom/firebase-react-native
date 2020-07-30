@@ -338,9 +338,15 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flexDirection: 'row',
   },
+<<<<<<< HEAD
   // notificationStyle: {
   //   color: Colors.primaryMidnightBlue
   // }
+=======
+  notificationStyle: {
+    color: Colors.primaryMidnightBlue
+  }
+>>>>>>> d0ac956... wip: add verification screen
 });
 
 export default Dashboard;
