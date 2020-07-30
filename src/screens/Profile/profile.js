@@ -19,10 +19,10 @@ import {
   TabNavigation,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
+import {TabView, SceneMap} from 'react-native-tab-view';
 
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize} from '@/globals';
-
 
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
