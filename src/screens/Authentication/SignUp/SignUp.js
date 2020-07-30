@@ -2,13 +2,10 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-//App Specific Component
 import AppColor from '@/globals/Colors';
 
 import {AppText, AppInput, AppButton} from '@/components';
 
-//import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-//SVG Import
 import SignUpService from '@/services/SignUpService';
 import LoginService from '@/services/LoginService';
 import {Close, EyeDark, EyeLight} from '@/assets/images/icons/';
@@ -31,8 +28,6 @@ const SignUp = (props) => {
 
   const toggleModal = () => {
     setModalVisible((previousState) => !previousState);
-    //alert(clickLink);
-    //setModalContentNumber(contentNum);
   };
 
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
@@ -66,7 +61,6 @@ const SignUp = (props) => {
     borderColor: AppColor.buttonDisable,
   });
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [buttonText, setButtonText] = useState('Sign up');
 
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
@@ -99,7 +93,7 @@ const SignUp = (props) => {
     });
 
     setButtonDisabled(true);
-    setButtonText('Sign up');
+    //setButtonText('Sign up');
 
     setIsValidMobileNumber(false);
   };
@@ -149,7 +143,7 @@ const SignUp = (props) => {
 
   const onEmailChange = (email) => {
     if (validateEmail(email)) {
-      setButtonText('Sign up');
+      //setButtonText('Sign up');
       setIsValidEmail(true);
       const newKeyValue = {login: email};
       setSignUpForm({...signUpForm, ...newKeyValue});
@@ -167,7 +161,7 @@ const SignUp = (props) => {
       }
 
       setIsValidEmail(false);
-      setButtonText('Sign up');
+      //setButtonText('Sign up');
     }
   };
 
@@ -501,7 +495,7 @@ const SignUp = (props) => {
 
             <View>
               <AppButton
-                text={buttonText}
+                text="Sign up"
                 type="primary"
                 height="xl"
                 disabled={buttonDisabled}

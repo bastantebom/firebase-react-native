@@ -8,13 +8,7 @@ import {
 } from 'react-native';
 import {Colors, normalize} from '@/globals';
 
-import {
-  AppViewContainer,
-  AppText,
-  AppInput,
-  AppButton,
-  TransitionIndicator,
-} from '@/components';
+import {AppText, AppButton, TransitionIndicator} from '@/components';
 
 import {NavigationArrow, NavigationPin} from '@/assets/images/icons';
 import LocationImage from '@/assets/images/location.svg';
@@ -70,9 +64,10 @@ const AlmostThere = (route) => {
       //"altitude":0,"altitudeAccuracy":-1,"latitude":13.749014,"accuracy":5,"longitude":121.072939,"heading":-1,"speed":-1
       const toPassString = {
         uid: route?.route?.params?.uid,
+        custom_token: route?.route?.params?.custom_token,
         address: stringAddress,
         latitude:
-          parseFloat(JSON.parse(initialLocation).latitude) + parseFloat(0.001),
+          parseFloat(JSON.parse(initialLocation).latitude) + parseFloat(0.002),
         longitude: JSON.parse(initialLocation).longitude,
       };
       //console.log(toPassString);

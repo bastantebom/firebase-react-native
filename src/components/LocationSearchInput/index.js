@@ -1,10 +1,18 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 //import {Image, Text} from 'react-native';
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
 import Global from '@/services/Config';
 import {Colors} from '@/globals';
 
-const GooglePlacesInput = ({onResultsClick, onClearInput}) => {
+const GooglePlacesInput = ({onResultsClick, onClearInput, currentValue}) => {
+  const placesRef = useRef(null);
+
+  useEffect(() => {
+    if (currentValue) {
+      placesRef.current.setAddressText(currentValue);
+    }
+  }, [currentValue]);
+
   return (
     <GooglePlacesAutocomplete
       placeholder="Enter street address or city"
@@ -19,7 +27,9 @@ const GooglePlacesInput = ({onResultsClick, onClearInput}) => {
         //sendCoordinates(coordinates, {data, details});
       }}
       onFail={(error) => console.error(error)}
-      textInputProps={{onChangeText: (value) => onClearInput(value)}}
+      textInputProps={{
+        onChangeText: (value) => onClearInput(value),
+      }}
       styles={{
         container: {
           marginTop: -10,
@@ -56,6 +66,7 @@ const GooglePlacesInput = ({onResultsClick, onClearInput}) => {
         },
         poweredContainer: {display: 'none'},
       }}
+      ref={placesRef}
     />
   );
 };
