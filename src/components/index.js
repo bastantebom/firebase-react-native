@@ -16,7 +16,7 @@ import TransitionIndicator from '@/components/TransitionIndicator/TransitionIndi
 import GooglePlaces from '@/components/LocationSearchInput';
 import TransparentHeader from '@/components/TransparentHeader/TransparentHeader';
 import BottomSheetHeader from './BottomSheet/header';
-
+import ProfileLinks from '@/components/ProfileLinks/ProfileLinks';
 import TabNavigation from './TabNavigation/TabNavigation';
 
 export {
@@ -40,4 +40,5 @@ export {
   GooglePlaces,
   TransparentHeader,
   BottomSheetHeader,
+  ProfileLinks,
 };

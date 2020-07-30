@@ -8,10 +8,7 @@ import {View} from 'react-native';
 //screens
 import {Onboarding} from '@/screens/Onboarding';
 import {Dashboard} from '@/screens/Dashboard';
-import {
-  Profile,
-  ProfileHives
-} from '@/screens/Profile';
+import {Profile, ProfileHives, Connections} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Post} from '@/screens/Post';
 import {Activity} from '@/screens/Activity';
@@ -94,16 +91,23 @@ function ActivityStackScreen() {
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator headerMode="screen">
-      <ProfileStack.Screen 
-        name="Profile" 
-        component={Profile} 
+      <ProfileStack.Screen
+        name="Profile"
+        component={Profile}
         options={{
           headerShown: false,
         }}
       />
-      <ProfileStack.Screen 
-        name="ProfileHives" 
-        component={ProfileHives} 
+      <ProfileStack.Screen
+        name="ProfileHives"
+        component={ProfileHives}
+        options={{
+          headerTitleAlign: 'center',
+        }}
+      />
+      <ProfileStack.Screen
+        name="Connections"
+        component={Connections}
         options={{
           headerTitleAlign: 'center',
         }}

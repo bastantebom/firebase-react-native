@@ -17,12 +17,13 @@ import {
   HexagonBorder,
   TransparentHeader,
   TabNavigation,
+  ProfileLinks,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
 
 import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize} from '@/globals';
+import {normalize, Colors} from '@/globals';
 
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
@@ -118,18 +119,14 @@ function Profile({navigation}) {
         />
       </View>
       <View style={styles.profileBasicInfo}>
-        <View style={styles.profileImageWrapper}></View>
-        <View style={styles.profileLinksWrapper}>
-          <View>
-            <AppText>Posts</AppText>
-          </View>
-          <View>
-            <AppText>Followers</AppText>
-          </View>
-          <View>
-            <AppText>Hives</AppText>
-          </View>
+        <View style={styles.profileImageWrapper}>
+          <ProfileImageUpload />
+          <HexagonBorder />
         </View>
+        <ProfileLinks
+          onClickHives={() => navigation.navigate('ProfileHives')}
+          onClickFollowers={() => navigation.navigate('Connections')}
+        />
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
@@ -171,10 +168,10 @@ const styles = StyleSheet.create({
   },
 
   profileImageWrapper: {
-    width: '40%',
-  },
-
-  profileLinksWrapper: {
-    width: '60%',
+    width: '33%',
+    height: normalize(160),
+    top: normalize(-80),
+    paddingLeft: normalize(24),
+    //backgroundColor: 'red',
   },
 });

@@ -49,5 +49,7 @@ export default {
 
   red: '#EF5350',
 
+  profileLink: '#515057',
+
   //switchDisable: '#CACBCC';
 };
