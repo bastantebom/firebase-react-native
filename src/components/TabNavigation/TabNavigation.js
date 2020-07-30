@@ -33,6 +33,7 @@ const TabNavigation = ({routesList}) => {
     return routes.map((route) => {
       return (
         <TouchableOpacity
+          key={route.key}
           activeOpacity={0.7}
           onPress={() => tabChangeHandler(route.key)}>
           <View style={styles.navigationItem}>

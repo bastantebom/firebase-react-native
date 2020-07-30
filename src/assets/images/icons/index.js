@@ -91,7 +91,14 @@ import MenuLiked from './MenuLiked.svg';
 import MenuLogOut from './MenuLogOut.svg';
 import MenuTelephone from './MenuTelephone.svg';
 
+import QRLink from './qr-link.svg';
+import QRDownload from './qr-download.svg';
+import QRShare from './qr-share.svg';
+
 export {
+  QRLink,
+  QRDownload,
+  QRShare,
   MenuAddFriend,
   MenuTelephone,
   MenuLogOut,
