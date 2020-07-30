@@ -70,15 +70,14 @@ function Profile({navigation}) {
     setMenu(!menu);
   };
 
-
   const [user, setUser] = useState();
-  const [profileImageUrl, setProfileImageUrl] = useState('')
+  const [profileImageUrl, setProfileImageUrl] = useState('');
 
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
-    
+
   const signOut = () => {
     if (user) {
       auth()
@@ -118,9 +117,23 @@ function Profile({navigation}) {
           height={normalize(158 * 1.2)}
         />
       </View>
+      <View style={styles.profileBasicInfo}>
+        <View style={styles.profileImageWrapper}></View>
+        <View style={styles.profileLinksWrapper}>
+          <View>
+            <AppText>Posts</AppText>
+          </View>
+          <View>
+            <AppText>Followers</AppText>
+          </View>
+          <View>
+            <AppText>Hives</AppText>
+          </View>
+        </View>
+      </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation /> 
+          <TabNavigation />
 
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
@@ -130,8 +143,6 @@ function Profile({navigation}) {
             size="sm"
           />
           <AppText>Welcome</AppText>
-          <ProfileImageUpload />
-          <HexagonBorder />
 
           <Button title="Change header" onPress={changeHeaderHandler} />
           <Button title="sign out" onPress={signOut} />
@@ -153,5 +164,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     position: 'relative',
     // justifyContent: 'center',
+  },
+
+  profileBasicInfo: {
+    flexDirection: 'row',
+  },
+
+  profileImageWrapper: {
+    width: '40%',
+  },
+
+  profileLinksWrapper: {
+    width: '60%',
   },
 });
