@@ -1,0 +1,133 @@
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+
+import { AppText } from '@/components';
+import { Colors } from '@/globals';
+
+
+const FirstRoute = () => {
+  return (
+    <View style={[styles.scene, { backgroundColor: '#ff4081' }]} >
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+    </View>
+  )
+};
+
+const SecondRoute = () => (
+  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} >
+    <AppText>secon pege</AppText>
+  </View>
+);
+
+const TabNavigation = ({routesArray}) => {
+
+  // const [routes] = useState([
+  //   { key: 'first', title: 'First', renderPage: <FirstRoute /> },
+  //   { key: 'second', title: 'Second', renderPage: <SecondRoute /> },
+  // ]);
+
+  const [routes] = useState([
+    { key: 'first', title: 'First', renderPage: <FirstRoute /> },
+    { key: 'second', title: 'Second', renderPage: <SecondRoute /> },
+  ]);
+
+
+  const [activeTab, setActiveTab] = useState(routes[0].key);
+
+  const tabChangeHandler = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  const RenderContent = () => {
+
+    const page = routes.find(activePage => {
+      if (activePage.key === activeTab)
+        return activePage
+    })
+
+    return page.renderPage
+    // return <View />
+  };
+
+  const RenderRoutes = () => {
+    return routes.map(route => {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => tabChangeHandler(route.key)}>
+          <View style={styles.navigationItem}>
+            <AppText
+              textStyle="tabNavigation"
+              color={
+                activeTab === route.key
+                  ? Colors.contentEbony
+                  : Colors.checkboxBorderDefault
+              }>
+              {route.title}
+            </AppText>
+            <View
+              style={[
+                styles.navigationLine,
+                activeTab === route.key
+                  ? styles.navigationActive
+                  : styles.navigationInactive,
+              ]}
+            />
+          </View>
+        </TouchableOpacity>
+      )
+    })
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.navigationContainer}>
+        <RenderRoutes />
+      </View>
+      <RenderContent />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+  },
+  navigationContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    width: '100%',
+  },
+  navigationItem: {
+    flex: 1,
+    position: 'relative',
+    padding: 12,
+    paddingBottom: 20,
+  },
+  navigationLine: {
+    position: 'absolute',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  navigationActive: {
+    borderColor: Colors.secondaryRoyalBlue,
+  },
+  navigationInactive: {
+    borderColor: 'transparent',
+  },
+});
+
+export default TabNavigation;

@@ -67,7 +67,52 @@ import SortNearest from './sort-nearest.svg';
 import CheckboxCheck from './checkbox-check.svg';
 import RadioDot from './radiobutton-dot.svg';
 
+import HeaderBack from './header-back.svg';
+import HeaderBackGray from './header-back-gray.svg';
+import HeaderEllipsis from './header-ellipsis';
+import HeaderFollow from './header-follow.svg';
+import HeaderFollowing from './header-following.svg';
+import HeaderMenu from './header-menu.svg';
+import HeaderQR from './header-qr.svg';
+import HeaderShare from './header-share.svg';
+
+import ProfileBlockRed from './profile-block-red.svg';
+import ProfileMute from './profile-mute.svg';
+import ProfileReport from './profile-report.svg';
+
+import MenuAddFriend from './MenuAddFriend.svg';
+import MenuArchive from './MenuArchive.svg';
+import MenuBell from './MenuBell.svg';
+import MenuChat from './MenuChat.svg';
+import MenuEdit from './MenuEdit.svg';
+import MenuInfo from './MenuInfo.svg';
+import MenuKey from './MenuKey.svg';
+import MenuLiked from './MenuLiked.svg';
+import MenuLogOut from './MenuLogOut.svg';
+import MenuTelephone from './MenuTelephone.svg';
+
 export {
+  MenuAddFriend,
+  MenuTelephone,
+  MenuLogOut,
+  MenuLiked,
+  MenuArchive,
+  MenuBell,
+  MenuChat,
+  MenuEdit,
+  MenuInfo,
+  MenuKey,
+  ProfileBlockRed,
+  ProfileReport,
+  ProfileMute,
+  HeaderBack,
+  HeaderBackGray,
+  HeaderEllipsis,
+  HeaderFollow,
+  HeaderFollowing,
+  HeaderMenu,
+  HeaderQR,
+  HeaderShare,
   SortHighLow,
   SortLowHigh,
   SortPopular,

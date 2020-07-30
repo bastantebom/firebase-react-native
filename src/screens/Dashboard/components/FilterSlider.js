@@ -168,7 +168,7 @@ const FilterSlider = ({modalToggler}) => {
               Icon={() => {
                 return <FilterSeller />;
               }}
-              label="Seller"
+              label="Selling"
               value={checkboxSeller}
               valueChangeHandler={checkboxSellerHandler}
               style={{marginBottom: 16}}
@@ -218,11 +218,14 @@ const FilterSlider = ({modalToggler}) => {
               valueChangeHandler={radioHandler}
               style={{marginBottom: 16}}
             />
+            <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+              Price
+            </AppText>
             <AppRadio
               Icon={() => {
                 return <SortHighLow />;
               }}
-              label="Price High to Low"
+              label="High to Low"
               name="HighLow"
               value={radioButtons.HighLow}
               valueChangeHandler={radioHandler}
@@ -232,7 +235,7 @@ const FilterSlider = ({modalToggler}) => {
               Icon={() => {
                 return <SortLowHigh />;
               }}
-              label="Price Low to High"
+              label="Low to High"
               name="LowHigh"
               value={radioButtons.LowHigh}
               valueChangeHandler={radioHandler}
