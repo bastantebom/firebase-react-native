@@ -19,9 +19,20 @@ import {
   TabNavigation,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
+import {TabView, SceneMap} from 'react-native-tab-view';
 
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize} from '@/globals';
+
+const FirstRoute = () => (
+  <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
+);
+
+const SecondRoute = () => (
+  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
+);
+
+
 
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
@@ -47,6 +58,21 @@ function Profile({navigation}) {
   const [menu, setMenu] = useState(false);
   const [QR, setQR] = useState(false);
 
+  const width = Dimensions.get('window').width;
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'first', title: 'First' },
+    { key: 'second', title: 'Second' },
+  ]);
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+
+  const initialLayout = { width: Dimensions.get('window').width };
+
   const [headerState, setHeaderState] = useState('own');
 
   const changeHeaderHandler = () => {
@@ -68,6 +94,7 @@ function Profile({navigation}) {
   const toggleMenu = () => {
     setMenu(!menu);
   };
+
 
   const [user, setUser] = useState();
   const [profileImageUrl, setProfileImageUrl] = useState('')
@@ -130,6 +157,13 @@ function Profile({navigation}) {
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation />
+
+          <TabView
+            navigationState={{index, routes}}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={initialLayout}
+          />
 
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
