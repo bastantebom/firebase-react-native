@@ -1,52 +1,113 @@
 //import liraries
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, TextInput, Platform} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 
 //import Geolocation from '@react-native-community/geolocation';
 import Config from '@/services/Config';
 import Geocoder from 'react-native-geocoding';
 import MapComponent from '@/components/MapComponent/MapComponent';
-import {AppViewContainer, AppText, AppButton} from '@/components';
+import {AppText, AppButton, TransitionIndicator} from '@/components';
 import {Colors} from '@/globals';
 
-import {NavigationArrow, NavigationPin, Close} from '@/assets/images/icons';
+import GooglePlacesInput from '@/components/LocationSearchInput';
+
+import {NavigationPin, Close} from '@/assets/images/icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import {useNavigation} from '@react-navigation/native';
-//import Geocoder from 'react-native-geocoding';
-//import LocationPin from '@/assets/images/icons/';
+import SignUpService from '@/services/SignUpService';
+import auth from '@react-native-firebase/auth';
 
 // create a component
 const AlmostThereMap = (route) => {
+  const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable,
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  Geocoder.init(Config.apiKey);
+  const [newCoords, setNewCoords] = useState({});
+  const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const onRegionChange = (region) => {
-    //console.log('this is in the consumer component');
-    console.log(region);
-    //if (changeMapAddress.length > 0) {
-    console.log('nabago na pala');
+    //console.log(region);
     getStringAddress(region);
-    //}
+    setButtonDisabled(false);
+    setButtonStyle({});
   };
 
   const getStringAddress = (location) => {
-    //console.log(location);
-    Geocoder.init(Config.apiKey);
-    //console.log(location.latitude);
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
         const addressComponent = json.results[1].formatted_address;
-        //console.log(json);
         setChangeMapAddress(addressComponent);
-        //setIsLocationReady(true);
-        //console.log('is location allowed ' + isAllowed);
       })
       .catch((error) => console.warn(error));
   };
 
-  const navigation = useNavigation();
+  const getPositionFromString = (address) => {
+    Geocoder.from(address)
+      .then((json) => {
+        var location = json.results[0].geometry.location;
+        console.log('New Coords');
+        setNewCoords(location);
+        setButtonDisabled(false);
+        setButtonStyle({});
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const onSearchLocationHandler = (data) => {
+    //console.log(JSON.stringify(data));
+    setChangeMapAddress(data);
+    getPositionFromString(data);
+  };
+
+  const saveRefineLocation = () => {
+    setIsScreenLoading(true);
+    if (route?.route?.params?.uid) {
+      SignUpService.saveLocation({
+        uid: route?.route?.params?.uid,
+        location: changeMapAddress,
+      })
+        .then((response) => {
+          if (response.success) {
+            signInAfterSaveLocation();
+          }
+        })
+        .catch((error) => {
+          setIsScreenLoading(false);
+          console.log('With Error in the API SignUp ' + error);
+        });
+    } else {
+      setIsScreenLoading(false);
+      navigation.push('Dashboard');
+    }
+  };
+
+  const signInAfterSaveLocation = () => {
+    if (route?.route?.params?.custom_token) {
+      auth()
+        .signInWithCustomToken(route?.route?.params?.custom_token)
+        .then(() => {
+          setIsScreenLoading(false);
+          navigation.push('Dashboard');
+        })
+        .catch((err) => {
+          setIsScreenLoading(false);
+          console.log(err);
+        });
+    } else {
+      setIsScreenLoading(false);
+      navigation.push('Dashboard');
+    }
+  };
+
   return (
     <>
+      <TransitionIndicator loading={isScreenLoading} />
       <View style={{flex: 1}}>
         <View style={styles.header}>
           <View style={styles.headerWrapper}>
@@ -75,33 +136,40 @@ const AlmostThereMap = (route) => {
                 <View style={styles.navIcon}>
                   <NavigationPin width={24} height={24} />
                 </View>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Enter street address or city"
-                  value={
+                <GooglePlacesInput
+                  onResultsClick={(data) => {
+                    onSearchLocationHandler(data);
+                  }}
+                  onClearInput={(textValue) => {
+                    console.log('setvalue');
+                  }}
+                  currentValue={
                     changeMapAddress.length > 0
                       ? changeMapAddress
                       : route?.route?.params.address
                   }
                 />
               </View>
+
               <MapComponent
                 latitude={route?.route?.params.latitude}
                 longitude={route?.route?.params.longitude}
+                reCenter={newCoords}
                 onRegionChange={(region) => {
                   onRegionChange(region);
                 }}
+                withCurrentMarker={true}
               />
               <View style={styles.buttonWrapper}>
                 <AppButton
                   text="Confirm"
                   type="primary"
                   height="xl"
-                  //customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+                  customStyle={buttonStyle}
+                  disabled={buttonDisabled}
                   onPress={() => {
-                    //signUpEmail(signUpForm);
+                    saveRefineLocation();
                   }}
-                  //loading={isLoading}
                 />
               </View>
             </>
@@ -177,5 +245,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default AlmostThereMap;

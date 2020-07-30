@@ -1,12 +1,22 @@
 //import liraries
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import React, {useEffect, useRef} from 'react';
+import {View, StyleSheet, Platform, Image} from 'react-native';
+import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {MapMarker} from '@/assets/images/icons';
 import {normalize} from '@/globals';
+import Config from '@/services/Config';
 
 // create a component
-const MapComponent = ({latitude, longitude, onRegionChange}) => {
+const MapComponent = ({
+  latitude,
+  longitude,
+  onRegionChange,
+  withCurrentMarker,
+  reCenter,
+}) => {
+  const circleRef = useRef(null);
+  const mapViewRef = useRef(null);
+
   const mapStyle = [
     {
       featureType: 'administrative',
@@ -31,7 +41,7 @@ const MapComponent = ({latitude, longitude, onRegionChange}) => {
       elementType: 'all',
       stylers: [
         {
-          visibility: 'off',
+          visibility: 'on',
         },
       ],
     },
@@ -88,16 +98,42 @@ const MapComponent = ({latitude, longitude, onRegionChange}) => {
     },
   ];
 
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      setTimeout(() => {
+        if (circleRef.current) {
+          circleRef.current.setNativeProps({
+            strokeColor: 'rgba(255, 212, 0, 0.8)',
+            fillColor: 'rgba(255, 212, 0, 0.18)',
+          });
+        }
+      }, 100);
+    }
+    //console.log('filled object');
+    //console.log(StyleSheet.absoluteFillObject);
+  }, []);
+
+  useEffect(() => {
+    let r = {
+      latitude: reCenter.lat,
+      longitude: reCenter.lng,
+      latitudeDelta: Config.latitudeDelta,
+      longitudeDelta: Config.longitudeDelta,
+    };
+    mapViewRef.current.animateToRegion(r, 2000);
+  }, [reCenter.lat]);
+
   return (
     <View style={styles.mapContainer}>
       <MapView
+        ref={mapViewRef}
         provider={PROVIDER_GOOGLE}
         style={styles.mapView}
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.025,
-          longitudeDelta: 0.025,
+          latitudeDelta: Config.latitudeDelta,
+          longitudeDelta: Config.longitudeDelta,
         }}
         customMapStyle={mapStyle}
         zoomEnabled={true}
@@ -106,9 +142,39 @@ const MapComponent = ({latitude, longitude, onRegionChange}) => {
         }}
         scrollEnabled={true}
         showsScale={true}
-      />
+        showsBuildings={true}
+        loadingEnabled={true}>
+        {withCurrentMarker ? (
+          <>
+            <Marker
+              coordinate={{
+                latitude: latitude,
+                longitude: longitude,
+              }}
+              centerOffset={(1, 1)}>
+              <View>
+                <Image
+                  source={require('@/assets/images/icons/current_location.png')}
+                  style={{height: 20, width: 20}}
+                />
+              </View>
+            </Marker>
+            <Circle
+              center={{
+                latitude: latitude + parseFloat(0.00002),
+                longitude: longitude,
+              }}
+              radius={20}
+              strokeWidth={1}
+              strokeColor={'rgba(255, 212, 0, 1)'}
+              fillColor={'rgba(255, 212, 0, 0.18)'}
+              ref={circleRef}
+            />
+          </>
+        ) : null}
+      </MapView>
       <View style={styles.markerFixed}>
-        <MapMarker width={normalize(56)} height={normalize(56)} />
+        <MapMarker width={normalize(48)} height={normalize(48)} />
       </View>
     </View>
   );
@@ -130,9 +196,9 @@ const styles = StyleSheet.create({
   markerFixed: {
     left: '50%',
     position: 'absolute',
-    bottom: '50%',
-    marginLeft: -28,
-    marginTop: -48,
+    top: '50%',
+    marginLeft: normalize(-24),
+    marginTop: normalize(-65),
   },
 });
 //make this component available to the app
