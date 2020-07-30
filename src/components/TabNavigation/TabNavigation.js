@@ -1,84 +1,96 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
-import {AppText} from '@/components';
-import {Colors} from '@/globals';
+import { AppText } from '@/components';
+import { Colors } from '@/globals';
 
-const TabNavigation = () => {
-  const [activeTab, setActiveTab] = useState('posts');
+
+const FirstRoute = () => {
+  return (
+    <View style={[styles.scene, { backgroundColor: '#ff4081' }]} >
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+      <AppText>pers peyj</AppText>
+    </View>
+  )
+};
+
+const SecondRoute = () => (
+  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} >
+    <AppText>secon pege</AppText>
+  </View>
+);
+
+const TabNavigation = ({routesArray}) => {
+
+  // const [routes] = useState([
+  //   { key: 'first', title: 'First', renderPage: <FirstRoute /> },
+  //   { key: 'second', title: 'Second', renderPage: <SecondRoute /> },
+  // ]);
+
+  const [routes] = useState([
+    { key: 'first', title: 'First', renderPage: <FirstRoute /> },
+    { key: 'second', title: 'Second', renderPage: <SecondRoute /> },
+  ]);
+
+
+  const [activeTab, setActiveTab] = useState(routes[0].key);
 
   const tabChangeHandler = (tabName) => {
     setActiveTab(tabName);
   };
 
   const RenderContent = () => {
-    if (activeTab === 'posts') {
-      return (
-        <View>
-          <AppText>My code page</AppText>
-        </View>
-      );
-    }
 
-    if (activeTab === 'recent') {
-      return (
-        <View>
-          <AppText>Camera</AppText>
-        </View>
-      );
-    }
+    const page = routes.find(activePage => {
+      if (activePage.key === activeTab)
+        return activePage
+    })
+
+    return page.renderPage
   };
+
+  const RenderRoutes = () => {
+    return routes.map(route => {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => tabChangeHandler(route.key)}>
+          <View style={styles.navigationItem}>
+            <AppText
+              textStyle="tabNavigation"
+              color={
+                activeTab === route.key
+                  ? Colors.contentEbony
+                  : Colors.checkboxBorderDefault
+              }>
+              {route.title}
+            </AppText>
+            <View
+              style={[
+                styles.navigationLine,
+                activeTab === route.key
+                  ? styles.navigationActive
+                  : styles.navigationInactive,
+              ]}
+            />
+          </View>
+        </TouchableOpacity>
+      )
+    })
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.navigationContainer}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => tabChangeHandler('posts')}>
-          <View style={styles.navigationItem}>
-            <AppText
-              textStyle="tabNavigation"
-              color={
-                activeTab === 'posts'
-                  ? Colors.contentEbony
-                  : Colors.checkboxBorderDefault
-              }>
-              My Code
-            </AppText>
-            <View
-              style={[
-                styles.navigationLine,
-                activeTab === 'posts'
-                  ? styles.navigationActive
-                  : styles.navigationInactive,
-              ]}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => tabChangeHandler('recent')}>
-          <View style={styles.navigationItem}>
-            <AppText
-              textStyle="tabNavigation"
-              color={
-                activeTab === 'recent'
-                  ? Colors.contentEbony
-                  : Colors.checkboxBorderDefault
-              }>
-              Scan Code
-            </AppText>
-            <View
-              style={[
-                styles.navigationLine,
-                activeTab === 'recent'
-                  ? styles.navigationActive
-                  : styles.navigationInactive,
-              ]}
-            />
-          </View>
-        </TouchableOpacity>
+        <RenderRoutes />
       </View>
       <RenderContent />
     </View>

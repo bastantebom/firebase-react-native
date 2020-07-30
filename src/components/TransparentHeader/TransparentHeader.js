@@ -42,23 +42,6 @@ const TransparentHeader = ({
   signOut,
 }) => {
 
-  const shareToInstagramStory = async () => {
-    const shareOptions = {
-      title: 'Share image to instastory',
-      method: Share.InstagramStories.SHARE_BACKGROUND_IMAGE,
-      backgroundImage: images.image1,
-      social: Share.Social.INSTAGRAM_STORIES,
-    };
-
-    try {
-      const ShareResponse = await Share.shareSingle(shareOptions);
-      setResult(JSON.stringify(ShareResponse, null, 2));
-    } catch (error) {
-      console.log('Error =>', error);
-      setResult('error: '.concat(getErrorString(error)));
-    }
-  };
-
   const shareHandler = async () => {
     const shareOptions = {
       title: 'Share profile',

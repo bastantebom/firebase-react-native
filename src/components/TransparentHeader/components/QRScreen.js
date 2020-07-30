@@ -10,7 +10,7 @@ import {
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import QRCode from 'react-native-qrcode-svg';
 
-import {AppText, PaddingView} from '@/components';
+import {AppText, PaddingView, TabNavigation} from '@/components';
 import {Colors, normalize} from '@/globals';
 
 import {HeaderBackGray} from '@/assets/images/icons';
@@ -72,9 +72,7 @@ const OwnMenu = ({toggleQR, signOut}) => {
               </TouchableOpacity>
             </View>
           </PaddingView>
-          <View>
-            <AppText>Tabs</AppText>
-          </View>
+          <TabNavigation />
 
           <View
             style={{
