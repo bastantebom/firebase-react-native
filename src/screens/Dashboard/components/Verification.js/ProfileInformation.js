@@ -160,7 +160,6 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
                 display="default"
                 onChange={onChange}
               />
-<<<<<<< HEAD
             )} */}
             <AppButton
               text="Save"
@@ -170,13 +169,6 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
         </View>
       </ScrollView>
       {/* <Modal
-=======
-            )}
-          </PaddingView>
-        </View>
-      </ScrollView>
-      <Modal
->>>>>>> 3444645... wip: update verification screens/add content
         isVisible={address}
         animationIn="slideInRight"
         animationInTiming={750}
