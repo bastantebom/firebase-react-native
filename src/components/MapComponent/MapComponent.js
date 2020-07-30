@@ -4,6 +4,7 @@ import {View, StyleSheet, Platform, Image} from 'react-native';
 import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {MapMarker} from '@/assets/images/icons';
 import {normalize} from '@/globals';
+import Config from '@/services/Config';
 
 // create a component
 const MapComponent = ({
@@ -116,8 +117,8 @@ const MapComponent = ({
     let r = {
       latitude: reCenter.lat,
       longitude: reCenter.lng,
-      latitudeDelta: 0.00082,
-      longitudeDelta: 0.00082,
+      latitudeDelta: Config.latitudeDelta,
+      longitudeDelta: Config.longitudeDelta,
     };
     mapViewRef.current.animateToRegion(r, 2000);
   }, [reCenter.lat]);
@@ -131,8 +132,8 @@ const MapComponent = ({
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.00082,
-          longitudeDelta: 0.00082,
+          latitudeDelta: Config.latitudeDelta,
+          longitudeDelta: Config.longitudeDelta,
         }}
         customMapStyle={mapStyle}
         zoomEnabled={true}
