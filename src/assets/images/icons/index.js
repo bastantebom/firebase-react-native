@@ -26,7 +26,7 @@ import Google from '@/assets/images/icons/google.svg';
 import NavigationArrow from '@/assets/images/icons/navigation-arrow.svg';
 import NavigationPin from '@/assets/images/icons/navigation-pin.svg';
 import NavigationPinRed from '@/assets/images/icons/navigation-pin-red.svg';
-import MapMarker from '@/assets/images/icons/map-marker.svg';
+import MapMarker from '@/assets/images/icons/pinbee_marker.svg';
 
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg';

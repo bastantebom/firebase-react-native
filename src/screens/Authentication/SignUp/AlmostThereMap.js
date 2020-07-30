@@ -121,7 +121,6 @@ const AlmostThereMap = (route) => {
             </View>
             <View style={styles.headerText}>
               <AppText textStyle="body2">Use current location</AppText>
-              <Text>{buttonDisabled ? newCoords.lng : null}</Text>
             </View>
             <View style={styles.headerSkip}>
               <TouchableOpacity>

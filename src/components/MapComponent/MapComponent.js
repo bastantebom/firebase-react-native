@@ -108,16 +108,16 @@ const MapComponent = ({
         }
       }, 100);
     }
-    console.log('filled object');
-    console.log(StyleSheet.absoluteFillObject);
+    //console.log('filled object');
+    //console.log(StyleSheet.absoluteFillObject);
   }, []);
 
   useEffect(() => {
     let r = {
       latitude: reCenter.lat,
       longitude: reCenter.lng,
-      latitudeDelta: 0.00162,
-      longitudeDelta: 0.00162,
+      latitudeDelta: 0.00082,
+      longitudeDelta: 0.00082,
     };
     mapViewRef.current.animateToRegion(r, 2000);
   }, [reCenter.lat]);
@@ -131,8 +131,8 @@ const MapComponent = ({
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.00162,
-          longitudeDelta: 0.00162,
+          latitudeDelta: 0.00082,
+          longitudeDelta: 0.00082,
         }}
         customMapStyle={mapStyle}
         zoomEnabled={true}
@@ -149,7 +149,8 @@ const MapComponent = ({
               coordinate={{
                 latitude: latitude,
                 longitude: longitude,
-              }}>
+              }}
+              centerOffset={(1, 1)}>
               <View>
                 <Image
                   source={require('@/assets/images/icons/current_location.png')}
@@ -159,10 +160,10 @@ const MapComponent = ({
             </Marker>
             <Circle
               center={{
-                latitude: latitude + parseFloat(0.000031),
+                latitude: latitude + parseFloat(0.00002),
                 longitude: longitude,
               }}
-              radius={30}
+              radius={20}
               strokeWidth={1}
               strokeColor={'rgba(255, 212, 0, 1)'}
               fillColor={'rgba(255, 212, 0, 0.18)'}
@@ -172,7 +173,7 @@ const MapComponent = ({
         ) : null}
       </MapView>
       <View style={styles.markerFixed}>
-        <MapMarker width={normalize(56)} height={normalize(56)} />
+        <MapMarker width={normalize(48)} height={normalize(48)} />
       </View>
     </View>
   );
@@ -190,14 +191,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     position: 'absolute',
-    ...StyleSheet.absoluteFillObject,
   },
   markerFixed: {
     left: '50%',
     position: 'absolute',
     top: '50%',
-    marginLeft: normalize(-28),
-    marginTop: normalize(-56),
+    marginLeft: normalize(-24),
+    marginTop: normalize(-65),
   },
 });
 //make this component available to the app

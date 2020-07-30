@@ -67,7 +67,8 @@ const AlmostThere = (route) => {
         custom_token: route?.route?.params?.custom_token,
         address: stringAddress,
         latitude:
-          parseFloat(JSON.parse(initialLocation).latitude) + parseFloat(0.002),
+          parseFloat(JSON.parse(initialLocation).latitude) +
+          parseFloat(0.00059),
         longitude: JSON.parse(initialLocation).longitude,
       };
       //console.log(toPassString);
