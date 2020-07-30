@@ -55,6 +55,7 @@ const TabNavigation = ({routesArray}) => {
     })
 
     return page.renderPage
+    // return <View />
   };
 
   const RenderRoutes = () => {

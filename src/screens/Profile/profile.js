@@ -19,19 +19,9 @@ import {
   TabNavigation,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
-import {TabView, SceneMap} from 'react-native-tab-view';
 
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize} from '@/globals';
-
-const FirstRoute = () => (
-  <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
-);
-
-const SecondRoute = () => (
-  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} />
-);
-
 
 
 function Profile({navigation}) {
@@ -57,21 +47,6 @@ function Profile({navigation}) {
   const [following, setFollowing] = useState(false);
   const [menu, setMenu] = useState(false);
   const [QR, setQR] = useState(false);
-
-  const width = Dimensions.get('window').width;
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: 'First' },
-    { key: 'second', title: 'Second' },
-  ]);
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
-
-  const initialLayout = { width: Dimensions.get('window').width };
 
   const [headerState, setHeaderState] = useState('own');
 
@@ -103,17 +78,6 @@ function Profile({navigation}) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
-
-  // const imageRef = storage()
-  //   .ref(`${currentUser.uid}/display-photos/`); //get current image
-  //     imageRef
-  //       .getDownloadURL()
-  //       .then((url) => {
-  //         setProfileImageUrl(url)
-  //       })
-  //       .catch((e) => 
-  //       console.log('Error => ', e)
-  //     );
     
   const signOut = () => {
     if (user) {
@@ -156,14 +120,7 @@ function Profile({navigation}) {
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation />
-
-          <TabView
-            navigationState={{index, routes}}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={initialLayout}
-          />
+          <TabNavigation /> 
 
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
@@ -172,7 +129,7 @@ function Profile({navigation}) {
             type="primary"
             size="sm"
           />
-          <AppText>Welcome, {currentUser}</AppText>
+          <AppText>Welcome</AppText>
           <ProfileImageUpload />
           <HexagonBorder />
 
