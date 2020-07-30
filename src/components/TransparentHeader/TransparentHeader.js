@@ -1,4 +1,4 @@
-import React, {createRef, useState} from 'react';
+import React, { createRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,8 +8,9 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import Share from "react-native-share";
 
-import {AppText, BottomSheetHeader} from '@/components';
+import { AppText, BottomSheetHeader } from '@/components';
 import EllipsisMenu from './components/EllipsisMenu';
 import OwnMenu from './components/OwnMenu';
 import QRScreen from './components/QRScreen';
@@ -26,7 +27,7 @@ import {
   ProfileReport,
   ProfileBlockRed,
 } from '@/assets/images/icons';
-import {normalize, GlobalStyle} from '@/globals';
+import { normalize, GlobalStyle } from '@/globals';
 
 const TransparentHeader = ({
   toggleEllipsisState,
@@ -40,6 +41,40 @@ const TransparentHeader = ({
   QR,
   signOut,
 }) => {
+
+  const shareToInstagramStory = async () => {
+    const shareOptions = {
+      title: 'Share image to instastory',
+      method: Share.InstagramStories.SHARE_BACKGROUND_IMAGE,
+      backgroundImage: images.image1,
+      social: Share.Social.INSTAGRAM_STORIES,
+    };
+
+    try {
+      const ShareResponse = await Share.shareSingle(shareOptions);
+      setResult(JSON.stringify(ShareResponse, null, 2));
+    } catch (error) {
+      console.log('Error =>', error);
+      setResult('error: '.concat(getErrorString(error)));
+    }
+  };
+
+  const shareHandler = async () => {
+    const shareOptions = {
+      title: 'Share profile',
+      url: 'https://github.com/react-native-community/react-native-share/blob/master/example/App.js',
+      failOnCancel: false,
+    };
+
+    try {
+      const ShareResponse = await Share.open(shareOptions);
+      setResult(JSON.stringify(ShareResponse, null, 2));
+    } catch (error) {
+      console.log('Error =>', error);
+      setResult('error: '.concat(getErrorString(error)));
+    }
+  };
+
   if (type === 'own')
     return (
       <>
@@ -62,9 +97,9 @@ const TransparentHeader = ({
             <View></View>
 
             {/* Right aligned icons */}
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity activeOpacity={0.7}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]} >
                   <HeaderShare width={normalize(16)} height={normalize(16)} />
                 </View>
               </TouchableOpacity>
@@ -115,7 +150,7 @@ const TransparentHeader = ({
             height: Dimensions.get('window').height,
           }}>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <QRScreen  toggleQR={toggleQR} />
+          <QRScreen toggleQR={toggleQR} />
         </Modal>
       </>
     );
@@ -148,7 +183,7 @@ const TransparentHeader = ({
             </View>
 
             {/* Right aligned icons */}
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
                 <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
                   {following ? (
@@ -157,21 +192,21 @@ const TransparentHeader = ({
                       height={normalize(16)}
                     />
                   ) : (
-                    <HeaderFollow
-                      width={normalize(16)}
-                      height={normalize(16)}
-                    />
-                  )}
+                      <HeaderFollow
+                        width={normalize(16)}
+                        height={normalize(16)}
+                      />
+                    )}
                   <AppText
                     textStyle="button3"
                     color="white"
-                    customStyle={{marginLeft: 4}}>
+                    customStyle={{ marginLeft: 4 }}>
                     {following ? 'Unfollow' : 'Follow'}
                   </AppText>
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderShare width={normalize(16)} height={normalize(16)} />
                 </View>
@@ -208,7 +243,7 @@ const TransparentHeader = ({
               onPress={() => {
                 toggleEllipsisState();
               }}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
