@@ -4,43 +4,12 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { AppText } from '@/components';
 import { Colors } from '@/globals';
 
+const TabNavigation = ({routesList}) => {
 
-const FirstRoute = () => {
-  return (
-    <View style={[styles.scene, { backgroundColor: '#ff4081' }]} >
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-      <AppText>pers peyj</AppText>
-    </View>
-  )
-};
+  if(!routesList) 
+    return (<AppText color="red">routeList props is required</AppText> )
 
-const SecondRoute = () => (
-  <View style={[styles.scene, { backgroundColor: '#673ab7' }]} >
-    <AppText>secon pege</AppText>
-  </View>
-);
-
-const TabNavigation = ({routesArray}) => {
-
-  // const [routes] = useState([
-  //   { key: 'first', title: 'First', renderPage: <FirstRoute /> },
-  //   { key: 'second', title: 'Second', renderPage: <SecondRoute /> },
-  // ]);
-
-  const [routes] = useState([
-    { key: 'first', title: 'First', renderPage: <FirstRoute /> },
-    { key: 'second', title: 'Second', renderPage: <SecondRoute /> },
-  ]);
-
-
+  const [routes] = useState(routesList);
   const [activeTab, setActiveTab] = useState(routes[0].key);
 
   const tabChangeHandler = (tabName) => {
@@ -55,7 +24,6 @@ const TabNavigation = ({routesArray}) => {
     })
 
     return page.renderPage
-    // return <View />
   };
 
   const RenderRoutes = () => {

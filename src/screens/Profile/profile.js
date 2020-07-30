@@ -120,7 +120,6 @@ function Profile({navigation}) {
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation /> 
 
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
