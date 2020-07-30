@@ -23,48 +23,35 @@ const SignUp = (props) => {
   const toggleSwitch = () => {
     setIsPromo((previousState) => !previousState);
   };
-
   const [isModalVisible, setModalVisible] = useState(false);
-
   const toggleModal = () => {
     setModalVisible((previousState) => !previousState);
   };
-
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
-
   const [isVisible, setIsVisible] = useState(false);
-
   const [loginUse, setLoginUse] = useState('');
   const [isValidLogin, setIsValidLogin] = useState(true);
-
   const [isValidMobileNumber, setIsValidMobileNumber] = useState(false);
-
   const [email, setEmail] = useState('');
   const [emailBorder, setEmailBorder] = useState({});
   const [isValidEmail, setIsValidEmail] = useState(false);
-
   const [name, setName] = useState('');
   const [isValidName, setIsValidName] = useState(true);
   const [nameBorder, setNameBorder] = useState({});
-
   const [password, setPassword] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [passwordBorder, setPasswordBorder] = useState({});
-
   const [signUpForm, setSignUpForm] = useState({
     terms_conditions: true,
     receive_updates: false,
   });
-
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: AppColor.buttonDisable,
     borderColor: AppColor.buttonDisable,
   });
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
-
   const cleanSignUpForm = () => {
     setLoginUse('');
     setIsValidLogin(true);

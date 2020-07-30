@@ -1,34 +1,18 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useEffect, useContext} from 'react';
+import {View, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
-
+import LoginService from '@/services/LoginService';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {AppButton, AppInput, AppText} from '@/components';
-
-
 import Colors from '@/globals/Colors';
-
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-
-
 import Close from '@/assets/images/icons/close.svg';
 import EyeDark from '@/assets/images/icons/eye-dark.svg';
 import EyeLight from '@/assets/images/icons/eye-light.svg';
-import { PaddingView } from '@/components';
+import {PaddingView} from '@/components';
 
-import LoginService from "@/services/LoginService";
-
-import { Context } from '@/context';
+import {Context} from '@/context';
 
 function Divider() {
   return (
@@ -50,55 +34,70 @@ function Login() {
   const [password, setPassword] = useState('');
   const [isVisble, setIsVisible] = useState(false);
 
-  const { closeSlider, authType, setAuthType } = useContext(Context);
+  const {closeSlider, authType, setAuthType} = useContext(Context);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
-    auth()
-      .signInWithEmailAndPassword(emailAddress, password)
-      .then(() => {
-        console.log('User signed in!');
-        navigation.push('Dashboard');
+    setIsLoading(true);
+    LoginService.loginMobile({
+      login: emailAddress,
+      password: password,
+    })
+      .then((response) => {
+        if (response.success) {
+          console.log('SUCCESS---------------');
+          auth()
+            .signInWithCustomToken(response.custom_token)
+            .then(() => {
+              setIsLoading(false);
+              navigation.push('Dashboard');
+            })
+            .catch((err) => {
+              setIsLoading(false);
+              console.log(err);
+            });
+        }
       })
-      .catch(error => {
-        console.error(error);
+      .catch((error) => {
+        setIsLoading(false);
+        console.log('FAILED---------------');
+        console.log('With Error in the API Login ' + error);
       });
-  }
+  };
 
   return (
     <ScrollView>
-      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
-        <PaddingView paddingSize={2} style={{ paddingTop: 5, paddingBottom: 100 }}>
+      <KeyboardAwareScrollView resetScrollToCoords={{x: 0, y: 0}}>
+        <PaddingView
+          paddingSize={2}
+          style={{paddingTop: 5, paddingBottom: 100}}>
           <AppViewContainer
             paddingSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}
-          >
+            customStyle={{paddingTop: 0, paddingHorizontal: 0}}>
             <TouchableOpacity onPress={closeSlider}>
               <Close />
             </TouchableOpacity>
           </AppViewContainer>
 
           <View style={styles.container}>
-
             <AppText textStyle="display5">Welcome back!</AppText>
             <AppText textStyle="caption" customStyle={styles.caption}>
               Log in to get going, Buzzybee.
             </AppText>
             <AppViewContainer
               marginSize={3}
-              customStyle={{ marginHorizontal: 0, marginBottom: 0 }}
-            >
-
+              customStyle={{marginHorizontal: 0, marginBottom: 0}}>
               <AppInput
                 label="Email or Mobile Number"
                 customStyle={styles.inputText}
                 onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
                 value={emailAddress}
-                keyboardType={"email-address"}
+                keyboardType={'email-address'}
               />
-              <View style={{ position: 'relative' }}>
+              <View style={{position: 'relative'}}>
                 <AppInput
                   label="Password"
-                  onChangeText={password => setPassword(password)}
+                  onChangeText={(password) => setPassword(password)}
                   value={password}
                   secureTextEntry={!isVisble ? true : false}
                 />
@@ -108,7 +107,8 @@ function Login() {
                   </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => navigation.push('ResetPassword')}>
+              <TouchableOpacity
+                onPress={() => navigation.push('ResetPassword')}>
                 <AppText textStyle="caption" customStyle={styles.caption}>
                   Forgot Password?
                 </AppText>
@@ -119,12 +119,12 @@ function Login() {
                 height="xl"
                 customStyle={styles.customLogin}
                 onPress={() => handleLogin()}
+                loading={isLoading}
               />
-
             </AppViewContainer>
             <Divider />
             <AppButton
-              text={"Log in with Facebook"}
+              text={'Log in with Facebook'}
               type="primary"
               height="md"
               icon="Facebook"
@@ -133,28 +133,32 @@ function Login() {
               onPress={() => LoginService.facebookSignIn()}
             />
             <AppButton
-              text={"Log in with Google"}
+              text={'Log in with Google'}
               type="primary"
               height="md"
               icon="Google"
               iconPosition="left"
               customStyle={styles.customButton}
               // onPress={console.log('PRESS')}
-              onPress={() => LoginService.googleLogin().then(() => console.log('Signed in with Google!'))}
+              onPress={() =>
+                LoginService.googleLogin().then(() =>
+                  console.log('Signed in with Google!'),
+                )
+              }
             />
             <View style={styles.cta}>
               <AppText textStyle="button2">Don't have an account? </AppText>
               <TouchableOpacity onPress={() => setAuthType('signup')}>
                 <AppText textStyle="button2" customStyle={styles.link}>
                   Sign up
-            </AppText>
+                </AppText>
               </TouchableOpacity>
             </View>
           </View>
         </PaddingView>
       </KeyboardAwareScrollView>
     </ScrollView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -201,8 +205,8 @@ const styles = StyleSheet.create({
   passwordToggle: {
     position: 'absolute',
     right: 10,
-    top: 18
-  }
+    top: 18,
+  },
 });
 
 export default Login;
