@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,9 +9,11 @@ import {
   ScrollView,
   Dimensions,
   Animated,
+  Alert,
+  Button
 } from 'react-native';
 
-import {Posts, PaddingView, AppInput, AppText} from '@/components';
+import {Posts, PaddingView, AppInput, AppText, Notification} from '@/components';
 import FilterSlider from './components/FilterSlider';
 
 import {
@@ -23,12 +25,21 @@ import {
 import {GlobalStyle, Colors, normalize} from '@/globals';
 
 import Modal from 'react-native-modal';
+import {Context} from '@/context';
+import { VerificationScreen } from './components/Verification.js';
 
 function Dashboard({navigation}) {
+  const {openNotification, closeNotification} = useContext(Context);
   const [modalState, setModalState] = useState(false);
   const [showLocation, setShowLocation] = useState(true);
   const [scrollState, setScrollState] = useState(0);
   const [margin, setMargin] = useState(16);
+
+  const [menu, setMenu] = useState(false);
+  
+  const toggleMenu = () => {
+    setMenu(!menu);
+  };
 
   const toggleModal = () => {
     setModalState(!modalState);
@@ -229,9 +240,28 @@ function Dashboard({navigation}) {
     }).start();
   };
 
+  useEffect(() => {
+    openNotification();
+  }, []);
+
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
+        <Notification 
+          message={
+            <View style={{ justifyContent: 'center'  }}>
+              <AppText textStyle="body2" customStyle={styles.notificationStyle}>Get the verified badge</AppText>
+              <AppText textStyle="caption">Short blurb here explaining why </AppText>
+            </View>
+          } 
+          type={'success'}
+        />
+        <VerificationScreen
+          onPress={() => toggleMenu()}
+          menu={menu}
+          toggleMenu={() => toggleMenu()}
+          modalBack={() => setMenu(false)}
+        />
         <View style={styles.container}>
           <SearchBarWithFilter />
           <Location />
@@ -300,6 +330,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flexDirection: 'row',
   },
+  notificationStyle: {
+    color: Colors.primaryMidnightBlue
+  }
 });
 
 export default Dashboard;
