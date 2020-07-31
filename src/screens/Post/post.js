@@ -1,92 +1,174 @@
-import React, {useRef, createRef, useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useRef, createRef, useState } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
-import {normalize} from '@/globals';
+import { normalize } from '@/globals';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Post = () => {
-  const [color, setColor] = useState('red');
-  const [page, setPage] = useState('sell');
-  const colorArray = ['red', 'blue', 'green'];
-  const pageArray = ['sell', 'post', 'need'];
+  const [pickingState, setPickingState] = useState(true)
 
-  const renderItem = ({item, index}) => {
-    return (
-      <View style={styles[item.title]}>
-        <Text style={styles.title}>{item.title}</Text>
-      </View>
-    );
-  };
+  const [postPosition] = useState(new Animated.Value(0))
+  const [postSize] = useState(new Animated.Value(normalize(114)))
 
-  let ref = createRef();
+  const [sellPosition] = useState(new Animated.Value(0))
+  const [sellSize] = useState(new Animated.Value(normalize(114)))
+
+  const [needPosition] = useState(new Animated.Value(0))
+  const [needSize] = useState(new Animated.Value(normalize(114)))
+
+
+  const selectActive = (selectedCard) => {
+    console.log("make me big")
+    setPickingState(!pickingState)
+
+    if (pickingState) {
+
+      switch (selectedCard) {
+        case 'post':
+          Animated.parallel([
+            Animated.timing(postSize, {
+              toValue: normalize(250),
+              duration: 500,
+              useNativeDriver: false
+            }),
+            // Animated.timing(sellPosition, {
+            //   toValue: normalize(78),
+            //   duration: 500,
+            //   useNativeDriver: false
+            // }),
+            // Animated.timing(needPosition, {
+            //   toValue: normalize(78),
+            //   duration: 500,
+            //   useNativeDriver: false
+            // }),
+
+          ]).start()
+          break;
+        case 'need':
+          Animated.parallel([
+            Animated.timing(needSize, {
+              toValue: normalize(250),
+              duration: 500,
+              useNativeDriver: false
+            }),
+          ]).start()
+          break;
+        case 'sell':
+          Animated.parallel([
+            Animated.timing(sellSize, {
+              toValue: normalize(250),
+              duration: 500,
+              useNativeDriver: false
+            }),
+          ]).start()
+          break;
+      }
+
+    }
+
+    else {
+
+      switch (selectedCard) {
+        case 'post':
+          Animated.parallel([
+            Animated.timing(postSize, {
+              toValue: normalize(114),
+              duration: 500,
+              useNativeDriver: false
+            }),
+          ]).start()
+          break;
+
+        case 'need':
+          Animated.parallel([
+            Animated.timing(needSize, {
+              toValue: normalize(114),
+              duration: 500,
+              useNativeDriver: false
+            }),
+          ]).start()
+          break;
+
+        case 'sell':
+          Animated.parallel([
+            Animated.timing(sellSize, {
+              toValue: normalize(114),
+              duration: 500,
+              useNativeDriver: false
+            }),
+          ]).start()
+          break;
+      }
+    }
+
+
+  }
+
+  let PostAnimationStyle = {
+    transform: [{ translateX: postPosition }],
+    width: postSize
+  }
+
+  let SellAnimationStyle = {
+    transform: [{ translateX: sellPosition }],
+    width: sellSize
+  }
+
+  let NeedAnimationStyle = {
+    transform: [{ translateX: needPosition }],
+    width: needSize
+  }
+
   return (
-    <>
-      <View
-        style={{marginTop: 70, backgroundColor: 'gray', position: 'relative'}}>
-        <Carousel
-          layout={'stack'}
-          layoutCardOffset={`18`}
-          ref={ref}
-          loop
-          onSnapToItem={(x) => {
-            setColor(colorArray[x]);
-            setPage(pageArray[x]);
-          }}
-          containerCustomStyle={{
-            transform: [{ scaleX: -1 }]
-          }}
-          onScroll={(e)=> console.log(e.contentOffset)}
-          data={[
-            {
-              title: 'hello',
-            },
-            {
-              title: 'world',
-            },
-            {
-              title: 'boom',
-            },
-          ]}
-          renderItem={renderItem}
-          sliderWidth={normalize(375)}
-          sliderHeight={100}
-          itemWidth={normalize(375)}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-            height: 20,
-            backgroundColor: color,
-          }}
-        />
-      </View>
-      <View>
-        <Text> {page} page </Text>
-      </View>
-    </>
+    <View style={styles.postAnimationContainer} >
+      <Animated.View style={[styles.postCard, PostAnimationStyle]}>
+        <TouchableOpacity onPress={() => selectActive('post')}>
+          <View style={{ height: '100%' }}>
+            <Text> Post card </Text>
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+
+      <Animated.View style={[styles.sellCard, SellAnimationStyle]}>
+        <TouchableOpacity onPress={() => selectActive('sell')}>
+          <View style={{ height: '100%' }}>
+            <Text> Sell card </Text>
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+
+      <Animated.View style={[styles.needCard, NeedAnimationStyle]}>
+        <TouchableOpacity onPress={() => selectActive('need')}>
+          <View style={{ height: '100%' }}>
+            <Text> Need card </Text>
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+    </View >
   );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
+  postAnimationContainer: {
+    backgroundColor: 'gray',
+    flexDirection: 'row',
+    position: 'relative'
   },
-  hello: {
-    width: normalize(340),
-    height: 100,
-    backgroundColor: 'red',
-  },
-  world: {
-    width: normalize(340),
-    height: 100,
+  sellCard: {
     backgroundColor: 'blue',
+    height: normalize(100),
+    borderRadius: 20
   },
-  boom: {
-    width: normalize(340),
-    height: 100,
+  postCard: {
+    backgroundColor: 'pink',
+    height: normalize(100),
+    borderRadius: 20
+  },
+  needCard: {
     backgroundColor: 'green',
-  },
+    height: normalize(100),
+    borderRadius: 20
+  }
 });
 
 export default Post;
