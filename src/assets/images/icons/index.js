@@ -95,10 +95,18 @@ import QRLink from './qr-link.svg';
 import QRDownload from './qr-download.svg';
 import QRShare from './qr-share.svg';
 
+import PostSell from './post-sell.svg';
+import PostNeed from './post-need.svg';
+import PostService from './post-service.svg';
+
+
 export {
   QRLink,
   QRDownload,
   QRShare,
+  PostNeed,
+  PostService,
+  PostSell,
   MenuAddFriend,
   MenuTelephone,
   MenuLogOut,
