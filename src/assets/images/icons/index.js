@@ -91,7 +91,15 @@ import MenuLiked from './MenuLiked.svg';
 import MenuLogOut from './MenuLogOut.svg';
 import MenuTelephone from './MenuTelephone.svg';
 
+import PostSell from './post-sell.svg';
+import PostNeed from './post-need.svg';
+import PostService from './post-service.svg';
+
+
 export {
+  PostNeed,
+  PostService,
+  PostSell,
   MenuAddFriend,
   MenuTelephone,
   MenuLogOut,
