@@ -25,34 +25,45 @@ const Post = () => {
   const [needDotOpacity] = useState(new Animated.Value(0));
   const [sellDotOpacity] = useState(new Animated.Value(0));
 
+  const [cardTextOpacity] = useState(new Animated.Value(1));
+
+
   const resetPicking = () => {
     setHighlightedCard(activeCard)
     setActiveCard('none')
 
     const showDot = () => {
       if (activeCard === 'post')
-        return Animated.timing(postDotOpacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: false
-        })
-
+        return Animated.parallel([
+          transitionFinish(),
+          Animated.timing(postDotOpacity, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false
+          })
+        ])
       if (activeCard === 'need')
-        return Animated.timing(needDotOpacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: false
-        })
-
+        return Animated.parallel([
+          transitionFinish(),
+          Animated.timing(needDotOpacity, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false
+          })
+        ])
       if (activeCard === 'sell')
-        return Animated.timing(sellDotOpacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: false
-        })
+        return Animated.parallel([
+          transitionFinish(),
+          Animated.timing(sellDotOpacity, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false
+          })
+        ])
     }
 
     Animated.sequence([
+      transitionActive(),
       Animated.parallel([
         Animated.timing(needSize, {
           toValue: normalize(114),
@@ -91,6 +102,7 @@ const Post = () => {
 
   const hideDots = () => {
     return Animated.parallel([
+      transitionActive(),
       Animated.timing(postDotOpacity, {
         toValue: 0,
         duration: 200,
@@ -107,6 +119,22 @@ const Post = () => {
         useNativeDriver: false
       })
     ])
+  }
+
+  const transitionActive = () => {
+    return Animated.timing(cardTextOpacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false
+    })
+  }
+
+  const transitionFinish = () => {
+    return Animated.timing(cardTextOpacity, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: false
+    })
   }
 
   const selectActive = (selectedCard) => {
@@ -147,7 +175,8 @@ const Post = () => {
                 duration: 500,
                 useNativeDriver: false
               }),
-            ])
+            ]),
+            transitionFinish(),
           ]).start()
           break;
         case 'need':
@@ -186,8 +215,8 @@ const Post = () => {
                 duration: 500,
                 useNativeDriver: false
               }),
-
-            ])
+            ]),
+            transitionFinish(),
           ]).start()
           break;
         case 'sell':
@@ -226,7 +255,8 @@ const Post = () => {
                 duration: 500,
                 useNativeDriver: false
               }),
-            ])
+            ]),
+            transitionFinish(),
           ]).start()
           break;
       }
@@ -263,6 +293,10 @@ const Post = () => {
     opacity: sellDotOpacity
   }
 
+  let PostTextOpacity = {
+    opacity: cardTextOpacity
+  }
+
 
 
   return (
@@ -276,19 +310,19 @@ const Post = () => {
         }
       ]}>
         <Animated.View style={[styles.postCard, PostAnimationStyle]}>
-          <TouchableOpacity onPress={() => {
+          <TouchableOpacity activeOpacity={.7} onPress={() => {
             selectActive('post')
             console.log(highlightedCard)
             if (activeCard !== 'none' && activeCard !== 'post') {
               resetPicking()
             }
           }}>
-            <View style={{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }}>
+            <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostNeed width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
                 <AppText textStyle="subtitle2" customStyle={{ textTransform: 'capitalize' }} color={Colors.neutralsWhite}>Find What You Need</AppText>
               </Animated.View>
-            </View>
+            </Animated.View>
           </TouchableOpacity>
 
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryMountainMeadow }, PostDotAnimationStyle]} />
@@ -296,38 +330,38 @@ const Post = () => {
         </Animated.View>
 
         <Animated.View style={[styles.sellCard, SellAnimationStyle]}>
-          <TouchableOpacity onPress={() => {
+          <TouchableOpacity activeOpacity={.7} onPress={() => {
             selectActive('sell')
             console.log(highlightedCard)
             if (activeCard !== 'none' && activeCard !== 'sell') {
               resetPicking()
             }
           }}>
-            <View style={{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }}>
+            <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostSell width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
                 <AppText textStyle="subtitle2" customStyle={{ textTransform: 'capitalize' }} color={Colors.neutralsWhite}>Start selling</AppText>
               </Animated.View>
-            </View>
+            </Animated.View>
           </TouchableOpacity>
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryRoyalBlue }, SellDotAnimationStyle]} />
 
         </Animated.View>
 
         <Animated.View style={[styles.needCard, NeedAnimationStyle]}>
-          <TouchableOpacity onPress={() => {
+          <TouchableOpacity activeOpacity={.7} onPress={() => {
             selectActive('need')
             console.log(highlightedCard)
             if (activeCard !== 'none' && activeCard !== 'need') {
               resetPicking()
             }
           }}>
-            <View style={{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }}>
+            <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostService width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
                 <AppText textStyle="subtitle2" customStyle={{ textTransform: 'capitalize' }} color={Colors.neutralsWhite}>offer your services</AppText>
               </Animated.View>
-            </View>
+            </Animated.View>
           </TouchableOpacity>
 
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryBrinkPink }, NeedDotAnimationStyle]} />
