@@ -27,10 +27,21 @@ const Post = () => {
 
   const [cardTextOpacity] = useState(new Animated.Value(1));
 
+  const [postText, setPostText] = useState('Find What You Need');
+  const [sellText, setSellText] = useState('Start Selling');
+  const [needText, setNeedText] = useState('Offer Your Services');
+
 
   const resetPicking = () => {
     setHighlightedCard(activeCard)
     setActiveCard('none')
+
+    setTimeout(() => {
+      setPostText('Find What You Need')
+      setSellText('Start Selling')
+      setNeedText('Offer Your Services')
+    }, 200)
+
 
     const showDot = () => {
       if (activeCard === 'post')
@@ -138,7 +149,6 @@ const Post = () => {
   }
 
   const selectActive = (selectedCard) => {
-
     setPickingState(!pickingState)
 
     if (pickingState) {
@@ -146,6 +156,9 @@ const Post = () => {
         case 'post':
           setActiveCard('post')
           setHighlightedCard('none')
+          setTimeout(() => {
+            setPostText('What are you looking for today?')
+          }, 200)
 
           Animated.sequence([
             hideDots(),
@@ -182,6 +195,9 @@ const Post = () => {
         case 'need':
           setActiveCard('need')
           setHighlightedCard('none')
+          setTimeout(() => {
+            setNeedText('What services do you want to list today?')
+          }, 200)
           Animated.sequence([
             hideDots(),
             Animated.parallel([
@@ -222,6 +238,9 @@ const Post = () => {
         case 'sell':
           setActiveCard('sell')
           setHighlightedCard('none')
+          setTimeout(() => {
+            setSellText('What are you listing today?')
+          }, 200)
           Animated.sequence([
             hideDots(),
             Animated.parallel([
@@ -320,7 +339,7 @@ const Post = () => {
             <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostNeed width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
-                <AppText textStyle="subtitle2" customStyle={{ textTransform: 'capitalize' }} color={Colors.neutralsWhite}>Find What You Need</AppText>
+                <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{postText}</AppText>
               </Animated.View>
             </Animated.View>
           </TouchableOpacity>
@@ -340,7 +359,7 @@ const Post = () => {
             <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostSell width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
-                <AppText textStyle="subtitle2" customStyle={{ textTransform: 'capitalize' }} color={Colors.neutralsWhite}>Start selling</AppText>
+                <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{sellText}</AppText>
               </Animated.View>
             </Animated.View>
           </TouchableOpacity>
@@ -359,7 +378,7 @@ const Post = () => {
             <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostService width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
-                <AppText textStyle="subtitle2" customStyle={{ textTransform: 'capitalize' }} color={Colors.neutralsWhite}>offer your services</AppText>
+                <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{needText}</AppText>
               </Animated.View>
             </Animated.View>
           </TouchableOpacity>
