@@ -118,7 +118,7 @@ const ScanTab = () => {
   )
 }
 
-const OwnMenu = ({ toggleQR, signOut }) => {
+const QRScreen = ({ toggleQR, signOut }) => {
 
   let routes = [
     { key: 'mycode', title: 'My Code', renderPage: <QRTab /> },
@@ -147,25 +147,10 @@ const OwnMenu = ({ toggleQR, signOut }) => {
             </View>
           </PaddingView>
           <TabNavigation routesList={routes} />
-
-
-        </View>
-
-        <View style={{ position: 'relative', backgroundColor: 'red', flex: 1, width: '100%' }}>
-          <View
-            style={{ backgroundColor: 'white', zIndex: 0, position: 'absolute' }}>
-            <AppText>asd</AppText>
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-  },
-});
-
-export default OwnMenu;
+export default QRScreen;
