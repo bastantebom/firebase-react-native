@@ -26,6 +26,12 @@ import {
 } from '@/assets/images/icons';
 
 export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => {
+  
+  const [profile, setProfile] = useState(false);
+
+  const toggleProfile = () => {
+    setProfile(!profile);
+  };
 
   const verificationReqs = [
     {
@@ -33,7 +39,7 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
       title: 'Complete profile information',
       titleDone: 'Completed profile information',
       icon: <Card/>,
-      route: 'profile',
+      // route: toggleProfile(),
       // completed: false
     },
     {
@@ -49,7 +55,7 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
       title: 'Upload a government ID',
       titleDone: 'Government ID verified',
       icon: <Id/>,
-      route: 'profile',
+      // route: 'profile',
       // completed: false
     },
     {
@@ -57,22 +63,20 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
       title: 'Add and verify email address',
       titleDone: 'Email address verified',
       icon: <Id/>,
-      route: 'profile',
+      // route: 'profile',
       // completed: true
     },
   ];
 
-  const [profile, setProfile] = useState(false);
-
-  const toggleProfile = () => {
-    setProfile(!profile);
-  };
-
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={[styles.list, {marginBottom: 28}]} 
-      // onPress={() => setScreen(item.route)}
-      onPress={toggleProfile}
+      // onPress={() => toggleProfile()}
+      onPress={() => 
+        item.id == 0 ? 
+          toggleProfile() :
+          null
+        }
     >
       <View style={styles.list}>
         <View style={{ marginRight: 8 }}>
@@ -86,10 +90,12 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
 
   return (
     <View style={{ zIndex: 999, position: 'relative' }}>
-      <Button
-        title="toggle verification"
-        onPress={onPress}
-      />
+      <View style={{ flex: 1, flexGrow: 1, alignItems: 'stretch', alignContent: 'stretch', width: '100%' }}>
+        <TouchableOpacity onPress={onPress}>
+          <AppText textStyle="body2">Get the verified badge</AppText>
+          <AppText textStyle="caption">Short blurb here explaining why</AppText>
+        </TouchableOpacity>
+      </View>
       <Modal
         isVisible={menu}
         animationIn="slideInUp"

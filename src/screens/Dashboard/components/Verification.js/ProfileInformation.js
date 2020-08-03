@@ -109,7 +109,13 @@ export const ProfileInformation = ({ profileBack }) => {
         <View style={styles.contentWrapper}>
           <PaddingView paddingSize={3}>
             <AppText textStyle="body1" customStyle={styles.customHeading}>Address</AppText>
-            <AppText textStyle="body2" color={Colors.contentPlaceholder}>You can save multiple addresses.</AppText>
+            <AppText 
+              textStyle="body2" 
+              color={Colors.contentPlaceholder}
+              customStyle={{ marginBottom: 16 }}
+            >
+              You can save multiple addresses.
+            </AppText>
             <TouchableOpacity onPress={() => toggleAddress()}>
               <AppText textStyle="body1" color={Colors.contentOcean}>Add an Address</AppText>
             </TouchableOpacity>
@@ -120,7 +126,13 @@ export const ProfileInformation = ({ profileBack }) => {
         <View style={[styles.contentWrapper, { borderBottomEndRadius: 0, borderBottomStartRadius: 0, marginBottom: 0 }]}>
           <PaddingView paddingSize={3}>
             <AppText textStyle="body1" customStyle={styles.customHeading}>Personal Information</AppText>
-            <AppText textStyle="body2" color={Colors.contentPlaceholder}>This won't be part of your public profile</AppText>
+            <AppText 
+              textStyle="body2" 
+              color={Colors.contentPlaceholder}
+              customStyle={{ marginBottom: 16 }}
+            >
+              This won't be part of your public profile
+            </AppText>
             <AppInput
               label="Email"
               customStyle={styles.customInput}
@@ -167,7 +179,7 @@ export const ProfileInformation = ({ profileBack }) => {
           height: Dimensions.get('window').height,
         }}
       >
-        <AddAnAddress/>
+        <AddAnAddress addressBack={() => setAddress(false)}/>
       </Modal>
     </SafeAreaView>
   )

@@ -259,18 +259,15 @@ function Dashboard({navigation}) {
       <SafeAreaView style={styles.safeAreaContainer}>
         <Notification 
           message={
-            <View style={{ justifyContent: 'center'  }}>
-              <AppText textStyle="body2" customStyle={styles.notificationStyle}>Get the verified badge</AppText>
-              <AppText textStyle="caption">Short blurb here explaining why </AppText>
-            </View>
+            <VerificationScreen
+              onPress={() => toggleMenu()}
+              menu={menu}
+              toggleMenu={() => toggleMenu()}
+              modalBack={() => setMenu(false)}
+            />
           } 
-          type={'success'}
-        />
-        <VerificationScreen
-          onPress={() => toggleMenu()}
-          menu={menu}
-          toggleMenu={() => toggleMenu()}
-          modalBack={() => setMenu(false)}
+          type={'verified'}
+          position="relative"
         />
         <View style={styles.container}>
           <SearchBarWithFilter />
@@ -341,9 +338,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flexDirection: 'row',
   },
-  notificationStyle: {
-    color: Colors.primaryMidnightBlue
-  }
+  // notificationStyle: {
+  //   color: Colors.primaryMidnightBlue
+  // }
 });
 
 export default Dashboard;
