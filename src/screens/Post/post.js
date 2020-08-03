@@ -33,10 +33,9 @@ const Post = () => {
 
 
   const resetPicking = () => {
-    setHighlightedCard(activeCard)
-    setActiveCard('none')
-
     setTimeout(() => {
+      setHighlightedCard(activeCard)
+      setActiveCard('none')
       setPostText('Find What You Need')
       setSellText('Start Selling')
       setNeedText('Offer Your Services')
@@ -154,9 +153,9 @@ const Post = () => {
     if (pickingState) {
       switch (selectedCard) {
         case 'post':
-          setActiveCard('post')
-          setHighlightedCard('none')
           setTimeout(() => {
+            setActiveCard('post')
+            setHighlightedCard('none')
             setPostText('What are you looking for today?')
           }, 200)
 
@@ -193,9 +192,9 @@ const Post = () => {
           ]).start()
           break;
         case 'need':
-          setActiveCard('need')
-          setHighlightedCard('none')
           setTimeout(() => {
+            setActiveCard('need')
+            setHighlightedCard('none')
             setNeedText('What services do you want to list today?')
           }, 200)
           Animated.sequence([
@@ -236,10 +235,10 @@ const Post = () => {
           ]).start()
           break;
         case 'sell':
-          setActiveCard('sell')
-          setHighlightedCard('none')
           setTimeout(() => {
             setSellText('What are you listing today?')
+            setActiveCard('sell')
+            setHighlightedCard('none')
           }, 200)
           Animated.sequence([
             hideDots(),
@@ -316,7 +315,97 @@ const Post = () => {
     opacity: cardTextOpacity
   }
 
+  const PostContent = () => {
+    if (activeCard !== 'none' && activeCard !== 'post') {
+      return (
+        <Animated.View style={[{ height: '100%', paddingLeft: 8, paddingRight: 8, paddingVertical: 8, position: 'relative', justifyContent: "center" }, PostTextOpacity]}>
+          <PostNeed width={normalize(24)} height={normalize(24)} />
+        </Animated.View>
+      )
+    }
 
+    if (activeCard === 'post')
+      return (
+        <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 16, paddingVertical: 8, position: 'relative', flexDirection: 'row', alignItems: 'center' }, PostTextOpacity]}>
+          <Animated.View style={{ flex: 1, justifyContent: "center" }}>
+            <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>Find What You Need</AppText>
+            <AppText textStyle="caption" color={Colors.neutralsWhite}>{postText}</AppText>
+          </Animated.View>
+          <PostNeed width={normalize(24)} height={normalize(24)} />
+        </Animated.View>
+      )
+
+    return (
+      <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
+        <PostNeed width={normalize(24)} height={normalize(24)} />
+        <Animated.View style={{ flex: 1, justifyContent: "center" }}>
+          <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{postText}</AppText>
+        </Animated.View>
+      </Animated.View>
+    )
+  }
+
+  const SellContent = () => {
+    if (activeCard !== 'none' && activeCard !== 'sell') {
+      return (
+        <Animated.View style={[{ height: '100%', paddingLeft: 8, paddingRight: 8, paddingVertical: 8, position: 'relative', justifyContent: "center" }, PostTextOpacity]}>
+          <PostSell width={normalize(24)} height={normalize(24)} />
+        </Animated.View>
+      )
+    }
+
+    if (activeCard === 'sell')
+      return (
+        <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 16, paddingVertical: 8, position: 'relative', flexDirection: 'row', alignItems: 'center' }, PostTextOpacity]}>
+          <Animated.View style={{ flex: 1, justifyContent: "center" }}>
+            <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>Start Selling</AppText>
+            <AppText textStyle="caption" color={Colors.neutralsWhite}>{sellText}</AppText>
+          </Animated.View>
+          <PostSell width={normalize(24)} height={normalize(24)} />
+        </Animated.View>
+      )
+
+    return (
+      <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
+        <PostSell width={normalize(24)} height={normalize(24)} />
+        <Animated.View style={{ flex: 1, justifyContent: "center" }}>
+          <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{sellText}</AppText>
+        </Animated.View>
+      </Animated.View>
+    )
+  }
+
+  const NeedContent = () => {
+    if (activeCard !== 'none' && activeCard !== 'need') {
+      return (
+        <Animated.View style={[{ height: '100%', paddingLeft: 8, paddingRight: 8, paddingVertical: 8, position: 'relative', justifyContent: "center" }, PostTextOpacity]}>
+          <PostService width={normalize(24)} height={normalize(24)} />
+        </Animated.View>
+      )
+    }
+
+    if (activeCard === 'need')
+      return (
+        <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 16, paddingVertical: 8, position: 'relative', flexDirection: 'row', alignItems: 'center' }, PostTextOpacity]}>
+          <Animated.View style={{ flex: 1, justifyContent: "center" }}>
+            <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>Offer Your Services</AppText>
+            <AppText textStyle="caption" color={Colors.neutralsWhite}>{needText}</AppText>
+          </Animated.View>
+          <PostService width={normalize(24)} height={normalize(24)} />
+        </Animated.View>
+      )
+
+    return (
+      <Animated.View style={[{
+        height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative'
+      }, PostTextOpacity]}>
+        <PostService width={normalize(24)} height={normalize(24)} />
+        <Animated.View style={{ flex: 1, justifyContent: "center" }}>
+          <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{needText}</AppText>
+        </Animated.View>
+      </Animated.View>
+    )
+  }
 
   return (
     <>
@@ -336,12 +425,13 @@ const Post = () => {
               resetPicking()
             }
           }}>
-            <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
+            {/* <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostNeed width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
                 <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{postText}</AppText>
               </Animated.View>
-            </Animated.View>
+            </Animated.View> */}
+            <PostContent />
           </TouchableOpacity>
 
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryMountainMeadow }, PostDotAnimationStyle]} />
@@ -356,12 +446,13 @@ const Post = () => {
               resetPicking()
             }
           }}>
-            <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
+            {/* <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostSell width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
                 <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{sellText}</AppText>
               </Animated.View>
-            </Animated.View>
+            </Animated.View> */}
+            <SellContent />
           </TouchableOpacity>
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryRoyalBlue }, SellDotAnimationStyle]} />
 
@@ -375,12 +466,13 @@ const Post = () => {
               resetPicking()
             }
           }}>
-            <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
+            {/* <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
               <PostService width={normalize(24)} height={normalize(24)} />
               <Animated.View style={{ flex: 1, justifyContent: "center" }}>
                 <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{needText}</AppText>
               </Animated.View>
-            </Animated.View>
+            </Animated.View> */}
+            <NeedContent />
           </TouchableOpacity>
 
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryBrinkPink }, NeedDotAnimationStyle]} />
@@ -388,7 +480,24 @@ const Post = () => {
         </Animated.View>
       </View>
       <TouchableOpacity>
-        <AppText>ASDASDA</AppText>
+        <View style={{
+          // backgroundColor: 'red',
+          width: 100,
+          borderWidth: 1,
+          borderRadius: 2,
+          // borderColor: '#ddd',
+          // borderBottomWidth: 0,
+          shadowColor: 'green',
+          shadowOffset: { width: 5, height: 10 },
+          shadowOpacity: 0.8,
+          shadowRadius: 2,
+          // elevation: 1,
+          marginLeft: 5,
+          marginRight: 5,
+          marginTop: 10,
+        }}>
+          <AppText>ASDASDA</AppText>
+        </View>
       </TouchableOpacity>
     </>
   );
@@ -396,7 +505,7 @@ const Post = () => {
 
 const styles = StyleSheet.create({
   postAnimationContainer: {
-    backgroundColor: 'gray',
+    backgroundColor: 'white',
     flexDirection: 'row',
     position: 'relative',
     paddingBottom: 24
@@ -405,13 +514,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondaryRoyalBlue,
     height: normalize(80),
     borderRadius: 20,
-    marginLeft: normalize(9)
+    marginLeft: normalize(9),
+
   },
   postCard: {
     // ACTS AS NEED CARD
     backgroundColor: Colors.secondaryMountainMeadow,
     height: normalize(80),
     borderRadius: 20,
+
+
+
     // marginLeft: normalize(8)
   },
   needCard: {
