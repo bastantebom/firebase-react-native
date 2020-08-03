@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 
-import { AppText } from '@/components';
-import { Colors } from '@/globals';
+import {AppText} from '@/components';
+import {Colors, normalize} from '@/globals';
 
-const TabNavigation = ({ routesList }) => {
-
+const TabNavigation = ({routesList}) => {
   if (!routesList)
-    return (<AppText color="red">routeList props is required</AppText>)
+    return <AppText color="red">routeList props is required</AppText>;
 
   const [routes] = useState(routesList);
   const [activeTab, setActiveTab] = useState(routes[0].key);
@@ -17,12 +16,11 @@ const TabNavigation = ({ routesList }) => {
   };
 
   const RenderContent = () => {
-    const page = routes.find(activePage => {
-      if (activePage.key === activeTab)
-        return activePage
-    })
+    const page = routes.find((activePage) => {
+      if (activePage.key === activeTab) return activePage;
+    });
 
-    return page.renderPage
+    return page.renderPage;
   };
 
   const RenderRoutes = () => {
@@ -31,19 +29,32 @@ const TabNavigation = ({ routesList }) => {
         <TouchableOpacity
           key={route.key}
           activeOpacity={0.7}
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           onPress={() => tabChangeHandler(route.key)}>
           <View style={styles.navigationItem}>
-            <AppText
-              textStyle="tabNavigation"
-              customStyle={{textAlign: 'center'}}
-              color={
-                activeTab === route.key
-                  ? Colors.contentEbony
-                  : Colors.checkboxBorderDefault
-              }>
-              {route.title}
-            </AppText>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <AppText
+                textStyle="tabNavigation"
+                customStyle={{textAlign: 'center'}}
+                color={
+                  activeTab === route.key
+                    ? Colors.contentEbony
+                    : Colors.checkboxBorderDefault
+                }>
+                {route.title}
+              </AppText>
+              <View
+                style={{
+                  backgroundColor: Colors.neutralsGainsboro,
+                  height: normalize(19),
+                  paddingHorizontal: 4,
+                  borderRadius: 8,
+                  marginLeft: 8,
+                }}>
+                <AppText>{route.numberBadge}</AppText>
+              </View>
+            </View>
+
             <View
               style={[
                 styles.navigationLine,
