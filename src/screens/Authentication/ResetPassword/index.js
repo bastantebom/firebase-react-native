@@ -110,49 +110,50 @@ const ResetPassword = ({navigation}) => {
   };
 
   return (
-    <AppViewContainer paddingSize={3} customStyle={styles.container}>
+    <>
       <Notification message={notificationMessage} type={notificationType} />
+      <AppViewContainer paddingSize={3} customStyle={styles.container}>
+        <View style={styles.closeIconContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Close width={24} height={24} />
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.closeIconContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Close width={24} height={24} />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.resetPasswordContainer}>
+          <ResetPasswordLock width={80} height={80} />
+        </View>
 
-      <View style={styles.resetPasswordContainer}>
-        <ResetPasswordLock width={80} height={80} />
-      </View>
+        <AppText customStyle={styles.resetPasswordText} textStyle="display5">
+          Reset Password
+        </AppText>
 
-      <AppText customStyle={styles.resetPasswordText} textStyle="display5">
-        Reset Password
-      </AppText>
+        <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">
+          No worries, it happens to the best of us!
+        </AppText>
 
-      <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">
-        No worries, it happens to the best of us!
-      </AppText>
+        <AppInput
+          label="Email or Mobile Number"
+          customStyle={styles.inputBox}
+          value={email}
+          onChangeText={(text) => onEmailChange(text)}
+        />
 
-      <AppInput
-        label="Email or Mobile Number"
-        customStyle={styles.inputBox}
-        value={email}
-        onChangeText={(text) => onEmailChange(text)}
-      />
-
-      <AppButton
-        text={buttonText}
-        type="primary"
-        height="lg"
-        customStyle={styles[buttonState]}
-        loading={buttonLoading}
-        disabled={buttonDisabled}
-        onPress={() => {
-          setButtonLoading(true);
-          setButtonDisabled(true);
-          sendEmail();
-          Keyboard.dismiss();
-        }}
-      />
-    </AppViewContainer>
+        <AppButton
+          text={buttonText}
+          type="primary"
+          height="lg"
+          customStyle={styles[buttonState]}
+          loading={buttonLoading}
+          disabled={buttonDisabled}
+          onPress={() => {
+            setButtonLoading(true);
+            setButtonDisabled(true);
+            sendEmail();
+            Keyboard.dismiss();
+          }}
+        />
+      </AppViewContainer>
+    </>
   );
 };
 
