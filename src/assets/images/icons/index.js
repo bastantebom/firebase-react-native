@@ -91,6 +91,13 @@ import MenuLiked from './MenuLiked.svg';
 import MenuLogOut from './MenuLogOut.svg';
 import MenuTelephone from './MenuTelephone.svg';
 
+// Verification
+import Card from '@/assets/images/icons/verify-card.svg';
+import Mobile from '@/assets/images/icons/verify-mobile.svg';
+import Id from '@/assets/images/icons/verify-id.svg';
+import ArrowRight from '@/assets/images/icons/arrow-right.svg';
+import VerifyTick from '@/assets/images/icons/verify-tick.svg';
+
 export {
   MenuAddFriend,
   MenuTelephone,
@@ -152,4 +159,9 @@ export {
   StarRating,
   CheckboxCheck,
   RadioDot,
+  Card,
+  Mobile,
+  Id,
+  ArrowRight,
+  VerifyTick
 };
