@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, SafeAreaView } from 'react-native';
 
 
 import { AppText } from '@/components'
@@ -408,7 +408,7 @@ const Post = () => {
   }
 
   return (
-    <>
+    <SafeAreaView>
       <View style={[
         styles.postAnimationContainer,
         {
@@ -499,7 +499,7 @@ const Post = () => {
           <AppText>ASDASDA</AppText>
         </View>
       </TouchableOpacity>
-    </>
+    </SafeAreaView>
   );
 };
 
