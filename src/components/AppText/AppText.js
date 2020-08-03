@@ -61,6 +61,11 @@ const styles = StyleSheet.create({
     fontSize: normalize(12),
     letterSpacing: 0.4,
   },
+  caption2: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(12),
+    letterSpacing: 0.4,
+  },
   display1: {
     fontFamily: 'RoundedMplus1c-Light',
     fontSize: normalize(56),
@@ -127,6 +132,11 @@ const styles = StyleSheet.create({
     fontSize: normalize(14),
     letterSpacing: 2,
     textTransform: 'uppercase',
+  },
+  metadata: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(10),
+    letterSpacing: 0.8,
   },
 });
 

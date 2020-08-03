@@ -54,10 +54,12 @@ function Dashboard({navigation}) {
       postServiceAddress: '#8 Atis Street',
       postServiceRadius: '500m',
       postDeliveryMethod: 'Delivery and Pickup',
+      status: 'ongoing',
     },
     {
       id: 2,
-      userImage: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+      userImage:
+        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
       name: 'Mark Santiago',
       username: 'Markee',
       rating: 4.5,
@@ -73,10 +75,12 @@ function Dashboard({navigation}) {
       postServiceAddress: '#8 Kaimito Street',
       postServiceRadius: '1000m',
       postDeliveryMethod: 'Home Service',
+      status: 'ongoing',
     },
     {
       id: 3,
-      userImage: 'https://media.glamour.com/photos/56958105085ae0a85037019e/master/pass/entertainment-2015-03-zayn-malik-one-direction-main.jpg',
+      userImage:
+        'https://media.glamour.com/photos/56958105085ae0a85037019e/master/pass/entertainment-2015-03-zayn-malik-one-direction-main.jpg',
       name: 'Wayne Santiago',
       username: 'Wayne',
       rating: 4.5,
@@ -92,10 +96,12 @@ function Dashboard({navigation}) {
       postServiceAddress: '#8 Kaimito Street',
       postServiceRadius: '1000m',
       postDeliveryMethod: 'Home Service',
+      status: 'completed',
     },
     {
       id: 4,
-      userImage: 'https://i.pinimg.com/originals/f9/0c/9e/f90c9e170d4b553a9d0a79735113365b.jpg',
+      userImage:
+        'https://i.pinimg.com/originals/f9/0c/9e/f90c9e170d4b553a9d0a79735113365b.jpg',
       name: 'Hayley Williams',
       username: 'hayley',
       rating: 4.5,
@@ -111,10 +117,12 @@ function Dashboard({navigation}) {
       postServiceAddress: '#8 Kaimito Street',
       postServiceRadius: '1000m',
       postDeliveryMethod: 'Home Service',
+      status: 'completed',
     },
     {
       id: 5,
-      userImage: 'https://www.cheatsheet.com/wp-content/uploads/2020/03/ursula-corbero.png',
+      userImage:
+        'https://www.cheatsheet.com/wp-content/uploads/2020/03/ursula-corbero.png',
       name: 'Pot Bernabe',
       username: 'pot',
       rating: 4.5,
@@ -130,7 +138,8 @@ function Dashboard({navigation}) {
       postServiceAddress: '#8 Kaimito Street',
       postServiceRadius: '1000m',
       postDeliveryMethod: 'Home Service',
-    }
+      status: 'completed',
+    },
   ];
 
   const SearchBarWithFilter = () => {
@@ -237,6 +246,7 @@ function Dashboard({navigation}) {
           <Location />
 
           <Posts
+            type="dashboard"
             data={DummyData}
             hideLocationComponent={hideLocationComponent}
             showLocationComponent={showLocationComponent}
