@@ -51,6 +51,9 @@ function Profile({navigation}) {
   const [menu, setMenu] = useState(false);
   const [QR, setQR] = useState(false);
 
+  const [visibleHives, setVisibleHives] = useState(false);
+  const [visibleFollowing, setVisibleFollowing] = useState(false);
+
   const [headerState, setHeaderState] = useState('own');
 
   const changeHeaderHandler = () => {
@@ -71,6 +74,14 @@ function Profile({navigation}) {
 
   const toggleMenu = () => {
     setMenu(!menu);
+  };
+
+  const toggleHives = () => {
+    setVisibleHives(!visibleHives);
+  };
+  const toggleConnections = () => {
+    //alert('text');
+    setVisibleFollowing(!visibleFollowing);
   };
 
   const [user, setUser] = useState();
@@ -132,26 +143,15 @@ function Profile({navigation}) {
           <HexagonBorder />
         </View>
         <ProfileLinks
-          onClickHives={() => navigation.navigate('ProfileHives')}
-          onClickFollowers={() => navigation.navigate('Connections')}
+          toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
+          toggleConnections={toggleConnections}
+          visibleHives={visibleHives}
+          visibleFollowing={visibleFollowing}
         />
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
-
-          <AppText textStyle="body1"> Sample Profile </AppText>
-          <AppButton
-            text="Go back to dashboard"
-            onPress={() => navigation.goBack()}
-            type="primary"
-            size="sm"
-          />
-          <AppText>Welcome</AppText>
-
-          <Button title="Change header" onPress={changeHeaderHandler} />
-          <Button title="sign out" onPress={signOut} />
-          <Button title="show bottom modal" onPress={toggleEllipsisState} />
         </View>
       </ScrollView>
     </>
@@ -176,9 +176,9 @@ const styles = StyleSheet.create({
   },
 
   profileImageWrapper: {
-    width: '33%',
+    width: '40%',
     height: normalize(160),
-    top: normalize(-80),
+    top: normalize(-50),
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },

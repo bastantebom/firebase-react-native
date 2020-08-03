@@ -14,6 +14,9 @@ import OnboardingIllustration4 from './onboarding-img4.svg';
 import PolygonStatic from './polygon-static.svg';
 
 import ProfileHeaderDefault from './profile-header-default.svg';
+import NoPost from './NoPost.svg';
+import NoReview from './NoReview.svg';
+import NoInfo from './NoInfo.svg';
 
 export {
   Location,
@@ -24,5 +27,8 @@ export {
   OnboardingIllustration3,
   OnboardingIllustration4,
   PolygonStatic,
-  ProfileHeaderDefault
+  ProfileHeaderDefault,
+  NoPost,
+  NoReview,
+  NoInfo,
 };
