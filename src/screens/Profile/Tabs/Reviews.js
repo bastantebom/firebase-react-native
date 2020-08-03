@@ -5,14 +5,20 @@ import {View, StyleSheet} from 'react-native';
 import {NoReview} from '@/assets/images';
 import {Colors, normalize} from '@/globals';
 
-import {AppText} from '@/components';
+import {AppText, Reviews} from '@/components';
 
 // create a component
 const Review = () => {
   const [hasReview, setHasReview] = useState(false);
+
+  const WithReview = () => {
+    return <Reviews />;
+  };
   return (
     <>
-      {hasReview ? null : ( //<WithReview />
+      {hasReview ? (
+        <WithReview />
+      ) : (
         <View style={styles.container}>
           <View style={styles.imageWrapper}>
             <NoReview width={normalize(140)} height={normalize(140)} />
