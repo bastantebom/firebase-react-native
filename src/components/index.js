@@ -18,8 +18,10 @@ import TransparentHeader from '@/components/TransparentHeader/TransparentHeader'
 import BottomSheetHeader from './BottomSheet/header';
 import ProfileLinks from '@/components/ProfileLinks/ProfileLinks';
 import TabNavigation from './TabNavigation/TabNavigation';
+import MarginView from './AppViewContainer/MarginView';
 
 export {
+  MarginView,
   TabNavigation,
   AppInput,
   AppText,

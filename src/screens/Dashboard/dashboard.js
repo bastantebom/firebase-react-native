@@ -237,6 +237,7 @@ function Dashboard({navigation}) {
           <Location />
 
           <Posts
+            type="own"
             data={DummyData}
             hideLocationComponent={hideLocationComponent}
             showLocationComponent={showLocationComponent}
