@@ -25,6 +25,8 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 
+import {Posts, MoreInfo, Reviews} from '@/screens/Profile/Tabs';
+
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
   // const [user, setUser] = useState();
@@ -79,6 +81,12 @@ function Profile({navigation}) {
     if (initializing) setInitializing(false);
   }
 
+  let profileTabs = [
+    {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
+    {key: 'review', title: 'Reviews', renderPage: <Reviews />},
+    {key: 'moreinfo', title: 'More Info', renderPage: <MoreInfo />},
+  ];
+
   const signOut = () => {
     if (user) {
       auth()
@@ -130,7 +138,7 @@ function Profile({navigation}) {
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation />
+          <TabNavigation routesList={profileTabs} />
 
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
