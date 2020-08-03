@@ -29,6 +29,7 @@ import {Context} from '@/context';
 import { VerificationScreen } from './components/Verification.js';
 
 function Dashboard({navigation}) {
+  
   const {openNotification, closeNotification} = useContext(Context);
   const [modalState, setModalState] = useState(false);
   const [showLocation, setShowLocation] = useState(true);

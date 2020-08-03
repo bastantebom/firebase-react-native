@@ -104,6 +104,12 @@ import FollowingEllipsis from './following-ellipsis.svg';
 import ProfileListBlock from './profile-list-block.svg';
 import ProfileListMute from './profile-list-mute.svg';
 import ProfileListUnfollow from './profile-list-unfollow.svg';
+// Verification
+import Card from '@/assets/images/icons/verify-card.svg';
+import Mobile from '@/assets/images/icons/verify-mobile.svg';
+import Id from '@/assets/images/icons/verify-id.svg';
+import ArrowRight from '@/assets/images/icons/arrow-right.svg';
+import VerifyTick from '@/assets/images/icons/verify-tick.svg';
 
 export {
   ProfileListBlock,
@@ -176,4 +182,9 @@ export {
   StarRating,
   CheckboxCheck,
   RadioDot,
+  Card,
+  Mobile,
+  Id,
+  ArrowRight,
+  VerifyTick
 };
