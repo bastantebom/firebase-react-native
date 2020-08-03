@@ -17,10 +17,6 @@ const TabNavigation = ({routesList}) => {
   };
 
   const RenderContent = () => {
-    const page = routes.find((activePage) => {
-      if (activePage.key === activeTab) return activePage;
-    });
-
     const page = routes.find(activePage => {
       if (activePage.key === activeTab)
         return activePage
