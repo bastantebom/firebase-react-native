@@ -17,12 +17,13 @@ import {
   HexagonBorder,
   TransparentHeader,
   TabNavigation,
+  ProfileLinks,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
 
 import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize} from '@/globals';
+import {normalize, Colors} from '@/globals';
 
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
@@ -70,15 +71,14 @@ function Profile({navigation}) {
     setMenu(!menu);
   };
 
-
   const [user, setUser] = useState();
-  const [profileImageUrl, setProfileImageUrl] = useState('')
+  const [profileImageUrl, setProfileImageUrl] = useState('');
 
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
-    
+
   const signOut = () => {
     if (user) {
       auth()
@@ -118,9 +118,19 @@ function Profile({navigation}) {
           height={normalize(158 * 1.2)}
         />
       </View>
+      <View style={styles.profileBasicInfo}>
+        <View style={styles.profileImageWrapper}>
+          <ProfileImageUpload />
+          <HexagonBorder />
+        </View>
+        <ProfileLinks
+          onClickHives={() => navigation.navigate('ProfileHives')}
+          onClickFollowers={() => navigation.navigate('Connections')}
+        />
+      </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation /> 
+          <TabNavigation />
 
           <AppText textStyle="body1"> Sample Profile </AppText>
           <AppButton
@@ -130,8 +140,6 @@ function Profile({navigation}) {
             size="sm"
           />
           <AppText>Welcome</AppText>
-          <ProfileImageUpload />
-          <HexagonBorder />
 
           <Button title="Change header" onPress={changeHeaderHandler} />
           <Button title="sign out" onPress={signOut} />
@@ -153,5 +161,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     position: 'relative',
     // justifyContent: 'center',
+  },
+
+  profileBasicInfo: {
+    flexDirection: 'row',
+  },
+
+  profileImageWrapper: {
+    width: '33%',
+    height: normalize(160),
+    top: normalize(-80),
+    paddingLeft: normalize(24),
+    //backgroundColor: 'red',
   },
 });
