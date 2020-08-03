@@ -99,6 +99,12 @@ import PostSell from './post-sell.svg';
 import PostNeed from './post-need.svg';
 import PostService from './post-service.svg';
 
+// Verification
+import Card from '@/assets/images/icons/verify-card.svg';
+import Mobile from '@/assets/images/icons/verify-mobile.svg';
+import Id from '@/assets/images/icons/verify-id.svg';
+import ArrowRight from '@/assets/images/icons/arrow-right.svg';
+import VerifyTick from '@/assets/images/icons/verify-tick.svg';
 
 export {
   QRLink,
@@ -167,4 +173,9 @@ export {
   StarRating,
   CheckboxCheck,
   RadioDot,
+  Card,
+  Mobile,
+  Id,
+  ArrowRight,
+  VerifyTick
 };
