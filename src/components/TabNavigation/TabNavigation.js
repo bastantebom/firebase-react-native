@@ -4,10 +4,10 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { AppText } from '@/components';
 import { Colors } from '@/globals';
 
-const TabNavigation = ({routesList}) => {
+const TabNavigation = ({ routesList }) => {
 
-  if(!routesList) 
-    return (<AppText color="red">routeList props is required</AppText> )
+  if (!routesList)
+    return (<AppText color="red">routeList props is required</AppText>)
 
   const [routes] = useState(routesList);
   const [activeTab, setActiveTab] = useState(routes[0].key);
@@ -31,10 +31,12 @@ const TabNavigation = ({routesList}) => {
         <TouchableOpacity
           key={route.key}
           activeOpacity={0.7}
+          style={{ flex: 1 }}
           onPress={() => tabChangeHandler(route.key)}>
           <View style={styles.navigationItem}>
             <AppText
               textStyle="tabNavigation"
+              customStyle={{textAlign: 'center'}}
               color={
                 activeTab === route.key
                   ? Colors.contentEbony
