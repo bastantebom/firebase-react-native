@@ -114,13 +114,19 @@ const MapComponent = ({
   }, []);
 
   useEffect(() => {
-    let r = {
-      latitude: reCenter.lat,
-      longitude: reCenter.lng,
-      latitudeDelta: Config.latitudeDelta,
-      longitudeDelta: Config.longitudeDelta,
-    };
-    mapViewRef.current.animateToRegion(r, 2000);
+    //console.log(isNaN(reCenter.lat));
+    //console.log(reCenter);
+    if (!isNaN(reCenter.lat)) {
+      setTimeout(() => {
+        let r = {
+          latitude: parseFloat(reCenter.lat),
+          longitude: parseFloat(reCenter.lng),
+          latitudeDelta: Config.latitudeDelta,
+          longitudeDelta: Config.longitudeDelta,
+        };
+        mapViewRef.current.animateToRegion(r, 2000);
+      }, 100);
+    }
   }, [reCenter.lat]);
 
   return (
@@ -150,8 +156,7 @@ const MapComponent = ({
               coordinate={{
                 latitude: latitude,
                 longitude: longitude,
-              }}
-              centerOffset={(1, 1)}>
+              }}>
               <View>
                 <Image
                   source={require('@/assets/images/icons/current_location.png')}
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     marginLeft: normalize(-24),
-    marginTop: normalize(-65),
+    marginTop: Platform.os === 'ios' ? normalize(-65) : normalize(-48),
   },
 });
 //make this component available to the app
