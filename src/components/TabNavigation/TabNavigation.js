@@ -75,6 +75,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: '100%',
+    borderBottomColor: Colors.neutralGray,
+    borderBottomWidth: 1,
   },
   navigationItem: {
     flex: 1,

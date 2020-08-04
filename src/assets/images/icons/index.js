@@ -53,6 +53,7 @@ import ServbeesAltActive from '@/assets/images/icons/servbees-alt-active.svg';
 
 import UserAlt from '@/assets/images/icons/user-alt.svg';
 import UserAltActive from '@/assets/images/icons/user-alt-active.svg';
+import Users from '@/assets/images/icons/followers.svg';
 
 import FilterNeeds from './filter-needs.svg';
 import FilterSeller from './filter-seller.svg';
@@ -98,7 +99,6 @@ import QRShare from './qr-share.svg';
 import PostSell from './post-sell.svg';
 import PostNeed from './post-need.svg';
 import PostService from './post-service.svg';
-
 
 export {
   QRLink,
@@ -167,4 +167,5 @@ export {
   StarRating,
   CheckboxCheck,
   RadioDot,
+  Users,
 };
