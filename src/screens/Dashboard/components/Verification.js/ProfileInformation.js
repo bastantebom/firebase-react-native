@@ -11,7 +11,7 @@ import {
   ScrollView
 } from 'react-native'
 import Modal from 'react-native-modal';
-import { AppText, PaddingView, AppInput, Switch } from '@/components';
+import { AppText, PaddingView, AppInput, Switch, AppButton } from '@/components';
 import { Colors, normalize } from '@/globals';
 import {
   HeaderBackGray,
@@ -150,7 +150,7 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
               customStyle={styles.customInput}
             />
             {/* <AppText>{date}</AppText> */}
-            <Button onPress={showDatepicker} title="Show date picker!" />
+            {/* <Button onPress={showDatepicker} title="Show date picker!" />
             {show && (
               <DateTimePicker
                 testID="dateTimePicker"
@@ -160,7 +160,11 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
                 display="default"
                 onChange={onChange}
               />
-            )}
+            )} */}
+            <AppButton
+              text="Save"
+              type="primary"
+            />
           </PaddingView>
         </View>
       </ScrollView>
