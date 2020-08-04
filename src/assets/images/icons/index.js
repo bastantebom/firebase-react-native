@@ -99,8 +99,17 @@ import PostSell from './post-sell.svg';
 import PostNeed from './post-need.svg';
 import PostService from './post-service.svg';
 
+import FollowingEllipsis from './following-ellipsis.svg';
+
+import ProfileListBlock from './profile-list-block.svg';
+import ProfileListMute from './profile-list-mute.svg';
+import ProfileListUnfollow from './profile-list-unfollow.svg';
 
 export {
+  ProfileListBlock,
+  ProfileListMute,
+  ProfileListUnfollow,
+  FollowingEllipsis,
   QRLink,
   QRDownload,
   QRShare,

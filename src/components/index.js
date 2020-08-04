@@ -21,7 +21,10 @@ import ProfileLinks from '@/components/ProfileLinks/ProfileLinks';
 import TabNavigation from './TabNavigation/TabNavigation';
 import MarginView from './AppViewContainer/MarginView';
 
+import ProfileList from './ProfileList/ProfileList';
+
 export {
+  ProfileList,
   MarginView,
   TabNavigation,
   AppInput,

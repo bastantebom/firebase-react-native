@@ -123,10 +123,8 @@ const TransparentHeader = ({
           isVisible={QR}
           animationIn="slideInUp"
           animationInTiming={750}
-          animationOut="slideOutDown"
+          animationOut="slideOutLeft"
           animationOutTiming={750}
-          onSwipeComplete={toggleQR}
-          swipeDirection="down"
           style={{
             margin: 0,
             backgroundColor: 'white',

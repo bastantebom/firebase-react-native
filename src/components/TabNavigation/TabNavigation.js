@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 
 import {AppText} from '@/components';
-import {Colors} from '@/globals';
+import {Colors, normalize} from '@/globals';
 
 const TabNavigation = ({routesList}) => {
   if (!routesList)
@@ -32,16 +32,29 @@ const TabNavigation = ({routesList}) => {
           style={{flex: 1}}
           onPress={() => tabChangeHandler(route.key)}>
           <View style={styles.navigationItem}>
-            <AppText
-              textStyle="tabNavigation"
-              customStyle={{textAlign: 'center'}}
-              color={
-                activeTab === route.key
-                  ? Colors.contentEbony
-                  : Colors.checkboxBorderDefault
-              }>
-              {route.title}
-            </AppText>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <AppText
+                textStyle="tabNavigation"
+                customStyle={{textAlign: 'center'}}
+                color={
+                  activeTab === route.key
+                    ? Colors.contentEbony
+                    : Colors.checkboxBorderDefault
+                }>
+                {route.title}
+              </AppText>
+              <View
+                style={{
+                  backgroundColor: Colors.neutralsGainsboro,
+                  height: normalize(19),
+                  paddingHorizontal: 4,
+                  borderRadius: 8,
+                  marginLeft: 8,
+                }}>
+                <AppText>{route.numberBadge}</AppText>
+              </View>
+            </View>
+
             <View
               style={[
                 styles.navigationLine,
