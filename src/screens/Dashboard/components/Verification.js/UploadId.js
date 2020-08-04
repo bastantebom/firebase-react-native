@@ -164,7 +164,7 @@ export const UploadGovernmentId = ({back}) => {
             </View>
           </PaddingView>   
         ) : (
-          <CameraId/>
+          <CameraId back={() => setScreen('idType')} />
         )}
     </SafeAreaView>
   )
