@@ -269,12 +269,6 @@ function Dashboard({navigation}) {
           type={'verified'}
           position="relative"
         />
-        <VerificationScreen
-          onPress={() => toggleMenu()}
-          menu={menu}
-          toggleMenu={() => toggleMenu()}
-          modalBack={() => setMenu(false)}
-        />
         <View style={styles.container}>
           <SearchBarWithFilter />
           <Location />
