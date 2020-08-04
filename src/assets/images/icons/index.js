@@ -99,8 +99,10 @@ import PostSell from './post-sell.svg';
 import PostNeed from './post-need.svg';
 import PostService from './post-service.svg';
 
+import FollowingEllipsis from './following-ellipsis';
 
 export {
+  FollowingEllipsis,
   QRLink,
   QRDownload,
   QRShare,
