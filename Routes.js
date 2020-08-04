@@ -60,6 +60,7 @@ function DashboardStackScreen() {
   return (
     <DashboardStack.Navigator headerMode="none">
       <DashboardStack.Screen name="Servbees" component={Dashboard} />
+      <DashboardStack.Screen name="VerifyAccount" component={VerifyAccount} />
     </DashboardStack.Navigator>
   );
 }
