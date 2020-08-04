@@ -8,6 +8,7 @@ import {AppViewContainer, PaddingView} from '@/components/AppViewContainer';
 import {HexagonBorder, ProfileImageUpload} from '@/components/ImageUpload';
 import Notification from '@/components/Notification';
 import {Post, Posts, PostFilter} from '@/components/Post';
+import Reviews from '@/components/Review/Reviews';
 import Switch from '@/components/Switch/Switch';
 import AppRadio from '@/components/AppRadio/Radio';
 import AppCheckbox from '@/components/AppCheckbox/Checkbox';
@@ -43,4 +44,5 @@ export {
   TransparentHeader,
   BottomSheetHeader,
   ProfileLinks,
+  Reviews,
 };

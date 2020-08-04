@@ -1,5 +1,6 @@
-import Profile from './profile';
-import ProfileHives from './hives';
-import Connections from './connections';
+/**
+ * import { NameOfComponent, NameOfComponent2 } from '@/components'
+ */
+import Profile from '@/screens/Profile/profile';
 
-export {Profile, ProfileHives, Connections};
+export {Profile};

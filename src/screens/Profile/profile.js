@@ -25,6 +25,8 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 
+import {Posts, MoreInfo, Reviews} from '@/screens/Profile/Tabs';
+
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
   // const [user, setUser] = useState();
@@ -49,6 +51,9 @@ function Profile({navigation}) {
   const [menu, setMenu] = useState(false);
   const [QR, setQR] = useState(false);
 
+  const [visibleHives, setVisibleHives] = useState(false);
+  const [visibleFollowing, setVisibleFollowing] = useState(false);
+
   const [headerState, setHeaderState] = useState('own');
 
   const changeHeaderHandler = () => {
@@ -71,6 +76,14 @@ function Profile({navigation}) {
     setMenu(!menu);
   };
 
+  const toggleHives = () => {
+    setVisibleHives(!visibleHives);
+  };
+  const toggleConnections = () => {
+    //alert('text');
+    setVisibleFollowing(!visibleFollowing);
+  };
+
   const [user, setUser] = useState();
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
@@ -78,6 +91,12 @@ function Profile({navigation}) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
+
+  let profileTabs = [
+    {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
+    {key: 'review', title: 'Reviews', renderPage: <Reviews />},
+    {key: 'moreinfo', title: 'More Info', renderPage: <MoreInfo />},
+  ];
 
   const signOut = () => {
     if (user) {
@@ -124,26 +143,15 @@ function Profile({navigation}) {
           <HexagonBorder />
         </View>
         <ProfileLinks
-          onClickHives={() => navigation.navigate('ProfileHives')}
-          onClickFollowers={() => navigation.navigate('Connections')}
+          toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
+          toggleConnections={toggleConnections}
+          visibleHives={visibleHives}
+          visibleFollowing={visibleFollowing}
         />
       </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation />
-
-          <AppText textStyle="body1"> Sample Profile </AppText>
-          <AppButton
-            text="Go back to dashboard"
-            onPress={() => navigation.goBack()}
-            type="primary"
-            size="sm"
-          />
-          <AppText>Welcome</AppText>
-
-          <Button title="Change header" onPress={changeHeaderHandler} />
-          <Button title="sign out" onPress={signOut} />
-          <Button title="show bottom modal" onPress={toggleEllipsisState} />
+          <TabNavigation routesList={profileTabs} />
         </View>
       </ScrollView>
     </>
@@ -168,9 +176,9 @@ const styles = StyleSheet.create({
   },
 
   profileImageWrapper: {
-    width: '33%',
+    width: '40%',
     height: normalize(160),
-    top: normalize(-80),
+    top: normalize(-50),
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },

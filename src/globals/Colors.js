@@ -51,5 +51,7 @@ export default {
 
   profileLink: '#515057',
 
+  emptyStateBackground: '#FAFAFB',
+
   //switchDisable: '#CACBCC';
 };
