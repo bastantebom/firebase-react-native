@@ -15,7 +15,7 @@ import {
 import { VerifyMap } from './Map';
 import Modal from 'react-native-modal';
 
-const AddAnAddress = ({addressBack}) => {
+export const AddAnAddress = ({back}) => {
 
   const [map, setMap] = useState(false);
 
@@ -29,7 +29,7 @@ const AddAnAddress = ({addressBack}) => {
         <View
           style={styles.modalHeader}>
           <TouchableOpacity
-            onPress={addressBack}
+            onPress={back}
             activeOpacity={0.7}
             style={{position: 'absolute', left: 0}}
           >
@@ -88,8 +88,6 @@ const AddAnAddress = ({addressBack}) => {
     </SafeAreaView>
   )
 }
-
-export default AddAnAddress;
 
 const styles = StyleSheet.create({
   modalHeader: {

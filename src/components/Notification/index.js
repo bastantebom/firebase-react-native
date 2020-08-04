@@ -59,7 +59,7 @@ const Notification = ({message, type, position = 'absolute'}) => {
           <Warning />
         )}
         {message}
-        <TouchableOpacity onPress={() => closeNotification()}>
+        <TouchableOpacity onPress={() => closeNotification()} style={{ position: 'absolute', right: 16, top: 16 }}>
           {type === 'success' ? (
             <CloseDark />
           ) : type === 'verified' ? (

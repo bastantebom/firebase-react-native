@@ -19,7 +19,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AddAnAddress from './Address';
 
-export const ProfileInformation = ({ profileBack }) => {
+export const ProfileInformation = ({ back, toggleAddress }) => {
 
   const [username, setUsername] = useState('');
   const [date, setDate] = useState(new Date());
@@ -48,11 +48,11 @@ export const ProfileInformation = ({ profileBack }) => {
     setIsDefault((previousState) => !previousState);
   };
 
-  const [address, setAddress] = useState(false);
+  // const [address, setAddress] = useState(false);
 
-  const toggleAddress = () => {
-    setAddress(!address);
-  };
+  // const toggleAddress = () => {
+  //   setAddress(!address);
+  // };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -62,7 +62,7 @@ export const ProfileInformation = ({ profileBack }) => {
             <View
               style={styles.modalHeader}>
               <TouchableOpacity
-                onPress={profileBack}
+                onPress={back}
                 activeOpacity={0.7}
                 style={{position: 'absolute', left: 0}}
               >
@@ -116,7 +116,7 @@ export const ProfileInformation = ({ profileBack }) => {
             >
               You can save multiple addresses.
             </AppText>
-            <TouchableOpacity onPress={() => toggleAddress()}>
+            <TouchableOpacity onPress={toggleAddress}>
               <AppText textStyle="body1" color={Colors.contentOcean}>Add an Address</AppText>
             </TouchableOpacity>
             {/* <Switch onValueChange={toggleSwitch} value={isDefault}/> */}
@@ -164,7 +164,7 @@ export const ProfileInformation = ({ profileBack }) => {
           </PaddingView>
         </View>
       </ScrollView>
-      <Modal
+      {/* <Modal
         isVisible={address}
         animationIn="slideInRight"
         animationInTiming={750}
@@ -180,7 +180,7 @@ export const ProfileInformation = ({ profileBack }) => {
         }}
       >
         <AddAnAddress addressBack={() => setAddress(false)}/>
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   )
 }
