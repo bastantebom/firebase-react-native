@@ -116,10 +116,10 @@ export const VerifyMap = ({back}, route) => {
         <AppText textStyle="body3">Add an Address</AppText>
       </View>
       <MapComponent
-        latitude={route?.route?.params.latitude}
-        longitude={route?.route?.params.longitude}
-        // latitude={37.78825}
-        // longitude={-122.4324}
+        // latitude={route?.route?.params.latitude}
+        // longitude={route?.route?.params.longitude}
+        latitude={37.78825}
+        longitude={-122.4324}
         reCenter={newCoords}
         onRegionChange={(region) => {
           onRegionChange(region);

@@ -115,6 +115,9 @@ import Id from '@/assets/images/icons/verify-id.svg';
 import ArrowRight from '@/assets/images/icons/arrow-right.svg';
 import VerifyTick from '@/assets/images/icons/verify-tick.svg';
 
+import Lock from '@/assets/images/icons/lock.svg';
+import FolderAdd from '@/assets/images/icons/folder-add.svg';
+
 export {
   ProfileListBlock,
   ProfileListMute,
@@ -191,5 +194,7 @@ export {
   Mobile,
   Id,
   ArrowRight,
-  VerifyTick
+  VerifyTick,
+  Lock,
+  FolderAdd
 };
