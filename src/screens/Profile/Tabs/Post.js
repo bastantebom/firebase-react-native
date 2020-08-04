@@ -117,7 +117,7 @@ const Post = () => {
     },
   ];
 
-  const [hasPost, setHasPost] = useState(false);
+  const [hasPost, setHasPost] = useState(true);
 
   const hideLocationComponent = () => {
     console.log('hide location');
@@ -194,8 +194,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.emptyStateBackground,
     padding: normalize(16),
-    borderTopColor: Colors.neutralGray,
-    borderTopWidth: 1,
   },
   imageWrapper: {
     marginBottom: normalize(16),

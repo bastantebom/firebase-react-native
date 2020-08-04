@@ -46,7 +46,20 @@ const OwnPost = ({data}) => {
   return (
     <MarginView
       marginSize={2}
-      style={{marginBottom: 0, padding: 12, borderRadius: 8, backgroundColor: 'white' }}>
+      style={{
+        marginBottom: 0,
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 4,
+      }}>
       <View style={{flexDirection: 'row'}}>
         <View style={styles.postImageContainer}>
           <Image
@@ -101,7 +114,9 @@ const OwnPost = ({data}) => {
               2 Offers
             </AppText>
           </View>
-          <AppText customStyle={{marginTop: 4}} textStyle="caption2">{postName}</AppText>
+          <AppText customStyle={{marginTop: 4}} textStyle="caption2">
+            {postName}
+          </AppText>
         </View>
       </View>
     </MarginView>

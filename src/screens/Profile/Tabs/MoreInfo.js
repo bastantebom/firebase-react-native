@@ -4,15 +4,65 @@ import {View, StyleSheet} from 'react-native';
 import {Colors, normalize} from '@/globals';
 
 import {NoInfo} from '@/assets/images';
-import {AppText} from '@/components';
+import {AppText, PaddingView} from '@/components';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Users} from '@/assets/images/icons';
 
 // create a component
 const MoreInfo = () => {
-  const [hasInfo, setHasInfo] = useState(false);
+  const [hasInfo, setHasInfo] = useState(true);
+
+  const WithInfo = () => {
+    return (
+      <>
+        <View
+          style={{borderBottomColor: Colors.neutralGray, borderBottomWidth: 1}}>
+          <PaddingView paddingSize={4}>
+            <View style={styles.titleWrapper}>
+              <AppText textStyle="subtitle2">About</AppText>
+            </View>
+            <View style={styles.infoContentWrapper}>
+              <AppText textStyle="body2">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.{' '}
+              </AppText>
+            </View>
+            <View style={styles.connectionWrapper}>
+              <View style={styles.followers}>
+                <Users width={normalize(14)} height={normalize(14)} />
+                <AppText
+                  textStyle="caption"
+                  color={Colors.profileLink}
+                  customStyle={{marginLeft: 4}}>
+                  29 Followers
+                </AppText>
+              </View>
+              <View style={styles.following}>
+                <AppText textStyle="caption" color={Colors.profileLink}>
+                  8 Following
+                </AppText>
+              </View>
+            </View>
+          </PaddingView>
+        </View>
+        <PaddingView paddingSize={4}>
+          <View style={styles.verifiedTitle}>
+            <AppText textStyle="subtitle2">
+              User is verified by Servbees!
+            </AppText>
+          </View>
+        </PaddingView>
+      </>
+    );
+  };
+
   return (
     <>
-      {hasInfo ? null : ( //<WithReview />
+      {hasInfo ? (
+        <WithInfo />
+      ) : (
         <View style={styles.container}>
           <View style={styles.imageWrapper}>
             <NoInfo width={normalize(140)} height={normalize(140)} />
@@ -50,8 +100,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.emptyStateBackground,
     padding: normalize(16),
-    borderTopColor: Colors.neutralGray,
-    borderTopWidth: 1,
   },
   imageWrapper: {
     marginBottom: normalize(16),
@@ -76,6 +124,21 @@ const styles = StyleSheet.create({
   copySpacing: {
     marginLeft: normalize(8),
     marginRight: normalize(8),
+  },
+
+  infoContentWrapper: {
+    marginTop: normalize(12),
+    marginBottom: normalize(21),
+  },
+
+  connectionWrapper: {
+    flexDirection: 'row',
+  },
+
+  followers: {
+    marginRight: normalize(16),
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
