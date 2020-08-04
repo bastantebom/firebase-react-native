@@ -14,13 +14,19 @@ import {FollowingEllipsis} from '@/assets/images/icons';
 
 import RemoveFollowerContent from './RemoveFollowerContent';
 import UnfollowContent from './UnfollowContent';
+import MuteContent from './MuteContent';
 
 const Profile = ({data, type}) => {
-  const {user_image, user_name, follower, following} = data;
+  const {user_image, user_name, user_username, follower, following} = data;
 
   const [followingState, setFollowingState] = useState(following);
   const [removeFollower, setRemoveFollower] = useState(false);
   const [unfollow, setUnfollow] = useState(false);
+  const [showMute, setShowMute] = useState(false);
+
+  const showMuteToggle = () => {
+    setShowMute(!showMute);
+  };
 
   const removeFollowerToggle = () => {
     setRemoveFollower(!removeFollower);
@@ -52,12 +58,16 @@ const Profile = ({data, type}) => {
 
       <View style={{flex: 1, marginLeft: 8}}>
         <AppText textStyle="body1">{user_name}</AppText>
-        <TouchableOpacity onPress={followingState ? unfollowToggle : follow}>
-          <AppText textStyle="metadata">
-            {' '}
-            {followingState ? '• Following' : '• Follow'}{' '}
-          </AppText>
-        </TouchableOpacity>
+        {type === 'followers' ? (
+          <TouchableOpacity onPress={followingState ? unfollowToggle : follow}>
+            <AppText textStyle="metadata">
+              {' '}
+              {followingState ? '• Following' : '• Follow'}{' '}
+            </AppText>
+          </TouchableOpacity>
+        ) : (
+          <AppText textStyle="metadata">@{user_username}</AppText>
+        )}
       </View>
 
       {type === 'followers' ? (
@@ -74,7 +84,7 @@ const Profile = ({data, type}) => {
         </TouchableOpacity>
       ) : (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={unfollowToggle}>
             <View
               style={{
                 paddingHorizontal: 8,
@@ -85,9 +95,7 @@ const Profile = ({data, type}) => {
               <AppText textStyle="caption2">Following</AppText>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{marginLeft: 8}}
-            onPress={() => console.log('press')}>
+          <TouchableOpacity style={{marginLeft: 8}} onPress={showMuteToggle}>
             <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
           </TouchableOpacity>
         </View>
@@ -141,6 +149,28 @@ const Profile = ({data, type}) => {
             unfollowToggle={unfollowToggle}
             unfollowHandler={unfollowHandler}
           />
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showMute}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
+        onSwipeComplete={showMuteToggle}
+        swipeDirection="down"
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={showMuteToggle}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View>
+          <MuteContent data={data} showMuteToggle={showMuteToggle} />
         </View>
       </Modal>
     </View>
