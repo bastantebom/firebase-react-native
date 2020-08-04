@@ -54,6 +54,7 @@ export const CameraId = () => {
             console.log(data.uri);  
         }
     };
+    
     return (
       <View style={styles.container}>
         <RNCamera
@@ -62,10 +63,11 @@ export const CameraId = () => {
           type={type}
           flashMode={flash}
           captureAudio={false}
+          // cameraViewDimensions={1,1}
           // ratio={cameraRatio}
           // onCameraReady={prepareRatio}
         />
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: .5, justifyContent: 'center', alignItems: 'center' }}>
           <AppText textStyle="body1">Take a photo of your driver's license</AppText>
           <AppText textStyle="body2">Make sure that your ID fits within the yellow border</AppText>
           <TouchableOpacity onPress={takePicture} style={styles.capture}>
@@ -95,13 +97,17 @@ const styles = StyleSheet.create({
   },
   preview: {
     flex: 1,
-    opacity: .5
+    opacity: .5,
+    position: 'relative',
+    zIndex: -2
     // height: 500,
     // justifyContent: 'flex-end',
     // alignItems: 'center',
   },
   capture: {
-    // flex: 0,
+    position: 'relative',
+    zIndex: 2,
+    flex: 0,
     backgroundColor: Colors.primaryYellow,
     borderRadius: 50,
     width: normalize(75),
