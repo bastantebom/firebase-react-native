@@ -92,7 +92,6 @@ import MenuLiked from './MenuLiked.svg';
 import MenuLogOut from './MenuLogOut.svg';
 import MenuTelephone from './MenuTelephone.svg';
 
-<<<<<<< HEAD
 import QRLink from './qr-link.svg';
 import QRDownload from './qr-download.svg';
 import QRShare from './qr-share.svg';
@@ -106,8 +105,6 @@ import FollowingEllipsis from './following-ellipsis.svg';
 import ProfileListBlock from './profile-list-block.svg';
 import ProfileListMute from './profile-list-mute.svg';
 import ProfileListUnfollow from './profile-list-unfollow.svg';
-=======
->>>>>>> 303f1d7... wip: update verification screens/add content
 // Verification
 import Card from '@/assets/images/icons/verify-card.svg';
 import Mobile from '@/assets/images/icons/verify-mobile.svg';
