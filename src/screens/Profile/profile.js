@@ -25,7 +25,8 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 
-import {Posts, MoreInfo, Reviews} from '@/screens/Profile/Tabs';
+import {Posts, MoreInfo, Reviews} from './Tabs';
+import ProfileInfo from './components/ProfileInfo';
 
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
@@ -117,6 +118,21 @@ function Profile({navigation}) {
 
   const width = Dimensions.get('window').width;
 
+  const ProfileDummyData = {
+    name: "Wayne's Burgers and Smoothies!",
+    is_verified: true,
+    full_name: 'Wayne Jansen Tayco',
+    username: 'waynesburger.com',
+    temperature_history: [
+      {date: new Date('07-07-2020'), temp: 36.4},
+      {date: new Date('07-08-2020'), temp: 35.9},
+    ],
+    ratings_count: 34,
+    ratings_average: 4.3,
+    joined_date: "Jan 2020",
+    location: "Subic, Zambales" 
+  };
+
   return (
     <>
       <TransparentHeader
@@ -149,6 +165,8 @@ function Profile({navigation}) {
           visibleFollowing={visibleFollowing}
         />
       </View>
+      <ProfileInfo profileData={ProfileDummyData} />
+
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
