@@ -26,7 +26,7 @@ import {GlobalStyle, Colors, normalize} from '@/globals';
 
 import Modal from 'react-native-modal';
 import {Context} from '@/context';
-import { VerificationScreen } from './components/Verification.js';
+import { VerificationScreen } from '@/screens/Dashboard/Verification';
 
 function Dashboard({navigation}) {
   

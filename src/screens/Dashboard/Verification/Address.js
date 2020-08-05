@@ -8,10 +8,7 @@ import {
 } from 'react-native'
 import { AppInput, PaddingView, AppText } from '@/components';
 import { Colors, normalize } from '@/globals';
-import {
-  HeaderBackGray,
-  ArrowRight
-} from '@/assets/images/icons';
+import { HeaderBackGray, ArrowRight } from '@/assets/images/icons';
 import { VerifyMap } from './Map';
 import Modal from 'react-native-modal';
 
@@ -81,9 +78,7 @@ export const AddAnAddress = ({back}) => {
           height: Dimensions.get('window').height,
         }}
       >
-        {/* <VerifyMap back={() => setMap(false)} /> */}
-        <VerifyMap/>
-
+        <VerifyMap back={() => setMap(false)} />
       </Modal>
     </SafeAreaView>
   )

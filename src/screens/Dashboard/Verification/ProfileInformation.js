@@ -168,23 +168,6 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
           </PaddingView>
         </View>
       </ScrollView>
-      {/* <Modal
-        isVisible={address}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        onSwipeComplete={toggleAddress}
-        swipeDirection="right"
-        onBackButtonPress={() => setAddress(false)}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}
-      >
-        <AddAnAddress addressBack={() => setAddress(false)}/>
-      </Modal> */}
     </SafeAreaView>
   )
 }

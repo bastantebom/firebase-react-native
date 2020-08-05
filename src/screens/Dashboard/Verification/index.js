@@ -7,9 +7,6 @@ import {
   StyleSheet,
   FlatList,
   SafeAreaView,
-  Text,
-  ScrollView,
-  SectionList
 } from 'react-native'
 import { ProfileInformation } from './ProfileInformation';
 import Modal from 'react-native-modal';
@@ -22,11 +19,10 @@ import {
   Mobile,
   Id,
   ArrowRight,
-  VerifyTick
 } from '@/assets/images/icons';
-import {MobileVerification} from './MobileVerification';
-import {UploadGovernmentId} from './UploadId';
-import {AddAnAddress} from './Address';
+import { MobileVerification } from './MobileVerification';
+import { UploadGovernmentId } from './UploadId';
+import { AddAnAddress } from './Address';
 
 
 import { useNavigation } from '@react-navigation/native';
@@ -216,6 +212,7 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
             ) : screen === 'governmentId' ? (
               <UploadGovernmentId 
                 back={() => setScreen('initial')} 
+                backToIndex={() => setScreen('initial')}
                 // backFromType={() => setScreen('governmentId')} 
               />
             ) : (
@@ -224,58 +221,6 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
           }
         </SafeAreaView> 
       </Modal>
-      {/* <Modal
-        isVisible={profile}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        onSwipeComplete={toggleProfile}
-        swipeDirection="right"
-        onBackButtonPress={() => setProfile(false)}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}
-      >
-        <ProfileInformation profileBack={() => setProfile(false)} />
-      </Modal>
-      <Modal
-        isVisible={mobileVerification}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        onSwipeComplete={toggleMobileVerification}
-        swipeDirection="right"
-        onBackButtonPress={() => setMobileVerification(false)}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}
-      >
-        <MobileVerification back={() => setMobileVerification(false)} onVerify={handleOnVerify}
-        />
-      </Modal>
-      <Modal
-        isVisible={uploadId}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        onSwipeComplete={toggleUploadId}
-        swipeDirection="right"
-        onBackButtonPress={() => setUploadId(false)}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}
-      >
-        <UploadGovernmentId back={() => setUploadId(false)}/>
-      </Modal> */}
     </View>
   )
 }
