@@ -60,7 +60,7 @@ const AlmostThereMap = (route) => {
   };
 
   const onSearchLocationHandler = (data) => {
-    //console.log(JSON.stringify(data));
+    console.log(data);
     setChangeMapAddress(data);
     getPositionFromString(data);
   };
@@ -133,12 +133,10 @@ const AlmostThereMap = (route) => {
           {route?.route?.params.address ? (
             <>
               <View style={styles.textInputWrapper}>
-                <View style={styles.navIcon}>
-                  <NavigationPin width={24} height={24} />
-                </View>
                 <GooglePlacesInput
                   onResultsClick={(data) => {
                     onSearchLocationHandler(data);
+                    //alert(data);
                   }}
                   onClearInput={(textValue) => {
                     console.log('setvalue');
@@ -212,10 +210,12 @@ const styles = StyleSheet.create({
 
   textInputWrapper: {
     width: '100%',
+    flex: 1,
     position: 'absolute',
     padding: 24,
     alignItems: 'stretch',
     zIndex: 100,
+    elevation: 100,
   },
 
   buttonWrapper: {
@@ -225,6 +225,7 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: 'stretch',
     zIndex: 100,
+    elevation: 100,
   },
 
   textInput: {
@@ -239,9 +240,10 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     position: 'absolute',
-    left: 40,
-    top: 35,
+    top: 45,
+    left: 45,
     zIndex: 101,
+    elevation: 101,
   },
 });
 

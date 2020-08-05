@@ -222,15 +222,16 @@ const AlmostThere = (route) => {
           Let us know your current location so we can show you services and
           goods nearby. You may change this later on.
         </AppText>
-
-        <View style={styles.textInputWrapper}>
-          <View style={styles.navIcon}>
-            <NavigationPin width={normalize(24)} height={normalize(24)} />
-          </View>
-          {/* <AppInput
-            customStyle={styles.textInput}
-            placeholder="Enter street address or city"
-          /> */}
+        <View
+          style={{
+            flex: 1,
+            //alignItems: 'flex-end',
+            //height: 70,
+            //zIndex: 1200,
+            //elevation: 1200,
+            //position: 'relative',
+            //backgroundColor: 'green',
+          }}>
           <GooglePlacesInput
             onResultsClick={(data) => {
               onSearchLocationHandler(data);
@@ -238,11 +239,12 @@ const AlmostThere = (route) => {
             onClearInput={(textValue) => {
               onClearSearchAddress(textValue);
             }}
+            adjustListPosition={true}
           />
         </View>
 
         {isLocationReady ? (
-          <>
+          <View style={styles.bottomWrapper}>
             <View style={styles.currentLocationContainer}>
               <NavigationArrow width={normalize(24)} height={normalize(24)} />
               <AppText
@@ -267,7 +269,7 @@ const AlmostThere = (route) => {
                 </TouchableOpacity>
               )}
             </View>
-          </>
+          </View>
         ) : (
           <ActivityIndicator
             animating={true}
@@ -314,26 +316,9 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
 
-  textInputWrapper: {
-    //position: 'relative',
-    marginBottom: 24,
-    zIndex: 9,
-  },
-
-  navIcon: {
-    position: 'absolute',
-    left: 16,
-    top: 13,
-    zIndex: 10,
-    elevation: 10,
-  },
-
-  textInput: {
-    borderColor: Colors.neutralGray,
-    borderWidth: 1,
-    paddingLeft: 40,
-    paddingRight: 39,
-    fontSize: 16,
+  textWrapper: {
+    height: 70,
+    //backgroundColor: 'blue',
   },
 
   currentLocationLabel: {
@@ -342,12 +327,23 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
 
+  bottomWrapper: {
+    //backgroundColor: 'red',
+    flex: 1,
+    justifyContent: 'flex-start',
+    //marginTop: '-30%',
+    //position: 'relative',
+    zIndex: -1,
+    elevation: -1,
+  },
+
   currentLocationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 16,
-    zIndex: 0,
-    elevation: 0,
+    //position: 'absolute',
+    //top: normalize(-70),
+    //backgroundColor: 'red',
   },
 
   currentAddress: {

@@ -53,6 +53,7 @@ import ServbeesAltActive from '@/assets/images/icons/servbees-alt-active.svg';
 
 import UserAlt from '@/assets/images/icons/user-alt.svg';
 import UserAltActive from '@/assets/images/icons/user-alt-active.svg';
+import Users from '@/assets/images/icons/followers.svg';
 
 import FilterNeeds from './filter-needs.svg';
 import FilterSeller from './filter-seller.svg';
@@ -176,4 +177,5 @@ export {
   StarRating,
   CheckboxCheck,
   RadioDot,
+  Users,
 };

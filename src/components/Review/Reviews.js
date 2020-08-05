@@ -1,26 +1,19 @@
 //import liraries
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {Colors} from '@/globals';
+import {FlatList} from 'react-native';
 
-// create a component
-const Reviews = () => {
+import Review from '@/components/Review/Review';
+
+const Reviews = ({data, type}) => {
+  const renderItem = ({item}) => <Review data={item} type={type} />;
+
   return (
-    <View style={styles.container}>
-      <Text>Reviews</Text>
-    </View>
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+    />
   );
 };
 
-// define your styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.emptyStateBackground,
-  },
-});
-
-//make this component available to the app
 export default Reviews;

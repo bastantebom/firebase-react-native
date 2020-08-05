@@ -1,5 +1,5 @@
 //import liraries
-import React, {useRef, useState, useEffect, useContext} from 'react';
+import React, {useRef, useState, useContext} from 'react';
 import {View, TextInput, StyleSheet, Keyboard} from 'react-native';
 import AppColor from '@/globals/Colors';
 import {useNavigation} from '@react-navigation/native';
@@ -8,12 +8,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import {Context} from '@/context';
 
-import {
-  AppViewContainer,
-  AppText,
-  TransitionIndicator,
-  Notification,
-} from '@/components';
+import {AppText, TransitionIndicator, Notification} from '@/components';
 import VerifyService from '@/services/VerifyService';
 
 // create a component
