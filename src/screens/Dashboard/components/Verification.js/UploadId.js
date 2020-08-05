@@ -21,6 +21,7 @@ import {
 import { VerifyMap } from './Map';
 import Modal from 'react-native-modal';
 import { CameraId } from './components/CameraId';
+import { SelfieId } from './components/SelfieId';
 
 export const UploadGovernmentId = ({back}) => {
   
@@ -163,8 +164,12 @@ export const UploadGovernmentId = ({back}) => {
               />
             </View>
           </PaddingView>   
+        ) : screen === 'uploadId' ? (
+          <CameraId 
+            back={() => setScreen('idType')} 
+          />
         ) : (
-          <CameraId back={() => setScreen('idType')} />
+          null
         )}
     </SafeAreaView>
   )

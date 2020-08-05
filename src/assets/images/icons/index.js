@@ -116,6 +116,9 @@ import VerifyTick from '@/assets/images/icons/verify-tick.svg';
 import Lock from '@/assets/images/icons/lock.svg';
 import FolderAdd from '@/assets/images/icons/folder-add.svg';
 
+import Flash from '@/assets/images/icons/camera-flash.svg';
+import Flip from '@/assets/images/icons/camera-flip.svg';
+
 export {
   ProfileListBlock,
   ProfileListMute,
@@ -194,5 +197,7 @@ export {
   ArrowRight,
   VerifyTick,
   Lock,
-  FolderAdd
+  FolderAdd,
+  Flash,
+  Flip
 };
