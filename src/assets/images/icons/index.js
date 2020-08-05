@@ -118,8 +118,12 @@ import FolderAdd from '@/assets/images/icons/folder-add.svg';
 
 import Flash from '@/assets/images/icons/camera-flash.svg';
 import Flip from '@/assets/images/icons/camera-flip.svg';
+import Temperature from './temperature.svg';
+import BeeJoinedTime from './bee-joined-time.svg'
 
 export {
+  BeeJoinedTime,
+  Temperature,
   ProfileListBlock,
   ProfileListMute,
   ProfileListUnfollow,
