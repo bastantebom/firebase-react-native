@@ -7,7 +7,7 @@ import {
   Dimensions,
   FlatList
 } from 'react-native'
-import { AppInput, PaddingView, AppText, AppButton } from '@/components';
+import { PaddingView, AppText, AppButton } from '@/components';
 import { Colors, normalize } from '@/globals';
 import {
   HeaderBackGray,
@@ -15,17 +15,13 @@ import {
   Lock,
   FolderAdd
 } from '@/assets/images/icons';
-import {
-  OnboardingIllustration1
-} from '@/assets/images';
-import { VerifyMap } from './Map';
-import Modal from 'react-native-modal';
+import { OnboardingIllustration1 } from '@/assets/images';
 import { CameraId } from './components/CameraId';
-import { SelfieId } from './components/SelfieId';
 
-export const UploadGovernmentId = ({back}) => {
+export const UploadGovernmentId = ({ back, backToIndex }) => {
   
   const [screen, setScreen] = useState('idAdd');
+  const [idType, setIdType] = useState('');
 
   const verificationReqs = [
     {
@@ -39,31 +35,48 @@ export const UploadGovernmentId = ({back}) => {
       id: 1,
       title: 'Passport',
       icon: <FolderAdd width={normalize(25)} height={normalize(25)} />,
-      // route: 'profile',
-      // completed: false
     },
     {
       id: 2,
       title: 'NBI Clearance',
       icon: <FolderAdd width={normalize(25)} height={normalize(25)} />,
-      // route: 'profile',
-      // completed: false
     },
     {
       id: 3,
       title: 'Voter\'s ID',
       icon: <FolderAdd width={normalize(25)} height={normalize(25)} />,
-      // route: 'profile',
-      // completed: true
     },
     {
       id: 4,
       title: 'Student\'s ID',
       icon: <FolderAdd width={normalize(25)} height={normalize(25)} />,
-      // route: 'profile',
-      // completed: true
     }
   ];
+
+  const addLicense = () => {
+    setIdType('Driver\'s License');
+    setScreen('uploadId');
+  }
+
+  const addPassport = () => {
+    setIdType('Passport');
+    setScreen('uploadId');
+  }
+
+  const addClearance = () => {
+    setIdType('NBI Clearance');
+    setScreen('uploadId');
+  }
+
+  const addVoterId = () => {
+    setIdType('Voter\'s ID');
+    setScreen('uploadId');
+  }
+
+  const addStudentId = () => {
+    setIdType('Student\'s ID');
+    setScreen('uploadId');
+  }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity 
@@ -71,12 +84,14 @@ export const UploadGovernmentId = ({back}) => {
       // onPress={() => toggleProfile()}
       onPress={() => 
         item.id === 0 ? 
-          toggleProfile() :
+          addLicense() :
         item.id === 1 ?
-          toggleMobileVerification() :
+          addPassport() :
         item.id === 2 ?
-        toggleUploadId() :
-        null
+          addClearance() :
+        item.id === 2 ?
+          addVoterId() :
+          addStudentId()
         }
     >
       <View style={styles.list}>
@@ -157,16 +172,18 @@ export const UploadGovernmentId = ({back}) => {
                   <AppText textStyle="caption" customStyle={{ marginLeft: 12 }}>This information won't be shared with other people who use Servbees</AppText>
                 </View>
               </View>
-              <AppButton
+              {/* <AppButton
                 text="Next"
                 type="primary"
                 onPress={() => setScreen('uploadId')}
-              />
+              /> */}
             </View>
           </PaddingView>   
         ) : screen === 'uploadId' ? (
           <CameraId 
             back={() => setScreen('idType')} 
+            backToIndex={backToIndex}
+            id={idType}
           />
         ) : (
           null

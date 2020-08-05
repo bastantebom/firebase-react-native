@@ -1,22 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   TouchableOpacity,
   View,
   StyleSheet,
   SafeAreaView
 } from 'react-native'
-import { AppInput, PaddingView, AppText, MapComponent, TransitionIndicator } from '@/components';
-import { Colors, normalize } from '@/globals';
-import {
-  HeaderBackGray,
-  ArrowRight
-} from '@/assets/images/icons';
-import Config from '@/services/Config';
 import Geocoder from 'react-native-geocoding';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
+import { HeaderBackGray } from '@/assets/images/icons';
+import Config from '@/services/Config';
+import GooglePlacesInput from '@/components/LocationSearchInput';
+import { PaddingView, AppText, MapComponent, TransitionIndicator, AppButton } from '@/components';
+import { Colors, normalize } from '@/globals';
 
 export const VerifyMap = ({back}, route) => {
+  
   const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
   const [buttonStyle, setButtonStyle] = useState({
@@ -102,30 +101,73 @@ export const VerifyMap = ({back}, route) => {
     }
   };
 
+  const onClearSearchAddress = (textValue) => {
+    if (textValue.trim().length < 1) {
+      setSearchStringAddress('');
+      setButtonDisabled(true);
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View
-        style={styles.modalHeader}>
-        <TouchableOpacity
-          onPress={back}
-          activeOpacity={0.7}
-          style={{position: 'absolute', left: 0}}
-        >
-          <HeaderBackGray width={normalize(16)} height={normalize(16)} />
-        </TouchableOpacity>
-        <AppText textStyle="body3">Add an Address</AppText>
-      </View>
-      <MapComponent
-        // latitude={route?.route?.params.latitude}
-        // longitude={route?.route?.params.longitude}
-        latitude={37.78825}
-        longitude={-122.4324}
-        reCenter={newCoords}
-        onRegionChange={(region) => {
-          onRegionChange(region);
-        }}
-        withCurrentMarker={true}
-      />
+      <PaddingView paddingSize={3}>
+        <View
+          style={styles.modalHeader}>
+          <TouchableOpacity
+            onPress={back}
+            activeOpacity={0.7}
+            style={{position: 'absolute', left: 0}}
+          >
+            <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+          </TouchableOpacity>
+          <AppText textStyle="body3">Address</AppText>
+        </View>
+      </PaddingView>
+      {/* <View> */}
+        <View style={styles.textInputWrapper}>
+          <GooglePlacesInput
+            onResultsClick={(data) => {
+              onSearchLocationHandler(data);
+              //alert(data);
+            }}
+            onClearInput={(textValue) => {
+              console.log('setvalue');
+            }}
+            currentValue={
+              changeMapAddress.length > 0
+                ? changeMapAddress
+                : route?.route?.params.address
+            }
+          />
+        </View>
+        <MapComponent
+          // latitude={latitude}
+          // longitude={longitude}
+          latitude={37.78825}
+          longitude={-122.4324}
+          reCenter={newCoords}
+          onRegionChange={(region) => {
+            onRegionChange(region);
+          }}
+          withCurrentMarker={true}
+        />
+        <View style={styles.buttonWrapper}>
+          <AppButton
+            text="Confirm"
+            type="primary"
+            height="xl"
+            customStyle={buttonStyle}
+            disabled={buttonDisabled}
+            onPress={() => {
+              saveRefineLocation();
+            }}
+          />
+        </View>
+      {/* </View> */}
     </SafeAreaView>
   )
 }
@@ -136,6 +178,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 32,
-  } 
+    // marginBottom: 32,
+  } ,
+  buttonWrapper: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 24,
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+    elevation: 100,
+  },
+  textInputWrapper: {
+    width: '100%',
+    flex: 0,
+    position: 'absolute',
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+    top: 70
+    // elevation: 100,
+  },
 })
+

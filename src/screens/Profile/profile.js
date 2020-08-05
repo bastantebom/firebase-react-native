@@ -139,7 +139,7 @@ function Profile({navigation}) {
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
-          <ProfileImageUpload />
+          <ProfileImageUpload size={150} />
           <HexagonBorder />
         </View>
         <ProfileLinks
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: '40%',
     height: normalize(160),
-    top: normalize(-50),
+    top: normalize(-40),
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },
