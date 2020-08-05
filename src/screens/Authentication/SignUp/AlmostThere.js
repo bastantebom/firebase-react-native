@@ -222,54 +222,56 @@ const AlmostThere = (route) => {
           Let us know your current location so we can show you services and
           goods nearby. You may change this later on.
         </AppText>
-        <View
-          style={{
-            flex: 1,
-            //alignItems: 'flex-end',
-            //height: 70,
-            //zIndex: 1200,
-            //elevation: 1200,
-            //position: 'relative',
-            //backgroundColor: 'green',
-          }}>
-          <GooglePlacesInput
-            onResultsClick={(data) => {
-              onSearchLocationHandler(data);
-            }}
-            onClearInput={(textValue) => {
-              onClearSearchAddress(textValue);
-            }}
-            adjustListPosition={true}
-          />
-        </View>
 
         {isLocationReady ? (
-          <View style={styles.bottomWrapper}>
-            <View style={styles.currentLocationContainer}>
-              <NavigationArrow width={normalize(24)} height={normalize(24)} />
-              <AppText
-                textStyle="promo"
-                customStyle={styles.currentLocationLabel}>
-                Your current location
-              </AppText>
+          <>
+            <View style={styles.bottomWrapper}>
+              <View style={styles.currentLocationContainer}>
+                <NavigationArrow width={normalize(24)} height={normalize(24)} />
+                <AppText
+                  textStyle="promo"
+                  customStyle={styles.currentLocationLabel}>
+                  Your current location
+                </AppText>
+              </View>
+              <View>
+                {searchStringAddress.length > 0 ? (
+                  <AppText></AppText>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      onCurrentLocationClick();
+                    }}>
+                    <AppText
+                      textStyle="body3"
+                      customStyle={styles.currentAddress}>
+                      {stringAddress}
+                    </AppText>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-            <View>
-              {searchStringAddress.length > 0 ? (
-                <AppText></AppText>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => {
-                    onCurrentLocationClick();
-                  }}>
-                  <AppText
-                    textStyle="body3"
-                    customStyle={styles.currentAddress}>
-                    {stringAddress}
-                  </AppText>
-                </TouchableOpacity>
-              )}
+            <View
+              style={{
+                flex: 2,
+                //alignItems: 'flex-end',
+                //height: 70,
+                zIndex: 1200,
+                elevation: 1200,
+                //position: 'relative',
+                //backgroundColor: 'green',
+              }}>
+              <GooglePlacesInput
+                onResultsClick={(data) => {
+                  onSearchLocationHandler(data);
+                }}
+                onClearInput={(textValue) => {
+                  onClearSearchAddress(textValue);
+                }}
+                adjustListPosition={true}
+              />
             </View>
-          </View>
+          </>
         ) : (
           <ActivityIndicator
             animating={true}
@@ -329,9 +331,9 @@ const styles = StyleSheet.create({
 
   bottomWrapper: {
     //backgroundColor: 'red',
-    flex: 1,
+    //flex: 1,
     justifyContent: 'flex-start',
-    //marginTop: '-30%',
+    marginBottom: normalize(8),
     //position: 'relative',
     zIndex: -1,
     elevation: -1,
