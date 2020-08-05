@@ -106,6 +106,19 @@ import ProfileListBlock from './profile-list-block.svg';
 import ProfileListMute from './profile-list-mute.svg';
 import ProfileListUnfollow from './profile-list-unfollow.svg';
 
+// Verification
+import Card from '@/assets/images/icons/verify-card.svg';
+import Mobile from '@/assets/images/icons/verify-mobile.svg';
+import Id from '@/assets/images/icons/verify-id.svg';
+import ArrowRight from '@/assets/images/icons/arrow-right.svg';
+import VerifyTick from '@/assets/images/icons/verify-tick.svg';
+
+import Lock from '@/assets/images/icons/lock.svg';
+import FolderAdd from '@/assets/images/icons/folder-add.svg';
+
+import Flash from '@/assets/images/icons/camera-flash.svg';
+import Flip from '@/assets/images/icons/camera-flip.svg';
+
 export {
   ProfileListBlock,
   ProfileListMute,
@@ -178,4 +191,13 @@ export {
   CheckboxCheck,
   RadioDot,
   Users,
+  Card,
+  Mobile,
+  Id,
+  ArrowRight,
+  VerifyTick,
+  Lock,
+  FolderAdd,
+  Flash,
+  Flip
 };
