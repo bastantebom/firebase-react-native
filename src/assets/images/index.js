@@ -18,6 +18,11 @@ import NoPost from './NoPost.svg';
 import NoReview from './NoReview.svg';
 import NoInfo from './NoInfo.svg';
 
+import IdSelfie from './IdSelfie.svg'
+
+import SelfieMask from './mask.svg'
+
+
 export {
   Location,
   ResetPassword,
@@ -31,4 +36,6 @@ export {
   NoPost,
   NoReview,
   NoInfo,
+  IdSelfie,
+  SelfieMask
 };

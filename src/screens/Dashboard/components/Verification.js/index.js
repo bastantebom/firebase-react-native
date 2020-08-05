@@ -165,11 +165,10 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
                 >
                   Complete your profile and verify youridentity for a better Servbees experience!
                 </AppText>
-                {verificationReqs.map((item, i) => {
+                {verificationReqs.map((item) => {
                   return (
-                    <>
+                    <View key={item.id}>
                       <TouchableOpacity 
-                        key={i}
                         style={[styles.list, {marginBottom: 28}]} 
                         // onPress={() => toggleProfile()}
                         onPress={() => 
@@ -190,7 +189,7 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
                         </View>
                         <ArrowRight/>
                       </TouchableOpacity>
-                    </>
+                    </View>
                   )
                 })}
                 {/* <FlatList
