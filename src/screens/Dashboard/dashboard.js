@@ -257,7 +257,7 @@ function Dashboard({navigation}) {
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        <Notification 
+        {/* <Notification 
           message={
             <VerificationScreen
               onPress={() => toggleMenu()}
@@ -268,7 +268,7 @@ function Dashboard({navigation}) {
           } 
           type={'verified'}
           position="relative"
-        />
+        /> */}
         <View style={styles.container}>
           <SearchBarWithFilter />
           <Location />

@@ -89,7 +89,7 @@ export const UploadGovernmentId = ({ back, backToIndex }) => {
           addPassport() :
         item.id === 2 ?
           addClearance() :
-        item.id === 2 ?
+        item.id === 3 ?
           addVoterId() :
           addStudentId()
         }
