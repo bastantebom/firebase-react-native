@@ -1,3 +1,4 @@
-import Post from './post';
+import Post from './components/PostPopup';
+import PostScreen from './PostScreen';
 
-export {Post};
+export {Post, PostScreen};

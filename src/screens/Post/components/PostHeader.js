@@ -6,7 +6,11 @@ import { AppText } from '@/components'
 import { normalize, Colors } from '@/globals';
 import { PostSell, PostService, PostNeed } from '@/assets/images/icons';
 
-const Post = () => {
+const Post = ({card}) => {
+  useEffect(() => {
+    selectActive(card)
+  }, [])
+
   const [pickingState, setPickingState] = useState(true)
 
   const [postPosition] = useState(new Animated.Value(0))
@@ -425,12 +429,6 @@ const Post = () => {
               resetPicking()
             }
           }}>
-            {/* <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
-              <PostNeed width={normalize(24)} height={normalize(24)} />
-              <Animated.View style={{ flex: 1, justifyContent: "center" }}>
-                <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{postText}</AppText>
-              </Animated.View>
-            </Animated.View> */}
             <PostContent />
           </TouchableOpacity>
 
@@ -446,12 +444,6 @@ const Post = () => {
               resetPicking()
             }
           }}>
-            {/* <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
-              <PostSell width={normalize(24)} height={normalize(24)} />
-              <Animated.View style={{ flex: 1, justifyContent: "center" }}>
-                <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{sellText}</AppText>
-              </Animated.View>
-            </Animated.View> */}
             <SellContent />
           </TouchableOpacity>
           <Animated.View style={[styles.needDot, { backgroundColor: Colors.secondaryRoyalBlue }, SellDotAnimationStyle]} />
@@ -466,12 +458,6 @@ const Post = () => {
               resetPicking()
             }
           }}>
-            {/* <Animated.View style={[{ height: '100%', paddingLeft: 16, paddingRight: 8, paddingVertical: 8, position: 'relative' }, PostTextOpacity]}>
-              <PostService width={normalize(24)} height={normalize(24)} />
-              <Animated.View style={{ flex: 1, justifyContent: "center" }}>
-                <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>{needText}</AppText>
-              </Animated.View>
-            </Animated.View> */}
             <NeedContent />
           </TouchableOpacity>
 
@@ -481,17 +467,13 @@ const Post = () => {
       </View>
       <TouchableOpacity>
         <View style={{
-          // backgroundColor: 'red',
           width: 100,
           borderWidth: 1,
           borderRadius: 2,
-          // borderColor: '#ddd',
-          // borderBottomWidth: 0,
           shadowColor: 'green',
           shadowOffset: { width: 5, height: 10 },
           shadowOpacity: 0.8,
           shadowRadius: 2,
-          // elevation: 1,
           marginLeft: 5,
           marginRight: 5,
           marginTop: 10,
@@ -512,7 +494,7 @@ const styles = StyleSheet.create({
   },
   sellCard: {
     backgroundColor: Colors.secondaryRoyalBlue,
-    height: normalize(80),
+    height: normalize(82),
     borderRadius: 20,
     marginLeft: normalize(9),
 
@@ -520,7 +502,7 @@ const styles = StyleSheet.create({
   postCard: {
     // ACTS AS NEED CARD
     backgroundColor: Colors.secondaryMountainMeadow,
-    height: normalize(80),
+    height: normalize(82),
     borderRadius: 20,
 
 
@@ -529,7 +511,7 @@ const styles = StyleSheet.create({
   },
   needCard: {
     backgroundColor: Colors.secondaryBrinkPink,
-    height: normalize(80),
+    height: normalize(82),
     borderRadius: 20,
     marginLeft: normalize(9)
   },

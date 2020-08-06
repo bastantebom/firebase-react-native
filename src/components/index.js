@@ -22,8 +22,10 @@ import TabNavigation from './TabNavigation/TabNavigation';
 import MarginView from './AppViewContainer/MarginView';
 
 import ProfileList from './ProfileList/ProfileList';
+import ScreenHeaderTitle from './ScreenHeaderTitle';
 
 export {
+  ScreenHeaderTitle,
   ProfileList,
   MarginView,
   TabNavigation,
