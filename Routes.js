@@ -1,17 +1,20 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { NavigationContainer, TouchableWithoutFeedback } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, {useEffect, useState, useContext} from 'react';
+import {
+  NavigationContainer,
+  TouchableWithoutFeedback,
+} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {View} from 'react-native';
 
 //screens
-import { Onboarding } from '@/screens/Onboarding';
-import { Dashboard } from '@/screens/Dashboard';
-import { Profile } from '@/screens/Profile';
-import { Hives } from '@/screens/Hive';
-import { Activity } from '@/screens/Activity';
-import { Post } from '@/screens/Post';
+import {Onboarding} from '@/screens/Onboarding';
+import {Dashboard} from '@/screens/Dashboard';
+import {Profile} from '@/screens/Profile';
+import {Hives} from '@/screens/Hive';
+import {Activity} from '@/screens/Activity';
+import {Post} from '@/screens/Post';
 
 import {
   AlmostThere,
@@ -20,8 +23,8 @@ import {
   ResetPassword,
 } from '@/screens/Authentication';
 
-import { normalize } from '@/globals';
-import { Context } from '@/context';
+import {normalize} from '@/globals';
+import {Context} from '@/context';
 
 import {
   ServbeesAlt,
@@ -32,7 +35,7 @@ import {
   BellActive,
   UserAlt,
   UserAltActive,
-  NotificationDot
+  NotificationDot,
 } from '@/assets/images/icons';
 
 const AuthStack = createStackNavigator();
@@ -95,12 +98,10 @@ function ProfileStackScreen() {
   );
 }
 
-function TabStack() {  
+function TabStack() {
   const [activityNotification, setActivityNotification] = useState(true);
   const [profileNotification, setProfileNotification] = useState(true);
-  const {
-    closePostButtons
-  } = useContext(Context);
+  const {closePostButtons} = useContext(Context);
 
   return (
     <Tab.Navigator
@@ -108,38 +109,46 @@ function TabStack() {
         style: {
           borderTopWidth: 0,
           elevation: 0,
-          position: 'relative'
+          position: 'relative',
         },
         tabStyle: {
           flex: 1,
-          alignItems: 'center'
+          alignItems: 'center',
         },
         labelStyle: {
           fontSize: normalize(12),
-          fontFamily: 'RoundedMplus1c-Medium'
+          fontFamily: 'RoundedMplus1c-Medium',
         },
         inactiveTintColor: '#8C8B98',
-        activeTintColor: '#1F1A54'
+        activeTintColor: '#1F1A54',
       }}>
       <Tab.Screen
         name="Servbees"
         component={DashboardStackScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            const icon = focused ? <ServbeesAltActive width={normalize(25)} height={normalize(25)} /> : <ServbeesAlt width={normalize(25)} height={normalize(25)} />;
+          tabBarIcon: ({focused}) => {
+            const icon = focused ? (
+              <ServbeesAltActive width={normalize(25)} height={normalize(25)} />
+            ) : (
+              <ServbeesAlt width={normalize(25)} height={normalize(25)} />
+            );
             return <>{icon}</>;
           },
           tabBarOnPress: () => {
-            closePostButtons
-          }
+            closePostButtons;
+          },
         }}
       />
       <Tab.Screen
         name="Hive"
         component={HiveStackScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            const icon = focused ? <HiveActive width={normalize(25)} height={normalize(25)} /> : <Hive width={normalize(25)} height={normalize(25)} />;
+          tabBarIcon: ({focused}) => {
+            const icon = focused ? (
+              <HiveActive width={normalize(25)} height={normalize(25)} />
+            ) : (
+              <Hive width={normalize(25)} height={normalize(25)} />
+            );
             return <>{icon}</>;
           },
         }}
@@ -148,38 +157,47 @@ function TabStack() {
         name="Post"
         component={PostStackScreen}
         options={{
-          tabBarButton: () => (<Post />)
+          tabBarButton: () => <Post />,
         }}
       />
       <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            const icon = focused ? <BellActive width={normalize(25)} height={normalize(25)} /> : <Bell width={normalize(25)} height={normalize(25)} />;
+          tabBarIcon: ({focused}) => {
+            const icon = focused ? (
+              <BellActive width={normalize(25)} height={normalize(25)} />
+            ) : (
+              <Bell width={normalize(25)} height={normalize(25)} />
+            );
             return (
-              <View style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                {activityNotification && (
-                <View style={{
-                  position: 'absolute',
-                  top: 3,
-                  right: 1,
-                  zIndex: 2
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                  <NotificationDot width={normalize(11)} height={normalize(11)}/>
+                {activityNotification && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 3,
+                      right: 1,
+                      zIndex: 2,
+                    }}>
+                    <NotificationDot
+                      width={normalize(11)}
+                      height={normalize(11)}
+                    />
+                  </View>
+                )}
+                <View
+                  style={{
+                    position: 'relative',
+                  }}>
+                  {icon}
                 </View>
-                ) 
-              }
-              <View style={{
-                position: 'relative'
-              }}>
-                {icon}
               </View>
-            </View>
             );
           },
         }}
@@ -188,33 +206,42 @@ function TabStack() {
         name="Profile"
         component={ProfileStackScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            const icon = focused ? <UserAltActive width={normalize(25)} height={normalize(25)} /> : <UserAlt width={normalize(25)} height={normalize(25)} />;
-            return (
-            <View style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-               {profileNotification && (
-                <View style={{
-                  position: 'absolute',
-                  top: 3,
-                  right: 1,
-                  zIndex: 2
-                }}>
-                  <NotificationDot width={normalize(11)} height={normalize(11)}/>
-                </View>
-               ) 
-              }
-              <View style={{
-                position: 'relative'
-              }}>
-                {icon}
-              </View>
-            </View>
+          tabBarIcon: ({focused}) => {
+            const icon = focused ? (
+              <UserAltActive width={normalize(25)} height={normalize(25)} />
+            ) : (
+              <UserAlt width={normalize(25)} height={normalize(25)} />
             );
-          }
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {profileNotification && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 3,
+                      right: 1,
+                      zIndex: 2,
+                    }}>
+                    <NotificationDot
+                      width={normalize(11)}
+                      height={normalize(11)}
+                    />
+                  </View>
+                )}
+                <View
+                  style={{
+                    position: 'relative',
+                  }}>
+                  {icon}
+                </View>
+              </View>
+            );
+          },
         }}
       />
     </Tab.Navigator>
@@ -224,9 +251,7 @@ function TabStack() {
 function Routes() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-  const {
-    closePostButtons
-  } = useContext(Context);
+  const {closePostButtons} = useContext(Context);
 
   function onAuthStateChanged(user) {
     setUser(user);
@@ -248,4 +273,3 @@ function Routes() {
 }
 
 export default Routes;
-
