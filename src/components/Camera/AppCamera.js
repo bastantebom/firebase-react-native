@@ -16,7 +16,7 @@ import {
   const maskRowHeight = Math.round((height - 300) / 20);
   const maskColWidth = (width - 300) / 2;
 
-export const IdPhoto = ({ message, instruction, withMask, captureImage }) => {
+export const AppCamera = ({ message, instruction, withMask, captureImage }) => {
   
     // const [screen, setScreen] = useState('idPhoto')
     // const [cameraRatio, setCameraRatio] = useState('')

@@ -1,3 +1,3 @@
-import IdPhoto from '@/components/Camera/IdPhoto';
+import AppCamera from '@/components/Camera/AppCamera';
 
-export { IdPhoto };
+export { AppCamera };

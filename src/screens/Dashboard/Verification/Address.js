@@ -9,7 +9,7 @@ import {
 import { AppInput, PaddingView, AppText } from '@/components';
 import { Colors, normalize } from '@/globals';
 import { HeaderBackGray, ArrowRight } from '@/assets/images/icons';
-import { VerifyMap } from './Map';
+import { VerifyMap } from './components/Map';
 import Modal from 'react-native-modal';
 
 export const AddAnAddress = ({back}) => {
