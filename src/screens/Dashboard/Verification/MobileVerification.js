@@ -12,7 +12,7 @@ import {
   HeaderBackGray,
   ArrowRight
 } from '@/assets/images/icons';
-import { VerifyMap } from './Map';
+import { VerifyMap } from './components/Map';
 import Modal from 'react-native-modal';
 
 export const MobileVerification = ({back, toggleMobileCode}) => {

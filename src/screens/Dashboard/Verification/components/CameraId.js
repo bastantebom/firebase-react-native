@@ -12,7 +12,7 @@ import { normalize, Colors } from '@/globals';
 import { AppText, AppButton, PaddingView } from '@/components';
 import { HeaderBack } from '@/assets/images/icons';
 import { SelfieId } from './SelfieId';
-// import { IdPhoto } from '@/components/Camera/IdPhoto';
+import { AppCamera } from '@/components/Camera/AppCamera';
 
 const { height, width } = Dimensions.get('window');
 const maskRowHeight = Math.round((height - 300) / 20);
@@ -76,7 +76,7 @@ export const CameraId = ({ back, backToIndex, id }) => {
             <HeaderBack width={normalize(16)} height={normalize(16)} />
             <AppText textStyle="body3">&nbsp;</AppText>
           </TouchableOpacity>
-          {/* <IdPhoto
+          {/* <AppCamera
             message={'Take a photo of your ' + id}
             instruction={'Make sure that your ID fits within the yellow border'}
             withMask

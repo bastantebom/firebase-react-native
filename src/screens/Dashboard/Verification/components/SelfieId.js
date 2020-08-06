@@ -143,9 +143,9 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
             captureAudio={false}
             type={cameraType}
           >
-            <View style={styles.maskOutter}>
               {/* <SelfieMask width={normalize(width)} /> */}
-            </View>
+            {/* <View style={styles.maskOutter}>
+            </View> */}
             <View style={{ justifyContent: 'space-between', width: '100%', flexDirection: 'row',  position: 'absolute', bottom: 25, paddingHorizontal: 25}}>
               <TouchableOpacity
                 onPress={() => toggleCameraType()}
@@ -159,7 +159,7 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
               </TouchableOpacity>
             </View>
           </RNCamera>
-          <View style={{ justifyContent: 'space-between', alignItems: 'center', height: height / 2 }}>
+          <View style={{ justifyContent: 'space-between', alignItems: 'center', height: height * .35, padding: 25 }}>
             <View>
               <AppText textStyle="body1">Take a selfie with ID</AppText>
               <AppText textStyle="body2" color={Colors.contentPlaceholder}>Hold your ID in front of you, showing your personal details  with your face image.</AppText>
@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
   },
   preview: {
     flex: 1,
-    // maxHeight: height / 2,
-    opacity: .5,
+    // maxHeight: height,
+    // opacity: .5,
   },
   capture: {
     backgroundColor: Colors.primaryYellow,
@@ -226,31 +226,31 @@ const styles = StyleSheet.create({
     height: normalize(75),
     marginBottom: 15,
   },
-  maskOutter: {
-    position: 'absolute',
-    // top: 0,
-    // left: 0,
-    width: '100%',
-    // height: '100%',
-    // alignItems: 'center',
-    // justifyContent: 'space-around',
-  },
-  maskInner: {
-    width: width - 17,
-    backgroundColor: 'transparent',
-    // borderColor: 'white',
-    borderRadius: 16,
-    borderColor: Colors.yellow2,
-    borderWidth: 4
-    // borderBottomColor: 'white',
-  },
-  maskFrame: {
-    backgroundColor: 'rgba(0,0,0,.5)',
-  },
-  maskRow: {
-    width: '100%',
-  },
-  maskCenter: { flexDirection: 'row' },
+  // maskOutter: {
+  //   position: 'absolute',
+  //   // top: 0,
+  //   // left: 0,
+  //   width: '100%',
+  //   // height: '100%',
+  //   // alignItems: 'center',
+  //   // justifyContent: 'space-around',
+  // },
+  // maskInner: {
+  //   width: width - 17,
+  //   backgroundColor: 'transparent',
+  //   // borderColor: 'white',
+  //   borderRadius: 16,
+  //   borderColor: Colors.yellow2,
+  //   borderWidth: 4
+  //   // borderBottomColor: 'white',
+  // },
+  // maskFrame: {
+  //   backgroundColor: 'rgba(0,0,0,.5)',
+  // },
+  // maskRow: {
+  //   width: '100%',
+  // },
+  // maskCenter: { flexDirection: 'row' },
   modalHeader: {
     // position: 'relative',
     justifyContent: 'center',
