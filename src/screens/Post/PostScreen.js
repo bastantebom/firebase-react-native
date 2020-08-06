@@ -1,15 +1,22 @@
 import React from 'react';
 import {View, TouchableOpacity, StyleSheet, SafeAreaView} from 'react-native';
 
-import {AppText} from '@/components';
+import {AppText, ScreenHeaderTitle} from '@/components';
 
-const PostScreen = ({togglePostModal}) => {
+import PostHeader from './components/PostHeader';
+
+const PostScreen = ({togglePostModal, card}) => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={togglePostModal}>
-          <AppText>HEllo POST SADS</AppText>
-        </TouchableOpacity>
+        <ScreenHeaderTitle
+          close={togglePostModal}
+          paddingSize={2}
+          icon="close"
+          title="Post"
+        />
+
+        <PostHeader card={card} />
       </View>
     </SafeAreaView>
   );

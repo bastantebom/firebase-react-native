@@ -76,6 +76,7 @@ import HeaderFollowing from './header-following.svg';
 import HeaderMenu from './header-menu.svg';
 import HeaderQR from './header-qr.svg';
 import HeaderShare from './header-share.svg';
+import HeaderCloseGray from './header-close-gray.svg';
 
 import ProfileBlockRed from './profile-block-red.svg';
 import ProfileMute from './profile-mute.svg';
@@ -119,7 +120,7 @@ import FolderAdd from '@/assets/images/icons/folder-add.svg';
 import Flash from '@/assets/images/icons/camera-flash.svg';
 import Flip from '@/assets/images/icons/camera-flip.svg';
 import Temperature from './temperature.svg';
-import BeeJoinedTime from './bee-joined-time.svg'
+import BeeJoinedTime from './bee-joined-time.svg';
 
 export {
   BeeJoinedTime,
@@ -155,6 +156,7 @@ export {
   HeaderMenu,
   HeaderQR,
   HeaderShare,
+  HeaderCloseGray,
   SortHighLow,
   SortLowHigh,
   SortPopular,
@@ -203,5 +205,5 @@ export {
   Lock,
   FolderAdd,
   Flash,
-  Flip
+  Flip,
 };

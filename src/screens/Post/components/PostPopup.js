@@ -30,6 +30,7 @@ const Post = () => {
   const animation = new Animated.Value(showButtons ? 0 : 1);
 
   const [showPostModal, setShowPostModal] = useState(false);
+  const [selectedCard, setSelectedCard] = useState('');
 
   const togglePostModal = () => {
     setShowPostModal(!showPostModal);
@@ -48,6 +49,11 @@ const Post = () => {
       useNativeDriver: true,
     }).start();
   }, [showButtons]);
+
+  const selectCard = (card) => {
+    togglePostModal();
+    setSelectedCard(card);
+  };
 
   return (
     <>
@@ -91,7 +97,11 @@ const Post = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <TouchableOpacity style={[styles.button, styles.pink]}>
+            <TouchableOpacity
+              style={[styles.button, styles.pink]}
+              onPress={() => {
+                selectCard('need');
+              }}>
               <View style={styles.iconHolder}>
                 <PostService width={normalize(25)} height={normalize(25)} />
               </View>
@@ -107,7 +117,11 @@ const Post = () => {
                 </AppText>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.blue]}>
+            <TouchableOpacity
+              style={[styles.button, styles.blue]}
+              onPress={() => {
+                selectCard('sell');
+              }}>
               <View style={styles.iconHolder}>
                 <PostSell width={normalize(25)} height={normalize(25)} />
               </View>
@@ -132,7 +146,11 @@ const Post = () => {
                 </AppText>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.green]} onPress={togglePostModal}>
+            <TouchableOpacity
+              style={[styles.button, styles.green]}
+              onPress={() => {
+                selectCard('post');
+              }}>
               <View style={styles.iconHolder}>
                 <PostNeed width={normalize(25)} height={normalize(25)} />
               </View>
@@ -140,7 +158,7 @@ const Post = () => {
                 {' '}
                 Post What You Need
               </AppText>
-              <View style={styles.exampleHolder} >
+              <View style={styles.exampleHolder}>
                 <AppText textStyle="caption" customStyle={styles.exampleText}>
                   Looking for
                 </AppText>
@@ -159,18 +177,16 @@ const Post = () => {
       <Modal
         isVisible={showPostModal}
         animationIn="slideInUp"
-        animationInTiming={750}
+        animationInTiming={450}
         animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={togglePostModal}
-        swipeDirection="down"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <PostScreen togglePostModal={togglePostModal} />
+        <PostScreen togglePostModal={togglePostModal} card={selectedCard} />
       </Modal>
     </>
   );
