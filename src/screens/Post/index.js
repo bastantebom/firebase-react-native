@@ -1,3 +1,3 @@
-import Post from './post';
+import Post from './components/PostPopup';
 
 export {Post};
