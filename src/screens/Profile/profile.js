@@ -27,6 +27,7 @@ import {normalize, Colors} from '@/globals';
 
 import {Posts, MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
+import { GuestProfile } from './components/GuestProfile';
 
 function Profile({navigation}) {
   // const [initializing, setInitializing] = useState(true);
@@ -135,7 +136,7 @@ function Profile({navigation}) {
 
   return (
     <>
-      <TransparentHeader
+      {/* <TransparentHeader
         type={headerState}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
@@ -173,7 +174,8 @@ function Profile({navigation}) {
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
-      </ScrollView>
+      </ScrollView> */}
+      <GuestProfile/>
     </>
   );
 }
