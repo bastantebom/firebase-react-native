@@ -43,7 +43,7 @@ const TabNavigation = ({routesList}) => {
                 }>
                 {route.title}
               </AppText>
-              <View
+              {/* <View
                 style={{
                   backgroundColor: Colors.neutralsGainsboro,
                   height: normalize(19),
@@ -52,7 +52,7 @@ const TabNavigation = ({routesList}) => {
                   marginLeft: 8,
                 }}>
                 <AppText>{route.numberBadge}</AppText>
-              </View>
+              </View> */}
             </View>
 
             <View
@@ -83,6 +83,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    borderTopColor: Colors.neutralsZircon,
+    borderTopWidth: normalize(4),
   },
   navigationContainer: {
     flex: 1,
