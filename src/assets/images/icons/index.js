@@ -100,6 +100,7 @@ import QRShare from './qr-share.svg';
 import PostSell from './post-sell.svg';
 import PostNeed from './post-need.svg';
 import PostService from './post-service.svg';
+import PostImages from './post-images.svg';
 
 import FollowingEllipsis from './following-ellipsis.svg';
 
@@ -123,6 +124,7 @@ import Temperature from './temperature.svg';
 import BeeJoinedTime from './bee-joined-time.svg';
 
 export {
+  PostImages,
   BeeJoinedTime,
   Temperature,
   ProfileListBlock,
