@@ -288,7 +288,7 @@ function Dashboard({navigation}) {
             setScrollState={setScrollState}
           />
         </View>
-        <LinearGradient
+        {/* <LinearGradient
           style={{
             position: 'absolute',
             bottom: 0,
@@ -301,7 +301,7 @@ function Dashboard({navigation}) {
           ]}
           // start={{x: 0.5, y: 0.3}}
           locations={[0.1, 1]}
-        />
+        /> */}
       </SafeAreaView>
       <Modal
         isVisible={modalState}
