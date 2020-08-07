@@ -10,10 +10,17 @@ import {
   Dimensions,
   Animated,
   Alert,
-  Button
+  Button,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
-import {Posts, PaddingView, AppInput, AppText, Notification} from '@/components';
+import {
+  Posts,
+  PaddingView,
+  AppInput,
+  AppText,
+  Notification,
+} from '@/components';
 import FilterSlider from './components/FilterSlider';
 
 import {
@@ -26,10 +33,9 @@ import {GlobalStyle, Colors, normalize} from '@/globals';
 
 import Modal from 'react-native-modal';
 import {Context} from '@/context';
-import { VerificationScreen } from '@/screens/Dashboard/Verification';
+import {VerificationScreen} from '@/screens/Dashboard/Verification';
 
 function Dashboard({navigation}) {
-  
   const {openNotification, closeNotification} = useContext(Context);
   const [modalState, setModalState] = useState(false);
   const [showLocation, setShowLocation] = useState(true);
@@ -37,7 +43,7 @@ function Dashboard({navigation}) {
   const [margin, setMargin] = useState(16);
 
   const [menu, setMenu] = useState(false);
-  
+
   const toggleMenu = () => {
     setMenu(!menu);
   };
@@ -282,6 +288,20 @@ function Dashboard({navigation}) {
             setScrollState={setScrollState}
           />
         </View>
+        <LinearGradient
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            height: Dimensions.get('window').height,
+            width: '100%',
+          }}
+          colors={[
+            'rgba(255,255,255, 0)',
+            'rgba(255,255,255, 1)',
+          ]}
+          // start={{x: 0.5, y: 0.3}}
+          locations={[0.1, 1]}
+        />
       </SafeAreaView>
       <Modal
         isVisible={modalState}
