@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -12,9 +12,14 @@ import {AppText, ScreenHeaderTitle} from '@/components';
 
 import PostHeader from './components/PostHeader';
 import {Colors, normalize} from '@/globals';
+import { GuestPost } from './components/GuestPost';
+
+import {UserContext} from '@/context/UserContext';
 
 const PostScreen = ({togglePostModal, card}) => {
+
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const { user, signOut, isLoggedIn } = useContext(UserContext);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -26,6 +31,12 @@ const PostScreen = ({togglePostModal, card}) => {
     togglePostModal()
   };
 
+  if (!isLoggedIn) {
+    return (
+      <GuestPost/>
+    )
+  }
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.neutralsZircon}}>
       <View style={styles.container}>
@@ -36,7 +47,7 @@ const PostScreen = ({togglePostModal, card}) => {
           title="Post"
         />
 
-        <PostHeader card={card} />
+        {/* <PostHeader card={card} /> */}
       </View>
 
       <Modal

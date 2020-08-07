@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -24,30 +24,16 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
+import {UserContext} from '@/context/UserContext';
 
 import {Posts, MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
 import { GuestProfile } from './components/GuestProfile';
 
 function Profile({navigation}) {
-  // const [initializing, setInitializing] = useState(true);
-  // const [user, setUser] = useState();
 
-  // function onAuthStateChanged(user) {
-  //   setUser(user);
-  //   if (initializing) setInitializing(false);
-  // }
+  const { user, signOut, isLoggedIn } = useContext(UserContext);
 
-  // useEffect(() => {
-  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-  //   return subscriber;
-  // }, []);
-
-  // if (initializing) return null;
-
-  const currentUser = auth().currentUser;
-
-  const [initializing, setInitializing] = useState(true);
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -86,13 +72,7 @@ function Profile({navigation}) {
     setVisibleFollowing(!visibleFollowing);
   };
 
-  const [user, setUser] = useState();
   const [profileImageUrl, setProfileImageUrl] = useState('');
-
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
 
   let profileTabs = [
     {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
@@ -100,22 +80,15 @@ function Profile({navigation}) {
     {key: 'moreinfo', title: 'More Info', renderPage: <MoreInfo />},
   ];
 
-  const signOut = () => {
-    if (user) {
-      auth()
-        .signOut()
-        .then(() => console.log('User signed out!'));
-    } else {
-      navigation.navigate('Onboarding');
-    }
-  };
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
+  // const signOut = () => {
+  //   if (user) {
+  //     auth()
+  //       .signOut()
+  //       .then(() => console.log('User signed out!'));
+  //   } else {
+  //     navigation.navigate('Onboarding');
+  //   }
+  // };
 
   const width = Dimensions.get('window').width;
 
@@ -134,9 +107,15 @@ function Profile({navigation}) {
     location: "Subic, Zambales" 
   };
 
+  if (!isLoggedIn) {
+    return (
+      <GuestProfile/>
+    )
+  }
+
   return (
     <>
-      {/* <TransparentHeader
+      <TransparentHeader
         type={headerState}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
@@ -164,16 +143,14 @@ function Profile({navigation}) {
           toggleConnections={toggleConnections}
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
-        />
+          />
       </View>
       <ProfileInfo profileData={ProfileDummyData} />
-
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
-      </ScrollView> */}
-      <GuestProfile/>
+      </ScrollView>
     </>
   );
 }
