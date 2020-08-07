@@ -3,7 +3,7 @@ import {View, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import LoginService from '@/services/LoginService';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AppButton, AppInput, AppText} from '@/components';
 import Colors from '@/globals/Colors';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';

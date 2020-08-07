@@ -20,10 +20,15 @@ const PostScreen = ({togglePostModal, card}) => {
     setShowCancelModal(!showCancelModal);
   };
 
-  const closeHandler = () => {
-    cancelModalToggle();
+  const closeHandler = (value) => {
+    if (value === 'continue') {
+      cancelModalToggle();
+      setTimeout(()=> {
+        togglePostModal();
+      }, 200)
+    }
 
-    togglePostModal()
+    cancelModalToggle();
   };
 
   return (
@@ -44,13 +49,11 @@ const PostScreen = ({togglePostModal, card}) => {
         animationIn="slideInUp"
         animationInTiming={450}
         animationOut="slideOutDown"
-        animationOutTiming={450}
+        animationOutTiming={200}
         style={{
           margin: 0,
-          height: normalize(300),
-          width: normalize(300),
-          alignItems: "center",
-          justifyContent: 'center'
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
@@ -59,11 +62,45 @@ const PostScreen = ({togglePostModal, card}) => {
         }>
         <View
           style={{
-            backgroundColor: 'red',
+            backgroundColor: 'white',
             height: normalize(300),
             width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
           }}>
-          <AppText>Hello</AppText>
+          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+            Cancel Post?
+          </AppText>
+
+          <AppText textStyle="caption" customStyle={{textAlign: 'center'}}>
+            You haven't finished your post yet.
+          </AppText>
+          <AppText
+            textStyle="caption"
+            customStyle={{textAlign: 'center'}}
+            customStyle={{marginBottom: 16}}>
+            Do you want to leave without finishing?
+          </AppText>
+
+          <TouchableOpacity
+            onPress={() => closeHandler('continue')}
+            style={{
+              backgroundColor: Colors.yellow2,
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+              marginBottom: 16,
+              borderRadius: 4
+            }}>
+            <AppText textStyle="button2">Continue</AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => closeHandler('cancel')}
+            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            <AppText textStyle="button2" color={Colors.contentOcean}>Cancel</AppText>
+          </TouchableOpacity>
         </View>
       </Modal>
     </SafeAreaView>

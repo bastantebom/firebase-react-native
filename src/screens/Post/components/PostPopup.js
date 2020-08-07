@@ -99,9 +99,9 @@ const Post = () => {
       <Modal
         isVisible={showButtons}
         animationIn="slideInUp"
-        animationInTiming={300}
-        animationOut="slideOutDown"
-        animationOutTiming={300}
+        animationInTiming={200}
+        animationOut="slideOutRight"
+        animationOutTiming={100}
         style={{
           margin: 0,
           backgroundColor: 'transparent',
@@ -136,17 +136,59 @@ const Post = () => {
 };
 
 const PopupButtons = ({selectCard, closePostButtons}) => {
+  const [viewOpacity] = useState(new Animated.Value(0));
+
+  const [serviceButton] = useState(new Animated.Value(130));
+  const [sellButton] = useState(new Animated.Value(65));
+
+  useEffect(() => {
+    setTimeout(() => {
+      Animated.timing(viewOpacity, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+
+      Animated.timing(serviceButton, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+
+      Animated.timing(sellButton, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }, 200);
+  }, []);
+
+  let AnimationStyle = {
+    opacity: viewOpacity,
+  };
+
+  let ServiceAnimationStyle = {
+    transform: [{translateY: serviceButton}],
+  };
+
+  let SellAnimationStyle = {
+    transform: [{translateY: sellButton}],
+  };
+
   return (
     <TouchableWithoutFeedback onPress={closePostButtons}>
       <SafeAreaView style={{flex: 1}}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            paddingBottom: 65,
-          }}>
-          <LinearGradient
+        <Animated.View
+          style={[
+            {
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              paddingBottom: 65,
+              // backgroundColor: 'rgba(0,0,0,.5)',
+            },
+          ]}>
+          {/* <LinearGradient
             style={{
               position: 'absolute',
               bottom: 45,
@@ -161,84 +203,97 @@ const PopupButtons = ({selectCard, closePostButtons}) => {
             ]}
             start={{x: 0.5, y: 0.3}}
             locations={[0.1, 0.8, 0.96, 1]}
-          />
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[styles.button, styles.pink]}
-            onPress={() => {
-              selectCard('need');
-            }}>
-            <View style={styles.iconHolder}>
-              <PostService width={normalize(25)} height={normalize(25)} />
-            </View>
-            <AppText textStyle="body2" customStyle={styles.btnText}>
-              Offer Your Services
-            </AppText>
-            <View style={styles.exampleHolder}>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Plumbing
+          /> */}
+          <Animated.View
+            style={[
+              {
+                alignItems: 'center',
+              },
+              AnimationStyle,
+            ]}>
+            <Animated.View style={ServiceAnimationStyle}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={[styles.button, styles.pink]}
+                onPress={() => {
+                  selectCard('need');
+                }}>
+                <View style={styles.iconHolder}>
+                  <PostService width={normalize(25)} height={normalize(25)} />
+                </View>
+                <AppText textStyle="body2" customStyle={styles.btnText}>
+                  Offer Your Services
+                </AppText>
+                <View style={styles.exampleHolder}>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Plumbing
+                  </AppText>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Electrician
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+
+            <Animated.View style={SellAnimationStyle}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={[styles.button, styles.blue]}
+                onPress={() => {
+                  selectCard('sell');
+                }}>
+                <View style={styles.iconHolder}>
+                  <PostSell width={normalize(25)} height={normalize(25)} />
+                </View>
+                <AppText textStyle="body2" customStyle={styles.btnText}>
+                  Sell Something
+                </AppText>
+                <View style={styles.exampleHolder}>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Gadget
+                  </AppText>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Plants
+                  </AppText>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Cake
+                  </AppText>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Mobile Phone
+                  </AppText>
+                  <AppText textStyle="caption" customStyle={styles.exampleText}>
+                    Books
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[styles.button, styles.green]}
+              onPress={() => {
+                selectCard('post');
+              }}>
+              <View style={styles.iconHolder}>
+                <PostNeed width={normalize(25)} height={normalize(25)} />
+              </View>
+              <AppText textStyle="body2" customStyle={styles.btnText}>
+                {' '}
+                Post What You Need
               </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Electrician
-              </AppText>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[styles.button, styles.blue]}
-            onPress={() => {
-              selectCard('sell');
-            }}>
-            <View style={styles.iconHolder}>
-              <PostSell width={normalize(25)} height={normalize(25)} />
-            </View>
-            <AppText textStyle="body2" customStyle={styles.btnText}>
-              Sell Something
-            </AppText>
-            <View style={styles.exampleHolder}>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Gadget
-              </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Plants
-              </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Cake
-              </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Mobile Phone
-              </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Books
-              </AppText>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[styles.button, styles.green]}
-            onPress={() => {
-              selectCard('post');
-            }}>
-            <View style={styles.iconHolder}>
-              <PostNeed width={normalize(25)} height={normalize(25)} />
-            </View>
-            <AppText textStyle="body2" customStyle={styles.btnText}>
-              {' '}
-              Post What You Need
-            </AppText>
-            <View style={styles.exampleHolder}>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Looking for
-              </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Available
-              </AppText>
-              <AppText textStyle="caption" customStyle={styles.exampleText}>
-                Photographer
-              </AppText>
-            </View>
-          </TouchableOpacity>
-        </View>
+              <View style={styles.exampleHolder}>
+                <AppText textStyle="caption" customStyle={styles.exampleText}>
+                  Looking for
+                </AppText>
+                <AppText textStyle="caption" customStyle={styles.exampleText}>
+                  Available
+                </AppText>
+                <AppText textStyle="caption" customStyle={styles.exampleText}>
+                  Photographer
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

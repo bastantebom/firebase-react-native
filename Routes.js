@@ -267,7 +267,10 @@ function Routes() {
 
   return (
     <NavigationContainer>
-      {!user ? <AuthStackScreen /> : <TabStack />}
+      {!user ? <AuthStackScreen /> : 
+      <TabStack 
+      />
+      }
     </NavigationContainer>
   );
 }
