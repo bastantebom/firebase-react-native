@@ -39,7 +39,7 @@ const Post = () => {
       username: 'Markee',
       rating: 4.5,
       postedAt: 5575482,
-      isVerified: true,
+      isVerified: false,
       isLiked: false,
 
       postType: 'Service',
@@ -60,7 +60,7 @@ const Post = () => {
       username: 'Wayne',
       rating: 4.5,
       postedAt: 53482,
-      isVerified: true,
+      isVerified: false,
       isLiked: false,
 
       postType: 'Service',
@@ -81,7 +81,7 @@ const Post = () => {
       username: 'hayley',
       rating: 4.5,
       postedAt: 777482,
-      isVerified: true,
+      isVerified: false,
       isLiked: false,
 
       postType: 'Service',
@@ -102,7 +102,7 @@ const Post = () => {
       username: 'pot',
       rating: 4.5,
       postedAt: 53482,
-      isVerified: true,
+      isVerified: false,
       isLiked: false,
 
       postType: 'Service',

@@ -34,7 +34,7 @@ const ProfileInfo = ({profileData}) => {
           customStyle={{marginRight: 8}}>
           {name}
         </AppText>
-        <Verified width={normalize(11)} height={normalize(12.4)} />
+        {/* <Verified width={normalize(11)} height={normalize(12.4)} /> */}
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
         <AppText textStyle="body3" customStyle={{marginRight: 16}}>

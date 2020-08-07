@@ -120,7 +120,7 @@ function Profile({navigation}) {
 
   const ProfileDummyData = {
     name: "Wayne's Burgers and Smoothies!",
-    is_verified: true,
+    is_verified: false,
     full_name: 'Wayne Jansen Tayco',
     username: 'waynesburger.com',
     temperature_history: [
@@ -156,7 +156,6 @@ function Profile({navigation}) {
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           <ProfileImageUpload size={150} />
-          <HexagonBorder />
         </View>
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}

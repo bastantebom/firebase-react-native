@@ -1,9 +1,17 @@
-import React from 'react';
-import {View, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {AppText, BottomSheetHeader, PaddingView} from '@/components';
 import {Colors, normalize} from '@/globals';
+
+import Modal from 'react-native-modal';
 
 import {
   ProfileMute,
@@ -21,8 +29,15 @@ import {
   MenuTelephone,
   MenuAddFriend,
 } from '@/assets/images/icons';
+import EditProfile from '@/screens/Profile/components/EditProfile/EditProfile';
 
 const OwnMenu = ({toggleMenu, signOut}) => {
+  const [editProfile, setEditProfile] = useState(false);
+
+  const toggleEditProfile = () => {
+    setEditProfile(!editProfile);
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
@@ -64,7 +79,7 @@ const OwnMenu = ({toggleMenu, signOut}) => {
                 </View>
               </TouchableOpacity> */}
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleEditProfile}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuEdit width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
@@ -178,6 +193,22 @@ const OwnMenu = ({toggleMenu, signOut}) => {
           </PaddingView>
         </View>
       </ScrollView>
+      <Modal
+        isVisible={editProfile}
+        animationIn="slideInUp"
+        animationInTiming={750}
+        animationOut="slideOutDown"
+        animationOutTiming={750}
+        onSwipeComplete={toggleEditProfile}
+        swipeDirection="down"
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <EditProfile toggleEditProfile={toggleEditProfile} />
+      </Modal>
     </SafeAreaView>
   );
 };

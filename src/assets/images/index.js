@@ -23,6 +23,8 @@ import IdSelfie from './IdSelfie.svg';
 import SelfieMask from './mask.svg';
 import Faded from './faded.svg';
 
+import CoverPhoto from './upload-cover.svg';
+
 export {
   Location,
   ResetPassword,
@@ -39,4 +41,5 @@ export {
   IdSelfie,
   SelfieMask,
   Faded,
+  CoverPhoto,
 };
