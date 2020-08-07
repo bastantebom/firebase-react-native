@@ -29,6 +29,7 @@ import EditAddress from './EditAddress';
 import GenderList from './Gender';
 import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // create a component
 const EditProfile = ({toggleEditProfile}) => {
@@ -65,228 +66,229 @@ const EditProfile = ({toggleEditProfile}) => {
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle title="Edit Profile" close={toggleEditProfile} />
         </PaddingView>
-        <View style={styles.container}>
-          <ScrollView>
-            <View
-              style={[
-                styles.contentWrapper,
-                {
-                  borderBottomLeftRadius: 0,
-                  borderBottomRightRadius: 0,
-                  marginBottom: 0,
-                },
-              ]}>
-              <PaddingView paddingSize={3}>
-                <View style={styles.coverPhoto}>
-                  <CoverPhoto width={normalize(48)} height={normalize(42)} />
-                  <AppText
-                    textStyle="body2"
-                    color={Colors.contentOcean}
-                    customStyle={{marginTop: normalize(8)}}>
-                    Upload a Cover Photo
-                  </AppText>
-                </View>
-              </PaddingView>
-            </View>
-            <View
-              style={[
-                styles.contentWrapper,
-                {
-                  borderBottomLeftRadius: 0,
-                  borderBottomRightRadius: 0,
-                  marginBottom: 0,
-                },
-              ]}>
-              <PaddingView paddingSize={3}>
-                <View style={styles.profilePhoto}>
-                  <View>
-                    <ProfileImageUpload size={80} />
-                  </View>
-                  <AppText
-                    textStyle="caption"
-                    color={Colors.contentOcean}
-                    customStyle={{marginLeft: normalize(8)}}>
-                    Tap Image to change Profile Picture
-                  </AppText>
-                </View>
-              </PaddingView>
-            </View>
-            <View style={styles.contentWrapper}>
-              <PaddingView paddingSize={3}>
-                <AppInput label="Display Name" />
-                <AppText
-                  textStyle="caption"
-                  color={Colors.profileLink}
-                  customStyle={{marginTop: normalize(5)}}>
-                  Help people discover your account by using a name that
-                  describes you or your service. This could be the name of your
-                  business, or your nickname.
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  color={Colors.profileLink}
-                  customStyle={{
-                    marginTop: normalize(24),
-                    marginBottom: normalize(5),
-                  }}>
-                  You can only change your Display Name twice every 14 days.
-                </AppText>
-                <AppInput label="Full Name" customStyle={{marginBottom: 16}} />
-                <AppInput label="Username" customStyle={{marginBottom: 4}} />
-                <View style={{flexDirection: 'row'}}>
-                  <AppText textStyle="caption">servbees.com/</AppText>
-                  <AppText textStyle="caption2">username</AppText>
-                </View>
-                <AppText textStyle="caption">
-                  Only use characters, numbers, and a dot (.)
-                </AppText>
 
-                <TextInput
-                  multiline={true}
-                  placeholder="Description"
-                  placeholderTextColor={Colors.profileLink}
-                  numberOfLines={Platform.OS === 'ios' ? null : 6}
-                  minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
-                  style={[styles.input]}
-                />
-              </PaddingView>
-            </View>
-            <View style={styles.contentWrapper}>
-              <PaddingView paddingSize={3}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          extraScrollHeight={40}
+          keyboardOpeningTime={50}
+          enableOnAndroid={true}>
+          <View
+            style={[
+              styles.contentWrapper,
+              {
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                marginBottom: 0,
+              },
+            ]}>
+            <PaddingView paddingSize={3}>
+              <View style={styles.coverPhoto}>
+                <CoverPhoto width={normalize(48)} height={normalize(42)} />
                 <AppText
-                  textStyle="body1"
-                  customStyle={{marginBottom: normalize(8)}}>
-                  Address
+                  textStyle="body2"
+                  color={Colors.contentOcean}
+                  customStyle={{marginTop: normalize(8)}}>
+                  Upload a Cover Photo
                 </AppText>
-                <AppInput
-                  label="Name"
-                  customStyle={{marginBottom: normalize(16)}}
-                />
-                <View style={{position: 'relative'}}>
-                  <TouchableOpacity onPress={() => toggleMap()}>
-                    <AppInput
-                      label="Address"
-                      customStyle={{marginBottom: normalize(16)}}
-                    />
-                    <View
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 12,
-                        right: 12,
-                      }}>
-                      <ArrowRight
-                        height={normalize(24)}
-                        width={normalize(24)}
-                      />
-                    </View>
-                  </TouchableOpacity>
+              </View>
+            </PaddingView>
+          </View>
+          <View
+            style={[
+              styles.contentWrapper,
+              {
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                marginBottom: 0,
+              },
+            ]}>
+            <PaddingView paddingSize={3}>
+              <View style={styles.profilePhoto}>
+                <View>
+                  <ProfileImageUpload size={80} />
                 </View>
-                <AppInput
-                  label="Address Details"
-                  customStyle={{marginBottom: normalize(16)}}
-                />
-                <AppInput
-                  label="Notes"
-                  customStyle={{marginBottom: normalize(16)}}
-                />
-              </PaddingView>
-            </View>
-            <View
-              style={[
-                styles.contentWrapper,
-                {
-                  borderBottomLeftRadius: 0,
-                  borderBottomRightRadius: 0,
-                  marginBottom: 0,
-                },
-              ]}>
-              <PaddingView paddingSize={3}>
                 <AppText
-                  textStyle="body1"
-                  customStyle={{marginBottom: normalize(8)}}>
-                  Personal Information
+                  textStyle="caption"
+                  color={Colors.contentOcean}
+                  customStyle={{marginLeft: normalize(8)}}>
+                  Tap Image to change Profile Picture
                 </AppText>
-                <AppInput
-                  label="Email"
-                  customStyle={{marginBottom: normalize(16)}}
-                />
-                <AppInput
-                  label="Secondary Email"
-                  customStyle={{marginBottom: normalize(16)}}
-                />
-                <AppInput
-                  label="Mobile Number"
-                  customStyle={{marginBottom: normalize(16)}}
-                />
-                <View style={{position: 'relative'}}>
-                  <TouchableOpacity onPress={showDatepicker}>
-                    <AppInput
-                      label="Birthday"
-                      customStyle={{marginBottom: normalize(16)}}
-                    />
-                    <View
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 12,
-                        right: 12,
-                      }}>
-                      <Calendar height={normalize(24)} width={normalize(24)} />
-                    </View>
-                  </TouchableOpacity>
-                  {show && (
-                    <DateTimePicker
-                      testID="dateTimePicker"
-                      value={date}
-                      mode={mode}
-                      is24Hour={true}
-                      display="default"
-                      onChange={console.log('Nagpalit ng Date')}
-                    />
-                  )}
-                </View>
-                <View style={{position: 'relative'}}>
-                  <TouchableOpacity onPress={toggleGender}>
-                    <AppInput
-                      label="Gender"
-                      customStyle={{marginBottom: normalize(16)}}
-                    />
-                    <View
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 12,
-                        right: 12,
-                      }}>
-                      <ArrowDown height={normalize(24)} width={normalize(24)} />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </PaddingView>
-            </View>
-            <View
-              style={[
-                styles.contentWrapper,
-                {
-                  borderBottomLeftRadius: 0,
-                  borderBottomRightRadius: 0,
-                  marginBottom: 0,
-                  paddingLeft: normalize(24),
-                  paddingRight: normalize(24),
-                  paddingBottom: normalize(24),
-                },
-              ]}>
-              <AppButton
-                text="Save"
+              </View>
+            </PaddingView>
+          </View>
+          <View style={styles.contentWrapper}>
+            <PaddingView paddingSize={3}>
+              <AppInput label="Display Name" />
+              <AppText
+                textStyle="caption"
+                color={Colors.profileLink}
+                customStyle={{marginTop: normalize(5)}}>
+                Help people discover your account by using a name that describes
+                you or your service. This could be the name of your business, or
+                your nickname.
+              </AppText>
+              <AppText
+                textStyle="caption"
+                color={Colors.profileLink}
                 customStyle={{
-                  backgroundColor: Colors.buttonDisable,
-                  borderColor: Colors.buttonDisable,
-                }}
+                  marginTop: normalize(24),
+                  marginBottom: normalize(5),
+                }}>
+                You can only change your Display Name twice every 14 days.
+              </AppText>
+              <AppInput label="Full Name" customStyle={{marginBottom: 16}} />
+              <AppInput label="Username" customStyle={{marginBottom: 4}} />
+              <View style={{flexDirection: 'row'}}>
+                <AppText textStyle="caption">servbees.com/</AppText>
+                <AppText textStyle="caption2">username</AppText>
+              </View>
+              <AppText textStyle="caption">
+                Only use characters, numbers, and a dot (.)
+              </AppText>
+
+              <TextInput
+                multiline={true}
+                placeholder="Description"
+                placeholderTextColor={Colors.profileLink}
+                numberOfLines={Platform.OS === 'ios' ? null : 6}
+                minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
+                style={[styles.input]}
               />
-            </View>
-          </ScrollView>
-        </View>
+            </PaddingView>
+          </View>
+          <View style={styles.contentWrapper}>
+            <PaddingView paddingSize={3}>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginBottom: normalize(8)}}>
+                Address
+              </AppText>
+              <AppInput
+                label="Name"
+                customStyle={{marginBottom: normalize(16)}}
+              />
+              <View style={{position: 'relative'}}>
+                <TouchableOpacity onPress={() => toggleMap()}>
+                  <AppInput
+                    label="Address"
+                    customStyle={{marginBottom: normalize(16)}}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 12,
+                      right: 12,
+                    }}>
+                    <ArrowRight height={normalize(24)} width={normalize(24)} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <AppInput
+                label="Address Details"
+                customStyle={{marginBottom: normalize(16)}}
+              />
+              <AppInput
+                label="Notes"
+                customStyle={{marginBottom: normalize(16)}}
+              />
+            </PaddingView>
+          </View>
+          <View
+            style={[
+              styles.contentWrapper,
+              {
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                marginBottom: 0,
+              },
+            ]}>
+            <PaddingView paddingSize={3}>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginBottom: normalize(8)}}>
+                Personal Information
+              </AppText>
+              <AppInput
+                label="Email"
+                customStyle={{marginBottom: normalize(16)}}
+              />
+              <AppInput
+                label="Secondary Email"
+                customStyle={{marginBottom: normalize(16)}}
+              />
+              <AppInput
+                label="Mobile Number"
+                customStyle={{marginBottom: normalize(16)}}
+              />
+              <View style={{position: 'relative'}}>
+                <TouchableOpacity onPress={showDatepicker}>
+                  <AppInput
+                    label="Birthday"
+                    customStyle={{marginBottom: normalize(16)}}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 12,
+                      right: 12,
+                    }}>
+                    <Calendar height={normalize(24)} width={normalize(24)} />
+                  </View>
+                </TouchableOpacity>
+                {show && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={console.log('Nagpalit ng Date')}
+                  />
+                )}
+              </View>
+              <View style={{position: 'relative'}}>
+                <TouchableOpacity onPress={toggleGender}>
+                  <AppInput
+                    label="Gender"
+                    customStyle={{marginBottom: normalize(16)}}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 12,
+                      right: 12,
+                    }}>
+                    <ArrowDown height={normalize(24)} width={normalize(24)} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </PaddingView>
+          </View>
+          <View
+            style={[
+              styles.contentWrapper,
+              {
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                marginBottom: 0,
+                paddingLeft: normalize(24),
+                paddingRight: normalize(24),
+                paddingBottom: normalize(24),
+              },
+            ]}>
+            <AppButton
+              text="Save"
+              customStyle={{
+                backgroundColor: Colors.buttonDisable,
+                borderColor: Colors.buttonDisable,
+              }}
+            />
+          </View>
+        </KeyboardAwareScrollView>
+
         <Modal
           isVisible={map}
           animationIn="slideInRight"
@@ -336,6 +338,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.neutralsZircon,
     //padding: normalize(16),
+    width: Dimensions.width,
   },
   contentWrapper: {
     backgroundColor: Colors.neutralsWhite,
