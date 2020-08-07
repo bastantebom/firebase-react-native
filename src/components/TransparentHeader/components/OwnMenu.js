@@ -52,17 +52,17 @@ const OwnMenu = ({toggleMenu, signOut}) => {
             </View>
 
             <View>
-              <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
+              {/* <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
                 Account
-              </AppText>
-              <TouchableOpacity activeOpacity={0.7}>
+              </AppText> */}
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuLiked width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Liked Posts
                   </AppText>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
@@ -73,67 +73,67 @@ const OwnMenu = ({toggleMenu, signOut}) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuArchive width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Archived Posts
                   </AppText>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
-              <TouchableOpacity activeOpacity={0.7}>
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row'}}>
                   <MenuAddFriend width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Invite Friends
                   </AppText>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
-            <Divider
+            {/* <Divider
               style={{
                 backgroundColor: Colors.neutralGray,
                 marginVertical: 24,
               }}
-            />
+            /> */}
 
             <View>
-              <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
+              {/* <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
                 Help and Support
-              </AppText>
+              </AppText> */}
 
-              <TouchableOpacity activeOpacity={0.7}>
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuChat width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Frequently Asked Questions
                   </AppText>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
-              <TouchableOpacity activeOpacity={0.7}>
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row'}}>
                   <MenuTelephone width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Contact Us
                   </AppText>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
-            <Divider
+            {/* <Divider
               style={{
                 backgroundColor: Colors.neutralGray,
                 marginVertical: 24,
               }}
-            />
+            /> */}
 
             <View>
-              <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
+              {/* <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
                 Settings and Privacy
-              </AppText>
+              </AppText> */}
               <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuKey width={normalize(24)} height={normalize(24)} />
@@ -143,14 +143,14 @@ const OwnMenu = ({toggleMenu, signOut}) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuBell width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Notification
                   </AppText>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <TouchableOpacity activeOpacity={0.7}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
@@ -160,7 +160,12 @@ const OwnMenu = ({toggleMenu, signOut}) => {
                   </AppText>
                 </View>
               </TouchableOpacity>
-
+              <Divider
+                style={{
+                  backgroundColor: Colors.neutralGray,
+                  marginVertical: 24,
+                }}
+              />
               <TouchableOpacity activeOpacity={0.7} onPress={signOut}>
                 <View style={{flexDirection: 'row'}}>
                   <MenuLogOut width={normalize(24)} height={normalize(24)} />

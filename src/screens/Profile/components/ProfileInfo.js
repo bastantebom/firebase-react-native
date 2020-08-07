@@ -45,13 +45,13 @@ const ProfileInfo = ({profileData}) => {
         </AppText>
       </View>
 
-      <View
+      {/* <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           marginTop: 16,
-        }}>
-        <View
+        }}> */}
+      {/* <View
           style={{
             flexDirection: 'row',
             paddingHorizontal: 8,
@@ -59,17 +59,22 @@ const ProfileInfo = ({profileData}) => {
             backgroundColor: Colors.secondarySolitude,
             // backgroundColor: 'black',
             borderRadius: 16,
-          }}>
-          <Temperature width={normalize(16)} height={normalize(16)} />
-          <AppText textStyle="caption" customStyle={{marginLeft: 4}}>{temperature_history[0].temp}°C 1h ago </AppText>
-        </View>
-      </View>
+          }}> */}
+      {/* <Temperature width={normalize(16)} height={normalize(16)} />
+          <AppText textStyle="caption" customStyle={{marginLeft: 4}}>{temperature_history[0].temp}°C 1h ago </AppText> */}
+      {/* </View> */}
+      {/* </View> */}
 
-      <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 16,}}>
+      {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 16}}>
         <StarRating width={normalize(16)} height={normalize(16)} />
-        <AppText textStyle="body3" customStyle={{marginRight: 8}}> {ratings_average} out of 5</AppText>
-        <AppText textStyle="body2" customStyle={{marginRight: 8}}>({ratings_count} Ratings)</AppText>
-      </View>
+        <AppText textStyle="body3" customStyle={{marginRight: 8}}>
+          {' '}
+          {ratings_average} out of 5
+        </AppText>
+        <AppText textStyle="body2" customStyle={{marginRight: 8}}>
+          ({ratings_count} Ratings)
+        </AppText>
+      </View> */}
 
       <Divider
         style={[
@@ -78,11 +83,20 @@ const ProfileInfo = ({profileData}) => {
         ]}
       />
 
-      <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16}}>
+      <View
+        style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16}}>
         <BeeJoinedTime width={normalize(16)} height={normalize(16)} />
-        <AppText textStyle="body2" customStyle={{marginLeft: 4, marginRight: 16}}>Joined {joined_date}</AppText>
+        <AppText
+          textStyle="body2"
+          customStyle={{marginLeft: 4, marginRight: 16}}>
+          Joined {joined_date}
+        </AppText>
         <NavigationPinRed width={normalize(16)} height={normalize(16)} />
-        <AppText textStyle="body2" customStyle={{marginLeft: 4, marginRight: 16}}>{location}</AppText>
+        <AppText
+          textStyle="body2"
+          customStyle={{marginLeft: 4, marginRight: 16}}>
+          {location}
+        </AppText>
       </View>
     </View>
   );

@@ -6,7 +6,8 @@ import Modal from 'react-native-modal';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Close} from '@/assets/images/icons/';
 import {AppButton, AppViewContainer, AppText} from '@/components';
-
+import {Faded} from '@/assets/images';
+import {normalize} from '@/globals';
 // create a component
 const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
   //const [isModalVisible, setModalVisible] = useState(false);
@@ -34,6 +35,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
         <TouchableOpacity style={styles.closeIconWrapper} onPress={onClose}>
           <Close height={24} width={24} />
         </TouchableOpacity>
+
         <ScrollView>
           <AppViewContainer>
             <AppText textStyle="display5">
@@ -46,7 +48,8 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
             </AppText>
           </AppViewContainer>
         </ScrollView>
-        <View>
+
+        <View style={{marginTop: normalize(16)}}>
           <AppButton
             text="Agree"
             type="secondary"

@@ -18,10 +18,10 @@ import NoPost from './NoPost.svg';
 import NoReview from './NoReview.svg';
 import NoInfo from './NoInfo.svg';
 
-import IdSelfie from './IdSelfie.svg'
+import IdSelfie from './IdSelfie.svg';
 
-import SelfieMask from './mask.svg'
-
+import SelfieMask from './mask.svg';
+import Faded from './faded.svg';
 
 export {
   Location,
@@ -37,5 +37,6 @@ export {
   NoReview,
   NoInfo,
   IdSelfie,
-  SelfieMask
+  SelfieMask,
+  Faded,
 };

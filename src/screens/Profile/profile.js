@@ -95,7 +95,7 @@ function Profile({navigation}) {
 
   let profileTabs = [
     {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
-    {key: 'review', title: 'Reviews', renderPage: <Reviews />},
+    // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
     {key: 'moreinfo', title: 'More Info', renderPage: <MoreInfo />},
   ];
 
@@ -129,8 +129,8 @@ function Profile({navigation}) {
     ],
     ratings_count: 34,
     ratings_average: 4.3,
-    joined_date: "Jan 2020",
-    location: "Subic, Zambales" 
+    joined_date: 'Jan 2020',
+    location: 'Subic, Zambales',
   };
 
   return (
@@ -165,7 +165,9 @@ function Profile({navigation}) {
           visibleFollowing={visibleFollowing}
         />
       </View>
-      <ProfileInfo profileData={ProfileDummyData} />
+      <View style={{backgroundColor: Colors.primaryYellow}}>
+        <ProfileInfo profileData={ProfileDummyData} />
+      </View>
 
       <ScrollView style={{flex: 1}}>
         <View style={styles.container}>
@@ -191,12 +193,14 @@ const styles = StyleSheet.create({
 
   profileBasicInfo: {
     flexDirection: 'row',
+    backgroundColor: Colors.neutralsWhite,
+    height: normalize(80),
   },
 
   profileImageWrapper: {
     width: '40%',
     height: normalize(160),
-    top: normalize(-40),
+    top: normalize(-70),
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },
