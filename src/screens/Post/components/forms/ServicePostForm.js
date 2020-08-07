@@ -39,13 +39,7 @@ const ServicePostForm = () => {
   };
 
   const checkFormContent = () => {
-    if (
-      title &&
-      price &&
-      (pickupState || deliveryState) &&
-      storeLocation &&
-      paymentMethod
-    )
+    if (title && price && storeLocation && paymentMethod)
       return setButtonEnabled(false);
 
     return setButtonEnabled(true);
@@ -80,7 +74,7 @@ const ServicePostForm = () => {
           marginBottom: 8,
           borderBottomLeftRadius: 4,
           borderBottomRightRadius: 4,
-          paddingBottom: 32,
+          paddingBottom: 100,
         }}>
         <View
           style={{
@@ -139,6 +133,7 @@ const ServicePostForm = () => {
             borderWidth: 1,
             paddingHorizontal: 16,
             paddingVertical: 8,
+            marginBottom: 16,
           }}
           defaultValue={description}
           onChangeText={(text) => setDescription(text)}
@@ -153,85 +148,13 @@ const ServicePostForm = () => {
           placeholderTextColor={'#c7c7c7'}
           underlineColorAndroid={'transparent'}
         />
-      </View>
-
-      <View
-        style={{
-          backgroundColor: 'white',
-          padding: 24,
-          borderBottomLeftRadius: 4,
-          borderBottomRightRadius: 4,
-          paddingVertical: 32,
-          borderRadius: 4,
-          marginBottom: 16,
-        }}>
-        <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
-          Delivery/Pick up Method
-        </AppText>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 16,
-          }}>
-          <AppText textStyle="body2">Pickup</AppText>
-          <Switch
-            value={pickupState}
-            onValueChange={togglePickupState}
-            disabled={false}
-            renderActiveText={false}
-            renderInActiveText={false}
-            circleSize={16}
-            barHeight={24}
-            circleBorderWidth={0}
-            backgroundActive={Colors.primaryYellow}
-            backgroundInactive={Colors.switchDisable}
-            switchWidthMultiplier={2.5}
-            switchBorderRadius={12}
-          />
-        </View>
         <AppInput
-          label="Store Location"
+          label="Location Address"
           customStyle={{marginBottom: 16}}
           value={storeLocation}
           onChangeText={(text) => setStoreLocation(text)}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-          <AppText textStyle="body2">Offer Delivery</AppText>
-          <Switch
-            value={deliveryState}
-            onValueChange={toggleDeliveryState}
-            disabled={false}
-            renderActiveText={false}
-            renderInActiveText={false}
-            circleSize={16}
-            barHeight={24}
-            circleBorderWidth={0}
-            backgroundActive={Colors.primaryYellow}
-            backgroundInactive={Colors.switchDisable}
-            switchWidthMultiplier={2.5}
-            switchBorderRadius={12}
-          />
-        </View>
-      </View>
 
-      <View
-        style={{
-          backgroundColor: 'white',
-          padding: 24,
-          borderBottomLeftRadius: 4,
-          borderBottomRightRadius: 4,
-          paddingVertical: 32,
-          borderRadius: 4,
-          marginBottom: 16,
-          paddingBottom: 100,
-        }}>
         <AppInput
           label="Payment Method"
           placeholder="Eg: Cash, Gcash"
@@ -242,7 +165,19 @@ const ServicePostForm = () => {
 
         <TouchableOpacity
           onPress={() => {
-            alert('title: ' + title + ' price: ' + price + ' description: ' + description);
+            alert(
+              'title: ' +
+                title +
+                '\nprice: ' +
+                price +
+                '\ndescription: ' +
+                description +
+                '\nlocation: ' +
+                storeLocation +
+                '\npayment method: ' +
+                paymentMethod +
+                ' \n Save na dito ',
+            );
           }}
           activeOpacity={0.7}
           disabled={buttonEnabled}

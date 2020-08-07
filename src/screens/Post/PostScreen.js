@@ -91,14 +91,15 @@ const PostScreen = ({togglePostModal, card}) => {
               width: '100%',
               alignItems: 'center',
               marginBottom: 16,
+              borderRadius: 4
             }}>
-            <AppText>Continue</AppText>
+            <AppText textStyle="button2">Continue</AppText>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
             style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
-            <AppText>Cancel</AppText>
+            <AppText textStyle="button2" color={Colors.contentOcean}>Cancel</AppText>
           </TouchableOpacity>
         </View>
       </Modal>
