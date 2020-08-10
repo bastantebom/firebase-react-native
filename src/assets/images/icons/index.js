@@ -133,8 +133,12 @@ import PostCash from './PostCash.svg';
 import PostClock from './PostClock.svg';
 import PostInfo from './PostInfo.svg';
 import PostNavigation from './PostNavigation.svg';
+import PostPencil from './PostPencil.svg';
+import PostRemove from './PostRemove.svg';
 
 export {
+  PostPencil,
+  PostRemove,
   PostBox,
   PostCash,
   PostClock,
