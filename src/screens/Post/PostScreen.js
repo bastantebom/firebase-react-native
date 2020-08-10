@@ -57,16 +57,16 @@ const PostScreen = ({togglePostModal, card}) => {
           // extraScrollHeight={25}
           keyboardOpeningTime={100}
           enableOnAndroid={true}>
-          <PostHeader card={card} />
+          <PostHeader card={card} togglePostModal={togglePostModal} />
         </KeyboardAwareScrollView>
       </View>
 
       <Modal
         isVisible={showCancelModal}
-        animationIn="slideInUp"
+        animationIn="bounceIn"
         animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={200}
+        animationOut="bounceOut"
+        animationOutTiming={450}
         style={{
           margin: 0,
           alignItems: 'center',

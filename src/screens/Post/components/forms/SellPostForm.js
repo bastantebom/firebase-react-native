@@ -8,7 +8,7 @@ import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
 
-const SellPostForm = () => {
+const SellPostForm = ({navToPost, togglePostModal}) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
@@ -62,6 +62,13 @@ const SellPostForm = () => {
     paymentMethod,
     description,
   ]);
+
+  const navigateToPost = () => {
+    togglePostModal();
+    navToPost({
+      title: title
+    });
+  };
 
   return (
     <>
@@ -233,16 +240,7 @@ const SellPostForm = () => {
         />
 
         <TouchableOpacity
-          onPress={() => {
-            alert(
-              'title: ' +
-                title +
-                ' price: ' +
-                price +
-                ' description: ' +
-                description,
-            );
-          }}
+          onPress={navigateToPost}
           activeOpacity={0.7}
           disabled={buttonEnabled}
           style={{

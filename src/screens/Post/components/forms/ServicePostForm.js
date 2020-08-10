@@ -8,7 +8,7 @@ import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
 
-const ServicePostForm = () => {
+const ServicePostForm = ({navToPost, togglePostModal}) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
@@ -56,6 +56,13 @@ const ServicePostForm = () => {
     paymentMethod,
     description,
   ]);
+
+  const navigateToPost = () => {
+    togglePostModal();
+    navToPost({
+      title: title
+    });
+  };
 
   return (
     <View
@@ -155,21 +162,7 @@ const ServicePostForm = () => {
       />
 
       <TouchableOpacity
-        onPress={() => {
-          alert(
-            'title: ' +
-              title +
-              '\nprice: ' +
-              price +
-              '\ndescription: ' +
-              description +
-              '\nlocation: ' +
-              storeLocation +
-              '\npayment method: ' +
-              paymentMethod +
-              ' \n Save na dito ',
-          );
-        }}
+        onPress={navigateToPost}
         activeOpacity={0.7}
         disabled={buttonEnabled}
         style={{

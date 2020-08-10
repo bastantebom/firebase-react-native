@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -9,10 +8,9 @@ import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
 
-const NeedPostForm = () => {
+const NeedPostForm = ({navToPost, togglePostModal}) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
-  const navigation = useNavigation();
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -59,8 +57,11 @@ const NeedPostForm = () => {
     description,
   ]);
 
-  const we = () => {
-    navigation.navigate('SinglePostView');
+  const navigateToPost = () => {
+    togglePostModal();
+    navToPost({
+      title: title
+    });
   };
 
   return (
@@ -161,11 +162,9 @@ const NeedPostForm = () => {
       />
 
       <TouchableOpacity
-        onPress={() => {
-          we();
-        }}
+        onPress={navigateToPost}
         activeOpacity={0.7}
-        disabled={buttonEnabled}
+        // disabled={buttonEnabled}
         style={{
           backgroundColor: buttonEnabled
             ? Colors.neutralsGainsboro

@@ -155,7 +155,7 @@ function TabStack() {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Hive"
         component={HiveStackScreen}
         options={{
@@ -168,7 +168,7 @@ function TabStack() {
             return <>{icon}</>;
           },
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Post"
         component={PostStackScreen}
@@ -176,7 +176,8 @@ function TabStack() {
           tabBarButton: () => <Post />,
         }}
       />
-      <Tab.Screen
+      
+      {/* <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
         options={{
@@ -217,7 +218,7 @@ function TabStack() {
             );
           },
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileStackScreen}
