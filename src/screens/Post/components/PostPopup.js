@@ -30,7 +30,7 @@ const height = Dimensions.get('window').height;
 
 const PostPopup = ({}) => {
   const navigation = useNavigation();
-  const {isLoggedIn} = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const {showButtons, openPostButtons, closePostButtons} = useContext(Context);
 
@@ -87,7 +87,7 @@ const PostPopup = ({}) => {
         }}>
         <TouchableWithoutFeedback
           onPress={
-            isLoggedIn
+            user
               ? showButtons
                 ? closePostButtons
                 : openPostButtons
@@ -110,7 +110,7 @@ const PostPopup = ({}) => {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
           onPress={
-            isLoggedIn
+            user
               ? showButtons
                 ? closePostButtons
                 : openPostButtons
