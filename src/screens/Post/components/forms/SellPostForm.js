@@ -64,15 +64,7 @@ const SellPostForm = () => {
   ]);
 
   return (
-    <KeyboardAwareScrollView
-      style={{
-        flex: 1,
-        backgroundColor: Colors.neutralsZircon,
-        width: normalize(375),
-      }}
-      extraScrollHeight={25}
-      keyboardOpeningTime={100}
-      enableOnAndroid={true}>
+    <>
       <View
         style={{
           backgroundColor: 'white',
@@ -230,7 +222,7 @@ const SellPostForm = () => {
           paddingVertical: 32,
           borderRadius: 4,
           marginBottom: 16,
-          paddingBottom: 100,
+          paddingBottom: 48,
         }}>
         <AppInput
           label="Payment Method"
@@ -242,7 +234,14 @@ const SellPostForm = () => {
 
         <TouchableOpacity
           onPress={() => {
-            alert('title: ' + title + ' price: ' + price + ' description: ' + description);
+            alert(
+              'title: ' +
+                title +
+                ' price: ' +
+                price +
+                ' description: ' +
+                description,
+            );
           }}
           activeOpacity={0.7}
           disabled={buttonEnabled}
@@ -256,7 +255,7 @@ const SellPostForm = () => {
           <AppText textStyle="button2">Publish</AppText>
         </TouchableOpacity>
       </View>
-    </KeyboardAwareScrollView>
+    </>
   );
 };
 

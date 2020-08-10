@@ -55,7 +55,7 @@ const PostScreen = ({togglePostModal, card}) => {
             backgroundColor: Colors.neutralsZircon,
             width: normalize(375),
           }}
-          extraScrollHeight={25}
+          // extraScrollHeight={25}
           keyboardOpeningTime={100}
           enableOnAndroid={true}>
           <PostHeader card={card} />
