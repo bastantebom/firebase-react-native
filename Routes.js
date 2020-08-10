@@ -266,7 +266,7 @@ function TabStack() {
 }
 
 function Routes() {
-  const {isLoggedIn} = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   return (
     <NavigationContainer>
