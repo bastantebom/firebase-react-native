@@ -17,9 +17,12 @@ import { GuestPost } from './components/GuestPost';
 import {UserContext} from '@/context/UserContext';
 
 const PostScreen = ({togglePostModal, card}) => {
+  // navigation.setOptions({
+  //   tabBarVisible: false
+  // });
 
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const { user, signOut, isLoggedIn } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -36,7 +39,7 @@ const PostScreen = ({togglePostModal, card}) => {
     cancelModalToggle();
   };
 
-  if (!isLoggedIn) {
+  if (!user) {
     return (
       <GuestPost/>
     )

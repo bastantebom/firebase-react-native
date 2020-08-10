@@ -123,6 +123,9 @@ import Flip from '@/assets/images/icons/camera-flip.svg';
 import Temperature from './temperature.svg';
 import BeeJoinedTime from './bee-joined-time.svg';
 
+import UploadIcon from '@/assets/images/icons/profile-upload.svg';
+import EmptyAvatar from '@/assets/images/icons/empty-avatar.svg';
+
 export {
   PostImages,
   BeeJoinedTime,
@@ -208,4 +211,6 @@ export {
   FolderAdd,
   Flash,
   Flip,
+  UploadIcon,
+  EmptyAvatar
 };

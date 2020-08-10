@@ -32,7 +32,8 @@ import { GuestProfile } from './components/GuestProfile';
 
 function Profile({navigation}) {
 
-  const { user, signOut, isLoggedIn } = useContext(UserContext);
+  const { user, signOut, 
+  } = useContext(UserContext);
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -107,7 +108,7 @@ function Profile({navigation}) {
     location: 'Subic, Zambales',
   };
 
-  if (!isLoggedIn) {
+  if (!user) {
     return (
       <GuestProfile/>
     )
@@ -115,7 +116,7 @@ function Profile({navigation}) {
 
   return (
     <>
-      {/* <TransparentHeader
+      <TransparentHeader
         type={headerState}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
@@ -135,8 +136,11 @@ function Profile({navigation}) {
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
-          <ProfileImageUpload size={150} />
-          <HexagonBorder />
+          {/* <ProfileImageUpload size={150} /> */}
+          <HexagonBorder 
+            size={150} 
+            // imgSrc={}
+          />
         </View>
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
@@ -153,8 +157,7 @@ function Profile({navigation}) {
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
-      </ScrollView> */}
-      <GuestProfile/>
+      </ScrollView>
     </>
   );
 }
