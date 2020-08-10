@@ -126,6 +126,7 @@ function TabStack() {
           borderTopWidth: 0,
           elevation: 0,
           position: 'relative',
+          paddingHorizontal: normalize(60),
         },
         tabStyle: {
           flex: 1,
@@ -176,7 +177,6 @@ function TabStack() {
           tabBarButton: () => <Post />,
         }}
       />
-      
       {/* <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
