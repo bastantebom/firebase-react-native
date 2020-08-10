@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import {AppText} from '@/components';
 import {normalize} from '@/globals';
@@ -28,10 +28,9 @@ import {PostScreen} from '@/screens/Post';
 
 const height = Dimensions.get('window').height;
 
-const Post = ({  }) => {
-
+const PostPopup = ({}) => {
   const navigation = useNavigation();
-  const { isLoggedIn } = useContext(UserContext);
+  const {isLoggedIn} = useContext(UserContext);
 
   const {showButtons, openPostButtons, closePostButtons} = useContext(Context);
 
@@ -56,14 +55,14 @@ const Post = ({  }) => {
     outputRange: ['0deg', '135deg'],
   });
 
-  useEffect(() => {
-    Animated.timing(spinValue, {
-      toValue: showButtons ? 1 : 0,
-      duration: 300,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start();
-  }, [showButtons]);
+  // useEffect(() => {
+  //   Animated.timing(spinValue, {
+  //     toValue: 0,
+  //     duration: 300,
+  //     easing: Easing.linear,
+  //     useNativeDriver: true,
+  //   }).start();
+  // }, [showButtons]);
 
   const selectCard = (card) => {
     closePostButtons();
@@ -86,8 +85,13 @@ const Post = ({  }) => {
           alignItems: 'center',
         }}>
         <TouchableWithoutFeedback
-          onPress={ isLoggedIn ? (showButtons ? closePostButtons : openPostButtons) : (() => navigation.navigate('Post')) }
-          >
+          onPress={
+            isLoggedIn
+              ? showButtons
+                ? closePostButtons
+                : openPostButtons
+              : () => navigation.navigate('Post')
+          }>
           <View
             style={{
               flex: 1,
@@ -104,8 +108,13 @@ const Post = ({  }) => {
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
-          onPress={ isLoggedIn ? (showButtons ? closePostButtons : openPostButtons) : (() => navigation.navigate('Post')) }
-          >
+          onPress={
+            isLoggedIn
+              ? showButtons
+                ? closePostButtons
+                : openPostButtons
+              : () => navigation.navigate('Post')
+          }>
           <AppText
             textStyle="nav"
             customStyle={showButtons ? {color: '#1F1A54'} : {color: '#8C8B98'}}>
@@ -131,6 +140,7 @@ const Post = ({  }) => {
           </TouchableWithoutFeedback>
         }>
         <PopupButtons
+          spinValue={spinValue}
           selectCard={selectCard}
           closePostButtons={closePostButtons}
         />
@@ -153,12 +163,14 @@ const Post = ({  }) => {
   );
 };
 
-const PopupButtons = ({selectCard, closePostButtons}) => {
+const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
   const [viewOpacity] = useState(new Animated.Value(0));
 
   const [serviceButton] = useState(new Animated.Value(130 + 70));
   const [sellButton] = useState(new Animated.Value(65 + 70));
   const [needButton] = useState(new Animated.Value(70));
+
+  
 
   useEffect(() => {
     setTimeout(() => {
@@ -168,13 +180,17 @@ const PopupButtons = ({selectCard, closePostButtons}) => {
           duration: 300,
           useNativeDriver: false,
         }),
-
+        Animated.timing(spinValue, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
         Animated.timing(serviceButton, {
           toValue: 0,
           duration: 300,
           useNativeDriver: false,
         }),
-
         Animated.timing(sellButton, {
           toValue: 0,
           duration: 300,
@@ -229,6 +245,12 @@ const PopupButtons = ({selectCard, closePostButtons}) => {
           duration: 300,
           useNativeDriver: false,
         }),
+        Animated.timing(spinValue, {
+          toValue: 0,
+          duration: 300,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
       ]),
     ]).start();
 
@@ -416,4 +438,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Post;
+export default PostPopup;
