@@ -3,6 +3,7 @@ import { View, SafeAreaView, StyleSheet, Dimensions  } from 'react-native';
 import { AppText, AppButton, PaddingView, } from '@/components';
 import { OnboardingIllustration4, OnboardingIllustration3 } from '@/assets/images';
 import SignUp from '@/screens/Authentication/SignUp/SignUp';
+import Login from '@/screens/Authentication/Login/login';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 
@@ -15,7 +16,6 @@ const width = Dimensions.get('window').width;
 let bottomSheetRef = createRef();
 
 export const GuestPost = () => {
-
   const {
     sliderState,
     closeSlider,

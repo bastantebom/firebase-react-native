@@ -6,27 +6,41 @@ import {
   Defs,
   ClipPath,
   Image,
+  Path,
+  Rect
 } from 'react-native-svg';
+import { EmptyAvatar } from '@/assets/images/icons';
 
 const HexagonBorder = ({ imgSrc, size }) => {
   return (
     <View>
-      <Svg height={size} width={size} viewBox="0 0 100 100" >
-        {/* <Defs> */}
-          <ClipPath id="clip">
+      { imgSrc ? (
+        <Svg height={size * 2} width={size} viewBox="0 0 100 100">
+          {/* <Defs> */}
             <Polygon
               points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018"
+              stroke="white"
+              strokeLinejoin="round"
+              strokeWidth={7}
             />
-          </ClipPath>
-        {/* </Defs> */}
-        <Image
-          width="100%"
-          height="100%"
-          opacity="1"
-          href={imgSrc}
-          clipPath="url(#clip)"
-        />
-      </Svg>
+            <ClipPath id="clip">
+              <Polygon
+                points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018"
+              />
+            </ClipPath>
+          {/* </Defs> */}
+          <Image
+            width="100%"
+            height="50%"
+            opacity="1"
+            href={imgSrc}
+            clipPath="url(#clip)"
+          />
+        </Svg> 
+        ) : (
+          <EmptyAvatar/>
+        )
+      }
     </View>
   )
 }

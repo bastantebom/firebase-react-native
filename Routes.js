@@ -79,15 +79,15 @@ function HiveStackScreen() {
 }
 
 function PostStackScreen() {
-  const { isLoggedIn } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   return (
     <>
-      { isLoggedIn ? null : 
+      {/* { !user ? null :  */}
         <PostStack.Navigator headerMode="none">
           <PostStack.Screen name="PostScreen" component={PostScreen} />
         </PostStack.Navigator>
-      }
+       {/* } */}
     </>
   )
 }
@@ -261,11 +261,11 @@ function TabStack() {
 }
 
 function Routes() {
-  const { isLoggedIn } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   return (
     <NavigationContainer>
-      {!isLoggedIn ? <AuthStackScreen /> : <TabStack />}
+      {!user ? <AuthStackScreen /> : <TabStack />}
     </NavigationContainer>
   );
 }

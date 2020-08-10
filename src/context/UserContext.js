@@ -4,62 +4,43 @@ import auth from '@react-native-firebase/auth';
 export const UserContext = createContext(null);
 
 export const UserContextProvider = ({ children }) => {
-  
-  const initialState = {
-    uid: '',
-    email: '',
-    displayName: '',
-    isSignedOut: undefined,
-  }
+  const [user, setUser] = useState();
 
-  const [users, setUsers] = useState(initialState);
-  const user = auth().currentUser;
-  
-  const onAuthStateChanged = () => {
+  function onAuthStateChanged(user) {
     if (user) {
-      fetchProfile(user);
-      // console.log(user);
-    } 
-    return null
-  }
-
-  const fetchProfile = () => {
-    if (user) {
-      setUsers({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName
+      const { uid, displayName, email} = user
+      setUser({
+        uid: uid,
+        displayName: displayName,
+        email: email
       });
     }
   }
 
-  const signOut = async () => {
-    // if (user) {
-    await
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
+
+  const signOut = () => {
     auth()
     .signOut()
-    .then(function() {
-      setUsers({
-        ...initialState
-      })
+    .then(() => {
+      setUser(null);
       console.log('User signed out')
     }).catch(function(error) {
       console.log('Error signing out', error);
     });
-    // }
   };
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    onAuthStateChanged();
-    return subscriber; 
-  }, [])
 
   return (
     <UserContext.Provider 
       value={{ 
-        user: users,
-        isLoggedIn: user,
+        user: user,
         signOut: signOut
       }} 
     >

@@ -32,7 +32,7 @@ import { GuestProfile } from './components/GuestProfile';
 
 function Profile({navigation}) {
 
-  const { user, signOut, isLoggedIn } = useContext(UserContext);
+  const { user, signOut } = useContext(UserContext);
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -107,7 +107,7 @@ function Profile({navigation}) {
     location: 'Subic, Zambales',
   };
 
-  if (!isLoggedIn) {
+  if (!user) {
     return (
       <GuestProfile/>
     )
@@ -135,7 +135,11 @@ function Profile({navigation}) {
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
-          <ProfileImageUpload size={150} />
+          {/* <ProfileImageUpload size={150} /> */}
+          <HexagonBorder 
+            size={150} 
+            // imgSrc={}
+          />
         </View>
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
