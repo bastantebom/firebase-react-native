@@ -30,6 +30,11 @@ const styles = StyleSheet.create({
     fontSize: normalize(16),
     letterSpacing: 0.5,
   },
+  body1medium: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(16),
+    letterSpacing: 0.5,
+  },
   body2: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(14),

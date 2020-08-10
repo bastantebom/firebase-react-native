@@ -128,7 +128,22 @@ import ArrowDown from './ArrowIosDown.svg';
 import UploadIcon from '@/assets/images/icons/profile-upload.svg';
 import EmptyAvatar from '@/assets/images/icons/empty-avatar.svg';
 
+import PostBox from './PostBox.svg';
+import PostCash from './PostCash.svg';
+import PostClock from './PostClock.svg';
+import PostInfo from './PostInfo.svg';
+import PostNavigation from './PostNavigation.svg';
+import PostPencil from './PostPencil.svg';
+import PostRemove from './PostRemove.svg';
+
 export {
+  PostPencil,
+  PostRemove,
+  PostBox,
+  PostCash,
+  PostClock,
+  PostInfo,
+  PostNavigation,
   PostImages,
   BeeJoinedTime,
   Temperature,

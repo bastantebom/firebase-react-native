@@ -14,7 +14,7 @@ import {Dashboard} from '@/screens/Dashboard';
 import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
-import {Post} from '@/screens/Post';
+import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 
 import {
@@ -86,10 +86,14 @@ function PostStackScreen() {
       {/* { !user ? null :  */}
         <PostStack.Navigator headerMode="none">
           <PostStack.Screen name="PostScreen" component={PostScreen} />
+          <PostStack.Screen
+            name="SinglePostView"
+            component={SinglePostView}
+          />
         </PostStack.Navigator>
        {/* } */}
     </>
-  )
+  );
 }
 
 function ActivityStackScreen() {
@@ -122,6 +126,7 @@ function TabStack() {
           borderTopWidth: 0,
           elevation: 0,
           position: 'relative',
+          paddingHorizontal: normalize(60),
         },
         tabStyle: {
           flex: 1,
@@ -151,7 +156,7 @@ function TabStack() {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Hive"
         component={HiveStackScreen}
         options={{
@@ -164,7 +169,7 @@ function TabStack() {
             return <>{icon}</>;
           },
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Post"
         component={PostStackScreen}
@@ -172,7 +177,7 @@ function TabStack() {
           tabBarButton: () => <Post />,
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
         options={{
@@ -213,7 +218,7 @@ function TabStack() {
             );
           },
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileStackScreen}
@@ -261,7 +266,7 @@ function TabStack() {
 }
 
 function Routes() {
-  const { user } = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   return (
     <NavigationContainer>

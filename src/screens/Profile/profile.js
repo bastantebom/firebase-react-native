@@ -30,7 +30,7 @@ import {Posts, MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
 import { GuestProfile } from './components/GuestProfile';
 
-function Profile({navigation}) {
+function Profile() {
 
   const { user, signOut } = useContext(UserContext);
 

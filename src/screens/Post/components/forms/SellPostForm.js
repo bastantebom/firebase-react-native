@@ -8,7 +8,7 @@ import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
 
-const SellPostForm = () => {
+const SellPostForm = ({navToPost, togglePostModal}) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
@@ -63,16 +63,20 @@ const SellPostForm = () => {
     description,
   ]);
 
+  const navigateToPost = () => {
+    togglePostModal();
+    navToPost({
+      title: title,
+      price: price,
+      description: description,
+      paymentMethod: paymentMethod,
+      storeLocation: storeLocation,
+      deliveryMethod: [pickupState, deliveryState]
+    });
+  };
+
   return (
-    <KeyboardAwareScrollView
-      style={{
-        flex: 1,
-        backgroundColor: Colors.neutralsZircon,
-        width: normalize(375),
-      }}
-      extraScrollHeight={25}
-      keyboardOpeningTime={100}
-      enableOnAndroid={true}>
+    <>
       <View
         style={{
           backgroundColor: 'white',
@@ -230,7 +234,7 @@ const SellPostForm = () => {
           paddingVertical: 32,
           borderRadius: 4,
           marginBottom: 16,
-          paddingBottom: 100,
+          paddingBottom: 48,
         }}>
         <AppInput
           label="Payment Method"
@@ -241,9 +245,7 @@ const SellPostForm = () => {
         />
 
         <TouchableOpacity
-          onPress={() => {
-            alert('title: ' + title + ' price: ' + price + ' description: ' + description);
-          }}
+          onPress={navigateToPost}
           activeOpacity={0.7}
           disabled={buttonEnabled}
           style={{
@@ -256,7 +258,7 @@ const SellPostForm = () => {
           <AppText textStyle="button2">Publish</AppText>
         </TouchableOpacity>
       </View>
-    </KeyboardAwareScrollView>
+    </>
   );
 };
 

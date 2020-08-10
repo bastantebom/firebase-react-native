@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import {AppText} from '@/components';
 import {normalize, Colors} from '@/globals';
@@ -14,10 +15,19 @@ import {PostSell, PostService, PostNeed} from '@/assets/images/icons';
 
 import {SellPostForm, NeedPostForm, ServicePostForm} from './forms';
 
-const Post = ({card}) => {
+const Post = ({card, togglePostModal}) => {
   useEffect(() => {
     selectActive(card);
   }, []);
+
+  const navigation = useNavigation();
+
+  const navToPost = (data) => {
+    navigation.navigate('Post', {
+      screen: 'SinglePostView',
+      params: data,
+    });
+  };
 
   const [pickingState, setPickingState] = useState(true);
 
@@ -610,17 +620,33 @@ const Post = ({card}) => {
         </Animated.View>
       </View>
 
-      <RenderActiveForm activeScreen={activeScreen} />
+      <RenderActiveForm
+        activeScreen={activeScreen}
+        navToPost={navToPost}
+        togglePostModal={togglePostModal}
+      />
     </SafeAreaView>
   );
 };
 
-const RenderActiveForm = ({activeScreen}) => {
-  if (activeScreen === 'post') return <NeedPostForm />;
+const RenderActiveForm = ({activeScreen, navToPost, togglePostModal}) => {
+  if (activeScreen === 'post')
+    return (
+      <NeedPostForm navToPost={navToPost} togglePostModal={togglePostModal} />
+    );
 
-  if (activeScreen === 'sell') return <SellPostForm />;
+  if (activeScreen === 'sell')
+    return (
+      <SellPostForm navToPost={navToPost} togglePostModal={togglePostModal} />
+    );
 
-  if (activeScreen === 'need') return <ServicePostForm />;
+  if (activeScreen === 'need')
+    return (
+      <ServicePostForm
+        navToPost={navToPost}
+        togglePostModal={togglePostModal}
+      />
+    );
 };
 
 const styles = StyleSheet.create({

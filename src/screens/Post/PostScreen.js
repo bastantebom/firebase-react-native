@@ -7,42 +7,36 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {AppText, ScreenHeaderTitle} from '@/components';
 
 import PostHeader from './components/PostHeader';
 import {Colors, normalize} from '@/globals';
-import { GuestPost } from './components/GuestPost';
+import {GuestPost} from './components/GuestPost';
 
 import {UserContext} from '@/context/UserContext';
 
 const PostScreen = ({togglePostModal, card}) => {
-  // navigation.setOptions({
-  //   tabBarVisible: false
-  // });
-
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const { user } = useContext(UserContext);
+  const {user, signOut} = useContext(UserContext);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
   };
-
   const closeHandler = (value) => {
     if (value === 'continue') {
       cancelModalToggle();
-      setTimeout(()=> {
+      setTimeout(() => {
         togglePostModal();
-      }, 200)
+      }, 200);
     }
 
     cancelModalToggle();
   };
 
   if (!user) {
-    return (
-      <GuestPost/>
-    )
+    return <GuestPost />;
   }
 
   return (
@@ -54,16 +48,25 @@ const PostScreen = ({togglePostModal, card}) => {
           icon="close"
           title="Post"
         />
-
-        <PostHeader card={card} />
+        <KeyboardAwareScrollView
+          style={{
+            flex: 1,
+            backgroundColor: Colors.neutralsZircon,
+            width: normalize(375),
+          }}
+          // extraScrollHeight={25}
+          keyboardOpeningTime={100}
+          enableOnAndroid={true}>
+          <PostHeader card={card} togglePostModal={togglePostModal} />
+        </KeyboardAwareScrollView>
       </View>
 
       <Modal
         isVisible={showCancelModal}
-        animationIn="slideInUp"
+        animationIn="bounceIn"
         animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={200}
+        animationOut="bounceOut"
+        animationOutTiming={450}
         style={{
           margin: 0,
           alignItems: 'center',
@@ -105,7 +108,7 @@ const PostScreen = ({togglePostModal, card}) => {
               width: '100%',
               alignItems: 'center',
               marginBottom: 16,
-              borderRadius: 4
+              borderRadius: 4,
             }}>
             <AppText textStyle="button2">Continue</AppText>
           </TouchableOpacity>
@@ -113,7 +116,9 @@ const PostScreen = ({togglePostModal, card}) => {
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
             style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
-            <AppText textStyle="button2" color={Colors.contentOcean}>Cancel</AppText>
+            <AppText textStyle="button2" color={Colors.contentOcean}>
+              Cancel
+            </AppText>
           </TouchableOpacity>
         </View>
       </Modal>
