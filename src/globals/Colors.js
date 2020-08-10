@@ -33,7 +33,7 @@ export default {
 
   contentOcean: '#3781FC',
   contentEbony: '#2E3034',
-  contentPlaceholder: '#8C8B98',
+  contentPlaceholder: '#515057',
 
   buttonDisable: '#F6F6F6',
 

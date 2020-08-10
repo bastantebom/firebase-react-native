@@ -66,7 +66,12 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
   const navigateToPost = () => {
     togglePostModal();
     navToPost({
-      title: title
+      title: title,
+      price: price,
+      description: description,
+      paymentMethod: paymentMethod,
+      storeLocation: storeLocation,
+      deliveryMethod: [pickupState, deliveryState]
     });
   };
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, StyleSheet, Image, ScrollView} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {AppText} from '@/components';
@@ -12,10 +12,18 @@ import {
   PostInfo,
   PostCash,
   PostBox,
+  CircleTick,
+  CloseDark,
 } from '@/assets/images/icons';
 
 const SinglePostView = (props) => {
   console.log(props.route.params);
+
+  const [showNotification, setShowNotification] = useState(true);
+
+  const toggleNotification = () => {
+    setShowNotification(!showNotification);
+  };
 
   const {
     title,
@@ -25,6 +33,35 @@ const SinglePostView = (props) => {
     storeLocation,
     deliveryMethod,
   } = props.route.params;
+
+  const CustomNotification = () => {
+    if (showNotification)
+      return (
+        <View
+          style={{
+            backgroundColor: Colors.primaryYellow,
+            position: 'absolute',
+            top: -58,
+            width: normalize(375),
+            paddingHorizontal: 16,
+            alignItems: 'center',
+            height: normalize(58),
+            borderTopRightRadius: 8,
+            borderTopLeftRadius: 8,
+            flexDirection: 'row',
+          }}>
+          <CircleTick width={normalize(24)} height={normalize(24)} />
+          <AppText customStyle={{flex: 1, marginLeft: 8}} textStyle="body2">
+            Post successful!
+          </AppText>
+          <TouchableOpacity onPress={toggleNotification} activeOpacity={0.7}>
+            <CloseDark width={normalize(24)} height={normalize(24)} />
+          </TouchableOpacity>
+        </View>
+      );
+    return null;
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.postImageContainer}>
@@ -37,6 +74,7 @@ const SinglePostView = (props) => {
         />
       </View>
       <View style={styles.postInfoContainer}>
+        <CustomNotification />
         <View style={{flexDirection: 'row'}}>
           <View style={styles.userInfoImageContainer}>
             <Image
@@ -49,13 +87,13 @@ const SinglePostView = (props) => {
           </View>
           <View style={{marginLeft: 8, justifyContent: 'center'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <AppText textStyle="caption" customStyle={{marginRight: 4}}>
+              <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
                 Charlize Theron
               </AppText>
               <Verified />
             </View>
             <View style={{}}>
-              <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
+              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
                 @{'oldguard'.toLowerCase()}
               </AppText>
             </View>
@@ -92,16 +130,22 @@ const SinglePostView = (props) => {
         </View>
         <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
         <View style={styles.iconText}>
-          <PostClock width={normalize(24)} height={normalize(24)} />
+          <PostCash width={normalize(24)} height={normalize(24)} />
           <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
             {paymentMethod}
           </AppText>
         </View>
         {deliveryMethod ? (
           <View style={styles.iconText}>
-            <PostClock width={normalize(24)} height={normalize(24)} />
+            <PostBox width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {deliveryMethod}
+              {deliveryMethod[0] && deliveryMethod[1]
+                ? 'Pickup & Delivery'
+                : deliveryMethod[0]
+                ? 'Pickup'
+                : deliveryMethod[1]
+                ? 'Delivery'
+                : 'None'}
             </AppText>
           </View>
         ) : null}
