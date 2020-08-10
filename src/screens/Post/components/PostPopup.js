@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 import {AppText} from '@/components';
 import {normalize} from '@/globals';
@@ -22,11 +23,16 @@ import {
   PostService,
 } from '@/assets/images/icons';
 import {Context} from '@/context';
+import {UserContext} from '@/context/UserContext';
 import {PostScreen} from '@/screens/Post';
 
 const height = Dimensions.get('window').height;
 
-const Post = () => {
+const Post = ({  }) => {
+
+  const navigation = useNavigation();
+  const { isLoggedIn } = useContext(UserContext);
+
   const {showButtons, openPostButtons, closePostButtons} = useContext(Context);
 
   const animation = new Animated.Value(showButtons ? 0 : 1);
@@ -69,7 +75,8 @@ const Post = () => {
           alignItems: 'center',
         }}>
         <TouchableWithoutFeedback
-          onPress={showButtons ? closePostButtons : openPostButtons}>
+          onPress={ isLoggedIn ? (showButtons ? closePostButtons : openPostButtons) : (() => navigation.navigate('Post')) }
+          >
           <View
             style={{
               flex: 1,
@@ -87,7 +94,8 @@ const Post = () => {
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
-          onPress={showButtons ? closePostButtons : openPostButtons}>
+          onPress={ isLoggedIn ? (showButtons ? closePostButtons : openPostButtons) : (() => navigation.navigate('Post')) }
+          >
           <AppText
             textStyle="nav"
             customStyle={showButtons ? {color: '#1F1A54'} : {color: '#8C8B98'}}>

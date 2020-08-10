@@ -11,6 +11,7 @@ import React, { useEffect } from 'react';
 import Routes from './Routes';
 import SplashScreen from 'react-native-splash-screen';
 import { ContextProvider } from "@/context";
+import { UserContextProvider } from "@/context/UserContext";
 
 const App: () => React$Node = () => {
   useEffect(() => {
@@ -19,9 +20,11 @@ const App: () => React$Node = () => {
   }, []);
 
   return (
-    <ContextProvider>
-      <Routes />
-    </ContextProvider>
+    <UserContextProvider>
+      <ContextProvider>
+        <Routes />
+      </ContextProvider>
+    </UserContextProvider>
   );
 };
 export default App;
