@@ -123,6 +123,9 @@ import Flip from '@/assets/images/icons/camera-flip.svg';
 import Temperature from './temperature.svg';
 import BeeJoinedTime from './bee-joined-time.svg';
 
+import Calendar from './Calendar.svg';
+import ArrowDown from './ArrowIosDown.svg';
+
 export {
   PostImages,
   BeeJoinedTime,
@@ -208,4 +211,6 @@ export {
   FolderAdd,
   Flash,
   Flip,
+  Calendar,
+  ArrowDown,
 };

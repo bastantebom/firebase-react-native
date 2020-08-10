@@ -15,7 +15,38 @@ import {
 } from '@/components';
 import {Colors, normalize} from '@/globals';
 
-export const VerifyMap = ({back}, route) => {
+const styles = StyleSheet.create({
+  modalHeader: {
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    //marginBottom: 32,
+  },
+  buttonWrapper: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 24,
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+    elevation: 100,
+  },
+  textInputWrapper: {
+    width: '100%',
+    flex: 0,
+    position: 'absolute',
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+    top: 70,
+    marginTop: 15,
+    // elevation: 100,
+  },
+});
+
+// create a component
+const EditAddress = ({back}, route) => {
   const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
   const [buttonStyle, setButtonStyle] = useState({
@@ -151,7 +182,7 @@ export const VerifyMap = ({back}, route) => {
         onRegionChange={(region) => {
           onRegionChange(region);
         }}
-        withCurrentMarker={true}
+        withCurrentMarker={false}
       />
       <View style={styles.buttonWrapper}>
         <AppButton
@@ -170,31 +201,5 @@ export const VerifyMap = ({back}, route) => {
   );
 };
 
-const styles = StyleSheet.create({
-  modalHeader: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    // marginBottom: 32,
-  },
-  buttonWrapper: {
-    width: '100%',
-    position: 'absolute',
-    bottom: 24,
-    padding: 24,
-    alignItems: 'stretch',
-    zIndex: 100,
-    elevation: 100,
-  },
-  textInputWrapper: {
-    width: '100%',
-    flex: 0,
-    position: 'absolute',
-    padding: 24,
-    alignItems: 'stretch',
-    zIndex: 100,
-    top: 70,
-    // elevation: 100,
-  },
-});
+//make this component available to the app
+export default EditAddress;
