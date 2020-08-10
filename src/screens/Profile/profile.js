@@ -32,8 +32,7 @@ import { GuestProfile } from './components/GuestProfile';
 
 function Profile({navigation}) {
 
-  const { user, signOut, 
-  } = useContext(UserContext);
+  const { user, signOut } = useContext(UserContext);
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);

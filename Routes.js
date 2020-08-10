@@ -83,11 +83,11 @@ function PostStackScreen() {
 
   return (
     <>
-      { !user ? null : 
+      {/* { !user ? null :  */}
         <PostStack.Navigator headerMode="none">
           <PostStack.Screen name="PostScreen" component={PostScreen} />
         </PostStack.Navigator>
-      }
+       {/* } */}
     </>
   )
 }

@@ -2,6 +2,7 @@ import React, {useContext} from 'react'
 import {
   View,
   Text,
+  SafeAreaView,
 } from 'react-native';
 import { AppText } from '@/components';
 import {UserContext} from '@/context/UserContext';
@@ -10,7 +11,7 @@ const Activity = () => {
   const { user } = useContext(UserContext);
 
   return (
-    <View>
+    <SafeAreaView>
       <Text>Activity</Text>
       { user && 
         <>
@@ -19,7 +20,7 @@ const Activity = () => {
           <AppText>{user.uid}</AppText>
         </>
       }
-    </View>
+    </SafeAreaView>
   )
 }
 
