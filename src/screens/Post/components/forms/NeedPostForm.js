@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -11,6 +12,7 @@ import {PostImages} from '@/assets/images/icons';
 const NeedPostForm = () => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
+  const navigation = useNavigation();
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -56,6 +58,10 @@ const NeedPostForm = () => {
     paymentMethod,
     description,
   ]);
+
+  const we = () => {
+    navigation.navigate('SinglePostView');
+  };
 
   return (
     <View
@@ -156,19 +162,7 @@ const NeedPostForm = () => {
 
       <TouchableOpacity
         onPress={() => {
-          alert(
-            'title: ' +
-              title +
-              '\nprice: ' +
-              price +
-              '\ndescription: ' +
-              description +
-              '\nlocation: ' +
-              storeLocation +
-              '\npayment method: ' +
-              paymentMethod +
-              ' \n Save na dito ',
-          );
+          we();
         }}
         activeOpacity={0.7}
         disabled={buttonEnabled}

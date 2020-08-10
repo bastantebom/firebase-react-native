@@ -14,7 +14,7 @@ import {Dashboard} from '@/screens/Dashboard';
 import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
-import {Post} from '@/screens/Post';
+import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 
 import {
@@ -86,10 +86,14 @@ function PostStackScreen() {
       {/* { !user ? null :  */}
         <PostStack.Navigator headerMode="none">
           <PostStack.Screen name="PostScreen" component={PostScreen} />
+          <PostStack.Screen
+            name="SinglePostView"
+            component={SinglePostView}
+          />
         </PostStack.Navigator>
        {/* } */}
     </>
-  )
+  );
 }
 
 function ActivityStackScreen() {
@@ -261,7 +265,7 @@ function TabStack() {
 }
 
 function Routes() {
-  const { user } = useContext(UserContext);
+  const {isLoggedIn} = useContext(UserContext);
 
   return (
     <NavigationContainer>

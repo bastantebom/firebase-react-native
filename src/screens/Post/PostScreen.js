@@ -24,7 +24,6 @@ const PostScreen = ({togglePostModal, card}) => {
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
   };
-
   const closeHandler = (value) => {
     if (value === 'continue') {
       cancelModalToggle();
