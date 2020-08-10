@@ -116,7 +116,7 @@ function Profile({navigation}) {
 
   return (
     <>
-      {/* <TransparentHeader
+      <TransparentHeader
         type={headerState}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
@@ -157,8 +157,7 @@ function Profile({navigation}) {
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
-      </ScrollView> */}
-      <GuestProfile/>
+      </ScrollView>
     </>
   );
 }
