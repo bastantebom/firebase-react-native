@@ -125,6 +125,8 @@ import BeeJoinedTime from './bee-joined-time.svg';
 
 import Calendar from './Calendar.svg';
 import ArrowDown from './ArrowIosDown.svg';
+import UploadIcon from '@/assets/images/icons/profile-upload.svg';
+import EmptyAvatar from '@/assets/images/icons/empty-avatar.svg';
 
 export {
   PostImages,
@@ -213,4 +215,6 @@ export {
   Flip,
   Calendar,
   ArrowDown,
+  UploadIcon,
+  EmptyAvatar
 };

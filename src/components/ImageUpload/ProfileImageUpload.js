@@ -7,10 +7,10 @@ import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import {ProgressBar} from 'react-native-paper';
 
-import UploadIcon from '@/assets/images/icons/profile-upload.svg';
 import AppButton from '../AppButton/AppButton';
 import AppText from '../AppText/AppText';
 import HexagonBorder from '@/components/ImageUpload/HexagonBorder';
+import { UploadIcon } from '@/assets/images/icons';
 
 const ProfileImageUpload = ({size}) => {
   const currentUser = auth().currentUser;
@@ -98,10 +98,10 @@ const ProfileImageUpload = ({size}) => {
         <UploadIcon height={size} width={size} />
       </TouchableOpacity>
       <View style={{display: !isVisible ? 'flex' : 'none'}}>
-        <Svg height={size} width={size} viewBox="0 0 100 100">
+        <Svg height={size} width={size} viewBox="0 0 100 100" strokeLinejoin="round">
           <Defs>
             <ClipPath id="clip">
-              <Polygon points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018" />
+              <Polygon points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018" strokeLinejoin="round"/>
             </ClipPath>
           </Defs>
           <Image
