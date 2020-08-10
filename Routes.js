@@ -15,6 +15,7 @@ import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
 import {Post} from '@/screens/Post';
+import {PostScreen} from '@/screens/Post';
 
 import {
   AlmostThere,
@@ -25,6 +26,7 @@ import {
 
 import {normalize} from '@/globals';
 import {Context} from '@/context';
+import {UserContext} from '@/context/UserContext';
 
 import {
   ServbeesAlt,
@@ -48,7 +50,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="AlmostThere" component={AlmostThere} />
       <AuthStack.Screen name="AlmostThereMap" component={AlmostThereMap} />
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-      <AuthStack.Screen name="Dashboard" component={Dashboard} />
+      <AuthStack.Screen name="TabStack" component={TabStack} />
     </AuthStack.Navigator>
   );
 }
@@ -77,7 +79,17 @@ function HiveStackScreen() {
 }
 
 function PostStackScreen() {
-  return null;
+  const { isLoggedIn } = useContext(UserContext);
+
+  return (
+    <>
+      { isLoggedIn ? null : 
+        <PostStack.Navigator headerMode="none">
+          <PostStack.Screen name="PostScreen" component={PostScreen} />
+        </PostStack.Navigator>
+      }
+    </>
+  )
 }
 
 function ActivityStackScreen() {
@@ -249,28 +261,11 @@ function TabStack() {
 }
 
 function Routes() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-  const {closePostButtons} = useContext(Context);
-
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
+  const { isLoggedIn } = useContext(UserContext);
 
   return (
     <NavigationContainer>
-      {!user ? <AuthStackScreen /> : 
-      <TabStack 
-      />
-      }
+      {!isLoggedIn ? <AuthStackScreen /> : <TabStack />}
     </NavigationContainer>
   );
 }

@@ -163,7 +163,9 @@ const Onboarding = ({navigation, illustration}) => {
           </Animated.View>
         </TouchableWithoutFeedback>
         <TouchableOpacity
-          onPress={() => navigation.push('Dashboard')}
+          // onPress={() => navigation.push('Dashboard')}
+          onPress={() => navigation.push('TabStack')}
+
           style={styles.link}>
           <AppText textStyle="body2">Skip</AppText>
         </TouchableOpacity>
