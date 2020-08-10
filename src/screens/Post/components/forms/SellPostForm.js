@@ -5,9 +5,12 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, TouchableOpacity, ScrollView, SafeAreaView, Image} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import {AppText, AppInput, Switch} from '@/components';
 import {normalize, Colors} from '@/globals';
@@ -19,6 +22,28 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
+  const [imageSource, setImageSource] = useState(null);
+
+  const handleSelect = () => {
+    ImagePicker.openPicker({
+      width: 500,
+      height: 500,
+      // cropping: true,
+      // multiple: true
+      includeBase64: true,
+    })
+      .then((response) => {
+        const source = {uri: response.path};
+        console.log(source);
+        setImageSource(source);
+        // const uri = image.path;
+        // setImageSource(uri)
+        // console.log(image.filename)
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   const {
     title,
@@ -151,25 +176,87 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <View
-          style={{
-            height: normalize(114),
-            borderStyle: 'dashed',
-            borderRadius: 4,
-            borderWidth: 1,
-            borderColor: Colors.neutralGray,
-            justifyContent: 'center',
-            marginBottom: 8,
-          }}>
-          <TouchableOpacity activeOpacity={0.7}>
-            <View style={{alignSelf: 'center', alignItems: 'center'}}>
-              <PostImages width={normalize(56)} height={normalize(56)} />
-              <AppText textStyle="body2" color={Colors.contentOcean}>
-                Upload Cover Photos
-              </AppText>
-            </View>
-          </TouchableOpacity>
+        {!imageSource ? (
+          <View
+            style={{
+              height: normalize(114),
+              borderStyle: 'dashed',
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: Colors.neutralGray,
+              justifyContent: 'center',
+              marginBottom: 8,
+              // maxWidth: imageSource && '25%'
+            }}>
+            <TouchableOpacity activeOpacity={0.7} onPress={() => handleSelect()}>
+              <View style={{alignSelf: 'center', alignItems: 'center'}}>
+                <PostImages width={normalize(56)} height={normalize(56)} />
+                <AppText textStyle="body2" color={Colors.contentOcean}>
+                  Upload Cover Photos
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          </View>
+          ) : (
+          <View
+            style={{
+              // height: 150,
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}
+          >
+          <Image 
+            source={imageSource} 
+            style={{
+              width: '25%',
+              height: '100%',
+              height: normalize(114),
+              marginBottom: 25,
+              marginRight: 8,
+              borderRadius: 4
+            }}
+          />
+          {/* {imageSource.map((item, index) => {
+            return (
+              <Image 
+                key={index}
+                source={item.imageSource} 
+                style={{
+                  width: '25%',
+                  height: '100%',
+                  height: normalize(114),
+                  marginBottom: 25,
+                  marginRight: 8,
+                  borderRadius: 4
+                }}
+              />
+            )
+          })} */}
+          <View
+            style={{
+              height: normalize(114),
+              borderStyle: 'dashed',
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: Colors.neutralGray,
+              justifyContent: 'center',
+              marginBottom: 8,
+              maxWidth: '25%'
+            }}
+          >
+            <TouchableOpacity activeOpacity={0.7} onPress={() => handleSelect()}>
+              <View style={{alignSelf: 'center', alignItems: 'center'}}>
+                <PostImages width={normalize(56)} height={normalize(56)} />
+                <AppText textStyle="body2" color={Colors.contentOcean} customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
+                  Upload Photo
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
+        )}
+
         <AppText textStyle="metadata" customStyle={{marginBottom: 16}}>
           <AppText customStyle={{fontWeight: 'bold'}}>
             Photos - {photoCount}/10
