@@ -55,14 +55,15 @@ const PostPopup = ({}) => {
     outputRange: ['0deg', '135deg'],
   });
 
-  // useEffect(() => {
-  //   Animated.timing(spinValue, {
-  //     toValue: 0,
-  //     duration: 300,
-  //     easing: Easing.linear,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }, [showButtons]);
+  useEffect(() => {
+    if (!showButtons)
+      Animated.timing(spinValue, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start();
+  }, [showButtons]);
 
   const selectCard = (card) => {
     closePostButtons();
@@ -127,7 +128,7 @@ const PostPopup = ({}) => {
         isVisible={showButtons}
         animationIn="slideInUp"
         animationInTiming={200}
-        animationOut="slideOutRight"
+        animationOut="slideOutDown"
         animationOutTiming={100}
         style={{
           margin: 0,
@@ -169,8 +170,6 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
   const [serviceButton] = useState(new Animated.Value(130 + 70));
   const [sellButton] = useState(new Animated.Value(65 + 70));
   const [needButton] = useState(new Animated.Value(70));
-
-  
 
   useEffect(() => {
     setTimeout(() => {
@@ -250,7 +249,7 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
           duration: 300,
           easing: Easing.linear,
           useNativeDriver: true,
-        })
+        }),
       ]),
     ]).start();
 

@@ -52,7 +52,7 @@ const PostScreen = ({togglePostModal, card}) => {
           title="Post"
         />
 
-        {/* <PostHeader card={card} /> */}
+        <PostHeader card={card} />
       </View>
 
       <Modal
