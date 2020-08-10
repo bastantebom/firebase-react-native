@@ -13,6 +13,8 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, TouchableOpacity, ScrollView, SafeAreaView, Image} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -93,24 +95,8 @@ const Library = ({
         <TouchableOpacity onPress={() => cancelUploadPhoto()}>
           <AppText textStyle="body2">Cancel</AppText>
         </TouchableOpacity>
-<<<<<<< HEAD
         <AppText textStyle="body1">All Photos</AppText>
         <AppText textStyle="body3" color={Colors.contentOcean}>Next</AppText>
-=======
-        <TouchableOpacity
-          onPress={showFolders}
-          style={{paddingVertical: 5, paddingHorizontal: 25}}>
-          <AppText textStyle="body1">All Photos</AppText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          // onPress={next}
-          onPress={() => next(selected, photoCount)}
-          style={{paddingVertical: 5, paddingHorizontal: 25}}>
-          <AppText textStyle="body3" color={Colors.contentOcean}>
-            Next
-          </AppText>
-        </TouchableOpacity>
->>>>>>> wip: camera function on add photos
       </View>
       <View style={styles.container}>
         <View
@@ -261,18 +247,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setCurrentImage(current.uri)
     // console.log(currentImage);
 
-<<<<<<< HEAD
     // console.log(current.uri);
 
     // console.log(selected);
     // image.node.image.uri
   }
-=======
-  useEffect(() => {
-    // console.log(uploadTabs)
-    console.log('photoCount outside Library', photoCount);
-  }, [photoCount]);
->>>>>>> wip: camera function on add photos
 
   const cancelUploadPhoto = () => {
     setShowPickerModal(!showPickerModal);
@@ -293,37 +272,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   }
 
   const uploadTabs = [
-<<<<<<< HEAD
     {key: 'camera', title: 'Photo', renderPage: 
       <AppCamera 
         captureImage={() => {console.log('captureImage')}}
         imageUrl
       />},
     {key: 'cameraroll', title: 'Library', renderPage: <Library count={photoCount} isSelected={selected} callback={getSelectedImages} current={currentImage} />},
-=======
-    {
-      key: 'camera',
-      title: 'Photo',
-      renderPage: (
-        <AppCamera captureImage={captureCamera}/>
-      ),
-    },
-    {
-      key: 'cameraroll',
-      title: 'Library',
-      renderPage: (
-        <Library
-          count={photoCount}
-          isSelected={selected}
-          callback={getSelectedImages}
-          current={currentImage}
-          cancel={cancelUploadPhoto}
-          next={continueUploadPhoto}
-          showFolders={toggleFolderList}
-        />
-      ),
-    },
->>>>>>> wip: camera function on add photos
   ];
 
   const togglePickupState = () => {
