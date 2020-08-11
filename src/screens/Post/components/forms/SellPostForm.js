@@ -6,43 +6,86 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, ScrollView, SafeAreaView, Image} from 'react-native';
+import {View, TouchableOpacity, ScrollView, SafeAreaView, Image, StyleSheet, Text, Dimensions} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 import ImagePicker from 'react-native-image-crop-picker';
+import NativeImagePicker from 'react-native-image-picker';
+import CameraRoll from "@react-native-community/cameraroll";
+import CameraRollPicker from 'react-native-camera-roll-picker';
+import Modal from 'react-native-modal';
 
 import {AppText, AppInput, Switch} from '@/components';
+import {AppText, AppInput, AppButton, TabNavigation} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
+import {PostImages, CloseLight} from '@/assets/images/icons';
+import { CameraId } from '@/screens/Dashboard/Verification/components/CameraId';
+import { AppCamera } from '@/components/Camera/AppCamera';
+
+
+function Library({photoCount, selected, getSelectedImages}) {
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.text}>
+          <Text style={styles.bold}> {photoCount} </Text> images has been selected
+        </Text>
+      </View>
+      <ScrollView horizontal>
+      <CameraRollPicker
+        groupTypes='All'
+        maximum={10}
+        selected={selected}
+        // assetType='Photos'
+        imagesPerRow={3}
+        imageMargin={5}
+        callback={getSelectedImages} 
+      />
+      </ScrollView>
+    </View>
+  )
+}
+
+const { height, width } = Dimensions.get('window');
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
-  const [imageSource, setImageSource] = useState(null);
+  const [imageSource, setImageSource] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [showPickerModal, setShowPickerModal] = useState(false);
+
+  const cancelPickerModal = () => {
+    setShowPickerModal(!showPickerModal);
+  };
 
   const handleSelect = () => {
     ImagePicker.openPicker({
       width: 500,
       height: 500,
       // cropping: true,
-      // multiple: true
+      // multiple: true,
+      // mediaType: 'photo',
       includeBase64: true,
     })
-      .then((response) => {
-        const source = {uri: response.path};
-        console.log(source);
-        setImageSource(source);
-        // const uri = image.path;
-        // setImageSource(uri)
-        // console.log(image.filename)
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    .then((response) => {
+      const source = response.path;
+      // console.log('source:', source);
+      setImageSource([...imageSource, { source }]);
+      console.log('imageSource', imageSource)
+      setPhotoCount(photoCount + 1)
+      // const uri = image.path;
+      // setImageSource(uri)
+      // console.log(image.filename)
+    })
+    .catch((e) => {
+      console.log(e);
+    });
   };
 
   const {
@@ -61,6 +104,27 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     paymentMethod,
     setPaymentMethod,
   } = formState;
+  const handleRemove = () => {
+    const newImg = imageSource.filter((t) => t);
+    setImageSource(newImg);
+    console.log('Image removed')
+  }
+
+  const getSelectedImages = (images, current) => {
+    var num = images.length;
+
+    setPhotoCount(num)
+    setSelected(images)
+
+    // console.log(current);
+    // console.log(selected);
+    console.log(photoCount)
+  }
+
+  let uploadTabs = [
+    {key: 'camera', title: 'Photo', renderPage: <AppCamera />},
+    {key: 'cameraroll', title: 'Library', renderPage: <Library photoCount={photoCount} selected={selected} getSelectedImages={getSelectedImages} />},
+  ];
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -176,7 +240,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        {!imageSource ? (
+        {imageSource.length === 0 ? (
           <View
             style={{
               height: normalize(114),
@@ -188,7 +252,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               marginBottom: 8,
               // maxWidth: imageSource && '25%'
             }}>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => handleSelect()}>
+            <TouchableOpacity 
+              activeOpacity={0.7} 
+              // onPress={() => handleSelect()}
+              // onPress={() => handleCameraRoll()}
+              onPress={() => setShowPickerModal(true)}
+            >
               <View style={{alignSelf: 'center', alignItems: 'center'}}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText textStyle="body2" color={Colors.contentOcean}>
@@ -201,38 +270,50 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           <View
             style={{
               // height: 150,
+              height: normalize(114),
               width: '100%',
               flexDirection: 'row',
-              justifyContent: 'center',
+              marginBottom: 25,
+              // justifyContent: 'center',
             }}
           >
-          <Image 
-            source={imageSource} 
-            style={{
-              width: '25%',
-              height: '100%',
-              height: normalize(114),
-              marginBottom: 25,
-              marginRight: 8,
-              borderRadius: 4
-            }}
-          />
-          {/* {imageSource.map((item, index) => {
-            return (
-              <Image 
-                key={index}
-                source={item.imageSource} 
-                style={{
-                  width: '25%',
-                  height: '100%',
-                  height: normalize(114),
-                  marginBottom: 25,
-                  marginRight: 8,
-                  borderRadius: 4
-                }}
-              />
-            )
-          })} */}
+          <ScrollView horizontal >
+            {imageSource.map((image, i) => {
+              return (
+                <View key={i}>
+                  <TouchableOpacity 
+                    onPress={() => handleRemove()}
+                    style={{ zIndex: 999, position: 'absolute', right: 20, top: 5 }} 
+                  >
+                    <View
+                      style={{
+                        position: 'absolute',
+                        backgroundColor: 'rgba(0,0,0,.6)',
+                        width: (normalize(28)),
+                        height: (normalize(28)),
+                        borderRadius: 50,
+                      }}
+                    />
+                    <View style={{ left: normalize(3.75), top: normalize(3.5) }}>
+                      <CloseLight width={(normalize(20))} height={(normalize(20))} />
+                    </View>
+                  </TouchableOpacity>
+                  <Image 
+                    // source={{uri: image.source}} 
+                    source={{uri: image.node.image.uri }} 
+                    style={{
+                      // width: '100%',
+                      width: normalize(84),
+                      // height: '100%',
+                      height: normalize(114),
+                      marginRight: 8,
+                      borderRadius: 4
+                    }}
+                  />
+                </View>
+              )
+            })}
+          </ScrollView>
           <View
             style={{
               height: normalize(114),
@@ -245,7 +326,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               maxWidth: '25%'
             }}
           >
-            <TouchableOpacity activeOpacity={0.7} onPress={() => handleSelect()}>
+            <TouchableOpacity 
+              activeOpacity={0.7} 
+              // onPress={() => handleSelect()}
+              // onPress={() => handleCameraRoll()}
+              onPress={() => setShowPickerModal(true)}
+            >
               <View style={{alignSelf: 'center', alignItems: 'center'}}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText textStyle="body2" color={Colors.contentOcean} customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
@@ -392,8 +478,63 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           )}
         </TouchableOpacity>
       </View>
+      <Modal
+        isVisible={showPickerModal}
+        // animationIn="bounceIn"
+        // animationInTiming={450}
+        // animationOut="bounceOut"
+        // animationOutTiming={450}
+        onSwipeComplete={() => setShowPickerModal(false)}
+        swipeDirection="down"
+        style={{
+          // margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: height,
+            width: width,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          {/* <TabNavigation routesList={uploadTabs} /> */}
+          <Library photoCount={photoCount} selected={selected} getSelectedImages={getSelectedImages} />
+          {/* <AppCamera/> */}
+        </View>
+      </Modal>
     </>
   );
 };
 
 export default SellPostForm;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: 500,
+    backgroundColor: '#F6AE2D',
+  },
+  content: {
+    marginTop: 15,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  text: {
+    fontSize: 16,
+    alignItems: 'center',
+    color: '#fff',
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  info: {
+    fontSize: 12,
+  },
+})
