@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
@@ -7,8 +7,11 @@ import Textarea from 'react-native-textarea';
 import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
+import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
 
 const SellPostForm = ({navToPost, togglePostModal}) => {
+  const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
@@ -63,15 +66,38 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
     description,
   ]);
 
-  const navigateToPost = () => {
-    togglePostModal();
-    navToPost({
+  // const navigateToPost = () => {
+  //   togglePostModal();
+  //   navToPost({
+  //     title: title,
+  //     price: price,
+  //     description: description,
+  //     paymentMethod: paymentMethod,
+  //     storeLocation: storeLocation,
+  //     deliveryMethod: [pickupState, deliveryState]
+  //   });
+  // };
+
+  const navigateToPost = async () => {
+    let type = 'Sell';
+    let data = {
+      uid: user.uid,
+      post_type: type,
+      images: [],
       title: title,
       price: price,
       description: description,
-      paymentMethod: paymentMethod,
-      storeLocation: storeLocation,
-      deliveryMethod: [pickupState, deliveryState]
+      payment_method: paymentMethod,
+      store_location: storeLocation,
+      delivery_method: [
+        pickupState ? 'pickup' : '',
+        deliveryState ? 'delivery' : '',
+      ],
+    };
+
+    await PostService.createPost(data).then((res) => {
+      togglePostModal();
+      navToPost(res);
     });
   };
 

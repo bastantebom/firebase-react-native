@@ -135,8 +135,10 @@ import PostInfo from './PostInfo.svg';
 import PostNavigation from './PostNavigation.svg';
 import PostPencil from './PostPencil.svg';
 import PostRemove from './PostRemove.svg';
+import ProfileImageDefault from './profile-image-default.svg';
 
 export {
+  ProfileImageDefault,
   PostPencil,
   PostRemove,
   PostBox,
@@ -231,5 +233,5 @@ export {
   Calendar,
   ArrowDown,
   UploadIcon,
-  EmptyAvatar
+  EmptyAvatar,
 };

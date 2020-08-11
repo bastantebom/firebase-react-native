@@ -37,6 +37,7 @@ const TransparentHeader = ({
   toggleQR,
   QR,
   signOut,
+  backFunction
 }) => {
   const shareHandler = async () => {
     const shareOptions = {
@@ -75,7 +76,7 @@ const TransparentHeader = ({
             }}>
             {/* Left aligned icons */}
             <View>
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
                 <View style={styles.circle}>
                   <HeaderBack width={normalize(16)} height={normalize(16)} />
                 </View>

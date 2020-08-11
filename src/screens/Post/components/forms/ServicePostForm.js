@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
@@ -7,24 +7,18 @@ import Textarea from 'react-native-textarea';
 import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
+import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
 
 const ServicePostForm = ({navToPost, togglePostModal}) => {
+  const {user} = useContext(UserContext);
+
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
-
-  const togglePickupState = () => {
-    setPickupState(!pickupState);
-  };
-
-  const toggleDeliveryState = () => {
-    setDeliveryState(!deliveryState);
-  };
 
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [pickupState, setPickupState] = useState(false);
-  const [deliveryState, setDeliveryState] = useState(false);
   const [storeLocation, setStoreLocation] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
 
@@ -32,8 +26,6 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
     setTitle('');
     setPrice('');
     setDescription('');
-    setPickupState(false);
-    setDeliveryState(false);
     setStoreLocation('');
     setPaymentMethod('');
   };
@@ -47,24 +39,25 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
 
   useEffect(() => {
     checkFormContent();
-  }, [
-    title,
-    price,
-    pickupState,
-    deliveryState,
-    storeLocation,
-    paymentMethod,
-    description,
-  ]);
+  }, [title, price, storeLocation, paymentMethod, description]);
 
-  const navigateToPost = () => {
-    togglePostModal();
-    navToPost({
+  const navigateToPost = async () => {
+    let type = 'service';
+    let data = {
+      uid: user.uid,
+      post_type: type,
+      images: [],
       title: title,
       price: price,
       description: description,
-      paymentMethod: paymentMethod,
-      storeLocation: storeLocation,
+      payment_method: paymentMethod,
+      store_location: storeLocation,
+      delivery_method: [],
+    };
+
+    await PostService.createPost(data).then((res) => {
+      togglePostModal();
+      navToPost(res);
     });
   };
 

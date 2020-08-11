@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Divider} from 'react-native-paper';
 
-import {AppText, TransparentHeader} from '@/components';
+import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 
 import {normalize, GlobalStyle, Colors} from '@/globals';
 import {
@@ -17,10 +17,9 @@ import {
 } from '@/assets/images/icons';
 
 const SinglePostView = (props) => {
-  console.log(props.route.params);
-
-  const [showNotification, setShowNotification] = useState(true);
+  const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const toggleEllipsisState = () => {
     setEllipsisState(!ellipsisState);
@@ -31,19 +30,51 @@ const SinglePostView = (props) => {
   };
 
   useEffect(() => {
+    setShowNotification(
+      props.route.params?.success ? props.route.params?.success : false,
+    );
+
     setTimeout(() => {
       setShowNotification(false);
     }, 5000);
   }, []);
 
+  // data = {
+  //   uid: user.uid,
+  //   post_type: type,
+  //   images: [],
+  //   title: title,
+  //   price: price,
+  //   description: description,
+  //   payment_method: paymentMethod,
+  //   store_location: storeLocation,
+  //   delivery_method: [],
+  // };
+
   const {
+    uid,
+    post_type,
+    images,
     title,
     description,
-    paymentMethod,
+    payment_method,
     price,
-    storeLocation,
-    deliveryMethod,
-  } = props.route.params;
+    store_location,
+    delivery_method,
+    available,
+    username,
+    profile_photo,
+    account_verified,
+    display_name,
+    date_posted,
+  } = props.route.params?.data;
+
+  const userInfo = {
+    username: username,
+    profile_photo: profile_photo,
+    account_verified: account_verified,
+    display_name: display_name,
+  };
 
   const CustomNotification = () => {
     if (showNotification)
@@ -87,30 +118,8 @@ const SinglePostView = (props) => {
         </View>
         <View style={styles.postInfoContainer}>
           <CustomNotification />
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.userInfoImageContainer}>
-              <Image
-                style={GlobalStyle.image}
-                source={{
-                  uri:
-                    'https://upload.wikimedia.org/wikipedia/commons/0/08/Charlize_Theron_WonderCon_2012_%28Straighten_Crop%29.jpg',
-                }}
-              />
-            </View>
-            <View style={{marginLeft: 8, justifyContent: 'center'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
-                  Charlize Theron
-                </AppText>
-                <Verified />
-              </View>
-              <View style={{}}>
-                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                  @{'oldguard'.toLowerCase()}
-                </AppText>
-              </View>
-            </View>
-          </View>
+
+          <ProfileInfo userInfo={userInfo} />
 
           <AppText
             textStyle="subtitle1"
@@ -125,13 +134,13 @@ const SinglePostView = (props) => {
           <View style={styles.iconText}>
             <PostClock width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              Over 1 min ago
+              Just Now
             </AppText>
           </View>
           <View style={styles.iconText}>
             <PostNavigation width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {storeLocation}
+              {store_location}
             </AppText>
           </View>
           <View style={styles.iconText}>
@@ -144,18 +153,18 @@ const SinglePostView = (props) => {
           <View style={styles.iconText}>
             <PostCash width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {paymentMethod}
+              {payment_method}
             </AppText>
           </View>
-          {deliveryMethod ? (
+          {delivery_method ? (
             <View style={styles.iconText}>
               <PostBox width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {deliveryMethod[0] && deliveryMethod[1]
+                {delivery_method[0] && delivery_method[1]
                   ? 'Pickup & Delivery'
-                  : deliveryMethod[0]
+                  : delivery_method[0]
                   ? 'Pickup'
-                  : deliveryMethod[1]
+                  : delivery_method[1]
                   ? 'Delivery'
                   : 'None'}
               </AppText>
@@ -167,6 +176,7 @@ const SinglePostView = (props) => {
         type="post-own"
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
+        backFunction={() => console.log('navigation go back')}
       />
     </>
   );
@@ -194,7 +204,7 @@ const styles = StyleSheet.create({
   },
   iconText: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     // backgroundColor: 'red'
     marginBottom: 16,
   },
