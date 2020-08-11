@@ -7,8 +7,6 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
 
 import {
   AppText,
