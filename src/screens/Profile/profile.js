@@ -7,7 +7,10 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
+<<<<<<< HEAD
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+=======
+>>>>>>> 80bc3f5... wip: multiple image picker using camera roll
 
 import {
   AppText,
