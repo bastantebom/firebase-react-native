@@ -137,8 +137,8 @@ const Post = () => {
       <Posts
         type="own"
         data={DummyData}
-        hideLocationComponent={hideLocationComponent}
-        showLocationComponent={showLocationComponent}
+        //hideLocationComponent={hideLocationComponent}
+        //showLocationComponent={showLocationComponent}
       />
     );
   };

@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {AppText} from '@/components';
-import {normalize, Colors, timePassed, GlobalStyle} from '@/globals';
+import {normalize, Colors, joinedDate, GlobalStyle} from '@/globals';
 import {
   Verified,
   Temperature,
@@ -11,6 +11,8 @@ import {
   BeeJoinedTime,
   NavigationPinRed,
 } from '@/assets/images/icons';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+//import {joinedDate} from '@/globals/Utils';
 
 const ProfileInfo = ({profileData}) => {
   const {
@@ -21,28 +23,47 @@ const ProfileInfo = ({profileData}) => {
     temperature_history,
     ratings_count,
     ratings_average,
-    joined_date,
-    location,
+    date_joined,
+    address,
   } = profileData;
 
   return (
     <View style={{paddingHorizontal: 16, backgroundColor: 'white'}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <AppText
-          textStyle="subtitle1"
-          color={Colors.primaryMidnightBlue}
-          customStyle={{marginRight: 8}}>
-          {name}
-        </AppText>
+        {name ? (
+          <AppText
+            textStyle="subtitle1"
+            color={Colors.primaryMidnightBlue}
+            customStyle={{marginRight: 8}}>
+            {name}
+          </AppText>
+        ) : (
+          <TouchableOpacity>
+            <AppText
+              textStyle="subtitle1"
+              color={Colors.primaryMidnightBlue}
+              customStyle={{marginRight: 8}}>
+              ADD DISPLAY NAME
+            </AppText>
+          </TouchableOpacity>
+        )}
         {/* <Verified width={normalize(11)} height={normalize(12.4)} /> */}
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
         <AppText textStyle="body3" customStyle={{marginRight: 16}}>
           {full_name}
         </AppText>
-        <AppText textStyle="body2" customStyle={{marginRight: 16}}>
-          @{username}
-        </AppText>
+        {username ? (
+          <AppText textStyle="body2" customStyle={{marginRight: 16}}>
+            @{username}
+          </AppText>
+        ) : (
+          <TouchableOpacity>
+            <AppText textStyle="body2" customStyle={{marginRight: 16}}>
+              @ADDUSERID
+            </AppText>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* <View
@@ -89,13 +110,13 @@ const ProfileInfo = ({profileData}) => {
         <AppText
           textStyle="body2"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          Joined {joined_date}
+          Joined {joinedDate(date_joined)}
         </AppText>
         <NavigationPinRed width={normalize(16)} height={normalize(16)} />
         <AppText
           textStyle="body2"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {location}
+          {address}
         </AppText>
       </View>
     </View>

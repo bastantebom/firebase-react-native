@@ -30,12 +30,26 @@ import {
   MenuAddFriend,
 } from '@/assets/images/icons';
 import EditProfile from '@/screens/Profile/components/EditProfile/EditProfile';
+import About from '@/screens/Profile/components/About/About';
+import ChangePassword from '@/screens/Profile/components/ChangePassword/ChangePassword';
 
 const OwnMenu = ({toggleMenu, signOut}) => {
   const [editProfile, setEditProfile] = useState(false);
 
   const toggleEditProfile = () => {
     setEditProfile(!editProfile);
+  };
+
+  const [about, setAbout] = useState(false);
+
+  const toggleAbout = () => {
+    setAbout(!about);
+  };
+
+  const [changePassword, setChangePassword] = useState(false);
+
+  const toggleChangePassword = () => {
+    setChangePassword(!changePassword);
   };
 
   return (
@@ -149,7 +163,9 @@ const OwnMenu = ({toggleMenu, signOut}) => {
               {/* <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
                 Settings and Privacy
               </AppText> */}
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={toggleChangePassword}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuKey width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
@@ -167,7 +183,7 @@ const OwnMenu = ({toggleMenu, signOut}) => {
                 </View>
               </TouchableOpacity> */}
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleAbout}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <MenuInfo width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
@@ -208,6 +224,40 @@ const OwnMenu = ({toggleMenu, signOut}) => {
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
         <EditProfile toggleEditProfile={toggleEditProfile} />
+      </Modal>
+
+      <Modal
+        isVisible={about}
+        animationIn="slideInUp"
+        animationInTiming={750}
+        animationOut="slideOutDown"
+        animationOutTiming={750}
+        onSwipeComplete={toggleAbout}
+        swipeDirection="down"
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <About toggleAbout={toggleAbout} />
+      </Modal>
+
+      <Modal
+        isVisible={changePassword}
+        animationIn="slideInUp"
+        animationInTiming={750}
+        animationOut="slideOutDown"
+        animationOutTiming={750}
+        onSwipeComplete={toggleChangePassword}
+        swipeDirection="down"
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <ChangePassword toggleChangePassword={toggleChangePassword} />
       </Modal>
     </SafeAreaView>
   );

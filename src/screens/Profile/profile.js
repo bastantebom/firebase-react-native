@@ -7,8 +7,7 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
 import {
   AppText,
@@ -28,11 +27,11 @@ import {UserContext} from '@/context/UserContext';
 
 import {Posts, MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
-import { GuestProfile } from './components/GuestProfile';
+import {GuestProfile} from './components/GuestProfile';
 
 function Profile() {
-
-  const { user, signOut } = useContext(UserContext);
+  const {user, signOut} = useContext(UserContext);
+  const [userInfo, setUserInfo] = useState({});
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -77,7 +76,11 @@ function Profile() {
   let profileTabs = [
     {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
     // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
-    {key: 'moreinfo', title: 'More Info', renderPage: <MoreInfo />},
+    {
+      key: 'moreinfo',
+      title: 'More Info',
+      renderPage: <MoreInfo moreInfo={userInfo.description} />,
+    },
   ];
 
   // const signOut = () => {
@@ -104,14 +107,30 @@ function Profile() {
     ratings_count: 34,
     ratings_average: 4.3,
     joined_date: 'Jan 2020',
-    location: 'Subic, Zambales',
+    address: 'Subic, Zambales',
   };
 
   if (!user) {
-    return (
-      <GuestProfile/>
-    )
+    return <GuestProfile />;
   }
+
+  useEffect(() => {
+    ProfileInfoService.getUser(user.uid)
+      .then((response) => {
+        console.log(response);
+        setUserInfo({...userInfo, ...response});
+        //setIsLoading(false);
+        //cleanSignUpForm();
+        // if (response.success) {
+        //   //navigation.navigate('VerifyAccount', {...response, ...formValues});
+        // } else {
+        //   //navigation.navigate('Onboarding');
+        // }
+      })
+      .catch((error) => {
+        console.log('With Error in the API SignUp ' + error);
+      });
+  }, []);
 
   return (
     <>
@@ -136,8 +155,8 @@ function Profile() {
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}
-          <HexagonBorder 
-            size={150} 
+          <HexagonBorder
+            size={150}
             // imgSrc={}
           />
         </View>
@@ -146,17 +165,17 @@ function Profile() {
           toggleConnections={toggleConnections}
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
-          />
+        />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
-        <ProfileInfo profileData={ProfileDummyData} />
+        <ProfileInfo profileData={userInfo} />
       </View>
 
-      <ScrollView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
-      </ScrollView>
+      </View>
     </>
   );
 }

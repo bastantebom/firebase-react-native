@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Colors, normalize} from '@/globals';
 
@@ -9,8 +9,14 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Users} from '@/assets/images/icons';
 
 // create a component
-const MoreInfo = () => {
-  const [hasInfo, setHasInfo] = useState(true);
+const MoreInfo = ({moreInfo}) => {
+  const [hasInfo, setHasInfo] = useState(false);
+
+  useEffect(() => {
+    if (moreInfo && moreInfo.length() > 0) {
+      setHasInfo(true);
+    }
+  }, [moreInfo]);
 
   const WithInfo = () => {
     return (
@@ -22,14 +28,9 @@ const MoreInfo = () => {
               <AppText textStyle="subtitle2">About</AppText>
             </View>
             <View style={styles.infoContentWrapper}>
-              <AppText textStyle="body2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.{' '}
-              </AppText>
+              <AppText textStyle="body2">{moreInfo}</AppText>
             </View>
-            <View style={styles.connectionWrapper}>
+            {/* <View style={styles.connectionWrapper}>
               <View style={styles.followers}>
                 <Users width={normalize(14)} height={normalize(14)} />
                 <AppText
@@ -44,16 +45,16 @@ const MoreInfo = () => {
                   8 Following
                 </AppText>
               </View>
-            </View>
+            </View> */}
           </PaddingView>
         </View>
-        <PaddingView paddingSize={4}>
+        {/* <PaddingView paddingSize={4}>
           <View style={styles.verifiedTitle}>
             <AppText textStyle="subtitle2">
               User is verified by Servbees!
             </AppText>
           </View>
-        </PaddingView>
+        </PaddingView> */}
       </>
     );
   };
@@ -79,13 +80,13 @@ const MoreInfo = () => {
               your profile now.
             </AppText>
           </View>
-          <View style={styles.linksWrapper}>
+          {/* <View style={styles.linksWrapper}>
             <TouchableOpacity>
               <AppText textStyle="body1" color={Colors.contentOcean}>
                 Complete your Profile
               </AppText>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       )}
     </>
