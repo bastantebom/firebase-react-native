@@ -21,6 +21,7 @@ const SinglePostView = (props) => {
 
   const [showNotification, setShowNotification] = useState(true);
   const [ellipsisState, setEllipsisState] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const toggleEllipsisState = () => {
     setEllipsisState(!ellipsisState);

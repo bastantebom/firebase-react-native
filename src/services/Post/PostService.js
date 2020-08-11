@@ -1,9 +1,9 @@
 import BaseAPI from '@/services/BaseAPI';
 
 const createPost = (payload) => {
-  console.log('creating post...');
-  console.log('post data: ');
-  console.log(payload);
+  // console.log('creating post...');
+  // console.log('post data: ');
+  // console.log(payload);
 
   return BaseAPI({
     url: 'post/create',

@@ -61,7 +61,7 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
     description,
   ]);
 
-  const navigateToPost = () => {
+  const navigateToPost = async () => {
     let type = 'service';
     let data = {
       uid: user.uid,
@@ -75,10 +75,11 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
       delivery_method: [],
     };
 
-    PostService.createPost(data);
-
-    togglePostModal();
-    navToPost(data);
+    // console.log(typeof PostService.createPost())
+    await PostService.createPost(data).then((res) => {
+      togglePostModal();
+      navToPost(res);
+    });
   };
 
   return (
