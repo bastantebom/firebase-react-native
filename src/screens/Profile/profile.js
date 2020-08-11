@@ -165,6 +165,7 @@ function Profile() {
           toggleConnections={toggleConnections}
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
+          userInfo={userInfo}
         />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
