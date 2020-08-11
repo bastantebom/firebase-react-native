@@ -15,6 +15,20 @@ const createPost = (payload) => {
   });
 };
 
-const PostService = {createPost};
+const editPost = (PID, payload) => {
+  /**
+   * Accepts Post ID and payload
+   */
+  return BaseAPI({
+    url: `post/edit/${PID}`,
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+}
+
+const PostService = {createPost, editPost};
 
 export default PostService;

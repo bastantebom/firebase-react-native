@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Divider} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 
@@ -17,6 +18,7 @@ import {
 } from '@/assets/images/icons';
 
 const SinglePostView = (props) => {
+  const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -176,7 +178,9 @@ const SinglePostView = (props) => {
         type="post-own"
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
-        backFunction={() => console.log('navigation go back')}
+        backFunction={() => navigation.goBack()}
+        editPostFunction={() => console.log('edit this post')}
+        deletePostFunction = {() => console.log('delete post')}
       />
     </>
   );

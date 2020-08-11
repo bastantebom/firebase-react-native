@@ -37,7 +37,9 @@ const TransparentHeader = ({
   toggleQR,
   QR,
   signOut,
-  backFunction
+  backFunction,
+  editPostFunction,
+  deletePostFunction,
 }) => {
   const shareHandler = async () => {
     const shareOptions = {
@@ -120,7 +122,11 @@ const TransparentHeader = ({
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <PostEllipsis toggleEllipsisState={toggleEllipsisState} />
+          <PostEllipsis
+            toggleEllipsisState={toggleEllipsisState}
+            editPostFunction={editPostFunction}
+            deletePostFunction={deletePostFunction}
+          />
         </Modal>
       </>
     );

@@ -6,7 +6,11 @@ import {Colors, normalize} from '@/globals';
 
 import {PostPencil, PostRemove} from '@/assets/images/icons';
 
-const PostEllipsis = ({toggleEllipsisState}) => {
+const PostEllipsis = ({
+  toggleEllipsisState,
+  editPostFunction,
+  deletePostFunction,
+}) => {
   return (
     <View
       style={{
@@ -17,7 +21,7 @@ const PostEllipsis = ({toggleEllipsisState}) => {
       }}>
       <BottomSheetHeader />
       <PaddingView paddingSize={2}>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => alert('Edit')}>
+        <TouchableOpacity activeOpacity={0.7} onPress={editPostFunction}>
           <View
             style={{
               flexDirection: 'row',
@@ -30,7 +34,7 @@ const PostEllipsis = ({toggleEllipsisState}) => {
             </AppText>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => alert('remove post')} >
+        <TouchableOpacity activeOpacity={0.7} onPress={deletePostFunction}>
           <View
             style={{
               flexDirection: 'row',
