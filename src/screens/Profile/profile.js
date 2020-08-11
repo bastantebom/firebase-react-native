@@ -17,6 +17,7 @@ import {
   TransparentHeader,
   TabNavigation,
   ProfileLinks,
+  WhiteOpacity,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -177,6 +178,7 @@ function Profile() {
           <TabNavigation routesList={profileTabs} />
         </View>
       </View>
+      <WhiteOpacity />
     </>
   );
 }
