@@ -36,13 +36,28 @@ const SinglePostView = (props) => {
     }, 5000);
   }, []);
 
+  // data = {
+  //   uid: user.uid,
+  //   post_type: type,
+  //   images: [],
+  //   title: title,
+  //   price: price,
+  //   description: description,
+  //   payment_method: paymentMethod,
+  //   store_location: storeLocation,
+  //   delivery_method: [],
+  // };
+
   const {
+    uid,
+    post_type,
+    images,
     title,
     description,
-    paymentMethod,
+    payment_method,
     price,
-    storeLocation,
-    deliveryMethod,
+    store_location,
+    delivery_method,
   } = props.route.params;
 
   const CustomNotification = () => {
@@ -131,7 +146,7 @@ const SinglePostView = (props) => {
           <View style={styles.iconText}>
             <PostNavigation width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {storeLocation}
+              {store_location}
             </AppText>
           </View>
           <View style={styles.iconText}>
@@ -144,18 +159,18 @@ const SinglePostView = (props) => {
           <View style={styles.iconText}>
             <PostCash width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {paymentMethod}
+              {payment_method}
             </AppText>
           </View>
-          {deliveryMethod ? (
+          {delivery_method ? (
             <View style={styles.iconText}>
               <PostBox width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {deliveryMethod[0] && deliveryMethod[1]
+                {delivery_method[0] && delivery_method[1]
                   ? 'Pickup & Delivery'
-                  : deliveryMethod[0]
+                  : delivery_method[0]
                   ? 'Pickup'
-                  : deliveryMethod[1]
+                  : delivery_method[1]
                   ? 'Delivery'
                   : 'None'}
               </AppText>
