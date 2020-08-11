@@ -75,14 +75,10 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
       delivery_method: [],
     };
 
-    // console.log(typeof PostService.createPost())
-    // await PostService.createPost(data).then((res) => {
-    //   togglePostModal();
-    //   navToPost(res);
-    // });
-
-    togglePostModal();
-    navToPost(data);
+    await PostService.createPost(data).then((res) => {
+      togglePostModal();
+      navToPost(res);
+    });
   };
 
   return (

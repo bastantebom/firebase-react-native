@@ -19,7 +19,7 @@ import {
 const SinglePostView = (props) => {
   console.log(props.route.params);
 
-  const [showNotification, setShowNotification] = useState(true);
+  const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -32,6 +32,8 @@ const SinglePostView = (props) => {
   };
 
   useEffect(() => {
+    setShowNotification(props.route.params.success);
+    
     setTimeout(() => {
       setShowNotification(false);
     }, 5000);
@@ -59,7 +61,20 @@ const SinglePostView = (props) => {
     price,
     store_location,
     delivery_method,
-  } = props.route.params;
+    available,
+    username,
+    profile_photo,
+    account_verified,
+    display_name,
+    date_posted,
+  } = props.route.params?.data;
+
+  const userInfo = {
+    username: username,
+    profile_photo: profile_photo,
+    account_verified: account_verified,
+    display_name: display_name,
+  };
 
   const CustomNotification = () => {
     if (showNotification)
@@ -103,8 +118,8 @@ const SinglePostView = (props) => {
         </View>
         <View style={styles.postInfoContainer}>
           <CustomNotification />
-          
-          <ProfileInfo userInfo={{}} />
+
+          <ProfileInfo userInfo={userInfo} />
 
           <AppText
             textStyle="subtitle1"
@@ -119,7 +134,7 @@ const SinglePostView = (props) => {
           <View style={styles.iconText}>
             <PostClock width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              Over 1 min ago
+              Just Now
             </AppText>
           </View>
           <View style={styles.iconText}>
@@ -161,6 +176,7 @@ const SinglePostView = (props) => {
         type="post-own"
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
+        backFunction={() => console.log('navigation go back')}
       />
     </>
   );
@@ -188,7 +204,7 @@ const styles = StyleSheet.create({
   },
   iconText: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     // backgroundColor: 'red'
     marginBottom: 16,
   },

@@ -9,11 +9,11 @@ import {AppText} from '@/components';
 import {GlobalStyle, Colors, normalize} from '@/globals';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 
-const ProfileInfo = ({userInfo = {}}) => {
+const ProfileInfo = ({userInfo}) => {
   const {
     username = 'defaultuser',
     profile_photo = '',
-    account_verified = true,
+    account_verified = false,
     display_name = 'Busy Bee',
   } = userInfo;
 
