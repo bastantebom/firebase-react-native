@@ -17,8 +17,6 @@ import {
 } from '@/assets/images/icons';
 
 const SinglePostView = (props) => {
-  console.log(props.route.params);
-
   const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -32,8 +30,10 @@ const SinglePostView = (props) => {
   };
 
   useEffect(() => {
-    setShowNotification(props.route.params.success);
-    
+    setShowNotification(
+      props.route.params?.success ? props.route.params?.success : false,
+    );
+
     setTimeout(() => {
       setShowNotification(false);
     }, 5000);

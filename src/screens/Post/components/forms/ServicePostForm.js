@@ -16,19 +16,9 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
-  const togglePickupState = () => {
-    setPickupState(!pickupState);
-  };
-
-  const toggleDeliveryState = () => {
-    setDeliveryState(!deliveryState);
-  };
-
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [pickupState, setPickupState] = useState(false);
-  const [deliveryState, setDeliveryState] = useState(false);
   const [storeLocation, setStoreLocation] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
 
@@ -36,8 +26,6 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
     setTitle('');
     setPrice('');
     setDescription('');
-    setPickupState(false);
-    setDeliveryState(false);
     setStoreLocation('');
     setPaymentMethod('');
   };
@@ -51,15 +39,7 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
 
   useEffect(() => {
     checkFormContent();
-  }, [
-    title,
-    price,
-    pickupState,
-    deliveryState,
-    storeLocation,
-    paymentMethod,
-    description,
-  ]);
+  }, [title, price, storeLocation, paymentMethod, description]);
 
   const navigateToPost = async () => {
     let type = 'service';
