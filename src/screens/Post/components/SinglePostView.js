@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Divider} from 'react-native-paper';
 
-import {AppText, TransparentHeader} from '@/components';
+import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 
 import {normalize, GlobalStyle, Colors} from '@/globals';
 import {
@@ -103,30 +103,8 @@ const SinglePostView = (props) => {
         </View>
         <View style={styles.postInfoContainer}>
           <CustomNotification />
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.userInfoImageContainer}>
-              <Image
-                style={GlobalStyle.image}
-                source={{
-                  uri:
-                    'https://upload.wikimedia.org/wikipedia/commons/0/08/Charlize_Theron_WonderCon_2012_%28Straighten_Crop%29.jpg',
-                }}
-              />
-            </View>
-            <View style={{marginLeft: 8, justifyContent: 'center'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
-                  Charlize Theron
-                </AppText>
-                <Verified />
-              </View>
-              <View style={{}}>
-                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                  @{'oldguard'.toLowerCase()}
-                </AppText>
-              </View>
-            </View>
-          </View>
+          
+          <ProfileInfo userInfo={{}} />
 
           <AppText
             textStyle="subtitle1"

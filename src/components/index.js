@@ -24,7 +24,10 @@ import MarginView from './AppViewContainer/MarginView';
 import ProfileList from './ProfileList/ProfileList';
 import ScreenHeaderTitle from './ScreenHeaderTitle';
 
+import ProfileInfo from './ProfileInfo/ProfileInfo';
+
 export {
+  ProfileInfo,
   ScreenHeaderTitle,
   ProfileList,
   MarginView,
