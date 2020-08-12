@@ -272,7 +272,7 @@ function Routes() {
 
     setTimeout(() => {
       setShowSplash(false);
-    }, 2000);
+    }, 2700);
   }, []);
 
   const [showSplash, setShowSplash] = useState(true);
