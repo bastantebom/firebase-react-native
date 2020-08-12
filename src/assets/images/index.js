@@ -25,6 +25,8 @@ import Faded from './faded.svg';
 
 import CoverPhoto from './upload-cover.svg';
 
+import AboutServbeesImage from './Glyph-High-Five.svg';
+
 export {
   Location,
   ResetPassword,
@@ -42,4 +44,5 @@ export {
   SelfieMask,
   Faded,
   CoverPhoto,
+  AboutServbeesImage,
 };

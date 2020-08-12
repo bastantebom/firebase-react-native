@@ -74,7 +74,9 @@ const TabNavigation = ({routesList}) => {
       <View style={styles.navigationContainer}>
         <RenderRoutes />
       </View>
-      <RenderContent />
+      <View style={{flex: 1}}>
+        <RenderContent />
+      </View>
     </View>
   );
 };
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
     borderTopWidth: normalize(4),
   },
   navigationContainer: {
-    flex: 1,
+    height: normalize(50),
     flexDirection: 'row',
     width: '100%',
     borderBottomColor: Colors.neutralGray,

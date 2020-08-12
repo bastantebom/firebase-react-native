@@ -54,6 +54,29 @@ export const timePassedShort = (seconds) => {
   return;
 };
 
+export const joinedDate = (completeDate) => {
+  //console.log(completeDate);
+  const newCompleteDate = new Date(completeDate);
+  //console.log(newCompleteDate.getYear());
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  return (
+    monthNames[newCompleteDate.getMonth()] + ' ' + newCompleteDate.getFullYear()
+  );
+};
+
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const scale = SCREEN_WIDTH / 375;

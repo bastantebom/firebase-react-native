@@ -14,17 +14,21 @@ const ProfileLinks = ({
   visibleFollowing,
   toggleHives,
   toggleConnections,
+  userInfo,
 }) => {
+  const {post_count} = userInfo;
   return (
     <>
       <View style={styles.profileLinksWrapper}>
         <View style={styles.firstLink}>
-          <AppText textStyle="subtitle1">9</AppText>
+          <AppText textStyle="subtitle1">
+            {post_count > 0 ? post_count : 0}
+          </AppText>
           <AppText
             textStyle="caption"
             color={Colors.profileLink}
             customStyle={{paddingLeft: normalize(8)}}>
-            Posts
+            {post_count == 1 ? 'Post' : 'Posts'}
           </AppText>
         </View>
         {/* <TouchableOpacity onPress={toggleConnections}>
