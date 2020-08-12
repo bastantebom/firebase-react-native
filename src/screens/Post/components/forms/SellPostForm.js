@@ -1,5 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -30,6 +35,8 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
   const [deliveryState, setDeliveryState] = useState(false);
   const [storeLocation, setStoreLocation] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
+
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const clearForm = () => {
     setTitle('');
@@ -79,6 +86,7 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
   // };
 
   const navigateToPost = async () => {
+    setLoadingSubmit(true);
     let type = 'Sell';
     let data = {
       uid: user.uid,
@@ -96,8 +104,11 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
     };
 
     await PostService.createPost(data).then((res) => {
+      setLoadingSubmit(false);
       togglePostModal();
-      navToPost(res);
+      setTimeout(() => {
+        navToPost(res);
+      }, 500);
     });
   };
 
@@ -254,8 +265,14 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
               : Colors.primaryYellow,
             paddingVertical: 12,
             alignItems: 'center',
+            height: 48,
+            justifyContent: 'center',
           }}>
-          <AppText textStyle="button2">Publish</AppText>
+          {loadingSubmit ? (
+            <ActivityIndicator />
+          ) : (
+            <AppText textStyle="button2">Publish</AppText>
+          )}
         </TouchableOpacity>
       </View>
     </>

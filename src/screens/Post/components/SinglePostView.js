@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 
@@ -21,7 +22,6 @@ const SinglePostView = (props) => {
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const toggleEllipsisState = () => {
     setEllipsisState(!ellipsisState);
@@ -180,7 +180,7 @@ const SinglePostView = (props) => {
         toggleEllipsisState={toggleEllipsisState}
         backFunction={() => navigation.goBack()}
         editPostFunction={() => console.log('edit this post')}
-        deletePostFunction = {() => console.log('delete post')}
+        deletePostFunction={() => console.log('delete post')}
       />
     </>
   );
