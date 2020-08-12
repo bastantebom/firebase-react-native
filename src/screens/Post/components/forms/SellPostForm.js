@@ -330,7 +330,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     deliveryState,
     storeLocation,
     paymentMethod,
-    description,
+    description
   ]);
 
   // const navigateToPost = () => {
