@@ -15,10 +15,27 @@ import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 
-const SellPostForm = ({navToPost, togglePostModal}) => {
+const SellPostForm = ({navToPost, togglePostModal, formState}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
+
+  const {
+    title,
+    setTitle,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    pickupState,
+    setPickupState,
+    deliveryState,
+    setDeliveryState,
+    storeLocation,
+    setStoreLocation,
+    paymentMethod,
+    setPaymentMethod,
+  } = formState
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -28,13 +45,13 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
     setDeliveryState(!deliveryState);
   };
 
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [pickupState, setPickupState] = useState(false);
-  const [deliveryState, setDeliveryState] = useState(false);
-  const [storeLocation, setStoreLocation] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
+  // const [title, setTitle] = useState('');
+  // const [price, setPrice] = useState('');
+  // const [description, setDescription] = useState('');
+  // const [pickupState, setPickupState] = useState(false);
+  // const [deliveryState, setDeliveryState] = useState(false);
+  // const [storeLocation, setStoreLocation] = useState('');
+  // const [paymentMethod, setPaymentMethod] = useState('');
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 

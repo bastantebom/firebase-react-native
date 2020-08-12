@@ -14,7 +14,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, normalize} from '@/globals';
 
 const EditPostScreen = ({data, togglePostModal, card}) => {
-  console.log(card);
+  console.log(data)
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const cancelModalToggle = () => {

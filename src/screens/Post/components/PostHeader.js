@@ -630,14 +630,39 @@ const Post = ({card, togglePostModal}) => {
 };
 
 const RenderActiveForm = ({activeScreen, navToPost, togglePostModal}) => {
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+  const [pickupState, setPickupState] = useState(false);
+  const [deliveryState, setDeliveryState] = useState(false);
+  const [storeLocation, setStoreLocation] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+
+  const formState = {
+    title: title,
+    setTitle: setTitle,
+    price: price,
+    setPrice: setPrice,
+    description: description,
+    setDescription: setDescription,
+    pickupState: pickupState,
+    setPickupState: setPickupState,
+    deliveryState: deliveryState,
+    setDeliveryState: setDeliveryState,
+    storeLocation: storeLocation,
+    setStoreLocation: setStoreLocation,
+    paymentMethod: paymentMethod,
+    setPaymentMethod: setPaymentMethod,
+  };
+
   if (activeScreen === 'post')
     return (
-      <NeedPostForm navToPost={navToPost} togglePostModal={togglePostModal} />
+      <NeedPostForm navToPost={navToPost} togglePostModal={togglePostModal} formState={formState} />
     );
 
   if (activeScreen === 'sell')
     return (
-      <SellPostForm navToPost={navToPost} togglePostModal={togglePostModal} />
+      <SellPostForm navToPost={navToPost} togglePostModal={togglePostModal} formState={formState}/>
     );
 
   if (activeScreen === 'need')
@@ -645,6 +670,7 @@ const RenderActiveForm = ({activeScreen, navToPost, togglePostModal}) => {
       <ServicePostForm
         navToPost={navToPost}
         togglePostModal={togglePostModal}
+        formState={formState}
       />
     );
 };
