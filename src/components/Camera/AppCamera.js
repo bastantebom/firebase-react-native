@@ -16,7 +16,13 @@ import {
   const maskRowHeight = Math.round((height - 300) / 20);
   const maskColWidth = (width - 300) / 2;
 
-export const AppCamera = ({ message, instruction, withMask, captureImage }) => {
+export const AppCamera = ({ 
+  message, 
+  instruction, 
+  withMask, 
+  captureImage,
+  imageUrl: image
+}) => {
   
     // const [screen, setScreen] = useState('idPhoto')
     // const [cameraRatio, setCameraRatio] = useState('')
@@ -45,6 +51,7 @@ export const AppCamera = ({ message, instruction, withMask, captureImage }) => {
         console.log(data.uri);  
 
         setImageUrl(data.uri);
+        console.log(imageUrl)
         // setScreen('idConfirm');
       }
     };
@@ -89,12 +96,27 @@ export const AppCamera = ({ message, instruction, withMask, captureImage }) => {
       >
         { withMask &&  <OverlayMask/> }
       </RNCamera>
-      <View style={{ justifyContent: 'space-between', alignItems: 'center', height: height * .35, paddingVertical: 25 }}>
-        <View>
-        <AppText textStyle="body1">{message}</AppText>
-        <AppText textStyle="body2" color={Colors.contentPlaceholder}>{instruction}</AppText>
+      <View style={{ justifyContent: 'space-between', alignItems: 'center', height: height * .35, paddingVertical: 25, alignContent: 'center', alignSelf: 'center' }}>
+        <View style={{ width: width }}>
+        <AppText 
+          textStyle="body1" 
+          customStyle={{ display: message && 'none' }}
+        >
+          {message}
+        </AppText>
+        <AppText 
+          textStyle="body2" 
+          color={Colors.contentPlaceholder}
+          customStyle={{ display: instruction && 'none' }}
+        >
+          {instruction}
+        </AppText>
         </View>
-        <TouchableOpacity onPress={captureImage} style={styles.capture}>
+        <TouchableOpacity onPress={() => {
+          // takePicture();
+          // console.log('captureImage');
+          captureImage
+          }} style={styles.capture}>
           <View style={styles.captureButton} />
         </TouchableOpacity>
       </View>
@@ -125,6 +147,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: normalize(75),
     height: normalize(75),
+
     // padding: 15,
     // paddingHorizontal: 20,
     // alignSelf: 'center',
