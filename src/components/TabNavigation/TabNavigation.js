@@ -4,7 +4,7 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {AppText} from '@/components';
 import {Colors, normalize} from '@/globals';
 
-const TabNavigation = ({routesList}) => {
+const TabNavigation = ({routesList, bottomTab}) => {
   if (!routesList)
     return <AppText color="red">routeList props is required</AppText>;
 
@@ -70,8 +70,8 @@ const TabNavigation = ({routesList}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.navigationContainer}>
+    <View style={[styles.container, { paddingBottom: bottomTab && 65 }]}>
+      <View style={[styles.navigationContainer, bottomTab && bottomStyle.bottomTabStyle]}>
         <RenderRoutes />
       </View>
       <RenderContent />
@@ -79,12 +79,20 @@ const TabNavigation = ({routesList}) => {
   );
 };
 
+const bottomStyle = StyleSheet.create({
+  bottomTabStyle: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+  }
+})
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
     borderTopColor: Colors.neutralsZircon,
-    borderTopWidth: normalize(4),
+    borderTopWidth: normalize(4)
   },
   navigationContainer: {
     flex: 1,
@@ -92,6 +100,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomColor: Colors.neutralGray,
     borderBottomWidth: 1,
+    backgroundColor: Colors.neutralsWhite,
   },
   navigationItem: {
     flex: 1,
