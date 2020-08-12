@@ -8,6 +8,8 @@ import auth from '@react-native-firebase/auth';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View} from 'react-native';
 
+import {AppText} from '@/components';
+
 //screens
 import {Onboarding} from '@/screens/Onboarding';
 import {Dashboard} from '@/screens/Dashboard';
@@ -79,19 +81,16 @@ function HiveStackScreen() {
 }
 
 function PostStackScreen() {
-  const { user } = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   return (
     <>
       {/* { !user ? null :  */}
-        <PostStack.Navigator headerMode="none">
-          <PostStack.Screen name="PostScreen" component={PostScreen} />
-          <PostStack.Screen
-            name="SinglePostView"
-            component={SinglePostView}
-          />
-        </PostStack.Navigator>
-       {/* } */}
+      <PostStack.Navigator headerMode="none">
+        <PostStack.Screen name="PostScreen" component={PostScreen} />
+        <PostStack.Screen name="SinglePostView" component={SinglePostView} />
+      </PostStack.Navigator>
+      {/* } */}
     </>
   );
 }
@@ -267,6 +266,32 @@ function TabStack() {
 
 function Routes() {
   const {user} = useContext(UserContext);
+
+  useEffect(() => {
+    // for splashscreen
+    // SplashScreen.hide();
+
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 2000);
+  }, []);
+
+  const [showSplash, setShowSplash] = useState(true);
+
+  const SplashScreenComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'yellow',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <AppText>SPLASH SCREEN</AppText>
+      </View>
+    );
+  };
+  if (showSplash) return <SplashScreenComponent />;
 
   return (
     <NavigationContainer>
