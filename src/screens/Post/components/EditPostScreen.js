@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,20 +6,15 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {AppText, ScreenHeaderTitle} from '@/components';
+import PostHeader from './PostHeader';
 import Modal from 'react-native-modal';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {AppText, ScreenHeaderTitle} from '@/components';
-
-import PostHeader from './components/PostHeader';
 import {Colors, normalize} from '@/globals';
-import {GuestPost} from './components/GuestPost';
 
-import {UserContext} from '@/context/UserContext';
-
-const PostScreen = ({togglePostModal, card}) => {
+const EditPostScreen = ({data, togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const {user} = useContext(UserContext);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -34,10 +29,6 @@ const PostScreen = ({togglePostModal, card}) => {
 
     cancelModalToggle();
   };
-
-  if (!user) {
-    return <GuestPost />;
-  }
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.neutralsZircon}}>
@@ -57,7 +48,7 @@ const PostScreen = ({togglePostModal, card}) => {
           // extraScrollHeight={25}
           keyboardOpeningTime={100}
           enableOnAndroid={true}>
-          <PostHeader card={card} togglePostModal={togglePostModal} />
+          <PostHeader card={card} togglePostModal={togglePostModal} initialData={data} />
         </KeyboardAwareScrollView>
       </View>
 
@@ -135,4 +126,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostScreen;
+export default EditPostScreen;

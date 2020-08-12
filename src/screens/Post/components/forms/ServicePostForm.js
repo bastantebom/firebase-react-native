@@ -10,17 +10,33 @@ import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 
-const ServicePostForm = ({navToPost, togglePostModal}) => {
+const ServicePostForm = ({
+  navToPost,
+  togglePostModal,
+  formState,
+  initialData,
+}) => {
   const {user} = useContext(UserContext);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [storeLocation, setStoreLocation] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const {
+    title,
+    setTitle,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    pickupState,
+    setPickupState,
+    deliveryState,
+    setDeliveryState,
+    storeLocation,
+    setStoreLocation,
+    paymentMethod,
+    setPaymentMethod,
+  } = formState;
 
   const clearForm = () => {
     setTitle('');
@@ -55,7 +71,21 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
       delivery_method: [],
     };
 
-    await PostService.createPost(data).then((res) => {
+    // console.log('im saving');
+    // console.log(initialData);
+
+    if (initialData.post_id) {
+      // console.log('I will edit post with id: ');
+      // console.log(initialData.post_id)
+      return await PostService.editPost(initialData.post_id, data).then(
+        (res) => {
+          togglePostModal();
+          navToPost(res);
+        },
+      );
+    }
+
+    return await PostService.createPost(data).then((res) => {
       togglePostModal();
       navToPost(res);
     });
@@ -169,7 +199,9 @@ const ServicePostForm = ({navToPost, togglePostModal}) => {
           paddingVertical: 12,
           alignItems: 'center',
         }}>
-        <AppText textStyle="button2">Publish</AppText>
+        <AppText textStyle="button2">
+          {initialData ? 'Update' : 'Publish'}
+        </AppText>
       </TouchableOpacity>
     </View>
   );

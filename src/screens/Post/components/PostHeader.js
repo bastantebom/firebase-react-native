@@ -15,7 +15,7 @@ import {PostSell, PostService, PostNeed} from '@/assets/images/icons';
 
 import {SellPostForm, NeedPostForm, ServicePostForm} from './forms';
 
-const Post = ({card, togglePostModal}) => {
+const Post = ({card, togglePostModal, initialData}) => {
   useEffect(() => {
     selectActive(card);
   }, []);
@@ -624,20 +624,68 @@ const Post = ({card, togglePostModal}) => {
         activeScreen={activeScreen}
         navToPost={navToPost}
         togglePostModal={togglePostModal}
+        initialData={initialData ? initialData : {}}
       />
     </SafeAreaView>
   );
 };
 
-const RenderActiveForm = ({activeScreen, navToPost, togglePostModal}) => {
+const RenderActiveForm = ({
+  activeScreen,
+  navToPost,
+  togglePostModal,
+  initialData,
+}) => {
+  console.log('initial data');
+  console.log(initialData);
+
+  const [title, setTitle] = useState(initialData.title);
+  const [price, setPrice] = useState(initialData.price?.toString());
+  const [description, setDescription] = useState(initialData.description);
+  const [pickupState, setPickupState] = useState(false);
+  const [deliveryState, setDeliveryState] = useState(false);
+  const [storeLocation, setStoreLocation] = useState(
+    initialData.store_location,
+  );
+  const [paymentMethod, setPaymentMethod] = useState(
+    initialData.payment_method,
+  );
+
+  const formState = {
+    title: title,
+    setTitle: setTitle,
+    price: price,
+    setPrice: setPrice,
+    description: description,
+    setDescription: setDescription,
+    pickupState: pickupState,
+    setPickupState: setPickupState,
+    deliveryState: deliveryState,
+    setDeliveryState: setDeliveryState,
+    storeLocation: storeLocation,
+    setStoreLocation: setStoreLocation,
+    paymentMethod: paymentMethod,
+    setPaymentMethod: setPaymentMethod,
+  };
+
   if (activeScreen === 'post')
     return (
-      <NeedPostForm navToPost={navToPost} togglePostModal={togglePostModal} />
+      <NeedPostForm
+        navToPost={navToPost}
+        togglePostModal={togglePostModal}
+        formState={formState}
+        initialData={initialData}
+      />
     );
 
   if (activeScreen === 'sell')
     return (
-      <SellPostForm navToPost={navToPost} togglePostModal={togglePostModal} />
+      <SellPostForm
+        navToPost={navToPost}
+        togglePostModal={togglePostModal}
+        formState={formState}
+        initialData={initialData}
+      />
     );
 
   if (activeScreen === 'need')
@@ -645,6 +693,8 @@ const RenderActiveForm = ({activeScreen, navToPost, togglePostModal}) => {
       <ServicePostForm
         navToPost={navToPost}
         togglePostModal={togglePostModal}
+        formState={formState}
+        initialData={initialData}
       />
     );
 };

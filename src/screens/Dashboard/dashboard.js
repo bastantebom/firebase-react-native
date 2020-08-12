@@ -20,6 +20,7 @@ import {
   AppInput,
   AppText,
   Notification,
+  WhiteOpacity
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
 
@@ -288,20 +289,7 @@ function Dashboard({navigation}) {
             setScrollState={setScrollState}
           />
         </View>
-        {/* <LinearGradient
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            height: Dimensions.get('window').height,
-            width: '100%',
-          }}
-          colors={[
-            'rgba(255,255,255, 0)',
-            'rgba(255,255,255, 1)',
-          ]}
-          // start={{x: 0.5, y: 0.3}}
-          locations={[0.1, 1]}
-        /> */}
+        <WhiteOpacity />
       </SafeAreaView>
       <Modal
         isVisible={modalState}

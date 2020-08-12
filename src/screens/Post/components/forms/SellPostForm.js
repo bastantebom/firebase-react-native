@@ -1,5 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -10,10 +15,27 @@ import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 
-const SellPostForm = ({navToPost, togglePostModal}) => {
+const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
+
+  const {
+    title,
+    setTitle,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    pickupState,
+    setPickupState,
+    deliveryState,
+    setDeliveryState,
+    storeLocation,
+    setStoreLocation,
+    paymentMethod,
+    setPaymentMethod,
+  } = formState;
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -23,13 +45,15 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
     setDeliveryState(!deliveryState);
   };
 
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [pickupState, setPickupState] = useState(false);
-  const [deliveryState, setDeliveryState] = useState(false);
-  const [storeLocation, setStoreLocation] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
+  // const [title, setTitle] = useState('');
+  // const [price, setPrice] = useState('');
+  // const [description, setDescription] = useState('');
+  // const [pickupState, setPickupState] = useState(false);
+  // const [deliveryState, setDeliveryState] = useState(false);
+  // const [storeLocation, setStoreLocation] = useState('');
+  // const [paymentMethod, setPaymentMethod] = useState('');
+
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const clearForm = () => {
     setTitle('');
@@ -79,6 +103,7 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
   // };
 
   const navigateToPost = async () => {
+    setLoadingSubmit(true);
     let type = 'Sell';
     let data = {
       uid: user.uid,
@@ -95,9 +120,23 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
       ],
     };
 
-    await PostService.createPost(data).then((res) => {
+    if (initialData.post_id) {
+      // console.log('I will edit post with id: ');
+      // console.log(initialData.post_id)
+      return await PostService.editPost(initialData.post_id, data).then(
+        (res) => {
+          togglePostModal();
+          navToPost(res);
+        },
+      );
+    }
+
+    return await PostService.createPost(data).then((res) => {
+      setLoadingSubmit(false);
       togglePostModal();
-      navToPost(res);
+      setTimeout(() => {
+        navToPost(res);
+      }, 500);
     });
   };
 
@@ -254,8 +293,16 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
               : Colors.primaryYellow,
             paddingVertical: 12,
             alignItems: 'center',
+            height: 48,
+            justifyContent: 'center',
           }}>
-          <AppText textStyle="button2">Publish</AppText>
+          {loadingSubmit ? (
+            <ActivityIndicator />
+          ) : (
+            <AppText textStyle="button2">
+              {initialData ? 'Update' : 'Publish'}
+            </AppText>
+          )}
         </TouchableOpacity>
       </View>
     </>

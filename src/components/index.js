@@ -25,8 +25,10 @@ import ProfileList from './ProfileList/ProfileList';
 import ScreenHeaderTitle from './ScreenHeaderTitle';
 
 import ProfileInfo from './ProfileInfo/ProfileInfo';
+import WhiteOpacity from './WhiteOpacity/WhiteOpacity';
 
 export {
+  WhiteOpacity,
   ProfileInfo,
   ScreenHeaderTitle,
   ProfileList,
