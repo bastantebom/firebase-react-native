@@ -1,11 +1,25 @@
-import React from 'react';
-import {View, SafeAreaView, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, SafeAreaView, StyleSheet, Animated} from 'react-native';
 import LottieView from 'lottie-react-native';
 
 import {AppText} from '@/components';
 import {Colors} from '@/globals';
 
 const SplashScreenComponent = () => {
+  const [copyrightOpacity] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.timing(copyrightOpacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
+  let copyrightAnimationStyle = {
+    opacity: copyrightOpacity,
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -13,11 +27,11 @@ const SplashScreenComponent = () => {
           source={require('./assets/Servbees-splash.json')}
           autoPlay
         />
-        <View style={styles.textContainer}>
+        <Animated.View style={[styles.textContainer, copyrightAnimationStyle]}>
           <AppText>© Copyright Servbees 2020.</AppText>
           <AppText>All rights reserved</AppText>
           <AppText>www.servbees.com</AppText>
-        </View>
+        </Animated.View>
       </SafeAreaView>
     </View>
   );
