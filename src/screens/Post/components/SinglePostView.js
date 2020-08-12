@@ -1,7 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 
@@ -15,11 +22,21 @@ import {
   CircleTick,
   CloseDark,
 } from '@/assets/images/icons';
+import EditPostScreen from './EditPostScreen';
 
 const SinglePostView = (props) => {
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
+
+  const [editPost, showEditPost] = useState(false);
+
+  const toggleEditPost = () => {
+    toggleEllipsisState();
+    setTimeout(() => {
+      showEditPost(!editPost);
+    }, 500);
+  };
 
   const toggleEllipsisState = () => {
     setEllipsisState(!ellipsisState);
@@ -177,11 +194,38 @@ const SinglePostView = (props) => {
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         backFunction={() => navigation.goBack()}
-        editPostFunction={() => console.log('edit this post')}
+        editPostFunction={toggleEditPost}
         deletePostFunction={() => console.log('delete post')}
       />
+
+      <Modal
+        isVisible={editPost}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showEditPost(false)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <EditPostScreen
+          data={props.route.params.data}
+          card={cardMap(post_type)}
+          togglePostModal={() => showEditPost(false)}
+        />
+      </Modal>
     </>
   );
+};
+
+const cardMap = (card) => {
+  return card === 'Service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 
 const styles = StyleSheet.create({

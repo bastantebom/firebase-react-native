@@ -104,9 +104,9 @@ const TransparentHeader = ({
         <Modal
           isVisible={ellipsisState}
           animationIn="slideInUp"
-          animationInTiming={500}
+          animationInTiming={200}
           animationOut="slideOutDown"
-          animationOutTiming={500}
+          animationOutTiming={200}
           onSwipeComplete={toggleEllipsisState}
           swipeDirection="down"
           style={{
