@@ -29,6 +29,20 @@ const editPost = (PID, payload) => {
   });
 }
 
-const PostService = {createPost, editPost};
+const deletePost = (PID) => {
+  /**
+   * Accepts Post ID and payload
+   */
+  return BaseAPI({
+    url: `post/delete/${PID}`,
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+
+const PostService = {createPost, editPost, deletePost};
 
 export default PostService;
