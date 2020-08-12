@@ -3,18 +3,4 @@
 
     <item android:drawable="@color/background" />
 
-    <item android:drawable="@drawable/splash_icon" android:height="191dp" android:width="135dp" android:gravity="center" />
-
-    <item
-        android:gravity="bottom"
-        android:bottom="20dp"
-    >
-        <bitmap android:src="@drawable/copyright"
-            android:gravity="center" 
-            
-            android:height="42dp"
-            />
-
-    </item>
-
 </layer-list>
