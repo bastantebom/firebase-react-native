@@ -200,7 +200,7 @@ const ServicePostForm = ({
           alignItems: 'center',
         }}>
         <AppText textStyle="button2">
-          {initialData ? 'Update' : 'Publish'}
+          {initialData.post_id ? 'Update' : 'Publish'}
         </AppText>
       </TouchableOpacity>
     </View>

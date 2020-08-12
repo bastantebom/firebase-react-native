@@ -22,6 +22,7 @@ import {
   CircleTick,
   CloseDark,
 } from '@/assets/images/icons';
+import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
 
 const SinglePostView = (props) => {
@@ -84,6 +85,7 @@ const SinglePostView = (props) => {
     account_verified,
     display_name,
     date_posted,
+    post_id,
   } = props.route.params?.data;
 
   const userInfo = {
@@ -119,6 +121,15 @@ const SinglePostView = (props) => {
         </View>
       );
     return null;
+  };
+
+  const deletePost = async () => {
+    console.log('delete this post with id: ');
+    console.log(post_id);
+    return await PostService.deletePost(post_id).then(() => {
+      toggleEllipsisState()
+      navigation.goBack();
+    });
   };
 
   return (
@@ -195,7 +206,7 @@ const SinglePostView = (props) => {
         toggleEllipsisState={toggleEllipsisState}
         backFunction={() => navigation.goBack()}
         editPostFunction={toggleEditPost}
-        deletePostFunction={() => console.log('delete post')}
+        deletePostFunction={deletePost}
       />
 
       <Modal
@@ -225,8 +236,8 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  console.log("passed card: ")
-  console.log(card)
+  console.log('passed card: ');
+  console.log(card);
   return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 

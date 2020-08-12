@@ -300,7 +300,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             <ActivityIndicator />
           ) : (
             <AppText textStyle="button2">
-              {initialData ? 'Update' : 'Publish'}
+              {initialData.post_id ? 'Update' : 'Publish'}
             </AppText>
           )}
         </TouchableOpacity>
