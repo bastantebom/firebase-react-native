@@ -10,7 +10,7 @@ import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 
-const ServicePostForm = ({navToPost, togglePostModal, formState}) => {
+const ServicePostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);

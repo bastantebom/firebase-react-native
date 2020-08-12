@@ -14,7 +14,6 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, normalize} from '@/globals';
 
 const EditPostScreen = ({data, togglePostModal, card}) => {
-  console.log(data)
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const cancelModalToggle = () => {
@@ -49,7 +48,7 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
           // extraScrollHeight={25}
           keyboardOpeningTime={100}
           enableOnAndroid={true}>
-          <PostHeader card={card} togglePostModal={togglePostModal} />
+          <PostHeader card={card} togglePostModal={togglePostModal} initialData={data} />
         </KeyboardAwareScrollView>
       </View>
 
