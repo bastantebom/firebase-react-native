@@ -29,14 +29,15 @@ const AlmostThere = (route) => {
   const [initialLocation, setInitialLocation] = useState({});
   const [isLocationReady, setIsLocationReady] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
-  const [searchStringAddress, setSearchStringAddress] = useState('');
   const [isAllowed, setIsAllowed] = useState();
   const [isScreenLoading, setIsScreenLoading] = useState(false);
-  const [buttonStyle, setButtonStyle] = useState({
-    backgroundColor: Colors.buttonDisable,
-    borderColor: Colors.buttonDisable,
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
   });
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  //Address Components
 
   const getStringAddress = (location) => {
     //console.log(location);
@@ -44,18 +45,32 @@ const AlmostThere = (route) => {
     Geocoder.from(JSON.parse(location).latitude, JSON.parse(location).longitude)
       .then((json) => {
         const addressComponent = json.results[1].formatted_address;
-        //console.log(json);
+        const arrayToExtract =
+          json.results.length == 8 ? 3 : json.results.length < 8 ? 2 : 2;
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            //latitude: JSON.parse(location).latitude,
+            //longitude: JSON.parse(location).longitude,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country:
+              json.results[arrayToExtract].address_components[3].long_name,
+          },
+        });
+
         setStringAddress(addressComponent);
+        //console.log(addressComponents);
         setIsLocationReady(true);
-        //console.log('is location allowed ' + isAllowed);
       })
       .catch((error) => console.warn(error));
   };
 
   const getLongLatFromString = () => {
-    if (searchStringAddress.trim().length > 0) {
-      console.log(searchStringAddress);
-      saveLocationHandler(searchStringAddress);
+    if (stringAddress.trim().length > 0) {
+      console.log(stringAddress);
+      saveLocationHandler(addressComponents);
     }
   };
 
@@ -72,7 +87,10 @@ const AlmostThere = (route) => {
         longitude: JSON.parse(initialLocation).longitude,
       };
       //console.log(toPassString);
-      navigation.navigate('AlmostThereMap', {...toPassString});
+      navigation.navigate('AlmostThereMap', {
+        ...toPassString,
+        ...addressComponents,
+      });
     }
   };
 
@@ -88,7 +106,7 @@ const AlmostThere = (route) => {
       },
       (error) => {
         console.log('Error', JSON.stringify(error));
-        //set to LUNETA PARK IF Permission Denied
+
         const initialPosition = JSON.stringify({
           altitude: 0,
           altitudeAccuracy: -1,
@@ -106,15 +124,19 @@ const AlmostThere = (route) => {
     );
   }
 
-  const saveLocationHandler = (address) => {
+  const saveLocationHandler = (fullAddress) => {
+    console.log(fullAddress);
     setIsScreenLoading(true);
     if (route?.route?.params?.uid) {
       SignUpService.saveLocation({
         uid: route?.route?.params?.uid,
-        location: address,
+        latitude: parseFloat(JSON.parse(initialLocation).latitude),
+        longitude: JSON.parse(initialLocation).longitude,
+        ...fullAddress,
       })
         .then((response) => {
           if (response.success) {
+            setIsScreenLoading(false);
             signInAfterSaveLocation();
           }
         })
@@ -124,7 +146,7 @@ const AlmostThere = (route) => {
         });
     } else {
       setIsScreenLoading(false);
-      navigation.push('Dashboard');
+      navigation.push('TabStack');
     }
   };
 
@@ -134,7 +156,7 @@ const AlmostThere = (route) => {
         .signInWithCustomToken(route?.route?.params?.custom_token)
         .then(() => {
           setIsScreenLoading(false);
-          navigation.push('Dashboard');
+          navigation.push('TabStack');
         })
         .catch((err) => {
           setIsScreenLoading(false);
@@ -142,25 +164,7 @@ const AlmostThere = (route) => {
         });
     } else {
       setIsScreenLoading(false);
-      navigation.push('Dashboard');
-    }
-  };
-
-  const onSearchLocationHandler = (data) => {
-    //console.log(JSON.stringify(data));
-    setSearchStringAddress(data);
-    setButtonDisabled(false);
-    setButtonStyle({});
-  };
-
-  const onClearSearchAddress = (textValue) => {
-    if (textValue.trim().length < 1) {
-      setSearchStringAddress('');
-      setButtonDisabled(true);
-      setButtonStyle({
-        backgroundColor: Colors.buttonDisable,
-        borderColor: Colors.buttonDisable,
-      });
+      navigation.push('TabStack');
     }
   };
 
@@ -178,37 +182,25 @@ const AlmostThere = (route) => {
   }, []);
 
   useEffect(() => {
-    if (isAllowed !== undefined && isLocationReady) {
+    if (
+      isAllowed !== undefined &&
+      isLocationReady &&
+      addressComponents.latitude !== 0
+    ) {
       if (!isAllowed) {
         console.log(route?.route?.params?.uid);
         console.log(
           'API Call to save current location which is default (LUNETA PARK)',
         );
-        saveLocationHandler(stringAddress);
+        saveLocationHandler(addressComponents);
       }
     }
-  }, [isAllowed, isLocationReady]);
+  }, [isAllowed, isLocationReady, addressComponents.latitude]);
 
   return (
     <>
       <View style={styles.almostContainer}>
         <TransitionIndicator loading={isScreenLoading} />
-        <View style={styles.skipContainer}>
-          {isLocationReady ? (
-            <TouchableOpacity
-              onPress={() => {
-                saveLocationHandler(stringAddress);
-              }}>
-              <AppText textStyle="body2">Skip</AppText>
-            </TouchableOpacity>
-          ) : (
-            <ActivityIndicator
-              animating={true}
-              size="small"
-              color={Colors.contentEbony}
-            />
-          )}
-        </View>
 
         <View style={styles.almostThereImageContainer}>
           <LocationImage width={normalize(80)} height={normalize(80)} />
@@ -235,41 +227,17 @@ const AlmostThere = (route) => {
                 </AppText>
               </View>
               <View>
-                {searchStringAddress.length > 0 ? (
-                  <AppText></AppText>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      onCurrentLocationClick();
-                    }}>
-                    <AppText
-                      textStyle="body3"
-                      customStyle={styles.currentAddress}>
-                      {stringAddress}
-                    </AppText>
-                  </TouchableOpacity>
-                )}
+                <TouchableOpacity
+                  onPress={() => {
+                    onCurrentLocationClick();
+                  }}>
+                  <AppText
+                    textStyle="body3"
+                    customStyle={styles.currentAddress}>
+                    {stringAddress}
+                  </AppText>
+                </TouchableOpacity>
               </View>
-            </View>
-            <View
-              style={{
-                flex: 2,
-                //alignItems: 'flex-end',
-                //height: 70,
-                zIndex: 1200,
-                elevation: 1200,
-                //position: 'relative',
-                //backgroundColor: 'green',
-              }}>
-              <GooglePlacesInput
-                onResultsClick={(data) => {
-                  onSearchLocationHandler(data);
-                }}
-                onClearInput={(textValue) => {
-                  onClearSearchAddress(textValue);
-                }}
-                adjustListPosition={true}
-              />
             </View>
           </>
         ) : (
@@ -284,8 +252,7 @@ const AlmostThere = (route) => {
             text="Next"
             type="primary"
             height="xl"
-            disabled={buttonDisabled}
-            customStyle={{...styles.buttonStyle, ...buttonStyle}}
+            customStyle={styles.buttonStyle}
             onPress={() => {
               getLongLatFromString();
             }}
@@ -330,11 +297,8 @@ const styles = StyleSheet.create({
   },
 
   bottomWrapper: {
-    //backgroundColor: 'red',
-    //flex: 1,
     justifyContent: 'flex-start',
     marginBottom: normalize(8),
-    //position: 'relative',
     zIndex: -1,
     elevation: -1,
   },
@@ -343,9 +307,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 16,
-    //position: 'absolute',
-    //top: normalize(-70),
-    //backgroundColor: 'red',
   },
 
   currentAddress: {

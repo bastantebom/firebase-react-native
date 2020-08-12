@@ -1,12 +1,17 @@
 //import liraries
-import React, {useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
 
 //import Geolocation from '@react-native-community/geolocation';
 import Config from '@/services/Config';
 import Geocoder from 'react-native-geocoding';
 import MapComponent from '@/components/MapComponent/MapComponent';
-import {AppText, AppButton, TransitionIndicator} from '@/components';
+import {
+  AppText,
+  AppButton,
+  TransitionIndicator,
+  ScreenHeaderTitle,
+} from '@/components';
 import {Colors} from '@/globals';
 
 import GooglePlacesInput from '@/components/LocationSearchInput';
@@ -30,6 +35,13 @@ const AlmostThereMap = (route) => {
   Geocoder.init(Config.apiKey);
   const [newCoords, setNewCoords] = useState({});
   const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
+    longitude: 0,
+    latitude: 0,
+  });
 
   const onRegionChange = (region) => {
     //console.log(region);
@@ -39,12 +51,36 @@ const AlmostThereMap = (route) => {
   };
 
   const getStringAddress = (location) => {
+    // console.log(
+    //   'dumadaan sa Get Sstring' +
+    //     route?.route?.params?.latitude +
+    //     ' ' +
+    //     route?.route?.params?.longitude,
+    // );
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
+        console.log(json);
         const addressComponent = json.results[1].formatted_address;
+        const arrayToExtract =
+          json.results.length == 8 ? 3 : json.results.length < 8 ? 2 : 2;
         setChangeMapAddress(addressComponent);
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country:
+              json.results[arrayToExtract].address_components[3].long_name,
+          },
+        });
+
+        console.log(addressComponents);
       })
       .catch((error) => console.warn(error));
+    console.log(addressComponents);
   };
 
   const getPositionFromString = (address) => {
@@ -62,6 +98,7 @@ const AlmostThereMap = (route) => {
   const onSearchLocationHandler = (data) => {
     console.log(data);
     setChangeMapAddress(data);
+    getStringAddress(data);
     getPositionFromString(data);
   };
 
@@ -70,7 +107,7 @@ const AlmostThereMap = (route) => {
     if (route?.route?.params?.uid) {
       SignUpService.saveLocation({
         uid: route?.route?.params?.uid,
-        location: changeMapAddress,
+        ...addressComponents,
       })
         .then((response) => {
           if (response.success) {
@@ -83,7 +120,7 @@ const AlmostThereMap = (route) => {
         });
     } else {
       setIsScreenLoading(false);
-      navigation.push('Dashboard');
+      navigation.push('TabStack');
     }
   };
 
@@ -93,7 +130,7 @@ const AlmostThereMap = (route) => {
         .signInWithCustomToken(route?.route?.params?.custom_token)
         .then(() => {
           setIsScreenLoading(false);
-          navigation.push('Dashboard');
+          navigation.push('TabStack');
         })
         .catch((err) => {
           setIsScreenLoading(false);
@@ -101,34 +138,41 @@ const AlmostThereMap = (route) => {
         });
     } else {
       setIsScreenLoading(false);
-      navigation.push('Dashboard');
+      navigation.push('TabStack');
     }
   };
+
+  useEffect(() => {
+    // exit early when we reach 0
+    console.log(route?.route?.params?.latitude);
+    if (route?.route?.params?.country && route?.route?.params?.city) {
+      setAddressComponents({
+        ...addressComponents,
+        ...{
+          latitude: route?.route?.params?.latitude,
+          longitude: route?.route?.params?.longitude,
+          city: route?.route?.params?.city,
+          province: route?.route?.params?.province,
+          country: route?.route?.params?.country,
+        },
+      });
+    }
+  }, []);
 
   return (
     <>
       <TransitionIndicator loading={isScreenLoading} />
       <View style={{flex: 1}}>
-        <View style={styles.header}>
-          <View style={styles.headerWrapper}>
-            <View style={styles.headerClose}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.goBack();
-                }}>
-                <Close width={24} height={24} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.headerText}>
-              <AppText textStyle="body2">Use current location</AppText>
-            </View>
-            <View style={styles.headerSkip}>
-              <TouchableOpacity>
-                <AppText textStyle="promo">Skip</AppText>
-              </TouchableOpacity>
-            </View>
+        <SafeAreaView>
+          <View style={{padding: 24}}>
+            <ScreenHeaderTitle
+              title="Select location"
+              close={() => {
+                navigation.goBack();
+              }}
+            />
           </View>
-        </View>
+        </SafeAreaView>
         <View style={{flex: 1, position: 'relative'}}>
           {route?.route?.params.address ? (
             <>
@@ -191,13 +235,13 @@ const styles = StyleSheet.create({
   },
 
   headerClose: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
 
   headerText: {
-    flex: 4,
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
