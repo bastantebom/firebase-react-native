@@ -10,7 +10,12 @@ import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 
-const ServicePostForm = ({navToPost, togglePostModal, formState, initialData}) => {
+const ServicePostForm = ({
+  navToPost,
+  togglePostModal,
+  formState,
+  initialData,
+}) => {
   const {user} = useContext(UserContext);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -31,7 +36,7 @@ const ServicePostForm = ({navToPost, togglePostModal, formState, initialData}) =
     setStoreLocation,
     paymentMethod,
     setPaymentMethod,
-  } = formState
+  } = formState;
 
   const clearForm = () => {
     setTitle('');
@@ -66,7 +71,21 @@ const ServicePostForm = ({navToPost, togglePostModal, formState, initialData}) =
       delivery_method: [],
     };
 
-    await PostService.createPost(data).then((res) => {
+    // console.log('im saving');
+    // console.log(initialData);
+
+    if (initialData.post_id) {
+      // console.log('I will edit post with id: ');
+      // console.log(initialData.post_id)
+      return await PostService.editPost(initialData.post_id, data).then(
+        (res) => {
+          togglePostModal();
+          navToPost(res);
+        },
+      );
+    }
+
+    return await PostService.createPost(data).then((res) => {
       togglePostModal();
       navToPost(res);
     });

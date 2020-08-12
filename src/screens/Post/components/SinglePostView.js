@@ -225,7 +225,9 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  return card === 'Service' ? 'need' : card === 'Need' ? 'post' : 'sell';
+  console.log("passed card: ")
+  console.log(card)
+  return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 
 const styles = StyleSheet.create({

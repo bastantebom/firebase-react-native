@@ -120,7 +120,18 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       ],
     };
 
-    await PostService.createPost(data).then((res) => {
+    if (initialData.post_id) {
+      // console.log('I will edit post with id: ');
+      // console.log(initialData.post_id)
+      return await PostService.editPost(initialData.post_id, data).then(
+        (res) => {
+          togglePostModal();
+          navToPost(res);
+        },
+      );
+    }
+
+    return await PostService.createPost(data).then((res) => {
       setLoadingSubmit(false);
       togglePostModal();
       setTimeout(() => {
