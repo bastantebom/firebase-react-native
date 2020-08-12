@@ -7,8 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View} from 'react-native';
-
-import {AppText} from '@/components';
+import SplashScreenComponent from './SplashScreen';
 
 //screens
 import {Onboarding} from '@/screens/Onboarding';
@@ -278,19 +277,19 @@ function Routes() {
 
   const [showSplash, setShowSplash] = useState(true);
 
-  const SplashScreenComponent = () => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'yellow',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <AppText>SPLASH SCREEN</AppText>
-      </View>
-    );
-  };
+  // const SplashScreenComponent = () => {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         backgroundColor: 'yellow',
+  //         alignItems: 'center',
+  //         justifyContent: 'center',
+  //       }}>
+  //       <AppText>SPLASH SCREEN</AppText>
+  //     </View>
+  //   );
+  // };
   if (showSplash) return <SplashScreenComponent />;
 
   return (
