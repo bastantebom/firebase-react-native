@@ -126,6 +126,9 @@ const VerifyAccount = (route) => {
             // .catch((err) => {
             //   console.log(err);
             // });
+          } else {
+            setIsScreenLoading(false);
+            console.log('Error sa Verification Code');
           }
         })
         .catch((error) => {

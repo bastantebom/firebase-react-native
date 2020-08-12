@@ -118,6 +118,7 @@ function Profile() {
   useEffect(() => {
     ProfileInfoService.getUser(user.uid)
       .then((response) => {
+        console.log('THIS IS IN PROFILE');
         console.log(response);
         setUserInfo({...userInfo, ...response});
         //setIsLoading(false);

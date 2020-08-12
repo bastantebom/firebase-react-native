@@ -43,7 +43,7 @@ const ProfileInfo = ({profileData}) => {
               textStyle="subtitle1"
               color={Colors.primaryMidnightBlue}
               customStyle={{marginRight: 8}}>
-              ADD DISPLAY NAME
+              {full_name}
             </AppText>
           </TouchableOpacity>
         )}
@@ -116,7 +116,7 @@ const ProfileInfo = ({profileData}) => {
         <AppText
           textStyle="body2"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {address}
+          {JSON.stringify(address)}
         </AppText>
       </View>
     </View>

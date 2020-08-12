@@ -50,7 +50,7 @@ function Login() {
             .signInWithCustomToken(response.custom_token)
             .then(() => {
               setIsLoading(false);
-              navigation.push('Dashboard');
+              navigation.push('TabStack');
             })
             .catch((err) => {
               setIsLoading(false);
