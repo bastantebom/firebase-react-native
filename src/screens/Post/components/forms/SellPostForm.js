@@ -1,12 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, ScrollView, SafeAreaView, Image, StyleSheet, Text, Dimensions} from 'react-native';
+import {View, TouchableOpacity, ScrollView, SafeAreaView, Image, StyleSheet, Text, Dimensions, Platform, PermissionsAndroid} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -25,27 +18,69 @@ import {PostImages, CloseLight} from '@/assets/images/icons';
 import { CameraId } from '@/screens/Dashboard/Verification/components/CameraId';
 import { AppCamera } from '@/components/Camera/AppCamera';
 
+function Library({count, isSelected, callback, current}) {
 
-function Library({photoCount, selected, getSelectedImages}) {
+  // const cancelUploadPhoto = () => {
+  //   setShowPickerModal(!showPickerModal);
+  //   setSelected([]);
+  // }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.text}>
-          <Text style={styles.bold}> {photoCount} </Text> images has been selected
-        </Text>
+    <>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignSelf: 'center',
+          alignItems: 'center',
+          width: '100%',
+          marginTop: 10,
+          height: 45,
+          paddingHorizontal: 25,
+          zIndex: 3
+        }}
+      > 
+        <TouchableOpacity onPress={() => cancelUploadPhoto()}>
+          <AppText textStyle="body2">Cancel</AppText>
+        </TouchableOpacity>
+        <AppText textStyle="body1">All Photos</AppText>
+        <AppText textStyle="body3" color={Colors.contentOcean}>Next</AppText>
       </View>
-      <ScrollView horizontal>
-      <CameraRollPicker
-        groupTypes='All'
-        maximum={10}
-        selected={selected}
-        // assetType='Photos'
-        imagesPerRow={3}
-        imageMargin={5}
-        callback={getSelectedImages} 
-      />
-      </ScrollView>
-    </View>
+      <View style={styles.container}>
+        <View style={{ position: 'absolute', top: 15, zIndex: 999, right: 0, left: 0, margin: 'auto' }}>
+          <AppText 
+            textStyle="eyebrow2"  
+            customStyle={{ alignItems: 'center', textAlign: 'center' }}
+            color={Colors.neutralsWhite}
+          >
+            <AppText customStyle={{ fontWeight: '700' }} color={Colors.neutralsWhite}>Photos - {count}/10 </AppText> Choose your listing’s main photo first for Cover Photo.
+          </AppText>
+        </View>
+        { current ? (
+          <Image 
+            source={{ uri: current }} 
+            style={{
+              width: width,
+              height: height / 2,
+            }}
+          /> ) : null
+        }
+        <CameraRollPicker
+          groupTypes='All'
+          maximum={10}
+          scrollRenderAheadDistance={500}
+          selected={isSelected}
+          // assetType='Photos'
+          imagesPerRow={3}
+          imageMargin={2}
+          callback={callback} 
+          emptyText="No photos"
+          emptyTextStyle={{ color: Colors.primaryYellow }}
+          // openCamera
+          // selectedMarker="number"
+        />
+      </View>
+    </>
   )
 }
 
@@ -55,6 +90,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
+  const [currentImage, setCurrentImage] = useState('');
+
   const [imageSource, setImageSource] = useState([]);
   const [selected, setSelected] = useState([]);
   const [showPickerModal, setShowPickerModal] = useState(false);
@@ -103,26 +140,60 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     paymentMethod,
     setPaymentMethod,
   } = formState;
-  const handleRemove = () => {
-    const newImg = imageSource.filter((t) => t);
-    setImageSource(newImg);
-    console.log('Image removed')
+  
+  const handleRemove = (image) => {
+    const valueToRemove = image.uri;
+    const newList = selected.filter((image) => image.uri !== valueToRemove);
+    setSelected(newList)
+    setPhotoCount(photoCount - 1)
   }
+
+  const requestPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        // PermissionsAndroid.PERMISSIONS.CAMERA
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can access your camera roll");
+        setShowPickerModal(true);
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const getSelectedImages = (images, current) => {
     var num = images.length;
-
-    setPhotoCount(num)
     setSelected(images)
 
-    // console.log(current);
+    setPhotoCount(num)
+    console.log('photoCount', photoCount)
+    // console.log('num', num)
+
+    setCurrentImage(current.uri)
+    // console.log(currentImage);
+
+    // console.log(current.uri);
+
     // console.log(selected);
-    console.log(photoCount)
+    // image.node.image.uri
   }
 
-  let uploadTabs = [
-    {key: 'camera', title: 'Photo', renderPage: <AppCamera />},
-    {key: 'cameraroll', title: 'Library', renderPage: <Library photoCount={photoCount} selected={selected} getSelectedImages={getSelectedImages} />},
+  const cancelUploadPhoto = () => {
+    setShowPickerModal(!showPickerModal);
+    setSelected([]);
+  }
+
+  const uploadTabs = [
+    {key: 'camera', title: 'Photo', renderPage: 
+      <AppCamera 
+        captureImage={() => {console.log('captureImage')}}
+        imageUrl
+      />},
+    {key: 'cameraroll', title: 'Library', renderPage: <Library count={photoCount} isSelected={selected} callback={getSelectedImages} current={currentImage} />},
   ];
 
   const togglePickupState = () => {
@@ -175,7 +246,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     deliveryState,
     storeLocation,
     paymentMethod,
-    description,
+    description
   ]);
 
   // const navigateToPost = () => {
@@ -239,7 +310,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        {imageSource.length === 0 ? (
+        {/* {imageSource.length === 0 ? ( */}
+        {photoCount === 0 ? (
           <View
             style={{
               height: normalize(114),
@@ -249,13 +321,20 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               borderColor: Colors.neutralGray,
               justifyContent: 'center',
               marginBottom: 8,
+              // width: 
+              // flex: 1
               // maxWidth: imageSource && '25%'
             }}>
             <TouchableOpacity 
               activeOpacity={0.7} 
               // onPress={() => handleSelect()}
               // onPress={() => handleCameraRoll()}
-              onPress={() => setShowPickerModal(true)}
+              onPress={() => {
+                // hasAndroidPermission()
+                // fetchPhotos()
+                requestPermission()
+                // setShowPickerModal(true)
+              }}
             >
               <View style={{alignSelf: 'center', alignItems: 'center'}}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
@@ -277,11 +356,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }}
           >
           <ScrollView horizontal >
-            {imageSource.map((image, i) => {
+            {selected.map((image, i) => {
               return (
                 <View key={i}>
                   <TouchableOpacity 
-                    onPress={() => handleRemove()}
+                    onPress={() => handleRemove(image)}
                     style={{ zIndex: 999, position: 'absolute', right: 20, top: 5 }} 
                   >
                     <View
@@ -299,10 +378,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
                   </TouchableOpacity>
                   <Image 
                     // source={{uri: image.source}} 
-                    source={{uri: image.node.image.uri }} 
+                    source={{uri: image.uri }} 
                     style={{
-                      // width: '100%',
-                      width: normalize(84),
+                      // width: '', 
+                      // flex: 2,
+                      // width: width / photoCount,
+                      width: photoCount === 1 ? width / 2 : photoCount === 2 ? width / 3.333 : width / 4,
+                      // maxWidth: 500,
                       // height: '100%',
                       height: normalize(114),
                       marginRight: 8,
@@ -315,6 +397,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           </ScrollView>
           <View
             style={{
+              // flex: 1,
               height: normalize(114),
               borderStyle: 'dashed',
               borderRadius: 4,
@@ -322,16 +405,14 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               borderColor: Colors.neutralGray,
               justifyContent: 'center',
               marginBottom: 8,
-              maxWidth: '25%'
+              width: photoCount <= 1 ? width / 3 : width / 4,
             }}
           >
             <TouchableOpacity 
               activeOpacity={0.7} 
-              // onPress={() => handleSelect()}
-              // onPress={() => handleCameraRoll()}
-              onPress={() => setShowPickerModal(true)}
+              onPress={() => {requestPermission()}}
             >
-              <View style={{alignSelf: 'center', alignItems: 'center'}}>
+              <View style={{alignSelf: 'center', alignItems: 'center' }}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText textStyle="body2" color={Colors.contentOcean} customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
                   Upload Photo
@@ -483,6 +564,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         // animationInTiming={450}
         // animationOut="bounceOut"
         // animationOutTiming={450}
+        onBackButtonPress={() => setShowPickerModal(false)}
         onSwipeComplete={() => setShowPickerModal(false)}
         swipeDirection="down"
         style={{
@@ -491,19 +573,23 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           justifyContent: 'center',
         }}
       >
-        <View
-          style={{
-            backgroundColor: 'white',
-            height: height,
-            width: width,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          {/* <TabNavigation routesList={uploadTabs} /> */}
-          <Library photoCount={photoCount} selected={selected} getSelectedImages={getSelectedImages} />
-          {/* <AppCamera/> */}
-        </View>
+          <View
+            style={{
+              backgroundColor: 'white',
+              height: height,
+              width: width,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+          {/* <SafeAreaView style={{ flex: 1 }}> */}
+            {/* <View>
+              <TabNavigation routesList={uploadTabs} bottomTab/>
+            </View> */}
+            <Library count={photoCount} isSelected={selected} callback={getSelectedImages} current={currentImage}/>
+            {/* <AppCamera/> */}
+        {/* </SafeAreaView> */}
+          </View>
       </Modal>
     </>
   );
@@ -514,26 +600,9 @@ export default SellPostForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 500,
-    backgroundColor: '#F6AE2D',
-  },
-  content: {
-    marginTop: 15,
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  text: {
-    fontSize: 16,
-    alignItems: 'center',
-    color: '#fff',
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  info: {
-    fontSize: 12,
+    height: '100%',
+    // paddingTop: 25,
+    // backgroundColor: '#F6AE2D',
+    zIndex: -2
   },
 })
