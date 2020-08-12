@@ -19,7 +19,6 @@ import Modal from 'react-native-modal';
 import {AppText, AppInput, Switch} from '@/components';
 import {AppText, AppInput, AppButton, TabNavigation} from '@/components';
 import {normalize, Colors} from '@/globals';
-import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {PostImages, CloseLight} from '@/assets/images/icons';
