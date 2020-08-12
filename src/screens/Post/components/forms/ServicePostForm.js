@@ -199,7 +199,9 @@ const ServicePostForm = ({
           paddingVertical: 12,
           alignItems: 'center',
         }}>
-        <AppText textStyle="button2">Publish</AppText>
+        <AppText textStyle="button2">
+          {initialData ? 'Update' : 'Publish'}
+        </AppText>
       </TouchableOpacity>
     </View>
   );

@@ -35,7 +35,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setStoreLocation,
     paymentMethod,
     setPaymentMethod,
-  } = formState
+  } = formState;
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -299,7 +299,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           {loadingSubmit ? (
             <ActivityIndicator />
           ) : (
-            <AppText textStyle="button2">Publish</AppText>
+            <AppText textStyle="button2">
+              {initialData ? 'Update' : 'Publish'}
+            </AppText>
           )}
         </TouchableOpacity>
       </View>
