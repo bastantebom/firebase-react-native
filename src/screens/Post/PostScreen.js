@@ -19,7 +19,7 @@ import {UserContext} from '@/context/UserContext';
 
 const PostScreen = ({togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const {user, signOut} = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);

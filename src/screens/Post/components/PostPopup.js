@@ -1,4 +1,4 @@
-import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TouchableWithoutFeedback,
@@ -10,7 +10,6 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 
 import {AppText} from '@/components';
@@ -30,7 +29,7 @@ const height = Dimensions.get('window').height;
 
 const PostPopup = ({}) => {
   const navigation = useNavigation();
-  const { user } = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   const {showButtons, openPostButtons, closePostButtons} = useContext(Context);
 
@@ -157,7 +156,6 @@ const PostPopup = ({}) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <PostScreen togglePostModal={togglePostModal} card={selectedCard} />
       </Modal>
     </>
@@ -271,22 +269,6 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
               backgroundColor: 'transparent',
             },
           ]}>
-          {/* <LinearGradient
-            style={{
-              position: 'absolute',
-              bottom: 45,
-              height: height,
-              width: '100%',
-            }}
-            colors={[
-              'rgba(255,255,255, 0)',
-              'rgba(255,255,255, 1)',
-              'rgba(255,255,255, .7)',
-              'rgba(255,255,255, 0)',
-            ]}
-            start={{x: 0.5, y: 0.3}}
-            locations={[0.1, 0.8, 0.96, 1]}
-          /> */}
           <Animated.View
             style={[
               {
