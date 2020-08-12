@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Switch} from 'react-native-switch';
+// import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 
-import {AppText, AppInput} from '@/components';
+import {AppText, AppInput, Switch} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
@@ -206,20 +206,7 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
             marginBottom: 16,
           }}>
           <AppText textStyle="body2">Pickup</AppText>
-          <Switch
-            value={pickupState}
-            onValueChange={togglePickupState}
-            disabled={false}
-            renderActiveText={false}
-            renderInActiveText={false}
-            circleSize={16}
-            barHeight={24}
-            circleBorderWidth={0}
-            backgroundActive={Colors.primaryYellow}
-            backgroundInactive={Colors.switchDisable}
-            switchWidthMultiplier={2.5}
-            switchBorderRadius={12}
-          />
+          <Switch value={pickupState} onValueChange={togglePickupState} />
         </View>
         <AppInput
           label="Store Location"
@@ -234,20 +221,7 @@ const SellPostForm = ({navToPost, togglePostModal}) => {
             justifyContent: 'space-between',
           }}>
           <AppText textStyle="body2">Offer Delivery</AppText>
-          <Switch
-            value={deliveryState}
-            onValueChange={toggleDeliveryState}
-            disabled={false}
-            renderActiveText={false}
-            renderInActiveText={false}
-            circleSize={16}
-            barHeight={24}
-            circleBorderWidth={0}
-            backgroundActive={Colors.primaryYellow}
-            backgroundInactive={Colors.switchDisable}
-            switchWidthMultiplier={2.5}
-            switchBorderRadius={12}
-          />
+          <Switch value={deliveryState} onValueChange={toggleDeliveryState} />
         </View>
       </View>
 
