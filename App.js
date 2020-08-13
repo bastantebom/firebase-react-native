@@ -7,13 +7,16 @@
  */
 
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
+import {View} from 'react-native';
+import {AppText} from '@/components';
+
 import Routes from './Routes';
 import SplashScreen from 'react-native-splash-screen';
-import { ContextProvider } from "@/context";
-import { UserContextProvider } from "@/context/UserContext";
+import {ContextProvider} from '@/context';
+import {UserContextProvider} from '@/context/UserContext';
 
-const App: () => React$Node = () => {
+const App = () => {
   useEffect(() => {
     // for splashscreen
     SplashScreen.hide();
