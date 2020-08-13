@@ -31,9 +31,10 @@ import ProfileInfo from './components/ProfileInfo';
 import {GuestProfile} from './components/GuestProfile';
 
 function Profile() {
-  const {user, signOut} = useContext(UserContext);
-  const [userInfo, setUserInfo] = useState({});
-  const [userDataAvailble, setUserDataAvailble] = useState(false);
+  const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
+  //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
+  //const [userInfo, setUserInfo] = useState({});
+  //const [userDataAvailable, setUserDataAvailable] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -97,45 +98,9 @@ function Profile() {
 
   const width = Dimensions.get('window').width;
 
-  const ProfileDummyData = {
-    name: "Wayne's Burgers and Smoothies!",
-    is_verified: false,
-    full_name: 'Wayne Jansen Tayco',
-    username: 'waynesburger.com',
-    temperature_history: [
-      {date: new Date('07-07-2020'), temp: 36.4},
-      {date: new Date('07-08-2020'), temp: 35.9},
-    ],
-    ratings_count: 34,
-    ratings_average: 4.3,
-    joined_date: 'Jan 2020',
-    address: 'Subic, Zambales',
-  };
-
   if (!user) {
     return <GuestProfile />;
   }
-
-  useEffect(() => {
-    ProfileInfoService.getUser(user.uid)
-      .then((response) => {
-        console.log('THIS IS IN PROFILE');
-        console.log(response.address);
-
-        setUserInfo({...userInfo, ...response});
-        setUserDataAvailble(true);
-        //setIsLoading(false);
-        //cleanSignUpForm();
-        // if (response.success) {
-        //   //navigation.navigate('VerifyAccount', {...response, ...formValues});
-        // } else {
-        //   //navigation.navigate('Onboarding');
-        // }
-      })
-      .catch((error) => {
-        console.log('With Error in the API SignUp ' + error);
-      });
-  }, []);
 
   return (
     <>
@@ -165,6 +130,7 @@ function Profile() {
             // imgSrc={}
           />
         </View>
+
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
           toggleConnections={toggleConnections}
@@ -174,7 +140,7 @@ function Profile() {
         />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
-        {userDataAvailble ? <ProfileInfo profileData={userInfo} /> : null}
+        <ProfileInfo profileData={userInfo} />
       </View>
 
       <View style={{flex: 1}}>

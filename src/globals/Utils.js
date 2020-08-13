@@ -56,25 +56,31 @@ export const timePassedShort = (seconds) => {
 
 export const joinedDate = (completeDate) => {
   //console.log(completeDate);
-  const newCompleteDate = new Date(completeDate);
-  //console.log(newCompleteDate.getYear());
-  const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return (
-    monthNames[newCompleteDate.getMonth()] + ' ' + newCompleteDate.getFullYear()
-  );
+  if (completeDate) {
+    const newCompleteDate = new Date(completeDate);
+    //console.log(newCompleteDate.getYear());
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return (
+      monthNames[newCompleteDate.getMonth()] +
+      ' ' +
+      newCompleteDate.getFullYear()
+    );
+  } else {
+    return 'Not registered yet';
+  }
 };
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');

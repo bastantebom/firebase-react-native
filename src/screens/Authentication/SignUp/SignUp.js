@@ -282,6 +282,9 @@ const SignUp = (props) => {
         setIsLoading(false);
         cleanSignUpForm();
         if (response.success) {
+          console.log('*******************');
+          console.log(response);
+          console.log('*******************');
           navigation.navigate('VerifyAccount', {...response, ...formValues});
         } else {
           navigation.navigate('Onboarding');

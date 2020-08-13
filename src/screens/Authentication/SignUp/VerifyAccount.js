@@ -103,12 +103,24 @@ const VerifyAccount = (route) => {
       const nCode = parseInt(code.join(''));
       setIsScreenLoading(true);
       //console.log('SEND VERIFICATION');
-      //console.log(route?.route?.params?.uid);
-      //console.log(nCode);
+
+      if (route?.route?.params?.login) {
+        var newProvider = route?.route?.params?.login;
+        var providerText = 'number';
+        if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
+          providerText = 'email';
+        }
+      }
+      console.log('---------------------------------');
+      console.log(providerText);
+      console.log(route?.route?.params?.uid);
+      console.log(nCode);
+      console.log('---------------------------------');
 
       VerifyService.verifyCode({
         uid: route?.route?.params?.uid,
         verification_code: nCode,
+        provider: providerText,
       })
         .then((response) => {
           if (response.success) {
@@ -150,7 +162,7 @@ const VerifyAccount = (route) => {
     setIsScreenLoading(true);
     if (route?.route?.params?.login) {
       var newProvider = route?.route?.params?.login;
-      var providerText = 'mobile';
+      var providerText = 'number';
       if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
         providerText = 'email';
       }
