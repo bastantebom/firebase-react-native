@@ -1,5 +1,18 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, TouchableOpacity, ScrollView, SafeAreaView, Image, StyleSheet, Text, Dimensions, Platform, PermissionsAndroid, TouchableWithoutFeedback, ActivityIndicator} from 'react-native';
+import {
+  View, 
+  TouchableOpacity, 
+  ScrollView, 
+  SafeAreaView, 
+  Image, 
+  StyleSheet, 
+  Text, 
+  Dimensions, 
+  Platform, 
+  PermissionsAndroid, 
+  TouchableWithoutFeedback, 
+  ActivityIndicator
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -18,6 +31,14 @@ import { CameraId } from '@/screens/Dashboard/Verification/components/CameraId';
 import { AppCamera } from '@/components/Camera/AppCamera';
 
 function Library({count, isSelected, callback, current, cancel, next, showFolders}) {
+
+  const [ sample, setSample ] = useState(count);
+
+  const sampleFunction = () => {
+    setSample(sample + 1)
+    callback()
+  }
+
   return (
     <>
       <View
@@ -51,7 +72,7 @@ function Library({count, isSelected, callback, current, cancel, next, showFolder
             customStyle={{ alignItems: 'center', textAlign: 'center' }}
             color={Colors.neutralsWhite}
           >
-            <AppText customStyle={{ fontWeight: '700' }} color={Colors.neutralsWhite}>Photos - {count}/10 </AppText> Choose your listing’s main photo first for Cover Photo.
+            <AppText customStyle={{ fontWeight: '700' }} color={Colors.neutralsWhite}>Photos - {sample}/10 </AppText> Choose your listing’s main photo first for Cover Photo.
           </AppText>
         </View>
         { current ? (
@@ -73,7 +94,7 @@ function Library({count, isSelected, callback, current, cancel, next, showFolder
             // assetType='Photos'
             imagesPerRow={3}
             imageMargin={2}
-            callback={callback} 
+            callback={sampleFunction} 
             emptyText="No photos"
             emptyTextStyle={{ color: Colors.primaryYellow }}
             // openCamera
@@ -155,7 +176,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const getSelectedImages = (images, current) => {
-    var num = images.length;
+    var num = images?.length;
     setSelected(images)
 
     setPhotoCount(num)
