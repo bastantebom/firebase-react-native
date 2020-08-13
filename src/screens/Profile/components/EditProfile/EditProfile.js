@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,9 @@ import GenderList from './Gender';
 import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {UserContext} from '@/context/UserContext';
+import Geocoder from 'react-native-geocoding';
+import Config from '@/services/Config';
 
 // create a component
 const EditProfile = ({toggleEditProfile}) => {
@@ -39,6 +42,38 @@ const EditProfile = ({toggleEditProfile}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [genderVisible, setGenderVisible] = useState(false);
+  const {userInfo, userDataAvailable} = useContext(UserContext);
+  //const [upatedInfo, setUpdate]
+
+  const {
+    display_name,
+    full_name,
+    username,
+    description,
+    address_name,
+    address_details,
+    address_note,
+    address,
+    email,
+    secondary_email,
+    mobile_number,
+    birth_date,
+    gender,
+  } = userInfo;
+
+  const [dName, setDName] = useState(display_name ? display_name : full_name);
+  const [name, setName] = useState(full_name);
+  const [uName, setUName] = useState(username);
+  const [desc, setDesc] = useState(description);
+  const [addName, setAddName] = useState(address_name);
+  const [stringAddress, setStringAddress] = useState();
+  const [addDet, setAddDet] = useState(address_details);
+  const [addNote, setAddNote] = useState(address_note);
+  const [em, setEm] = useState(email);
+  const [sEm, setSEm] = useState(secondary_email);
+  const [mobile, setMobile] = useState(mobile_number);
+  const [bDate, setBDate] = useState(birth_date);
+  const [g, setG] = useState(gender);
 
   const toggleMap = () => {
     setMap(!map);
@@ -60,6 +95,26 @@ const EditProfile = ({toggleEditProfile}) => {
       showMode('date');
     }
   };
+
+  const getStringAddress = () => {
+    Geocoder.init(Config.apiKey);
+    Geocoder.from(
+      JSON.stringify(address.latitude),
+      JSON.stringify(address.longitude),
+    )
+      .then((json) => {
+        setStringAddress(json.results[1].formatted_address);
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  useEffect(() => {
+    // exit early when we reach 0
+    if (userInfo) {
+      getStringAddress();
+    }
+  }, [userInfo]);
+
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -118,7 +173,13 @@ const EditProfile = ({toggleEditProfile}) => {
           </View>
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
-              <AppInput label="Display Name" />
+              <AppInput
+                value={dName}
+                label="Display Name"
+                onChangeText={(dName) => {
+                  setDName(dName);
+                }}
+              />
               <AppText
                 textStyle="caption"
                 color={Colors.profileLink}
@@ -136,23 +197,41 @@ const EditProfile = ({toggleEditProfile}) => {
                 }}>
                 You can only change your Display Name twice every 14 days.
               </AppText>
-              <AppInput label="Full Name" customStyle={{marginBottom: 16}} />
-              <AppInput label="Username" customStyle={{marginBottom: 4}} />
+              <AppInput
+                value={name}
+                label="Full Name"
+                customStyle={{marginBottom: 16}}
+                onChangeText={(name) => {
+                  setName(name);
+                }}
+              />
+              <AppInput
+                value={uName}
+                label="Username"
+                customStyle={{marginBottom: 4}}
+                onChangeText={(uName) => {
+                  setUName(uName);
+                }}
+              />
               <View style={{flexDirection: 'row'}}>
                 <AppText textStyle="caption">servbees.com/</AppText>
-                <AppText textStyle="caption2">username</AppText>
+                <AppText textStyle="caption2">{uName}</AppText>
               </View>
               <AppText textStyle="caption">
-                Only use characters, numbers, and a dot (.)
+                Only use characters, numbers, and a dot (.){' '}
               </AppText>
 
               <TextInput
+                value={desc}
                 multiline={true}
                 placeholder="Description"
                 placeholderTextColor={Colors.profileLink}
                 numberOfLines={Platform.OS === 'ios' ? null : 6}
                 minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
                 style={[styles.input]}
+                onChangeText={(desc) => {
+                  setDesc(desc);
+                }}
               />
             </PaddingView>
           </View>
@@ -164,12 +243,17 @@ const EditProfile = ({toggleEditProfile}) => {
                 Address
               </AppText>
               <AppInput
-                label="Name"
+                value={addName}
+                label="Address Name"
                 customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(addName) => {
+                  setAddName(addName);
+                }}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
                   <AppInput
+                    value={stringAddress}
                     label="Address"
                     customStyle={{marginBottom: normalize(16)}}
                   />
@@ -185,12 +269,20 @@ const EditProfile = ({toggleEditProfile}) => {
                 </TouchableOpacity>
               </View>
               <AppInput
+                value={addDet}
                 label="Address Details"
                 customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(addDet) => {
+                  setAddDet(addDet);
+                }}
               />
               <AppInput
+                value={addNote}
                 label="Notes"
                 customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(addNote) => {
+                  setAddNote(addNote);
+                }}
               />
             </PaddingView>
           </View>
@@ -210,20 +302,33 @@ const EditProfile = ({toggleEditProfile}) => {
                 Personal Information
               </AppText>
               <AppInput
+                value={em}
                 label="Email"
                 customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(em) => {
+                  setEm(em);
+                }}
               />
               <AppInput
+                value={sEm}
                 label="Secondary Email"
                 customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(sEm) => {
+                  setSEm(sEm);
+                }}
               />
               <AppInput
+                value={mobile}
                 label="Mobile Number"
                 customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(mobile) => {
+                  setMobile(mobile);
+                }}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>
                   <AppInput
+                    value={bDate}
                     label="Birthday"
                     customStyle={{marginBottom: normalize(16)}}
                   />
@@ -251,6 +356,7 @@ const EditProfile = ({toggleEditProfile}) => {
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={toggleGender}>
                   <AppInput
+                    value={g}
                     label="Gender"
                     customStyle={{marginBottom: normalize(16)}}
                   />
@@ -303,7 +409,7 @@ const EditProfile = ({toggleEditProfile}) => {
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          <EditAddress back={() => setMap(false)} />
+          <EditAddress address={userInfo.address} back={() => setMap(false)} />
         </Modal>
 
         <Modal
@@ -368,7 +474,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: normalize(16),
     padding: normalize(8),
-    textAlignVertical: 'top',
+    fontSize: normalize(14),
   },
 });
 
