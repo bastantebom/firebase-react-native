@@ -416,7 +416,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
         {/* {imageSource.length === 0 ? ( */}
-        {photoCount === 0 ? (
+        {photoCount === 0 || !singleImage ? (
           <View
             style={{
               height: normalize(114),
