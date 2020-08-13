@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 
-import {Posts, AppInput, AppText, WhiteOpacity} from '@/components';
+import {Posts, AppInput, AppText, WhiteOpacity, Notification} from '@/components';
 import FilterSlider from './components/FilterSlider';
 
 import {
@@ -257,7 +257,7 @@ function Dashboard({navigation}) {
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        {/* <Notification 
+        <Notification 
           message={
             <VerificationScreen
               onPress={() => toggleMenu()}
@@ -268,7 +268,7 @@ function Dashboard({navigation}) {
           } 
           type={'verified'}
           position="relative"
-        /> */}
+        />
         <View style={styles.container}>
           <SearchBarWithFilter />
           <Location />
