@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   Dimensions,
   TextInput,
   TouchableOpacity,
@@ -33,12 +32,12 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {UserContext} from '@/context/UserContext';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
+import moment from 'moment';
 
 // create a component
 const EditProfile = ({toggleEditProfile}) => {
-  const [fullHeight, setFullHeight] = useState();
   const [map, setMap] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [genderVisible, setGenderVisible] = useState(false);
@@ -108,6 +107,12 @@ const EditProfile = ({toggleEditProfile}) => {
       .catch((error) => console.warn(error));
   };
 
+  const setDateFromString = () => {
+    if (bDate) {
+      setDate(moment(bDate).toDate());
+    }
+  };
+
   const setGenderFromModal = (data) => {
     const tempG =
       data === 'notsay'
@@ -118,16 +123,18 @@ const EditProfile = ({toggleEditProfile}) => {
     setG(tempG);
   };
 
-  const setBirthday = (e, date) => {
-    //const currentDate = date || date;
-    //setShow(Platform.OS === 'ios');
-    //setBDate(currentDate);
+  const setBirthday = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    setBDate(moment.utc(currentDate).add(1, 'day').format('MM/DD/YYYY'));
   };
 
   useEffect(() => {
     // exit early when we reach 0
     if (userInfo) {
       getStringAddress();
+      setDateFromString();
     }
   }, [userInfo]);
 
@@ -364,7 +371,6 @@ const EditProfile = ({toggleEditProfile}) => {
                   <DateTimePicker
                     value={date}
                     mode={mode}
-                    is24Hour={true}
                     display="default"
                     onChange={setBirthday}
                   />
