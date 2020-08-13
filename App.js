@@ -15,6 +15,7 @@ import Routes from './Routes';
 import SplashScreen from 'react-native-splash-screen';
 import {ContextProvider} from '@/context';
 import {UserContextProvider} from '@/context/UserContext';
+//import {ProfileInfoContextProvider} from '@/context/ProfileInfoContext';
 
 const App = () => {
   useEffect(() => {
