@@ -5,7 +5,7 @@ import {TextInput} from 'react-native-paper';
 import AppColor from '@/globals/Colors';
 
 // create a component
-const AppInput = (props) => {
+const AppInput = (props, {children}) => {
   const [isActive, setIsActive] = useState(false);
 
   const onFocus = () => {
@@ -34,7 +34,7 @@ const AppInput = (props) => {
         onBlur={onBlur}
         onFocus={onFocus}
         {...props}
-        style={styles.appInput}
+        style={[styles.appInput, {...props.style}]}
         theme={{
           colors: {
             primary: AppColor.contentOcean,
@@ -43,7 +43,9 @@ const AppInput = (props) => {
             medium: 'RoundedMplus1c-Medium',
           },
         }}
-      />
+      >
+        {children}
+      </TextInput>
     </View>
   );
 };

@@ -8,8 +8,15 @@ import {
   ScrollView,
   Animated,
 } from 'react-native';
+import {TextInput} from 'react-native-paper';
 
-import {Posts, AppInput, AppText, WhiteOpacity, Notification} from '@/components';
+import {
+  Posts,
+  AppInput,
+  AppText,
+  WhiteOpacity,
+  Notification,
+} from '@/components';
 import FilterSlider from './components/FilterSlider';
 
 import {
@@ -17,6 +24,7 @@ import {
   JarHeart,
   NavigationPinRed,
   NavigationArrow,
+  NavigationPin,
 } from '@/assets/images/icons';
 import {GlobalStyle, Colors, normalize} from '@/globals';
 
@@ -156,9 +164,17 @@ function Dashboard({navigation}) {
       <View
         style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginTop: 16}]}>
         <View style={{flex: 1}}>
-          <AppInput label="Start your search" />
+          {/* <NavigationPinRed width={24} height={24} /> */}
+          {/* <AppInput label="Search your location"></AppInput> */}
+          <View style={{position: 'relative'}}>
+            <AppInput label="Search your location" style={{paddingLeft: 24}}  />
+            <View style={{ position: 'absolute', top: '50%', marginTop: normalize(-12), left: 8 }}>
+              <NavigationPinRed width={normalize(24)} height={normalize(24)} />
+            </View>
+          </View>
         </View>
-        <TouchableOpacity onPress={toggleModal}>
+
+        {/* <TouchableOpacity onPress={toggleModal}>
           <View style={styles.circleButton}>
             <Filter />
           </View>
@@ -167,7 +183,7 @@ function Dashboard({navigation}) {
           <View style={styles.circleButton}>
             <JarHeart />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   };
@@ -215,7 +231,7 @@ function Dashboard({navigation}) {
   };
 
   const hideLocationComponent = () => {
-    console.log('hide location');
+    // console.log('hide location');
     setShowLocation(false);
     setMargin(4);
     fadeOut();
@@ -257,7 +273,7 @@ function Dashboard({navigation}) {
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        <Notification 
+        <Notification
           message={
             <VerificationScreen
               onPress={() => toggleMenu()}
@@ -265,13 +281,13 @@ function Dashboard({navigation}) {
               toggleMenu={() => toggleMenu()}
               modalBack={() => setMenu(false)}
             />
-          } 
+          }
           type={'verified'}
           position="relative"
         />
         <View style={styles.container}>
           <SearchBarWithFilter />
-          <Location />
+          {/* <Location /> */}
 
           <Posts
             type="dashboard"
