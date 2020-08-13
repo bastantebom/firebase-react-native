@@ -17,28 +17,26 @@ export const UserContextProvider = ({children}) => {
         displayName: displayName,
         email: email,
       });
-      //console.log('tawagin ang service');
-      getUserInfo(user.uid);
     }
-  }
-
-  function getUserInfo(uid) {
-    console.log(uid);
-    ProfileInfoService.getUser(uid)
-      .then((response) => {
-        //console.log('okay get User');
-        setUserInfo({...userInfo, ...response});
-        setUserDataAvailable(true);
-      })
-      .catch((error) => {
-        setUserDataAvailable(false);
-      });
   }
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      ProfileInfoService.getUser(user.uid)
+        .then((response) => {
+          setUserInfo({...userInfo, ...response});
+          setUserDataAvailable(true);
+        })
+        .catch((error) => {
+          setUserDataAvailable(false);
+        });
+    }
+  }, [user]);
 
   const signOut = () => {
     auth()
