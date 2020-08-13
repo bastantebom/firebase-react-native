@@ -9,12 +9,7 @@ import {
   Animated,
 } from 'react-native';
 
-import {
-  Posts,
-  AppInput,
-  AppText,
-  WhiteOpacity
-} from '@/components';
+import {Posts, AppInput, AppText, WhiteOpacity} from '@/components';
 import FilterSlider from './components/FilterSlider';
 
 import {
@@ -35,6 +30,8 @@ function Dashboard({navigation}) {
   const [showLocation, setShowLocation] = useState(true);
   const [scrollState, setScrollState] = useState(0);
   const [margin, setMargin] = useState(16);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [menu, setMenu] = useState(false);
 
@@ -252,6 +249,9 @@ function Dashboard({navigation}) {
 
   useEffect(() => {
     openNotification();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, []);
 
   return (
@@ -280,6 +280,7 @@ function Dashboard({navigation}) {
             showLocationComponent={showLocationComponent}
             scrollState={scrollState}
             setScrollState={setScrollState}
+            isLoading={isLoading}
           />
         </View>
         <WhiteOpacity />

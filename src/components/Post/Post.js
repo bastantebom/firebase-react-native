@@ -16,7 +16,7 @@ import {
 } from '@/assets/images/icons';
 import LoadingScreen from './loading';
 
-const Post = ({data, type}) => {
+const Post = ({data, type, isLoading}) => {
   const {
     userImage,
     name,
@@ -43,7 +43,7 @@ const Post = ({data, type}) => {
 
   if (type === 'dashboard')
     return (
-      <LoadingScreen.LoadingPublicPost isLoading={false}>
+      <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
         <PaddingView paddingSize={2} style={styles.container}>
           <View style={styles.userInfoContainer}>
             <View style={styles.userInfoImageContainer}>
