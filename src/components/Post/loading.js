@@ -146,7 +146,6 @@ const LoadingOwnPost = ({children, isLoading}) => {
                     {
                       width: normalize(240),
                       height: normalize(18),
-                      marginBottom: 8,
                     },
                   ],
                 },
