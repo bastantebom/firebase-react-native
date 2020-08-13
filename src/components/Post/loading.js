@@ -88,8 +88,81 @@ const LoadingPublicPost = ({children, isLoading}) => {
   );
 };
 
+const LoadingOwnPost = ({children, isLoading}) => {
+  return (
+    <SkeletonContent
+      containerStyle={{flexDirection: 'column'}}
+      isLoading={isLoading}
+      layout={[
+        {
+          backgroundColor: 'white',
+          margin: 16,
+          borderRadius: 8,
+          elevation: 5,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          children: [
+            {
+              flexDirection: 'row',
+              padding: 12,
+              children: [
+                {
+                  height: normalize(72),
+                  width: normalize(64),
+                  borderRadius: normalize(8),
+                  overflow: 'hidden',
+                },
+                {
+                  marginLeft: 8,
+                  flexDirection: 'column',
+                  children: [
+                    {
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: 8,
+                      children: [
+                        {
+                          width: normalize(20),
+                          height: normalize(20),
+                          borderRadius: normalize(20 / 2),
+                        },
+                        {
+                          width: normalize(100),
+                          height: normalize(18),
+                          marginLeft: 8,
+                        },
+                      ],
+                    },
+                    {
+                      width: normalize(100),
+                      height: normalize(18),
+                      marginBottom: 8,
+                    },
+                    {
+                      width: normalize(240),
+                      height: normalize(18),
+                      marginBottom: 8,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]}>
+      {children}
+    </SkeletonContent>
+  );
+};
+
 const LoadingScreen = {
   LoadingPublicPost,
+  LoadingOwnPost,
 };
 
 export default LoadingScreen;

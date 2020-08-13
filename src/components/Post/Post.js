@@ -146,7 +146,7 @@ const Post = ({data, type, isLoading}) => {
       </LoadingScreen.LoadingPublicPost>
     );
 
-  if (type === 'own') return <OwnPost data={data} />;
+  if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />;
 
   return (
     <AppText color={'red'}>
