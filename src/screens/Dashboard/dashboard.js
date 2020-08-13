@@ -168,7 +168,7 @@ function Dashboard({navigation}) {
           {/* <AppInput label="Search your location"></AppInput> */}
           <View style={{position: 'relative'}}>
             <AppInput label="Search your location" style={{paddingLeft: 24}}  />
-            <View style={{ position: 'absolute', top: '50%', marginTop: normalize(-12), left: 8 }}>
+            <View style={{ position: 'absolute', top: '50%', marginTop: normalize(-12), left: 4 }}>
               <NavigationPinRed width={normalize(24)} height={normalize(24)} />
             </View>
           </View>
@@ -267,7 +267,7 @@ function Dashboard({navigation}) {
     openNotification();
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 5000);
   }, []);
 
   return (
