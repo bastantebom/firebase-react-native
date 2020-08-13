@@ -2,26 +2,14 @@ import React, {useState, useRef, useContext, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   SafeAreaView,
   ScrollView,
-  Dimensions,
   Animated,
-  Alert,
-  Button,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 
-import {
-  Posts,
-  PaddingView,
-  AppInput,
-  AppText,
-  Notification,
-  WhiteOpacity
-} from '@/components';
+import {Posts, AppInput, AppText, WhiteOpacity, Notification} from '@/components';
 import FilterSlider from './components/FilterSlider';
 
 import {
@@ -42,6 +30,8 @@ function Dashboard({navigation}) {
   const [showLocation, setShowLocation] = useState(true);
   const [scrollState, setScrollState] = useState(0);
   const [margin, setMargin] = useState(16);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [menu, setMenu] = useState(false);
 
@@ -188,7 +178,7 @@ function Dashboard({navigation}) {
         style={[
           GlobalStyle.rowCenter,
           {
-            marginHorizontal: 16,
+            marginLeft: 16,
             marginVertical: margin,
             height: 34,
             overflow: 'hidden',
@@ -259,12 +249,15 @@ function Dashboard({navigation}) {
 
   useEffect(() => {
     openNotification();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, []);
 
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        {/* <Notification 
+        <Notification 
           message={
             <VerificationScreen
               onPress={() => toggleMenu()}
@@ -275,7 +268,7 @@ function Dashboard({navigation}) {
           } 
           type={'verified'}
           position="relative"
-        /> */}
+        />
         <View style={styles.container}>
           <SearchBarWithFilter />
           <Location />
@@ -287,6 +280,7 @@ function Dashboard({navigation}) {
             showLocationComponent={showLocationComponent}
             scrollState={scrollState}
             setScrollState={setScrollState}
+            isLoading={isLoading}
           />
         </View>
         <WhiteOpacity />

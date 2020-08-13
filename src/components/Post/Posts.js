@@ -3,8 +3,8 @@ import {FlatList} from 'react-native';
 
 import Post from '@/components/Post/Post';
 
-const Posts = ({data, showLocationComponent, hideLocationComponent, scrollState, setScrollState, type}) => {
-  const renderItem = ({item}) => <Post data={item} type={type}/>;
+const Posts = ({data, showLocationComponent, hideLocationComponent, scrollState, setScrollState, type, isLoading}) => {
+  const renderItem = ({item}) => <Post data={item} type={type} isLoading={isLoading} />;
 
   const handleOnScroll = (event) => {   
     console.log(event.nativeEvent.contentOffset.y);
@@ -22,7 +22,6 @@ const Posts = ({data, showLocationComponent, hideLocationComponent, scrollState,
       keyExtractor={(item) => item.id}
       onMomentumScrollEnd={showLocationComponent}
       onScrollBeginDrag={hideLocationComponent}
-    //   onScroll={handleOnScroll}
     />
   );
 };

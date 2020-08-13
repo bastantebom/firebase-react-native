@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Colors, normalize} from '@/globals';
 
@@ -118,6 +118,7 @@ const Post = () => {
   ];
 
   const [hasPost, setHasPost] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const hideLocationComponent = () => {
     console.log('hide location');
@@ -132,11 +133,18 @@ const Post = () => {
     fadeIn();
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
   const WithPost = () => {
     return (
       <Posts
         type="own"
         data={DummyData}
+        isLoading={isLoading}
         //hideLocationComponent={hideLocationComponent}
         //showLocationComponent={showLocationComponent}
       />
