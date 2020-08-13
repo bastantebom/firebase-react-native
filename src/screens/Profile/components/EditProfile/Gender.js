@@ -6,7 +6,7 @@ import {AppText, BottomSheetHeader, PaddingView, AppRadio} from '@/components';
 import {normalize, GlobalStyle, Colors} from '@/globals';
 import {ProfileListBlock} from '@/assets/images/icons';
 
-const Gender = () => {
+const Gender = ({setGenderValue, toggleGender}) => {
   const [radioButtons, setRadioButtons] = useState({
     male: false,
     female: false,
@@ -43,6 +43,8 @@ const Gender = () => {
       default:
         break;
     }
+    setGenderValue(label);
+    toggleGender();
   };
 
   return (

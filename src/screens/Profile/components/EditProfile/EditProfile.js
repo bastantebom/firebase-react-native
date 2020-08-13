@@ -108,6 +108,22 @@ const EditProfile = ({toggleEditProfile}) => {
       .catch((error) => console.warn(error));
   };
 
+  const setGenderFromModal = (data) => {
+    const tempG =
+      data === 'notsay'
+        ? 'Rather not say'
+        : data === 'female'
+        ? 'Female'
+        : 'Male';
+    setG(tempG);
+  };
+
+  const setBirthday = (e, date) => {
+    //const currentDate = date || date;
+    //setShow(Platform.OS === 'ios');
+    //setBDate(currentDate);
+  };
+
   useEffect(() => {
     // exit early when we reach 0
     if (userInfo) {
@@ -256,6 +272,7 @@ const EditProfile = ({toggleEditProfile}) => {
                     value={stringAddress}
                     label="Address"
                     customStyle={{marginBottom: normalize(16)}}
+                    onFocus={() => toggleMap()}
                   />
                   <View
                     style={{
@@ -331,6 +348,7 @@ const EditProfile = ({toggleEditProfile}) => {
                     value={bDate}
                     label="Birthday"
                     customStyle={{marginBottom: normalize(16)}}
+                    onFocus={showDatepicker}
                   />
                   <View
                     style={{
@@ -344,12 +362,11 @@ const EditProfile = ({toggleEditProfile}) => {
                 </TouchableOpacity>
                 {show && (
                   <DateTimePicker
-                    testID="dateTimePicker"
                     value={date}
                     mode={mode}
                     is24Hour={true}
                     display="default"
-                    onChange={console.log('Nagpalit ng Date')}
+                    onChange={setBirthday}
                   />
                 )}
               </View>
@@ -358,6 +375,7 @@ const EditProfile = ({toggleEditProfile}) => {
                   <AppInput
                     value={g}
                     label="Gender"
+                    onFocus={toggleGender}
                     customStyle={{marginBottom: normalize(16)}}
                   />
                   <View
@@ -430,7 +448,10 @@ const EditProfile = ({toggleEditProfile}) => {
             </TouchableWithoutFeedback>
           }>
           <View>
-            <GenderList />
+            <GenderList
+              toggleGender={toggleGender}
+              setGenderValue={(pGender) => setGenderFromModal(pGender)}
+            />
           </View>
         </Modal>
       </SafeAreaView>
