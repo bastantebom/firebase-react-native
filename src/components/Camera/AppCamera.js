@@ -20,56 +20,55 @@ export const AppCamera = ({
   message, 
   instruction, 
   withMask, 
-  captureImage,
-  imageUrl: image
+  captureImage
 }) => {
   
     // const [screen, setScreen] = useState('idPhoto')
     // const [cameraRatio, setCameraRatio] = useState('')
-    const [imageUrl, setImageUrl] = useState('');
-    const cameraRef = useRef(null)
+  const [imageUrl, setImageUrl] = useState('');
+  const cameraRef = useRef(null)
 
-    const DESIRED_RATIO = "16:9";
-    
-    const prepareRatio = async () => {
-      if (Platform.OS === 'android' && cameraRef) {
-        const ratios = await cameraRef.getSupportedRatiosAsync();
+  const DESIRED_RATIO = "16:9";
+  
+  const prepareRatio = async () => {
+    if (Platform.OS === 'android' && cameraRef) {
+      const ratios = await cameraRef.getSupportedRatiosAsync();
 
-        const ratio = ratios.find((ratio) => ratio === DESIRED_RATIO) || ratios[ratios.length - 1];
+      const ratio = ratios.find((ratio) => ratio === DESIRED_RATIO) || ratios[ratios.length - 1];
 
-        setCameraRatio(ratio)
-      }
+      setCameraRatio(ratio)
     }
+  }
 
-    const takePicture = async() => {
-      if (cameraRef) {
-        const options = { 
-          quality: 1, 
-          base64: true 
-        };
-        const data = await cameraRef.current.takePictureAsync(options);
-        console.log(data.uri);  
+  const takePicture = async() => {
+    if (cameraRef) {
+      const options = { 
+        quality: 1, 
+        base64: true 
+      };
+      const data = await cameraRef.current.takePictureAsync(options);
+      setImageUrl(data.uri);
+      console.log('imageUrl', imageUrl)
+      console.log('data.uri', data.uri)
+      console.log('appcamera', imageUrl)
+      // resumePreview();
+    }
+  };
 
-        setImageUrl(data.uri);
-        console.log(imageUrl)
-        // setScreen('idConfirm');
-      }
-    };
+  // const retakePhoto = () => {
+  //   // setImageUrl('');
+  //   setScreen('idPhoto');
+  // }
 
-    // const retakePhoto = () => {
-    //   // setImageUrl('');
-    //   setScreen('idPhoto');
-    // }
+  // const selfieScreen = () => {
+  //   setScreen('selfieInitial');
+  //   console.log(imageUrl);
+  // }
 
-    // const selfieScreen = () => {
-    //   setScreen('selfieInitial');
-    //   console.log(imageUrl);
-    // }
-
-    useEffect(() => {
-      prepareRatio;
-      // console.log(cameraRatio)
-    }, []);
+  useEffect(() => {
+    prepareRatio;
+    // console.log(cameraRatio)
+  }, []);
 
   function OverlayMask() {
     return (
@@ -113,9 +112,11 @@ export const AppCamera = ({
         </AppText>
         </View>
         <TouchableOpacity onPress={() => {
-          // takePicture();
+          takePicture()
+          // console.log('appcamera', imageUrl)
+          captureImage(imageUrl)
           // console.log('captureImage');
-          captureImage
+          // () => captureImage()
           }} style={styles.capture}>
           <View style={styles.captureButton} />
         </TouchableOpacity>
