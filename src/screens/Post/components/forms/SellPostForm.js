@@ -271,6 +271,19 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     // togglePickerModal();
   }
 
+  const continueUploadPhoto = (selected, photoCount) => {
+    setSelected(selected); 
+    setPhotoCount(photoCount);
+    togglePickerModal();
+  }
+
+  const captureCamera = (imageUrl) => {
+    // setSelected([...selected, {imageUrl}]);
+    setSingleImage(imageUrl)
+    console.log('image url outside appcamera', singleImage)
+    // togglePickerModal();
+  }
+
   const uploadTabs = [
     {key: 'camera', title: 'Photo', renderPage: 
       <AppCamera 
