@@ -2,24 +2,17 @@ import React, {useState, useRef, useContext, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   SafeAreaView,
   ScrollView,
-  Dimensions,
   Animated,
-  Alert,
-  Button,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 
 import {
   Posts,
-  PaddingView,
   AppInput,
   AppText,
-  Notification,
   WhiteOpacity
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
@@ -188,7 +181,7 @@ function Dashboard({navigation}) {
         style={[
           GlobalStyle.rowCenter,
           {
-            marginHorizontal: 16,
+            marginLeft: 16,
             marginVertical: margin,
             height: 34,
             overflow: 'hidden',
