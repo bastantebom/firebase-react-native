@@ -116,7 +116,7 @@ const ProfileInfo = ({profileData}) => {
         <AppText
           textStyle="body2"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {JSON.stringify(address)}
+          {address ? address.city : ''}, {address ? address.province : ''}
         </AppText>
       </View>
     </View>

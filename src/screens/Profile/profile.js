@@ -33,6 +33,7 @@ import {GuestProfile} from './components/GuestProfile';
 function Profile() {
   const {user, signOut} = useContext(UserContext);
   const [userInfo, setUserInfo] = useState({});
+  const [userDataAvailble, setUserDataAvailble] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -119,8 +120,10 @@ function Profile() {
     ProfileInfoService.getUser(user.uid)
       .then((response) => {
         console.log('THIS IS IN PROFILE');
-        console.log(response);
+        console.log(response.address);
+
         setUserInfo({...userInfo, ...response});
+        setUserDataAvailble(true);
         //setIsLoading(false);
         //cleanSignUpForm();
         // if (response.success) {
@@ -171,7 +174,7 @@ function Profile() {
         />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
-        <ProfileInfo profileData={userInfo} />
+        {userDataAvailble ? <ProfileInfo profileData={userInfo} /> : null}
       </View>
 
       <View style={{flex: 1}}>

@@ -59,18 +59,18 @@ export const joinedDate = (completeDate) => {
   const newCompleteDate = new Date(completeDate);
   //console.log(newCompleteDate.getYear());
   const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   return (
     monthNames[newCompleteDate.getMonth()] + ' ' + newCompleteDate.getFullYear()
