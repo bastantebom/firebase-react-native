@@ -38,7 +38,7 @@ import {CameraId} from '@/screens/Dashboard/Verification/components/CameraId';
 import {AppCamera} from '@/components/Camera/AppCamera';
 import { set } from 'react-native-reanimated';
 
-const Library =({
+const Library = ({
   // count,
   // isSelected,
   // callback,
@@ -65,16 +65,21 @@ const Library =({
   const [selected, setSelected] = useState([]);
 
   const getSelectedImages = (images) => {
-    console.log('FUNCTION PARAMS');
-    console.log(images);
-
+    // console.log('FUNCTION PARAMS');
     var num = images.length;
     setSelected(images);
-
     setPhotoCount(num);
     // console.log('photoCount', photoCount)
-    setCurrentImage(num > 0 ? images[num-1].uri: '');
+    // setCurrentImage(num > 0 ? images[num-1].uri: '');
+    setCurrentImage(images.uri);
   };
+
+  useEffect(() => {
+    // setSelected(images);
+    setSelected([...selected]);
+    console.log('photoCount inside Library', photoCount);
+    console.log('selected images inside Library', selected);
+  }, [photoCount]);
 
   return (
     <>
@@ -102,7 +107,8 @@ const Library =({
           <AppText textStyle="body1">All Photos</AppText>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={next}
+          // onPress={next}
+          onPress={() => next(selected, photoCount)}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
           <AppText textStyle="body3" color={Colors.contentOcean}>
             Next
@@ -141,7 +147,7 @@ const Library =({
           />
         ) : null}
         <View style={{marginLeft: 17, height: '100%'}}>
-          <ScrollView horizontal>
+          {/* <ScrollView horizontal> */}
             <CameraRollPicker
               groupTypes="All"
               maximum={10}
@@ -150,7 +156,7 @@ const Library =({
               // assetType='Photos'
               imagesPerRow={3}
               imageMargin={2}
-              callback={() =>{
+              callback={() => {
                 getSelectedImages(selected)
               }}
               emptyText="No photos"
@@ -158,7 +164,7 @@ const Library =({
               // openCamera
               // selectedMarker="number"
             />
-          </ScrollView>
+          {/* </ScrollView> */}
         </View>
       </View>
     </>
@@ -174,6 +180,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const [currentImage, setCurrentImage] = useState('');
   const [imageSource, setImageSource] = useState([]);
+  const [singleImage, setSingleImage] = useState('');
   const [selected, setSelected] = useState([]);
   const [showPickerModal, setShowPickerModal] = useState(false);
 
@@ -246,7 +253,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   useEffect(() => {
     // console.log(uploadTabs)
-    console.log('photoCount', photoCount);
+    console.log('photoCount outside Library', photoCount);
   }, [photoCount]);
 
   const cancelUploadPhoto = () => {
@@ -255,17 +262,25 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setPhotoCount(0);
   };
 
+  const continueUploadPhoto = (selected, photoCount) => {
+    setSelected(selected); 
+    setPhotoCount(photoCount);
+    togglePickerModal();
+  }
+
+  const captureCamera = (imageUrl) => {
+    // setSelected([...selected, {imageUrl}]);
+    setSingleImage(imageUrl)
+    console.log('image url outside appcamera', singleImage)
+    // togglePickerModal();
+  }
+
   const uploadTabs = [
     {
       key: 'camera',
       title: 'Photo',
       renderPage: (
-        <AppCamera
-          captureImage={() => {
-            console.log('captureImage');
-          }}
-          imageUrl
-        />
+        <AppCamera captureImage={captureCamera}/>
       ),
     },
     {
@@ -278,7 +293,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           callback={getSelectedImages}
           current={currentImage}
           cancel={cancelUploadPhoto}
-          next={togglePickerModal}
+          next={continueUploadPhoto}
           showFolders={toggleFolderList}
         />
       ),
@@ -417,7 +432,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
         {/* {imageSource.length === 0 ? ( */}
-        {photoCount === 0 ? (
+        {photoCount === 0 || !singleImage ? (
           <View
             style={{
               height: normalize(114),
@@ -433,14 +448,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }}>
             <TouchableOpacity
               activeOpacity={0.7}
-              // onPress={() => handleSelect()}
-              // onPress={() => handleCameraRoll()}
-              onPress={() => {
-                // hasAndroidPermission()
-                // fetchPhotos()
-                requestPermission();
-                // setShowPickerModal(true)
-              }}>
+              onPress={() => {requestPermission()}}>
               <View style={{alignSelf: 'center', alignItems: 'center'}}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText textStyle="body2" color={Colors.contentOcean}>
@@ -459,6 +467,49 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               marginBottom: 8,
               // justifyContent: 'center',
             }}>
+            
+            <View>
+              <TouchableOpacity
+                onPress={() => handleRemove(image)}
+                style={{
+                  zIndex: 999,
+                  position: 'absolute',
+                  right: 20,
+                  top: 5,
+                }}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    backgroundColor: 'rgba(0,0,0,.6)',
+                    width: normalize(28),
+                    height: normalize(28),
+                    borderRadius: 50,
+                  }}
+                />
+                <View
+                  style={{left: normalize(3.75), top: normalize(3.5)}}>
+                  <CloseLight
+                    width={normalize(20)}
+                    height={normalize(20)}
+                  />
+                </View>
+              </TouchableOpacity>
+              <Image
+                source={{uri: singleImage}}
+                style={{
+                  width:
+                    photoCount === 1
+                      ? width / 2
+                      : photoCount === 2
+                      ? width / 3.333
+                      : width / 4,
+                  height: normalize(114),
+                  marginRight: 8,
+                  borderRadius: 4,
+                }}
+              />
+            </View>
+
             <ScrollView horizontal>
               {selected.map((image, i) => {
                 return (
