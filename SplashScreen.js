@@ -32,7 +32,7 @@ const SplashScreenComponent = () => {
           <AppText textStyle="body2">All rights reserved</AppText>
           <AppText
             textStyle="metadata"
-            customstyle={{marginTop: 24, marginBottom: 8}}>
+            customStyle={{marginTop: 24, marginBottom: 8}}>
             www.servbees.com
           </AppText>
         </Animated.View>
