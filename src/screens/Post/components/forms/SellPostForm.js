@@ -22,8 +22,14 @@ import CameraRoll from '@react-native-community/cameraroll';
 import CameraRollPicker from 'react-native-camera-roll-picker';
 import Modal from 'react-native-modal';
 
-import {AppText, AppInput, Switch} from '@/components';
-import {AppText, AppInput, AppButton, TabNavigation} from '@/components';
+import {
+  AppText,
+  AppInput,
+  Switch,
+  AppButton,
+  TabNavigation,
+  BottomSheetHeader,
+} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
@@ -84,19 +90,17 @@ const Library = ({
           alignSelf: 'center',
           alignItems: 'center',
           width: '100%',
-          marginTop: 10,
+          marginTop: 5,
           height: 45,
           paddingHorizontal: 25,
-          zIndex: 3
-        }}
-      > 
-        <TouchableOpacity onPress={() => cancelUploadPhoto()}>
+          zIndex: 3,
+          // backgroundColor: 'red'
+        }}>
+        <TouchableOpacity
+          onPress={cancel}
+          style={{paddingVertical: 5, paddingHorizontal: 25}}>
           <AppText textStyle="body2">Cancel</AppText>
         </TouchableOpacity>
-<<<<<<< HEAD
-        <AppText textStyle="body1">All Photos</AppText>
-        <AppText textStyle="body3" color={Colors.contentOcean}>Next</AppText>
-=======
         <TouchableOpacity
           onPress={showFolders}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
@@ -110,7 +114,6 @@ const Library = ({
             Next
           </AppText>
         </TouchableOpacity>
->>>>>>> wip: camera function on add photos
       </View>
       <View style={styles.container}>
         <View
@@ -138,7 +141,7 @@ const Library = ({
           <Image
             source={{uri: currentImage}}
             style={{
-              width: width,
+              width: '100%',
               height: height / 2,
             }}
           />
@@ -174,24 +177,27 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
-  const [currentImage, setCurrentImage] = useState('');
 
+  const [currentImage, setCurrentImage] = useState('');
   const [imageSource, setImageSource] = useState([]);
   const [singleImage, setSingleImage] = useState('');
   const [selected, setSelected] = useState([]);
   const [showPickerModal, setShowPickerModal] = useState(false);
 
-  const cancelPickerModal = () => {
+  const [showFolderList, setShowFolderList] = useState(false);
+
+  const togglePickerModal = () => {
     setShowPickerModal(!showPickerModal);
+  };
+
+  const toggleFolderList = () => {
+    setShowFolderList(!showFolderList);
   };
 
   const handleSelect = () => {
     ImagePicker.openPicker({
       width: 500,
       height: 500,
-      // cropping: true,
-      // multiple: true,
-      // mediaType: 'photo',
       includeBase64: true,
     })
       .then((response) => {
@@ -209,23 +215,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       });
   };
 
-  const {
-    title,
-    setTitle,
-    price,
-    setPrice,
-    description,
-    setDescription,
-    pickupState,
-    setPickupState,
-    deliveryState,
-    setDeliveryState,
-    storeLocation,
-    setStoreLocation,
-    paymentMethod,
-    setPaymentMethod,
-  } = formState;
-  
   const handleRemove = (image) => {
     const valueToRemove = image.uri;
     const newList = selected.filter((image) => image.uri !== valueToRemove);
@@ -254,30 +243,24 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     console.log('FUNCTION PARAMS');
     console.log(images);
 
-    setPhotoCount(num)
-    console.log('photoCount', photoCount)
-    // console.log('num', num)
+    var num = images.length;
+    setSelected(images);
 
-    setCurrentImage(current.uri)
-    // console.log(currentImage);
+    setPhotoCount(num);
+    // console.log('photoCount', photoCount)
+    setCurrentImage(num > 1 ? images[num-1].uri: '');
+  };
 
-<<<<<<< HEAD
-    // console.log(current.uri);
-
-    // console.log(selected);
-    // image.node.image.uri
-  }
-=======
   useEffect(() => {
     // console.log(uploadTabs)
     console.log('photoCount outside Library', photoCount);
   }, [photoCount]);
->>>>>>> wip: camera function on add photos
 
   const cancelUploadPhoto = () => {
-    setShowPickerModal(!showPickerModal);
+    togglePickerModal();
     setSelected([]);
-  }
+    setPhotoCount(0);
+  };
 
   const continueUploadPhoto = (selected, photoCount) => {
     setSelected(selected); 
@@ -293,14 +276,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   }
 
   const uploadTabs = [
-<<<<<<< HEAD
-    {key: 'camera', title: 'Photo', renderPage: 
-      <AppCamera 
-        captureImage={() => {console.log('captureImage')}}
-        imageUrl
-      />},
-    {key: 'cameraroll', title: 'Library', renderPage: <Library count={photoCount} isSelected={selected} callback={getSelectedImages} current={currentImage} />},
-=======
     {
       key: 'camera',
       title: 'Photo',
@@ -323,8 +298,24 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         />
       ),
     },
->>>>>>> wip: camera function on add photos
   ];
+
+  const {
+    title,
+    setTitle,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    pickupState,
+    setPickupState,
+    deliveryState,
+    setDeliveryState,
+    storeLocation,
+    setStoreLocation,
+    paymentMethod,
+    setPaymentMethod,
+  } = formState;
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -473,7 +464,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               height: normalize(114),
               width: '100%',
               flexDirection: 'row',
-              marginBottom: 25,
+              marginBottom: 8,
               // justifyContent: 'center',
             }}>
             
@@ -562,53 +553,38 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
                         borderRadius: 4,
                       }}
                     />
-                    <View style={{ left: normalize(3.75), top: normalize(3.5) }}>
-                      <CloseLight width={(normalize(20))} height={(normalize(20))} />
-                    </View>
-                  </TouchableOpacity>
-                  <Image 
-                    // source={{uri: image.source}} 
-                    source={{uri: image.uri }} 
-                    style={{
-                      // width: '', 
-                      // flex: 2,
-                      // width: width / photoCount,
-                      width: photoCount === 1 ? width / 2 : photoCount === 2 ? width / 3.333 : width / 4,
-                      // maxWidth: 500,
-                      // height: '100%',
-                      height: normalize(114),
-                      marginRight: 8,
-                      borderRadius: 4
-                    }}
-                  />
+                  </View>
+                );
+              })}
+            </ScrollView>
+            <View
+              style={{
+                // flex: 1,
+                height: normalize(114),
+                borderStyle: 'dashed',
+                borderRadius: 4,
+                borderWidth: 1,
+                borderColor: Colors.neutralGray,
+                justifyContent: 'center',
+                // marginBottom: 8,
+                width: photoCount <= 1 ? width / 3 : width / 4,
+              }}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  requestPermission();
+                }}>
+                <View style={{alignSelf: 'center', alignItems: 'center'}}>
+                  <PostImages width={normalize(56)} height={normalize(56)} />
+                  <AppText
+                    textStyle="body2"
+                    color={Colors.contentOcean}
+                    customStyle={{paddingHorizontal: 15, textAlign: 'center'}}>
+                    Upload Photo
+                  </AppText>
                 </View>
-              )
-            })}
-          </ScrollView>
-          <View
-            style={{
-              // flex: 1,
-              height: normalize(114),
-              borderStyle: 'dashed',
-              borderRadius: 4,
-              borderWidth: 1,
-              borderColor: Colors.neutralGray,
-              justifyContent: 'center',
-              marginBottom: 8,
-              width: photoCount <= 1 ? width / 3 : width / 4,
-            }}
-          >
-            <TouchableOpacity 
-              activeOpacity={0.7} 
-              onPress={() => {requestPermission()}}
-            >
-              <View style={{alignSelf: 'center', alignItems: 'center' }}>
-                <PostImages width={normalize(56)} height={normalize(56)} />
-                <AppText textStyle="body2" color={Colors.contentOcean} customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
-                  Upload Photo
-                </AppText>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
@@ -749,36 +725,64 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       </View>
       <Modal
         isVisible={showPickerModal}
-        // animationIn="bounceIn"
-        // animationInTiming={450}
-        // animationOut="bounceOut"
-        // animationOutTiming={450}
-        onBackButtonPress={() => setShowPickerModal(false)}
-        onSwipeComplete={() => setShowPickerModal(false)}
+        onBackButtonPress={togglePickerModal}
+        onSwipeComplete={togglePickerModal}
         swipeDirection="down"
         style={{
-          // margin: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-          <View
-            style={{
-              backgroundColor: 'white',
-              height: height,
-              width: width,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-          {/* <SafeAreaView style={{ flex: 1 }}> */}
-            {/* <View>
-              <TabNavigation routesList={uploadTabs} bottomTab/>
-            </View> */}
-            <Library count={photoCount} isSelected={selected} callback={getSelectedImages} current={currentImage}/>
+          margin: 0,
+          // marginLeft: 15,
+          // marginRight: 50
+          // width: '100%',
+          // height: height
+          // alignItems: 'center',
+          // justifyContent: 'center',
+          // backgroundColor: 'red'
+        }}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: height,
+            width: width,
+            // justifyContent: 'center',
+            alignItems: 'center',
+            // backgroundColor: 'red'
+          }}>
+          <SafeAreaView style={{flex: 1}}>
+            <View>
+              <TabNavigation routesList={uploadTabs} bottomTab />
+            </View>
+            {/* <Library count={photoCount} isSelected={selected} callback={getSelectedImages} current={currentImage} cancel={cancelUploadPhoto} next={togglePickerModal} showFolders={toggleFolderList} /> */}
             {/* <AppCamera/> */}
-        {/* </SafeAreaView> */}
+          </SafeAreaView>
+        </View>
+
+        {/* <Modal
+          isVisible={showFolderList}
+          animationIn="slideInUp"
+          animationInTiming={500}
+          animationOut="slideOutDown"
+          animationOutTiming={500}
+          onSwipeComplete={toggleFolderList}
+          swipeDirection="down"
+          style={{
+            justifyContent: 'flex-end',
+            margin: 0,
+          }}
+          customBackdrop={
+            <TouchableWithoutFeedback onPress={toggleFolderList}>
+              <View style={{flex: 1, backgroundColor: 'black'}} />
+            </TouchableWithoutFeedback>
+          }>
+          <View style={{
+           backgroundColor: 'white',
+           paddingBottom: 24,
+           borderTopEndRadius: 8,
+           borderTopStartRadius: 8,
+          }} >
+            <BottomSheetHeader/>
+            <AppText>hjdahdjahjdsaj</AppText>
           </View>
+        </Modal> */}
       </Modal>
     </>
   );
@@ -789,6 +793,7 @@ export default SellPostForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // width: width,
     height: '100%',
     // paddingTop: 25,
     // backgroundColor: '#F6AE2D',
