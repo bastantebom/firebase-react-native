@@ -25,22 +25,20 @@ const ChangePassword = ({toggleChangePassword}) => {
           padding: 24,
         }}>
         <ScreenHeaderTitle
-          title="Change Password"
+          title="Current Password"
           close={toggleChangePassword}
         />
 
         <FloatingAppInput
           value={cPass}
           label="Current Password"
-          customStyle={{marginBottom: normalize(16), marginTop: 40}}
           onChangeText={(cPass) => {
             setCPass(cPass);
           }}
         />
         <FloatingAppInput
           value={nPass}
-          label="New Password"
-          customStyle={{marginBottom: normalize(16)}}
+          label="Current Password"
           onChangeText={(nPass) => {
             setNPass(nPass);
           }}
@@ -48,7 +46,6 @@ const ChangePassword = ({toggleChangePassword}) => {
         <FloatingAppInput
           value={fPass}
           label="Confirm Password"
-          customStyle={{marginBottom: normalize(16)}}
           onChangeText={(fPass) => {
             setFPass(fPass);
           }}
