@@ -5,12 +5,12 @@ import {Colors, normalize} from '@/globals';
 
 import {NoInfo} from '@/assets/images';
 import {AppText, PaddingView} from '@/components';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Users} from '@/assets/images/icons';
 
 // create a component
 const MoreInfo = ({moreInfo}) => {
   const [hasInfo, setHasInfo] = useState(false);
+  //const [email, setEmail] = useState('');
+  //const [name, setName] = useState('');
 
   useEffect(() => {
     if (moreInfo && moreInfo.length() > 0) {
