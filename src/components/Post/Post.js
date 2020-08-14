@@ -106,7 +106,7 @@ const Post = ({data, type, isLoading}) => {
                 textStyle="price"
                 customStyle={styles.priceText}
                 color={Colors.secondaryMountainMeadow}>
-                ₱ {postPrice}
+                ₱{postPrice}
               </AppText>
 
               <Divider style={styles.dividerStyle} />

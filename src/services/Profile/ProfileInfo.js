@@ -1,7 +1,7 @@
 import BaseAPI from '@/services/BaseAPI';
 
-const getUser = (payload) => {
-  return BaseAPI({
+const getUser = async (payload) => {
+  return await BaseAPI({
     url: 'user/' + payload,
     method: 'GET',
     headers: {
