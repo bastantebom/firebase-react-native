@@ -16,7 +16,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ProfileInfo = ({profileData}) => {
   const {
-    name,
+    display_name,
     is_verified,
     full_name,
     username,
@@ -30,23 +30,13 @@ const ProfileInfo = ({profileData}) => {
   return (
     <View style={{paddingHorizontal: 16, backgroundColor: 'white'}}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        {name ? (
-          <AppText
-            textStyle="subtitle1"
-            color={Colors.primaryMidnightBlue}
-            customStyle={{marginRight: 8}}>
-            {name}
-          </AppText>
-        ) : (
-          <TouchableOpacity>
-            <AppText
-              textStyle="subtitle1"
-              color={Colors.primaryMidnightBlue}
-              customStyle={{marginRight: 8}}>
-              {full_name}
-            </AppText>
-          </TouchableOpacity>
-        )}
+        <AppText
+          textStyle="subtitle1"
+          color={Colors.primaryMidnightBlue}
+          customStyle={{marginRight: 8}}>
+          {display_name ? display_name : full_name}
+        </AppText>
+
         {/* <Verified width={normalize(11)} height={normalize(12.4)} /> */}
       </View>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
