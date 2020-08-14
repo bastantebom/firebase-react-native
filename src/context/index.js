@@ -1,4 +1,5 @@
 import React, {createContext, useState} from 'react';
+import {PostService} from '@/services';
 
 export const Context = createContext();
 
@@ -34,6 +35,15 @@ export const ContextProvider = ({children}) => {
     setShowButtons(false);
   };
 
+  const fetchPosts = (getPostsParams) => {
+    PostService.getPosts(getPostsParams).then((res) => {
+      // console.log('POSTS');
+      // LAST ID TO BE USED FOR PAGINATION
+      console.log(res.last_id);
+      setPosts(res.data);
+    });
+  }
+
   return (
     <Context.Provider
       value={{
@@ -50,7 +60,8 @@ export const ContextProvider = ({children}) => {
         showButtons,
         setShowButtons,
         posts,
-        setPosts
+        setPosts,
+        fetchPosts
       }}>
       {children}
     </Context.Provider>

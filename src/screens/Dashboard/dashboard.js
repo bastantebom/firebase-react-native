@@ -279,24 +279,30 @@ function Dashboard({navigation}) {
 
   useEffect(() => {
     openNotification();
-    console.log('USE EFFECT DASHBOARD');
-    console.log(userInfo);
-    console.log(user.uid);
+    setIsLoading(true);
+    // console.log('USE EFFECT DASHBOARD');
+    // console.log(userInfo);
+    // console.log(user.uid);
 
     let getPostsParams = {
       uid: user.uid,
-      limit: 10,
+      limit: 5,
     };
 
     PostService.getPosts(getPostsParams).then((res) => {
       // console.log('POSTS');
-
       // LAST ID TO BE USED FOR PAGINATION
       console.log(res.last_id);
       setPosts(res.data);
-      setIsLoading(false);
+      showLoading();
     });
   }, []);
+
+  const showLoading = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  };
 
   return (
     <>
