@@ -1,10 +1,20 @@
 import BaseAPI from '@/services/BaseAPI';
 
-const createPost = async (payload) => {
-  // console.log('creating post...');
-  // console.log('post data: ');
-  // console.log(payload);
+const getPosts = async (UID, limit, last_pid = '') => {
+  return await BaseAPI({
+    url: `post/${UID}`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      limit: limit,
+      last_pid: last_pid,
+    },
+  });
+};
 
+const createPost = async (payload) => {
   return await BaseAPI({
     url: 'post/create',
     method: 'POST',
