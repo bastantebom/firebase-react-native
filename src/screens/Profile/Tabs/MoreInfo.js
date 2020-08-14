@@ -6,6 +6,7 @@ import {Colors, normalize} from '@/globals';
 import {NoInfo} from '@/assets/images';
 import {AppText, PaddingView} from '@/components';
 import {UserContext} from '@/context/UserContext';
+import {ScrollView} from 'react-native-gesture-handler';
 
 // create a component
 const MoreInfo = () => {
@@ -35,7 +36,9 @@ const MoreInfo = () => {
               <AppText textStyle="subtitle2">About</AppText>
             </View>
             <View style={styles.infoContentWrapper}>
-              <AppText textStyle="body2">{description}</AppText>
+              <ScrollView>
+                <AppText textStyle="body2">{description}</AppText>
+              </ScrollView>
             </View>
             {/* <View style={styles.connectionWrapper}>
               <View style={styles.followers}>
