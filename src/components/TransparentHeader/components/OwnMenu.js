@@ -223,7 +223,10 @@ const OwnMenu = ({toggleMenu, signOut}) => {
           height: Dimensions.get('window').height,
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <EditProfile toggleEditProfile={toggleEditProfile} />
+        <EditProfile
+          toggleMenu={toggleMenu}
+          toggleEditProfile={toggleEditProfile}
+        />
       </Modal>
 
       <Modal

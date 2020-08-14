@@ -106,7 +106,7 @@ const ProfileInfo = ({profileData}) => {
         <AppText
           textStyle="button3"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {address ? address.city : ''}
+          {address ? address.city : 'Manila City'}
         </AppText>
       </View>
     </View>

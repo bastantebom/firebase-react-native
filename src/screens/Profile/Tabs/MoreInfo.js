@@ -1,22 +1,29 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Colors, normalize} from '@/globals';
 
 import {NoInfo} from '@/assets/images';
 import {AppText, PaddingView} from '@/components';
+import {UserContext} from '@/context/UserContext';
 
 // create a component
-const MoreInfo = ({moreInfo}) => {
+const MoreInfo = () => {
+  const {userInfo} = useContext(UserContext);
   const [hasInfo, setHasInfo] = useState(false);
   //const [email, setEmail] = useState('');
   //const [name, setName] = useState('');
+  const {description} = userInfo;
 
   useEffect(() => {
-    if (moreInfo && moreInfo.length() > 0) {
-      setHasInfo(true);
+    //console.log(description);
+    if (description) {
+      if (description.trim().length > 0) {
+        //console.log('moreinfo');
+        setHasInfo(true);
+      }
     }
-  }, [moreInfo]);
+  }, [description]);
 
   const WithInfo = () => {
     return (
@@ -28,7 +35,7 @@ const MoreInfo = ({moreInfo}) => {
               <AppText textStyle="subtitle2">About</AppText>
             </View>
             <View style={styles.infoContentWrapper}>
-              <AppText textStyle="body2">{moreInfo}</AppText>
+              <AppText textStyle="body2">{description}</AppText>
             </View>
             {/* <View style={styles.connectionWrapper}>
               <View style={styles.followers}>
