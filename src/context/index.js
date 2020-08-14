@@ -8,6 +8,8 @@ export const ContextProvider = ({children}) => {
   const [authType, setAuthType] = useState('');
   const [showButtons, setShowButtons] = useState();
 
+  const [posts, setPosts] = useState([]);
+
   const closeSlider = () => {
     setSliderState('close');
   };
@@ -47,6 +49,8 @@ export const ContextProvider = ({children}) => {
         closePostButtons,
         showButtons,
         setShowButtons,
+        posts,
+        setPosts
       }}>
       {children}
     </Context.Provider>

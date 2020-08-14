@@ -17,24 +17,42 @@ import {
 import LoadingScreen from './loading';
 
 const Post = ({data, type, isLoading}) => {
+  // const {
+  //   userImage,
+  //   name,
+  //   username,
+  //   rating,
+  //   postedAt,
+  //   isVerified,
+  //   postType,
+  //   postImage,
+  //   postName,
+  //   postPrice,
+  //   postServiceAddress,
+  //   postServiceRadius,
+  //   postDeliveryMethod,
+  // } = data;
+
   const {
-    userImage,
-    name,
+    display_name,
+    date_posted,
+    available,
+    profile_photo,
+    payment_method,
+    store_location,
+    title,
     username,
-    rating,
-    postedAt,
-    isVerified,
-    postType,
-    postImage,
-    postName,
-    postPrice,
-    postServiceAddress,
-    postServiceRadius,
-    postDeliveryMethod,
+    delivery_method,
+    description,
+    uid,
+    price,
+    post_id,
+    images,
+    account_verified,
   } = data;
 
   const VerifiedBadge = () => {
-    return isVerified ? <Verified /> : <></>;
+    return account_verified ? <Verified /> : <></>;
   };
 
   let timeAgo = (time) => {
@@ -50,7 +68,9 @@ const Post = ({data, type, isLoading}) => {
               <Image
                 style={GlobalStyle.image}
                 source={{
-                  uri: userImage,
+                  uri: profile_photo
+                    ? profile_photo
+                    : 'https://i.pinimg.com/originals/f9/0c/9e/f90c9e170d4b553a9d0a79735113365b.jpg',
                 }}
               />
             </View>
@@ -59,7 +79,7 @@ const Post = ({data, type, isLoading}) => {
                 <AppText
                   textStyle="caption"
                   customStyle={styles.userInfoDetailsName}>
-                  {name}
+                  {display_name}
                 </AppText>
                 <VerifiedBadge />
               </View>
@@ -68,17 +88,17 @@ const Post = ({data, type, isLoading}) => {
                   @{username.toLowerCase()}
                 </AppText>
 
-                <View style={styles.starRatingContainer}>
+                {/* <View style={styles.starRatingContainer}>
                   <StarRating width={12} height={12} />
                   <AppText
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}>
                     {rating}
                   </AppText>
-                </View>
+                </View> */}
 
                 <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
-                  {timeAgo(postedAt)}
+                  {/* {timeAgo(date_posted._seconds)} */} 1 hour ago
                 </AppText>
               </View>
             </View>
@@ -92,7 +112,9 @@ const Post = ({data, type, isLoading}) => {
               <Image
                 style={GlobalStyle.image}
                 source={{
-                  uri: postImage,
+                  uri: images[0]
+                    ? images[0]
+                    : 'https://www.tarladalal.com/products/images/B_S_Cover_image_300.jpg',
                 }}
               />
             </View>
@@ -100,13 +122,13 @@ const Post = ({data, type, isLoading}) => {
               <AppText
                 textStyle="body2"
                 customStyle={GlobalStyle.marginBottom1}>
-                {postName}
+                {title}
               </AppText>
               <AppText
                 textStyle="price"
                 customStyle={styles.priceText}
                 color={Colors.secondaryMountainMeadow}>
-                ₱{postPrice}
+                ₱{price}
               </AppText>
 
               <Divider style={styles.dividerStyle} />
@@ -118,10 +140,10 @@ const Post = ({data, type, isLoading}) => {
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}
                     customStyle={{marginLeft: 4}}>
-                    {postServiceAddress}
+                    {store_location}
                   </AppText>
                 </View>
-                <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
+                {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
                   <NavigationArrow width={12} height={12} />
                   <AppText
                     textStyle="eyebrow2"
@@ -129,7 +151,7 @@ const Post = ({data, type, isLoading}) => {
                     customStyle={{marginLeft: 4}}>
                     {postServiceRadius}
                   </AppText>
-                </View>
+                </View> */}
               </View>
 
               <View style={GlobalStyle.rowCenter}>
@@ -137,7 +159,7 @@ const Post = ({data, type, isLoading}) => {
                 <AppText
                   textStyle="eyebrow2"
                   customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
-                  {postDeliveryMethod}
+                  {/* {delivery_method} */} Delivery & Placeholder
                 </AppText>
               </View>
             </View>

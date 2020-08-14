@@ -31,9 +31,14 @@ import {GlobalStyle, Colors, normalize} from '@/globals';
 import Modal from 'react-native-modal';
 import {Context} from '@/context';
 import {VerificationScreen} from '@/screens/Dashboard/Verification';
+import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
 
 function Dashboard({navigation}) {
-  const {openNotification, closeNotification} = useContext(Context);
+  const {openNotification, closeNotification, posts, setPosts} = useContext(
+    Context,
+  );
+  const {userInfo, user} = useContext(UserContext);
   const [modalState, setModalState] = useState(false);
   const [showLocation, setShowLocation] = useState(true);
   const [scrollState, setScrollState] = useState(0);
@@ -162,13 +167,22 @@ function Dashboard({navigation}) {
   const SearchBarWithFilter = () => {
     return (
       <View
-        style={[GlobalStyle.rowCenter, {marginHorizontal: 16, marginTop: 16}]}>
+        style={[
+          GlobalStyle.rowCenter,
+          {marginHorizontal: 16, marginVertical: 8},
+        ]}>
         <View style={{flex: 1}}>
           {/* <NavigationPinRed width={24} height={24} /> */}
           {/* <AppInput label="Search your location"></AppInput> */}
           <View style={{position: 'relative'}}>
-            <AppInput label="Search your location" style={{paddingLeft: 24}}  />
-            <View style={{ position: 'absolute', top: '50%', marginTop: normalize(-12), left: 4 }}>
+            <AppInput label="Search your location" style={{paddingLeft: 24}} />
+            <View
+              style={{
+                position: 'absolute',
+                top: '50%',
+                marginTop: normalize(-12),
+                left: 4,
+              }}>
               <NavigationPinRed width={normalize(24)} height={normalize(24)} />
             </View>
           </View>
@@ -265,9 +279,23 @@ function Dashboard({navigation}) {
 
   useEffect(() => {
     openNotification();
-    setTimeout(() => {
+    console.log('USE EFFECT DASHBOARD');
+    console.log(userInfo);
+    console.log(user.uid);
+
+    let getPostsParams = {
+      uid: user.uid,
+      limit: 10,
+    };
+
+    PostService.getPosts(getPostsParams).then((res) => {
+      // console.log('POSTS');
+
+      // LAST ID TO BE USED FOR PAGINATION
+      console.log(res.last_id);
+      setPosts(res.data);
       setIsLoading(false);
-    }, 1000);
+    });
   }, []);
 
   return (
@@ -293,7 +321,7 @@ function Dashboard({navigation}) {
 
           <Posts
             type="dashboard"
-            data={DummyData}
+            data={posts}
             hideLocationComponent={hideLocationComponent}
             showLocationComponent={showLocationComponent}
             scrollState={scrollState}

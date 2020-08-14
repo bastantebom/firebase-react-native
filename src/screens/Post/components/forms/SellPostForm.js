@@ -114,10 +114,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       description: description,
       payment_method: paymentMethod,
       store_location: storeLocation,
-      delivery_method: [
-        pickupState ? 'pickup' : '',
-        deliveryState ? 'delivery' : '',
-      ],
+      delivery_method: {
+        pickup: pickupState,
+        delivery: deliveryState,
+      },
     };
 
     if (initialData.post_id) {
