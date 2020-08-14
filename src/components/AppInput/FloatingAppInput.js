@@ -7,16 +7,26 @@ import AppText from '../AppText/AppText';
 // create a component
 const FloatingAppInput = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const [labelPosition] = useState(new Animated.Value(0));
-  //const [labelPositionX] = useState(new Animated.Value(0));
-  const [labelScale] = useState(new Animated.Value(1));
+  const [labelPosition] = useState(
+    new Animated.Value(props.value === '' ? 0 : 1),
+  );
+  const [labelPositionX] = useState(
+    new Animated.Value(props.value === '' ? 0 : 1),
+  );
+  const [labelScale] = useState(new Animated.Value(props.value === '' ? 1 : 0));
 
   const onFocus = () => {
     //alert('Focus');
     setIsActive(true);
     Animated.parallel([
       Animated.timing(labelPosition, {
-        toValue: -12,
+        toValue: -10,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+
+      Animated.timing(labelPositionX, {
+        toValue: -8,
         duration: 300,
         useNativeDriver: false,
       }),
@@ -39,6 +49,11 @@ const FloatingAppInput = (props) => {
           duration: 300,
           useNativeDriver: false,
         }),
+        Animated.timing(labelPositionX, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
         Animated.timing(labelScale, {
           toValue: 1,
           duration: 300,
@@ -48,10 +63,36 @@ const FloatingAppInput = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (props.value !== '') {
+      Animated.parallel([
+        Animated.timing(labelPosition, {
+          toValue: -10,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(labelPositionX, {
+          toValue: -8,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+
+        Animated.timing(labelScale, {
+          toValue: 0.75,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [props.value]);
+
   let labelStyle = {
     transform: [
       {
         translateY: labelPosition,
+      },
+      {
+        translateX: labelPositionX,
       },
       {
         scale: labelScale,
@@ -59,17 +100,22 @@ const FloatingAppInput = (props) => {
     ],
   };
 
-  const activeColor = isActive ? Colors.contentOcean : Colors.neutralGray;
+  const activeColor = isActive ? Colors.contentOcean : Colors.profileLink;
+  //const paddingLeftLabel = isActive ? normalize(5) : normalize(10);
+
+  //   const labelPadding = {
+  //     paddingLeft: paddingLeftLabel,
+  //   };
 
   return (
     <View
       style={{
-        paddingVertical: 4,
-        paddingHorizontal: 16,
+        paddingVertical: normalize(4),
+        paddingHorizontal: normalize(16),
         borderColor: activeColor,
         borderWidth: 1,
         borderRadius: 4,
-        height: 54,
+        height: normalize(50),
       }}>
       <Animated.View style={[styles.label, labelStyle]}>
         <AppText textStyle="body1" color={activeColor}>
@@ -91,8 +137,8 @@ const FloatingAppInput = (props) => {
 const styles = StyleSheet.create({
   floatingInput: {
     backgroundColor: Colors.neutralWhite,
-    fontSize: 16,
-    height: 54,
+    fontSize: normalize(16),
+    height: normalize(54),
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(16),
     letterSpacing: 0.5,
@@ -101,8 +147,8 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     left: 0,
-    paddingTop: 14,
-    paddingLeft: 12,
+    paddingTop: normalize(14),
+    paddingLeft: normalize(12),
   },
 });
 

@@ -27,6 +27,7 @@ export const UserContextProvider = ({children}) => {
 
   useEffect(() => {
     if (user) {
+      console.log('pumasok pa din sa useEffect');
       ProfileInfoService.getUser(user.uid)
         .then((response) => {
           setUserInfo({...userInfo, ...response});
@@ -56,6 +57,7 @@ export const UserContextProvider = ({children}) => {
         user: user,
         signOut: signOut,
         userInfo: userInfo,
+        setUserInfo: setUserInfo,
         userDataAvailable: userDataAvailable,
       }}>
       {children}

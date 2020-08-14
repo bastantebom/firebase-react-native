@@ -33,6 +33,7 @@ import {UserContext} from '@/context/UserContext';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
+import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 
 // create a component
 const EditProfile = ({toggleEditProfile}) => {
@@ -41,7 +42,9 @@ const EditProfile = ({toggleEditProfile}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [genderVisible, setGenderVisible] = useState(false);
-  const {userInfo, userDataAvailable} = useContext(UserContext);
+  const {userInfo, userDataAvailable, setUserInfo} = useContext(UserContext);
+  const [buttonStyle, setButtonStyle] = useState({});
+  const [buttonDisable, setButtonDisable] = useState(false);
   //const [upatedInfo, setUpdate]
 
   const {
@@ -59,6 +62,9 @@ const EditProfile = ({toggleEditProfile}) => {
     birth_date,
     gender,
   } = userInfo;
+
+  const isEmailRequired = email ? true : false;
+  const isMobileRequired = mobile_number ? true : false;
 
   const [dName, setDName] = useState(display_name ? display_name : full_name);
   const [name, setName] = useState(full_name);
@@ -130,6 +136,47 @@ const EditProfile = ({toggleEditProfile}) => {
     setBDate(moment.utc(currentDate).add(1, 'day').format('MM/DD/YYYY'));
   };
 
+  const emailChangeHandler = (em) => {
+    setEm(em);
+    if (em.trim().length === 0 && isEmailRequired) {
+      setButtonState(true);
+    } else {
+      setButtonState(false);
+    }
+  };
+
+  const mobileChangeHandler = (mobile) => {
+    setMobile(mobile);
+    if (
+      (mobile.trim().length !== 11 || mobile.trim().length !== 13) &&
+      isMobileRequired
+    ) {
+      setButtonState(true);
+    } else {
+      setButtonState(false);
+    }
+  };
+
+  const setButtonState = (j) => {
+    if (j) {
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    setButtonDisable(j);
+  };
+
+  const updateProfile = () => {
+    //alert(dName + ' ' + name);
+
+    const dataToUpdate = {display_name: dName};
+    setUserInfo({...userInfo, ...dataToUpdate});
+    alert('Profile is updated');
+  };
+
   useEffect(() => {
     // exit early when we reach 0
     if (userInfo) {
@@ -196,7 +243,14 @@ const EditProfile = ({toggleEditProfile}) => {
           </View>
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
-              <AppInput
+              {/* <AppInput
+                value={dName}
+                label="Display Name"
+                onChangeText={(dName) => {
+                  setDName(dName);
+                }}
+              /> */}
+              <FloatingAppInput
                 value={dName}
                 label="Display Name"
                 onChangeText={(dName) => {
@@ -330,7 +384,8 @@ const EditProfile = ({toggleEditProfile}) => {
                 label="Email"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(em) => {
-                  setEm(em);
+                  emailChangeHandler(em);
+                  //setEm(em);
                 }}
               />
               <AppInput
@@ -346,7 +401,7 @@ const EditProfile = ({toggleEditProfile}) => {
                 label="Mobile Number"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(mobile) => {
-                  setMobile(mobile);
+                  mobileChangeHandler(mobile);
                 }}
               />
               <View style={{position: 'relative'}}>
@@ -411,10 +466,11 @@ const EditProfile = ({toggleEditProfile}) => {
             ]}>
             <AppButton
               text="Save"
-              customStyle={{
-                backgroundColor: Colors.buttonDisable,
-                borderColor: Colors.buttonDisable,
-              }}
+              type="primary"
+              height="xl"
+              disabled={buttonDisable}
+              customStyle={{...buttonStyle}}
+              onPress={() => updateProfile()}
             />
           </View>
         </KeyboardAwareScrollView>
