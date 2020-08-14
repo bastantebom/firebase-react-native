@@ -267,13 +267,14 @@ function Dashboard({navigation}) {
     openNotification();
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
+    }, 1000);
   }, []);
 
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        <Notification
+        {/* ---- Verification Notification ---- */}
+        {/* <Notification
           message={
             <VerificationScreen
               onPress={() => toggleMenu()}
@@ -284,7 +285,8 @@ function Dashboard({navigation}) {
           }
           type={'verified'}
           position="relative"
-        />
+        /> */}
+        {/* ---- Verification Notification ---- */}
         <View style={styles.container}>
           <SearchBarWithFilter />
           {/* <Location /> */}
