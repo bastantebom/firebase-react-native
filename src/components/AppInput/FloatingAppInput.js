@@ -20,13 +20,13 @@ const FloatingAppInput = (props) => {
     setIsActive(true);
     Animated.parallel([
       Animated.timing(labelPosition, {
-        toValue: -10,
+        toValue: normalize(-10),
         duration: 300,
         useNativeDriver: false,
       }),
 
       Animated.timing(labelPositionX, {
-        toValue: -7,
+        toValue: normalize(-8),
         duration: 300,
         useNativeDriver: false,
       }),
@@ -67,12 +67,12 @@ const FloatingAppInput = (props) => {
     if (props.value !== '') {
       Animated.parallel([
         Animated.timing(labelPosition, {
-          toValue: -10,
+          toValue: normalize(-10),
           duration: 300,
           useNativeDriver: false,
         }),
         Animated.timing(labelPositionX, {
-          toValue: -7,
+          toValue: normalize(-8),
           duration: 300,
           useNativeDriver: false,
         }),
@@ -138,17 +138,19 @@ const FloatingAppInput = (props) => {
 const styles = StyleSheet.create({
   floatingInput: {
     backgroundColor: Colors.neutralWhite,
-    fontSize: normalize(16),
     height: normalize(54),
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(16),
     letterSpacing: 0.5,
+    paddingVertical: normalize(4),
+    //paddingLeft: normalize(1),
   },
 
   label: {
     position: 'absolute',
-    left: 0,
+    //left: 0,
     paddingTop: normalize(14),
+    //left: normalize(10),
     paddingLeft: normalize(12),
   },
 });
