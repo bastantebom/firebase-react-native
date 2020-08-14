@@ -11,7 +11,7 @@ const SplashScreenComponent = () => {
   useEffect(() => {
     Animated.timing(copyrightOpacity, {
       toValue: 1,
-      duration: 2000,
+      duration: 2500,
       useNativeDriver: false,
     }).start();
   }, []);
@@ -28,9 +28,13 @@ const SplashScreenComponent = () => {
           autoPlay
         />
         <Animated.View style={[styles.textContainer, copyrightAnimationStyle]}>
-          <AppText>© Copyright Servbees 2020.</AppText>
-          <AppText>All rights reserved</AppText>
-          <AppText>www.servbees.com</AppText>
+          <AppText textStyle="body2">© Copyright Servbees 2020.</AppText>
+          <AppText textStyle="body2">All rights reserved</AppText>
+          <AppText
+            textStyle="metadata"
+            customstyle={{marginTop: 24, marginBottom: 8}}>
+            www.servbees.com
+          </AppText>
         </Animated.View>
       </SafeAreaView>
     </View>
