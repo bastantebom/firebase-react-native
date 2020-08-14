@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
-import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {Divider} from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
 
-import {AppText, BottomSheetHeader, PaddingView, AppRadio} from '@/components';
-import {normalize, GlobalStyle, Colors} from '@/globals';
-import {ProfileListBlock} from '@/assets/images/icons';
+import {BottomSheetHeader, PaddingView, AppRadio} from '@/components';
+import {normalize, Colors} from '@/globals';
 
-const Gender = () => {
+const Gender = ({setGenderValue, toggleGender}) => {
   const [radioButtons, setRadioButtons] = useState({
     male: false,
     female: false,
@@ -43,6 +41,8 @@ const Gender = () => {
       default:
         break;
     }
+    setGenderValue(label);
+    toggleGender();
   };
 
   return (

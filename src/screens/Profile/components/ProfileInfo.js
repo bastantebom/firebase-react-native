@@ -108,15 +108,15 @@ const ProfileInfo = ({profileData}) => {
         style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16}}>
         <BeeJoinedTime width={normalize(16)} height={normalize(16)} />
         <AppText
-          textStyle="body2"
+          textStyle="button3"
           customStyle={{marginLeft: 4, marginRight: 16}}>
           Joined {joinedDate(date_joined)}
         </AppText>
         <NavigationPinRed width={normalize(16)} height={normalize(16)} />
         <AppText
-          textStyle="body2"
+          textStyle="button3"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {address ? address.city : ''}, {address ? address.province : ''}
+          {address ? address.city : ''}
         </AppText>
       </View>
     </View>

@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 });
 
 // create a component
-const EditAddress = ({back}, route) => {
+const EditAddress = ({back, address}, route) => {
   const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
   const [buttonStyle, setButtonStyle] = useState({
@@ -176,8 +176,8 @@ const EditAddress = ({back}, route) => {
       <MapComponent
         // latitude={latitude}
         // longitude={longitude}
-        latitude={37.78825}
-        longitude={-122.4324}
+        latitude={address.latitude}
+        longitude={address.longitude}
         reCenter={newCoords}
         onRegionChange={(region) => {
           onRegionChange(region);
