@@ -26,7 +26,7 @@ const FloatingAppInput = (props) => {
       }),
 
       Animated.timing(labelPositionX, {
-        toValue: -8,
+        toValue: -7,
         duration: 300,
         useNativeDriver: false,
       }),
@@ -72,7 +72,7 @@ const FloatingAppInput = (props) => {
           useNativeDriver: false,
         }),
         Animated.timing(labelPositionX, {
-          toValue: -8,
+          toValue: -7,
           duration: 300,
           useNativeDriver: false,
         }),
@@ -116,6 +116,7 @@ const FloatingAppInput = (props) => {
         borderWidth: 1,
         borderRadius: 4,
         height: normalize(50),
+        ...props.customStyle,
       }}>
       <Animated.View style={[styles.label, labelStyle]}>
         <AppText textStyle="body1" color={activeColor}>

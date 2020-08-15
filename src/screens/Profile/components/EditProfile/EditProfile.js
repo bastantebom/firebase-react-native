@@ -36,7 +36,7 @@ import moment from 'moment';
 import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 
 // create a component
-const EditProfile = ({toggleEditProfile}) => {
+const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [map, setMap] = useState(false);
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
@@ -172,9 +172,20 @@ const EditProfile = ({toggleEditProfile}) => {
   const updateProfile = () => {
     //alert(dName + ' ' + name);
 
-    const dataToUpdate = {display_name: dName};
+    const dataToUpdate = {
+      display_name: dName,
+      description: desc,
+      full_name: name,
+      username: uName,
+    };
     setUserInfo({...userInfo, ...dataToUpdate});
+    // console.log('cccccccccccccccccccccccc');
+    // console.log(userInfo);
+    // console.log('cccccccccccccccccccccccc');
     alert('Profile is updated');
+
+    toggleEditProfile();
+    toggleMenu();
   };
 
   useEffect(() => {
@@ -274,7 +285,7 @@ const EditProfile = ({toggleEditProfile}) => {
                 }}>
                 You can only change your Display Name twice every 14 days.
               </AppText>
-              <AppInput
+              <FloatingAppInput
                 value={name}
                 label="Full Name"
                 customStyle={{marginBottom: 16}}
@@ -282,7 +293,7 @@ const EditProfile = ({toggleEditProfile}) => {
                   setName(name);
                 }}
               />
-              <AppInput
+              <FloatingAppInput
                 value={uName}
                 label="Username"
                 customStyle={{marginBottom: 4}}

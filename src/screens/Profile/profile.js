@@ -82,7 +82,7 @@ function Profile() {
     {
       key: 'moreinfo',
       title: 'More Info',
-      renderPage: <MoreInfo moreInfo={userInfo.description} />,
+      renderPage: <MoreInfo />,
     },
   ];
 

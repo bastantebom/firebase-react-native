@@ -1,5 +1,5 @@
 //import liraries
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
 
 import {
@@ -9,9 +9,14 @@ import {
   AppButton,
 } from '@/components';
 import {normalize} from '@/globals';
+import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 
 // create a component
 const ChangePassword = ({toggleChangePassword}) => {
+  const [cPass, setCPass] = useState('');
+  const [nPass, setNPass] = useState('');
+  const [fPass, setFPass] = useState('');
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View
@@ -24,17 +29,29 @@ const ChangePassword = ({toggleChangePassword}) => {
           close={toggleChangePassword}
         />
 
-        <AppInput
+        <FloatingAppInput
+          value={cPass}
           label="Current Password"
           customStyle={{marginBottom: normalize(16), marginTop: 40}}
+          onChangeText={(cPass) => {
+            setCPass(cPass);
+          }}
         />
-        <AppInput
+        <FloatingAppInput
+          value={nPass}
           label="New Password"
           customStyle={{marginBottom: normalize(16)}}
+          onChangeText={(nPass) => {
+            setNPass(nPass);
+          }}
         />
-        <AppInput
+        <FloatingAppInput
+          value={fPass}
           label="Confirm Password"
           customStyle={{marginBottom: normalize(16)}}
+          onChangeText={(fPass) => {
+            setFPass(fPass);
+          }}
         />
 
         <View
