@@ -9,9 +9,9 @@ import BottomSheet from 'reanimated-bottom-sheet';
 
 import { Colors } from '@/globals';
 import {Context} from '@/context';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
+const {height, width} = Dimensions.get('window');
 
 let bottomSheetRef = createRef();
 
@@ -92,31 +92,33 @@ export const GuestPost = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <PaddingView paddingSize={3}> 
-        <OnboardingIllustration3/>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <AppText 
-            textStyle="display5" 
-            customStyle={styles.textStyle}
-            color={Colors.primaryMidnightBlue}
-          >
-            Some text here encouraging them to be part of the Servbees community so they could Post
-          </AppText>
-          <AppText textStyle="caption" customStyle={styles.textStyle}>Additional benefits of joining Servbees here </AppText>
-          <AppButton
-            text="Join Now"
-            type="primary"
-            size="sm"
-            customStyle={{ marginTop: 18 }}
-            onPress={() => {
-              clickHandler();
-              setAuthType('signup');
-              bottomSheetRef.current.snapTo(0);
-              // console.log('hasjjhjh');
-            }}
-          />
-        </View>
-      </PaddingView>
+      <ScrollView>
+        <PaddingView paddingSize={3}> 
+          <OnboardingIllustration3 width={width} height={width * .8}/>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <AppText 
+              textStyle="display5" 
+              customStyle={styles.textStyle}
+              color={Colors.primaryMidnightBlue}
+            >
+              Some text here encouraging them to be part of the Servbees community so they could Post
+            </AppText>
+            <AppText textStyle="caption" customStyle={styles.textStyle}>Additional benefits of joining Servbees here </AppText>
+            <AppButton
+              text="Join Now"
+              type="primary"
+              size="sm"
+              customStyle={{ marginTop: 18 }}
+              onPress={() => {
+                clickHandler();
+                setAuthType('signup');
+                bottomSheetRef.current.snapTo(0);
+                // console.log('hasjjhjh');
+              }}
+            />
+          </View>
+        </PaddingView>
+      </ScrollView>
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={['85%', '0%']}
