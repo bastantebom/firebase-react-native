@@ -244,40 +244,7 @@ function Dashboard({navigation}) {
     );
   };
 
-  const hideLocationComponent = () => {
-    // console.log('hide location');
-    setShowLocation(false);
-    setMargin(4);
-    fadeOut();
-  };
-
-  const showLocationComponent = (event) => {
-    setShowLocation(true);
-    setMargin(16);
-    fadeIn();
-  };
-
-  const fadeAnim = useRef(new Animated.Value(34)).current;
-
-  const fadeIn = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 34,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change fadeAnim value to 0 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  useEffect(() => {
+  useEffect(async () => {
     openNotification();
     setIsLoading(true);
     // console.log('USE EFFECT DASHBOARD');
@@ -289,7 +256,7 @@ function Dashboard({navigation}) {
       limit: 5,
     };
 
-    PostService.getPosts(getPostsParams).then((res) => {
+    await PostService.getPosts(getPostsParams).then((res) => {
       // console.log('POSTS');
       // LAST ID TO BE USED FOR PAGINATION
       console.log(res.last_id);
@@ -328,8 +295,6 @@ function Dashboard({navigation}) {
           <Posts
             type="dashboard"
             data={posts}
-            hideLocationComponent={hideLocationComponent}
-            showLocationComponent={showLocationComponent}
             scrollState={scrollState}
             setScrollState={setScrollState}
             isLoading={isLoading}

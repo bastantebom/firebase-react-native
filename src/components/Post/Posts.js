@@ -8,8 +8,6 @@ import {PostService} from '@/services';
 
 const Posts = ({
   data,
-  showLocationComponent,
-  hideLocationComponent,
   scrollState,
   setScrollState,
   type,
@@ -20,18 +18,6 @@ const Posts = ({
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
   );
-
-  const handleOnScroll = (event) => {
-    console.log(event.nativeEvent.contentOffset.y);
-    if (
-      event.nativeEvent.contentOffset.y <= scrollState ||
-      event.nativeEvent.contentOffset.y <= 0
-    ) {
-      showLocationComponent();
-    }
-
-    setScrollState(event.nativeEvent.contentOffset.y);
-  };
 
   const [refresh, setRefresh] = useState(false);
 
@@ -58,9 +44,7 @@ const Posts = ({
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      onMomentumScrollEnd={showLocationComponent}
-      onScrollBeginDrag={hideLocationComponent}
+      keyExtractor={(item) => item.post_id}
       onRefresh={refreshPosts}
       refreshing={refresh}
     />
