@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,11 +6,8 @@ import {
   SafeAreaView,
   Image,
   StyleSheet,
-  Text,
   Dimensions,
-  Platform,
   PermissionsAndroid,
-  TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
@@ -19,9 +16,6 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 import ImagePicker from 'react-native-image-crop-picker';
-import NativeImagePicker from 'react-native-image-picker';
-import CameraRoll from '@react-native-community/cameraroll';
-import CameraRollPicker from 'react-native-camera-roll-picker';
 import Modal from 'react-native-modal';
 
 import {AppText, AppInput, Switch} from '@/components';
@@ -227,7 +221,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('You can access your camera roll');
-        setShowPickerModal(true);
+        // setShowPickerModal(true);
+        togglePickerModal(selected, photoCount)
       } else {
         return null;
       }
@@ -272,9 +267,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   }
 
   const continueUploadPhoto = (selected, photoCount) => {
+    // setSelected([...selected, {selected}]);
     setSelected(selected); 
     setPhotoCount(photoCount);
-    togglePickerModal();
+    togglePickerModal(selected, photoCount);
   }
 
   const captureCamera = (imageUrl) => {
@@ -282,6 +278,18 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setSingleImage(imageUrl)
     console.log('image url outside appcamera', singleImage)
     // togglePickerModal();
+  }
+
+  const cancelCamera = () => {
+    togglePickerModal(selected, photoCount);
+  };
+
+  const continueCamera = (imageUrl, photoCount) => {
+    setSelected([...selected, { imageUrl }]);
+    console.log('imageUrl', imageUrl);
+    console.log('selected array', selected)
+    setPhotoCount(photoCount + 1);
+    togglePickerModal(selected, photoCount);
   }
 
   const uploadTabs = [
@@ -408,7 +416,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
         {/* {imageSource.length === 0 ? ( */}
-        {photoCount === 0 || !singleImage ? (
+        {photoCount === 0 ? (
           <View
             style={{
               height: normalize(114),
@@ -424,7 +432,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }}>
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => {requestPermission()}}>
+              onPress={() => requestPermission()}
+            >
               <View style={{alignSelf: 'center', alignItems: 'center'}}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText textStyle="body2" color={Colors.contentOcean}>
@@ -443,55 +452,14 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               marginBottom: 25,
               // justifyContent: 'center',
             }}>
-            
-            <View>
-              <TouchableOpacity
-                onPress={() => handleRemove(image)}
-                style={{
-                  zIndex: 999,
-                  position: 'absolute',
-                  right: 20,
-                  top: 5,
-                }}>
-                <View
-                  style={{
-                    position: 'absolute',
-                    backgroundColor: 'rgba(0,0,0,.6)',
-                    width: normalize(28),
-                    height: normalize(28),
-                    borderRadius: 50,
-                  }}
-                />
-                <View
-                  style={{left: normalize(3.75), top: normalize(3.5)}}>
-                  <CloseLight
-                    width={normalize(20)}
-                    height={normalize(20)}
-                  />
-                </View>
-              </TouchableOpacity>
-              <Image
-                source={{uri: singleImage}}
-                style={{
-                  width:
-                    photoCount === 1
-                      ? width / 2
-                      : photoCount === 2
-                      ? width / 3.333
-                      : width / 4,
-                  height: normalize(114),
-                  marginRight: 8,
-                  borderRadius: 4,
-                }}
-              />
-            </View>
-
+        
             <ScrollView horizontal>
               {selected.map((image, i) => {
                 return (
                   <View key={i}>
                     <TouchableOpacity
                       onPress={() => handleRemove(image)}
+                      // onPress={() => console.log(image.uri)}
                       style={{
                         zIndex: 999,
                         position: 'absolute',

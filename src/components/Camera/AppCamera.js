@@ -11,10 +11,27 @@ import {
   FolderAdd,
   HeaderBack
 } from '@/assets/images/icons';
-// const {width, height} = Dimensions.get('window');
-  const { height, width } = Dimensions.get('window');
-  const maskRowHeight = Math.round((height - 300) / 20);
-  const maskColWidth = (width - 300) / 2;
+
+const { height, width } = Dimensions.get('window');
+const maskRowHeight = Math.round((height - 300) / 20);
+const maskColWidth = (width - 300) / 2;
+
+const DESIRED_RATIO = "1:1";
+
+
+function OverlayMask() {
+  return (
+    <View style={styles.maskOutter}>
+      <View style={[{ flex: maskRowHeight  }, styles.maskRow, styles.maskFrame]} />
+      <View style={[{ flex: height / 10 }, styles.maskCenter]}>
+        <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+        <View style={styles.maskInner} />
+        <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+      </View>
+      <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
+    </View>
+  )
+}
 
 export const AppCamera = ({ 
   message, 
@@ -24,19 +41,18 @@ export const AppCamera = ({
 }) => {
   
     // const [screen, setScreen] = useState('idPhoto')
-    // const [cameraRatio, setCameraRatio] = useState('')
-  const [imageUrl, setImageUrl] = useState('');
+  const [cameraRatio, setCameraRatio] = useState('')
+  const [ imageUrl, setImageUrl ] = useState('');
   const cameraRef = useRef(null)
-
-  const DESIRED_RATIO = "16:9";
   
   const prepareRatio = async () => {
     if (Platform.OS === 'android' && cameraRef) {
       const ratios = await cameraRef.getSupportedRatiosAsync();
 
-      const ratio = ratios.find((ratio) => ratio === DESIRED_RATIO) || ratios[ratios.length - 1];
+      // const ratio = ratios.find((ratio) => ratio === DESIRED_RATIO) || ratios[ratios.length - 1];
 
-      setCameraRatio(ratio)
+      // setCameraRatio(ratio)
+      console.log(ratios)
     }
   }
 
@@ -44,16 +60,25 @@ export const AppCamera = ({
     if (cameraRef) {
       const options = { 
         quality: 1, 
-        base64: true 
+        base64: true,
+        // width: 1.6,
+        pauseAfterCapture: true,
+        // height: 50
       };
       const data = await cameraRef.current.takePictureAsync(options);
+      
+      cameraRef.current.pausePreview()
+      
       setImageUrl(data.uri);
-      console.log('imageUrl', imageUrl)
-      console.log('data.uri', data.uri)
-      console.log('appcamera', imageUrl)
-      // resumePreview();
+      // console.log('data.uri', data.uri)
+      // console.log('imageUrl', imageUrl)
     }
   };
+
+  const retake = () => {
+    cameraRef.current.resumePreview()
+    // setImageUrl('');
+  }
 
   // const retakePhoto = () => {
   //   // setImageUrl('');
@@ -70,32 +95,30 @@ export const AppCamera = ({
     // console.log(cameraRatio)
   }, []);
 
-  function OverlayMask() {
-    return (
-      <View style={styles.maskOutter}>
-        <View style={[{ flex: maskRowHeight  }, styles.maskRow, styles.maskFrame]} />
-        <View style={[{ flex: height / 10 }, styles.maskCenter]}>
-          <View style={[{ width: maskColWidth }, styles.maskFrame]} />
-          <View style={styles.maskInner} />
-          <View style={[{ width: maskColWidth }, styles.maskFrame]} />
-        </View>
-        <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
-      </View>
-    )
-  }
-
   return (
     <View style={styles.container}>
       <RNCamera
         ref={cameraRef}
-        style={styles.preview}
+        style={{ 
+          flexDirection: 'column',
+          alignItems: 'center',
+          // width: dimen.value_100wp,
+          height: height / 2,
+          overflow: 'hidden'
+          // marginTop: 250
+         }}
         type={'front'}
         captureAudio={false}
-        ratio={"1:1"}
+        // ratio={cameraRatio}
+        // onCameraReady={prepareRatio}
       >
         { withMask &&  <OverlayMask/> }
+        {/* { imageUrl ?
+          <Image source={{ uri: imageUrl }} style={styles.preview} />
+          : null
+        } */}
       </RNCamera>
-      <View style={{ justifyContent: 'space-between', alignItems: 'center', height: height * .35, paddingVertical: 25, alignContent: 'center', alignSelf: 'center' }}>
+      <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 25 }}>
         <View style={{ width: width }}>
         <AppText 
           textStyle="body1" 
@@ -112,14 +135,22 @@ export const AppCamera = ({
         </AppText>
         </View>
         <TouchableOpacity onPress={() => {
-          takePicture()
+          {takePicture(),
+            captureImage(imageUrl)
+            // console.log(imageUrl)
+          }
           // console.log('appcamera', imageUrl)
-          captureImage(imageUrl)
+          // captureImage(imageUrl)
           // console.log('captureImage');
           // () => captureImage()
           }} style={styles.capture}>
           <View style={styles.captureButton} />
         </TouchableOpacity>
+        { imageUrl ?
+          <TouchableOpacity onPress={retake}>
+            <AppText textStyle="body1" customStyle={{ marginTop: 20 }}>Retake</AppText>
+          </TouchableOpacity> : null
+        }
       </View>
     </View>
   )
@@ -128,6 +159,7 @@ export const AppCamera = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // height: 500
     // flexDirection: 'column',
     // backgroundColor: 'pink',
   },
@@ -136,22 +168,23 @@ const styles = StyleSheet.create({
     // opacity: .5,
     // position: 'relative',
     // zIndex: -2
-    // height: 500,
+    // height: height/5,
+    // paddingTop: 150
     // justifyContent: 'flex-end',
     // alignItems: 'center',
   },
   capture: {
     // position: 'relative',
     // zIndex: 2,
-    flex: 0,
+    // flex: 0,
     backgroundColor: Colors.primaryYellow,
     borderRadius: 50,
     width: normalize(75),
     height: normalize(75),
 
-    // padding: 15,
-    // paddingHorizontal: 20,
-    // alignSelf: 'center',
+    padding: 15,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
     marginBottom: 15,
   },
   captureButton: {
@@ -160,8 +193,8 @@ const styles = StyleSheet.create({
     width: normalize(50),
     height: normalize(50),
     position: 'absolute',
-    top: 15,
-    left: 15,
+    top: normalize(12.5),
+    left: normalize(12.5),
   },
   maskOutter: {
     position: 'absolute',
