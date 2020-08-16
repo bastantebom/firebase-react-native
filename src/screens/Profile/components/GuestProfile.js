@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, SafeAreaView, StyleSheet } from 'react-native';
+import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import { AppText, AppButton, PaddingView, } from '@/components';
 import { OnboardingIllustration4 } from '@/assets/images';
 import { Colors } from '@/globals';
+
+const {width, height} = Dimensions.get('window');
 
 export const GuestProfile = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <PaddingView paddingSize={3}> 
-        <OnboardingIllustration4/>
+        <OnboardingIllustration4 width={width} height={width * .8}/>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <AppText 
             textStyle="display5" 

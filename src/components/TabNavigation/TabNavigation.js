@@ -84,7 +84,7 @@ const TabNavigation = ({routesList, bottomTab}) => {
 const bottomStyle = StyleSheet.create({
   bottomTabStyle: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 0,
     left: 0,
   }
 })

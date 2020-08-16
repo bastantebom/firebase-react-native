@@ -9,6 +9,7 @@ import {
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
+import Swiper from 'react-native-swiper'
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 
@@ -24,6 +25,7 @@ import {
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
+import { ImageModal } from './ImageModal';
 
 const SinglePostView = (props) => {
   const navigation = useNavigation();
@@ -31,6 +33,7 @@ const SinglePostView = (props) => {
   const [ellipsisState, setEllipsisState] = useState(false);
 
   const [editPost, showEditPost] = useState(false);
+  const [postImageModal, setPostImageModal] = useState(false);
 
   const toggleEditPost = () => {
     toggleEllipsisState();
@@ -46,6 +49,10 @@ const SinglePostView = (props) => {
   const toggleNotification = () => {
     setShowNotification(!showNotification);
   };
+
+  const togglePostImageModal = () => {
+    setPostImageModal(!postImageModal);
+  }
 
   useEffect(() => {
     setShowNotification(
@@ -95,6 +102,25 @@ const SinglePostView = (props) => {
     display_name: display_name,
   };
 
+  const dummyPostImage = [
+    {
+      key: 0,
+      uri: 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
+    },
+    {
+      key: 1,
+      uri: 'https://i.insider.com/55fc68f7bd86ef11008bb735',
+    },
+    {
+      key: 2,
+      uri: 'https://nypost.com/wp-content/uploads/sites/2/2019/02/in-n-out_french_fries-02.jpg?quality=90&strip=all&w=1200',
+    },
+    {
+      key: 3,
+      uri: 'https://i.ytimg.com/vi/fD9xj7vKlns/maxresdefault.jpg',
+    }
+  ]
+
   const CustomNotification = () => {
     if (showNotification)
       return (
@@ -136,13 +162,30 @@ const SinglePostView = (props) => {
     <>
       <View style={{flex: 1}}>
         <View style={styles.postImageContainer}>
-          <Image
+          {/* <Image
             style={GlobalStyle.image}
             source={{
               uri:
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
-          />
+          /> */}
+          <Swiper
+            activeDotColor={Colors.primaryYellow}
+            dotColor={Colors.neutralsIron}
+            dotStyle={{ marginRight: 9 }}
+            activeDotStyle={{ marginRight: 9 }}
+          >
+            {dummyPostImage.map((item) => {
+              return (
+                <TouchableWithoutFeedback key={item.id} onPress={togglePostImageModal}>
+                  <Image
+                    style={GlobalStyle.image}
+                    source={{ uri: item.uri }}
+                  />
+                </TouchableWithoutFeedback>
+              )
+            })}
+          </Swiper>
         </View>
         <View style={styles.postInfoContainer}>
           <CustomNotification />
@@ -230,6 +273,18 @@ const SinglePostView = (props) => {
           card={cardMap(post_type)}
           togglePostModal={() => showEditPost(false)}
         />
+      </Modal>
+      <Modal
+        isVisible={postImageModal}
+        animationIn="bounceIn"
+        animationOut="bounceOut"
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <ImageModal close={togglePostImageModal} data={dummyPostImage} />
       </Modal>
     </>
   );
