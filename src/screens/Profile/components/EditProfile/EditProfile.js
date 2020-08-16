@@ -15,7 +15,7 @@ import {
   ScreenHeaderTitle,
   PaddingView,
   AppButton,
-  AppInput,
+  FloatingAppInput,
   AppText,
   ProfileImageUpload,
 } from '@/components';
@@ -33,7 +33,6 @@ import {UserContext} from '@/context/UserContext';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
-import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 
 // create a component
 const EditProfile = ({toggleEditProfile, toggleMenu}) => {

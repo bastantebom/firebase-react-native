@@ -10,8 +10,20 @@ const getUser = async (payload) => {
   });
 };
 
+const updateUser = (payload, UID) => {
+  return BaseAPI({
+    url: 'user/update/' + UID,
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const ProfileInfoService = {
   getUser,
+  updateUser,
 };
 
 export default ProfileInfoService;
