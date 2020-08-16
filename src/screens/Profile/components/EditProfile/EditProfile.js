@@ -45,6 +45,13 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const {userInfo, userDataAvailable, setUserInfo} = useContext(UserContext);
   const [buttonStyle, setButtonStyle] = useState({});
   const [buttonDisable, setButtonDisable] = useState(false);
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
+    longitude: 0,
+    latitude: 0,
+  });
   //const [upatedInfo, setUpdate]
 
   const {
@@ -52,9 +59,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     full_name,
     username,
     description,
-    address_name,
-    address_details,
-    address_note,
+    //address_name,
+    //address_details,
+    //address_note,
     address,
     email,
     secondary_email,
@@ -70,10 +77,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [name, setName] = useState(full_name);
   const [uName, setUName] = useState(username);
   const [desc, setDesc] = useState(description);
-  const [addName, setAddName] = useState(address_name);
+  const [addName, setAddName] = useState(address.name);
   const [stringAddress, setStringAddress] = useState();
-  const [addDet, setAddDet] = useState(address_details);
-  const [addNote, setAddNote] = useState(address_note);
+  const [addDet, setAddDet] = useState(address.details);
+  const [addNote, setAddNote] = useState(address.note);
   const [em, setEm] = useState(email);
   const [sEm, setSEm] = useState(secondary_email);
   const [mobile, setMobile] = useState(mobile_number);
@@ -101,14 +108,37 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     }
   };
 
-  const getStringAddress = () => {
+  const getStringAddress = (lat, lng) => {
     Geocoder.init(Config.apiKey);
-    Geocoder.from(
-      JSON.stringify(address.latitude),
-      JSON.stringify(address.longitude),
-    )
+    Geocoder.from(lat, lng)
       .then((json) => {
         setStringAddress(json.results[1].formatted_address);
+        const arrayToExtract =
+          json.results.length == 12
+            ? 7
+            : json.results.length == 11
+            ? 6
+            : json.results.length == 10
+            ? 6
+            : json.results.length == 9
+            ? 4
+            : json.results.length == 8
+            ? 3
+            : json.results.length < 8
+            ? 2
+            : 2;
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: lat,
+            longitude: lng,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country: 'Philippines',
+          },
+          //setChangeMapAddress(addressComponent);
+        });
       })
       .catch((error) => console.warn(error));
   };
@@ -169,30 +199,46 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     setButtonDisable(j);
   };
 
+  const prepareAddressUpdate = (fullAddress) => {
+    getStringAddress(fullAddress.latitude, fullAddress.longitude);
+  };
+
   const updateProfile = () => {
     //alert(dName + ' ' + name);
+
+    const addressToUpdate = {
+      details: addDet,
+      note: addNote,
+      name: addName,
+      ...addressComponents,
+    };
 
     const dataToUpdate = {
       display_name: dName,
       description: desc,
       full_name: name,
       username: uName,
+      address: {...userInfo.address, ...addressToUpdate},
+      birth_date: bDate,
+      secondary_email: sEm,
+      mobile_number: mobile,
+      gender: g,
     };
+    //console.log(dataToUpdate.address);
     setUserInfo({...userInfo, ...dataToUpdate});
-    // console.log('cccccccccccccccccccccccc');
-    // console.log(userInfo);
-    // console.log('cccccccccccccccccccccccc');
-    alert('Profile is updated');
+    console.log(userInfo);
+    //alert('Profile is updated');
 
-    toggleEditProfile();
-    toggleMenu();
+    //toggleEditProfile();
+    //toggleMenu();
   };
 
   useEffect(() => {
     // exit early when we reach 0
     if (userInfo) {
-      getStringAddress();
+      getStringAddress(address.latitude, address.longitude);
       setDateFromString();
+      //alert(address_name);
     }
   }, [userInfo]);
 
@@ -200,7 +246,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     <>
       <SafeAreaView style={{flex: 1}}>
         <PaddingView paddingSize={3}>
-          <ScreenHeaderTitle title="Edit Profile" close={toggleEditProfile} />
+          <ScreenHeaderTitle
+            iconSize={16}
+            title="Edit Profile"
+            close={toggleEditProfile}
+          />
         </PaddingView>
 
         <KeyboardAwareScrollView
@@ -330,7 +380,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                 customStyle={{marginBottom: normalize(8)}}>
                 Address
               </AppText>
-              <AppInput
+              <FloatingAppInput
                 value={addName}
                 label="Address Name"
                 customStyle={{marginBottom: normalize(16)}}
@@ -340,7 +390,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
-                  <AppInput
+                  <FloatingAppInput
                     value={stringAddress}
                     label="Address"
                     customStyle={{marginBottom: normalize(16)}}
@@ -357,7 +407,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                   </View>
                 </TouchableOpacity>
               </View>
-              <AppInput
+              <FloatingAppInput
                 value={addDet}
                 label="Address Details"
                 customStyle={{marginBottom: normalize(16)}}
@@ -365,7 +415,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                   setAddDet(addDet);
                 }}
               />
-              <AppInput
+              <FloatingAppInput
                 value={addNote}
                 label="Notes"
                 customStyle={{marginBottom: normalize(16)}}
@@ -390,26 +440,29 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                 customStyle={{marginBottom: normalize(8)}}>
                 Personal Information
               </AppText>
-              <AppInput
+              <FloatingAppInput
                 value={em}
                 label="Email"
+                keyboardType="email-address"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(em) => {
                   emailChangeHandler(em);
                   //setEm(em);
                 }}
               />
-              <AppInput
+              <FloatingAppInput
                 value={sEm}
                 label="Secondary Email"
+                keyboardType="email-address"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(sEm) => {
                   setSEm(sEm);
                 }}
               />
-              <AppInput
+              <FloatingAppInput
                 value={mobile}
                 label="Mobile Number"
+                keyboardType="phone-pad"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(mobile) => {
                   mobileChangeHandler(mobile);
@@ -417,7 +470,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>
-                  <AppInput
+                  <FloatingAppInput
                     value={bDate}
                     label="Birthday"
                     customStyle={{marginBottom: normalize(16)}}
@@ -444,7 +497,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               </View>
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={toggleGender}>
-                  <AppInput
+                  <FloatingAppInput
                     value={g}
                     label="Gender"
                     onFocus={toggleGender}
@@ -492,15 +545,20 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
           animationInTiming={750}
           animationOut="slideOutRight"
           animationOutTiming={750}
-          onSwipeComplete={toggleMap}
-          swipeDirection="right"
+          swipeDirection={undefined}
           onBackButtonPress={() => setMap(false)}
           style={{
             margin: 0,
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          <EditAddress address={userInfo.address} back={() => setMap(false)} />
+          <EditAddress
+            address={userInfo.address}
+            back={() => setMap(false)}
+            changeFromMapHandler={(fullAddress) =>
+              prepareAddressUpdate(fullAddress)
+            }
+          />
         </Modal>
 
         <Modal
