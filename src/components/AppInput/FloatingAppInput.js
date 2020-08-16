@@ -7,122 +7,84 @@ import AppText from '../AppText/AppText';
 // create a component
 const FloatingAppInput = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const [labelPosition] = useState(
-    new Animated.Value(props.value === '' ? 0 : 1),
-  );
-  const [labelPositionX] = useState(
-    new Animated.Value(props.value === '' ? 0 : 1),
-  );
-  const [labelScale] = useState(new Animated.Value(props.value === '' ? 1 : 0));
+  const [labelPosition] = useState(new Animated.Value(0));
+  //const [font]
 
   const onFocus = () => {
-    //alert('Focus');
     setIsActive(true);
-    Animated.parallel([
-      Animated.timing(labelPosition, {
-        toValue: normalize(-10),
-        duration: 300,
-        useNativeDriver: false,
-      }),
-
-      Animated.timing(labelPositionX, {
-        toValue: normalize(-8),
-        duration: 300,
-        useNativeDriver: false,
-      }),
-
-      Animated.timing(labelScale, {
-        toValue: 0.75,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-    ]).start();
+    animateFocus();
   };
 
   const onBlur = () => {
-    //alert('Blur');
     setIsActive(false);
-    if (props.value === '') {
-      Animated.parallel([
-        Animated.timing(labelPosition, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: false,
-        }),
-        Animated.timing(labelPositionX, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: false,
-        }),
-        Animated.timing(labelScale, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: false,
-        }),
-      ]).start();
-    }
+    animateBlur();
   };
 
   useEffect(() => {
-    if (props.value !== '') {
-      Animated.parallel([
-        Animated.timing(labelPosition, {
-          toValue: normalize(-10),
-          duration: 300,
-          useNativeDriver: false,
-        }),
-        Animated.timing(labelPositionX, {
-          toValue: normalize(-8),
-          duration: 300,
-          useNativeDriver: false,
-        }),
-
-        Animated.timing(labelScale, {
-          toValue: 0.75,
-          duration: 300,
-          useNativeDriver: false,
-        }),
-      ]).start();
+    //console.log(props.value);
+    if (props.value !== '' && props.value !== undefined) {
+      animateFocus();
     }
   }, [props.value]);
+
+  const animateFocus = () => {
+    Animated.timing(labelPosition, {
+      toValue: normalize(-10),
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const animateBlur = () => {
+    if (props.value === '' || props.value === undefined)
+      Animated.timing(labelPosition, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+  };
 
   let labelStyle = {
     transform: [
       {
         translateY: labelPosition,
       },
-      {
-        translateX: labelPositionX,
-      },
-      {
-        scale: labelScale,
-      },
     ],
   };
 
-  const activeColor = isActive ? Colors.contentOcean : Colors.profileLink;
-  //const paddingLeftLabel = isActive ? normalize(5) : normalize(10);
+  const activeBorderColor = isActive ? Colors.contentOcean : Colors.neutralGray;
+  const activeTextColor = isActive
+    ? Colors.contentOcean
+    : Colors.contentPlaceholder;
 
-  //   const labelPadding = {
-  //     paddingLeft: paddingLeftLabel,
-  //   };
+  const fontSize =
+    !isActive && (props.value === undefined || props.value === '')
+      ? normalize(16)
+      : normalize(12);
+
+  /** VALIDATION HANDLER **/
+
+  /** VALIDATION HANDLER **/
 
   return (
     <View
       style={{
         paddingVertical: normalize(4),
         paddingHorizontal: normalize(16),
-        borderColor: activeColor,
+        borderColor: activeBorderColor,
         borderWidth: 1,
         borderRadius: 4,
         height: normalize(50),
         ...props.customStyle,
       }}>
-      <Animated.View style={[styles.label, labelStyle]}>
-        <AppText textStyle="body1" color={activeColor}>
+      <Animated.Text style={[styles.label, labelStyle]}>
+        <AppText
+          textStyle="body1"
+          color={activeTextColor}
+          customStyle={{fontSize: fontSize}}>
           {props.label}
         </AppText>
-      </Animated.View>
+      </Animated.Text>
       <TextInput
         {...props}
         style={styles.floatingInput}
@@ -143,15 +105,12 @@ const styles = StyleSheet.create({
     fontSize: normalize(16),
     letterSpacing: 0.5,
     paddingVertical: normalize(4),
-    //paddingLeft: normalize(1),
   },
 
   label: {
     position: 'absolute',
-    //left: 0,
-    paddingTop: normalize(14),
-    //left: normalize(10),
-    paddingLeft: normalize(12),
+    paddingTop: normalize(12),
+    paddingLeft: normalize(16),
   },
 });
 

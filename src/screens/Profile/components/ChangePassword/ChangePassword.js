@@ -35,17 +35,19 @@ const ChangePassword = ({toggleChangePassword}) => {
           onChangeText={(cPass) => {
             setCPass(cPass);
           }}
+          customStyle={{marginTop: normalize(35), marginBottom: normalize(16)}}
         />
         <FloatingAppInput
           value={nPass}
-          label="Current Password"
+          label="New Password"
           onChangeText={(nPass) => {
             setNPass(nPass);
           }}
+          customStyle={{marginBottom: normalize(16)}}
         />
         <FloatingAppInput
           value={fPass}
-          label="Confirm Password"
+          label="Confirm New Password"
           onChangeText={(fPass) => {
             setFPass(fPass);
           }}
