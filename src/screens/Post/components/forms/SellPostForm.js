@@ -254,9 +254,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   }
 
   const continueUploadPhoto = (selected, photoCount) => {
+    // setSelected([...selected, {selected}]);
     setSelected(selected); 
     setPhotoCount(photoCount);
-    togglePickerModal();
+    togglePickerModal(selected, photoCount);
   }
 
   const captureCamera = (imageUrl) => {
@@ -416,7 +417,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
         {/* {imageSource.length === 0 ? ( */}
-        {photoCount === 0 || !singleImage ? (
+        {photoCount === 0 ? (
           <View
             style={{
               height: normalize(114),
