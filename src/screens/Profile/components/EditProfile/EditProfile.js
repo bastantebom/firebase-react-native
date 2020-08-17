@@ -18,6 +18,7 @@ import {
   FloatingAppInput,
   AppText,
   ProfileImageUpload,
+  TransitionIndicator,
 } from '@/components';
 
 import storage from '@react-native-firebase/storage';
@@ -35,6 +36,7 @@ import {UserContext} from '@/context/UserContext';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
 // create a component
 const EditProfile = ({toggleEditProfile, toggleMenu}) => {
@@ -57,6 +59,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [imageSource, setImageSource] = useState('');
   const [imgUploading, setImgUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
+  const [IS_UPDATING, setIS_UPDATING] = useState(false);
 
   const {
     profile_photo,
@@ -71,6 +74,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     birth_date,
     gender,
   } = userInfo;
+
+  const {uid} = user;
 
   const isEmailRequired = email ? true : false;
   const isMobileRequired = mobile_number ? true : false;
@@ -207,7 +212,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   };
 
   const uploadImageHandler = async () => {
-    setButtonState(true);
+    //setButtonState(true);
     const {uri} = imageSource;
     const filename = uri.substring(uri.lastIndexOf('/') + 1);
     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
@@ -219,46 +224,55 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
     await fileRef.putFile(uploadUri);
     try {
-      setUserInfo({
-        ...userInfo,
-        profile_photo: await fileRef.getDownloadURL(),
-      });
-      setButtonState(false);
+      setPPhoto(await fileRef.getDownloadURL());
+      //setButtonState(false);
+      setImageSource(null);
+      return true;
     } catch (e) {
-      setButtonState(false);
-      console.error(e);
+      return false;
     }
-    setImageSource(null);
   };
 
   const updateProfile = () => {
-    //alert(dName + ' ' + name);
-    uploadImageHandler();
-    const addressToUpdate = {
-      details: addDet,
-      note: addNote,
-      name: addName,
-      ...addressComponents,
-    };
+    setIS_UPDATING(true);
+    if (uploadImageHandler()) {
+      const addressToUpdate = {
+        details: addDet,
+        note: addNote,
+        name: addName,
+        ...addressComponents,
+      };
 
-    const dataToUpdate = {
-      display_name: dName,
-      description: desc,
-      full_name: name,
-      username: uName,
-      address: {...userInfo.address, ...addressToUpdate},
-      birth_date: bDate,
-      secondary_email: sEm,
-      mobile_number: mobile,
-      gender: g,
-    };
-    //console.log(dataToUpdate.address);
+      const dataToUpdate = {
+        profile_photo: encodeURI(pPhoto),
+        display_name: dName,
+        description: desc,
+        full_name: name,
+        username: uName,
+        address: {...userInfo.address, ...addressToUpdate},
+        birth_date: bDate,
+        secondary_email: sEm,
+        mobile_number: mobile,
+        gender: g,
+      };
+
+      console.log(dataToUpdate);
+      /*ProfileInfoService.updateUser(dataToUpdate, uid)
+        .then((response) => {
+          setIS_UPDATING(false);
+          console.log(response);
+        })
+        .catch((error) => {
+          setIS_UPDATING(false);
+          console.log('With Error in the API Update Profile ' + error);
+        });*/
+    }
     //setUserInfo({...userInfo, ...dataToUpdate});
     //console.log(userInfo);
     //alert('Profile is updated');
 
-    toggleEditProfile();
-    toggleMenu();
+    //toggleEditProfile();
+    //toggleMenu();
   };
 
   useEffect(() => {
@@ -273,6 +287,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
+        <TransitionIndicator loading={IS_UPDATING} />
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
             iconSize={16}

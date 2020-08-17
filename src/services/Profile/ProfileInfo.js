@@ -12,7 +12,7 @@ const getUser = async (payload) => {
 
 const updateUser = (payload, UID) => {
   return BaseAPI({
-    url: 'user/update/' + UID,
+    url: `user/update/${UID}`,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
