@@ -70,20 +70,18 @@ const TabNavigation = ({routesList, bottomTab}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={[styles.container, {paddingBottom: bottomTab && 65}]}>
-        <View
-          style={[
-            styles.navigationContainer,
-            bottomTab && bottomStyle.bottomTabStyle,
-          ]}>
-          <RenderRoutes />
-        </View>
-        <View style={{flex: 1}}>
-          <RenderContent />
-        </View>
+    <View style={[styles.container, {paddingBottom: bottomTab && 65}]}>
+      <View
+        style={[
+          styles.navigationContainer,
+          bottomTab && bottomStyle.bottomTabStyle,
+        ]}>
+        <RenderRoutes />
       </View>
-    </SafeAreaView>
+      <View style={{flex: 1}}>
+        <RenderContent />
+      </View>
+    </View>
   );
 };
 
@@ -99,8 +97,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    // borderTopColor: Colors.neutralsZircon,
-    // borderTopWidth: normalize(4),
+    borderTopColor: Colors.neutralsZircon,
+    borderTopWidth: normalize(4),
   },
   navigationContainer: {
     height: normalize(50),
