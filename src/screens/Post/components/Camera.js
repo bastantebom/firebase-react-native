@@ -12,9 +12,9 @@ export const PostCamera = ({
   const [imageUrl, setImageUrl] = useState('');
   const [photoCount, setPhotoCount] = useState(0);
 
-  const continueUploadPhoto = (imageUrl) => {
+  const captureImage = (imageUrl) => {
     setImageUrl(imageUrl)
-    setPhotoCount(photoCount + 1)
+    setPhotoCount(1)
     console.log('appcamera',  imageUrl);
     console.log('appcamera',  photoCount);
   }
@@ -54,7 +54,7 @@ export const PostCamera = ({
         </TouchableOpacity>
       </View>
       <AppCamera
-        captureImage={continueUploadPhoto}
+        captureImage={captureImage}
       />
     </>
   )

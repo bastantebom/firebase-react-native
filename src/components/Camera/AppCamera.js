@@ -1,15 +1,18 @@
-import React, { PureComponent, useState, useEffect, useRef } from 'react';
-import { AppRegistry, StyleSheet, Text, TouchableOpacity, View, Platform, Dimensions, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  StyleSheet, 
+  TouchableOpacity, 
+  View, 
+  Platform, 
+  Dimensions, 
+  Image 
+} from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { normalize, Colors } from '@/globals';
-import { AppText, AppButton, PaddingView } from '@/components';
-// import Permissions from 'react-native-permissions';
+import { AppText } from '@/components';
 import {
-  HeaderBackGray,
-  ArrowRight,
-  Lock,
-  FolderAdd,
-  HeaderBack
+  Flash,
+  Flip
 } from '@/assets/images/icons';
 
 const { height, width } = Dimensions.get('window');
@@ -17,7 +20,6 @@ const maskRowHeight = Math.round((height - 300) / 20);
 const maskColWidth = (width - 300) / 2;
 
 const DESIRED_RATIO = "1:1";
-
 
 function OverlayMask() {
   return (
@@ -40,8 +42,9 @@ export const AppCamera = ({
   captureImage
 }) => {
   
-    // const [screen, setScreen] = useState('idPhoto')
   const [cameraRatio, setCameraRatio] = useState('')
+  const [flash, setFlash] = useState('off')
+  const [cameraType, setCameraType] = useState('front')
   const [ imageUrl, setImageUrl ] = useState('');
   const cameraRef = useRef(null)
   
@@ -53,6 +56,24 @@ export const AppCamera = ({
 
       // setCameraRatio(ratio)
       console.log(ratios)
+    }
+  }
+
+  const toggleCameraType = () => {
+    if(cameraType === 'front') {
+      setCameraType('back')
+    } else {
+      setCameraType('front')
+    }
+  }
+
+  const toggleFlash = () => {
+    if(flash === 'off') {
+      setFlash('on')
+    } else if (flash === 'on') {
+      setFlash('torch')
+    } else {
+      setFlash('off')
     }
   }
 
@@ -78,6 +99,7 @@ export const AppCamera = ({
   const retake = () => {
     cameraRef.current.resumePreview()
     // setImageUrl('');
+    // console.log('retake', imageUrl )
   }
 
   // const retakePhoto = () => {
@@ -102,21 +124,29 @@ export const AppCamera = ({
         style={{ 
           flexDirection: 'column',
           alignItems: 'center',
-          // width: dimen.value_100wp,
           height: height / 2,
           overflow: 'hidden'
-          // marginTop: 250
          }}
         type={'front'}
         captureAudio={false}
+        flashMode={flash}
+        type={cameraType}
         // ratio={cameraRatio}
         // onCameraReady={prepareRatio}
       >
         { withMask &&  <OverlayMask/> }
-        {/* { imageUrl ?
-          <Image source={{ uri: imageUrl }} style={styles.preview} />
-          : null
-        } */}
+        <View style={{ justifyContent: 'space-between', width: '100%', flexDirection: 'row',  position: 'absolute', bottom: 25, paddingHorizontal: 25}}>
+          <TouchableOpacity
+            onPress={() => toggleCameraType()}
+          >
+            <Flip width={normalize(25)} height={normalize(25)}/>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => toggleFlash()}
+          >
+            <Flash width={normalize(25)} height={normalize(25)} />
+          </TouchableOpacity>
+        </View>
       </RNCamera>
       <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 25 }}>
         <View style={{ width: width }}>
@@ -146,7 +176,7 @@ export const AppCamera = ({
           }} style={styles.capture}>
           <View style={styles.captureButton} />
         </TouchableOpacity>
-        { imageUrl ?
+        { imageUrl !== '' ?
           <TouchableOpacity onPress={retake}>
             <AppText textStyle="body1" customStyle={{ marginTop: 20 }}>Retake</AppText>
           </TouchableOpacity> : null

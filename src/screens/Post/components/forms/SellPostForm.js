@@ -96,22 +96,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     }
   };
 
-  const getSelectedImages = (images) => {
-    console.log('FUNCTION PARAMS');
-    console.log(images);
-
-    var num = images.length;
-    setSelected(images);
-
-    setPhotoCount(num);
-    // console.log('photoCount', photoCount)
-    setCurrentImage(num > 1 ? images[num-1].uri: '');
-  };
-
-  useEffect(() => {
-    // console.log(uploadTabs)
-    console.log('photoCount outside Library', photoCount);
-  }, [photoCount]);
+  // useEffect(() => {
+  //   // console.log(uploadTabs)
+  //   console.log('photoCount outside Library', photoCount);
+  // }, [photoCount]);
 
   const cancelUploadPhoto = () => {
     setSelected([...selected, {}]);
@@ -141,9 +129,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const continueCamera = (imageUrl, photoCount) => {
     setSelected([...selected, { imageUrl }]);
-    console.log('imageUrl', imageUrl);
-    console.log('selected array', selected)
-    setPhotoCount(photoCount + 1);
+    // console.log('imageUrl', imageUrl);
+    // console.log('photoCount', photoCount)
+    // console.log('selected array', selected)
+    // setPhotoCount(photoCount + 1);
     togglePickerModal(selected, photoCount);
   }
 
