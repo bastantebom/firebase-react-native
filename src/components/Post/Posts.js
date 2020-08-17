@@ -6,13 +6,7 @@ import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostService} from '@/services';
 
-const Posts = ({
-  data,
-  scrollState,
-  setScrollState,
-  type,
-  isLoading,
-}) => {
+const Posts = ({data, scrollState, setScrollState, type, isLoading}) => {
   const {user} = useContext(UserContext);
   const {setPosts, posts} = useContext(Context);
   const renderItem = ({item}) => (
@@ -20,6 +14,7 @@ const Posts = ({
   );
 
   const [refresh, setRefresh] = useState(false);
+  const [lastPID, setLastPID] = useState('');
 
   const refreshPosts = async () => {
     setRefresh(true);
@@ -27,23 +22,48 @@ const Posts = ({
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
+      // last_pid: lastPID,
     };
 
-    console.log("Before Await")
+    // console.log("Before Await")
 
     await PostService.getPosts(getPostsParams)
       .then((res) => {
-        console.log("Refreshed")
+        console.log('Refreshed');
+        setLastPID(res.last_id);
         setPosts(res.data);
         setRefresh(false);
       })
       .catch((err) => {
-        console.log("Error Refreshing")
+        console.log('Error Refreshing');
         console.log(err);
         setRefresh(false);
       });
+  };
 
-      console.log("After Await")
+  const getMorePost = async () => {
+    let getPostsParams = {
+      uid: user.uid,
+      limit: 5,
+      last_pid: lastPID,
+    };
+
+    // console.log("Before Await")
+
+    await PostService.getPosts(getPostsParams)
+      .then((res) => {
+        setLastPID(res.last_id);
+        setPosts([
+          ...posts,
+          ...res.data,
+        ]);
+        setRefresh(false);
+      })
+      .catch((err) => {
+        console.log('Error Refreshing');
+        console.log(err);
+        setRefresh(false);
+      });
   };
 
   return (
@@ -53,6 +73,8 @@ const Posts = ({
       keyExtractor={(item) => item.post_id}
       onRefresh={refreshPosts}
       refreshing={refresh}
+      onEndReached={getMorePost}
+      onEndReachedThreshold={0.1}
     />
   );
 };

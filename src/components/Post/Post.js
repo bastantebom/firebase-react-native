@@ -95,9 +95,10 @@ const Post = ({data, type, isLoading}) => {
                   style={GlobalStyle.image}
                   source={{
                     uri:
-                      images.length > 0
-                        ? images[0]
-                        : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                      // images.length > 0
+                      //   ? images[0]
+                        // :
+                         'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
                   }}
                 />
               </View>
@@ -137,23 +138,24 @@ const Post = ({data, type, isLoading}) => {
                   </AppText>
                 </View> */}
               </View>
-              {delivery_method.pickup && delivery_method.delivery ? (
+              {/* {delivery_method.pickup && delivery_method.delivery ? ( */}
                 <View style={GlobalStyle.rowCenter}>
                   <TransportationBox width={16} height={16} />
 
                   <AppText
                     textStyle="eyebrow2"
                     customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
-                    {delivery_method.pickup && delivery_method.delivery
+                    {/* {delivery_method.pickup && delivery_method.delivery
                       ? 'Pickup & Delivery'
                       : delivery_method.delivery
                       ? 'Delivery'
                       : delivery_method.pickup
                       ? 'Pickup'
-                      : 'Not set'}
+                      : 'Not set'} */}
+                      Delivery
                   </AppText>
                 </View>
-              ) : null}
+              {/* ) : null} */}
             </View>
           </View>
         </PaddingView>
