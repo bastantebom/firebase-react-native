@@ -11,8 +11,6 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, ScrollView, SafeAreaView, Image, StyleSheet, Text, Dimensions} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
@@ -78,23 +76,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       });
   };
 
-  const {
-    title,
-    setTitle,
-    price,
-    setPrice,
-    description,
-    setDescription,
-    pickupState,
-    setPickupState,
-    deliveryState,
-    setDeliveryState,
-    storeLocation,
-    setStoreLocation,
-    paymentMethod,
-    setPaymentMethod,
-  } = formState;
-  
+  const togglePickerModal = (selected, photoCount) => {
+    setShowPickerModal(!showPickerModal);
+    setSelected(selected);
+    setPhotoCount(photoCount);
+  };
+
   const handleRemove = (image) => {
     const valueToRemove = image.uri;
     const newList = selected.filter((image) => image.uri !== valueToRemove);
@@ -153,39 +140,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       }
   };
 
-  const getSelectedImages = (images) => {
-    console.log('FUNCTION PARAMS');
-    console.log(images);
-
-    setPhotoCount(num)
-    console.log('photoCount', photoCount)
-    // console.log('num', num)
-
-    setPhotoCount(num);
-    // console.log('photoCount', photoCount)
-    setCurrentImage(num > 1 ? images[num - 1].uri : '');
-  };
-
-    // console.log(current.uri);
-
-    // console.log(selected);
-    // image.node.image.uri
-  }
-
   const cancelUploadPhoto = () => {
     setSelected([...selected, {}]);
     setPhotoCount(photoCount);
     // setSelected([]);
     // setPhotoCount(0);
     togglePickerModal(selected, photoCount);
-  }
-
-  const captureCamera = (imageUrl) => {
-    // setSelected([...selected, {imageUrl}]);
-    setSingleImage(imageUrl)
-    console.log('image url outside appcamera', singleImage)
-    // togglePickerModal();
-  }
+  };
 
   const continueUploadPhoto = (selected, photoCount) => {
     // setSelected([...selected, {selected}]);
@@ -206,10 +167,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const continueCamera = (imageUrl, photoCount) => {
-    setSelected([...selected, {imageUrl}]);
-    console.log('imageUrl', imageUrl);
-    console.log('selected array', selected);
-    setPhotoCount(photoCount + 1);
+    setSelected([...selected, { imageUrl }]);
+    // console.log('imageUrl', imageUrl);
+    // console.log('photoCount', photoCount)
+    // console.log('selected array', selected)
+    // setPhotoCount(photoCount + 1);
     togglePickerModal(selected, photoCount);
   };
 
@@ -227,6 +189,23 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       ),
     },
   ];
+
+  const {
+    title,
+    setTitle,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    pickupState,
+    setPickupState,
+    deliveryState,
+    setDeliveryState,
+    storeLocation,
+    setStoreLocation,
+    paymentMethod,
+    setPaymentMethod,
+  } = formState;
 
   const togglePickupState = () => {
     setPickupState(!pickupState);
@@ -375,7 +354,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               height: normalize(114),
               width: '100%',
               flexDirection: 'row',
-              marginBottom: 25,
+              marginBottom: 8,
               // justifyContent: 'center',
             }}>
             <ScrollView horizontal>
@@ -451,33 +430,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
                     Upload Photo
                   </AppText>
                 </View>
-              )
-            })}
-          </ScrollView>
-          <View
-            style={{
-              // flex: 1,
-              height: normalize(114),
-              borderStyle: 'dashed',
-              borderRadius: 4,
-              borderWidth: 1,
-              borderColor: Colors.neutralGray,
-              justifyContent: 'center',
-              marginBottom: 8,
-              width: photoCount <= 1 ? width / 3 : width / 4,
-            }}
-          >
-            <TouchableOpacity 
-              activeOpacity={0.7} 
-              onPress={() => {requestPermission()}}
-            >
-              <View style={{alignSelf: 'center', alignItems: 'center' }}>
-                <PostImages width={normalize(56)} height={normalize(56)} />
-                <AppText textStyle="body2" color={Colors.contentOcean} customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
-                  Upload Photo
-                </AppText>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
@@ -625,7 +579,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         swipeDirection="down"
         // Comment this out to disable closing on swipe down
         style={{
-          // margin: 0,
+          margin: 0,
           alignItems: 'center',
           justifyContent: 'center',
         }}>
@@ -646,6 +600,7 @@ export default SellPostForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // width: width,
     height: '100%',
     // paddingTop: 25,
     // backgroundColor: '#F6AE2D',

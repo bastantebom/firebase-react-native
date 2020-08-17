@@ -8,12 +8,12 @@ export const PostCamera = ({cancel, next}) => {
   const [imageUrl, setImageUrl] = useState('');
   const [photoCount, setPhotoCount] = useState(0);
 
-  const continueUploadPhoto = (imageUrl) => {
-    setImageUrl(imageUrl);
-    setPhotoCount(photoCount + 1);
-    console.log('appcamera', imageUrl);
-    console.log('appcamera', photoCount);
-  };
+  const captureImage = (imageUrl) => {
+    setImageUrl(imageUrl)
+    setPhotoCount(1)
+    console.log('appcamera',  imageUrl);
+    console.log('appcamera',  photoCount);
+  }
 
   return (
     <SafeAreaView style={{flex: 1}}>
