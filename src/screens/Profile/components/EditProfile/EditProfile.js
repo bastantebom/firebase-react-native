@@ -20,6 +20,8 @@ import {
   ProfileImageUpload,
 } from '@/components';
 
+import storage from '@react-native-firebase/storage';
+
 import {CoverPhoto} from '@/assets/images';
 import {ArrowRight, ArrowDown, Calendar} from '@/assets/images/icons';
 
@@ -41,7 +43,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [genderVisible, setGenderVisible] = useState(false);
-  const {userInfo, userDataAvailable, setUserInfo} = useContext(UserContext);
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
   const [buttonStyle, setButtonStyle] = useState({});
   const [buttonDisable, setButtonDisable] = useState(false);
   const [addressComponents, setAddressComponents] = useState({
@@ -51,16 +53,17 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     longitude: 0,
     latitude: 0,
   });
-  //const [upatedInfo, setUpdate]
+
+  const [imageSource, setImageSource] = useState('');
+  const [imgUploading, setImgUploading] = useState(false);
+  const [transferred, setTransferred] = useState(0);
 
   const {
+    profile_photo,
     display_name,
     full_name,
     username,
     description,
-    //address_name,
-    //address_details,
-    //address_note,
     address,
     email,
     secondary_email,
@@ -72,6 +75,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const isEmailRequired = email ? true : false;
   const isMobileRequired = mobile_number ? true : false;
 
+  const [pPhoto, setPPhoto] = useState(profile_photo);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
   const [name, setName] = useState(full_name);
   const [uName, setUName] = useState(username);
@@ -202,9 +206,34 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     getStringAddress(fullAddress.latitude, fullAddress.longitude);
   };
 
+  const uploadImageHandler = async () => {
+    setButtonState(true);
+    const {uri} = imageSource;
+    const filename = uri.substring(uri.lastIndexOf('/') + 1);
+    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+
+    setImgUploading(true);
+    setTransferred(0);
+
+    const task = storage().ref();
+    const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
+    await fileRef.putFile(uploadUri);
+    try {
+      setUserInfo({
+        ...userInfo,
+        profile_photo: await fileRef.getDownloadURL(),
+      });
+      setButtonState(false);
+    } catch (e) {
+      setButtonState(false);
+      console.error(e);
+    }
+    setImageSource(null);
+  };
+
   const updateProfile = () => {
     //alert(dName + ' ' + name);
-
+    uploadImageHandler();
     const addressToUpdate = {
       details: addDet,
       note: addNote,
@@ -224,12 +253,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
       gender: g,
     };
     //console.log(dataToUpdate.address);
-    setUserInfo({...userInfo, ...dataToUpdate});
-    console.log(userInfo);
+    //setUserInfo({...userInfo, ...dataToUpdate});
+    //console.log(userInfo);
     //alert('Profile is updated');
 
-    //toggleEditProfile();
-    //toggleMenu();
+    toggleEditProfile();
+    toggleMenu();
   };
 
   useEffect(() => {
@@ -290,7 +319,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
             <PaddingView paddingSize={3}>
               <View style={styles.profilePhoto}>
                 <View>
-                  <ProfileImageUpload size={80} />
+                  <ProfileImageUpload
+                    imgSourceHandler={(imgSrc) => {
+                      setImageSource(imgSrc);
+                    }}
+                    size={80}
+                  />
                 </View>
                 <AppText
                   textStyle="caption"
