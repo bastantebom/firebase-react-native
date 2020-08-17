@@ -56,7 +56,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     latitude: 0,
   });
 
-  const [imageSource, setImageSource] = useState('');
+  const [imageSource, setImageSource] = useState(null);
   const [imgUploading, setImgUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
   const [IS_UPDATING, setIS_UPDATING] = useState(false);
@@ -213,66 +213,34 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
 
   const uploadImageHandler = async () => {
     //setButtonState(true);
+    //console.log(imageSource);
+    //if (imageSource) {
     const {uri} = imageSource;
-    const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+    if (uri) {
+      const filename = uri.substring(uri.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
-    setImgUploading(true);
-    setTransferred(0);
-
-    const task = storage().ref();
-    const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
-    await fileRef.putFile(uploadUri);
-    try {
+      //setImgUploading(false);
+      setTransferred(0);
+      //console.log(user.uid);
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
+      await fileRef.putFile(uploadUri);
       setPPhoto(await fileRef.getDownloadURL());
       //setButtonState(false);
+      //console.log(await fileRef.getDownloadURL());
       setImageSource(null);
-      return true;
-    } catch (e) {
-      return false;
+      setImgUploading(true);
+      //return true;
+    } else {
+      setImgUploading(true);
     }
   };
 
   const updateProfile = () => {
     setIS_UPDATING(true);
-    if (uploadImageHandler()) {
-      const addressToUpdate = {
-        details: addDet,
-        note: addNote,
-        name: addName,
-        ...addressComponents,
-      };
-
-      const dataToUpdate = {
-        profile_photo: encodeURI(pPhoto),
-        display_name: dName,
-        description: desc,
-        full_name: name,
-        username: uName,
-        address: {...userInfo.address, ...addressToUpdate},
-        birth_date: bDate,
-        secondary_email: sEm,
-        mobile_number: mobile,
-        gender: g,
-      };
-
-      console.log(dataToUpdate);
-      /*ProfileInfoService.updateUser(dataToUpdate, uid)
-        .then((response) => {
-          setIS_UPDATING(false);
-          console.log(response);
-        })
-        .catch((error) => {
-          setIS_UPDATING(false);
-          console.log('With Error in the API Update Profile ' + error);
-        });*/
-    }
-    //setUserInfo({...userInfo, ...dataToUpdate});
-    //console.log(userInfo);
-    //alert('Profile is updated');
-
-    //toggleEditProfile();
-    //toggleMenu();
+    uploadImageHandler();
   };
 
   useEffect(() => {
@@ -283,6 +251,49 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
       //alert(address_name);
     }
   }, [userInfo]);
+
+  useEffect(() => {
+    if (imgUploading && pPhoto) {
+      //console.log(uid);
+      //console.log(pPhoto);
+      //const profilePhotoEnc = pPhoto;
+      //console.log(profilePhotoEnc);
+      const addressToUpdate = {
+        details: addDet,
+        note: addNote,
+        name: addName,
+        ...addressComponents,
+      };
+
+      const dataToUpdate = {
+        profile_photo: pPhoto,
+        display_name: dName,
+        description: desc,
+        full_name: name,
+        username: uName,
+        address: {...userInfo.address, ...addressToUpdate},
+        birth_date: bDate,
+        secondary_email: sEm,
+        mobile_number: mobile,
+        gender: g,
+      };
+      console.log(dataToUpdate);
+      ProfileInfoService.updateUser(dataToUpdate, uid)
+        .then((response) => {
+          if (response.success) {
+            setIS_UPDATING(false);
+            console.log(response);
+          } else {
+            setIS_UPDATING(false);
+            console.log(response);
+          }
+        })
+        .catch((error) => {
+          setIS_UPDATING(false);
+          console.log(error);
+        });
+    }
+  }, [imgUploading, pPhoto]);
 
   return (
     <>
