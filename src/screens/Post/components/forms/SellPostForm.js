@@ -287,9 +287,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const continueCamera = (imageUrl, photoCount) => {
     setSelected([...selected, { imageUrl }]);
-    console.log('imageUrl', imageUrl);
-    console.log('selected array', selected)
-    setPhotoCount(photoCount + 1);
+    // console.log('imageUrl', imageUrl);
+    // console.log('photoCount', photoCount)
+    // console.log('selected array', selected)
+    // setPhotoCount(photoCount + 1);
     togglePickerModal(selected, photoCount);
   }
 

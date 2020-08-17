@@ -12,6 +12,8 @@ const { width, height } = Dimensions.get('window');
 
 export const ImageModal = ({ close, data }) => {
 
+  console.log(data)
+
   const Pagination = ({
     size,
     paginationIndex,
@@ -27,29 +29,15 @@ export const ImageModal = ({ close, data }) => {
             key={index}
             onPress={() => scrollToIndex({ index })}
           >
-            {/* <View> */}
-              {data.map((item) => {
-                
-                // useEffect(() => {
-                //   const valueToRemove = item.uri;
-                //   const newList = data.filter((item) => item.uri !== valueToRemove);
-                //   setData(newList);
-                //   console.log(newList)
-                // }, [data])
-                
-                return (
-                  <Image
-                    // key={item.id}
-                    style={[{ height: 40, width: 40, borderRadius: 5, marginHorizontal: 4 }, 
-                      paginationIndex === index
-                          ? { borderColor: paginationActiveColor, borderWidth: 3 }
-                          : { borderColor: paginationDefaultColor }
-                    ]}
-                    source={{ uri: item.uri }}
-                  />
-                )
-              })}
-            {/* </View> */}
+            <Image
+              // key={item.id}
+              style={[{ height: 40, width: 40, borderRadius: 5, marginHorizontal: 4 }, 
+                paginationIndex === index
+                    ? { borderColor: paginationActiveColor, borderWidth: 3 }
+                    : { borderColor: paginationDefaultColor }
+              ]}
+              source={{ uri: data[index].uri }}
+            />
           </TouchableOpacity>
         ))}
       </View>
@@ -90,8 +78,6 @@ export const ImageModal = ({ close, data }) => {
           paginationActiveColor={Colors.primaryYellow}
           showPagination
           PaginationComponent={Pagination}
-          // paginationStyle={{ position: 'absolute', bottom: 0, backgroundColor: 'red' }}
-          // paginationStyleItem={{ position: 'absolute', bottom: 0, backgroundColor: 'red' }}
         >
           {data.map((item) => {
             return (
@@ -124,7 +110,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
-    bottom: 0,
+    bottom: 50,
     left: 0,
     right: 0,
   },

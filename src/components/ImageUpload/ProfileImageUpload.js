@@ -57,7 +57,10 @@ const ProfileImageUpload = ({size}) => {
     const task = storage()
       // .ref(filename)
       .ref(`${currentUser.uid}/display-photos/${filename}`)
-      .putFile(uploadUri);
+      .putFile(uploadUri)
+      // .then((res) => {
+      //   console.log(res)
+      // })
 
     // set progress state
     task.on('state_changed', (snapshot) => {
