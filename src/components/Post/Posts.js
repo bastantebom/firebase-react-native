@@ -29,15 +29,21 @@ const Posts = ({
       limit: 5,
     };
 
-    PostService.getPosts(getPostsParams)
+    console.log("Before Await")
+
+    await PostService.getPosts(getPostsParams)
       .then((res) => {
+        console.log("Refreshed")
         setPosts(res.data);
         setRefresh(false);
       })
       .catch((err) => {
+        console.log("Error Refreshing")
         console.log(err);
         setRefresh(false);
       });
+
+      console.log("After Await")
   };
 
   return (
