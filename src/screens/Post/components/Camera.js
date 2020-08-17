@@ -1,26 +1,22 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import { AppText } from '@/components'
-import { Colors } from '@/globals'
+import React, {useState} from 'react';
+import {View, TouchableOpacity, SafeAreaView} from 'react-native';
+import {AppText} from '@/components';
+import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
 
-export const PostCamera = ({
-  cancel,
-  next
-}) => {
-
+export const PostCamera = ({cancel, next}) => {
   const [imageUrl, setImageUrl] = useState('');
   const [photoCount, setPhotoCount] = useState(0);
 
-  const captureImage = (imageUrl) => {
-    setImageUrl(imageUrl)
-    setPhotoCount(1)
-    console.log('appcamera',  imageUrl);
-    console.log('appcamera',  photoCount);
-  }
+  const continueUploadPhoto = (imageUrl) => {
+    setImageUrl(imageUrl);
+    setPhotoCount(photoCount + 1);
+    console.log('appcamera', imageUrl);
+    console.log('appcamera', photoCount);
+  };
 
   return (
-    <>
+    <SafeAreaView style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -53,9 +49,7 @@ export const PostCamera = ({
           </AppText>
         </TouchableOpacity>
       </View>
-      <AppCamera
-        captureImage={captureImage}
-      />
-    </>
-  )
-}
+      <AppCamera captureImage={continueUploadPhoto} />
+    </SafeAreaView>
+  );
+};
