@@ -155,23 +155,17 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     togglePickerModal(selected, photoCount);
   };
 
-  const captureCamera = (imageUrl) => {
-    // setSelected([...selected, {imageUrl}]);
-    setSingleImage(imageUrl);
-    console.log('image url outside appcamera', singleImage);
-    // togglePickerModal();
-  };
-
   const cancelCamera = () => {
     togglePickerModal(selected, photoCount);
   };
 
   const continueCamera = (imageUrl, photoCount) => {
     setSelected([...selected, { imageUrl }]);
-    // console.log('imageUrl', imageUrl);
+    // setSelected([...selected, imageUrl]);
+    console.log('imageUrl', imageUrl);
     // console.log('photoCount', photoCount)
-    // console.log('selected array', selected)
-    // setPhotoCount(photoCount + 1);
+    console.log('selected array', selected)
+    setPhotoCount(photoCount + 1);
     togglePickerModal(selected, photoCount);
   };
 
@@ -573,10 +567,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       <Modal
         isVisible={showPickerModal}
         onBackButtonPress={() => togglePickerModal(selected, photoCount)}
-
         // Comment this out to disable closing on swipe down
-        onSwipeComplete={() => togglePickerModal(selected, photoCount)}
-        swipeDirection="down"
+        // onSwipeComplete={() => togglePickerModal(selected, photoCount)}
+        // swipeDirection="down"
         // Comment this out to disable closing on swipe down
         style={{
           margin: 0,

@@ -81,7 +81,7 @@ export const AppCamera = ({
     if (cameraRef) {
       const options = { 
         quality: 1, 
-        base64: true,
+        // base64: true,
         // width: 1.6,
         pauseAfterCapture: true,
         // height: 50
@@ -90,8 +90,8 @@ export const AppCamera = ({
       
       cameraRef.current.pausePreview()
       
-      setImageUrl(data.uri);
-      // console.log('data.uri', data.uri)
+      setImageUrl(data);
+      console.log('data', data)
       // console.log('imageUrl', imageUrl)
     }
   };

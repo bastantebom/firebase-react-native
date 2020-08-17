@@ -10,9 +10,9 @@ export const PostCamera = ({cancel, next}) => {
 
   const captureImage = (imageUrl) => {
     setImageUrl(imageUrl)
-    setPhotoCount(1)
-    console.log('appcamera',  imageUrl);
-    console.log('appcamera',  photoCount);
+    // setPhotoCount(1)
+    console.log('appcamera', imageUrl);
+    // console.log('appcamera', photoCount);
   }
 
   return (

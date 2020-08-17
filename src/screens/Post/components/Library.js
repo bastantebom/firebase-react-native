@@ -56,6 +56,7 @@ export const Library = ({
   const [currentImage, setCurrentImage] = useState('');
   const [selected, setSelected] = useState([]);
   const [selectedCount, setSelectedCount] = useState([]);
+  const [iterate, setIterate] = useState(0);
   const [showFolderList, setShowFolderList] = useState(false);
 
   const getSelectedImages = async (images) => {
@@ -63,22 +64,27 @@ export const Library = ({
     setSelected(images);
     setPhotoCount(num);
     setCurrentImage(num > 0 ? images[num - 1].uri : '');
+    
+    // console.log(selected.length)
+    // const [count, setCount] = useState(0);
 
-    const count = 0;
-    const iterate = count + 1;
-    // setSelectedCount([...selectedCount, { count }])
-    console.log(selectedCount)
+    const length = selected.length
+    setIterate(length)
+    setSelectedCount([...selectedCount, iterate])
+    // console.log('selectedCount', selectedCount)
+    console.log(selected.length)
   };
 
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
 
-  // useEffect(() => {
-  //   console.log('photoCount inside Library', photoCount);
-  //   console.log('selected images inside Library', selected);
-  //   // console.log('current', currentImage);
-  // }, [photoCount, selected]);
+  useEffect(() => {
+    // Array.from({ length: selected.length }).map((_, index) => (
+    //   { index }
+    // ))
+    console.log(selected.length)
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
@@ -99,7 +105,7 @@ export const Library = ({
           <TouchableOpacity
             onPress={toggleFolderList}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <AppText textStyle="body1">All Photos</AppText>
               <ArrowDown height={normalize(24)} width={normalize(24)} />
             </View>
@@ -164,13 +170,16 @@ export const Library = ({
                     top: 6 
                   }}
                 >
-                  <AppText 
-                    textStyle="subtitle1" 
-                    color={Colors.neutralsWhite} 
-                    customStyle={{ textAlign: 'center' }}
-                  >
-                    {selectedCount}
-                  </AppText>
+                  {Array.from({ length: selected.length }).map((_, index) => (
+                    <AppText 
+                      textStyle="subtitle1" 
+                      color={Colors.neutralsWhite} 
+                      customStyle={{ textAlign: 'center' }}
+                      key={index}
+                    >
+                      {selectedCount[index]}
+                    </AppText>
+                  ))}
                 </View>
               }
               callback={() => getSelectedImages(selected)}
