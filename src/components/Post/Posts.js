@@ -22,21 +22,18 @@ const Posts = ({data, scrollState, setScrollState, type, isLoading}) => {
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
-      // last_pid: lastPID,
     };
-
-    // console.log("Before Await")
 
     await PostService.getPosts(getPostsParams)
       .then((res) => {
-        console.log('Refreshed');
         setLastPID(res.last_id);
         setPosts(res.data);
+
+        console.log("DATA RESPONSE:");
+        console.log(res.data);
         setRefresh(false);
       })
       .catch((err) => {
-        console.log('Error Refreshing');
-        console.log(err);
         setRefresh(false);
       });
   };
@@ -48,20 +45,13 @@ const Posts = ({data, scrollState, setScrollState, type, isLoading}) => {
       last_pid: lastPID,
     };
 
-    // console.log("Before Await")
-
     await PostService.getPosts(getPostsParams)
       .then((res) => {
         setLastPID(res.last_id);
-        setPosts([
-          ...posts,
-          ...res.data,
-        ]);
+        setPosts([...posts, ...res.data]);
         setRefresh(false);
       })
       .catch((err) => {
-        console.log('Error Refreshing');
-        console.log(err);
         setRefresh(false);
       });
   };

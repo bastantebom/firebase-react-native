@@ -44,7 +44,10 @@ const Post = ({data, type, isLoading}) => {
     store_location,
     title,
     username,
-    delivery_method,
+    delivery_method: {
+      pickup,
+      delivery
+    },
     description,
     uid,
     price,
