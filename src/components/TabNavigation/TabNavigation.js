@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, SafeAreaView} from 'react-native';
 
 import {AppText} from '@/components';
 import {Colors, normalize} from '@/globals';
@@ -70,14 +70,20 @@ const TabNavigation = ({routesList, bottomTab}) => {
   };
 
   return (
-    <View style={[styles.container, { paddingBottom: bottomTab && 65 }]}>
-      <View style={[styles.navigationContainer, bottomTab && bottomStyle.bottomTabStyle]}>
-        <RenderRoutes />
+    <SafeAreaView style={{flex: 1}}>
+      <View style={[styles.container, {paddingBottom: bottomTab && 65}]}>
+        <View
+          style={[
+            styles.navigationContainer,
+            bottomTab && bottomStyle.bottomTabStyle,
+          ]}>
+          <RenderRoutes />
+        </View>
+        <View style={{flex: 1}}>
+          <RenderContent />
+        </View>
       </View>
-      <View style={{flex: 1}}>
-        <RenderContent />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -86,15 +92,15 @@ const bottomStyle = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
-  }
-})
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    borderTopColor: Colors.neutralsZircon,
-    borderTopWidth: normalize(4)
+    // borderTopColor: Colors.neutralsZircon,
+    // borderTopWidth: normalize(4),
   },
   navigationContainer: {
     height: normalize(50),

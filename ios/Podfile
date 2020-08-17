@@ -77,8 +77,13 @@ target 'servbees' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-   # React Native Maps dependencies
+  permissions_path = '../node_modules/react-native-permissions/ios' 
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary.podspec"
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
 
+   # React Native Maps dependencies
   target 'servbeesTests' do
     inherit! :complete
     # Pods for testing
