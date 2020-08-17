@@ -10,9 +10,9 @@ import {ProgressBar} from 'react-native-paper';
 import AppButton from '../AppButton/AppButton';
 import AppText from '../AppText/AppText';
 import HexagonBorder from '@/components/ImageUpload/HexagonBorder';
-import { UploadIcon } from '@/assets/images/icons';
+import {UploadIcon} from '@/assets/images/icons';
 
-const ProfileImageUpload = ({size}) => {
+const ProfileImageUpload = ({size, imgSourceHandler}) => {
   const currentUser = auth().currentUser;
 
   const [initializing, setInitializing] = useState(true);
@@ -38,7 +38,7 @@ const ProfileImageUpload = ({size}) => {
         // const uri = image.path;
         // setImageSource(uri)
         // console.log(image.filename)
-
+        imgSourceHandler(source);
         setIsVisible(false);
       })
       .catch((e) => {
@@ -98,10 +98,17 @@ const ProfileImageUpload = ({size}) => {
         <UploadIcon height={size} width={size} />
       </TouchableOpacity>
       <View style={{display: !isVisible ? 'flex' : 'none'}}>
-        <Svg height={size} width={size} viewBox="0 0 100 100" strokeLinejoin="round">
+        <Svg
+          height={size}
+          width={size}
+          viewBox="0 0 100 100"
+          strokeLinejoin="round">
           <Defs>
             <ClipPath id="clip">
-              <Polygon points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018" strokeLinejoin="round"/>
+              <Polygon
+                points="93.30127018922194,75 50,100 6.698729810778076,75.00000000000001 6.698729810778062,25.000000000000014 49.99999999999999,0 93.30127018922194,25.000000000000018"
+                strokeLinejoin="round"
+              />
             </ClipPath>
           </Defs>
           <Image
