@@ -12,7 +12,7 @@ import AppText from '../AppText/AppText';
 import HexagonBorder from '@/components/ImageUpload/HexagonBorder';
 import {UploadIcon} from '@/assets/images/icons';
 
-const ProfileImageUpload = ({size, imgSourceHandler}) => {
+const ProfileImageUpload = ({size, imgSourceHandler, imgSrc}) => {
   const currentUser = auth().currentUser;
 
   const [initializing, setInitializing] = useState(true);
@@ -94,10 +94,10 @@ const ProfileImageUpload = ({size, imgSourceHandler}) => {
     <View>
       <TouchableOpacity
         onPress={() => handleSelect()}
-        style={{display: isVisible ? 'flex' : 'none'}}>
+        style={{display: isVisible && !imgSrc ? 'flex' : 'none'}}>
         <UploadIcon height={size} width={size} />
       </TouchableOpacity>
-      <View style={{display: !isVisible ? 'flex' : 'none'}}>
+      <View style={{display: !isVisible || imgSrc ? 'flex' : 'none'}}>
         <Svg
           height={size}
           width={size}
@@ -115,7 +115,7 @@ const ProfileImageUpload = ({size, imgSourceHandler}) => {
             width="100%"
             height="100%"
             opacity="1"
-            href={imageSource && imageSource}
+            href={imageSource || imgSrc}
             clipPath="url(#clip)"
             onPress={() => handleSelect()}
           />

@@ -215,8 +215,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     //setButtonState(true);
     //console.log(imageSource);
     //if (imageSource) {
-    const {uri} = imageSource;
-    if (uri) {
+
+    if (imageSource) {
+      const {uri} = imageSource;
+      console.log('Sa If');
       const filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
@@ -234,6 +236,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
       setImgUploading(true);
       //return true;
     } else {
+      console.log('Sa Else');
       setImgUploading(true);
     }
   };
@@ -248,6 +251,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     if (userInfo) {
       getStringAddress(address.latitude, address.longitude);
       setDateFromString();
+      //console.log(pPhoto);
       //alert(address_name);
     }
   }, [userInfo]);
@@ -265,6 +269,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
         ...addressComponents,
       };
 
+      Object.keys(addressToUpdate).forEach(
+        (key) =>
+          addressToUpdate[key] === undefined && delete addressToUpdate[key],
+      );
+
       const dataToUpdate = {
         profile_photo: pPhoto,
         display_name: dName,
@@ -277,15 +286,20 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
         mobile_number: mobile,
         gender: g,
       };
+      Object.keys(dataToUpdate).forEach(
+        (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
+      );
+
       console.log(dataToUpdate);
       ProfileInfoService.updateUser(dataToUpdate, uid)
         .then((response) => {
           if (response.success) {
+            //console.log(response);
             setIS_UPDATING(false);
-            console.log(response);
+            setUserInfo({...userInfo, ...response.data});
           } else {
             setIS_UPDATING(false);
-            console.log(response);
+            //console.log(response);
           }
         })
         .catch((error) => {
@@ -350,6 +364,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                       setImageSource(imgSrc);
                     }}
                     size={80}
+                    imgSrc={pPhoto}
                   />
                 </View>
                 <AppText
