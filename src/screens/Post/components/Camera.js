@@ -21,14 +21,8 @@ export const PostCamera = ({cancel, next}) => {
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          // alignSelf: 'center',
           alignItems: 'center',
-          // width: '100%',
-          marginTop: 5,
-          height: 45,
-          // paddingHorizontal: 25,
-          // zIndex: 3,
-          // backgroundColor: 'red'
+          height: 45
         }}>
         <TouchableOpacity
           onPress={cancel}
@@ -36,12 +30,10 @@ export const PostCamera = ({cancel, next}) => {
           <AppText textStyle="body2">Cancel</AppText>
         </TouchableOpacity>
         <TouchableOpacity
-          // onPress={() => showFolders(folderCount)}
-          style={{paddingVertical: 5, paddingHorizontal: 25}}>
+          style={{paddingHorizontal: 25 }}>
           <AppText textStyle="body1">Photo</AppText>
         </TouchableOpacity>
         <TouchableOpacity
-          // onPress={next}
           onPress={() => next(imageUrl, photoCount)}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
           <AppText textStyle="body3" color={Colors.contentOcean}>
@@ -49,7 +41,7 @@ export const PostCamera = ({cancel, next}) => {
           </AppText>
         </TouchableOpacity>
       </View>
-      <AppCamera captureImage={continueUploadPhoto} />
+      <AppCamera captureImage={captureImage} />
     </SafeAreaView>
   );
 };

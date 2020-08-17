@@ -55,15 +55,19 @@ export const Library = ({
   const [photoCount, setPhotoCount] = useState(0);
   const [currentImage, setCurrentImage] = useState('');
   const [selected, setSelected] = useState([]);
-  const [folderCount, setFolderCount] = useState(0);
+  const [selectedCount, setSelectedCount] = useState([]);
   const [showFolderList, setShowFolderList] = useState(false);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setSelected(images);
     setPhotoCount(num);
-    // console.log('photoCount', photoCount)
     setCurrentImage(num > 0 ? images[num - 1].uri : '');
+
+    const count = 0;
+    const iterate = count + 1;
+    // setSelectedCount([...selectedCount, { count }])
+    console.log(selectedCount)
   };
 
   const toggleFolderList = () => {
@@ -77,8 +81,8 @@ export const Library = ({
   // }, [photoCount, selected]);
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }} >
+      <View style={{ flex: 1 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -109,7 +113,7 @@ export const Library = ({
             </AppText>
           </TouchableOpacity>
         </View>
-        <View style={styles.container}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               position: 'absolute',
@@ -148,6 +152,27 @@ export const Library = ({
               selected={selected}
               imagesPerRow={3}
               imageMargin={2}
+              selectedMarker={
+                <View 
+                  style={{ 
+                    backgroundColor: Colors.contentOcean, 
+                    width: 25, 
+                    height: 25, 
+                    borderRadius: 50, 
+                    position: 'absolute', 
+                    right: 4, 
+                    top: 6 
+                  }}
+                >
+                  <AppText 
+                    textStyle="subtitle1" 
+                    color={Colors.neutralsWhite} 
+                    customStyle={{ textAlign: 'center' }}
+                  >
+                    {selectedCount}
+                  </AppText>
+                </View>
+              }
               callback={() => getSelectedImages(selected)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               // assetType="Videos"
@@ -183,9 +208,3 @@ export const Library = ({
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
