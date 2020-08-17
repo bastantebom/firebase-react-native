@@ -21,6 +21,8 @@ import {
   PostBox,
   CircleTick,
   CloseDark,
+  CircleTickWhite,
+  CloseLight
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
@@ -50,11 +52,15 @@ const SinglePostView = (props) => {
   };
 
   useEffect(() => {
-    console.log("LOGGING ROUTE PROPS")
+    console.log('LOGGING ROUTE PROPS');
     console.log(props.route.params);
 
     setShowNotification(
       props.route.params?.created ? props.route.params?.created : false,
+    );
+
+    setShowNotification(
+      props.route.params?.edited ? props.route.params?.edited : false,
     );
 
     setTimeout(() => {
@@ -89,11 +95,39 @@ const SinglePostView = (props) => {
   };
 
   const CustomNotification = () => {
+    const backgroundColor = props.route.params?.created
+      ? Colors.primaryYellow
+      : Colors.secondaryRoyalBlue;
+
+    const notificationMessage = props.route.params?.created
+      ? 'Post Successful!'
+      : 'Post edited successfully';
+
+    const notificationColor = props.route.params?.created
+      ? Colors.contentEbony
+      : 'white';
+
+    const NotificationCheckbox = () => {
+      return props.route.params?.created ? (
+        <CircleTick width={normalize(24)} height={normalize(24)} />
+      ) : (
+        <CircleTickWhite width={normalize(24)} height={normalize(24)} />
+      );
+    };
+
+    const NotificationClose = () => {
+      return props.route.params?.created ? (
+        <CloseDark width={normalize(24)} height={normalize(24)} />
+      ) : (
+        <CloseLight width={normalize(24)} height={normalize(24)} />
+      );
+    }
+
     if (showNotification)
       return (
         <View
           style={{
-            backgroundColor: Colors.primaryYellow,
+            backgroundColor: backgroundColor,
             position: 'absolute',
             top: -58,
             width: normalize(375),
@@ -104,12 +138,15 @@ const SinglePostView = (props) => {
             borderTopLeftRadius: 8,
             flexDirection: 'row',
           }}>
-          <CircleTick width={normalize(24)} height={normalize(24)} />
-          <AppText customStyle={{flex: 1, marginLeft: 8}} textStyle="body2">
-            Post successful!
+          <NotificationCheckbox />
+          <AppText
+            customStyle={{flex: 1, marginLeft: 8}}
+            color={notificationColor}
+            textStyle="body2">
+            {notificationMessage}
           </AppText>
           <TouchableOpacity onPress={closeNotification} activeOpacity={0.7}>
-            <CloseDark width={normalize(24)} height={normalize(24)} />
+            <NotificationClose />
           </TouchableOpacity>
         </View>
       );

@@ -77,7 +77,8 @@ function Profile() {
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
   let profileTabs = [
-    {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
+    // {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
+    {key: 'ownpost', title: 'Posts', renderPage: <></>},
     // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
     {
       key: 'moreinfo',

@@ -45,7 +45,7 @@ const Posts = ({data, scrollState, setScrollState, type, isLoading}) => {
     await PostService.getPosts(getPostsParams)
       .then((res) => {
         setLastPID(res.last_id);
-        setPosts([...posts, ...res.data]);
+        setPosts([new Set(...posts, ...res.data)]);
         setRefresh(false);
       })
       .catch((err) => {

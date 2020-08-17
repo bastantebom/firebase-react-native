@@ -60,6 +60,8 @@ const Post = ({data, type, isLoading}) => {
     let computedData = {
       data: data,
       viewing: true,
+      created: false,
+      editing: false
     };
 
     navigation.navigate('Post', {

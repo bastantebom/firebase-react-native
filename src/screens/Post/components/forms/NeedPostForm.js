@@ -75,7 +75,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
-          navToPost({...res, edited: true});
+          navToPost({...res, viewing: false, created: false, edited: true});
 
           console.log('CREATE A POST GOING TO SINGLEPOST');
           console.log({...res, edited: true});
@@ -85,7 +85,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
     return await PostService.createPost(data).then((res) => {
       togglePostModal();
-      navToPost({...res, created: true});
+      navToPost({...res, viewing: false, created: true, edited: false});
     });
   };
 
