@@ -18,21 +18,6 @@ import {
 import LoadingScreen from './loading';
 
 const Post = ({data, type, isLoading}) => {
-  // const {
-  //   userImage,
-  //   name,
-  //   username,
-  //   rating,
-  //   postedAt,
-  //   isVerified,
-  //   postType,
-  //   postImage,
-  //   postName,
-  //   postPrice,
-  //   postServiceAddress,
-  //   postServiceRadius,
-  //   postDeliveryMethod,
-  // } = data;
   const {user} = useContext(UserContext);
 
   const {
@@ -44,10 +29,7 @@ const Post = ({data, type, isLoading}) => {
     store_location,
     title,
     username,
-    delivery_method: {
-      pickup,
-      delivery
-    },
+    delivery_method: {pickup, delivery},
     description,
     uid,
     price,
@@ -76,12 +58,13 @@ const Post = ({data, type, isLoading}) => {
 
   const navToPost = () => {
     let computedData = {
-      ...data,
+      data: data,
+      viewing: true,
     };
 
     navigation.navigate('Post', {
       screen: 'SinglePostView',
-      params: data,
+      params: computedData,
     });
   };
 
@@ -98,26 +81,28 @@ const Post = ({data, type, isLoading}) => {
                   style={GlobalStyle.image}
                   source={{
                     uri:
-                      // images.length > 0
-                      //   ? images[0]
-                        // :
-                         'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                      images.length > 0
+                        ? images[0]
+                        : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
                   }}
                 />
               </View>
             </TouchableOpacity>
             <View style={styles.postDetailContainer}>
-              <AppText
-                textStyle="body2"
-                customStyle={GlobalStyle.marginBottom1}>
-                {title}
-              </AppText>
-              <AppText
-                textStyle="price"
-                customStyle={styles.priceText}
-                color={Colors.secondaryMountainMeadow}>
-                ₱{price}
-              </AppText>
+              <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+                <AppText
+                  textStyle="body2"
+                  customStyle={GlobalStyle.marginBottom1}>
+                  {title}
+                </AppText>
+
+                <AppText
+                  textStyle="price"
+                  customStyle={styles.priceText}
+                  color={Colors.secondaryMountainMeadow}>
+                  ₱{price}
+                </AppText>
+              </TouchableOpacity>
 
               <Divider style={styles.dividerStyle} />
 
@@ -141,24 +126,23 @@ const Post = ({data, type, isLoading}) => {
                   </AppText>
                 </View> */}
               </View>
-              {/* {delivery_method.pickup && delivery_method.delivery ? ( */}
+              {pickup || delivery ? (
                 <View style={GlobalStyle.rowCenter}>
                   <TransportationBox width={16} height={16} />
 
                   <AppText
                     textStyle="eyebrow2"
                     customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
-                    {/* {delivery_method.pickup && delivery_method.delivery
+                    {pickup && delivery
                       ? 'Pickup & Delivery'
-                      : delivery_method.delivery
+                      : delivery
                       ? 'Delivery'
-                      : delivery_method.pickup
+                      : pickup
                       ? 'Pickup'
-                      : 'Not set'} */}
-                      Delivery
+                      : 'Not set'}
                   </AppText>
                 </View>
-              {/* ) : null} */}
+              ) : null}
             </View>
           </View>
         </PaddingView>

@@ -126,7 +126,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
-          navToPost(res);
+          navToPost({...res, edited: true});
+
+          console.log('CREATE A POST GOING TO SINGLEPOST');
+          console.log({...res, edited: true});
         },
       );
     }
@@ -135,7 +138,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       setLoadingSubmit(false);
       togglePostModal();
       setTimeout(() => {
-        navToPost(res);
+        navToPost({...res, created: true});
       }, 500);
     });
   };

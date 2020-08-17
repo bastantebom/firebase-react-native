@@ -94,14 +94,16 @@ const ServicePostForm = ({
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
-          navToPost(res);
+          navToPost({...res, edited: true});
+          console.log('CREATE A POST GOING TO SINGLEPOST');
+          console.log({...res, created: true});
         },
       );
     }
 
     return await PostService.createPost(data).then((res) => {
       togglePostModal();
-      navToPost(res);
+      navToPost({...res, created: true});
     });
   };
 

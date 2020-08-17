@@ -28,9 +28,6 @@ const Posts = ({data, scrollState, setScrollState, type, isLoading}) => {
       .then((res) => {
         setLastPID(res.last_id);
         setPosts(res.data);
-
-        console.log("DATA RESPONSE:");
-        console.log(res.data);
         setRefresh(false);
       })
       .catch((err) => {

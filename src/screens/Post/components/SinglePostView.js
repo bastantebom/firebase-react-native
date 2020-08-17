@@ -26,11 +26,10 @@ import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
 
 const SinglePostView = (props) => {
-
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
   const navigation = useNavigation();
-  const [showNotification, setShowNotification] = useState();
+  const [showNotification, setShowNotification] = useState(false);
   const [ellipsisState, setEllipsisState] = useState(false);
 
   const [editPost, showEditPost] = useState(false);
@@ -46,31 +45,22 @@ const SinglePostView = (props) => {
     setEllipsisState(!ellipsisState);
   };
 
-  const toggleNotification = () => {
-    setShowNotification(!showNotification);
+  const closeNotification = () => {
+    setShowNotification(false);
   };
 
   useEffect(() => {
+    console.log("LOGGING ROUTE PROPS")
+    console.log(props.route.params);
+
     setShowNotification(
-      props.route.params?.success ? props.route.params?.success : false,
+      props.route.params?.created ? props.route.params?.created : false,
     );
 
     setTimeout(() => {
       setShowNotification(false);
-    }, 5000);
-  }, []);
-
-  // data = {
-  //   uid: user.uid,
-  //   post_type: type,
-  //   images: [],
-  //   title: title,
-  //   price: price,
-  //   description: description,
-  //   payment_method: paymentMethod,
-  //   store_location: storeLocation,
-  //   delivery_method: [],
-  // };
+    }, 3000);
+  }, [props]);
 
   const {
     uid,
@@ -118,7 +108,7 @@ const SinglePostView = (props) => {
           <AppText customStyle={{flex: 1, marginLeft: 8}} textStyle="body2">
             Post successful!
           </AppText>
-          <TouchableOpacity onPress={toggleNotification} activeOpacity={0.7}>
+          <TouchableOpacity onPress={closeNotification} activeOpacity={0.7}>
             <CloseDark width={normalize(24)} height={normalize(24)} />
           </TouchableOpacity>
         </View>
@@ -130,7 +120,7 @@ const SinglePostView = (props) => {
     console.log('delete this post with id: ');
     console.log(post_id);
     return await PostService.deletePost(post_id).then(() => {
-      toggleEllipsisState()
+      toggleEllipsisState();
       navigation.goBack();
     });
   };
@@ -239,8 +229,6 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  console.log('passed card: ');
-  console.log(card);
   return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 
