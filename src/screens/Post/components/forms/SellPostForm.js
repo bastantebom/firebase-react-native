@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,12 +9,14 @@ import {
   Dimensions,
   PermissionsAndroid,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 import ImagePicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 import {
   AppText,
@@ -24,12 +26,12 @@ import {
   TabNavigation,
   BottomSheetHeader,
 } from '@/components';
-import { normalize, Colors } from '@/globals';
-import { PostService } from '@/services';
-import { UserContext } from '@/context/UserContext';
-import { PostImages, CloseLight } from '@/assets/images/icons';
-import { Library } from '../Library'
-import { PostCamera } from '../Camera';
+import {normalize, Colors} from '@/globals';
+import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
+import {PostImages, CloseLight} from '@/assets/images/icons';
+import {Library} from '../Library';
+import {PostCamera} from '../Camera';
 
 const {height, width} = Dimensions.get('window');
 
@@ -47,7 +49,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const togglePickerModal = (selected, photoCount) => {
     setShowPickerModal(!showPickerModal);
     setSelected(selected);
-    setPhotoCount(photoCount)
+    setPhotoCount(photoCount);
   };
 
   const handleSelect = () => {
@@ -79,21 +81,54 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const requestPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        // PermissionsAndroid.PERMISSIONS.CAMERA
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can access your camera roll');
-        // setShowPickerModal(true);
-        togglePickerModal(selected, photoCount)
-      } else {
-        return null;
+    if (Platform.OS === 'ios') {
+      check(PERMISSIONS.IOS.CAMERA)
+        .then((result) => {
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              console.log(
+                'This feature is not available (on this device / in this context)',
+              );
+              break;
+            case RESULTS.DENIED:
+              console.log(
+                'The permission has not been requested / is denied but requestable',
+              );
+              request(PERMISSIONS.IOS.CAMERA).then((result) => {
+                console.log(result);
+              });
+              break;
+            case RESULTS.GRANTED:
+              console.log('The permission is granted');
+              togglePickerModal(selected, photoCount);
+              break;
+            case RESULTS.BLOCKED:
+              console.log(
+                'The permission is denied and not requestable anymore',
+              );
+              break;
+          }
+        })
+        .catch((error) => {
+          // …
+          console.log('NOT ALLOWEDD!!');
+        });
+    } else
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          // PermissionsAndroid.PERMISSIONS.CAMERA
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can access your camera roll');
+          // setShowPickerModal(true);
+          togglePickerModal(selected, photoCount);
+        } else {
+          return null;
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   // useEffect(() => {
@@ -103,7 +138,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const cancelUploadPhoto = () => {
     setSelected([...selected, {}]);
-    setPhotoCount(photoCount)
+    setPhotoCount(photoCount);
     // setSelected([]);
     // setPhotoCount(0);
     togglePickerModal(selected, photoCount);
@@ -111,17 +146,17 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const continueUploadPhoto = (selected, photoCount) => {
     // setSelected([...selected, {selected}]);
-    setSelected(selected); 
+    setSelected(selected);
     setPhotoCount(photoCount);
     togglePickerModal(selected, photoCount);
-  }
+  };
 
   const captureCamera = (imageUrl) => {
     // setSelected([...selected, {imageUrl}]);
-    setSingleImage(imageUrl)
-    console.log('image url outside appcamera', singleImage)
+    setSingleImage(imageUrl);
+    console.log('image url outside appcamera', singleImage);
     // togglePickerModal();
-  }
+  };
 
   const cancelCamera = () => {
     togglePickerModal(selected, photoCount);
@@ -134,27 +169,19 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     // console.log('selected array', selected)
     // setPhotoCount(photoCount + 1);
     togglePickerModal(selected, photoCount);
-  }
+  };
 
   const uploadTabs = [
     {
       key: 'camera',
       title: 'Photo',
-      renderPage: (
-        <PostCamera
-          cancel={cancelCamera}
-          next={continueCamera}
-        />
-      ),
+      renderPage: <PostCamera cancel={cancelCamera} next={continueCamera} />,
     },
     {
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library
-          cancel={cancelUploadPhoto}
-          next={continueUploadPhoto}
-        />
+        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} />
       ),
     },
   ];
@@ -307,8 +334,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }}>
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => requestPermission()}
-            >
+              onPress={() => requestPermission()}>
               <View style={{alignSelf: 'center', alignItems: 'center'}}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText textStyle="body2" color={Colors.contentOcean}>
@@ -327,7 +353,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               marginBottom: 8,
               // justifyContent: 'center',
             }}>
-        
             <ScrollView horizontal>
               {selected.map((image, i) => {
                 return (
@@ -387,7 +412,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
                 justifyContent: 'center',
                 // marginBottom: 8,
                 width: photoCount <= 1 ? width / 3 : width / 4,
-                marginLeft: photoCount >= 3 ? 8 : 0 ,
+                marginLeft: photoCount >= 3 ? 8 : 0,
               }}>
               <TouchableOpacity
                 activeOpacity={0.7}
@@ -544,20 +569,22 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       <Modal
         isVisible={showPickerModal}
         onBackButtonPress={() => togglePickerModal(selected, photoCount)}
+
+        // Comment this out to disable closing on swipe down
         onSwipeComplete={() => togglePickerModal(selected, photoCount)}
         swipeDirection="down"
+        // Comment this out to disable closing on swipe down
         style={{
           margin: 0,
           alignItems: 'center',
           justifyContent: 'center',
-        }}
-      >
+        }}>
         <View
           style={{
             backgroundColor: 'white',
             height: '100%',
           }}>
-            <TabNavigation routesList={uploadTabs} bottomTab />
+          <TabNavigation routesList={uploadTabs} bottomTab />
         </View>
       </Modal>
     </>
