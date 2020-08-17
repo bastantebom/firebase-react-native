@@ -456,7 +456,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               </AppText>
               <FloatingAppInput
                 value={addName}
-                label="Address Name"
+                label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(addName) => {
                   setAddName(addName);
@@ -492,6 +492,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               <FloatingAppInput
                 value={addNote}
                 label="Notes"
+                placeholder="ex. Yello Gate"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(addNote) => {
                   setAddNote(addNote);
