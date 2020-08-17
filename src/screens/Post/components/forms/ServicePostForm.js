@@ -59,6 +59,17 @@ const ServicePostForm = ({
 
   const navigateToPost = async () => {
     let type = 'service';
+    // let data = {
+    //   uid: user.uid,
+    //   post_type: type,
+    //   images: [],
+    //   title: title,
+    //   price: price,
+    //   description: description,
+    //   payment_method: paymentMethod,
+    //   store_location: storeLocation,
+    //   delivery_method: [],
+    // };
     let data = {
       uid: user.uid,
       post_type: type,
@@ -68,7 +79,10 @@ const ServicePostForm = ({
       description: description,
       payment_method: paymentMethod,
       store_location: storeLocation,
-      delivery_method: [],
+      delivery_method: {
+        pickup: pickupState,
+        delivery: deliveryState,
+      },
     };
 
     // console.log('im saving');

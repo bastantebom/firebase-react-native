@@ -54,6 +54,17 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const navigateToPost = async () => {
     let type = 'Need';
+    // let data = {
+    //   uid: user.uid,
+    //   post_type: type,
+    //   images: [],
+    //   title: title,
+    //   price: price,
+    //   description: description,
+    //   payment_method: paymentMethod,
+    //   store_location: storeLocation,
+    //   delivery_method: [],
+    // };
     let data = {
       uid: user.uid,
       post_type: type,
@@ -63,7 +74,10 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       description: description,
       payment_method: paymentMethod,
       store_location: storeLocation,
-      delivery_method: [],
+      delivery_method: {
+        pickup: pickupState,
+        delivery: deliveryState,
+      },
     };
 
     if (initialData.post_id) {

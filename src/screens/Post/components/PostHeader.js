@@ -636,8 +636,6 @@ const RenderActiveForm = ({
   togglePostModal,
   initialData,
 }) => {
-  console.log('initial data');
-  console.log(initialData);
 
   const [title, setTitle] = useState(initialData.title);
   const [price, setPrice] = useState(initialData.price?.toString());

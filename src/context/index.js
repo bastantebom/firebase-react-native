@@ -1,4 +1,5 @@
 import React, {createContext, useState} from 'react';
+import {PostService} from '@/services';
 
 export const Context = createContext();
 
@@ -7,6 +8,8 @@ export const ContextProvider = ({children}) => {
   const [notificationState, setNotificationState] = useState('');
   const [authType, setAuthType] = useState('');
   const [showButtons, setShowButtons] = useState();
+
+  const [posts, setPosts] = useState([]);
 
   const closeSlider = () => {
     setSliderState('close');
@@ -32,6 +35,15 @@ export const ContextProvider = ({children}) => {
     setShowButtons(false);
   };
 
+  const fetchPosts = (getPostsParams) => {
+    PostService.getPosts(getPostsParams).then((res) => {
+      // console.log('POSTS');
+      // LAST ID TO BE USED FOR PAGINATION
+      console.log(res.last_id);
+      setPosts(res.data);
+    });
+  }
+
   return (
     <Context.Provider
       value={{
@@ -47,6 +59,9 @@ export const ContextProvider = ({children}) => {
         closePostButtons,
         showButtons,
         setShowButtons,
+        posts,
+        setPosts,
+        fetchPosts
       }}>
       {children}
     </Context.Provider>

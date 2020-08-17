@@ -1,11 +1,18 @@
 import BaseAPI from '@/services/BaseAPI';
 
-const createPost = async (payload) => {
-  // console.log('creating post...');
-  // console.log('post data: ');
-  // console.log(payload);
+const getPosts = (payload) => {
+  return BaseAPI({
+    url: `post`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
 
-  return await BaseAPI({
+const createPost = (payload) => {
+  return BaseAPI({
     url: 'post/create',
     method: 'POST',
     headers: {
@@ -15,11 +22,11 @@ const createPost = async (payload) => {
   });
 };
 
-const editPost = async (PID, payload) => {
+const editPost = (PID, payload) => {
   /**
    * Accepts Post ID and payload
    */
-  return await BaseAPI({
+  return BaseAPI({
     url: `post/edit/${PID}`,
     method: 'PUT',
     headers: {
@@ -29,11 +36,11 @@ const editPost = async (PID, payload) => {
   });
 };
 
-const deletePost = async (PID) => {
+const deletePost = (PID) => {
   /**
    * Accepts Post ID
    */
-  return await BaseAPI({
+  return BaseAPI({
     url: `post/delete/${PID}`,
     method: 'DELETE',
     headers: {
@@ -42,6 +49,6 @@ const deletePost = async (PID) => {
   });
 };
 
-const PostService = {createPost, editPost, deletePost};
+const PostService = {createPost, getPosts, editPost, deletePost};
 
 export default PostService;

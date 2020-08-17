@@ -7,7 +7,7 @@ const client = axios.create({
 
 const BaseAPI = function (options) {
   const onSuccess = function (response) {
-    console.debug('Request Successful!', response);
+    // console.debug('Request Successful!', response);
     return response.data;
   };
 

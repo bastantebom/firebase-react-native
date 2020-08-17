@@ -26,6 +26,9 @@ import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
 
 const SinglePostView = (props) => {
+
+  // console.log("SINGLEW POST VIEW POST PROPS")
+  // console.log(props)
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState();
   const [ellipsisState, setEllipsisState] = useState(false);
@@ -86,7 +89,7 @@ const SinglePostView = (props) => {
     display_name,
     date_posted,
     post_id,
-  } = props.route.params?.data;
+  } = props.route?.params?.data;
 
   const userInfo = {
     username: username,
@@ -147,7 +150,7 @@ const SinglePostView = (props) => {
         <View style={styles.postInfoContainer}>
           <CustomNotification />
 
-          <ProfileInfo userInfo={userInfo} />
+          <ProfileInfo userInfo={userInfo} type="own-post" />
 
           <AppText
             textStyle="subtitle1"

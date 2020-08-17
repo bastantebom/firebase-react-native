@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-
 import {Divider} from 'react-native-paper';
-import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
+import {useNavigation} from '@react-navigation/native';
 
+import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
 import OwnPost from './OwnPost';
-import {PaddingView, AppText} from '@/components';
+import {PaddingView, AppText, ProfileInfo} from '@/components';
+import {UserContext} from '@/context/UserContext';
 import {
   Verified,
   JarHeart,
@@ -17,96 +18,105 @@ import {
 import LoadingScreen from './loading';
 
 const Post = ({data, type, isLoading}) => {
+  // const {
+  //   userImage,
+  //   name,
+  //   username,
+  //   rating,
+  //   postedAt,
+  //   isVerified,
+  //   postType,
+  //   postImage,
+  //   postName,
+  //   postPrice,
+  //   postServiceAddress,
+  //   postServiceRadius,
+  //   postDeliveryMethod,
+  // } = data;
+  const {user} = useContext(UserContext);
+
   const {
-    userImage,
-    name,
+    display_name,
+    date_posted,
+    available,
+    profile_photo,
+    payment_method,
+    store_location,
+    title,
     username,
-    rating,
-    postedAt,
-    isVerified,
-    postType,
-    postImage,
-    postName,
-    postPrice,
-    postServiceAddress,
-    postServiceRadius,
-    postDeliveryMethod,
+    delivery_method: {
+      pickup,
+      delivery
+    },
+    description,
+    uid,
+    price,
+    post_id,
+    images,
+    account_verified,
   } = data;
 
   const VerifiedBadge = () => {
-    return isVerified ? <Verified /> : <></>;
+    return account_verified ? <Verified /> : <></>;
   };
 
   let timeAgo = (time) => {
     return '• ' + timePassed(time) + ' ago';
   };
 
+  const userInfo = {
+    username: username,
+    profile_photo: profile_photo,
+    account_verified: account_verified,
+    display_name: display_name,
+    date_posted: date_posted,
+  };
+
+  const navigation = useNavigation();
+
+  const navToPost = () => {
+    let computedData = {
+      ...data,
+    };
+
+    navigation.navigate('Post', {
+      screen: 'SinglePostView',
+      params: data,
+    });
+  };
+
   if (type === 'dashboard')
     return (
       <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
         <PaddingView paddingSize={2} style={styles.container}>
-          <View style={styles.userInfoContainer}>
-            <View style={styles.userInfoImageContainer}>
-              <Image
-                style={GlobalStyle.image}
-                source={{
-                  uri: userImage,
-                }}
-              />
-            </View>
-            <View style={styles.userInfoDetailsContainer}>
-              <View style={styles.userInfoDetailsNameContainer}>
-                <AppText
-                  textStyle="caption"
-                  customStyle={styles.userInfoDetailsName}>
-                  {name}
-                </AppText>
-                <VerifiedBadge />
-              </View>
-              <View style={styles.userInfoDetailsUsernameContainer}>
-                <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
-                  @{username.toLowerCase()}
-                </AppText>
-
-                <View style={styles.starRatingContainer}>
-                  <StarRating width={12} height={12} />
-                  <AppText
-                    textStyle="eyebrow2"
-                    color={Colors.contentPlaceholder}>
-                    {rating}
-                  </AppText>
-                </View>
-
-                <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
-                  {timeAgo(postedAt)}
-                </AppText>
-              </View>
-            </View>
-            <TouchableOpacity>
-              <JarHeart width={20} height={20} />
-            </TouchableOpacity>
-          </View>
+          <ProfileInfo userInfo={userInfo} type="dashboard" />
 
           <View style={styles.postContainer}>
-            <View style={styles.postImageContainer}>
-              <Image
-                style={GlobalStyle.image}
-                source={{
-                  uri: postImage,
-                }}
-              />
-            </View>
+            <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+              <View style={styles.postImageContainer}>
+                <Image
+                  style={GlobalStyle.image}
+                  source={{
+                    uri:
+                      // images.length > 0
+                      //   ? images[0]
+                        // :
+                         'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                  }}
+                />
+              </View>
+            </TouchableOpacity>
             <View style={styles.postDetailContainer}>
               <AppText
                 textStyle="body2"
                 customStyle={GlobalStyle.marginBottom1}>
-                {postName}
+                {title}
               </AppText>
               <AppText
                 textStyle="price"
                 customStyle={styles.priceText}
                 color={Colors.secondaryMountainMeadow}>
-                ₱{postPrice}
+                ₱{price}
               </AppText>
 
               <Divider style={styles.dividerStyle} />
@@ -118,10 +128,10 @@ const Post = ({data, type, isLoading}) => {
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}
                     customStyle={{marginLeft: 4}}>
-                    {postServiceAddress}
+                    {store_location}
                   </AppText>
                 </View>
-                <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
+                {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
                   <NavigationArrow width={12} height={12} />
                   <AppText
                     textStyle="eyebrow2"
@@ -129,17 +139,26 @@ const Post = ({data, type, isLoading}) => {
                     customStyle={{marginLeft: 4}}>
                     {postServiceRadius}
                   </AppText>
-                </View>
+                </View> */}
               </View>
+              {/* {delivery_method.pickup && delivery_method.delivery ? ( */}
+                <View style={GlobalStyle.rowCenter}>
+                  <TransportationBox width={16} height={16} />
 
-              <View style={GlobalStyle.rowCenter}>
-                <TransportationBox width={16} height={16} />
-                <AppText
-                  textStyle="eyebrow2"
-                  customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
-                  {postDeliveryMethod}
-                </AppText>
-              </View>
+                  <AppText
+                    textStyle="eyebrow2"
+                    customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
+                    {/* {delivery_method.pickup && delivery_method.delivery
+                      ? 'Pickup & Delivery'
+                      : delivery_method.delivery
+                      ? 'Delivery'
+                      : delivery_method.pickup
+                      ? 'Pickup'
+                      : 'Not set'} */}
+                      Delivery
+                  </AppText>
+                </View>
+              {/* ) : null} */}
             </View>
           </View>
         </PaddingView>
