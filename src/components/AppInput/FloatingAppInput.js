@@ -21,11 +21,11 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
-    //console.log(props.value);
-    if (props.value !== '' && props.value !== undefined) {
+    console.log(props.value + ' ' + props.placeholder);
+    if (props.value !== undefined || props.placeholder !== undefined) {
       animateFocus();
     }
-  }, [props.value]);
+  }, [props.value, props.placeholder]);
 
   const animateFocus = () => {
     Animated.timing(labelPosition, {
@@ -36,7 +36,7 @@ const FloatingAppInput = (props) => {
   };
 
   const animateBlur = () => {
-    if (props.value === '' || props.value === undefined)
+    if (props.placeholder === undefined && props.value === undefined)
       Animated.timing(labelPosition, {
         toValue: 0,
         duration: 300,
@@ -58,7 +58,7 @@ const FloatingAppInput = (props) => {
     : Colors.contentPlaceholder;
 
   const fontSize =
-    !isActive && (props.value === undefined || props.value === '')
+    !isActive && props.value === undefined && props.placeholder === undefined
       ? normalize(16)
       : normalize(12);
 
