@@ -125,10 +125,7 @@ function Profile() {
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}
-          <HexagonBorder
-            size={150}
-            // imgSrc={}
-          />
+          <HexagonBorder size={150} imgSrc={userInfo.profile_photo} />
         </View>
 
         <ProfileLinks
