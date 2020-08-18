@@ -9,6 +9,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View} from 'react-native';
 import SplashScreenComponent from './SplashScreen';
 
+import {Notification} from '@/components';
+
 //screens
 import {Onboarding} from '@/screens/Onboarding';
 import {Dashboard} from '@/screens/Dashboard';
@@ -40,6 +42,7 @@ import {
   UserAltActive,
   NotificationDot,
 } from '@/assets/images/icons';
+import {SafeAreaView} from 'react-navigation';
 
 const AuthStack = createStackNavigator();
 
@@ -265,11 +268,9 @@ function TabStack() {
 
 function Routes() {
   const {user} = useContext(UserContext);
+  const {deleteNotif, setDeleteNotif} = useContext(Context);
 
   useEffect(() => {
-    // for splashscreen
-    // SplashScreen.hide();
-
     setTimeout(() => {
       setShowSplash(false);
     }, 3000);
@@ -277,20 +278,19 @@ function Routes() {
 
   const [showSplash, setShowSplash] = useState(true);
 
-  // const SplashScreenComponent = () => {
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         backgroundColor: 'yellow',
-  //         alignItems: 'center',
-  //         justifyContent: 'center',
-  //       }}>
-  //       <AppText>SPLASH SCREEN</AppText>
-  //     </View>
-  //   );
-  // };
   if (showSplash) return <SplashScreenComponent />;
+
+  const DeleteNotification = () => {
+    if (deleteNotif) {
+      return (
+        <SafeAreaView>
+          <Notification type={'verified'} position="relative" />
+        </SafeAreaView>
+      );
+    }
+
+    return <></>;
+  };
 
   return (
     <NavigationContainer>

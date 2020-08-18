@@ -7,19 +7,19 @@ const client = axios.create({
 
 const BaseAPI = function (options) {
   const onSuccess = function (response) {
-    // console.debug('Request Successful!', response);
+    console.debug('Request Successful!');
     return response.data;
   };
 
   const onError = function (error) {
-    console.error('Request Failed:', error.config);
+    console.error('Request Failed:');
 
     if (error.response) {
-      console.error('Status:', error.response.status);
-      console.error('Data:', error.response.data);
-      console.error('Headers:', error.response.headers);
+      console.error('Status:');
+      console.error('Data:');
+      console.error('Headers:');
     } else {
-      console.error('Error Message:', error.message);
+      console.error('Error Message:');
     }
 
     return Promise.reject(error.response || error.message);

@@ -94,14 +94,14 @@ const ServicePostForm = ({
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
-          navToPost(res);
+          navToPost({...res, viewing: false, created: false, edited: true});
         },
       );
     }
 
     return await PostService.createPost(data).then((res) => {
       togglePostModal();
-      navToPost(res);
+      navToPost({...res, viewing: false, created: true, edited: false});
     });
   };
 

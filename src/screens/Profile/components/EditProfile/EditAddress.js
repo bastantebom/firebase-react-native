@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {TouchableOpacity, View, StyleSheet, SafeAreaView} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import {useNavigation} from '@react-navigation/native';
@@ -14,6 +14,7 @@ import {
   AppButton,
 } from '@/components';
 import {Colors, normalize} from '@/globals';
+import {UserContext} from '@/context/UserContext';
 
 const styles = StyleSheet.create({
   modalHeader: {
@@ -40,14 +41,15 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     zIndex: 100,
     top: 70,
-    marginTop: 15,
+    marginTop: 25,
     // elevation: 100,
   },
 });
 
 // create a component
-const EditAddress = ({back, address}, route) => {
-  const navigation = useNavigation();
+const EditAddress = ({back, address, changeFromMapHandler}, route) => {
+  const {userInfo, setUserInfo} = useContext(UserContext);
+  //const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
@@ -56,29 +58,71 @@ const EditAddress = ({back, address}, route) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   Geocoder.init(Config.apiKey);
   const [newCoords, setNewCoords] = useState({});
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
+    longitude: 0,
+    latitude: 0,
+  });
+  //const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const onRegionChange = (region) => {
     //console.log(region);
     getStringAddress(region);
-    setButtonDisabled(false);
-    setButtonStyle({});
+    //setButtonDisabled(false);
   };
 
   const getStringAddress = (location) => {
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
         const addressComponent = json.results[1].formatted_address;
+        const arrayToExtract =
+          json.results.length == 12
+            ? 7
+            : json.results.length == 11
+            ? 6
+            : json.results.length == 10
+            ? 6
+            : json.results.length == 9
+            ? 4
+            : json.results.length == 8
+            ? 3
+            : json.results.length < 8
+            ? 2
+            : 2;
+
         setChangeMapAddress(addressComponent);
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country: 'Philippines',
+          },
+          //setChangeMapAddress(addressComponent);
+        });
       })
       .catch((error) => console.warn(error));
+    //console.log(addressComponents);
+    //setButtonDisabled(false);
+    //setButtonStyle({});
   };
 
   const getPositionFromString = (address) => {
+    //console.log('Dito Sya');
     Geocoder.from(address)
       .then((json) => {
-        var location = json.results[0].geometry.location;
-        console.log('New Coords');
+        const location = json.results[0].geometry.location;
+        //console.log(location);
+        const convertedLocation = {
+          latitude: location.lat,
+          longitude: location.lng,
+        };
+        getStringAddress(convertedLocation);
         setNewCoords(location);
         setButtonDisabled(false);
         setButtonStyle({});
@@ -88,59 +132,18 @@ const EditAddress = ({back, address}, route) => {
 
   const onSearchLocationHandler = (data) => {
     //console.log(JSON.stringify(data));
-    setChangeMapAddress(data);
+    //setChangeMapAddress(data);
+    //getStringAddress(data);
     getPositionFromString(data);
   };
 
   const saveRefineLocation = () => {
-    setIsScreenLoading(true);
-    if (route?.route?.params?.uid) {
-      SignUpService.saveLocation({
-        uid: route?.route?.params?.uid,
-        location: changeMapAddress,
-      })
-        .then((response) => {
-          if (response.success) {
-            signInAfterSaveLocation();
-          }
-        })
-        .catch((error) => {
-          setIsScreenLoading(false);
-          console.log('With Error in the API SignUp ' + error);
-        });
-    } else {
-      setIsScreenLoading(false);
-      navigation.push('Dashboard');
-    }
-  };
-
-  const signInAfterSaveLocation = () => {
-    if (route?.route?.params?.custom_token) {
-      auth()
-        .signInWithCustomToken(route?.route?.params?.custom_token)
-        .then(() => {
-          setIsScreenLoading(false);
-          navigation.push('Dashboard');
-        })
-        .catch((err) => {
-          setIsScreenLoading(false);
-          console.log(err);
-        });
-    } else {
-      setIsScreenLoading(false);
-      navigation.push('Dashboard');
-    }
-  };
-
-  const onClearSearchAddress = (textValue) => {
-    if (textValue.trim().length < 1) {
-      setSearchStringAddress('');
-      setButtonDisabled(true);
-      setButtonStyle({
-        backgroundColor: Colors.buttonDisable,
-        borderColor: Colors.buttonDisable,
-      });
-    }
+    // const dataToUpdate = {
+    //   address: addressComponents,
+    // };
+    //setUserInfo({...userInfo, ...dataToUpdate});
+    changeFromMapHandler(addressComponents);
+    back();
   };
 
   return (
@@ -160,6 +163,7 @@ const EditAddress = ({back, address}, route) => {
       <View style={styles.textInputWrapper}>
         <GooglePlacesInput
           onResultsClick={(data) => {
+            //alert(data);
             onSearchLocationHandler(data);
             //alert(data);
           }}

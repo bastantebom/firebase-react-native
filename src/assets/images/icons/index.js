@@ -8,6 +8,7 @@
 //  notification
 import CircleTick from '@/assets/images/icons/circle-tick.svg';
 import Warning from '@/assets/images/icons/warning.svg';
+import CircleTickWhite from './circle-tick-white.svg';
 
 // utils
 import Close from '@/assets/images/icons/close.svg';
@@ -137,7 +138,13 @@ import PostPencil from './PostPencil.svg';
 import PostRemove from './PostRemove.svg';
 import ProfileImageDefault from './profile-image-default.svg';
 
+import ContactTelephone from './contact-telephone.svg';
+import ContactEmail from './contact-email.svg';
+
 export {
+  ContactTelephone,
+  ContactEmail,
+  CircleTickWhite,
   ProfileImageDefault,
   PostPencil,
   PostRemove,

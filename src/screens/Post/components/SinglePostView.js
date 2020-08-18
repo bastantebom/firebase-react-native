@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,8 +12,7 @@ import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper'
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
-
-import {normalize, GlobalStyle, Colors} from '@/globals';
+import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
 import {
   PostClock,
   PostNavigation,
@@ -22,21 +21,46 @@ import {
   PostBox,
   CircleTick,
   CloseDark,
+  CircleTickWhite,
+  CloseLight,
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
 import EditPostScreen from './EditPostScreen';
 import { ImageModal } from './ImageModal';
 
 const SinglePostView = (props) => {
-
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
+
+  const {
+    uid,
+    post_type,
+    images,
+    title,
+    description,
+    payment_method,
+    price,
+    store_location: {longitude, city, province, latitude, country},
+    delivery_method,
+    available,
+    username,
+    profile_photo,
+    account_verified,
+    display_name,
+    date_posted,
+    post_id,
+  } = props.route?.params?.data;
+
   const navigation = useNavigation();
-  const [showNotification, setShowNotification] = useState();
+  const [showNotification, setShowNotification] = useState(false);
   const [ellipsisState, setEllipsisState] = useState(false);
+  const [otherPostModal, setOtherPostModal] = useState(false);
 
   const [editPost, showEditPost] = useState(false);
   const [postImageModal, setPostImageModal] = useState(false);
+
+  const {user} = useContext(UserContext);
 
   const toggleEditPost = () => {
     toggleEllipsisState();
@@ -49,8 +73,8 @@ const SinglePostView = (props) => {
     setEllipsisState(!ellipsisState);
   };
 
-  const toggleNotification = () => {
-    setShowNotification(!showNotification);
+  const closeNotification = () => {
+    setShowNotification(false);
   };
 
   const togglePostImageModal = () => {
@@ -58,45 +82,23 @@ const SinglePostView = (props) => {
   }
 
   useEffect(() => {
-    setShowNotification(
-      props.route.params?.success ? props.route.params?.success : false,
-    );
+    // console.log('LOGGING ROUTE PROPS');
+    if (!(uid === user.uid)) setOtherPostModal(true);
+
+    setShowNotification(setNotification());
 
     setTimeout(() => {
       setShowNotification(false);
-    }, 5000);
-  }, []);
+    }, 3000);
+  }, [props]);
 
-  // data = {
-  //   uid: user.uid,
-  //   post_type: type,
-  //   images: [],
-  //   title: title,
-  //   price: price,
-  //   description: description,
-  //   payment_method: paymentMethod,
-  //   store_location: storeLocation,
-  //   delivery_method: [],
-  // };
-
-  const {
-    uid,
-    post_type,
-    images,
-    title,
-    description,
-    payment_method,
-    price,
-    store_location,
-    delivery_method,
-    available,
-    username,
-    profile_photo,
-    account_verified,
-    display_name,
-    date_posted,
-    post_id,
-  } = props.route?.params?.data;
+  const setNotification = () => {
+    return props.route.params?.created
+      ? props.route.params?.created
+      : props.route.params?.edited
+      ? props.route.params?.edited
+      : false;
+  };
 
   const userInfo = {
     username: username,
@@ -123,13 +125,53 @@ const SinglePostView = (props) => {
       uri: 'https://i.ytimg.com/vi/fD9xj7vKlns/maxresdefault.jpg',
     }
   ]
+  const deletePost = async () => {
+    console.log('delete this post with id: ');
+    console.log(post_id);
+    return await PostService.deletePost(post_id).then(() => {
+      toggleEllipsisState();
+      navigation.goBack();
+    });
+  };
+
+  let timeAgo = (time) => {
+    return timePassed(time) + ' ago';
+  };
 
   const CustomNotification = () => {
+    const backgroundColor = props.route.params?.created
+      ? Colors.primaryYellow
+      : Colors.secondaryRoyalBlue;
+
+    const notificationMessage = props.route.params?.created
+      ? 'Post Successful!'
+      : 'Post edited successfully';
+
+    const notificationColor = props.route.params?.created
+      ? Colors.contentEbony
+      : 'white';
+
+    const NotificationCheckbox = () => {
+      return props.route.params?.created ? (
+        <CircleTick width={normalize(24)} height={normalize(24)} />
+      ) : (
+        <CircleTickWhite width={normalize(24)} height={normalize(24)} />
+      );
+    };
+
+    const NotificationClose = () => {
+      return props.route.params?.created ? (
+        <CloseDark width={normalize(24)} height={normalize(24)} />
+      ) : (
+        <CloseLight width={normalize(24)} height={normalize(24)} />
+      );
+    };
+
     if (showNotification)
       return (
         <View
           style={{
-            backgroundColor: Colors.primaryYellow,
+            backgroundColor: backgroundColor,
             position: 'absolute',
             top: -58,
             width: normalize(375),
@@ -140,29 +182,23 @@ const SinglePostView = (props) => {
             borderTopLeftRadius: 8,
             flexDirection: 'row',
           }}>
-          <CircleTick width={normalize(24)} height={normalize(24)} />
-          <AppText customStyle={{flex: 1, marginLeft: 8}} textStyle="body2">
-            Post successful!
+          <NotificationCheckbox />
+          <AppText
+            customStyle={{flex: 1, marginLeft: 8}}
+            color={notificationColor}
+            textStyle="body2">
+            {notificationMessage}
           </AppText>
-          <TouchableOpacity onPress={toggleNotification} activeOpacity={0.7}>
-            <CloseDark width={normalize(24)} height={normalize(24)} />
+          <TouchableOpacity onPress={closeNotification} activeOpacity={0.7}>
+            <NotificationClose />
           </TouchableOpacity>
         </View>
       );
     return null;
   };
 
-  const deletePost = async () => {
-    console.log('delete this post with id: ');
-    console.log(post_id);
-    return await PostService.deletePost(post_id).then(() => {
-      toggleEllipsisState()
-      navigation.goBack();
-    });
-  };
-
-  return (
-    <>
+  const SinglePostContent = () => {
+    return (
       <View style={{flex: 1}}>
         <View style={styles.postImageContainer}>
           {/* <Image
@@ -208,13 +244,13 @@ const SinglePostView = (props) => {
           <View style={styles.iconText}>
             <PostClock width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              Just Now
+              {timeAgo(date_posted)}
             </AppText>
           </View>
           <View style={styles.iconText}>
             <PostNavigation width={normalize(24)} height={normalize(24)} />
             <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {store_location}
+              {city}, {province}, {country}
             </AppText>
           </View>
           <View style={styles.iconText}>
@@ -246,8 +282,14 @@ const SinglePostView = (props) => {
           ) : null}
         </View>
       </View>
+    );
+  };
+
+  return (
+    <>
+      <SinglePostContent />
       <TransparentHeader
-        type="post-own"
+        type={uid === user.uid ? 'post-own' : 'post-other'}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         backFunction={() => navigation.goBack()}
@@ -294,8 +336,6 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  console.log('passed card: ');
-  console.log(card);
   return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 

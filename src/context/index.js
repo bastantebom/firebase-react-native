@@ -8,6 +8,7 @@ export const ContextProvider = ({children}) => {
   const [notificationState, setNotificationState] = useState('');
   const [authType, setAuthType] = useState('');
   const [showButtons, setShowButtons] = useState();
+  const [deleteNotif, setDeleteNotif] = useState(true);
 
   const [posts, setPosts] = useState([]);
 
@@ -42,7 +43,7 @@ export const ContextProvider = ({children}) => {
       console.log(res.last_id);
       setPosts(res.data);
     });
-  }
+  };
 
   return (
     <Context.Provider
@@ -61,7 +62,9 @@ export const ContextProvider = ({children}) => {
         setShowButtons,
         posts,
         setPosts,
-        fetchPosts
+        fetchPosts,
+        deleteNotif,
+        setDeleteNotif
       }}>
       {children}
     </Context.Provider>

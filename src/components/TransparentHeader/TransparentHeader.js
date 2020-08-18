@@ -58,6 +58,37 @@ const TransparentHeader = ({
     }
   };
 
+  if (type === 'post-other') {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          position: 'absolute',
+          zIndex: 1,
+          backgroundColor: 'transparent',
+        }}>
+        <View
+          style={{
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            paddingHorizontal: 16,
+            width: Dimensions.get('window').width,
+            paddingTop: 4,
+          }}>
+          {/* Left aligned icons */}
+          <View>
+            <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
+              <View style={styles.circle}>
+                <HeaderBack width={normalize(16)} height={normalize(16)} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          {/* Right aligned icons */}
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   if (type === 'post-own')
     return (
       <>
