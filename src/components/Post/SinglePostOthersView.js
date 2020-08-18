@@ -145,15 +145,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
           <TouchableOpacity
             style={{flex: 1, marginRight: 8}}
             activeOpacity={0.7}>
-            <View
-              style={{
-                flexDirection: 'row',
-                borderWidth: 1.2,
-                borderColor: Colors.primaryYellow,
-                justifyContent: 'center',
-                paddingVertical: 12,
-                alignItems: 'center',
-              }}>
+            <View style={styles.contactButtonContainer}>
               <ContactTelephone width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
                 Call Seller
@@ -163,15 +155,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
           <TouchableOpacity
             style={{flex: 1, marginLeft: 8}}
             activeOpacity={0.7}>
-            <View
-              style={{
-                flexDirection: 'row',
-                borderWidth: 1.2,
-                borderColor: Colors.primaryYellow,
-                justifyContent: 'center',
-                paddingVertical: 12,
-                alignItems: 'center',
-              }}>
+            <View style={styles.contactButtonContainer}>
               <ContactEmail width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
                 Send Email
@@ -208,6 +192,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
+  },
+  contactButtonContainer: {
+    flexDirection: 'row',
+    borderWidth: 1.2,
+    borderColor: Colors.primaryYellow,
+    justifyContent: 'center',
+    paddingVertical: 12,
+    alignItems: 'center',
   },
 });
 
