@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 import {AppText} from '@/components';
 import {GlobalStyle, Colors, normalize, timePassed} from '@/globals';
@@ -17,9 +17,6 @@ const ProfileInfo = ({userInfo, type}) => {
     display_name = 'Busy Bee',
     date_posted,
   } = userInfo;
-
-  // console.log("DATE POSTED")
-  // console.log(date_posted._seconds)
 
   const VerifiedBadge = ({width = 10, height = 11.25}) => {
     return account_verified ? (
@@ -46,15 +43,16 @@ const ProfileInfo = ({userInfo, type}) => {
 
   if (type === 'dashboard')
     return (
-      <View style={{flexDirection: 'row'}}>
-        <View
-          style={{
-            height: normalize(32),
-            width: normalize(32),
-            borderRadius: normalize(32 / 2),
-            overflow: 'hidden',
-          }}>
-          {/* <Image
+      <TouchableOpacity activeOpacity={0.7}>
+        <View style={{flexDirection: 'row'}}>
+          <View
+            style={{
+              height: normalize(32),
+              width: normalize(32),
+              borderRadius: normalize(32 / 2),
+              overflow: 'hidden',
+            }}>
+            {/* <Image
             style={GlobalStyle.image}
             source={{
               uri: profile_photo
@@ -62,23 +60,23 @@ const ProfileInfo = ({userInfo, type}) => {
                 : 'https://i.pinimg.com/originals/f9/0c/9e/f90c9e170d4b553a9d0a79735113365b.jpg',
             }}
           /> */}
-          <ProfilePhoto size={32} />
-        </View>
-        <View style={styles.userInfoDetailsContainer}>
-          <View style={styles.userInfoDetailsNameContainer}>
-            <AppText
-              textStyle="caption"
-              customStyle={styles.userInfoDetailsName}>
-              {display_name}
-            </AppText>
-            <VerifiedBadge />
+            <ProfilePhoto size={32} />
           </View>
-          <View style={styles.userInfoDetailsUsernameContainer}>
-            <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
-              @{username.toLowerCase()}
-            </AppText>
+          <View style={styles.userInfoDetailsContainer}>
+            <View style={styles.userInfoDetailsNameContainer}>
+              <AppText
+                textStyle="caption"
+                customStyle={styles.userInfoDetailsName}>
+                {display_name}
+              </AppText>
+              <VerifiedBadge />
+            </View>
+            <View style={styles.userInfoDetailsUsernameContainer}>
+              <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
+                @{username.toLowerCase()}
+              </AppText>
 
-            {/* <View style={styles.starRatingContainer}>
+              {/* <View style={styles.starRatingContainer}>
                   <StarRating width={12} height={12} />
                   <AppText
                     textStyle="eyebrow2"
@@ -87,16 +85,16 @@ const ProfileInfo = ({userInfo, type}) => {
                   </AppText>
                 </View> */}
 
-            <AppText
-              textStyle="eyebrow2"
-              color={Colors.contentPlaceholder}
-              customStyle={{paddingHorizontal: 4}}>
-              {/* {timeAgo(date_posted._seconds)} */}
-              1 day ago
-            </AppText>
+              <AppText
+                textStyle="eyebrow2"
+                color={Colors.contentPlaceholder}
+                customStyle={{paddingHorizontal: 4}}>
+                {timeAgo(date_posted)}
+              </AppText>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
   // OWN POST VIEW

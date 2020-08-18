@@ -6499,6 +6499,11 @@ react-native-camera@^3.35.0:
   dependencies:
     prop-types "^15.6.2"
 
+react-native-countdown-circle@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-countdown-circle/-/react-native-countdown-circle-3.0.1.tgz#7905688ee21a37f1a6d41ea1d14a5bc5f83b2603"
+  integrity sha512-S2O2/VyV9/i6RfLkqrWBi8u5oyh/I3+7ftlet1uRlpx/REf4bCKd6CUMNeOhgsWC+Hqxr32EQ6vjOmtG0GofQA==
+
 react-native-dash@^0.0.11:
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/react-native-dash/-/react-native-dash-0.0.11.tgz#cf1b0108e4660217cf0300b872231a5cadb9c4a8"

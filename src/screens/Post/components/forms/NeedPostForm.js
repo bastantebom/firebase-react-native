@@ -54,17 +54,6 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const navigateToPost = async () => {
     let type = 'Need';
-    // let data = {
-    //   uid: user.uid,
-    //   post_type: type,
-    //   images: [],
-    //   title: title,
-    //   price: price,
-    //   description: description,
-    //   payment_method: paymentMethod,
-    //   store_location: storeLocation,
-    //   delivery_method: [],
-    // };
     let data = {
       uid: user.uid,
       post_type: type,
@@ -86,14 +75,17 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
-          navToPost(res);
+          navToPost({...res, viewing: false, created: false, edited: true});
+
+          console.log('CREATE A POST GOING TO SINGLEPOST');
+          console.log({...res, edited: true});
         },
       );
     }
 
     return await PostService.createPost(data).then((res) => {
       togglePostModal();
-      navToPost(res);
+      navToPost({...res, viewing: false, created: true, edited: false});
     });
   };
 

@@ -126,7 +126,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
-          navToPost(res);
+          navToPost({...res, viewing: false, created: false, edited: true});
         },
       );
     }
@@ -135,7 +135,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       setLoadingSubmit(false);
       togglePostModal();
       setTimeout(() => {
-        navToPost(res);
+        navToPost({...res, viewing: false, created: true, edited: false});
       }, 500);
     });
   };

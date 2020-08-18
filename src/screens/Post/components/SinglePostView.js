@@ -21,16 +21,17 @@ import {
   PostBox,
   CircleTick,
   CloseDark,
+  CircleTickWhite,
+  CloseLight
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
 
 const SinglePostView = (props) => {
-
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
   const navigation = useNavigation();
-  const [showNotification, setShowNotification] = useState();
+  const [showNotification, setShowNotification] = useState(false);
   const [ellipsisState, setEllipsisState] = useState(false);
 
   const [editPost, showEditPost] = useState(false);
@@ -46,31 +47,26 @@ const SinglePostView = (props) => {
     setEllipsisState(!ellipsisState);
   };
 
-  const toggleNotification = () => {
-    setShowNotification(!showNotification);
+  const closeNotification = () => {
+    setShowNotification(false);
   };
 
   useEffect(() => {
+    console.log('LOGGING ROUTE PROPS');
+    console.log(props.route.params);
+
     setShowNotification(
-      props.route.params?.success ? props.route.params?.success : false,
+      props.route.params?.created ? props.route.params?.created : false,
+    );
+
+    setShowNotification(
+      props.route.params?.edited ? props.route.params?.edited : false,
     );
 
     setTimeout(() => {
       setShowNotification(false);
-    }, 5000);
-  }, []);
-
-  // data = {
-  //   uid: user.uid,
-  //   post_type: type,
-  //   images: [],
-  //   title: title,
-  //   price: price,
-  //   description: description,
-  //   payment_method: paymentMethod,
-  //   store_location: storeLocation,
-  //   delivery_method: [],
-  // };
+    }, 3000);
+  }, [props]);
 
   const {
     uid,
@@ -99,11 +95,39 @@ const SinglePostView = (props) => {
   };
 
   const CustomNotification = () => {
+    const backgroundColor = props.route.params?.created
+      ? Colors.primaryYellow
+      : Colors.secondaryRoyalBlue;
+
+    const notificationMessage = props.route.params?.created
+      ? 'Post Successful!'
+      : 'Post edited successfully';
+
+    const notificationColor = props.route.params?.created
+      ? Colors.contentEbony
+      : 'white';
+
+    const NotificationCheckbox = () => {
+      return props.route.params?.created ? (
+        <CircleTick width={normalize(24)} height={normalize(24)} />
+      ) : (
+        <CircleTickWhite width={normalize(24)} height={normalize(24)} />
+      );
+    };
+
+    const NotificationClose = () => {
+      return props.route.params?.created ? (
+        <CloseDark width={normalize(24)} height={normalize(24)} />
+      ) : (
+        <CloseLight width={normalize(24)} height={normalize(24)} />
+      );
+    }
+
     if (showNotification)
       return (
         <View
           style={{
-            backgroundColor: Colors.primaryYellow,
+            backgroundColor: backgroundColor,
             position: 'absolute',
             top: -58,
             width: normalize(375),
@@ -114,12 +138,15 @@ const SinglePostView = (props) => {
             borderTopLeftRadius: 8,
             flexDirection: 'row',
           }}>
-          <CircleTick width={normalize(24)} height={normalize(24)} />
-          <AppText customStyle={{flex: 1, marginLeft: 8}} textStyle="body2">
-            Post successful!
+          <NotificationCheckbox />
+          <AppText
+            customStyle={{flex: 1, marginLeft: 8}}
+            color={notificationColor}
+            textStyle="body2">
+            {notificationMessage}
           </AppText>
-          <TouchableOpacity onPress={toggleNotification} activeOpacity={0.7}>
-            <CloseDark width={normalize(24)} height={normalize(24)} />
+          <TouchableOpacity onPress={closeNotification} activeOpacity={0.7}>
+            <NotificationClose />
           </TouchableOpacity>
         </View>
       );
@@ -130,7 +157,7 @@ const SinglePostView = (props) => {
     console.log('delete this post with id: ');
     console.log(post_id);
     return await PostService.deletePost(post_id).then(() => {
-      toggleEllipsisState()
+      toggleEllipsisState();
       navigation.goBack();
     });
   };
@@ -239,8 +266,6 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  console.log('passed card: ');
-  console.log(card);
   return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 
