@@ -45,7 +45,7 @@ export const AppCamera = ({
   const [cameraRatio, setCameraRatio] = useState('')
   const [flash, setFlash] = useState('off')
   const [cameraType, setCameraType] = useState('front')
-  const [ imageUrl, setImageUrl ] = useState('');
+  const [imageUrl, setImageUrl] = useState([])
   const cameraRef = useRef(null)
   
   const prepareRatio = async () => {
@@ -77,46 +77,31 @@ export const AppCamera = ({
     }
   }
 
-  const takePicture = async() => {
+  const takePicture = async () => {
     if (cameraRef) {
       const options = { 
         quality: 1, 
-        // base64: true,
-        // width: 1.6,
         pauseAfterCapture: true,
-        // height: 50
       };
+
       const data = await cameraRef.current.takePictureAsync(options);
-      
+
       cameraRef.current.pausePreview()
+
+      setImageUrl(data)
       
-      setImageUrl(data);
-      // setImageUrl('data1213!!!!!!!!!!!');
-      console.log('data', data)
-      console.log('imageUrl', imageUrl)
     }
   };
-
+  
   const retake = () => {
     cameraRef.current.resumePreview()
-    // setImageUrl('');
-    // console.log('retake', imageUrl )
+    // setImageUrl([]);
   }
-
-  // const retakePhoto = () => {
-  //   // setImageUrl('');
-  //   setScreen('idPhoto');
-  // }
-
-  // const selfieScreen = () => {
-  //   setScreen('selfieInitial');
-  //   console.log(imageUrl);
-  // }
 
   useEffect(() => {
     prepareRatio;
-    // console.log(cameraRatio)
-  }, []);
+    captureImage(imageUrl)
+  }, [imageUrl]);
 
   return (
     <View style={styles.container}>
@@ -165,19 +150,14 @@ export const AppCamera = ({
           {instruction}
         </AppText>
         </View>
-        <TouchableOpacity onPress={() => {
-          {takePicture(),
-            captureImage(imageUrl)
-            // console.log(imageUrl)
-          }
-          // console.log('appcamera', imageUrl)
-          // captureImage(imageUrl)
-          // console.log('captureImage');
-          // () => captureImage()
-          }} style={styles.capture}>
+        <TouchableOpacity onPress={() => {{ 
+          takePicture()}
+        }} 
+          style={styles.capture}
+        >
           <View style={styles.captureButton} />
         </TouchableOpacity>
-        { imageUrl !== '' ?
+        { imageUrl.length != 0 ?
           <TouchableOpacity onPress={retake}>
             <AppText textStyle="body1" customStyle={{ marginTop: 20 }}>Retake</AppText>
           </TouchableOpacity> : null

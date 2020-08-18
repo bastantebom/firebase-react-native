@@ -2,43 +2,19 @@ import React, {useState, useEffect, useContext, useReducer} from 'react';
 import {
   View,
   TouchableOpacity,
-  ScrollView,
   SafeAreaView,
   Image,
-  StyleSheet,
-  Text,
   Dimensions,
-  Platform,
-  PermissionsAndroid,
   TouchableWithoutFeedback,
-  ActivityIndicator,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// import {Switch} from 'react-native-switch';
-import Textarea from 'react-native-textarea';
-import ImagePicker from 'react-native-image-crop-picker';
-import NativeImagePicker from 'react-native-image-picker';
-import CameraRoll from '@react-native-community/cameraroll';
 import CameraRollPicker from 'react-native-camera-roll-picker';
 import Modal from 'react-native-modal';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import {
   AppText,
-  AppInput,
-  Switch,
-  AppButton,
-  TabNavigation,
-  BottomSheetHeader,
-  AppRadio,
-  PaddingView,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
-import {PostService} from '@/services';
-import {UserContext} from '@/context/UserContext';
-import {PostImages, CloseLight, ArrowDown} from '@/assets/images/icons';
-import {CameraId} from '@/screens/Dashboard/Verification/components/CameraId';
-import {AppCamera} from '@/components/Camera/AppCamera';
+import {ArrowDown} from '@/assets/images/icons';
 import {PhotoAlbums} from './PhotoAlbums';
 
 const {height, width} = Dimensions.get('window');
@@ -52,39 +28,43 @@ export const Library = ({
   next,
   // showFolders,
 }) => {
+  
   const [photoCount, setPhotoCount] = useState(0);
   const [currentImage, setCurrentImage] = useState('');
   const [selected, setSelected] = useState([]);
   const [selectedCount, setSelectedCount] = useState([]);
-  const [iterate, setIterate] = useState(0);
+  const [count, setCount] = useState(0);
   const [showFolderList, setShowFolderList] = useState(false);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setSelected(images);
     setPhotoCount(num);
+    getData();
     setCurrentImage(num > 0 ? images[num - 1].uri : '');
-    
-    // console.log(selected.length)
-    // const [count, setCount] = useState(0);
-
-    const length = selected.length
-    setIterate(length)
-    setSelectedCount([...selectedCount, iterate])
-    // console.log('selectedCount', selectedCount)
-    console.log(selected.length)
+    setSelectedCount(prev => [...prev, num])
   };
+  
+  // const lastItem = selectedCount.pop();
+  const lastItem = selectedCount;
+  
+  const getData = () => {
+    const arr = selectedCount;
+
+    arr.forEach(function(i, idx, array){
+      if (idx === array.length - 1){ 
+        setCount(i)
+      }
+    });
+  }
 
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
 
   useEffect(() => {
-    // Array.from({ length: selected.length }).map((_, index) => (
-    //   { index }
-    // ))
-    console.log(selected.length)
-  }, []);
+    getData();
+  }, [getData])
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
@@ -101,15 +81,15 @@ export const Library = ({
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText textStyle="body2">Cancel</AppText>
           </TouchableOpacity>
-
-          <TouchableOpacity
+          <AppText textStyle="body1">All Photos</AppText>
+          {/* <TouchableOpacity
             onPress={toggleFolderList}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <AppText textStyle="body1">All Photos</AppText>
               <ArrowDown height={normalize(24)} width={normalize(24)} />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             // onPress={next}
             onPress={() => next(selected, photoCount)}
@@ -170,16 +150,19 @@ export const Library = ({
                     top: 6 
                   }}
                 >
-                  {Array.from({ length: selected.length }).map((_, index) => (
+                  {/* {Array.from({ length: selectedCount.length }).map((_, index) => ( */}
+                  {/* {selectedCount.map((item, index) =>  */}
                     <AppText 
                       textStyle="subtitle1" 
                       color={Colors.neutralsWhite} 
                       customStyle={{ textAlign: 'center' }}
-                      key={index}
+                      // key={index}
                     >
-                      {selectedCount[index]}
+                      {/* {lastItem[index]} */}
+                      {count}
                     </AppText>
-                  ))}
+                  {/* )} */}
+                  {/* ))}  */}
                 </View>
               }
               callback={() => getSelectedImages(selected)}

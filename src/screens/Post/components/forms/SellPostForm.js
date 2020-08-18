@@ -39,12 +39,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
-  const [currentImage, setCurrentImage] = useState('');
-
   const [imageSource, setImageSource] = useState([]);
-  const [singleImage, setSingleImage] = useState('');
   const [selected, setSelected] = useState([]);
   const [showPickerModal, setShowPickerModal] = useState(false);
+
+  const [postImageCount, setPostImageCount] = useState(0);
+  const [postImages, setPostImages] = useState([]);
 
   const cancelPickerModal = () => {
     setShowPickerModal(!showPickerModal);
@@ -56,20 +56,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     ImagePicker.openPicker({
       width: 500,
       height: 500,
-      // cropping: true,
-      // multiple: true,
-      // mediaType: 'photo',
       includeBase64: true,
     })
       .then((response) => {
         const source = response.path;
-        // console.log('source:', source);
         setImageSource([...imageSource, {source}]);
         console.log('imageSource', imageSource);
         setPhotoCount(photoCount + 1);
-        // const uri = image.path;
-        // setImageSource(uri)
-        // console.log(image.filename)
       })
       .catch((e) => {
         console.log(e);
@@ -83,10 +76,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const handleRemove = (image) => {
-    const valueToRemove = image.uri;
-    const newList = selected.filter((image) => image.uri !== valueToRemove);
-    setSelected(newList);
-    setPhotoCount(photoCount - 1);
+    const imageToRemove = image.uri;
+    const newImageList = postImages.filter((image) => image.uri !== imageToRemove);
+    setPostImages(newImageList);
+    setPostImageCount(postImageCount - 1);
   };
 
   const requestPermission = async () => {
@@ -141,34 +134,31 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const cancelUploadPhoto = () => {
-    setSelected([...selected, {}]);
-    setPhotoCount(photoCount);
-    // setSelected([]);
-    // setPhotoCount(0);
+    // setSelected([...selected, {}]);
+    // setPhotoCount(photoCount);
     togglePickerModal(selected, photoCount);
   };
 
   const continueUploadPhoto = (selected, photoCount) => {
-    // setSelected([...selected, {selected}]);
-    setSelected(selected);
-    setPhotoCount(photoCount);
+    setPostImages([...postImages, ...selected])
+    setPostImageCount(postImageCount + photoCount)
     togglePickerModal(selected, photoCount);
   };
+
+  console.log('postImages', postImages)
 
   const cancelCamera = () => {
     togglePickerModal(selected, photoCount);
   };
 
-  const continueCamera = (cameraImage) => {
-    // const dataVal = cameraImage.uri
-
-    setSelected([...selected, cameraImage ]);
-    // setSelected([...selected, imageUrl]);
-    // setPhotoCount(photoCount + 1);
+  const continueCamera = (selected, photoCount) => {
+    setPostImages([...postImages, selected]);
+    setPostImageCount(postImageCount + photoCount)
     togglePickerModal(selected, photoCount);
   };
-
-  console.log(selected)
+  
+  // console.log(...selected)
+  // console.log(selected)
   
   const uploadTabs = [
     {
@@ -316,12 +306,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-          {/* <Image
-            source={{ uri: 'file:///data/user/0/com.servbees/cache/Camera/f47c16d4-0c8b-4381-aeea-9f661a5052c5.jpg' }}
-            style={{ height: 500, width: 500 }}
-          /> */}
-        {/* {imageSource.length === 0 ? ( */}
-        {photoCount === 0 ? (
+        {postImageCount === 0 ? (
           <View
             style={{
               height: normalize(114),
@@ -331,9 +316,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               borderColor: Colors.neutralGray,
               justifyContent: 'center',
               marginBottom: 8,
-              // width:
-              // flex: 1
-              // maxWidth: imageSource && '25%'
             }}>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -357,7 +339,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               // justifyContent: 'center',
             }}>
             <ScrollView horizontal>
-              {selected.map((image, i) => {
+              {postImages.map((image, i) => {
                 return (
                   <View key={i}>
                     <TouchableOpacity
@@ -390,9 +372,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
                       source={{uri: image.uri}}
                       style={{
                         width:
-                          photoCount === 1
+                          postImageCount === 1
                             ? width / 2
-                            : photoCount === 2
+                            : postImageCount === 2
                             ? width / 3.333
                             : width / 4,
                         height: normalize(114),
@@ -414,8 +396,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
                 borderColor: Colors.neutralGray,
                 justifyContent: 'center',
                 // marginBottom: 8,
-                width: photoCount <= 1 ? width / 3 : width / 4,
-                marginLeft: photoCount >= 3 ? 8 : 0,
+                width: postImageCount <= 1 ? width / 3 : width / 4,
+                marginLeft: postImageCount >= 3 ? 8 : 0,
               }}>
               <TouchableOpacity
                 activeOpacity={0.7}
@@ -436,7 +418,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <AppText textStyle="metadata" customStyle={{marginBottom: 16}}>
           <AppText customStyle={{fontWeight: 'bold'}}>
-            Photos - {photoCount}/10
+            Photos - {postImageCount}/10
           </AppText>{' '}
           Choose your listing’s main photo first for Cover Photo. And more
           photos with multiple angles to show any damage or wear.

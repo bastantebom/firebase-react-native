@@ -6,14 +6,17 @@ import {AppCamera} from '@/components/Camera/AppCamera';
 
 export const PostCamera = ({cancel, next}) => {
   const [cameraImage, setCameraImage] = useState('');
+  const [count, setCount] = useState(0);
+
   const [photoCount, setPhotoCount] = useState(0);
+  const [selected, setSelected] = useState([]);
 
   const captureImage = (imageUrl) => {
-    setCameraImage(imageUrl)
-    // setPhotoCount(1)
-    console.log('appcamera', imageUrl);
-    // console.log('appcamera', photoCount);
+    setSelected(imageUrl)
+    setPhotoCount(1)
+    console.log('test', imageUrl)
   }
+
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -34,7 +37,7 @@ export const PostCamera = ({cancel, next}) => {
           <AppText textStyle="body1">Photo</AppText>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => next(cameraImage, photoCount)}
+          onPress={() => next(selected, photoCount)}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
           <AppText textStyle="body3" color={Colors.contentOcean}>
             Next
