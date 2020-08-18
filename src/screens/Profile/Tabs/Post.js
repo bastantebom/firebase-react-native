@@ -1,14 +1,17 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Colors, normalize} from '@/globals';
 
 import {NoPost} from '@/assets/images';
 import {Posts, AppText} from '@/components';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {UserContext} from '@/context/UserContext';
 
 // create a component
 const Post = () => {
+  const {userInfo} = useContext(UserContext);
+  const {post_count} = userInfo;
   const DummyData = [
     {
       id: 1,
@@ -117,7 +120,7 @@ const Post = () => {
     },
   ];
 
-  const [hasPost, setHasPost] = useState(true);
+  const [hasPost, setHasPost] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const hideLocationComponent = () => {
@@ -139,15 +142,23 @@ const Post = () => {
     }, 1000);
   }, []);
 
+  useEffect(() => {
+    //console.log(userInfo);
+    if (post_count) {
+      setHasPost(true);
+    }
+  }, [post_count]);
+
   const WithPost = () => {
     return (
-      <Posts
-        type="own"
-        data={DummyData}
-        isLoading={isLoading}
-        //hideLocationComponent={hideLocationComponent}
-        //showLocationComponent={showLocationComponent}
-      />
+      // <Posts
+      //   type="own"
+      //   data={DummyData}
+      //   isLoading={isLoading}
+      //   //hideLocationComponent={hideLocationComponent}
+      //   //showLocationComponent={showLocationComponent}
+      // />
+      <></>
     );
   };
 
