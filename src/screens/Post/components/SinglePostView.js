@@ -22,7 +22,7 @@ import {
   CircleTick,
   CloseDark,
   CircleTickWhite,
-  CloseLight
+  CloseLight,
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import EditPostScreen from './EditPostScreen';
@@ -55,18 +55,20 @@ const SinglePostView = (props) => {
     console.log('LOGGING ROUTE PROPS');
     console.log(props.route.params);
 
-    setShowNotification(
-      props.route.params?.created ? props.route.params?.created : false,
-    );
-
-    setShowNotification(
-      props.route.params?.edited ? props.route.params?.edited : false,
-    );
+    setShowNotification(setNotification());
 
     setTimeout(() => {
       setShowNotification(false);
     }, 3000);
   }, [props]);
+
+  const setNotification = () => {
+    return props.route.params?.created
+      ? props.route.params?.created
+      : props.route.params?.edited
+      ? props.route.params?.edited
+      : false;
+  };
 
   const {
     uid,
@@ -121,7 +123,7 @@ const SinglePostView = (props) => {
       ) : (
         <CloseLight width={normalize(24)} height={normalize(24)} />
       );
-    }
+    };
 
     if (showNotification)
       return (
