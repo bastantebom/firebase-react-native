@@ -13,9 +13,9 @@ import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 
 // create a component
 const ChangePassword = ({toggleChangePassword}) => {
-  const [cPass, setCPass] = useState('');
-  const [nPass, setNPass] = useState('');
-  const [fPass, setFPass] = useState('');
+  const [cPass, setCPass] = useState(undefined);
+  const [nPass, setNPass] = useState(undefined);
+  const [fPass, setFPass] = useState(undefined);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -25,30 +25,29 @@ const ChangePassword = ({toggleChangePassword}) => {
           padding: 24,
         }}>
         <ScreenHeaderTitle
-          title="Change Password"
+          title="Current Password"
           close={toggleChangePassword}
         />
 
         <FloatingAppInput
           value={cPass}
           label="Current Password"
-          customStyle={{marginBottom: normalize(16), marginTop: 40}}
           onChangeText={(cPass) => {
             setCPass(cPass);
           }}
+          customStyle={{marginTop: normalize(35), marginBottom: normalize(16)}}
         />
         <FloatingAppInput
           value={nPass}
           label="New Password"
-          customStyle={{marginBottom: normalize(16)}}
           onChangeText={(nPass) => {
             setNPass(nPass);
           }}
+          customStyle={{marginBottom: normalize(16)}}
         />
         <FloatingAppInput
           value={fPass}
-          label="Confirm Password"
-          customStyle={{marginBottom: normalize(16)}}
+          label="Confirm New Password"
           onChangeText={(fPass) => {
             setFPass(fPass);
           }}

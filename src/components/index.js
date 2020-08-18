@@ -3,6 +3,7 @@
  */
 import AppButton from '@/components/AppButton/AppButton';
 import AppInput from '@/components/AppInput/AppInput';
+import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 import AppText from '@/components/AppText/AppText';
 import {AppViewContainer, PaddingView} from '@/components/AppViewContainer';
 import {HexagonBorder, ProfileImageUpload} from '@/components/ImageUpload';
@@ -55,4 +56,5 @@ export {
   BottomSheetHeader,
   ProfileLinks,
   Reviews,
+  FloatingAppInput,
 };
