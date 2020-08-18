@@ -26,7 +26,11 @@ const Post = ({data, type, isLoading}) => {
     available,
     profile_photo,
     payment_method,
-    store_location,
+    store_location: {
+      city,
+      province,
+      country
+    },
     title,
     username,
     delivery_method: {pickup, delivery},
@@ -61,7 +65,7 @@ const Post = ({data, type, isLoading}) => {
       data: data,
       viewing: true,
       created: false,
-      editing: false
+      edited: false
     };
 
     navigation.navigate('Post', {
@@ -115,7 +119,7 @@ const Post = ({data, type, isLoading}) => {
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}
                     customStyle={{marginLeft: 4}}>
-                    {store_location}
+                    {city}, {province}
                   </AppText>
                 </View>
                 {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
