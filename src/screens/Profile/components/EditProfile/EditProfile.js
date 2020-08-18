@@ -297,6 +297,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
             //console.log(response);
             setIS_UPDATING(false);
             setUserInfo({...userInfo, ...response.data});
+            toggleEditProfile();
+            toggleMenu();
           } else {
             setIS_UPDATING(false);
             //console.log(response);
@@ -620,7 +622,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
           animationInTiming={750}
           animationOut="slideOutRight"
           animationOutTiming={750}
-          swipeDirection={undefined}
           onBackButtonPress={() => setMap(false)}
           style={{
             margin: 0,

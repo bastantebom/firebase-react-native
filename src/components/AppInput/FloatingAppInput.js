@@ -21,7 +21,7 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
-    console.log(props.value + ' ' + props.placeholder);
+    //console.log(props.value + ' ' + props.placeholder);
     if (props.value !== undefined || props.placeholder !== undefined) {
       animateFocus();
     }

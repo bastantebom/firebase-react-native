@@ -71,6 +71,8 @@ const EditAddress = ({back, address, changeFromMapHandler}, route) => {
     //console.log(region);
     getStringAddress(region);
     //setButtonDisabled(false);
+    setButtonDisabled(false);
+    setButtonStyle({});
   };
 
   const getStringAddress = (location) => {

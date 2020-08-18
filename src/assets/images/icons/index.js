@@ -17,7 +17,7 @@ import CloseLight from '@/assets/images/icons/close-light.svg';
 
 // password
 import EyeDark from '@/assets/images/icons/eye-dark.svg';
-import EyeLight from '@/assets/images/icons/eye-light.svg';
+import EyeLight from '@/assets/images/icons/password-hide.svg';
 
 // 3rd party
 import Facebook from '@/assets/images/icons/facebook.svg';
