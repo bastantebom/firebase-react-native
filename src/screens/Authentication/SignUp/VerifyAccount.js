@@ -1,6 +1,12 @@
 //import liraries
 import React, {useRef, useState, useContext} from 'react';
-import {View, TextInput, StyleSheet, Keyboard} from 'react-native';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Keyboard,
+  SafeAreaView,
+} from 'react-native';
 import AppColor from '@/globals/Colors';
 import {useNavigation} from '@react-navigation/native';
 import VerifyIcon from '@/assets/images/verify.svg';
@@ -226,27 +232,33 @@ const VerifyAccount = (route) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Notification message={notificationMessage} type={notificationType} />
-      <TransitionIndicator loading={isScreenLoading} />
-      <View style={styles.defaultStyle}>
-        <VerifyIcon />
-      </View>
-      <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
-        <AppText textStyle="display5">Enter Your Verification</AppText>
-      </View>
-      <View style={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
-        <AppText textStyle="body2" customStyle={styles.bodyContent}>
-          An email with the 4-digit code has been sent to{' '}
-          <AppText textStyle="body3" customStyle={styles.bodyContent}>
-            {route?.route?.params?.login.toLowerCase()}
+    <SafeAreaView style={{flex: 1}}>
+      <View style={styles.container}>
+        <Notification message={notificationMessage} type={notificationType} />
+        <TransitionIndicator loading={isScreenLoading} />
+        <View style={styles.defaultStyle}>
+          <VerifyIcon />
+        </View>
+        <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
+          <AppText textStyle="display5">Enter Your Verification</AppText>
+        </View>
+        <View style={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
+          <AppText textStyle="body2" customStyle={styles.bodyContent}>
+            An email with the 4-digit code has been sent to{' '}
+            <AppText textStyle="body3" customStyle={styles.bodyContent}>
+              {route?.route?.params?.login.toLowerCase()}
+            </AppText>
           </AppText>
-        </AppText>
-      </View>
+        </View>
 
-      <View style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
-        {[firstTextInput, secondTextInput, thirdTextInput, fourthTextInput].map(
-          (textInputRef, index) => (
+        <View
+          style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
+          {[
+            firstTextInput,
+            secondTextInput,
+            thirdTextInput,
+            fourthTextInput,
+          ].map((textInputRef, index) => (
             <TextInput
               style={{
                 ...styles.inputVerification,
@@ -266,28 +278,31 @@ const VerifyAccount = (route) => {
               value={verifyArray[index]}
               key={index}
             />
-          ),
-        )}
-      </View>
+          ))}
+        </View>
 
-      <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
-        <AppText textStyle="body2" customStyle={styles.bodyContent}>
-          Didn’t receive a code?
-        </AppText>
+        <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
+          <AppText textStyle="body2" customStyle={styles.bodyContent}>
+            Didn’t receive a code?
+          </AppText>
+        </View>
+        <TouchableOpacity
+          customStyle={styles.defaultStyle}
+          onPress={() => {
+            resendCodeHandler();
+            //navigation.navigate('Dashboard', 'Jayson Ilagan');
+          }}>
+          <AppText
+            textStyle="body2"
+            customStyle={{
+              ...styles.bodyContent,
+              ...styles.contentColorOverride,
+            }}>
+            Resend code
+          </AppText>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        customStyle={styles.defaultStyle}
-        onPress={() => {
-          resendCodeHandler();
-          //navigation.navigate('Dashboard', 'Jayson Ilagan');
-        }}>
-        <AppText
-          textStyle="body2"
-          customStyle={{...styles.bodyContent, ...styles.contentColorOverride}}>
-          Resend code
-        </AppText>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
