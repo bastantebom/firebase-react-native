@@ -138,7 +138,12 @@ import PostPencil from './PostPencil.svg';
 import PostRemove from './PostRemove.svg';
 import ProfileImageDefault from './profile-image-default.svg';
 
+import ContactTelephone from './contact-telephone.svg';
+import ContactEmail from './contact-email.svg';
+
 export {
+  ContactTelephone,
+  ContactEmail,
   CircleTickWhite,
   ProfileImageDefault,
   PostPencil,
