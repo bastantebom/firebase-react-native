@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  SafeAreaView,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -18,10 +19,8 @@ import {
   PostInfo,
   PostCash,
   PostBox,
-  CircleTick,
-  CloseDark,
-  CircleTickWhite,
-  CloseLight,
+  ContactEmail,
+  ContactTelephone,
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
@@ -135,6 +134,52 @@ const SinglePostOthersView = ({data, backFunction}) => {
     <>
       <TransparentHeader type={'post-other'} backFunction={backFunction} />
       <SinglePostContent />
+
+      <SafeAreaView
+        style={{
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          backgroundColor: 'transparent',
+        }}>
+        <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
+          <TouchableOpacity
+            style={{flex: 1, marginRight: 8}}
+            activeOpacity={0.7}>
+            <View
+              style={{
+                flexDirection: 'row',
+                borderWidth: 1.2,
+                borderColor: Colors.primaryYellow,
+                justifyContent: 'center',
+                paddingVertical: 12,
+                alignItems: 'center',
+              }}>
+              <ContactTelephone width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                Call Seller
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, marginLeft: 8}}
+            activeOpacity={0.7}>
+            <View
+              style={{
+                flexDirection: 'row',
+                borderWidth: 1.2,
+                borderColor: Colors.primaryYellow,
+                justifyContent: 'center',
+                paddingVertical: 12,
+                alignItems: 'center',
+              }}>
+              <ContactEmail width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                Send Email
+              </AppText>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     </>
   );
 };
