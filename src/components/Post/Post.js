@@ -46,6 +46,8 @@ const Post = ({data, type, isLoading}) => {
     post_id,
     images,
     account_verified,
+    email,
+    phone_number
   } = data;
 
   const VerifiedBadge = () => {

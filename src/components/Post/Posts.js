@@ -6,6 +6,7 @@ import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostService} from '@/services';
 import {AppText} from '@/components';
+import {set} from 'react-native-reanimated';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user} = useContext(UserContext);
@@ -70,14 +71,19 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
     await PostService.getPosts(getPostsParams)
       .then((res) => {
+        if (res.lastPID === lastPID) {
+          console.log("rejecting ")
+          return Promise.reject('End of posts');
+        }
+
         const setLast = new Promise((resolve, reject) => {
-          if (res.last_pid === '') reject('No last ID');
-          else resolve(res.last_pid);
+          if (res.last_pid === '') {
+            reject('No last ID');
+          } else resolve(res.last_pid);
         });
 
-        setLastPID(setLast);
+        setLastPID(setLast());
         setPosts([...posts, ...res.data]);
-
         setFecthMore(false);
         setRefresh(false);
       })
@@ -94,10 +100,10 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       onRefresh={refreshPosts}
       refreshing={refresh}
       onEndReached={getMorePost}
-      onEndReachedThreshold={0.1}
+      onEndReachedThreshold={0}
       ListFooterComponent={
-        <View>
-          {fetchMore ? <ActivityIndicator /> : <AppText>Fetch more </AppText>}
+        <View style={{alignItems: 'center', marginTop: 8}}>
+          {fetchMore ? <ActivityIndicator /> : <AppText>{lastPID}</AppText>}
         </View>
       }
     />
