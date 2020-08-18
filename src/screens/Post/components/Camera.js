@@ -5,11 +5,11 @@ import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
 
 export const PostCamera = ({cancel, next}) => {
-  const [imageUrl, setImageUrl] = useState('');
+  const [cameraImage, setCameraImage] = useState('');
   const [photoCount, setPhotoCount] = useState(0);
 
   const captureImage = (imageUrl) => {
-    setImageUrl(imageUrl)
+    setCameraImage(imageUrl)
     // setPhotoCount(1)
     console.log('appcamera', imageUrl);
     // console.log('appcamera', photoCount);
@@ -34,7 +34,7 @@ export const PostCamera = ({cancel, next}) => {
           <AppText textStyle="body1">Photo</AppText>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => next(imageUrl, photoCount)}
+          onPress={() => next(cameraImage, photoCount)}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
           <AppText textStyle="body3" color={Colors.contentOcean}>
             Next

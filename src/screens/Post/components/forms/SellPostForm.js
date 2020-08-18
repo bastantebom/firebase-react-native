@@ -159,16 +159,17 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     togglePickerModal(selected, photoCount);
   };
 
-  const continueCamera = (imageUrl, photoCount) => {
-    setSelected([...selected, { imageUrl }]);
+  const continueCamera = (cameraImage) => {
+    // const dataVal = cameraImage.uri
+
+    setSelected([...selected, cameraImage ]);
     // setSelected([...selected, imageUrl]);
-    console.log('imageUrl', imageUrl);
-    // console.log('photoCount', photoCount)
-    console.log('selected array', selected)
-    setPhotoCount(photoCount + 1);
+    // setPhotoCount(photoCount + 1);
     togglePickerModal(selected, photoCount);
   };
 
+  console.log(selected)
+  
   const uploadTabs = [
     {
       key: 'camera',
@@ -315,6 +316,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
+          {/* <Image
+            source={{ uri: 'file:///data/user/0/com.servbees/cache/Camera/f47c16d4-0c8b-4381-aeea-9f661a5052c5.jpg' }}
+            style={{ height: 500, width: 500 }}
+          /> */}
         {/* {imageSource.length === 0 ? ( */}
         {photoCount === 0 ? (
           <View

@@ -91,8 +91,9 @@ export const AppCamera = ({
       cameraRef.current.pausePreview()
       
       setImageUrl(data);
+      // setImageUrl('data1213!!!!!!!!!!!');
       console.log('data', data)
-      // console.log('imageUrl', imageUrl)
+      console.log('imageUrl', imageUrl)
     }
   };
 
