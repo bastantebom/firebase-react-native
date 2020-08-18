@@ -1,7 +1,15 @@
-import React, {useContext} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
 import OwnPost from './OwnPost';
@@ -16,9 +24,11 @@ import {
   TransportationBox,
 } from '@/assets/images/icons';
 import LoadingScreen from './loading';
+import SinglePostOthersView from './SinglePostOthersView';
 
 const Post = ({data, type, isLoading}) => {
   const {user} = useContext(UserContext);
+  const [showPost, setShowPost] = useState(false);
 
   const {
     display_name,
@@ -26,11 +36,7 @@ const Post = ({data, type, isLoading}) => {
     available,
     profile_photo,
     payment_method,
-    store_location: {
-      city,
-      province,
-      country
-    },
+    store_location: {city, province, country},
     title,
     username,
     delivery_method: {pickup, delivery},
@@ -65,13 +71,15 @@ const Post = ({data, type, isLoading}) => {
       data: data,
       viewing: true,
       created: false,
-      edited: false
+      edited: false,
     };
 
-    navigation.navigate('Post', {
-      screen: 'SinglePostView',
-      params: computedData,
-    });
+    if (user.uid === uid)
+      navigation.navigate('Post', {
+        screen: 'SinglePostView',
+        params: computedData,
+      });
+    else setShowPost(true);
   };
 
   if (type === 'dashboard')
@@ -152,6 +160,20 @@ const Post = ({data, type, isLoading}) => {
             </View>
           </View>
         </PaddingView>
+        <Modal
+          isVisible={showPost}
+          animationIn="slideInUp"
+          animationInTiming={500}
+          animationOut="slideOutLeft"
+          animationOutTiming={500}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+            justifyContent: 'flex-start'
+          }}>
+          <SinglePostOthersView data={data} backFunction={() => setShowPost(false)} />
+        </Modal>
       </LoadingScreen.LoadingPublicPost>
     );
 

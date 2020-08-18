@@ -25,9 +25,8 @@ import {
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
-import EditPostScreen from './EditPostScreen';
 
-const SinglePostView = (props) => {
+const SinglePostOthersView = ({data, backFunction}) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
 
@@ -48,50 +47,9 @@ const SinglePostView = (props) => {
     display_name,
     date_posted,
     post_id,
-  } = props.route?.params?.data;
-
-  const navigation = useNavigation();
-  const [showNotification, setShowNotification] = useState(false);
-  const [ellipsisState, setEllipsisState] = useState(false);
-  const [otherPostModal, setOtherPostModal] = useState(false);
-
-  const [editPost, showEditPost] = useState(false);
+  } = data;
 
   const {user} = useContext(UserContext);
-
-  const toggleEditPost = () => {
-    toggleEllipsisState();
-    setTimeout(() => {
-      showEditPost(!editPost);
-    }, 500);
-  };
-
-  const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState);
-  };
-
-  const closeNotification = () => {
-    setShowNotification(false);
-  };
-
-  useEffect(() => {
-    // console.log('LOGGING ROUTE PROPS');
-    if (!(uid === user.uid)) setOtherPostModal(true);
-
-    setShowNotification(setNotification());
-
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  }, [props]);
-
-  const setNotification = () => {
-    return props.route.params?.created
-      ? props.route.params?.created
-      : props.route.params?.edited
-      ? props.route.params?.edited
-      : false;
-  };
 
   const userInfo = {
     username: username,
@@ -100,76 +58,8 @@ const SinglePostView = (props) => {
     display_name: display_name,
   };
 
-  const deletePost = async () => {
-    console.log('delete this post with id: ');
-    console.log(post_id);
-    return await PostService.deletePost(post_id).then(() => {
-      toggleEllipsisState();
-      navigation.goBack();
-    });
-  };
-
   let timeAgo = (time) => {
     return timePassed(time) + ' ago';
-  };
-
-  const CustomNotification = () => {
-    const backgroundColor = props.route.params?.created
-      ? Colors.primaryYellow
-      : Colors.secondaryRoyalBlue;
-
-    const notificationMessage = props.route.params?.created
-      ? 'Post Successful!'
-      : 'Post edited successfully';
-
-    const notificationColor = props.route.params?.created
-      ? Colors.contentEbony
-      : 'white';
-
-    const NotificationCheckbox = () => {
-      return props.route.params?.created ? (
-        <CircleTick width={normalize(24)} height={normalize(24)} />
-      ) : (
-        <CircleTickWhite width={normalize(24)} height={normalize(24)} />
-      );
-    };
-
-    const NotificationClose = () => {
-      return props.route.params?.created ? (
-        <CloseDark width={normalize(24)} height={normalize(24)} />
-      ) : (
-        <CloseLight width={normalize(24)} height={normalize(24)} />
-      );
-    };
-
-    if (showNotification)
-      return (
-        <View
-          style={{
-            backgroundColor: backgroundColor,
-            position: 'absolute',
-            top: -58,
-            width: normalize(375),
-            paddingHorizontal: 16,
-            alignItems: 'center',
-            height: normalize(58),
-            borderTopRightRadius: 8,
-            borderTopLeftRadius: 8,
-            flexDirection: 'row',
-          }}>
-          <NotificationCheckbox />
-          <AppText
-            customStyle={{flex: 1, marginLeft: 8}}
-            color={notificationColor}
-            textStyle="body2">
-            {notificationMessage}
-          </AppText>
-          <TouchableOpacity onPress={closeNotification} activeOpacity={0.7}>
-            <NotificationClose />
-          </TouchableOpacity>
-        </View>
-      );
-    return null;
   };
 
   const SinglePostContent = () => {
@@ -185,8 +75,6 @@ const SinglePostView = (props) => {
           />
         </View>
         <View style={styles.postInfoContainer}>
-          <CustomNotification />
-
           <ProfileInfo userInfo={userInfo} type="own-post" />
 
           <AppText
@@ -245,44 +133,10 @@ const SinglePostView = (props) => {
 
   return (
     <>
+      <TransparentHeader type={'post-other'} backFunction={backFunction} />
       <SinglePostContent />
-      <TransparentHeader
-        type={uid === user.uid ? 'post-own' : 'post-other'}
-        ellipsisState={ellipsisState}
-        toggleEllipsisState={toggleEllipsisState}
-        backFunction={() => navigation.goBack()}
-        editPostFunction={toggleEditPost}
-        deletePostFunction={deletePost}
-      />
-
-      <Modal
-        isVisible={editPost}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => showEditPost(false)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
-          </TouchableWithoutFeedback>
-        }>
-        <EditPostScreen
-          data={props.route.params.data}
-          card={cardMap(post_type)}
-          togglePostModal={() => showEditPost(false)}
-        />
-      </Modal>
     </>
   );
-};
-
-const cardMap = (card) => {
-  return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
 };
 
 const styles = StyleSheet.create({
@@ -308,9 +162,8 @@ const styles = StyleSheet.create({
   iconText: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    // backgroundColor: 'red'
     marginBottom: 16,
   },
 });
 
-export default SinglePostView;
+export default SinglePostOthersView;

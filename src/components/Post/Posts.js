@@ -42,7 +42,6 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
   const refreshPosts = async () => {
     setRefresh(true);
-
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
@@ -50,7 +49,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
     await PostService.getPosts(getPostsParams)
       .then((res) => {
-        setLastPID(res.last_id);
+        setLastPID(res.last_pid);
         if (res.data.length > 0) setPosts(res.data);
         setRefresh(false);
       })
@@ -60,6 +59,9 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   };
 
   const getMorePost = async () => {
+    console.log('GET MORE POST');
+    console.log(lastPID);
+
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
@@ -69,14 +71,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     await PostService.getPosts(getPostsParams)
       .then((res) => {
         const setLast = new Promise((resolve, reject) => {
-          if (res.last_id === '') reject('No last ID');
-          else resolve(res.last_id);
+          if (res.last_pid === '') reject('No last ID');
+          else resolve(res.last_pid);
         });
 
         setLastPID(setLast);
+        setPosts([...posts, ...res.data]);
 
         setFecthMore(false);
-        setPosts([...posts, ...res.data]);
         setRefresh(false);
       })
       .catch((err) => {
