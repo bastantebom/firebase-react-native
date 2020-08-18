@@ -492,7 +492,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               <FloatingAppInput
                 value={addNote}
                 label="Notes"
-                placeholder="ex. Yello Gate"
+                placeholder="ex. Yellow Gate"
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(addNote) => {
                   setAddNote(addNote);

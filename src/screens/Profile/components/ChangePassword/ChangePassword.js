@@ -13,9 +13,9 @@ import FloatingAppInput from '@/components/AppInput/FloatingAppInput';
 
 // create a component
 const ChangePassword = ({toggleChangePassword}) => {
-  const [cPass, setCPass] = useState('');
-  const [nPass, setNPass] = useState('');
-  const [fPass, setFPass] = useState('');
+  const [cPass, setCPass] = useState(undefined);
+  const [nPass, setNPass] = useState(undefined);
+  const [fPass, setFPass] = useState(undefined);
 
   return (
     <SafeAreaView style={{flex: 1}}>
