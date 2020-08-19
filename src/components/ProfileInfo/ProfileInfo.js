@@ -16,6 +16,7 @@ const ProfileInfo = ({userInfo, type}) => {
     account_verified = false,
     display_name = 'Busy Bee',
     date_posted,
+    uid,
   } = userInfo;
 
   const VerifiedBadge = ({width = 10, height = 11.25}) => {
@@ -43,7 +44,9 @@ const ProfileInfo = ({userInfo, type}) => {
 
   if (type === 'dashboard')
     return (
-      <TouchableOpacity activeOpacity={0.7}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => console.log('OPEN MODAL for profile: ' + uid)}>
         <View style={{flexDirection: 'row'}}>
           <View
             style={{
@@ -100,24 +103,28 @@ const ProfileInfo = ({userInfo, type}) => {
   // OWN POST VIEW
   if (type === 'own-post')
     return (
-      <View style={{flexDirection: 'row'}}>
-        <View style={styles.userInfoImageContainer}>
-          <ProfilePhoto size={42} />
-        </View>
-        <View style={{marginLeft: 8, justifyContent: 'center'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
-              {display_name}
-            </AppText>
-            <VerifiedBadge />
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => console.log('OPEN MODAL for profile: ' + uid)}>
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.userInfoImageContainer}>
+            <ProfilePhoto size={42} />
           </View>
-          <View style={{}}>
-            <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-              @{username.toLowerCase()}
-            </AppText>
+          <View style={{marginLeft: 8, justifyContent: 'center'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
+                {display_name}
+              </AppText>
+              <VerifiedBadge />
+            </View>
+            <View style={{}}>
+              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+                @{username.toLowerCase()}
+              </AppText>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
 };
 

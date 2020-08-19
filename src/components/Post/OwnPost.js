@@ -8,24 +8,27 @@ import LoadingScreen from './loading';
 
 const OwnPost = ({data, isLoading}) => {
   const {
-    userImage,
-    name,
+    display_name,
+    date_posted,
+    available,
+    profile_photo,
+    payment_method,
+    store_location: {city, province, country},
+    title,
     username,
-    rating,
-    postedAt,
-    isVerified,
-    postType,
-    postImage,
-    postName,
-    postPrice,
-    postServiceAddress,
-    postServiceRadius,
-    postDeliveryMethod,
-    status,
+    delivery_method: {pickup, delivery},
+    description,
+    uid,
+    price,
+    post_id,
+    images,
+    account_verified,
+    email,
+    phone_number
   } = data;
 
   const VerifiedBadge = () => {
-    return isVerified ? (
+    return account_verified ? (
       <Verified width={normalize(9)} height={normalize(10.12)} />
     ) : (
       <></>

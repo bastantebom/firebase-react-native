@@ -10,7 +10,6 @@ import {
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
-
 import {
   AppText,
   AppButton,
@@ -45,6 +44,7 @@ function Profile() {
 
   const [visibleHives, setVisibleHives] = useState(false);
   const [visibleFollowing, setVisibleFollowing] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   const [headerState, setHeaderState] = useState('own');
 
@@ -79,7 +79,19 @@ function Profile() {
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
   let profileTabs = [
-    {key: 'ownpost', title: 'Posts', renderPage: <Posts />},
+    {
+      key: 'ownpost',
+      title: 'Posts',
+      renderPage: (
+        <Posts
+          type="dashboard"
+          // data={DummyData}
+          data={[{}]}
+          isLoading={isDataLoading}
+          setIsLoading={setIsDataLoading}
+        />
+      ),
+    },
     //{key: 'ownpost', title: 'Posts', renderPage: <></>},
     // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
     {
