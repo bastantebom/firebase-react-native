@@ -12,6 +12,8 @@ import {
   Platform,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import storage from '@react-native-firebase/storage';
+
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -43,8 +45,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [selected, setSelected] = useState([]);
   const [showPickerModal, setShowPickerModal] = useState(false);
 
-  const [postImageCount, setPostImageCount] = useState(0);
-  const [postImages, setPostImages] = useState([]);
+  const [postImageCount, setPostImageCount] = useState(initialData?.images?.length);
+  const [postImages, setPostImages] = useState(initialData?.images);
 
   const cancelPickerModal = () => {
     setShowPickerModal(!showPickerModal);
@@ -77,7 +79,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const handleRemove = (image) => {
     const imageToRemove = image.uri;
-    const newImageList = postImages.filter((image) => image.uri !== imageToRemove);
+    const newImageList = postImages.filter(
+      (image) => image.uri !== imageToRemove,
+    );
     setPostImages(newImageList);
     setPostImageCount(postImageCount - 1);
   };
@@ -140,12 +144,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const continueUploadPhoto = (selected, photoCount) => {
-    setPostImages([...postImages, ...selected])
-    setPostImageCount(postImageCount + photoCount)
+    setPostImages([...postImages, ...selected]);
+    setPostImageCount(postImageCount + photoCount);
     togglePickerModal(selected, photoCount);
   };
 
-  console.log('postImages', postImages)
+  console.log('postImages', postImages);
 
   const cancelCamera = () => {
     togglePickerModal(selected, photoCount);
@@ -153,13 +157,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const continueCamera = (selected, photoCount) => {
     setPostImages([...postImages, selected]);
-    setPostImageCount(postImageCount + photoCount)
+    setPostImageCount(postImageCount + photoCount);
     togglePickerModal(selected, photoCount);
   };
-  
+
   // console.log(...selected)
   // console.log(selected)
-  
+
   const uploadTabs = [
     {
       key: 'camera',
@@ -257,6 +261,32 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   //   });
   // };
 
+  // console.log("POST IMAGES")
+  // console.log(postImages)
+
+  const uploadImageHandler = async (image) => {
+    console.log('I got the image');
+    console.log(image);
+
+    if (image) {
+      const {uri, filename} = image;
+      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
+
+      const newFilename = filename.substring(0, filename.lastIndexOf('.'));
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      await fileRef.putFile(uploadUri);
+      const downloadURL = await fileRef.getDownloadURL();
+
+      return Promise.resolve(downloadURL);
+    } else {
+      return Promise.reject('Failed to upload');
+    }
+  };
+
   const navigateToPost = async () => {
     setLoadingSubmit(true);
     let type = 'Sell';
@@ -275,9 +305,28 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       },
     };
 
+    // compare if images are the same with initial data --- when editing
+    // Upload images
+    const uploadAllImage = () =>
+      Promise.all(
+        postImages.map((image) => {
+          return uploadImageHandler(image)
+            .then((res) => {
+              console.log(res);
+              return res;
+            })
+            .catch((err) => {
+              console.log(err);
+              return err;
+            });
+        }),
+      );
+
+    await uploadAllImage().then((response) => {
+      data.images = response;
+    });
+
     if (initialData.post_id) {
-      // console.log('I will edit post with id: ');
-      // console.log(initialData.post_id)
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
