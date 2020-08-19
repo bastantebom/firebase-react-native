@@ -16,6 +16,7 @@ import {
   AppText,
   WhiteOpacity,
   Notification,
+  FloatingAppInput,
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
 
@@ -43,6 +44,8 @@ function Dashboard({navigation}) {
   const [showLocation, setShowLocation] = useState(true);
   const [scrollState, setScrollState] = useState(0);
   const [margin, setMargin] = useState(16);
+
+  const {address} = userInfo;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -167,7 +170,10 @@ function Dashboard({navigation}) {
   useEffect(() => {
     // Notification for Verifying the profile
     // openNotification();
-  }, []);
+    if (address) {
+      console.log(address);
+    }
+  }, [address]);
 
   const showLoading = () => {
     setTimeout(() => {
@@ -241,7 +247,11 @@ const SearchBarWithFilter = () => {
         {/* <NavigationPinRed width={24} height={24} /> */}
         {/* <AppInput label="Search your location"></AppInput> */}
         <View style={{position: 'relative'}}>
-          <AppInput label="Search your location" style={{paddingLeft: 24}} />
+          <FloatingAppInput
+            label="Your location"
+            customStyle={{paddingLeft: normalize(32), borderWidth: 0}}
+            paddingLeftLabel={32}
+          />
           <View
             style={{
               position: 'absolute',
