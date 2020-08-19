@@ -18,7 +18,7 @@ import {normalize, Colors} from '@/globals';
 import {ArrowDown} from '@/assets/images/icons';
 import {PhotoAlbums} from './PhotoAlbums';
 
-const {height, width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export const Library = ({
   cancel,
