@@ -7,7 +7,9 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
+
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+
 
 import {
   AppText,
