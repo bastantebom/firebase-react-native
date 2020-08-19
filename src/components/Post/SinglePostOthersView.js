@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   SafeAreaView,
+  Linking,
+  ScrollView,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -46,6 +48,8 @@ const SinglePostOthersView = ({data, backFunction}) => {
     display_name,
     date_posted,
     post_id,
+    email,
+    phone_number,
   } = data;
 
   const {user} = useContext(UserContext);
@@ -61,7 +65,17 @@ const SinglePostOthersView = ({data, backFunction}) => {
     return timePassed(time) + ' ago';
   };
 
-  const SinglePostContent = () => {
+  let makeCall = () => {
+    let phoneNumber = '';
+    if (Platform.OS === 'android') {
+      phoneNumber = `tel:${phone_number}`;
+    } else {
+      phoneNumber = `telprompt:${phone_number}`;
+    }
+    Linking.openURL(phoneNumber);
+  };
+
+  const SinglePostContent = ({children}) => {
     return (
       <View style={{flex: 1}}>
         <View style={styles.postImageContainer}>
@@ -126,60 +140,72 @@ const SinglePostOthersView = ({data, backFunction}) => {
             </View>
           ) : null}
         </View>
+        {children}
       </View>
     );
   };
 
   return (
     <>
-      <TransparentHeader type={'post-other'} backFunction={backFunction} />
-      <SinglePostContent />
-
-      <SafeAreaView
-        style={{
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          backgroundColor: 'transparent',
-        }}>
-        <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
-          <TouchableOpacity
-            style={{flex: 1, marginRight: 8}}
-            activeOpacity={0.7}>
+      <ScrollView>
+        <View style={{flex: 1}}>
+          <TransparentHeader type={'post-other'} backFunction={backFunction} />
+          <SinglePostContent>
             <View
               style={{
+                flex: 1,
                 flexDirection: 'row',
-                borderWidth: 1.2,
-                borderColor: Colors.primaryYellow,
-                justifyContent: 'center',
-                paddingVertical: 12,
-                alignItems: 'center',
+                paddingHorizontal: 20,
+                // backgroundColor: 'red',
+                paddingTop: 40,
+                paddingBottom: 40,
+                alignItems: 'flex-end',
               }}>
-              <ContactTelephone width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
-                Call Seller
-              </AppText>
+              {phone_number ? (
+                <TouchableOpacity
+                  style={{flex: 1, marginRight: 8}}
+                  activeOpacity={0.7}
+                  // onPress={() => Linking.openURL(`tel:${phone_number}`)}
+                  onPress={makeCall}>
+                  <View style={styles.contactButtonContainer}>
+                    <ContactTelephone
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
+                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                      Call Seller
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+              {email ? (
+                <TouchableOpacity
+                  style={{flex: 1, marginLeft: 8}}
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL(
+                      `mailto:${email}?subject=Servbees: Is this still available?`,
+                    );
+                  }}>
+                  <View style={styles.contactButtonContainer}>
+                    <ContactEmail
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
+                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                      Send Email
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{flex: 1, marginLeft: 8}}
-            activeOpacity={0.7}>
-            <View
-              style={{
-                flexDirection: 'row',
-                borderWidth: 1.2,
-                borderColor: Colors.primaryYellow,
-                justifyContent: 'center',
-                paddingVertical: 12,
-                alignItems: 'center',
-              }}>
-              <ContactEmail width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
-                Send Email
-              </AppText>
-            </View>
-          </TouchableOpacity>
+          </SinglePostContent>
         </View>
-      </SafeAreaView>
+      </ScrollView>
     </>
   );
 };
@@ -197,6 +223,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
     padding: 16,
+    // backgroundColor: 'blue',
+    // height: '100%',
   },
   userInfoImageContainer: {
     height: normalize(42),
@@ -208,6 +236,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
+  },
+  contactButtonContainer: {
+    flexDirection: 'row',
+    borderWidth: 1.2,
+    borderColor: Colors.primaryYellow,
+    justifyContent: 'center',
+    paddingVertical: 12,
+    alignItems: 'center',
   },
 });
 

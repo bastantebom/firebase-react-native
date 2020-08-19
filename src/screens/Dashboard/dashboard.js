@@ -254,7 +254,7 @@ const SearchBarWithFilter = () => {
         </View>
       </View>
 
-      {/* <TouchableOpacity onPress={toggleModal}>
+      {/* <TouchableOpacity onPress={()=>{}}>
         <View style={styles.circleButton}>
           <Filter />
         </View>

@@ -6,6 +6,7 @@ import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostService} from '@/services';
 import {AppText} from '@/components';
+import {set} from 'react-native-reanimated';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user} = useContext(UserContext);
@@ -41,6 +42,8 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   }, []);
 
   const refreshPosts = async () => {
+    console.log('REFRESH FUNCTION');
+
     setRefresh(true);
     let getPostsParams = {
       uid: user.uid,
@@ -59,30 +62,27 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   };
 
   const getMorePost = async () => {
-    console.log('GET MORE POST');
-    console.log(lastPID);
+    setFecthMore(true);
+    if (lastPID === 'No more posts available.') setFecthMore(false);
 
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
       last_pid: lastPID,
     };
+    // console.log('GET MORE POST');
+    // console.log(lastPID);
+    // console.log(getPostsParams);
 
     await PostService.getPosts(getPostsParams)
       .then((res) => {
-        const setLast = new Promise((resolve, reject) => {
-          if (res.last_pid === '') reject('No last ID');
-          else resolve(res.last_pid);
-        });
-
-        setLastPID(setLast);
-        setPosts([...posts, ...res.data]);
-
+        setLastPID(res.last_pid ? res.last_pid : 'No more posts available.');
+        setPosts(res.data ? [...posts, ...res.data] : [...posts]);
         setFecthMore(false);
-        setRefresh(false);
       })
       .catch((err) => {
-        setRefresh(false);
+        // console.log('GET POST SERVICE ERROR');
+        // console.log(err);
       });
   };
 
@@ -94,10 +94,10 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       onRefresh={refreshPosts}
       refreshing={refresh}
       onEndReached={getMorePost}
-      onEndReachedThreshold={0.1}
+      onEndReachedThreshold={0}
       ListFooterComponent={
-        <View>
-          {fetchMore ? <ActivityIndicator /> : <AppText>Fetch more </AppText>}
+        <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+          {fetchMore ? <ActivityIndicator /> : <AppText>{lastPID}</AppText>}
         </View>
       }
     />
