@@ -43,6 +43,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
   const refreshPosts = async () => {
     console.log('REFRESH FUNCTION');
+    console.log(type)
 
     setRefresh(true);
     let getPostsParams = {
@@ -63,7 +64,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
   const getMorePost = async () => {
     setFecthMore(true);
-    if (lastPID === 'No more posts available.') setFecthMore(false);
+    if (lastPID === 'none') setFecthMore(false);
 
     let getPostsParams = {
       uid: user.uid,
@@ -76,7 +77,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
     await PostService.getPosts(getPostsParams)
       .then((res) => {
-        setLastPID(res.last_pid ? res.last_pid : 'No more posts available.');
+        setLastPID(res.last_pid ? res.last_pid : 'none');
         setPosts(res.data ? [...posts, ...res.data] : [...posts]);
         setFecthMore(false);
       })
@@ -97,7 +98,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       onEndReachedThreshold={0}
       ListFooterComponent={
         <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
-          {fetchMore ? <ActivityIndicator /> : <AppText>{lastPID}</AppText>}
+          {fetchMore ? <ActivityIndicator /> : <AppText>{lastPID === 'none' ? 'No more posts available': ''}</AppText>}
         </View>
       }
     />

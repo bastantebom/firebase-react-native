@@ -197,7 +197,7 @@ function Dashboard({navigation}) {
           {/* <Location /> */}
 
           <Posts
-            type="dashboard"
+            type="own"
             data={posts.length > 0 ? posts : DummyData}
             // data={posts}
             isLoading={isLoading}
