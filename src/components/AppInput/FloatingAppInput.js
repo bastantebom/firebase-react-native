@@ -64,7 +64,7 @@ const FloatingAppInput = (props) => {
 
   const paddingLeftCustom = {
     paddingLeft: normalize(
-      16 + props.paddingLeftLabel ? props.paddingLeftLabel : 0,
+      16 + (props.paddingLeftLabel ? props.paddingLeftLabel : 0),
     ),
   };
   /** VALIDATION HANDLER **/
