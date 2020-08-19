@@ -62,6 +62,11 @@ const FloatingAppInput = (props) => {
       ? normalize(16)
       : normalize(12);
 
+  const paddingLeftCustom = {
+    paddingLeft: normalize(
+      16 + (props.paddingLeftLabel ? props.paddingLeftLabel : 0),
+    ),
+  };
   /** VALIDATION HANDLER **/
 
   /** VALIDATION HANDLER **/
@@ -77,7 +82,7 @@ const FloatingAppInput = (props) => {
         height: normalize(50),
         ...props.customStyle,
       }}>
-      <Animated.Text style={[styles.label, labelStyle]}>
+      <Animated.Text style={[styles.label, paddingLeftCustom, labelStyle]}>
         <AppText
           textStyle="body1"
           color={activeTextColor}
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     paddingTop: normalize(12),
-    paddingLeft: normalize(16),
+    //paddingLeft: normalize(16),
   },
 });
 

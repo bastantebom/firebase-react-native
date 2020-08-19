@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   Animated,
+  Dimensions,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 
@@ -16,6 +17,7 @@ import {
   AppText,
   WhiteOpacity,
   Notification,
+  FloatingAppInput,
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
 
@@ -33,16 +35,21 @@ import {Context} from '@/context';
 import {VerificationScreen} from '@/screens/Dashboard/Verification';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
+import Geocoder from 'react-native-geocoding';
+import Config from '@/services/Config';
+import LocationMap from '@/screens/Dashboard/components/Location';
 
 function Dashboard({navigation}) {
   const {openNotification, closeNotification, posts, setPosts} = useContext(
     Context,
   );
-  const {userInfo, user} = useContext(UserContext);
+
   const [modalState, setModalState] = useState(false);
-  const [showLocation, setShowLocation] = useState(true);
+
   const [scrollState, setScrollState] = useState(0);
   const [margin, setMargin] = useState(16);
+
+  //const {address} = userInfo;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -164,11 +171,6 @@ function Dashboard({navigation}) {
     },
   ];
 
-  useEffect(() => {
-    // Notification for Verifying the profile
-    // openNotification();
-  }, []);
-
   const showLoading = () => {
     setTimeout(() => {
       setIsLoading(false);
@@ -231,30 +233,111 @@ function Dashboard({navigation}) {
 }
 
 const SearchBarWithFilter = () => {
+  const {userInfo} = useContext(UserContext);
+  const {address} = userInfo;
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
+    longitude: 0,
+    latitude: 0,
+  });
+  const [showLocation, setShowLocation] = useState(false);
+  const [cityName, setCityName] = useState('');
+
+  useEffect(() => {
+    // Notification for Verifying the profile
+    // openNotification();
+    if (address) {
+      getStringAddress(address.latitude, address.longitude);
+    }
+  }, [address]);
+
+  const getStringAddress = (lat, lng) => {
+    Geocoder.init(Config.apiKey);
+    Geocoder.from(lat, lng)
+      .then((json) => {
+        //setStringAddress(json.results[1].formatted_address);
+        const arrayToExtract =
+          json.results.length == 12
+            ? 7
+            : json.results.length == 11
+            ? 6
+            : json.results.length == 10
+            ? 6
+            : json.results.length == 9
+            ? 4
+            : json.results.length == 8
+            ? 3
+            : json.results.length < 8
+            ? 2
+            : 2;
+        setCityName(
+          json.results[arrayToExtract].address_components[0].long_name,
+        );
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: lat,
+            longitude: lng,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country: 'Philippines',
+          },
+          //setChangeMapAddress(addressComponent);
+        });
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const prepareAddressUpdate = (fullAddress) => {
+    getStringAddress(fullAddress.latitude, fullAddress.longitude);
+  };
+
   return (
-    <View
-      style={[
-        GlobalStyle.rowCenter,
-        {marginHorizontal: 16, marginVertical: 8},
-      ]}>
-      <View style={{flex: 1}}>
-        {/* <NavigationPinRed width={24} height={24} /> */}
-        {/* <AppInput label="Search your location"></AppInput> */}
-        <View style={{position: 'relative'}}>
-          <AppInput label="Search your location" style={{paddingLeft: 24}} />
-          <View
-            style={{
-              position: 'absolute',
-              top: '50%',
-              marginTop: normalize(-12),
-              left: 4,
-            }}>
-            <NavigationPinRed width={normalize(24)} height={normalize(24)} />
+    <>
+      <View
+        style={[
+          GlobalStyle.rowCenter,
+          {marginHorizontal: 16, marginVertical: 8},
+        ]}>
+        <View style={{flex: 1}}>
+          {/* <NavigationPinRed width={24} height={24} /> */}
+          {/* <AppInput label="Search your location"></AppInput> */}
+          <View style={{position: 'relative'}}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowLocation(true);
+              }}>
+              <View style={{paddingLeft: normalize(48)}}>
+                <View>
+                  <AppText textStyle="caption">Your location</AppText>
+                </View>
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: Colors.primaryMidnightBlue,
+                  }}>
+                  <AppText textStyle="body3" color={Colors.primaryMidnightBlue}>
+                    {cityName}
+                  </AppText>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View
+              style={{
+                position: 'absolute',
+                top: '50%',
+                marginTop: normalize(-12),
+                left: 4,
+              }}>
+              <NavigationPinRed width={normalize(24)} height={normalize(24)} />
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* <TouchableOpacity onPress={()=>{}}>
+        {/* <TouchableOpacity onPress={toggleModal}>
         <View style={styles.circleButton}>
           <Filter />
         </View>
@@ -264,7 +347,28 @@ const SearchBarWithFilter = () => {
           <JarHeart />
         </View>
       </TouchableOpacity> */}
-    </View>
+      </View>
+      <Modal
+        isVisible={showLocation}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        onBackButtonPress={() => setShowLocation(false)}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <LocationMap
+          address={userInfo.address}
+          back={() => setShowLocation(false)}
+          changeFromMapHandler={(fullAddress) =>
+            prepareAddressUpdate(fullAddress)
+          }
+        />
+      </Modal>
+    </>
   );
 };
 
