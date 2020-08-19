@@ -14,9 +14,7 @@ export const PostCamera = ({cancel, next}) => {
   const captureImage = (imageUrl) => {
     setSelected(imageUrl)
     setPhotoCount(1)
-    console.log('test', imageUrl)
   }
-
 
   return (
     <SafeAreaView style={{flex: 1}}>
