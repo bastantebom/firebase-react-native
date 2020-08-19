@@ -59,6 +59,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
     profile_photo: profile_photo,
     account_verified: account_verified,
     display_name: display_name,
+    uid: uid
   };
 
   let timeAgo = (time) => {

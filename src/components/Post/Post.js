@@ -64,6 +64,7 @@ const Post = ({data, type, isLoading}) => {
     account_verified: account_verified,
     display_name: display_name,
     date_posted: date_posted,
+    uid: uid
   };
 
   const navigation = useNavigation();
