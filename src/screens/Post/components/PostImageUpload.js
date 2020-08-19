@@ -26,15 +26,12 @@ import { Library } from './Library';
 const {height, width} = Dimensions.get('window');
 
 export const PostImageUpload = ({
-  data,
   getImage, 
 }) => {
 
-  const {user} = useContext(UserContext);
-  const [buttonEnabled, setButtonEnabled] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
-  const [imageSource, setImageSource] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [currentImage, setCurrentImage] = useState();
   const [showPickerModal, setShowPickerModal] = useState(false);
 
   const [postImageCount, setPostImageCount] = useState(0);
@@ -120,9 +117,10 @@ export const PostImageUpload = ({
     togglePickerModal(selected, photoCount);
   };
 
-  const continueCamera = (selected, photoCount) => {
+  const continueCamera = (selected, photoCount, currentImage) => {
     setPostImages([...postImages, selected]);
     setPostImageCount(postImageCount + photoCount)
+    setCurrentImage(currentImage)
     togglePickerModal(selected, photoCount);
   };
   
@@ -136,14 +134,14 @@ export const PostImageUpload = ({
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} />
+        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} imageArray={postImages} current={currentImage} />
       ),
     },
   ];
 
   useEffect(() => {
     getImage(postImages)
-  }, [postImages])
+  }, [])
 
   return (
     <>
@@ -283,6 +281,7 @@ export const PostImageUpload = ({
             height: '100%',
           }}>
           <TabNavigation routesList={uploadTabs} bottomTab />
+          {/* <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} /> */}
         </View>
       </Modal>
     </>

@@ -89,13 +89,14 @@ export const AppCamera = ({
       cameraRef.current.pausePreview()
 
       setImageUrl(data)
-      
     }
   };
+
+  console.log(imageUrl)
   
   const retake = () => {
     cameraRef.current.resumePreview()
-    // setImageUrl([]);
+    setImageUrl([]);
   }
 
   useEffect(() => {
