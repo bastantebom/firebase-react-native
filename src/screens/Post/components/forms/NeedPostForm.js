@@ -6,15 +6,21 @@ import Textarea from 'react-native-textarea';
 
 import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
-import {PostImages} from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
+import { PostImageUpload } from '../PostImageUpload';
 
 const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user} = useContext(UserContext);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
-  const [photoCount, setPhotoCount] = useState(0);
+  const [postImages, setPostImages] = useState([]);
+
+  console.log('post images', postImages)
+
+  const getImage = (postImages) => {
+    setPostImages([...postImages]);
+  }
 
   const {
     title,
@@ -99,32 +105,8 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-      <View
-        style={{
-          height: normalize(114),
-          borderStyle: 'dashed',
-          borderRadius: 4,
-          borderWidth: 1,
-          borderColor: Colors.neutralGray,
-          justifyContent: 'center',
-          marginBottom: 8,
-        }}>
-        <TouchableOpacity activeOpacity={0.7}>
-          <View style={{alignSelf: 'center', alignItems: 'center'}}>
-            <PostImages width={normalize(56)} height={normalize(56)} />
-            <AppText textStyle="body2" color={Colors.contentOcean}>
-              Upload Cover Photos
-            </AppText>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <AppText textStyle="metadata" customStyle={{marginBottom: 16}}>
-        <AppText customStyle={{fontWeight: 'bold'}}>
-          Photos - {photoCount}/10
-        </AppText>{' '}
-        Choose your listing’s main photo first for Cover Photo. And more photos
-        with multiple angles to show any damage or wear.
-      </AppText>
+
+      <PostImageUpload getImage={getImage} />
 
       <AppInput
         customStyle={{marginBottom: 16}}

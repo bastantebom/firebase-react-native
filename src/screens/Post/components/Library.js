@@ -75,7 +75,8 @@ export const Library = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             height: 45,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={cancel}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
