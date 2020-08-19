@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useReducer} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -13,22 +13,19 @@ import Modal from 'react-native-modal';
 import {
   AppText,
 } from '@/components';
+import {Context} from '@/context';
 import {normalize, Colors} from '@/globals';
 import {ArrowDown} from '@/assets/images/icons';
 import {PhotoAlbums} from './PhotoAlbums';
 
-const {height, width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export const Library = ({
-  // count,
-  // isSelected,
-  // callback,
-  // current,
   cancel,
   next,
-  // showFolders,
+  imageArray,
+  current
 }) => {
-  
   const [photoCount, setPhotoCount] = useState(0);
   const [currentImage, setCurrentImage] = useState('');
   const [selected, setSelected] = useState([]);
@@ -64,7 +61,13 @@ export const Library = ({
 
   useEffect(() => {
     getData();
-  }, [getData])
+    // console.log(photoCount)
+    // console.log(selected)
+    // console.log(currentImage)
+    // console.log(imageArray)
+    // setSelected(imageArray)
+    // setCurrentImage(current)
+  }, [photoCount, selected, currentImage, imageArray, current])
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
@@ -92,10 +95,10 @@ export const Library = ({
             </View>
           </TouchableOpacity> */}
           <TouchableOpacity
-            // onPress={next}
-            onPress={() => next(selected, photoCount)}
+            disabled={ selected.length < 1 && true }
+            onPress={() => next(selected, photoCount, currentImage)}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
-            <AppText textStyle="body3" color={Colors.contentOcean}>
+            <AppText textStyle="body3" color={ selected.length < 1 ? Colors.buttonDisable : Colors.contentOcean}>
               Next
             </AppText>
           </TouchableOpacity>
@@ -127,11 +130,11 @@ export const Library = ({
               source={{uri: currentImage}}
               style={{
                 width: '100%',
-                height: height / 2,
+                height: height / 2.2,
               }}
             />
           ) : null}
-          <View style={{height: '100%'}}>
+          <View style={{height: currentImage ? (height / 1.8) - normalize(122) : height - normalize(117), zIndex: -1}}>
             <CameraRollPicker
               groupTypes="All"
               maximum={10}
@@ -168,7 +171,6 @@ export const Library = ({
               }
               callback={() => getSelectedImages(selected)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
-              // assetType="Videos"
               emptyTextStyle={{
                 color: Colors.primaryYellow,
                 width: '100%',
