@@ -153,7 +153,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
 
   const setDateFromString = () => {
     if (bDate) {
-      setDate(moment(bDate).toDate());
+      setDate(moment(new Date(bDate)).toDate());
     }
   };
 
@@ -519,6 +519,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                 Personal Information
               </AppText>
               <FloatingAppInput
+                editable={false}
+                selectTextOnFocus={false}
                 value={em}
                 label="Email"
                 keyboardType="email-address"
@@ -529,6 +531,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                 }}
               />
               <FloatingAppInput
+                editable={false}
+                selectTextOnFocus={false}
                 value={sEm}
                 label="Secondary Email"
                 keyboardType="email-address"
@@ -538,6 +542,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                 }}
               />
               <FloatingAppInput
+                editable={false}
+                selectTextOnFocus={false}
                 value={mobile}
                 label="Mobile Number"
                 keyboardType="phone-pad"
