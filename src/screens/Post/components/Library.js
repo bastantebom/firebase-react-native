@@ -18,7 +18,7 @@ import {normalize, Colors} from '@/globals';
 import {ArrowDown} from '@/assets/images/icons';
 import {PhotoAlbums} from './PhotoAlbums';
 
-const {height} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
 export const Library = ({
   cancel,
@@ -26,6 +26,9 @@ export const Library = ({
   imageArray,
   current
 }) => {
+
+  const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
+
   const [photoCount, setPhotoCount] = useState(0);
   const [currentImage, setCurrentImage] = useState('');
   const [selected, setSelected] = useState([]);
@@ -40,10 +43,14 @@ export const Library = ({
     getData();
     setCurrentImage(num > 0 ? images[num - 1].uri : '');
     setSelectedCount(prev => [...prev, num])
+
+    setPostImage(selected)
+    setImageCount(num)
+    setImageCurrent(num > 0 ? images[num - 1].uri : '')
   };
   
-  // const lastItem = selectedCount.pop();
-  const lastItem = selectedCount;
+  const lastItem = selectedCount.pop();
+  // const lastItem = selectedCount;
   
   const getData = () => {
     const arr = selectedCount;
@@ -61,13 +68,16 @@ export const Library = ({
 
   useEffect(() => {
     getData();
+    setSelected(postImage)
+    setPhotoCount(imageCount)
+    setCurrentImage(imageCurrent)
     // console.log(photoCount)
     // console.log(selected)
     // console.log(currentImage)
     // console.log(imageArray)
     // setSelected(imageArray)
     // setCurrentImage(current)
-  }, [photoCount, selected, currentImage, imageArray, current])
+  }, [postImage])
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
@@ -134,7 +144,7 @@ export const Library = ({
               }}
             />
           ) : null}
-          <View style={{height: currentImage ? (height / 1.8) - normalize(122) : height - normalize(117), zIndex: -1}}>
+          <View style={{height: currentImage ? (height / 1.8) - normalize(122) : height - normalize(117), width: width, zIndex: -1}}>
             <CameraRollPicker
               groupTypes="All"
               maximum={10}
@@ -162,8 +172,8 @@ export const Library = ({
                       customStyle={{ textAlign: 'center' }}
                       // key={index}
                     >
-                      {/* {lastItem[index]} */}
-                      {count}
+                      {lastItem}
+                      {/* {count} */}
                     </AppText>
                   {/* )} */}
                   {/* ))}  */}
@@ -173,8 +183,6 @@ export const Library = ({
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,
-                width: '100%',
-                height: '100%',
                 paddingVertical: 45,
               }}
             />

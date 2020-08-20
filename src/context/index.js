@@ -12,6 +12,10 @@ export const ContextProvider = ({children}) => {
 
   const [posts, setPosts] = useState([]);
 
+  const [postImage, setPostImage] = useState([]);
+  const [imageCount, setImageCount] = useState(0);
+  const [imageCurrent, setImageCurrent] = useState('');
+
   const closeSlider = () => {
     setSliderState('close');
   };
@@ -64,7 +68,13 @@ export const ContextProvider = ({children}) => {
         setPosts,
         fetchPosts,
         deleteNotif,
-        setDeleteNotif
+        setDeleteNotif,
+        postImage,
+        setPostImage,
+        imageCount,
+        setImageCount,
+        imageCurrent,
+        setImageCurrent
       }}>
       {children}
     </Context.Provider>
