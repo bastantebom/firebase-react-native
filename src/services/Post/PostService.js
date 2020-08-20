@@ -11,6 +11,17 @@ const getPosts = (payload) => {
   });
 };
 
+const getPostsLocation = (payload) => {
+  return BaseAPI({
+    url: `post/location`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+}
+
 const createPost = (payload) => {
   return BaseAPI({
     url: 'post/create',
@@ -49,6 +60,6 @@ const deletePost = (PID) => {
   });
 };
 
-const PostService = {createPost, getPosts, editPost, deletePost};
+const PostService = {createPost, getPosts, editPost, deletePost, getPostsLocation};
 
 export default PostService;

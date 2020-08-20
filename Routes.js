@@ -82,7 +82,7 @@ function HiveStackScreen() {
   );
 }
 
-function PostStackScreen() {
+function PostStackScreen({navigation}) {
   const {user} = useContext(UserContext);
 
   return (
@@ -90,7 +90,7 @@ function PostStackScreen() {
       {/* { !user ? null :  */}
       <PostStack.Navigator headerMode="none">
         <PostStack.Screen name="PostScreen" component={PostScreen} />
-        <PostStack.Screen name="SinglePostView" component={SinglePostView} />
+        <PostStack.Screen name="SinglePostView" component={SinglePostView}  />
       </PostStack.Navigator>
       {/* } */}
     </>
@@ -98,6 +98,8 @@ function PostStackScreen() {
 }
 
 function ActivityStackScreen() {
+
+
   return (
     <ActivityStack.Navigator headerMode="none">
       <ActivityStack.Screen name="Activity" component={Activity} />

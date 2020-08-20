@@ -43,6 +43,7 @@ function Dashboard({navigation}) {
   const {openNotification, closeNotification, posts, setPosts} = useContext(
     Context,
   );
+  const {user} = useContext(UserContext);
 
   const [modalState, setModalState] = useState(false);
 
@@ -233,7 +234,8 @@ function Dashboard({navigation}) {
 }
 
 const SearchBarWithFilter = () => {
-  const {userInfo} = useContext(UserContext);
+  const {posts, setPosts} = useContext(Context);
+  const {userInfo, user} = useContext(UserContext);
   const {address} = userInfo;
   const [addressComponents, setAddressComponents] = useState({
     city: '',
@@ -246,8 +248,6 @@ const SearchBarWithFilter = () => {
   const [cityName, setCityName] = useState('');
 
   useEffect(() => {
-    // Notification for Verifying the profile
-    // openNotification();
     if (address) {
       getStringAddress(address.latitude, address.longitude);
     }
@@ -293,6 +293,31 @@ const SearchBarWithFilter = () => {
 
   const prepareAddressUpdate = (fullAddress) => {
     getStringAddress(fullAddress.latitude, fullAddress.longitude);
+  };
+
+  changeFromMapHandler = async (fullAddress) => {
+    console.log('CLICKYCLICK');
+    console.log(fullAddress);
+    console.log(fullAddress.city);
+
+    let getPostsParams = {
+      uid: user.uid,
+      limit: 5,
+      city: fullAddress?.city,
+    };
+
+    console.log('GET POST PARAMS');
+    console.log(getPostsParams);
+
+    await PostService.getPostsLocation(getPostsParams)
+      .then((res) => {
+        console.log('res');
+        console.log(res);
+        if (res.data.length > 0) setPosts(res.data);
+      })
+      .catch((err) => {});
+
+    await prepareAddressUpdate(fullAddress);
   };
 
   return (
@@ -364,7 +389,7 @@ const SearchBarWithFilter = () => {
           address={userInfo.address}
           back={() => setShowLocation(false)}
           changeFromMapHandler={(fullAddress) =>
-            prepareAddressUpdate(fullAddress)
+            changeFromMapHandler(fullAddress)
           }
         />
       </Modal>
