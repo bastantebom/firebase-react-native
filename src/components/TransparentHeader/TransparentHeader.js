@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Share from 'react-native-share';
+import {useNavigation} from '@react-navigation/native';
 
 import {AppText, BottomSheetHeader} from '@/components';
 import {EllipsisMenu, OwnMenu, QRScreen, PostEllipsis} from './components';
@@ -41,6 +42,7 @@ const TransparentHeader = ({
   editPostFunction,
   deletePostFunction,
 }) => {
+  const navigation = useNavigation();
   const shareHandler = async () => {
     const shareOptions = {
       title: 'Share profile',
@@ -260,7 +262,7 @@ const TransparentHeader = ({
             }}>
             {/* Left aligned icons */}
             <View>
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
                 <View style={styles.circle}>
                   <HeaderBack width={normalize(16)} height={normalize(16)} />
                 </View>

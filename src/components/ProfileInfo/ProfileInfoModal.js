@@ -27,11 +27,11 @@ import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
 
-import {Posts, MoreInfo, Reviews} from './Tabs';
-import ProfileInfo from './components/ProfileInfo';
-import {GuestProfile} from './components/GuestProfile';
+// import {Posts, MoreInfo, Reviews} from './Tabs';
+import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
+// import {GuestProfile} from './components/GuestProfile';
 
-function Profile({profileViewType = 'own', backFunction, uid}) {
+function Profile({profileViewType = 'other', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
   //const [userInfo, setUserInfo] = useState({});
@@ -77,39 +77,6 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   };
 
   const [profileImageUrl, setProfileImageUrl] = useState('');
-
-  let profileTabs = [
-    {
-      key: 'ownpost',
-      title: 'Posts',
-      renderPage: (
-        <Posts
-          type="dashboard"
-          // data={DummyData}
-          data={[{}]}
-          isLoading={isDataLoading}
-          setIsLoading={setIsDataLoading}
-        />
-      ),
-    },
-    //{key: 'ownpost', title: 'Posts', renderPage: <></>},
-    // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
-    {
-      key: 'moreinfo',
-      title: 'More Info',
-      renderPage: <MoreInfo />,
-    },
-  ];
-
-  // const signOut = () => {
-  //   if (user) {
-  //     auth()
-  //       .signOut()
-  //       .then(() => console.log('User signed out!'));
-  //   } else {
-  //     navigation.navigate('Onboarding');
-  //   }
-  // };
 
   const width = Dimensions.get('window').width;
 
@@ -160,7 +127,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
 
       <View style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation routesList={profileTabs} />
+          {/* <TabNavigation routesList={profileTabs} /> */}
         </View>
       </View>
       <WhiteOpacity />
