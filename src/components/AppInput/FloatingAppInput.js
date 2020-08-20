@@ -93,6 +93,7 @@ const FloatingAppInput = (props) => {
       <TextInput
         {...props}
         style={styles.floatingInput}
+        underlineColorAndroid="transparent"
         onFocus={onFocus}
         onBlur={onBlur}
         blurOnSubmit
