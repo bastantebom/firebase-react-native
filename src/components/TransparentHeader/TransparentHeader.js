@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Share from 'react-native-share';
+import {useNavigation} from '@react-navigation/native';
 
 import {AppText, BottomSheetHeader} from '@/components';
 import {EllipsisMenu, OwnMenu, QRScreen, PostEllipsis} from './components';
@@ -40,7 +41,9 @@ const TransparentHeader = ({
   backFunction,
   editPostFunction,
   deletePostFunction,
+  userInfo,
 }) => {
+  const navigation = useNavigation();
   const shareHandler = async () => {
     const shareOptions = {
       title: 'Share profile',
@@ -50,11 +53,17 @@ const TransparentHeader = ({
     };
 
     try {
-      const ShareResponse = await Share.open(shareOptions);
-      setResult(JSON.stringify(ShareResponse, null, 2));
+      const ShareResponse = await Share.open(shareOptions)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // setResult(JSON.stringify(ShareResponse, null, 2));
     } catch (error) {
       console.log('Error =>', error);
-      setResult('error: '.concat(getErrorString(error)));
+      // setResult('error: '.concat(getErrorString(error)));
     }
   };
 
@@ -260,7 +269,7 @@ const TransparentHeader = ({
             }}>
             {/* Left aligned icons */}
             <View>
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
                 <View style={styles.circle}>
                   <HeaderBack width={normalize(16)} height={normalize(16)} />
                 </View>
@@ -332,7 +341,10 @@ const TransparentHeader = ({
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <EllipsisMenu toggleEllipsisState={toggleEllipsisState} />
+          <EllipsisMenu
+            toggleEllipsisState={toggleEllipsisState}
+            userInfo={userInfo}
+          />
         </Modal>
       </>
     );

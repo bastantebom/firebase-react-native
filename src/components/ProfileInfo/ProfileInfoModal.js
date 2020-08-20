@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import {
   AppText,
@@ -27,14 +28,14 @@ import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
 
-import {Posts, MoreInfo, Reviews} from './Tabs';
-import ProfileInfo from './components/ProfileInfo';
-import {GuestProfile} from './components/GuestProfile';
+// import {Posts, MoreInfo, Reviews} from './Tabs';
+import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
+// import {GuestProfile} from './components/GuestProfile';
 
-function Profile({profileViewType = 'own', backFunction, uid}) {
-  const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
+function Profile({profileViewType = 'other', backFunction, uid}) {
+  const {user, signOut} = useContext(UserContext);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
-  //const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
@@ -78,46 +79,26 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
 
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
-  let profileTabs = [
-    {
-      key: 'ownpost',
-      title: 'Posts',
-      renderPage: (
-        <Posts
-          type="dashboard"
-          // data={DummyData}
-          data={[{}]}
-          isLoading={isDataLoading}
-          setIsLoading={setIsDataLoading}
-        />
-      ),
-    },
-    //{key: 'ownpost', title: 'Posts', renderPage: <></>},
-    // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
-    {
-      key: 'moreinfo',
-      title: 'More Info',
-      renderPage: <MoreInfo />,
-    },
-  ];
-
-  // const signOut = () => {
-  //   if (user) {
-  //     auth()
-  //       .signOut()
-  //       .then(() => console.log('User signed out!'));
-  //   } else {
-  //     navigation.navigate('Onboarding');
-  //   }
-  // };
-
   const width = Dimensions.get('window').width;
 
   if (!user) {
     return <GuestProfile />;
   }
 
-  console.log(uid);
+  useEffect(() => {
+    setIsDataLoading(true);
+    ProfileInfoService.getUser(uid)
+      .then((response) => {
+        setUserInfo(response);
+      })
+      .catch((err) => {
+        console.log('Err: ' + err);
+      })
+      .finally(() => {
+        console.log('FINALLY');
+        setIsDataLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -133,6 +114,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         toggleQR={toggleQR}
         QR={QR}
         backFunction={backFunction}
+        userInfo={userInfo}
       />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault
@@ -155,18 +137,75 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
-        <ProfileInfo profileData={userInfo} />
+        <LoadingUserInfo isLoading={isDataLoading}>
+          <ProfileInfo profileData={userInfo} />
+        </LoadingUserInfo>
       </View>
 
       <View style={{flex: 1}}>
         <View style={styles.container}>
-          <TabNavigation routesList={profileTabs} />
+          {/* <TabNavigation routesList={profileTabs} /> */}
         </View>
       </View>
       <WhiteOpacity />
     </>
   );
 }
+
+const LoadingUserInfo = ({children, isLoading}) => {
+  return (
+    <SkeletonContent
+      containerStyle={{flexDirection: 'column', backgroundColor: 'white'}}
+      isLoading={isLoading}
+      layout={[
+        {
+          marginHorizontal: 20,
+          width: normalize(190),
+          height: normalize(24),
+        },
+        {
+          marginHorizontal: 20,
+          flexDirection: 'row',
+          marginTop: 8,
+          children: [
+            {
+              width: normalize(120),
+              height: normalize(20),
+              marginRight: 16,
+            },
+            {
+              width: normalize(100),
+              height: normalize(20),
+            },
+          ],
+        },
+        {
+          alignSelf: 'center',
+          width: normalize(375 - 40),
+          height: normalize(2),
+          marginVertical: 16,
+        },
+        {
+          marginHorizontal: 20,
+          flexDirection: 'row',
+          marginTop: 8,
+          children: [
+            {
+              width: normalize(120),
+              height: normalize(20),
+              marginRight: 16,
+            },
+            {
+              width: normalize(120),
+              height: normalize(20),
+            },
+          ],
+        },
+      ]}>
+      {children}
+    </SkeletonContent>
+  );
+};
 
 export default Profile;
 

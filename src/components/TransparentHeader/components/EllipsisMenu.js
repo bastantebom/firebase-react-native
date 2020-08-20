@@ -10,7 +10,9 @@ import {
   ProfileBlockRed,
 } from '@/assets/images/icons';
 
-const EllipsisMenu = ({toggleEllipsisState}) => {
+const EllipsisMenu = ({toggleEllipsisState, userInfo}) => {
+  const {username} = userInfo;
+
   return (
     <View
       style={{
@@ -30,7 +32,7 @@ const EllipsisMenu = ({toggleEllipsisState}) => {
             }}>
             <ProfileMute />
             <AppText customStyle={{marginLeft: 8}} textStyle="body2">
-              Mute @trishaparedes
+              Mute @{username}
             </AppText>
           </View>
         </TouchableOpacity>
@@ -43,7 +45,7 @@ const EllipsisMenu = ({toggleEllipsisState}) => {
             }}>
             <ProfileReport />
             <AppText customStyle={{marginLeft: 8}} textStyle="body2">
-              Report @trishaparedes
+              Report @{username}
             </AppText>
           </View>
         </TouchableOpacity>
@@ -59,7 +61,7 @@ const EllipsisMenu = ({toggleEllipsisState}) => {
               color={Colors.red}
               customStyle={{marginLeft: 8}}
               textStyle="body2">
-              Block @trishaparedes
+              Block @{username}
             </AppText>
           </View>
         </TouchableOpacity>
