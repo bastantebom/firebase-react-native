@@ -3,33 +3,104 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import storage from '@react-native-firebase/storage';
+/*Map Essentials*/
+import {ArrowRight} from '@/assets/images/icons';
+import Geocoder from 'react-native-geocoding';
+import Config from '@/services/Config';
+import Modal from 'react-native-modal';
+import StoreLocation from '../StoreLocation';
+/*Map Essentials*/
 
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 
-import {
-  AppText,
-  AppInput,
-  Switch,
-} from '@/components';
+import {AppText, AppInput, Switch} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
-import { PostImageUpload } from '../PostImageUpload';
+import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
-  const {user} = useContext(UserContext);
+  const {user, userInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
+  /*MAP Essentials */
+  const [map, setMap] = useState(false);
+  const {address} = userInfo;
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
+    longitude: 0,
+    latitude: 0,
+  });
+  const [showLocation, setShowLocation] = useState(false);
+  const [stringAddress, setStringAddress] = useState('');
 
-  console.log('post images', postImages)
+  useEffect(() => {
+    // Notification for Verifying the profile
+    // openNotification();
+    if (address) {
+      getStringAddress(address.latitude, address.longitude);
+    }
+  }, [address]);
+
+  const getStringAddress = (lat, lng) => {
+    Geocoder.init(Config.apiKey);
+    Geocoder.from(lat, lng)
+      .then((json) => {
+        setStringAddress(json.results[1].formatted_address);
+        const arrayToExtract =
+          json.results.length == 12
+            ? 7
+            : json.results.length == 11
+            ? 6
+            : json.results.length == 10
+            ? 6
+            : json.results.length == 9
+            ? 4
+            : json.results.length == 8
+            ? 3
+            : json.results.length < 8
+            ? 2
+            : 2;
+        /*setCityName(
+          json.results[arrayToExtract].address_components[0].long_name,
+        );*/
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: lat,
+            longitude: lng,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country: 'Philippines',
+          },
+          //setChangeMapAddress(addressComponent);
+        });
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const prepareAddressUpdate = (fullAddress) => {
+    getStringAddress(fullAddress.latitude, fullAddress.longitude);
+  };
+
+  const toggleMap = () => {
+    setMap(!map);
+  };
+  /*MAP Essentials */
+
+  console.log('post images', postImages);
 
   const getImage = (postImages) => {
     setPostImages([...postImages]);
-  }
+  };
 
   const {
     title,
@@ -150,7 +221,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       price: price,
       description: description,
       payment_method: paymentMethod,
-      store_location: storeLocation,
+      store_location: addressComponents,
       delivery_method: {
         pickup: pickupState,
         delivery: deliveryState,
@@ -207,7 +278,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        
         <PostImageUpload getImage={getImage} />
 
         <AppInput
@@ -279,12 +349,25 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           <AppText textStyle="body2">Pickup</AppText>
           <Switch value={pickupState} onValueChange={togglePickupState} />
         </View>
-        <AppInput
-          label="Store Location"
-          customStyle={{marginBottom: 16}}
-          value={storeLocation}
-          onChangeText={(text) => setStoreLocation(text)}
-        />
+        <View style={{position: 'relative'}}>
+          <TouchableOpacity onPress={() => toggleMap()}>
+            <AppInput
+              label="Location Address"
+              customStyle={{marginBottom: 16}}
+              value={stringAddress}
+              //onChangeText={(text) => setStoreLocation(text)}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 12,
+                right: 12,
+              }}>
+              <ArrowRight height={normalize(24)} width={normalize(24)} />
+            </View>
+          </TouchableOpacity>
+        </View>
         <View
           style={{
             flexDirection: 'row',
@@ -336,6 +419,26 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             </AppText>
           )}
         </TouchableOpacity>
+        <Modal
+          isVisible={map}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          onBackButtonPress={() => setMap(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <StoreLocation
+            address={userInfo.address}
+            back={() => setMap(false)}
+            changeFromMapHandler={(fullAddress) =>
+              prepareAddressUpdate(fullAddress)
+            }
+          />
+        </Modal>
       </View>
     </>
   );
