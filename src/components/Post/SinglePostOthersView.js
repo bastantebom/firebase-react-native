@@ -89,7 +89,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
           />
         </View>
         <View style={styles.postInfoContainer}>
-          <ProfileInfo userInfo={userInfo} type="own-post" />
+          <ProfileInfo userInfo={userInfo} type="own-post" closePostModal={backFunction} />
 
           <AppText
             textStyle="subtitle1"

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import {
   AppText,
@@ -85,10 +86,18 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
   }
 
   useEffect(() => {
+    setIsDataLoading(true);
     ProfileInfoService.getUser(uid)
       .then((response) => {
         setUserInfo(response);
       })
+      .catch((err) => {
+        console.log('Err: ' + err);
+      })
+      .finally(() => {
+        console.log('FINALLY');
+        setIsDataLoading(false);
+      });
   }, []);
 
   return (
@@ -128,7 +137,9 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
         />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
-        <ProfileInfo profileData={userInfo} />
+        <LoadingUserInfo isLoading={isDataLoading}>
+          <ProfileInfo profileData={userInfo} />
+        </LoadingUserInfo>
       </View>
 
       <View style={{flex: 1}}>
@@ -140,6 +151,61 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
     </>
   );
 }
+
+const LoadingUserInfo = ({children, isLoading}) => {
+  return (
+    <SkeletonContent
+      containerStyle={{flexDirection: 'column', backgroundColor: 'white'}}
+      isLoading={isLoading}
+      layout={[
+        {
+          marginHorizontal: 20,
+          width: normalize(190),
+          height: normalize(24),
+        },
+        {
+          marginHorizontal: 20,
+          flexDirection: 'row',
+          marginTop: 8,
+          children: [
+            {
+              width: normalize(120),
+              height: normalize(20),
+              marginRight: 16,
+            },
+            {
+              width: normalize(100),
+              height: normalize(20),
+            },
+          ],
+        },
+        {
+          alignSelf: 'center',
+          width: normalize(375 - 40),
+          height: normalize(2),
+          marginVertical: 16,
+        },
+        {
+          marginHorizontal: 20,
+          flexDirection: 'row',
+          marginTop: 8,
+          children: [
+            {
+              width: normalize(120),
+              height: normalize(20),
+              marginRight: 16,
+            },
+            {
+              width: normalize(120),
+              height: normalize(20),
+            },
+          ],
+        },
+      ]}>
+      {children}
+    </SkeletonContent>
+  );
+};
 
 export default Profile;
 

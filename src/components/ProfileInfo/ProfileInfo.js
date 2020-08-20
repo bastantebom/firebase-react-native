@@ -20,7 +20,7 @@ import {UserContext} from '@/context/UserContext';
 import {Profile} from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
 
-const ProfileInfo = ({userInfo, type}) => {
+const ProfileInfo = ({userInfo, type, closePostModal}) => {
   const {user} = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
@@ -58,13 +58,19 @@ const ProfileInfo = ({userInfo, type}) => {
   };
 
   openProfileHandler = () => {
+    console.log(user.uid);
+    console.log(uid);
+
     if (user.uid === uid) {
       return navigation.navigate('Profile', {
         screen: 'Profile',
       });
     }
 
-    return setProfileModal(true);
+    // return
+    console.log('OPENING MODAL');
+
+    setProfileModal(true);
   };
 
   if (type === 'dashboard')
@@ -145,9 +151,7 @@ const ProfileInfo = ({userInfo, type}) => {
   // OWN POST VIEW
   if (type === 'own-post')
     return (
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => console.log('OPEN MODAL for profile: ' + uid)}>
+      <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
         <View style={{flexDirection: 'row'}}>
           <View style={styles.userInfoImageContainer}>
             <ProfilePhoto size={42} />
@@ -166,6 +170,23 @@ const ProfileInfo = ({userInfo, type}) => {
             </View>
           </View>
         </View>
+        <Modal
+          isVisible={profileModal}
+          animationIn="slideInUp"
+          animationInTiming={500}
+          animationOut="slideOutDown"
+          animationOutTiming={300}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+            justifyContent: 'flex-start',
+          }}>
+          <ProfileInfoModal
+            backFunction={() => setProfileModal(false)}
+            uid={uid}
+          />
+        </Modal>
       </TouchableOpacity>
     );
 };
