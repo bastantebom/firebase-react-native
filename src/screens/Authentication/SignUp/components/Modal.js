@@ -5,7 +5,7 @@ import Modal from 'react-native-modal';
 
 import {ScrollView} from 'react-native-gesture-handler';
 import {Close} from '@/assets/images/icons/';
-import {AppButton, AppViewContainer, AppText} from '@/components';
+import {AppButton, AppViewContainer, AppText, WhiteOpacity} from '@/components';
 import {Faded} from '@/assets/images';
 import {normalize} from '@/globals';
 // create a component
@@ -48,7 +48,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
             </AppText>
           </AppViewContainer>
         </ScrollView>
-
+        <WhiteOpacity />
         <View style={{marginTop: normalize(16)}}>
           <AppButton
             text="Agree"

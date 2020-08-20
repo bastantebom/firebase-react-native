@@ -21,6 +21,7 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
+    console.log(props.invalidField);
     //console.log(props.value + ' ' + props.placeholder);
     if (props.value !== undefined || props.placeholder !== undefined) {
       animateFocus();
@@ -93,6 +94,7 @@ const FloatingAppInput = (props) => {
       <TextInput
         {...props}
         style={styles.floatingInput}
+        underlineColorAndroid="transparent"
         onFocus={onFocus}
         onBlur={onBlur}
         blurOnSubmit

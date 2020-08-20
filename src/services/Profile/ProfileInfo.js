@@ -33,10 +33,22 @@ const updatePassword = (payload, UID) => {
   });
 };
 
+const validateUsername = (payload) => {
+  return BaseAPI({
+    url: `/username/validate`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const ProfileInfoService = {
   getUser,
   updateUser,
   updatePassword,
+  validateUsername,
 };
 
 export default ProfileInfoService;

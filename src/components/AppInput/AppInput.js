@@ -33,6 +33,7 @@ const AppInput = (props, {children}) => {
       <TextInput
         onBlur={onBlur}
         onFocus={onFocus}
+        underlineColorAndroid="transparent"
         {...props}
         style={[styles.appInput, {...props.style}]}
         theme={{
@@ -42,8 +43,7 @@ const AppInput = (props, {children}) => {
           fonts: {
             medium: 'RoundedMplus1c-Medium',
           },
-        }}
-      >
+        }}>
         {children}
       </TextInput>
     </View>
