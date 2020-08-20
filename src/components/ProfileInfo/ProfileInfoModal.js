@@ -32,9 +32,9 @@ import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'other', backFunction, uid}) {
-  const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
+  const {user, signOut} = useContext(UserContext);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
-  //const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
@@ -84,7 +84,12 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
     return <GuestProfile />;
   }
 
-  console.log(uid);
+  useEffect(() => {
+    ProfileInfoService.getUser(uid)
+      .then((response) => {
+        setUserInfo(response);
+      })
+  }, []);
 
   return (
     <>
@@ -100,6 +105,7 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
         toggleQR={toggleQR}
         QR={QR}
         backFunction={backFunction}
+        userInfo={userInfo}
       />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
         <ProfileHeaderDefault

@@ -2,7 +2,7 @@
  * Component for profile info
  */
 
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -11,16 +11,19 @@ import {
   Dimensions,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import {useNavigation} from '@react-navigation/native';
 
 import {AppText} from '@/components';
 import {GlobalStyle, Colors, normalize, timePassed} from '@/globals';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
-
+import {UserContext} from '@/context/UserContext';
 import {Profile} from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
 
 const ProfileInfo = ({userInfo, type}) => {
+  const {user} = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
+  const navigation = useNavigation();
 
   const {
     username = 'defaultuser',
@@ -54,11 +57,19 @@ const ProfileInfo = ({userInfo, type}) => {
     );
   };
 
+  openProfileHandler = () => {
+    if (user.uid === uid) {
+      return navigation.navigate('Profile', {
+        screen: 'Profile',
+      });
+    }
+
+    return setProfileModal(true);
+  };
+
   if (type === 'dashboard')
     return (
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => setProfileModal(true)}>
+      <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
         <View style={{flexDirection: 'row'}}>
           <View
             style={{
@@ -123,7 +134,10 @@ const ProfileInfo = ({userInfo, type}) => {
             height: Dimensions.get('window').height,
             justifyContent: 'flex-start',
           }}>
-          <ProfileInfoModal backFunction={() => setProfileModal(false)} uid={uid} />
+          <ProfileInfoModal
+            backFunction={() => setProfileModal(false)}
+            uid={uid}
+          />
         </Modal>
       </TouchableOpacity>
     );

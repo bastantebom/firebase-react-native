@@ -41,6 +41,7 @@ const TransparentHeader = ({
   backFunction,
   editPostFunction,
   deletePostFunction,
+  userInfo,
 }) => {
   const navigation = useNavigation();
   const shareHandler = async () => {
@@ -52,11 +53,17 @@ const TransparentHeader = ({
     };
 
     try {
-      const ShareResponse = await Share.open(shareOptions);
-      setResult(JSON.stringify(ShareResponse, null, 2));
+      const ShareResponse = await Share.open(shareOptions)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // setResult(JSON.stringify(ShareResponse, null, 2));
     } catch (error) {
       console.log('Error =>', error);
-      setResult('error: '.concat(getErrorString(error)));
+      // setResult('error: '.concat(getErrorString(error)));
     }
   };
 
@@ -334,7 +341,10 @@ const TransparentHeader = ({
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <EllipsisMenu toggleEllipsisState={toggleEllipsisState} />
+          <EllipsisMenu
+            toggleEllipsisState={toggleEllipsisState}
+            userInfo={userInfo}
+          />
         </Modal>
       </>
     );
