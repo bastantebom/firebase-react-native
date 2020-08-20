@@ -37,6 +37,7 @@ import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import _ from 'lodash';
 
 // create a component
 const EditProfile = ({toggleEditProfile, toggleMenu}) => {
@@ -83,7 +84,36 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [pPhoto, setPPhoto] = useState(profile_photo);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
   const [name, setName] = useState(full_name);
+  /*Username Validations */
   const [uName, setUName] = useState(username);
+  const [invalidUser, setInvalidUser] = useState(true);
+  const [invalidUserFormat, setInvalidUserFormat] = useState(false);
+  const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
+  const onChangeUsername = (uName) => {
+    let userNameReg = /^[a-z0-9.-]*$/;
+    if (userNameReg.test(uName)) {
+      setInvalidUserFormat(false);
+      setUName(uName);
+      delayedUsernameValidation(uName);
+    } else {
+      setUName(uName);
+      setInvalidUserFormat(true);
+      setButtonState(true);
+    }
+  };
+  const sendValidation = async (un) => {
+    await ProfileInfoService.validateUsername({uid: user.uid, username: un})
+      .then((response) => {
+        //console.log(response);
+        setInvalidUser(response.valid);
+        setButtonState(!response.valid);
+      })
+      .catch((error) => {
+        setInvalidUser(true);
+        setButtonState(true);
+      });
+  };
+  /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);
   const [stringAddress, setStringAddress] = useState();
@@ -423,17 +453,27 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               <FloatingAppInput
                 value={uName}
                 label="Username"
-                customStyle={{marginBottom: 4}}
-                onChangeText={(uName) => {
-                  setUName(uName);
+                customStyle={{
+                  marginBottom: 4,
                 }}
+                invalidField={!invalidUser || invalidUserFormat}
+                onChangeText={(uName) => onChangeUsername(uName)}
+                autoCapitalize="none"
               />
+              {!invalidUser ? (
+                <AppText textStyle="caption" customStyle={styles.errorCopy}>
+                  Username is already been used
+                </AppText>
+              ) : null}
               <View style={{flexDirection: 'row'}}>
                 <AppText textStyle="caption">servbees.com/</AppText>
                 <AppText textStyle="caption2">{uName}</AppText>
               </View>
-              <AppText textStyle="caption">
-                Only use characters, numbers, and a dot (.){' '}
+
+              <AppText
+                textStyle="caption"
+                color={invalidUserFormat ? Colors.errorInput : ''}>
+                Only use characters, numbers, dash and a dot (.){' '}
               </AppText>
 
               <TextInput
@@ -710,6 +750,11 @@ const styles = StyleSheet.create({
     marginTop: normalize(16),
     padding: normalize(8),
     fontSize: normalize(14),
+  },
+
+  errorCopy: {
+    color: Colors.errorInput,
+    marginBottom: 12,
   },
 });
 
