@@ -70,7 +70,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     address,
     email,
     secondary_email,
-    mobile_number,
+    phone_number,
     birth_date,
     gender,
   } = userInfo;
@@ -78,7 +78,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const {uid} = user;
 
   const isEmailRequired = email ? true : false;
-  const isMobileRequired = mobile_number ? true : false;
+  const isMobileRequired = phone_number ? true : false;
 
   const [pPhoto, setPPhoto] = useState(profile_photo);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
@@ -91,7 +91,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [addNote, setAddNote] = useState(address.note);
   const [em, setEm] = useState(email);
   const [sEm, setSEm] = useState(secondary_email);
-  const [mobile, setMobile] = useState(mobile_number);
+  const [mobile, setMobile] = useState(phone_number);
   const [bDate, setBDate] = useState(birth_date);
   const [g, setG] = useState(gender);
 
@@ -257,7 +257,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   }, [userInfo]);
 
   useEffect(() => {
-    if (imgUploading && pPhoto) {
+    if (imgUploading) {
       //console.log(uid);
       //console.log(pPhoto);
       //const profilePhotoEnc = pPhoto;
@@ -282,8 +282,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
         username: uName,
         address: {...userInfo.address, ...addressToUpdate},
         birth_date: bDate,
+        email: em,
         secondary_email: sEm,
-        mobile_number: mobile,
+        phone_number: mobile,
         gender: g,
       };
       Object.keys(dataToUpdate).forEach(
@@ -309,7 +310,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
           console.log(error);
         });
     }
-  }, [imgUploading, pPhoto]);
+  }, [imgUploading]);
 
   return (
     <>
