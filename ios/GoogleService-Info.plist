@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>717890893531-qii7clpj1dusu6upbu3gokr1cadnuoln.apps.googleusercontent.com</string>
+	<string>29855387596-rab893v41d13s4vfdf1ou73aa4gavfhh.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.717890893531-qii7clpj1dusu6upbu3gokr1cadnuoln</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>717890893531-4cvrbrnmfq1gb5j4kt6ug7vu7t2gdqda.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.29855387596-rab893v41d13s4vfdf1ou73aa4gavfhh</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDtsYM4jp7ir67asPyyyAJnwr5R1skcXR4</string>
+	<string>AIzaSyAVHI6ectXBkxwBY-utBculqOIOqtaGlXg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>717890893531</string>
+	<string>29855387596</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>org.reactjs.native.example.servbees</string>
 	<key>PROJECT_ID</key>
-	<string>pixles-servbees</string>
+	<string>dev-servbees</string>
 	<key>STORAGE_BUCKET</key>
-	<string>pixles-servbees.appspot.com</string>
+	<string>dev-servbees.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:717890893531:ios:fbb50d6122b3627b2e7efe</string>
+	<string>1:29855387596:ios:deef40bb35631d6eca1769</string>
 	<key>DATABASE_URL</key>
-	<string>https://pixles-servbees.firebaseio.com</string>
+	<string>https://dev-servbees.firebaseio.com</string>
 </dict>
 </plist>
