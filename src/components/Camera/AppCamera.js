@@ -92,7 +92,7 @@ export const AppCamera = ({
     }
   };
 
-  console.log(imageUrl)
+  // console.log(imageUrl)
   
   const retake = () => {
     cameraRef.current.resumePreview()
@@ -151,9 +151,7 @@ export const AppCamera = ({
           {instruction}
         </AppText>
         </View>
-        <TouchableOpacity onPress={() => {{ 
-          takePicture()}
-        }} 
+        <TouchableOpacity onPress={() => takePicture()} 
           style={styles.capture}
         >
           <View style={styles.captureButton} />

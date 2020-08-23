@@ -14,15 +14,19 @@ import {AppText, ScreenHeaderTitle} from '@/components';
 import PostHeader from './components/PostHeader';
 import {Colors, normalize} from '@/globals';
 import {GuestPost} from './components/GuestPost';
-
+import {Context} from '@/context';
 import {UserContext} from '@/context/UserContext';
 
 const PostScreen = ({togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const {user} = useContext(UserContext);
+  const {setPostImage, setImageCount, setImageCurrent} = useContext(Context);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
+    setPostImage([]);
+    setImageCount(0);
+    setImageCurrent('');
   };
   const closeHandler = (value) => {
     if (value === 'continue') {

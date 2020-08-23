@@ -5,6 +5,7 @@ import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
 
 export const PostCamera = ({cancel, next}) => {
+  
   const [photoCount, setPhotoCount] = useState(0);
   const [selected, setSelected] = useState([]);
 
