@@ -19,8 +19,8 @@ import {
   FloatingAppInput,
   Notification,
 } from '@/components';
-import {EyeDark, EyeLight} from '@/assets/images/icons';
-import {normalize} from '@/globals';
+import {EyeDark, EyeLight, Verified, Close} from '@/assets/images/icons';
+import {normalize, Colors} from '@/globals';
 //import {TransitionIndicator} from '@/components';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import {Context} from '@/context';
@@ -38,6 +38,10 @@ const ChangePassword = ({toggleChangePassword}) => {
   const {uid} = user;
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
+  const [verified, setVerified] = useState();
+  const [showVerified, setShowVerified] = useState(false);
+  const [buttonStyle, setButtonStyle] = useState({});
+  const [buttonDisable, setButtonDisable] = useState(false);
 
   const onSaveHandler = () => {
     setIS_UPDATING(true);
@@ -85,6 +89,43 @@ const ChangePassword = ({toggleChangePassword}) => {
     }
   };
 
+  const onCurrentPasswordValidate = () => {
+    ProfileInfoService.validateCurrentPassword({
+      uid: uid,
+      current_password: cPass,
+    })
+      .then((response) => {
+        if (response.verified) {
+          setVerified(true);
+          setShowVerified(true);
+          hideIcon();
+          setButtonState(false);
+        } else {
+          triggerNotification('Current Password does not correct', 'error');
+          setButtonState(true);
+        }
+      })
+      .catch((error) => {
+        setIS_UPDATING(false);
+        setVerified(false);
+        setShowVerified(true);
+        hideIcon();
+        setButtonState(true);
+      });
+  };
+
+  const setButtonState = (j) => {
+    if (j) {
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    setButtonDisable(j);
+  };
+
   const triggerNotification = (message, type) => {
     setNotificationType(type);
     setNotificationMessage(
@@ -124,6 +165,12 @@ const ChangePassword = ({toggleChangePassword}) => {
     }, 5000);
   };
 
+  const hideIcon = () => {
+    setTimeout(() => {
+      setShowVerified(false);
+    }, 5000);
+  };
+
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -147,6 +194,7 @@ const ChangePassword = ({toggleChangePassword}) => {
               onChangeText={(cPass) => {
                 setCPass(cPass);
               }}
+              onEndEditing={onCurrentPasswordValidate}
               secureTextEntry={!isVisible ? true : false}
               customStyle={{
                 marginTop: normalize(35),
@@ -154,9 +202,17 @@ const ChangePassword = ({toggleChangePassword}) => {
               }}
             />
             <View style={styles.passwordToggle}>
-              <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
-                {!isVisible ? <EyeDark /> : <EyeLight />}
-              </TouchableOpacity>
+              {!showVerified ? (
+                <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                  {!isVisible ? <EyeDark /> : <EyeLight />}
+                </TouchableOpacity>
+              ) : (
+                <View style={{paddingTop: normalize(4)}}>
+                  {verified ? (
+                    <Verified width={normalize(16)} height={normalize(16)} />
+                  ) : null}
+                </View>
+              )}
             </View>
           </View>
           <View style={{position: 'relative'}}>
@@ -200,7 +256,8 @@ const ChangePassword = ({toggleChangePassword}) => {
               text="Change Password"
               type="primary"
               height="xl"
-              //disabled={true}
+              disabled={buttonDisable}
+              customStyle={buttonStyle}
               onPress={() => {
                 onSaveHandler();
               }}

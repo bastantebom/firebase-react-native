@@ -10,12 +10,12 @@ const FloatingAppInput = (props) => {
   const [labelPosition] = useState(new Animated.Value(0));
   //const [font]
 
-  const onFocus = () => {
+  const onFocusInput = () => {
     setIsActive(true);
     animateFocus();
   };
 
-  const onBlur = () => {
+  const onBlurInput = () => {
     setIsActive(false);
     animateBlur();
   };
@@ -95,8 +95,8 @@ const FloatingAppInput = (props) => {
         {...props}
         style={styles.floatingInput}
         underlineColorAndroid="transparent"
-        onFocus={onFocus}
-        onBlur={onBlur}
+        onFocus={onFocusInput}
+        onBlur={onBlurInput}
         blurOnSubmit
       />
     </View>
