@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Image,
 } from 'react-native';
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
@@ -101,23 +102,11 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
     },
   ];
 
-  // const signOut = () => {
-  //   if (user) {
-  //     auth()
-  //       .signOut()
-  //       .then(() => console.log('User signed out!'));
-  //   } else {
-  //     navigation.navigate('Onboarding');
-  //   }
-  // };
-
   const width = Dimensions.get('window').width;
 
   if (!user) {
     return <GuestProfile />;
   }
-
-  console.log(uid);
 
   return (
     <>
@@ -134,11 +123,19 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         QR={QR}
         backFunction={backFunction}
       />
-      <View style={{backgroundColor: 'red', height: normalize(158)}}>
-        <ProfileHeaderDefault
-          width={normalize(375 * 1.2)}
-          height={normalize(158 * 1.2)}
-        />
+      <View
+        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        {userInfo.cover_photo ? (
+          <Image
+            source={{uri: userInfo.cover_photo}}
+            style={{width: normalize(375), height: normalize(158 * 1.2)}}
+          />
+        ) : (
+          <ProfileHeaderDefault
+            width={normalize(375 * 1.2)}
+            height={normalize(158 * 1.2)}
+          />
+        )}
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
