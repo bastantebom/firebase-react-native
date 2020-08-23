@@ -98,9 +98,9 @@ const Post = ({data, type, isLoading}) => {
                   style={GlobalStyle.image}
                   source={{
                     uri:
-                      // images.length > 0
-                      //   ? images[0]
-                      //   : 
+                      images.length > 0
+                        ? images[0]
+                        : 
                         'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
                   }}
                 />

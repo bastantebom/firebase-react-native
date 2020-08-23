@@ -18,66 +18,53 @@ import {normalize, Colors} from '@/globals';
 import {ArrowDown} from '@/assets/images/icons';
 import {PhotoAlbums} from './PhotoAlbums';
 
-const {height, width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export const Library = ({
   cancel,
-  next,
-  imageArray,
-  current
+  next
 }) => {
 
   const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
 
-  const [photoCount, setPhotoCount] = useState(0);
-  const [currentImage, setCurrentImage] = useState('');
-  const [selected, setSelected] = useState([]);
   const [selectedCount, setSelectedCount] = useState([]);
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const [showFolderList, setShowFolderList] = useState(false);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
-    setSelected(images);
-    setPhotoCount(num);
-    getData();
-    setCurrentImage(num > 0 ? images[num - 1].uri : '');
-    setSelectedCount(prev => [...prev, num])
+    setPostImage(images)
+    setImageCount(num);
+    setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    setPostImage(selected)
-    setImageCount(num)
-    setImageCurrent(num > 0 ? images[num - 1].uri : '')
+    // setSelectedCount(prev => [...prev, 0])
+    
+    // getData();
   };
   
-  const lastItem = selectedCount.pop();
+
+  // const lastItem = selectedCount.pop();
   // const lastItem = selectedCount;
   
-  const getData = () => {
-    const arr = selectedCount;
+  // const getData = () => {
+  //   const arr = selectedCount;
 
-    arr.forEach(function(i, idx, array){
-      if (idx === array.length - 1){ 
-        setCount(i)
-      }
-    });
-  }
+  //   arr.forEach(function(i, idx, array){
+  //     if (idx === array.length - 1){ 
+  //       setCount(i)
+  //     }
+  //   });
+  // }
 
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
 
-  useEffect(() => {
-    getData();
-    setSelected(postImage)
-    setPhotoCount(imageCount)
-    setCurrentImage(imageCurrent)
-    // console.log(photoCount)
-    // console.log(selected)
-    // console.log(currentImage)
-    // console.log(imageArray)
-    // setSelected(imageArray)
-    // setCurrentImage(current)
-  }, [postImage])
+  // console.log('Library', postImage)
+
+  // useEffect(() => {
+  //   getData();
+  // }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
@@ -105,10 +92,10 @@ export const Library = ({
             </View>
           </TouchableOpacity> */}
           <TouchableOpacity
-            disabled={ selected.length < 1 && true }
-            onPress={() => next(selected, photoCount, currentImage)}
+            disabled={ postImage.length < 1 && true }
+            onPress={() => next(postImage, imageCount, imageCurrent)}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
-            <AppText textStyle="body3" color={ selected.length < 1 ? Colors.buttonDisable : Colors.contentOcean}>
+            <AppText textStyle="body3" color={ postImage.length < 1 ? Colors.buttonDisable : Colors.contentOcean}>
               Next
             </AppText>
           </TouchableOpacity>
@@ -130,26 +117,26 @@ export const Library = ({
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {photoCount}/10{' '}
+                Photos - {imageCount}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
           </View>
-          {currentImage ? (
+          {imageCurrent ? (
             <Image
-              source={{uri: currentImage}}
+              source={{uri: imageCurrent}}
               style={{
                 width: '100%',
                 height: height / 2.2,
               }}
             />
           ) : null}
-          <View style={{height: currentImage ? (height / 1.8) - normalize(122) : height - normalize(117), width: width, zIndex: -1}}>
+          <View style={{height: imageCurrent ? (height / 1.8) - normalize(122) : height - normalize(117), zIndex: -1}}>
             <CameraRollPicker
               groupTypes="All"
               maximum={10}
               scrollRenderAheadDistance={500}
-              selected={selected}
+              selected={postImage}
               imagesPerRow={3}
               imageMargin={2}
               selectedMarker={
@@ -164,25 +151,27 @@ export const Library = ({
                     top: 6 
                   }}
                 >
-                  {/* {Array.from({ length: selectedCount.length }).map((_, index) => ( */}
                   {/* {selectedCount.map((item, index) =>  */}
+                  {/* {Array.from({ length: postImage.length }).map((_, index) => ( */}
                     <AppText 
                       textStyle="subtitle1" 
                       color={Colors.neutralsWhite} 
                       customStyle={{ textAlign: 'center' }}
                       // key={index}
                     >
-                      {lastItem}
+                      {imageCount}
                       {/* {count} */}
                     </AppText>
+                   {/* ))}  */}
                   {/* )} */}
-                  {/* ))}  */}
                 </View>
               }
-              callback={() => getSelectedImages(selected)}
+              callback={() => getSelectedImages(postImage)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,
+                width: '100%',
+                height: '100%',
                 paddingVertical: 45,
               }}
             />

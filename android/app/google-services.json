@@ -1,42 +1,43 @@
 {
   "project_info": {
-    "project_number": "29855387596",
-    "firebase_url": "https://dev-servbees.firebaseio.com",
-    "project_id": "dev-servbees",
-    "storage_bucket": "dev-servbees.appspot.com"
+    "project_number": "960850345935",
+    "firebase_url": "https://codes-servbees.firebaseio.com",
+    "project_id": "codes-servbees",
+    "storage_bucket": "codes-servbees.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:29855387596:android:3b80c0cb4b978542ca1769",
+        "mobilesdk_app_id": "1:960850345935:android:1f9749826532ac1f079cba",
         "android_client_info": {
           "package_name": "com.servbees"
         }
       },
       "oauth_client": [
         {
-          "client_id": "29855387596-t3d8gvtuudo7r3gomu0v3505qg2eepa4.apps.googleusercontent.com",
+          "client_id": "960850345935-ufm7qrek4g1svabufdblvukksa5v5g4r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.servbees",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD9Y2Tt5l_oxIGyrWED17aSMEdSUccXQAY"
+          "current_key": "AIzaSyDMknlgnSUy46tevw-jAixdIegnE4yiPCQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "29855387596-t3d8gvtuudo7r3gomu0v3505qg2eepa4.apps.googleusercontent.com",
+              "client_id": "960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "29855387596-rab893v41d13s4vfdf1ou73aa4gavfhh.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "org.reactjs.native.example.servbees"
-              }
             }
           ]
         }
