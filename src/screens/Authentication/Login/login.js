@@ -38,7 +38,7 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    console.log("HANDLE LOGIN CLICK")
+    console.log('HANDLE LOGIN CLICK');
     setIsLoading(true);
     await LoginService.loginMobile({
       login: emailAddress,
@@ -47,7 +47,7 @@ function Login() {
       .then((response) => {
         if (response.success) {
           console.log('SUCCESS---------------');
-          auth()
+          return auth()
             .signInWithCustomToken(response.custom_token)
             .then(() => {
               setIsLoading(false);
@@ -58,9 +58,13 @@ function Login() {
               console.log(err);
             });
         }
+
+        if (!response.success) {
+          setIsLoading(false);
+          alert(response.message);
+        }
       })
       .catch((error) => {
-        setIsLoading(false);
         console.log('FAILED---------------');
         console.log('With Error in the API Login ' + error);
       });
