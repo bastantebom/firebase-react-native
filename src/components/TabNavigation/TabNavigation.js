@@ -89,7 +89,7 @@ const bottomStyle = StyleSheet.create({
   bottomTabStyle: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
+    left: 0
   },
 });
 

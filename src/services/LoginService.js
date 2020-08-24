@@ -5,7 +5,7 @@ import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { GoogleSignin } from '@react-native-community/google-signin';
 
 GoogleSignin.configure({
-  webClientId: '717890893531-jkj7upleeejblmrto3b4iktq6u5k90ti.apps.googleusercontent.com',
+  webClientId: '960850345935-ufm7qrek4g1svabufdblvukksa5v5g4r.apps.googleusercontent.com',
 });
 
 const loginMobile = (payload) => {

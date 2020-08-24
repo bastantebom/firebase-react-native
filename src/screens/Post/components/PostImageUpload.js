@@ -19,38 +19,36 @@ import {
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
 import {PostImages, CloseLight} from '@/assets/images/icons';
 import {PostCamera} from './Camera';
 import { Library } from './Library';
 
 const {height, width} = Dimensions.get('window');
 
-export const PostImageUpload = ({
-  data,
-  getImage, 
-}) => {
+export const PostImageUpload = () => {
 
-  const {user} = useContext(UserContext);
-  const [buttonEnabled, setButtonEnabled] = useState(false);
+  const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
+
   const [photoCount, setPhotoCount] = useState(0);
-  const [imageSource, setImageSource] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [currentImage, setCurrentImage] = useState();
   const [showPickerModal, setShowPickerModal] = useState(false);
 
   const [postImageCount, setPostImageCount] = useState(0);
   const [postImages, setPostImages] = useState([]);
 
-  const togglePickerModal = (selected, photoCount) => {
+  const togglePickerModal = () => {
     setShowPickerModal(!showPickerModal);
-    setSelected(selected);
-    setPhotoCount(photoCount);
+    // setSelected(selected);
+    // setPhotoCount(photoCount);
   };
 
   const handleRemove = (image) => {
     const imageToRemove = image.uri;
-    const newImageList = postImages.filter((image) => image.uri !== imageToRemove);
-    setPostImages(newImageList);
-    setPostImageCount(postImageCount - 1);
+    const newImageList = postImage.filter((image) => image.uri !== imageToRemove);
+    setPostImage(newImageList);
+    setImageCount(imageCount - 1);
   };
 
   const requestPermission = async () => {
@@ -73,7 +71,7 @@ export const PostImageUpload = ({
               break;
             case RESULTS.GRANTED:
               console.log('The permission is granted');
-              togglePickerModal(selected, photoCount);
+              togglePickerModal();
               break;
             case RESULTS.BLOCKED:
               console.log(
@@ -95,7 +93,7 @@ export const PostImageUpload = ({
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log('You can access your camera roll');
           // setShowPickerModal(true);
-          togglePickerModal(selected, photoCount);
+          togglePickerModal();
         } else {
           return null;
         }
@@ -107,23 +105,25 @@ export const PostImageUpload = ({
   const cancelUploadPhoto = () => {
     // setSelected([...selected, {}]);
     // setPhotoCount(photoCount);
-    togglePickerModal(selected, photoCount);
+    togglePickerModal();
   };
 
-  const continueUploadPhoto = (selected, photoCount) => {
-    setPostImages([...postImages, ...selected])
-    setPostImageCount(postImageCount + photoCount)
-    togglePickerModal(selected, photoCount);
+  const continueUploadPhoto = (postImage, imageCount) => {
+    setPostImage([...postImage])
+    // setImageCount(imageCount)
+    // setPostImageCount(imageCount)
+    togglePickerModal();
   };
   
   const cancelCamera = () => {
-    togglePickerModal(selected, photoCount);
+    togglePickerModal();
   };
 
   const continueCamera = (selected, photoCount) => {
-    setPostImages([...postImages, selected]);
-    setPostImageCount(postImageCount + photoCount)
-    togglePickerModal(selected, photoCount);
+    setPostImage([...postImage, selected]);
+    setImageCount(imageCount + photoCount)
+    // setCurrentImage(currentImage)
+    togglePickerModal();
   };
   
   const uploadTabs = [
@@ -136,18 +136,14 @@ export const PostImageUpload = ({
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} />
+        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} imageArray={postImages} current={currentImage} />
       ),
     },
   ];
 
-  useEffect(() => {
-    getImage(postImages)
-  }, [postImages])
-
   return (
     <>
-      {postImageCount === 0 ? (
+      {imageCount === 0 ? (
         <View
           style={{
             height: normalize(114),
@@ -158,7 +154,6 @@ export const PostImageUpload = ({
             justifyContent: 'center',
             marginBottom: 8,
           }}>
-            {/* <AppText>{data}</AppText> */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => requestPermission()}>
@@ -181,7 +176,7 @@ export const PostImageUpload = ({
             // justifyContent: 'center',
           }}>
           <ScrollView horizontal>
-            {postImages.map((image, i) => {
+            {postImage.map((image, i) => {
               return (
                 <View key={i}>
                   <TouchableOpacity
@@ -213,9 +208,9 @@ export const PostImageUpload = ({
                     source={{uri: image.uri}}
                     style={{
                       width:
-                        postImageCount === 1
+                        imageCount === 1
                           ? width / 2
-                          : postImageCount === 2
+                          : imageCount === 2
                           ? width / 3.333
                           : width / 4,
                       height: normalize(114),
@@ -237,8 +232,8 @@ export const PostImageUpload = ({
               borderColor: Colors.neutralGray,
               justifyContent: 'center',
               // marginBottom: 8,
-              width: postImageCount <= 1 ? width / 3 : width / 4,
-              marginLeft: postImageCount >= 3 ? 8 : 0,
+              width: imageCount <= 1 ? width / 3 : width / 4,
+              marginLeft: imageCount >= 3 ? 8 : 0,
             }}>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -259,7 +254,7 @@ export const PostImageUpload = ({
 
       <AppText textStyle="metadata" customStyle={{marginBottom: 16}}>
         <AppText customStyle={{fontWeight: 'bold'}}>
-          Photos - {postImageCount}/10
+          Photos - {imageCount}/10
         </AppText>{' '}
         Choose your listing’s main photo first for Cover Photo. And more
         photos with multiple angles to show any damage or wear.
@@ -267,7 +262,7 @@ export const PostImageUpload = ({
       
       <Modal
         isVisible={showPickerModal}
-        onBackButtonPress={() => togglePickerModal(selected, photoCount)}
+        onBackButtonPress={() => togglePickerModal()}
         // Comment this out to disable closing on swipe down
         // onSwipeComplete={() => togglePickerModal(selected, photoCount)}
         // swipeDirection="down"

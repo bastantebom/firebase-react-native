@@ -5,9 +5,7 @@ import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
 
 export const PostCamera = ({cancel, next}) => {
-  const [cameraImage, setCameraImage] = useState('');
-  const [count, setCount] = useState(0);
-
+  
   const [photoCount, setPhotoCount] = useState(0);
   const [selected, setSelected] = useState([]);
 
@@ -35,9 +33,10 @@ export const PostCamera = ({cancel, next}) => {
           <AppText textStyle="body1">Photo</AppText>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={ selected.length < 1 && true }
           onPress={() => next(selected, photoCount)}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
-          <AppText textStyle="body3" color={Colors.contentOcean}>
+          <AppText textStyle="body3" color={ selected.length < 1 ? Colors.buttonDisable : Colors.contentOcean}>
             Next
           </AppText>
         </TouchableOpacity>

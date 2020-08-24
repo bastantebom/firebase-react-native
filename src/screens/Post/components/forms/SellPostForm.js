@@ -18,16 +18,18 @@ import StoreLocation from '../StoreLocation';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 
-import {AppText, AppInput, Switch} from '@/components';
+import {AppText, AppInput, Switch, AppButton} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user, userInfo} = useContext(UserContext);
+  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
-  const [postImages, setPostImages] = useState([]);
+
   /*MAP Essentials */
   const [map, setMap] = useState(false);
   const {address} = userInfo;
@@ -96,12 +98,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
   /*MAP Essentials */
 
-  console.log('post images', postImages);
-
-  const getImage = (postImages) => {
-    setPostImages([...postImages]);
-  };
-
+  console.log('SellPostForm', postImage);
+  
   const {
     title,
     setTitle,
@@ -185,7 +183,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   // };
 
   // console.log("POST IMAGES")
-  // console.log(postImages)
+  // console.log(postImage)
 
   const uploadImageHandler = async (image) => {
     console.log('I got the image');
@@ -212,6 +210,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const navigateToPost = async () => {
     setLoadingSubmit(true);
+    setPostImage([]);
+    setImageCount(0);
+    setImageCurrent('');
     let type = 'Sell';
     let data = {
       uid: user.uid,
@@ -232,7 +233,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     // Upload images
     const uploadAllImage = () =>
       Promise.all(
-        postImages.map((image) => {
+        postImage.map((image) => {
           return uploadImageHandler(image)
             .then((res) => {
               console.log(res);
@@ -278,7 +279,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload getImage={getImage} />
+        <PostImageUpload/>
 
         <AppInput
           customStyle={{marginBottom: 16}}

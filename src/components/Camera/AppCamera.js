@@ -89,13 +89,14 @@ export const AppCamera = ({
       cameraRef.current.pausePreview()
 
       setImageUrl(data)
-      
     }
   };
+
+  // console.log(imageUrl)
   
   const retake = () => {
     cameraRef.current.resumePreview()
-    // setImageUrl([]);
+    setImageUrl([]);
   }
 
   useEffect(() => {
@@ -150,9 +151,7 @@ export const AppCamera = ({
           {instruction}
         </AppText>
         </View>
-        <TouchableOpacity onPress={() => {{ 
-          takePicture()}
-        }} 
+        <TouchableOpacity onPress={() => takePicture()} 
           style={styles.capture}
         >
           <View style={styles.captureButton} />

@@ -100,7 +100,8 @@ const Post = ({data, type, isLoading}) => {
                     uri:
                       images.length > 0
                         ? images[0]
-                        : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                        : 
+                        'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
                   }}
                 />
               </View>
