@@ -7,6 +7,7 @@ import {
   Dimensions,
   Text,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 
 import {
@@ -19,7 +20,7 @@ import {
 
 import ResetPasswordLock from '@/assets/images/reset-password.svg';
 
-import {Close} from '@/assets/images/icons';
+import {Close, HeaderBackGray} from '@/assets/images/icons';
 
 import ForgotPasswordService from '@/services/ForgotPassword';
 
@@ -60,7 +61,7 @@ const ResetPassword = ({navigation}) => {
 
   function sendResetPasswordEmail() {
     let payload = {
-      email: email,
+      login: email,
     };
 
     return new Promise((resolve) => {
@@ -110,12 +111,12 @@ const ResetPassword = ({navigation}) => {
   };
 
   return (
-    <>
+    <SafeAreaView style={{flex: 1}}>
       <Notification message={notificationMessage} type={notificationType} />
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
         <View style={styles.closeIconContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Close width={24} height={24} />
+            <HeaderBackGray width={16} height={16} />
           </TouchableOpacity>
         </View>
 
@@ -127,7 +128,7 @@ const ResetPassword = ({navigation}) => {
           Reset Password
         </AppText>
 
-        <AppText customStyle={styles.resetPasswordSubText} textStyle="body2">
+        <AppText customStyle={styles.resetPasswordSubText} textStyle="caption">
           No worries, it happens to the best of us!
         </AppText>
 
@@ -153,7 +154,7 @@ const ResetPassword = ({navigation}) => {
           }}
         />
       </AppViewContainer>
-    </>
+    </SafeAreaView>
   );
 };
 

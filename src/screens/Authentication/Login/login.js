@@ -37,16 +37,16 @@ function Login() {
   const {closeSlider, authType, setAuthType} = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setIsLoading(true);
-    LoginService.loginMobile({
+    await LoginService.loginMobile({
       login: emailAddress,
       password: password,
     })
       .then((response) => {
         if (response.success) {
           console.log('SUCCESS---------------');
-          auth()
+          return auth()
             .signInWithCustomToken(response.custom_token)
             .then(() => {
               setIsLoading(false);
@@ -57,9 +57,14 @@ function Login() {
               console.log(err);
             });
         }
+
+        if (!response.success) {
+          setIsLoading(false);
+          alert('Invalid login credentials');
+          setPassword('');
+        }
       })
       .catch((error) => {
-        setIsLoading(false);
         console.log('FAILED---------------');
         console.log('With Error in the API Login ' + error);
       });
