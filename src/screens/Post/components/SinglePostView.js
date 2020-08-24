@@ -131,6 +131,7 @@ const SinglePostView = (props) => {
     console.log(post_id);
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState();
+      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
       navigation.goBack();
     });
   };
