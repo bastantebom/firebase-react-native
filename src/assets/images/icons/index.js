@@ -35,7 +35,7 @@ import JarHeart from '@/assets/images/icons/jar-heart.svg';
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg';
-import VerifiedGreen from '@/assets/images/icons/verified-green.svg';
+import VerifiedGreen from '@/assets/images/icons/check-active.svg';
 import StarRating from '@/assets/images/icons/star-rating.svg';
 import TransportationBox from '@/assets/images/icons/transportation-box.svg';
 

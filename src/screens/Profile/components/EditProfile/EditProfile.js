@@ -23,7 +23,12 @@ import {
 
 import storage from '@react-native-firebase/storage';
 
-import {ArrowRight, ArrowDown, Calendar} from '@/assets/images/icons';
+import {
+  ArrowRight,
+  ArrowDown,
+  Calendar,
+  VerifiedGreen,
+} from '@/assets/images/icons';
 
 import {Colors, normalize} from '@/globals';
 import EditAddress from './EditAddress';
@@ -109,14 +114,22 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
       .then((response) => {
         //console.log(response);
+        setVerified(response.valid);
         setInvalidUser(response.valid);
         setButtonState(!response.valid);
+        hideIcon();
       })
       .catch((error) => {
         setInvalidUser(true);
         setButtonState(true);
       });
   };
+  const hideIcon = () => {
+    setTimeout(() => {
+      setShowVerified(false);
+    }, 5000);
+  };
+  const [verified, setVerified] = useState();
   /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);
@@ -460,6 +473,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                 onChangeText={(uName) => onChangeUsername(uName)}
                 autoCapitalize="none"
               />
+              <View style={styles.passwordToggle}>
+                <View style={{paddingTop: normalize(4)}}>
+                  {verified ? (
+                    <VerifiedGreen
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  ) : null}
+                </View>
+              </View>
               {!invalidUser ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
                   Username is already been used
@@ -745,6 +768,12 @@ const styles = StyleSheet.create({
   errorCopy: {
     color: Colors.errorInput,
     marginBottom: 12,
+  },
+
+  passwordToggle: {
+    position: 'absolute',
+    right: normalize(10),
+    top: normalize(48),
   },
 });
 
