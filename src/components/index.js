@@ -28,6 +28,8 @@ import ScreenHeaderTitle from './ScreenHeaderTitle';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import WhiteOpacity from './WhiteOpacity/WhiteOpacity';
 
+import OfflineNotice from '@/components/OfflineNotice';
+
 export {
   WhiteOpacity,
   ProfileInfo,
@@ -57,4 +59,5 @@ export {
   ProfileLinks,
   Reviews,
   FloatingAppInput,
+  OfflineNotice,
 };
