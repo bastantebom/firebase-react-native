@@ -150,7 +150,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       title &&
       price &&
       (pickupState || deliveryState) &&
-      storeLocation &&
       paymentMethod
     )
       return setButtonEnabled(false);

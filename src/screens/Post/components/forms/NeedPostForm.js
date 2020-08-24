@@ -128,7 +128,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const checkFormContent = () => {
-    if (title && price && storeLocation && paymentMethod)
+    if (title && price && paymentMethod)
       return setButtonEnabled(false);
 
     return setButtonEnabled(true);

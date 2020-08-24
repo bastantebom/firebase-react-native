@@ -132,7 +132,7 @@ const ServicePostForm = ({
   };
 
   const checkFormContent = () => {
-    if (title && price && storeLocation && paymentMethod)
+    if (title && price && paymentMethod)
       return setButtonEnabled(false);
 
     return setButtonEnabled(true);
@@ -140,7 +140,7 @@ const ServicePostForm = ({
 
   useEffect(() => {
     checkFormContent();
-  }, [title, price, storeLocation, paymentMethod, description]);
+  }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
     let type = 'service';
