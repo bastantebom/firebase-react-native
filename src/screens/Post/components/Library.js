@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useMemo} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -28,19 +28,31 @@ export const Library = ({
   const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
 
   const [selectedCount, setSelectedCount] = useState([]);
-  // const [count, setCount] = useState(0);
   const [showFolderList, setShowFolderList] = useState(false);
+  const [selected, setSelected] = useState([]);
+  const [photoCount, setPhotoCount] = useState(0);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
-    setPostImage(images)
+
+    // setSelected([images]);
+    // setPhotoCount(num);
+    setPostImage(images);
     setImageCount(num);
+
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
     // setSelectedCount(prev => [...prev, 0])
-    
     // getData();
+    // console.log('Selected', selected)
+    // console.log('PostImage', postImage)
+    // console.log('PhotoCount', photoCount)
   };
+
+  const setToContext = (selected, photoCount) => {
+    setPostImage(selected);
+    setImageCount(photoCount);
+  }
   
 
   // const lastItem = selectedCount.pop();
@@ -93,7 +105,10 @@ export const Library = ({
           </TouchableOpacity> */}
           <TouchableOpacity
             disabled={ postImage.length < 1 && true }
-            onPress={() => next(postImage, imageCount, imageCurrent)}
+            onPress={() => {
+              setToContext(selected, photoCount),
+              next(postImage, imageCount, imageCurrent)
+            }}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText textStyle="body3" color={ postImage.length < 1 ? Colors.buttonDisable : Colors.contentOcean}>
               Next

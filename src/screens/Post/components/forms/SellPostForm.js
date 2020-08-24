@@ -98,7 +98,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
   /*MAP Essentials */
 
-  console.log('SellPostForm', postImage);
+  // console.log('SellPostForm', postImage);
   
   const {
     title,
