@@ -38,19 +38,6 @@ export const PostImageUpload = () => {
   const [postImageCount, setPostImageCount] = useState(0);
   const [postImages, setPostImages] = useState([]);
 
-  const togglePickerModal = () => {
-    setShowPickerModal(!showPickerModal);
-    // setSelected(selected);
-    // setPhotoCount(photoCount);
-  };
-
-  const handleRemove = (image) => {
-    const imageToRemove = image.uri;
-    const newImageList = postImage.filter((image) => image.uri !== imageToRemove);
-    setPostImage(newImageList);
-    setImageCount(imageCount - 1);
-  };
-
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
       check(PERMISSIONS.IOS.CAMERA)
@@ -85,32 +72,45 @@ export const PostImageUpload = () => {
           console.log('NOT ALLOWEDD!!');
         });
     } else
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          // PermissionsAndroid.PERMISSIONS.CAMERA
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can access your camera roll');
-          // setShowPickerModal(true);
-          togglePickerModal();
-        } else {
-          return null;
-        }
-      } catch (err) {
-        console.log(err);
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        // PermissionsAndroid.PERMISSIONS.CAMERA
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can access your camera roll');
+        // setShowPickerModal(true);
+        togglePickerModal();
+      } else {
+        return null;
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const togglePickerModal = () => {
+    setShowPickerModal(!showPickerModal);
+    // setSelected(selected);
+    // setPhotoCount(photoCount);
+  };
+
+  const handleRemove = (image) => {
+    const imageToRemove = image.uri;
+    const newImageList = postImage.filter((image) => image.uri !== imageToRemove);
+    setPostImage(newImageList);
+    setImageCount(imageCount - 1);
   };
 
   const cancelUploadPhoto = () => {
-    // setSelected([...selected, {}]);
+    // setPostImage([...postImage])
     // setPhotoCount(photoCount);
     togglePickerModal();
   };
 
-  const continueUploadPhoto = (postImage, imageCount) => {
-    setPostImage([...postImage])
-    // setImageCount(imageCount)
+  const continueUploadPhoto = (selected, photoCount) => {
+    setPostImage([...postImage, ...selected])
+    setImageCount(imageCount + photoCount)
     // setPostImageCount(imageCount)
     togglePickerModal();
   };
@@ -236,9 +236,15 @@ export const PostImageUpload = () => {
               marginLeft: imageCount >= 3 ? 8 : 0,
             }}>
             <TouchableOpacity
+              disabled={imageCount === 10 && true}
               activeOpacity={0.7}
               onPress={() => requestPermission()}>
-              <View style={{alignSelf: 'center', alignItems: 'center'}}>
+              <View style={{
+                  alignSelf: 'center', 
+                  alignItems: 'center',
+                  opacity: imageCount === 10 ? .5 : 1
+                }}
+              >
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText
                   textStyle="body2"

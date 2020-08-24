@@ -11,6 +11,17 @@ const createUser = (payload) => {
   });
 };
 
+const saveSocials = (payload) => {
+  return BaseAPI({
+    url: 'user/sm-account',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+}
+
 const saveLocation = (payload) => {
   return BaseAPI({
     url: '/user/location',
@@ -33,6 +44,7 @@ const SignUpService = {
   createUser,
   getAll,
   saveLocation,
+  saveSocials
 };
 
 export default SignUpService;
