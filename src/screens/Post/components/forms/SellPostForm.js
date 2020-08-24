@@ -26,7 +26,9 @@ import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
-  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(
+    Context,
+  );
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
 
@@ -62,7 +64,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             : json.results.length == 11
             ? 6
             : json.results.length == 10
-            ? 6
+            ? 5
             : json.results.length == 9
             ? 4
             : json.results.length == 8
@@ -99,7 +101,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   /*MAP Essentials */
 
   console.log('SellPostForm', postImage);
-  
+
   const {
     title,
     setTitle,
@@ -146,12 +148,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const checkFormContent = () => {
-    if (
-      title &&
-      price &&
-      (pickupState || deliveryState) &&
-      paymentMethod
-    )
+    if (title && price && (pickupState || deliveryState) && paymentMethod)
       return setButtonEnabled(false);
 
     return setButtonEnabled(true);
@@ -279,7 +276,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload/>
+        <PostImageUpload />
 
         <AppInput
           customStyle={{marginBottom: 16}}
