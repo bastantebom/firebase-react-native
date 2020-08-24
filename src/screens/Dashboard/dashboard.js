@@ -40,9 +40,11 @@ import Config from '@/services/Config';
 import LocationMap from '@/screens/Dashboard/components/Location';
 
 function Dashboard({navigation}) {
-  const {openNotification, closeNotification, posts, setPosts} = useContext(
-    Context,
-  );
+  const {
+    openNotification,
+    closeNotification,
+    posts,
+  } = useContext(Context);
   const {user} = useContext(UserContext);
 
   const [modalState, setModalState] = useState(false);
@@ -201,7 +203,7 @@ function Dashboard({navigation}) {
 
           <Posts
             type="dashboard"
-            data={posts.length > 0 ? posts : DummyData}
+            data={posts}
             // data={posts}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
@@ -234,7 +236,7 @@ function Dashboard({navigation}) {
 }
 
 const SearchBarWithFilter = () => {
-  const {posts, setPosts} = useContext(Context);
+  const {posts, setPosts, setLocationFilter} = useContext(Context);
   const {userInfo, user} = useContext(UserContext);
   const {address} = userInfo;
   const [addressComponents, setAddressComponents] = useState({
@@ -296,26 +298,23 @@ const SearchBarWithFilter = () => {
   };
 
   changeFromMapHandler = async (fullAddress) => {
-    console.log('CLICKYCLICK');
-    console.log(fullAddress);
+    // console.log('CLICKYCLICK');
+    // console.log(fullAddress);
+    
+
+    // let getPostsParams = {
+    //   uid: user.uid,
+    //   limit: 5,
+    //   city: fullAddress?.city,
+    // };
+
+    // console.log('GET POST PARAMS');
+    // console.log(getPostsParams);
+
+    console.log('Changing location filter on context to: ');
     console.log(fullAddress.city);
 
-    let getPostsParams = {
-      uid: user.uid,
-      limit: 5,
-      city: fullAddress?.city,
-    };
-
-    console.log('GET POST PARAMS');
-    console.log(getPostsParams);
-
-    await PostService.getPostsLocation(getPostsParams)
-      .then((res) => {
-        console.log('res');
-        console.log(res);
-        if (res.data.length > 0) setPosts(res.data);
-      })
-      .catch((err) => {});
+    setLocationFilter(fullAddress?.city);
 
     await prepareAddressUpdate(fullAddress);
   };

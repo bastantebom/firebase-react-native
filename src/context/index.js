@@ -1,9 +1,12 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useState, useContext} from 'react';
 import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
 
 export const Context = createContext();
 
 export const ContextProvider = ({children}) => {
+  const {userInfo} = useContext(UserContext);
+
   const [sliderState, setSliderState] = useState('');
   const [notificationState, setNotificationState] = useState('');
   const [authType, setAuthType] = useState('');
@@ -11,6 +14,7 @@ export const ContextProvider = ({children}) => {
   const [deleteNotif, setDeleteNotif] = useState(true);
 
   const [posts, setPosts] = useState([]);
+  const [locationFilter, setLocationFilter] = useState(userInfo?.address?.city);
 
   const [postImage, setPostImage] = useState([]);
   const [imageCount, setImageCount] = useState(0);
@@ -74,7 +78,9 @@ export const ContextProvider = ({children}) => {
         imageCount,
         setImageCount,
         imageCurrent,
-        setImageCurrent
+        setImageCurrent,
+        locationFilter,
+        setLocationFilter
       }}>
       {children}
     </Context.Provider>
