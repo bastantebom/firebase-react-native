@@ -136,6 +136,10 @@ const SinglePostView = (props) => {
   };
 
   let timeAgo = (time) => {
+    if (time <= 60) {
+      return 'Just now';
+    }
+
     return timePassed(time) + ' ago';
   };
 
