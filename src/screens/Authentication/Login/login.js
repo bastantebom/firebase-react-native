@@ -61,6 +61,7 @@ function Login() {
         if (!response.success) {
           setIsLoading(false);
           alert('Invalid login credentials');
+          setPassword('');
         }
       })
       .catch((error) => {
