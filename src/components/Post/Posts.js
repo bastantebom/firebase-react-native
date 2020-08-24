@@ -9,8 +9,10 @@ import {AppText} from '@/components';
 import {set} from 'react-native-reanimated';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
-  const {user} = useContext(UserContext);
-  const {setPosts, posts} = useContext(Context);
+  const {user, userInfo} = useContext(UserContext);
+  const {setPosts, posts, locationFilter, setLocationFilter} = useContext(
+    Context,
+  );
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
   );
@@ -35,26 +37,36 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   //     });
   // }, []);
 
+  const initialLocation = userInfo?.address?.city
+    ? userInfo?.address?.city
+    : 'Manila';
+
   useEffect(() => {
+    console.log('Useffect posts LOCATION IS CHANGED');
+    console.log(locationFilter);
+    console.log(userInfo);
     refreshPosts().then(() => {
       setIsLoading(false);
     });
-  }, []);
+  }, [locationFilter]);
 
   const refreshPosts = async () => {
     console.log('REFRESH FUNCTION');
-    console.log(type)
+    console.log(type);
+    setPosts([]);
 
     setRefresh(true);
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
+      city: locationFilter ? locationFilter : initialLocation,
     };
 
-    await PostService.getPosts(getPostsParams)
+    await PostService.getPostsLocation(getPostsParams)
       .then((res) => {
         setLastPID(res.last_pid);
         if (res.data.length > 0) setPosts(res.data);
+        else setPosts([]);
         setRefresh(false);
       })
       .catch((err) => {
@@ -70,12 +82,13 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       uid: user.uid,
       limit: 5,
       last_pid: lastPID,
+      city: locationFilter ? locationFilter : initialLocation,
     };
     // console.log('GET MORE POST');
     // console.log(lastPID);
     // console.log(getPostsParams);
 
-    await PostService.getPosts(getPostsParams)
+    await PostService.getPostsLocation(getPostsParams)
       .then((res) => {
         setLastPID(res.last_pid ? res.last_pid : 'none');
         setPosts(res.data ? [...posts, ...res.data] : [...posts]);
@@ -87,21 +100,35 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       });
   };
 
+  if (data.length > 0) {
+    return (
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.post_id}
+        onRefresh={refreshPosts}
+        refreshing={refresh}
+        onEndReached={getMorePost}
+        onEndReachedThreshold={0}
+        ListFooterComponent={
+          <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+            {fetchMore ? (
+              <ActivityIndicator />
+            ) : (
+              <AppText>
+                {lastPID === 'none' ? 'No more posts available' : ''}
+              </AppText>
+            )}
+          </View>
+        }
+      />
+    );
+  }
+
   return (
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.post_id}
-      onRefresh={refreshPosts}
-      refreshing={refresh}
-      onEndReached={getMorePost}
-      onEndReachedThreshold={0}
-      ListFooterComponent={
-        <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
-          {fetchMore ? <ActivityIndicator /> : <AppText>{lastPID === 'none' ? 'No more posts available': ''}</AppText>}
-        </View>
-      }
-    />
+    <View>
+      <AppText>No posts in your area.</AppText>
+    </View>
   );
 };
 
