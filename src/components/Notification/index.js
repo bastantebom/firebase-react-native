@@ -1,5 +1,11 @@
 import React, {useContext} from 'react';
-import {StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  SafeAreaView,
+  View,
+} from 'react-native';
 
 import PaddingView from '@/components/AppViewContainer/PaddingView';
 
@@ -50,25 +56,29 @@ const Notification = ({message, type, position = 'absolute'}) => {
 
   if (notificationState === 'open') {
     return (
-      <PaddingView paddingSize={2} style={styles.container}>
-        {type === 'success' ? (
-          <CircleTick />
-        ) : type === 'verified' ? (
-          <Verified width={normalize(24)} height={normalize(24)} />
-        ) : (
-          <Warning />
-        )}
-        {message}
-        <TouchableOpacity onPress={() => closeNotification()} style={{ position: 'absolute', right: 16, top: 16 }}>
+      <SafeAreaView style={{zIndex: 1}}>
+        <PaddingView paddingSize={2} style={styles.container}>
           {type === 'success' ? (
-            <CloseDark />
+            <CircleTick width={normalize(24)} height={normalize(24)} />
           ) : type === 'verified' ? (
-            <CloseDark />
+            <Verified width={normalize(24)} height={normalize(24)} />
           ) : (
-            <CloseLight />
+            <Warning width={normalize(24)} height={normalize(24)} />
           )}
-        </TouchableOpacity>
-      </PaddingView>
+          <View style={{flex: 1}}>{message}</View>
+          <TouchableOpacity
+            onPress={() => closeNotification()}
+            style={{height: normalize(24)}}>
+            {type === 'success' ? (
+              <CloseDark width={normalize(24)} height={normalize(24)} />
+            ) : type === 'verified' ? (
+              <CloseDark width={normalize(24)} height={normalize(24)} />
+            ) : (
+              <CloseLight width={normalize(24)} height={normalize(24)} />
+            )}
+          </TouchableOpacity>
+        </PaddingView>
+      </SafeAreaView>
     );
   }
 

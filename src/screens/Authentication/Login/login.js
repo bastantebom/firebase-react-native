@@ -37,9 +37,10 @@ function Login() {
   const {closeSlider, authType, setAuthType} = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    console.log("HANDLE LOGIN CLICK")
     setIsLoading(true);
-    LoginService.loginMobile({
+    await LoginService.loginMobile({
       login: emailAddress,
       password: password,
     })
