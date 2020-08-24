@@ -32,7 +32,7 @@ import {normalize} from '@/globals';
  * }
  */
 
-const Notification = ({message, type, position = 'absolute'}) => {
+const Notification = ({message, type, position = 'absolute', top}) => {
   const {notificationState, closeNotification} = useContext(Context);
 
   const width = Dimensions.get('window').width;
@@ -41,7 +41,7 @@ const Notification = ({message, type, position = 'absolute'}) => {
     container: {
       width: width,
       position: position,
-      top: 0,
+      top: 0 + (top ? top : 0),
       left: 0,
       flexDirection: 'row',
       zIndex: 1,

@@ -40,11 +40,7 @@ import Config from '@/services/Config';
 import LocationMap from '@/screens/Dashboard/components/Location';
 
 function Dashboard({navigation}) {
-  const {
-    openNotification,
-    closeNotification,
-    posts,
-  } = useContext(Context);
+  const {openNotification, closeNotification, posts} = useContext(Context);
   const {user} = useContext(UserContext);
 
   const [modalState, setModalState] = useState(false);
@@ -266,7 +262,7 @@ const SearchBarWithFilter = () => {
             : json.results.length == 11
             ? 6
             : json.results.length == 10
-            ? 6
+            ? 5
             : json.results.length == 9
             ? 4
             : json.results.length == 8
@@ -300,7 +296,6 @@ const SearchBarWithFilter = () => {
   changeFromMapHandler = async (fullAddress) => {
     // console.log('CLICKYCLICK');
     // console.log(fullAddress);
-    
 
     // let getPostsParams = {
     //   uid: user.uid,

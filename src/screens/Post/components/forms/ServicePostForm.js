@@ -64,7 +64,7 @@ const ServicePostForm = ({
             : json.results.length == 11
             ? 6
             : json.results.length == 10
-            ? 6
+            ? 5
             : json.results.length == 9
             ? 4
             : json.results.length == 8
@@ -132,8 +132,7 @@ const ServicePostForm = ({
   };
 
   const checkFormContent = () => {
-    if (title && price && paymentMethod)
-      return setButtonEnabled(false);
+    if (title && price && paymentMethod) return setButtonEnabled(false);
 
     return setButtonEnabled(true);
   };

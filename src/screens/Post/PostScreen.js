@@ -60,6 +60,7 @@ const PostScreen = ({togglePostModal, card}) => {
           }}
           // extraScrollHeight={25}
           keyboardOpeningTime={100}
+          keyboardShouldPersistTaps={'handled'}
           enableOnAndroid={true}>
           <PostHeader card={card} togglePostModal={togglePostModal} />
         </KeyboardAwareScrollView>

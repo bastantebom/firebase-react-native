@@ -42,6 +42,7 @@ const TransparentHeader = ({
   editPostFunction,
   deletePostFunction,
   userInfo,
+  triggerNotify,
 }) => {
   const navigation = useNavigation();
   const shareHandler = async () => {
@@ -194,17 +195,17 @@ const TransparentHeader = ({
 
             {/* Right aligned icons */}
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
+              {/* <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderShare width={normalize(16)} height={normalize(16)} />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
+              {/* <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderQR width={normalize(16)} height={normalize(16)} />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
@@ -229,7 +230,11 @@ const TransparentHeader = ({
             height: Dimensions.get('window').height,
           }}>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <OwnMenu signOut={signOut} toggleMenu={toggleMenu} />
+          <OwnMenu
+            signOut={signOut}
+            toggleMenu={toggleMenu}
+            triggerNotify={triggerNotify}
+          />
         </Modal>
 
         <Modal

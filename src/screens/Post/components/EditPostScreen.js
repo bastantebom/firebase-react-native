@@ -47,8 +47,13 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
           }}
           // extraScrollHeight={25}
           keyboardOpeningTime={100}
+          keyboardShouldPersistTaps={'handled'}
           enableOnAndroid={true}>
-          <PostHeader card={card} togglePostModal={togglePostModal} initialData={data} />
+          <PostHeader
+            card={card}
+            togglePostModal={togglePostModal}
+            initialData={data}
+          />
         </KeyboardAwareScrollView>
       </View>
 

@@ -44,11 +44,23 @@ const validateUsername = (payload) => {
   });
 };
 
+const validateCurrentPassword = (payload) => {
+  return BaseAPI({
+    url: `/user/password/verify`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const ProfileInfoService = {
   getUser,
   updateUser,
   updatePassword,
   validateUsername,
+  validateCurrentPassword,
 };
 
 export default ProfileInfoService;

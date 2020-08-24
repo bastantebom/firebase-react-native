@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -23,8 +23,12 @@ import {
 
 import storage from '@react-native-firebase/storage';
 
-import {CoverPhoto} from '@/assets/images';
-import {ArrowRight, ArrowDown, Calendar} from '@/assets/images/icons';
+import {
+  ArrowRight,
+  ArrowDown,
+  Calendar,
+  VerifiedGreen,
+} from '@/assets/images/icons';
 
 import {Colors, normalize} from '@/globals';
 import EditAddress from './EditAddress';
@@ -38,9 +42,10 @@ import Config from '@/services/Config';
 import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import _ from 'lodash';
+import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
 
 // create a component
-const EditProfile = ({toggleEditProfile, toggleMenu}) => {
+const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [map, setMap] = useState(false);
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
@@ -58,11 +63,13 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   });
 
   const [imageSource, setImageSource] = useState(null);
+  const [imageCoverSource, setImageCoverSource] = useState(null);
   const [imgUploading, setImgUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
   const [IS_UPDATING, setIS_UPDATING] = useState(false);
 
   const {
+    cover_photo,
     profile_photo,
     display_name,
     full_name,
@@ -81,7 +88,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const isEmailRequired = email ? true : false;
   const isMobileRequired = phone_number ? true : false;
 
+  const [cPhoto, setCPhoto] = useState(cover_photo);
   const [pPhoto, setPPhoto] = useState(profile_photo);
+  const [profilePhotoClick, setProfilePhotoClick] = useState(false);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
   const [name, setName] = useState(full_name);
   /*Username Validations */
@@ -90,6 +99,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
   const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
   const onChangeUsername = (uName) => {
+    setVerified(false);
     let userNameReg = /^[a-z0-9.-]*$/;
     if (userNameReg.test(uName)) {
       setInvalidUserFormat(false);
@@ -107,12 +117,24 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
         //console.log(response);
         setInvalidUser(response.valid);
         setButtonState(!response.valid);
+        if (response.valid) {
+          setVerified(true);
+          hideIcon();
+        }
       })
       .catch((error) => {
         setInvalidUser(true);
         setButtonState(true);
+        //setVerified(false);
+        //hideIcon();
       });
   };
+  const hideIcon = () => {
+    setTimeout(() => {
+      setVerified(false);
+    }, 5000);
+  };
+  const [verified, setVerified] = useState(false);
   /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);
@@ -157,7 +179,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
             : json.results.length == 11
             ? 6
             : json.results.length == 10
-            ? 6
+            ? 5
             : json.results.length == 9
             ? 4
             : json.results.length == 8
@@ -241,106 +263,104 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     getStringAddress(fullAddress.latitude, fullAddress.longitude);
   };
 
-  const uploadImageHandler = async () => {
-    //setButtonState(true);
-    //console.log(imageSource);
-    //if (imageSource) {
-
-    if (imageSource) {
-      const {uri} = imageSource;
-      console.log('Sa If');
+  const uploadImageHandler = async (image) => {
+    if (image) {
+      const {uri} = image;
+      //console.log('Sa If');
       const filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-
-      //setImgUploading(false);
       setTransferred(0);
-      //console.log(user.uid);
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
       await fileRef.putFile(uploadUri);
-      setPPhoto(await fileRef.getDownloadURL());
-      //setButtonState(false);
-      //console.log(await fileRef.getDownloadURL());
-      setImageSource(null);
-      setImgUploading(true);
-      //return true;
+      return Promise.resolve(await fileRef.getDownloadURL());
     } else {
-      console.log('Sa Else');
-      setImgUploading(true);
+      return Promise.reject('empty');
     }
   };
 
-  const updateProfile = () => {
+  const updateProfile = async () => {
+    const addressToUpdate = {
+      details: addDet,
+      note: addNote,
+      name: addName,
+      ...addressComponents,
+    };
+
+    Object.keys(addressToUpdate).forEach(
+      (key) =>
+        addressToUpdate[key] === undefined && delete addressToUpdate[key],
+    );
+
+    const dataToUpdate = {
+      //cover_photo: cPhoto,
+      //profile_photo: pPhoto,
+      display_name: dName,
+      description: desc,
+      full_name: name,
+      username: uName,
+      address: {...userInfo.address, ...addressToUpdate},
+      birth_date: bDate,
+      email: em,
+      secondary_email: sEm,
+      phone_number: mobile,
+      gender: g,
+    };
+
     setIS_UPDATING(true);
-    uploadImageHandler();
-  };
+    const images = [imageCoverSource, imageSource];
 
-  useEffect(() => {
-    // exit early when we reach 0
-    if (userInfo) {
-      getStringAddress(address.latitude, address.longitude);
-      setDateFromString();
-      //console.log(pPhoto);
-      //alert(address_name);
-    }
-  }, [userInfo]);
-
-  useEffect(() => {
-    if (imgUploading) {
-      //console.log(uid);
-      //console.log(pPhoto);
-      //const profilePhotoEnc = pPhoto;
-      //console.log(profilePhotoEnc);
-      const addressToUpdate = {
-        details: addDet,
-        note: addNote,
-        name: addName,
-        ...addressComponents,
-      };
-
-      Object.keys(addressToUpdate).forEach(
-        (key) =>
-          addressToUpdate[key] === undefined && delete addressToUpdate[key],
+    const uploadProfileImagesHandler = () =>
+      Promise.all(
+        images.map(async (image) => {
+          try {
+            const res = await uploadImageHandler(image);
+            return res;
+          } catch (error) {
+            return error;
+          }
+        }),
       );
 
-      const dataToUpdate = {
-        profile_photo: pPhoto,
-        display_name: dName,
-        description: desc,
-        full_name: name,
-        username: uName,
-        address: {...userInfo.address, ...addressToUpdate},
-        birth_date: bDate,
-        email: em,
-        secondary_email: sEm,
-        phone_number: mobile,
-        gender: g,
-      };
+    await uploadProfileImagesHandler().then((response) => {
+      //console.log(response);
+      dataToUpdate.cover_photo =
+        response[0] === 'empty' ? undefined : response[0];
+      dataToUpdate.profile_photo =
+        response[1] === 'empty' ? undefined : response[1];
+
       Object.keys(dataToUpdate).forEach(
         (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
       );
+      //console.log('-----------------');
+      //console.log(dataToUpdate);
 
-      console.log(dataToUpdate);
       ProfileInfoService.updateUser(dataToUpdate, uid)
         .then((response) => {
           if (response.success) {
-            //console.log(response);
             setIS_UPDATING(false);
             setUserInfo({...userInfo, ...response.data});
             toggleEditProfile();
             toggleMenu();
+            triggerNotify(true);
           } else {
             setIS_UPDATING(false);
-            //console.log(response);
           }
         })
         .catch((error) => {
           setIS_UPDATING(false);
           console.log(error);
         });
+    });
+  };
+
+  useEffect(() => {
+    if (userInfo) {
+      getStringAddress(address.latitude, address.longitude);
+      setDateFromString();
     }
-  }, [imgUploading]);
+  }, [userInfo.birth_date, userInfo.address]);
 
   return (
     <>
@@ -358,6 +378,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
           style={styles.container}
           extraScrollHeight={40}
           keyboardOpeningTime={50}
+          keyboardShouldPersistTaps={'handled'}
           enableOnAndroid={true}>
           <View
             style={[
@@ -369,15 +390,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
               },
             ]}>
             <PaddingView paddingSize={3}>
-              <View style={styles.coverPhoto}>
-                <CoverPhoto width={normalize(48)} height={normalize(42)} />
-                <AppText
-                  textStyle="body2"
-                  color={Colors.contentOcean}
-                  customStyle={{marginTop: normalize(8)}}>
-                  Upload a Cover Photo
-                </AppText>
-              </View>
+              <CoverPhotoUpload
+                imgSourceHandler={(imgSrc) => {
+                  setImageCoverSource(imgSrc);
+                }}
+                imgSrc={cPhoto}
+              />
             </PaddingView>
           </View>
           <View
@@ -395,29 +413,30 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                   <ProfileImageUpload
                     imgSourceHandler={(imgSrc) => {
                       setImageSource(imgSrc);
+                      setProfilePhotoClick(false);
                     }}
                     size={80}
                     imgSrc={pPhoto}
+                    profilePhotoClick={profilePhotoClick}
+                    setProfilePhotoClick={setProfilePhotoClick}
                   />
                 </View>
-                <AppText
-                  textStyle="caption"
-                  color={Colors.contentOcean}
-                  customStyle={{marginLeft: normalize(8)}}>
-                  Tap Image to change Profile Picture
-                </AppText>
+                <TouchableOpacity
+                  onPress={() => {
+                    setProfilePhotoClick(true);
+                  }}>
+                  <AppText
+                    textStyle="caption"
+                    color={Colors.contentOcean}
+                    customStyle={{marginLeft: normalize(8)}}>
+                    Tap Image to change Profile Picture
+                  </AppText>
+                </TouchableOpacity>
               </View>
             </PaddingView>
           </View>
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
-              {/* <AppInput
-                value={dName}
-                label="Display Name"
-                onChangeText={(dName) => {
-                  setDName(dName);
-                }}
-              /> */}
               <FloatingAppInput
                 value={dName}
                 label="Display Name"
@@ -450,16 +469,26 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                   setName(name);
                 }}
               />
-              <FloatingAppInput
-                value={uName}
-                label="Username"
-                customStyle={{
-                  marginBottom: 4,
-                }}
-                invalidField={!invalidUser || invalidUserFormat}
-                onChangeText={(uName) => onChangeUsername(uName)}
-                autoCapitalize="none"
-              />
+              <View style={{position: 'relative'}}>
+                <FloatingAppInput
+                  value={uName}
+                  label="Username"
+                  customStyle={{
+                    marginBottom: 4,
+                  }}
+                  invalidField={!invalidUser || invalidUserFormat}
+                  onChangeText={(uName) => onChangeUsername(uName)}
+                  autoCapitalize="none"
+                />
+                <View style={styles.passwordToggle}>
+                  {verified ? (
+                    <VerifiedGreen
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  ) : null}
+                </View>
+              </View>
               {!invalidUser ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
                   Username is already been used
@@ -727,19 +756,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
 
-  coverPhoto: {
-    height: normalize(114),
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: Colors.neutralGray,
-    borderRadius: normalize(4),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   profilePhoto: {
     flexDirection: 'row',
-    height: normalize(25),
+    height: normalize(30),
     alignItems: 'center',
   },
 
@@ -755,6 +774,12 @@ const styles = StyleSheet.create({
   errorCopy: {
     color: Colors.errorInput,
     marginBottom: 12,
+  },
+
+  passwordToggle: {
+    position: 'absolute',
+    right: normalize(10),
+    top: normalize(18),
   },
 });
 

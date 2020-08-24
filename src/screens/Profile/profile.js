@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Image,
 } from 'react-native';
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
@@ -19,6 +20,7 @@ import {
   TabNavigation,
   ProfileLinks,
   WhiteOpacity,
+  Notification,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -26,6 +28,7 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context/index';
 
 import {Posts, MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
@@ -33,6 +36,9 @@ import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
+  const {openNotification, closeNotification} = useContext(Context);
+  const [notificationMessage, setNotificationMessage] = useState();
+  const [notificationType, setNotificationType] = useState();
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
   //const [userInfo, setUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
@@ -76,7 +82,44 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
     setVisibleFollowing(!visibleFollowing);
   };
 
-  const [profileImageUrl, setProfileImageUrl] = useState('');
+  const triggerNotification = (message, type) => {
+    setNotificationType(type);
+    setNotificationMessage(
+      <AppText
+        textStyle="body2"
+        customStyle={
+          type === 'success' ? notificationText : notificationErrorTextStyle
+        }>
+        {message}
+      </AppText>,
+    );
+    openNotification();
+    //setIsScreenLoading(false);
+    closeNotificationTimer();
+  };
+
+  const notificationErrorTextStyle = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    color: 'white',
+    flexWrap: 'wrap',
+  };
+
+  const notificationText = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    flexWrap: 'wrap',
+  };
+
+  const closeNotificationTimer = () => {
+    setTimeout(() => {
+      setNotificationType();
+      setNotificationMessage();
+      closeNotification();
+    }, 5000);
+  };
 
   let profileTabs = [
     {
@@ -101,23 +144,19 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
     },
   ];
 
-  // const signOut = () => {
-  //   if (user) {
-  //     auth()
-  //       .signOut()
-  //       .then(() => console.log('User signed out!'));
-  //   } else {
-  //     navigation.navigate('Onboarding');
-  //   }
-  // };
-
   const width = Dimensions.get('window').width;
 
   if (!user) {
     return <GuestProfile />;
   }
 
-  console.log(uid);
+  const triggerNotify = (notify) => {
+    if (notify) {
+      triggerNotification('Profile has been updated successfully!', 'success');
+    } else {
+      triggerNotification('Profile update Failed!', 'error');
+    }
+  };
 
   return (
     <>
@@ -133,13 +172,28 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         toggleQR={toggleQR}
         QR={QR}
         backFunction={backFunction}
+        triggerNotify={triggerNotify}
       />
-      <View style={{backgroundColor: 'red', height: normalize(158)}}>
-        <ProfileHeaderDefault
-          width={normalize(375 * 1.2)}
-          height={normalize(158 * 1.2)}
-        />
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+        top={normalize(30)}
+      />
+      <View
+        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        {userInfo.cover_photo ? (
+          <Image
+            source={{uri: userInfo.cover_photo}}
+            style={{width: normalize(375), height: normalize(158 * 1.2)}}
+          />
+        ) : (
+          <ProfileHeaderDefault
+            width={normalize(375 * 1.2)}
+            height={normalize(158 * 1.2)}
+          />
+        )}
       </View>
+
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}

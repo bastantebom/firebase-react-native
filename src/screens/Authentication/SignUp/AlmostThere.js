@@ -51,7 +51,7 @@ const AlmostThere = (route) => {
             : json.results.length == 11
             ? 6
             : json.results.length == 10
-            ? 6
+            ? 5
             : json.results.length == 9
             ? 4
             : json.results.length == 8
