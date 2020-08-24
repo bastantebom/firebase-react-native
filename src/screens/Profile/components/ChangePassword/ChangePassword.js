@@ -19,7 +19,7 @@ import {
   FloatingAppInput,
   Notification,
 } from '@/components';
-import {EyeDark, EyeLight, Verified, Close} from '@/assets/images/icons';
+import {EyeDark, EyeLight, VerifiedGreen, Close} from '@/assets/images/icons';
 import {normalize, Colors} from '@/globals';
 //import {TransitionIndicator} from '@/components';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
@@ -209,7 +209,10 @@ const ChangePassword = ({toggleChangePassword}) => {
               ) : (
                 <View style={{paddingTop: normalize(4)}}>
                   {verified ? (
-                    <Verified width={normalize(16)} height={normalize(16)} />
+                    <VerifiedGreen
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
                   ) : null}
                 </View>
               )}

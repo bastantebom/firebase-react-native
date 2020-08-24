@@ -35,6 +35,7 @@ import JarHeart from '@/assets/images/icons/jar-heart.svg';
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg';
+import VerifiedGreen from '@/assets/images/icons/verified-green.svg';
 import StarRating from '@/assets/images/icons/star-rating.svg';
 import TransportationBox from '@/assets/images/icons/transportation-box.svg';
 
@@ -206,6 +207,7 @@ export {
   Hive,
   HiveActive,
   Verified,
+  VerifiedGreen,
   ServbeesAlt,
   ServbeesAltActive,
   TransportationBox,
