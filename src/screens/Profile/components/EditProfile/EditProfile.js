@@ -99,6 +99,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
   const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
   const onChangeUsername = (uName) => {
+    setVerified(false);
     let userNameReg = /^[a-z0-9.-]*$/;
     if (userNameReg.test(uName)) {
       setInvalidUserFormat(false);
@@ -116,8 +117,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
         //console.log(response);
         setInvalidUser(response.valid);
         setButtonState(!response.valid);
-        setVerified(response.valid);
-        hideIcon();
+        if (response.valid) {
+          setVerified(true);
+          hideIcon();
+        }
       })
       .catch((error) => {
         setInvalidUser(true);
@@ -131,7 +134,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       setVerified(false);
     }, 5000);
   };
-  const [verified, setVerified] = useState();
+  const [verified, setVerified] = useState(false);
   /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);

@@ -174,6 +174,7 @@ const ChangePassword = ({toggleChangePassword}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
+        <Notification message={notificationMessage} type={notificationType} />
         <TransitionIndicator loading={IS_UPDATING} />
 
         <View
@@ -181,7 +182,6 @@ const ChangePassword = ({toggleChangePassword}) => {
             flex: 1,
             padding: 24,
           }}>
-          <Notification message={notificationMessage} type={notificationType} />
           <ScreenHeaderTitle
             title="Current Password"
             close={toggleChangePassword}

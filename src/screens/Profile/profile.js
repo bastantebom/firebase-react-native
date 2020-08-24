@@ -174,6 +174,11 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         backFunction={backFunction}
         triggerNotify={triggerNotify}
       />
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+        top={normalize(30)}
+      />
       <View
         style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
         {userInfo.cover_photo ? (
@@ -188,12 +193,6 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
           />
         )}
       </View>
-
-      <Notification
-        message={notificationMessage}
-        type={notificationType}
-        top={normalize(30)}
-      />
 
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
