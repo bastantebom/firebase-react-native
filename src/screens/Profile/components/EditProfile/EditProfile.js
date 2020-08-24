@@ -114,19 +114,21 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
       .then((response) => {
         //console.log(response);
-        setVerified(response.valid);
         setInvalidUser(response.valid);
         setButtonState(!response.valid);
+        setVerified(response.valid);
         hideIcon();
       })
       .catch((error) => {
         setInvalidUser(true);
         setButtonState(true);
+        setVerified(false);
+        hideIcon();
       });
   };
   const hideIcon = () => {
     setTimeout(() => {
-      setShowVerified(false);
+      setVerified(false);
     }, 5000);
   };
   const [verified, setVerified] = useState();
@@ -463,18 +465,18 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
                   setName(name);
                 }}
               />
-              <FloatingAppInput
-                value={uName}
-                label="Username"
-                customStyle={{
-                  marginBottom: 4,
-                }}
-                invalidField={!invalidUser || invalidUserFormat}
-                onChangeText={(uName) => onChangeUsername(uName)}
-                autoCapitalize="none"
-              />
-              <View style={styles.passwordToggle}>
-                <View style={{paddingTop: normalize(4)}}>
+              <View style={{position: 'relative'}}>
+                <FloatingAppInput
+                  value={uName}
+                  label="Username"
+                  customStyle={{
+                    marginBottom: 4,
+                  }}
+                  invalidField={!invalidUser || invalidUserFormat}
+                  onChangeText={(uName) => onChangeUsername(uName)}
+                  autoCapitalize="none"
+                />
+                <View style={styles.passwordToggle}>
                   {verified ? (
                     <VerifiedGreen
                       width={normalize(16)}
@@ -773,7 +775,7 @@ const styles = StyleSheet.create({
   passwordToggle: {
     position: 'absolute',
     right: normalize(10),
-    top: normalize(48),
+    top: normalize(18),
   },
 });
 
