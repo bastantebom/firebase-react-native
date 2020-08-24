@@ -26,8 +26,8 @@ import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
-  const {user, userInfo} = useContext(UserContext);
   const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+  const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
 
   /*MAP Essentials */
@@ -150,7 +150,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       title &&
       price &&
       (pickupState || deliveryState) &&
-      storeLocation &&
       paymentMethod
     )
       return setButtonEnabled(false);
@@ -261,6 +260,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
     return await PostService.createPost(data).then((res) => {
       setLoadingSubmit(false);
+      setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       togglePostModal();
       setTimeout(() => {
         navToPost({...res, viewing: false, created: true, edited: false});

@@ -29,7 +29,7 @@ const ServicePostForm = ({
   formState,
   initialData,
 }) => {
-  const {user, userInfo} = useContext(UserContext);
+  const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
   /*MAP Essentials */
@@ -132,7 +132,7 @@ const ServicePostForm = ({
   };
 
   const checkFormContent = () => {
-    if (title && price && storeLocation && paymentMethod)
+    if (title && price && paymentMethod)
       return setButtonEnabled(false);
 
     return setButtonEnabled(true);
@@ -140,7 +140,7 @@ const ServicePostForm = ({
 
   useEffect(() => {
     checkFormContent();
-  }, [title, price, storeLocation, paymentMethod, description]);
+  }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
     let type = 'service';
@@ -186,6 +186,7 @@ const ServicePostForm = ({
 
     return await PostService.createPost(data).then((res) => {
       togglePostModal();
+      setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       navToPost({...res, viewing: false, created: true, edited: false});
     });
   };

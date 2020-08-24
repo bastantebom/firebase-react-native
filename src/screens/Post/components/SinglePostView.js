@@ -9,7 +9,7 @@ import {
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
-import Swiper from 'react-native-swiper'
+import Swiper from 'react-native-swiper';
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
@@ -27,12 +27,9 @@ import {
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import EditPostScreen from './EditPostScreen';
-import { ImageModal } from './ImageModal';
+import {ImageModal} from './ImageModal';
 
 const SinglePostView = (props) => {
-  // console.log("SINGLEW POST VIEW POST PROPS")
-  // console.log(props)
-
   const {
     uid,
     post_type,
@@ -60,7 +57,7 @@ const SinglePostView = (props) => {
   const [editPost, showEditPost] = useState(false);
   const [postImageModal, setPostImageModal] = useState(false);
 
-  const {user} = useContext(UserContext);
+  const {user, setUserInfo} = useContext(UserContext);
 
   const toggleEditPost = () => {
     toggleEllipsisState();
@@ -79,7 +76,7 @@ const SinglePostView = (props) => {
 
   const togglePostImageModal = () => {
     setPostImageModal(!postImageModal);
-  }
+  };
 
   useEffect(() => {
     // console.log('LOGGING ROUTE PROPS');
@@ -105,13 +102,14 @@ const SinglePostView = (props) => {
     profile_photo: profile_photo,
     account_verified: account_verified,
     display_name: display_name,
-    uid: uid
+    uid: uid,
   };
 
   const dummyPostImage = [
     {
       key: 0,
-      uri: 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
+      uri:
+        'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
     },
     {
       key: 1,
@@ -119,18 +117,20 @@ const SinglePostView = (props) => {
     },
     {
       key: 2,
-      uri: 'https://nypost.com/wp-content/uploads/sites/2/2019/02/in-n-out_french_fries-02.jpg?quality=90&strip=all&w=1200',
+      uri:
+        'https://nypost.com/wp-content/uploads/sites/2/2019/02/in-n-out_french_fries-02.jpg?quality=90&strip=all&w=1200',
     },
     {
       key: 3,
       uri: 'https://i.ytimg.com/vi/fD9xj7vKlns/maxresdefault.jpg',
-    }
-  ]
+    },
+  ];
   const deletePost = async () => {
     console.log('delete this post with id: ');
     console.log(post_id);
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState();
+      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
       navigation.goBack();
     });
   };
@@ -212,18 +212,16 @@ const SinglePostView = (props) => {
           <Swiper
             activeDotColor={Colors.primaryYellow}
             dotColor={Colors.neutralsIron}
-            dotStyle={{ marginRight: 9 }}
-            activeDotStyle={{ marginRight: 9 }}
-          >
+            dotStyle={{marginRight: 9}}
+            activeDotStyle={{marginRight: 9}}>
             {dummyPostImage.map((item) => {
               return (
-                <TouchableWithoutFeedback key={item.id} onPress={togglePostImageModal}>
-                  <Image
-                    style={GlobalStyle.image}
-                    source={{ uri: item.uri }}
-                  />
+                <TouchableWithoutFeedback
+                  key={item.id}
+                  onPress={togglePostImageModal}>
+                  <Image style={GlobalStyle.image} source={{uri: item.uri}} />
                 </TouchableWithoutFeedback>
-              )
+              );
             })}
           </Swiper>
         </View>
@@ -328,8 +326,7 @@ const SinglePostView = (props) => {
           margin: 0,
           alignItems: 'center',
           justifyContent: 'center',
-        }}
-      >
+        }}>
         <ImageModal close={togglePostImageModal} data={dummyPostImage} />
       </Modal>
     </>
