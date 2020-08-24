@@ -38,7 +38,6 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    console.log('HANDLE LOGIN CLICK');
     setIsLoading(true);
     await LoginService.loginMobile({
       login: emailAddress,
@@ -61,7 +60,7 @@ function Login() {
 
         if (!response.success) {
           setIsLoading(false);
-          alert(response.message);
+          alert('Invalid login credentials');
         }
       })
       .catch((error) => {
