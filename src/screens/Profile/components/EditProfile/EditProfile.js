@@ -45,7 +45,7 @@ import _ from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
 
 // create a component
-const EditProfile = ({toggleEditProfile, toggleMenu}) => {
+const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [map, setMap] = useState(false);
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
@@ -122,8 +122,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
       .catch((error) => {
         setInvalidUser(true);
         setButtonState(true);
-        setVerified(false);
-        hideIcon();
+        //setVerified(false);
+        //hideIcon();
       });
   };
   const hideIcon = () => {
@@ -340,6 +340,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu}) => {
             setUserInfo({...userInfo, ...response.data});
             toggleEditProfile();
             toggleMenu();
+            triggerNotify(true);
           } else {
             setIS_UPDATING(false);
           }

@@ -42,6 +42,7 @@ const TransparentHeader = ({
   editPostFunction,
   deletePostFunction,
   userInfo,
+  triggerNotify,
 }) => {
   const navigation = useNavigation();
   const shareHandler = async () => {
@@ -229,7 +230,11 @@ const TransparentHeader = ({
             height: Dimensions.get('window').height,
           }}>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <OwnMenu signOut={signOut} toggleMenu={toggleMenu} />
+          <OwnMenu
+            signOut={signOut}
+            toggleMenu={toggleMenu}
+            triggerNotify={triggerNotify}
+          />
         </Modal>
 
         <Modal

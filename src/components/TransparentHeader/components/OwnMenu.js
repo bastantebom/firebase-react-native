@@ -33,7 +33,7 @@ import EditProfile from '@/screens/Profile/components/EditProfile/EditProfile';
 import About from '@/screens/Profile/components/About/About';
 import ChangePassword from '@/screens/Profile/components/ChangePassword/ChangePassword';
 
-const OwnMenu = ({toggleMenu, signOut}) => {
+const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
   const [editProfile, setEditProfile] = useState(false);
 
   const toggleEditProfile = () => {
@@ -226,6 +226,7 @@ const OwnMenu = ({toggleMenu, signOut}) => {
         <EditProfile
           toggleMenu={toggleMenu}
           toggleEditProfile={toggleEditProfile}
+          triggerNotify={triggerNotify}
         />
       </Modal>
 
