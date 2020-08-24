@@ -9,8 +9,10 @@ import {AppText} from '@/components';
 import {set} from 'react-native-reanimated';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
-  const {user} = useContext(UserContext);
-  const {setPosts, posts, locationFilter} = useContext(Context);
+  const {user, userInfo} = useContext(UserContext);
+  const {setPosts, posts, locationFilter, setLocationFilter} = useContext(
+    Context,
+  );
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
   );
@@ -35,8 +37,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   //     });
   // }, []);
 
+  const initialLocation = userInfo?.address?.city
+    ? userInfo?.address?.city
+    : 'Manila';
+
   useEffect(() => {
     console.log('Useffect posts LOCATION IS CHANGED');
+    console.log(locationFilter);
+    console.log(userInfo);
     refreshPosts().then(() => {
       setIsLoading(false);
     });
@@ -51,7 +59,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
-      city: `${locationFilter} City`,
+      city: locationFilter ? locationFilter : initialLocation,
     };
 
     await PostService.getPostsLocation(getPostsParams)
@@ -74,7 +82,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       uid: user.uid,
       limit: 5,
       last_pid: lastPID,
-      city: `${locationFilter} City`,
+      city: locationFilter ? locationFilter : initialLocation,
     };
     // console.log('GET MORE POST');
     // console.log(lastPID);
