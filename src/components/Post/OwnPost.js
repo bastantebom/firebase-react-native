@@ -24,7 +24,7 @@ const OwnPost = ({data, isLoading}) => {
     images,
     account_verified,
     email,
-    phone_number
+    phone_number,
   } = data;
 
   const VerifiedBadge = () => {
@@ -70,7 +70,10 @@ const OwnPost = ({data, isLoading}) => {
             <Image
               style={GlobalStyle.image}
               source={{
-                uri: postImage,
+                uri:
+                  images.length > 0
+                    ? images[0]
+                    : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
               }}
             />
           </View>
@@ -86,17 +89,17 @@ const OwnPost = ({data, isLoading}) => {
                   <Image
                     style={GlobalStyle.image}
                     source={{
-                      uri: userImage,
+                      uri: profile_photo,
                     }}
                   />
                 </View>
                 <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
-                  {name}
+                  {display_name}
                 </AppText>
                 <VerifiedBadge />
               </View>
 
-              <AppText>{timeAgo(postedAt)}</AppText>
+              <AppText>{timeAgo(date_posted)}</AppText>
             </View>
             <View
               style={{
@@ -104,7 +107,7 @@ const OwnPost = ({data, isLoading}) => {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <View
+              {/* <View
                 style={{
                   backgroundColor: statusBackground(),
                   borderRadius: 20,
@@ -116,7 +119,7 @@ const OwnPost = ({data, isLoading}) => {
                   customStyle={{textTransform: 'capitalize'}}>
                   {status}
                 </AppText>
-              </View>
+              </View> */}
               <AppText
                 textStyle="metadata"
                 customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
@@ -124,7 +127,7 @@ const OwnPost = ({data, isLoading}) => {
               </AppText>
             </View>
             <AppText customStyle={{marginTop: 4}} textStyle="caption2">
-              {postName}
+              {title}
             </AppText>
           </View>
         </View>

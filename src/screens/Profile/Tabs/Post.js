@@ -143,7 +143,7 @@ const Post = () => {
   }, []);
 
   useEffect(() => {
-    //console.log(userInfo);
+    console.log('Post Tab');
     if (post_count) {
       setHasPost(true);
     }
@@ -151,14 +151,14 @@ const Post = () => {
 
   const WithPost = () => {
     return (
-      // <Posts
-      //   type="own"
-      //   data={DummyData}
-      //   isLoading={isLoading}
-      //   //hideLocationComponent={hideLocationComponent}
-      //   //showLocationComponent={showLocationComponent}
-      // />
-      <></>
+      <Posts
+        type="own"
+        data={[]}
+        isLoading={isLoading}
+        //hideLocationComponent={hideLocationComponent}
+        //showLocationComponent={showLocationComponent}
+      />
+      //<></>
     );
   };
 

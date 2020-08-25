@@ -21,7 +21,11 @@ import {
   ProfileLinks,
   WhiteOpacity,
   Notification,
+<<<<<<< HEAD
   OfflineNotice,
+=======
+  Posts,
+>>>>>>> fix own posts auto-refresh
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -31,15 +35,19 @@ import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context/index';
 
-import {Posts, MoreInfo, Reviews} from './Tabs';
+import {MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
 import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
+<<<<<<< HEAD
   const {openNotification, closeNotification, isInternetReachable} = useContext(
     Context,
   );
+=======
+  const {openNotification, closeNotification, posts} = useContext(Context);
+>>>>>>> fix own posts auto-refresh
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
@@ -50,6 +58,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   const [following, setFollowing] = useState(false);
   const [menu, setMenu] = useState(false);
   const [QR, setQR] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [visibleHives, setVisibleHives] = useState(false);
   const [visibleFollowing, setVisibleFollowing] = useState(false);
@@ -124,19 +133,22 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
     }, 5000);
   };
 
-  let profileTabs = [
+  const profileTabs = [
     {
       key: 'ownpost',
       title: 'Posts',
       renderPage: (
         <Posts
-          type="dashboard"
-          // data={DummyData}
-          data={[{}]}
-          isLoading={isDataLoading}
-          setIsLoading={setIsDataLoading}
+          type="own"
+          data={posts}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          //hideLocationComponent={hideLocationComponent}
+          //showLocationComponent={showLocationComponent}
         />
       ),
+
+      //<></>
     },
     //{key: 'ownpost', title: 'Posts', renderPage: <></>},
     // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
@@ -146,6 +158,12 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       renderPage: <MoreInfo />,
     },
   ];
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
   const width = Dimensions.get('window').width;
 
@@ -219,6 +237,14 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       <View style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
+          {/* <Posts
+            type="own"
+            data={posts}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            //hideLocationComponent={hideLocationComponent}
+            //showLocationComponent={showLocationComponent}
+          /> */}
         </View>
       </View>
       <WhiteOpacity />
