@@ -108,9 +108,9 @@ export const PostImageUpload = () => {
     togglePickerModal();
   };
 
-  const continueUploadPhoto = (selected, photoCount) => {
-    setPostImage([...postImage, ...selected])
-    setImageCount(imageCount + photoCount)
+  const continueUploadPhoto = (postImage, imageCount) => {
+    setPostImage(postImage)
+    setImageCount(imageCount)
     // setPostImageCount(imageCount)
     togglePickerModal();
   };
