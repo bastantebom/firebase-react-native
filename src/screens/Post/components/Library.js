@@ -106,7 +106,7 @@ export const Library = ({
           <TouchableOpacity
             disabled={ postImage.length < 1 && true }
             onPress={() => {
-              setToContext(selected, photoCount),
+              // setToContext(selected, photoCount),
               next(postImage, imageCount, imageCurrent)
             }}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
