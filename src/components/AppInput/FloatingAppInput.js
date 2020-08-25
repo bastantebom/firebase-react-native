@@ -1,21 +1,74 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TextInput, StyleSheet, Animated} from 'react-native';
 import {Colors, normalize} from '@/globals';
 import AppText from '../AppText/AppText';
 import ValidationList from './Validation';
+import ValidationFunctions from './ValidationFunctions';
+import {debounce} from 'lodash';
 
 // create a component
 const FloatingAppInput = (props) => {
-  const {value, placeholder, label, validation = []} = props;
+  const {
+    value,
+    placeholder,
+    label,
+    validation = [],
+    onChangeText,
+    valueHandler,
+  } = props;
 
+  const [internalValue, setInternalValue] = useState(value)
+
+  const inputDebounce = useCallback(
+    debounce(() => validateInput(value), 2000),
+    [],
+  );
+
+  const [showValidationError, setShowValidationError] = useState(false);
   const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
-  //const [font]
 
-  // console.log(validation);
-  // console.log(ValidationList[validation])
+
+  const onValueChange = (value) => {
+    valueHandler(value);
+    inputDebounce()
+  }
+
+  const validateInput = (value) => {
+    console.log("Validate input")
+    setInternalValue(value)
+    if (validation.includes('username'))
+      ValidationFunctions.usernameValidator(value)
+        .then((res) => {
+          setShowValidationError(res);
+        })
+        .catch((err) => {
+          setShowValidationError(false);
+          setValidationError(err);
+        });
+
+    if (validation.includes('email'))
+      ValidationFunctions.emailValidator(value)
+        .then((res) => {
+          setShowValidationError(res);
+        })
+        .catch((err) => {
+          setShowValidationError(false);
+          setValidationError(err);
+        });
+
+    if (validation.includes('number'))
+      ValidationFunctions.MobileNumberValidator(value)
+        .then((res) => {
+          setShowValidationError(res);
+        })
+        .catch((err) => {
+          setShowValidationError(false);
+          setValidationError(err);
+        });
+  };
 
   const onFocusInput = () => {
     setIsActive(true);
@@ -100,6 +153,7 @@ const FloatingAppInput = (props) => {
           </AppText>
         </Animated.Text>
         <TextInput
+          onChangeText={onValueChange}
           {...props}
           style={styles.floatingInput}
           underlineColorAndroid="transparent"
@@ -110,10 +164,13 @@ const FloatingAppInput = (props) => {
       </View>
       {validation.length > 0 && (
         <AppText
-          customStyle={{marginLeft: normalize(16)}}
+          customStyle={{
+            marginLeft: normalize(16),
+            display: showValidationError ? 'none' : 'flex',
+          }}
           textStyle="metadata"
           color={'red'}>
-          Error Text
+          {validationError}
         </AppText>
       )}
     </View>

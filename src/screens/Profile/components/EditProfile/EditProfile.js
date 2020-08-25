@@ -545,11 +545,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               </AppText>
               <FloatingAppInput
                 value={addName}
+                valueHandler={setAddName}
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(addName) => {
-                  setAddName(addName);
-                }}
+                validation={['email', '']}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -613,8 +612,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(em) => {
                   emailChangeHandler(em);
-                  //setEm(em);
                 }}
+                validation={['email']}
               />
               <FloatingAppInput
                 editable={false}
