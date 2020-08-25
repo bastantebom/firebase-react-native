@@ -3,14 +3,19 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput, StyleSheet, Animated} from 'react-native';
 import {Colors, normalize} from '@/globals';
 import AppText from '../AppText/AppText';
+import ValidationList from './Validation';
 
 // create a component
 const FloatingAppInput = (props) => {
-  const {value, placeholder, label} = props;
+  const {value, placeholder, label, validation = []} = props;
 
+  const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
   //const [font]
+
+  // console.log(validation);
+  // console.log(ValidationList[validation])
 
   const onFocusInput = () => {
     setIsActive(true);
@@ -103,12 +108,14 @@ const FloatingAppInput = (props) => {
           blurOnSubmit
         />
       </View>
-      <AppText
-        customStyle={{marginLeft: normalize(16)}}
-        textStyle="metadata"
-        color={'red'}>
-        Error Text
-      </AppText>
+      {validation.length > 0 && (
+        <AppText
+          customStyle={{marginLeft: normalize(16)}}
+          textStyle="metadata"
+          color={'red'}>
+          Error Text
+        </AppText>
+      )}
     </View>
   );
 };
