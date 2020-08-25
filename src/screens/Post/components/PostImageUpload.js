@@ -108,10 +108,16 @@ export const PostImageUpload = () => {
     togglePickerModal();
   };
 
+  // const continueUploadPhoto = (postImage, imageCount) => {
+  //   setPostImage(postImage)
+  //   setImageCount(imageCount)
+  //   // setPostImageCount(imageCount)
+  //   togglePickerModal();
+  // };
+
   const continueUploadPhoto = (postImage, imageCount) => {
     setPostImage(postImage)
     setImageCount(imageCount)
-    // setPostImageCount(imageCount)
     togglePickerModal();
   };
   
