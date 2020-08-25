@@ -1,4 +1,5 @@
-import React, {createContext, useState, useContext} from 'react';
+import React, {createContext, useState, useContext, useEffect} from 'react';
+import NetInfo from '@react-native-community/netinfo';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 
@@ -19,6 +20,8 @@ export const ContextProvider = ({children}) => {
   const [postImage, setPostImage] = useState([]);
   const [imageCount, setImageCount] = useState(0);
   const [imageCurrent, setImageCurrent] = useState('');
+
+  const [isInternetReachable, setIsInternetReachable] = useState(false);
 
   const closeSlider = () => {
     setSliderState('close');
@@ -53,6 +56,17 @@ export const ContextProvider = ({children}) => {
     });
   };
 
+  const onChangeConnection = (newState) => {
+    setIsInternetReachable(newState);
+  };
+
+  useEffect(() => {
+    // NetInfo.isConnected.addEventListener(
+    //   'connectionChange',
+    //   onChangeConnection,
+    // );
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -80,7 +94,8 @@ export const ContextProvider = ({children}) => {
         imageCurrent,
         setImageCurrent,
         locationFilter,
-        setLocationFilter
+        setLocationFilter,
+        isInternetReachable,
       }}>
       {children}
     </Context.Provider>

@@ -308,6 +308,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       gender: g,
     };
 
+    Object.keys(dataToUpdate).forEach(
+      (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
+    );
+
     setIS_UPDATING(true);
     const images = [imageCoverSource, imageSource];
 
@@ -325,14 +329,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
     await uploadProfileImagesHandler().then((response) => {
       //console.log(response);
-      dataToUpdate.cover_photo =
-        response[0] === 'empty' ? undefined : response[0];
+      //response[0] !== 'empty' ?
+      dataToUpdate.cover_photo = response[0] === 'empty' ? cPhoto : response[0];
       dataToUpdate.profile_photo =
-        response[1] === 'empty' ? undefined : response[1];
-
-      Object.keys(dataToUpdate).forEach(
-        (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
-      );
+        response[1] === 'empty' ? pPhoto : response[1];
       //console.log('-----------------');
       //console.log(dataToUpdate);
 

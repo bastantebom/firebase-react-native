@@ -21,6 +21,7 @@ import {
   ProfileLinks,
   WhiteOpacity,
   Notification,
+  OfflineNotice,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -36,7 +37,9 @@ import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
-  const {openNotification, closeNotification} = useContext(Context);
+  const {openNotification, closeNotification, isInternetReachable} = useContext(
+    Context,
+  );
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
@@ -179,6 +182,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         type={notificationType}
         top={normalize(30)}
       />
+
       <View
         style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
         {userInfo.cover_photo ? (
