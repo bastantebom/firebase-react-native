@@ -40,7 +40,10 @@ const SinglePostOthersView = ({data, backFunction}) => {
     payment_method,
     price,
     store_location: {longitude, city, province, latitude, country},
-    delivery_method,
+    delivery_method: {
+      pickup,
+      delivery
+    },
     available,
     username,
     profile_photo,
@@ -126,20 +129,22 @@ const SinglePostOthersView = ({data, backFunction}) => {
               {payment_method}
             </AppText>
           </View>
-          {delivery_method ? (
+          {!pickup && !delivery ? (
+            <></>
+          ) : (
             <View style={styles.iconText}>
               <PostBox width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {delivery_method[0] && delivery_method[1]
+                {pickup && delivery
                   ? 'Pickup & Delivery'
-                  : delivery_method[0]
-                  ? 'Pickup'
-                  : delivery_method[1]
+                  : delivery
                   ? 'Delivery'
-                  : 'None'}
+                  : pickup
+                  ? 'Pickup'
+                  : ''}
               </AppText>
             </View>
-          ) : null}
+          )}
         </View>
         {children}
       </View>
