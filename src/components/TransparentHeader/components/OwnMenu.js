@@ -211,12 +211,10 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
       </ScrollView>
       <Modal
         isVisible={editProfile}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={toggleEditProfile}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -232,12 +230,10 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
 
       <Modal
         isVisible={about}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={toggleAbout}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -249,12 +245,10 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
 
       <Modal
         isVisible={changePassword}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={toggleChangePassword}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',

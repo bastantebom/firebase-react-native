@@ -219,11 +219,9 @@ const TransparentHeader = ({
         <Modal
           isVisible={menu}
           animationIn="slideInUp"
-          animationInTiming={750}
-          animationOut="slideOutDown"
-          animationOutTiming={750}
-          onSwipeComplete={toggleMenu}
-          swipeDirection="down"
+          animationInTiming={450}
+          animationOut="slideOutLeft"
+          animationOutTiming={450}
           style={{
             margin: 0,
             backgroundColor: 'white',
@@ -240,9 +238,9 @@ const TransparentHeader = ({
         <Modal
           isVisible={QR}
           animationIn="slideInUp"
-          animationInTiming={750}
+          animationInTiming={450}
           animationOut="slideOutLeft"
-          animationOutTiming={750}
+          animationOutTiming={450}
           style={{
             margin: 0,
             backgroundColor: 'white',

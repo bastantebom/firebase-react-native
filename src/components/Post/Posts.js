@@ -54,6 +54,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     console.log('REFRESH FUNCTION');
     console.log(type);
     setPosts([]);
+    setLastPID('none');
 
     setRefresh(true);
     let getPostsParams = {
@@ -126,7 +127,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   }
 
   return (
-    <View>
+    <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
       <AppText>No posts in your area.</AppText>
     </View>
   );

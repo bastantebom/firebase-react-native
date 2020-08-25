@@ -28,7 +28,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
 
-  console.log('post images', postImages);
+  // console.log('post images', postImages);
 
   /*MAP Essentials */
   const [map, setMap] = useState(false);
@@ -155,15 +155,10 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     };
 
     if (initialData.post_id) {
-      // console.log('I will edit post with id: ');
-      // console.log(initialData.post_id)
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
           navToPost({...res, viewing: false, created: false, edited: true});
-
-          console.log('CREATE A POST GOING TO SINGLEPOST');
-          console.log({...res, edited: true});
         },
       );
     }
