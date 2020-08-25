@@ -21,11 +21,7 @@ import {
   ProfileLinks,
   WhiteOpacity,
   Notification,
-<<<<<<< HEAD
-  OfflineNotice,
-=======
   Posts,
->>>>>>> fix own posts auto-refresh
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -41,13 +37,7 @@ import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
-<<<<<<< HEAD
-  const {openNotification, closeNotification, isInternetReachable} = useContext(
-    Context,
-  );
-=======
   const {openNotification, closeNotification, posts} = useContext(Context);
->>>>>>> fix own posts auto-refresh
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
