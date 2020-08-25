@@ -2,25 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>FacebookAppID</key>
-	<string>2732862826943177</string>
-	<key>FacebookDisplayName</key>
-	<string>servbees</string>
-
-	<key>NSCameraUsageDescription</key>
-	<string>Your message to user when the camera is accessed for the first time</string>
-
-	<!-- Required with iOS 11 and higher: include this only if you are planning to use the camera roll -->
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Your message to user when the photo library is accessed for the first time</string>
-
-	<!-- Include this only if you are planning to use the camera roll -->
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Your message to user when the photo library is accessed for the first time</string>
-
-	<!-- Include this only if you are planning to use the microphone for video recording -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Your message to user when the microphone is accessed for the first time</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -53,6 +34,10 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FacebookAppID</key>
+	<string>2732862826943177</string>
+	<key>FacebookDisplayName</key>
+	<string>servbees</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -68,12 +53,20 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access your location.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Your message to user when the camera is accessed for the first time</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to access your location.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Your message to user when the microphone is accessed for the first time</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Your message to user when the photo library is accessed for the first time</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your message to user when the photo library is accessed for the first time</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RoundedMplus1c-Light.ttf</string>
@@ -89,8 +82,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
