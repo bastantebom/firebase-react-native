@@ -40,7 +40,9 @@ const HexagonBorder = ({imgSrc, size}) => {
             width="100%"
             height="50%"
             opacity="1"
-            href={require('@/assets/images/default-profile.png')}
+            href={
+              imgSrc ? imgSrc : require('@/assets/images/default-profile.png')
+            }
             // profile-image-default.svg
             // href={imgSrc}
             // source={{
