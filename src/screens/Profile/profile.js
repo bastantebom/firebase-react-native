@@ -150,6 +150,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   ];
 
   useEffect(() => {
+    //console.log(posts);
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -227,14 +228,6 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       <View style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
-          {/* <Posts
-            type="own"
-            data={posts}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            //hideLocationComponent={hideLocationComponent}
-            //showLocationComponent={showLocationComponent}
-          /> */}
         </View>
       </View>
       <WhiteOpacity />

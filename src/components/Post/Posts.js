@@ -6,7 +6,7 @@ import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostService} from '@/services';
 import {AppText} from '@/components';
-import {set} from 'react-native-reanimated';
+import PostOwnEmpty from '@/screens/Profile/Tabs/Post';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user, userInfo} = useContext(UserContext);
@@ -126,11 +126,17 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     );
   }
 
-  return (
-    <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
-      <AppText>No posts in your area.</AppText>
-    </View>
-  );
+  if (type === 'own' && data.length == 0) {
+    return <PostOwnEmpty />;
+  }
+
+  if (type !== 'own') {
+    return (
+      <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+        <AppText>No posts in your area.</AppText>
+      </View>
+    );
+  }
 };
 
 export default Posts;

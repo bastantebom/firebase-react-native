@@ -120,15 +120,16 @@ const OwnPost = ({data, isLoading}) => {
                   {status}
                 </AppText>
               </View> */}
-              <AppText
+              {/* <AppText
                 textStyle="metadata"
                 customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
                 2 Offers
-              </AppText>
+              </AppText> */}
             </View>
             <AppText customStyle={{marginTop: 4}} textStyle="caption2">
               {title}
             </AppText>
+            <AppText textStyle="metadata">{description}</AppText>
           </View>
         </View>
       </MarginView>
