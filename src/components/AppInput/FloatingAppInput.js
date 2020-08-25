@@ -6,6 +6,8 @@ import AppText from '../AppText/AppText';
 
 // create a component
 const FloatingAppInput = (props) => {
+  const {value, placeholder, label} = props;
+
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
   //const [font]
@@ -21,12 +23,10 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
-    //console.log(props.invalidField);
-    //console.log(props.value + ' ' + props.placeholder);
-    if (props.value !== undefined || props.placeholder !== undefined) {
+    if (value !== undefined || placeholder !== undefined) {
       animateFocus();
     }
-  }, [props.value, props.placeholder]);
+  }, [value, placeholder]);
 
   const animateFocus = () => {
     Animated.timing(labelPosition, {
@@ -37,7 +37,7 @@ const FloatingAppInput = (props) => {
   };
 
   const animateBlur = () => {
-    if (props.placeholder === undefined && props.value === undefined)
+    if (placeholder === undefined && value === undefined)
       Animated.timing(labelPosition, {
         toValue: 0,
         duration: 300,
@@ -59,7 +59,7 @@ const FloatingAppInput = (props) => {
     : Colors.contentPlaceholder;
 
   const fontSize =
-    !isActive && props.value === undefined && props.placeholder === undefined
+    !isActive && value === undefined && placeholder === undefined
       ? normalize(16)
       : normalize(12);
 
@@ -75,30 +75,40 @@ const FloatingAppInput = (props) => {
   return (
     <View
       style={{
-        paddingVertical: normalize(4),
-        paddingHorizontal: normalize(16),
-        borderColor: activeBorderColor,
-        borderWidth: 1,
-        borderRadius: 4,
-        height: normalize(50),
         ...props.customStyle,
       }}>
-      <Animated.Text style={[styles.label, paddingLeftCustom, labelStyle]}>
-        <AppText
-          textStyle="body1"
-          color={activeTextColor}
-          customStyle={{fontSize: fontSize}}>
-          {props.label}
-        </AppText>
-      </Animated.Text>
-      <TextInput
-        {...props}
-        style={styles.floatingInput}
-        underlineColorAndroid="transparent"
-        onFocus={onFocusInput}
-        onBlur={onBlurInput}
-        blurOnSubmit
-      />
+      <View
+        style={{
+          paddingVertical: normalize(4),
+          paddingHorizontal: normalize(16),
+          borderColor: activeBorderColor,
+          borderWidth: 1,
+          borderRadius: 4,
+          height: normalize(50),
+        }}>
+        <Animated.Text style={[styles.label, paddingLeftCustom, labelStyle]}>
+          <AppText
+            textStyle="body1"
+            color={activeTextColor}
+            customStyle={{fontSize: fontSize}}>
+            {label}
+          </AppText>
+        </Animated.Text>
+        <TextInput
+          {...props}
+          style={styles.floatingInput}
+          underlineColorAndroid="transparent"
+          onFocus={onFocusInput}
+          onBlur={onBlurInput}
+          blurOnSubmit
+        />
+      </View>
+      <AppText
+        customStyle={{marginLeft: normalize(16)}}
+        textStyle="metadata"
+        color={'red'}>
+        Error Text
+      </AppText>
     </View>
   );
 };
