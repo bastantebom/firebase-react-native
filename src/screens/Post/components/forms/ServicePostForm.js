@@ -100,7 +100,7 @@ const ServicePostForm = ({
   };
   /*MAP Essentials */
 
-  console.log('post images', postImages);
+  // console.log('post images', postImages);
 
   const getImage = (postImages) => {
     setPostImages([...postImages]);

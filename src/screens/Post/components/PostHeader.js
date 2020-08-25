@@ -640,8 +640,8 @@ const RenderActiveForm = ({
   const [title, setTitle] = useState(initialData.title);
   const [price, setPrice] = useState(initialData.price?.toString());
   const [description, setDescription] = useState(initialData.description);
-  const [pickupState, setPickupState] = useState(false);
-  const [deliveryState, setDeliveryState] = useState(false);
+  const [pickupState, setPickupState] = useState(initialData ? initialData?.delivery_method?.pickup : false);
+  const [deliveryState, setDeliveryState] = useState(initialData ? initialData?.delivery_method?.delivery : false);
   const [storeLocation, setStoreLocation] = useState(
     initialData.store_location,
   );
