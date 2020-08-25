@@ -10,7 +10,7 @@ import {Context} from '@/context/index';
 import {useNavigation} from '@react-navigation/native';
 
 // create a component
-const PostOwnEmpty = () => {
+const PostOwnEmpty = ({isLoading}) => {
   const {openPostButtons} = useContext(Context);
   const navigation = useNavigation();
   return (

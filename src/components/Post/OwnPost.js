@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, Image, StyleSheet} from 'react-native';
 
-import {AppText, MarginView} from '@/components';
+import {AppText, MarginView, ProfileInfo} from '@/components';
 import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
-import {Verified} from '@/assets/images/icons';
+import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 import LoadingScreen from './loading';
 
 const OwnPost = ({data, isLoading}) => {
@@ -47,6 +47,19 @@ const OwnPost = ({data, isLoading}) => {
     return 'red';
   };
 
+  const ProfilePhoto = ({size}) => {
+    return profile_photo ? (
+      <Image
+        style={GlobalStyle.image}
+        source={{
+          uri: profile_photo,
+        }}
+      />
+    ) : (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    );
+  };
+
   return (
     <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
       <MarginView
@@ -86,12 +99,7 @@ const OwnPost = ({data, isLoading}) => {
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={styles.userInfoImageContainer}>
-                  <Image
-                    style={GlobalStyle.image}
-                    source={{
-                      uri: profile_photo,
-                    }}
-                  />
+                  <ProfilePhoto size={16} />
                 </View>
                 <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
                   {display_name}

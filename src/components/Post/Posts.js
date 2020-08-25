@@ -7,6 +7,7 @@ import {Context} from '@/context';
 import {PostService} from '@/services';
 import {AppText} from '@/components';
 import PostOwnEmpty from '@/screens/Profile/Tabs/Post';
+import LoadingScreen from './loading';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user, userInfo} = useContext(UserContext);
@@ -127,7 +128,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   }
 
   if (type === 'own' && data.length == 0) {
-    return <PostOwnEmpty />;
+    return <PostOwnEmpty isLoading={isLoading} />;
   }
 
   if (type !== 'own') {
