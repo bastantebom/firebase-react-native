@@ -189,7 +189,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       const {uri, filename} = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
 
-      const newFilename = filename.substring(0, filename.lastIndexOf('.'));
+      const newFilename =  
+        Platform.OS === 'ios' ? filename.substring(0, filename.lastIndexOf('.')) 
+        : uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 

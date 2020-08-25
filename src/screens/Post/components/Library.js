@@ -42,7 +42,7 @@ export const Library = ({
 
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    // setSelectedCount(prev => [...prev, 0])
+    setSelectedCount(prev => [...prev, imageCount])
     // getData();
     // console.log('Selected', selected)
     // console.log('PostImage', postImage)
@@ -106,7 +106,7 @@ export const Library = ({
           <TouchableOpacity
             disabled={ postImage.length < 1 && true }
             onPress={() => {
-              // setToContext(selected, photoCount),
+              setToContext(selected, photoCount),
               next(postImage, imageCount, imageCurrent)
             }}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
@@ -174,7 +174,8 @@ export const Library = ({
                       customStyle={{ textAlign: 'center' }}
                       // key={index}
                     >
-                      {imageCount}
+                      {/* {imageCount} */}
+                      {selectedCount.pop()}
                       {/* {count} */}
                     </AppText>
                    {/* ))}  */}
