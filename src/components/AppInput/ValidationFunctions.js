@@ -31,7 +31,7 @@ const emailValidator = async (email) => {
       reject('Invalid email address.');
     } 
 
-    return resolve(true);
+    return resolve('email is', true);
   });
 };
 
