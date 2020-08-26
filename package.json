@@ -5,6 +5,8 @@
   "scripts": {
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
+    "dev": "cd firebase_env && ./dev-env.sh",
+    "prod": "cd firebase_env && ./prod-env.sh",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
