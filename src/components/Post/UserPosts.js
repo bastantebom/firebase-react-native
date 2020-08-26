@@ -11,7 +11,7 @@ import LoadingScreen from './loading';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user, userInfo} = useContext(UserContext);
-  const {setPosts, posts, locationFilter, setLocationFilter} = useContext(
+  const {setUserPosts, userPosts} = useContext(
     Context,
   );
   const renderItem = ({item}) => (
@@ -22,22 +22,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const [lastPID, setLastPID] = useState('');
   const [fetchMore, setFecthMore] = useState(false);
 
-  const initialLocation = userInfo?.address?.city
-    ? userInfo?.address?.city
-    : 'Manila';
 
   useEffect(() => {
-    // console.log('Useffect posts LOCATION IS CHANGED');
-    // console.log(locationFilter);
-    // console.log(userInfo);
     refreshPosts().then(() => {
       setIsLoading(false);
     });
-  }, [locationFilter]);
+  }, []);
 
   const refreshPosts = async () => {
-    // console.log('REFRESH FUNCTION');
-    // console.log(type);
     setPosts([]);
     setLastPID('none');
 
@@ -45,7 +37,6 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     let getPostsParams = {
       uid: user.uid,
       limit: 5,
-      city: locationFilter ? locationFilter : initialLocation,
     };
 
     await PostService.getPostsLocation(getPostsParams)
