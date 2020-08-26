@@ -1,49 +1,41 @@
 {
   "project_info": {
-    "project_number": "960850345935",
-    "firebase_url": "https://codes-servbees.firebaseio.com",
-    "project_id": "codes-servbees",
-    "storage_bucket": "codes-servbees.appspot.com"
+    "project_number": "78822170583",
+    "firebase_url": "https://servbees.firebaseio.com",
+    "project_id": "servbees",
+    "storage_bucket": "servbees.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:960850345935:android:1f9749826532ac1f079cba",
+        "mobilesdk_app_id": "1:78822170583:android:79d2073828c81bb3723592",
         "android_client_info": {
           "package_name": "com.servbees"
         }
       },
       "oauth_client": [
         {
-          "client_id": "960850345935-qds3cmcsqsjl6b1tad8aaul59sn8ec2n.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.servbees",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com",
+          "client_id": "78822170583-7gtfq9r1n2q25rujl2sjtq46q0sspv6d.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDMknlgnSUy46tevw-jAixdIegnE4yiPCQ"
+          "current_key": "AIzaSyBa-nTSwiSp-VCsCvqYpazkVYaxxFiz8CI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com",
+              "client_id": "78822170583-7gtfq9r1n2q25rujl2sjtq46q0sspv6d.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "960850345935-eturloplsh13to62kj0abf6a4mh35s91.apps.googleusercontent.com",
+              "client_id": "78822170583-a1j0r1u10g21orgolbj3do6qdl8t3mpv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "org.reactjs.native.example.servbees"
+                "bundle_id": "com.servbees"
               }
             }
           ]
