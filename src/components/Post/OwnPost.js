@@ -137,7 +137,7 @@ const OwnPost = ({data, isLoading}) => {
             <AppText customStyle={{marginTop: 4}} textStyle="caption2">
               {title}
             </AppText>
-            <AppText textStyle="metadata">{description}</AppText>
+            {/* <AppText textStyle="metadata">{description}</AppText> */}
           </View>
         </View>
       </MarginView>
