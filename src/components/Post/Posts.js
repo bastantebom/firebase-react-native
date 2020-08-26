@@ -21,6 +21,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const [refresh, setRefresh] = useState(false);
   const [lastPID, setLastPID] = useState('');
   const [fetchMore, setFecthMore] = useState(false);
+  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
 
   const initialLocation = userInfo?.address?.city
     ? userInfo?.address?.city
@@ -46,12 +47,20 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       uid: user.uid,
       limit: 5,
       city: locationFilter ? locationFilter : initialLocation,
+      last_pid: null,
     };
 
     await PostService.getPostsLocation(getPostsParams)
       .then((res) => {
-        console.log('Refresh function response');
-        console.log(res);
+        // console.log('Refresh function response');
+        // console.log(res);
+        // res.data.map((item) => {
+        //   console.log(item.post_id);
+        // });
+
+        // console.log('LAST ID');
+        // console.log(res.last_pid);
+
         setLastPID(res.last_pid);
         if (res.data.length > 0) setPosts(res.data);
         else setPosts([]);
@@ -64,7 +73,9 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
   const getMorePost = async () => {
     setFecthMore(true);
-    if (lastPID === 'none') {
+    // console.log('FLAGGER');
+    // console.log(thereIsMoreFlag);
+    if (!thereIsMoreFlag) {
       setFecthMore(false);
       console.log('Stopping getting more post');
       return;
@@ -83,15 +94,30 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     await PostService.getPostsLocation(getPostsParams)
       .then((res) => {
         console.log('Get more posts function response');
-        console.log(res);
+
+        res.data.map((item) => {
+          console.log(item.post_id);
+        });
+
+        console.log('res.sucess: ', res.success);
+        // console.log(res.success);
+
+        // console.log(res.data);
         // if (res.success) setLastPID(res.last_pid);
-        setLastPID(res.success ? res.last_pid : 'none');
-        setPosts(res.data ? [...posts, ...res.data] : [...posts]);
-        setFecthMore(false);
+        if (res.success) {
+          setLastPID(res.last_pid);
+          console.log('INSIDE SUCCESS TRUE');
+          setPosts(res.data ? [...posts, ...res.data] : [...posts]);
+          setFecthMore(false);
+        } else {
+          setThereIsMoreFlag(false);
+          setFecthMore(false);
+        }
       })
       .catch((err) => {
         // console.log('GET POST SERVICE ERROR');
-        // console.log(err);
+        // // console.log(err);
+        setFecthMore(false);
       });
   };
 
@@ -103,7 +129,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         keyExtractor={(item) => item.post_id}
         onRefresh={refreshPosts}
         refreshing={refresh}
-        onEndReached={getMorePost}
+        onEndReached={() => getMorePost()}
         onEndReachedThreshold={0.1}
         ListFooterComponent={
           <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>

@@ -9,11 +9,9 @@ import {AppText} from '@/components';
 import PostOwnEmpty from '@/screens/Profile/Tabs/Post';
 import LoadingScreen from './loading';
 
-const Posts = ({data, type, isLoading, setIsLoading}) => {
+const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   const {user, userInfo} = useContext(UserContext);
-  const {setUserPosts, userPosts} = useContext(
-    Context,
-  );
+  const {setUserPosts, userPosts} = useContext(Context);
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
   );
@@ -22,7 +20,6 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const [lastPID, setLastPID] = useState('');
   const [fetchMore, setFecthMore] = useState(false);
 
-
   useEffect(() => {
     refreshPosts().then(() => {
       setIsLoading(false);
@@ -30,22 +27,22 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   }, []);
 
   const refreshPosts = async () => {
-    setPosts([]);
+    setUserPosts([]);
     setLastPID('none');
-
     setRefresh(true);
+
     let getPostsParams = {
-      uid: user.uid,
+      uid: userID,
       limit: 5,
     };
 
-    await PostService.getPostsLocation(getPostsParams)
+    await PostService.getUserPosts(getPostsParams)
       .then((res) => {
-        console.log('Refresh function response');
-        console.log(res);
+        // console.log('Refresh function response');
+        // console.log(res);
         setLastPID(res.last_pid);
-        if (res.data.length > 0) setPosts(res.data);
-        else setPosts([]);
+        if (res.data.length > 0) setUserPosts(res.data);
+        else setUserPosts([]);
         setRefresh(false);
       })
       .catch((err) => {
@@ -65,25 +62,22 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       uid: user.uid,
       limit: 5,
       last_pid: lastPID,
-      city: locationFilter ? locationFilter : initialLocation,
     };
     // console.log('GET MORE POST');
     // console.log(lastPID);
     // console.log(getPostsParams);
 
-    await PostService.getPostsLocation(getPostsParams)
+    await PostService.getUserPosts(getPostsParams)
       .then((res) => {
-        console.log('Get more posts function response');
+        console.log('Get more userPosts function response');
         console.log(res);
         // if (res.success) setLastPID(res.last_pid);
-        setLastPID(res.success ? res.last_pid : 'none');
-        setPosts(res.data ? [...posts, ...res.data] : [...posts]);
+        setLastPID(res.last_pid ? res.last_pid : 'none');
         setFecthMore(false);
+
+        setUserPosts(res.data ? [...userPosts, ...res.data] : [...userPosts]);
       })
-      .catch((err) => {
-        // console.log('GET POST SERVICE ERROR');
-        // console.log(err);
-      });
+      .catch((err) => {});
   };
 
   if (data.length > 0) {
@@ -102,7 +96,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
               <ActivityIndicator />
             ) : (
               <AppText>
-                {lastPID === 'none' ? 'No more posts available' : ''}
+                {lastPID === 'none' ? 'No more userPosts available' : ''}
               </AppText>
             )}
           </View>
@@ -118,10 +112,10 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   if (type !== 'own') {
     return (
       <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
-        <AppText>No posts in your area.</AppText>
+        <AppText>No user posts</AppText>
       </View>
     );
   }
 };
 
-export default Posts;
+export default UserPosts;
