@@ -27,33 +27,27 @@ export const Library = ({
 
   const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
 
-  const [selectedCount, setSelectedCount] = useState([]);
+  // const [selectedCount, setSelectedCount] = useState([]);
   const [showFolderList, setShowFolderList] = useState(false);
-  const [selected, setSelected] = useState([]);
-  const [photoCount, setPhotoCount] = useState(0);
+  // const [selected, setSelected] = useState([]);
+  // const [photoCount, setPhotoCount] = useState(0);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
-
-    // setSelected([images]);
-    // setPhotoCount(num);
     setPostImage(images);
     setImageCount(num);
-
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    setSelectedCount(prev => [...prev, imageCount])
+    // setSelectedCount(prev => [...prev, {count: num}])
     // getData();
-    // console.log('Selected', selected)
-    // console.log('PostImage', postImage)
-    // console.log('PhotoCount', photoCount)
   };
 
-  const setToContext = (selected, photoCount) => {
-    setPostImage(selected);
-    setImageCount(photoCount);
-  }
-  
+  // console.log(selectedCount)
+
+  // const setToContext = (selected, photoCount) => {
+  //   setPostImage(selected);
+  //   setImageCount(photoCount);
+  // }
 
   // const lastItem = selectedCount.pop();
   // const lastItem = selectedCount;
@@ -75,8 +69,8 @@ export const Library = ({
   // console.log('Library', postImage)
 
   // useEffect(() => {
-  //   getData();
-  // }, [])
+  //   // getData();
+  // }, [selectedCount])
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
@@ -106,7 +100,7 @@ export const Library = ({
           <TouchableOpacity
             disabled={ postImage.length < 1 && true }
             onPress={() => {
-              setToContext(selected, photoCount),
+              // setToContext(selected, photoCount),
               next(postImage, imageCount, imageCurrent)
             }}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
@@ -174,11 +168,10 @@ export const Library = ({
                       customStyle={{ textAlign: 'center' }}
                       // key={index}
                     >
-                      {/* {imageCount} */}
-                      {selectedCount.pop()}
-                      {/* {count} */}
+                      {/* {selectedCount[index].count} */}
+                      {imageCount}
                     </AppText>
-                   {/* ))}  */}
+                   {/* ))}   */}
                   {/* )} */}
                 </View>
               }
