@@ -1,5 +1,11 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  Text,
+} from 'react-native';
 
 import {AppText} from '@/components';
 import {Colors, normalize} from '@/globals';
@@ -10,27 +16,21 @@ const TabNavigation = ({routesList, bottomTab}) => {
 
   const [routes] = useState(routesList);
   const [activeTab, setActiveTab] = useState(routes[0].key);
+  const [activeContent, setActiveContent] = useState(0);
 
-  const tabChangeHandler = (tabName) => {
+  const tabChangeHandler = (tabName, index) => {
     setActiveTab(tabName);
-  };
-
-  const RenderContent = () => {
-    const page = routes.find((activePage) => {
-      if (activePage.key === activeTab) return activePage;
-    });
-
-    return page.renderPage;
+    setActiveContent(index);
   };
 
   const RenderRoutes = () => {
-    return routes.map((route) => {
+    return routes.map((route, index) => {
       return (
         <TouchableOpacity
           key={route.key}
           activeOpacity={0.7}
           style={{flex: 1}}
-          onPress={() => tabChangeHandler(route.key)}>
+          onPress={() => tabChangeHandler(route.key, index)}>
           <View style={styles.navigationItem}>
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
               <AppText
@@ -69,6 +69,23 @@ const TabNavigation = ({routesList, bottomTab}) => {
     });
   };
 
+  //const Content = routesList[0].renderPage;
+  //let Content = '';
+
+  // useEffect(() => {
+  //   console.log('Render content');
+  //   const RenderContent = () => {
+  //     const page = routes.find((activePage) => {
+  //       console.log('Render inside');
+  //       if (activePage.key === activeTab) return activePage;
+  //     });
+  //     console.log('Render content outside');
+  //     return page.renderPage;
+  //   };
+
+  //   Content = RenderContent;
+  // }, []);
+
   return (
     <View style={[styles.container, {paddingBottom: bottomTab && 65}]}>
       <View
@@ -78,9 +95,7 @@ const TabNavigation = ({routesList, bottomTab}) => {
         ]}>
         <RenderRoutes />
       </View>
-      <View style={{flex: 1}}>
-        <RenderContent />
-      </View>
+      <View style={{flex: 1}}>{routesList[activeContent].renderPage}</View>
     </View>
   );
 };
@@ -89,7 +104,7 @@ const bottomStyle = StyleSheet.create({
   bottomTabStyle: {
     position: 'absolute',
     bottom: 0,
-    left: 0
+    left: 0,
   },
 });
 

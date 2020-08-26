@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, Image, StyleSheet} from 'react-native';
 
-import {AppText, MarginView} from '@/components';
+import {AppText, MarginView, ProfileInfo} from '@/components';
 import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
-import {Verified} from '@/assets/images/icons';
+import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 import LoadingScreen from './loading';
 
 const OwnPost = ({data, isLoading}) => {
@@ -24,7 +24,7 @@ const OwnPost = ({data, isLoading}) => {
     images,
     account_verified,
     email,
-    phone_number
+    phone_number,
   } = data;
 
   const VerifiedBadge = () => {
@@ -45,6 +45,19 @@ const OwnPost = ({data, isLoading}) => {
     if (status === 'completed') return Colors.secondaryShamrock;
 
     return 'red';
+  };
+
+  const ProfilePhoto = ({size}) => {
+    return profile_photo ? (
+      <Image
+        style={GlobalStyle.image}
+        source={{
+          uri: profile_photo,
+        }}
+      />
+    ) : (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    );
   };
 
   return (
@@ -70,7 +83,10 @@ const OwnPost = ({data, isLoading}) => {
             <Image
               style={GlobalStyle.image}
               source={{
-                uri: postImage,
+                uri:
+                  images.length > 0
+                    ? images[0]
+                    : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
               }}
             />
           </View>
@@ -83,20 +99,15 @@ const OwnPost = ({data, isLoading}) => {
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={styles.userInfoImageContainer}>
-                  <Image
-                    style={GlobalStyle.image}
-                    source={{
-                      uri: userImage,
-                    }}
-                  />
+                  <ProfilePhoto size={16} />
                 </View>
                 <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
-                  {name}
+                  {display_name}
                 </AppText>
                 <VerifiedBadge />
               </View>
 
-              <AppText>{timeAgo(postedAt)}</AppText>
+              <AppText>{timeAgo(date_posted)}</AppText>
             </View>
             <View
               style={{
@@ -104,7 +115,7 @@ const OwnPost = ({data, isLoading}) => {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <View
+              {/* <View
                 style={{
                   backgroundColor: statusBackground(),
                   borderRadius: 20,
@@ -116,16 +127,17 @@ const OwnPost = ({data, isLoading}) => {
                   customStyle={{textTransform: 'capitalize'}}>
                   {status}
                 </AppText>
-              </View>
-              <AppText
+              </View> */}
+              {/* <AppText
                 textStyle="metadata"
                 customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
                 2 Offers
-              </AppText>
+              </AppText> */}
             </View>
             <AppText customStyle={{marginTop: 4}} textStyle="caption2">
-              {postName}
+              {title}
             </AppText>
+            <AppText textStyle="metadata">{description}</AppText>
           </View>
         </View>
       </MarginView>
