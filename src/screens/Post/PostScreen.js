@@ -24,13 +24,13 @@ const PostScreen = ({togglePostModal, card}) => {
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
-    setPostImage([]);
-    setImageCount(0);
-    setImageCurrent('');
   };
   const closeHandler = (value) => {
     if (value === 'continue') {
       cancelModalToggle();
+      setPostImage([]);
+      setImageCount(0);
+      setImageCurrent('');
       setTimeout(() => {
         togglePostModal();
       }, 200);
