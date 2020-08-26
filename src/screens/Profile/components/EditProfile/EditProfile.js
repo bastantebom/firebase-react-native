@@ -1,5 +1,11 @@
 //import liraries
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
@@ -41,7 +47,7 @@ import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import _ from 'lodash';
+import {debounce} from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
 
 // create a component
@@ -97,24 +103,32 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
-  const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
+  // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
+
+  const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
+
   const onChangeUsername = (uName) => {
+    console.log("On change function")
+
     setVerified(false);
     let userNameReg = /^[a-z0-9.-]*$/;
-    if (userNameReg.test(uName)) {
+    if (userNameReg.test(uName) && uName.length > 2) {
       setInvalidUserFormat(false);
       setUName(uName);
-      delayedUsernameValidation(uName);
+      usernameHandler(uName);
+      // delayedUsernameValidation(uName);
     } else {
       setUName(uName);
       setInvalidUserFormat(true);
       setButtonState(true);
     }
   };
+
   const sendValidation = async (un) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
       .then((response) => {
         //console.log(response);
+        console.log('THIS API IS CALLED');
         setInvalidUser(response.valid);
         setButtonState(!response.valid);
         if (response.valid) {
@@ -129,7 +143,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
         //hideIcon();
       });
   };
+
   const hideIcon = () => {
+    return;
     setTimeout(() => {
       setVerified(false);
     }, 5000);
@@ -479,6 +495,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   invalidField={!invalidUser || invalidUserFormat}
                   onChangeText={(uName) => onChangeUsername(uName)}
                   autoCapitalize="none"
+                  validation={['username']}
                 />
                 <View style={styles.passwordToggle}>
                   {verified ? (
@@ -528,11 +545,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               </AppText>
               <FloatingAppInput
                 value={addName}
+                valueHandler={setAddName}
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(addName) => {
-                  setAddName(addName);
-                }}
+                validation={['email', '']}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -596,8 +612,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 onChangeText={(em) => {
                   emailChangeHandler(em);
-                  //setEm(em);
                 }}
+                validation={['email']}
               />
               <FloatingAppInput
                 editable={false}

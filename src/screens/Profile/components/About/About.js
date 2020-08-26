@@ -93,12 +93,10 @@ const About = ({toggleAbout}) => {
       {/* About Servbees Modal */}
       <Modal
         isVisible={servbees}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={toggleServbees}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -110,12 +108,10 @@ const About = ({toggleAbout}) => {
       {/* Privacy Policy Modal */}
       <Modal
         isVisible={privacyPolicy}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={togglePrivacyPolicy}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutRight"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -128,12 +124,10 @@ const About = ({toggleAbout}) => {
       {/* Payment Terms Modal */}
       <Modal
         isVisible={paymentTerms}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={togglePaymentTerms}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutRight"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -146,12 +140,10 @@ const About = ({toggleAbout}) => {
       {/* Payment Terms Modal */}
       <Modal
         isVisible={termsOfUse}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
-        onSwipeComplete={toggleTermsOfUse}
-        swipeDirection="down"
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutRight"
+        animationOutTiming={450}
         style={{
           margin: 0,
           backgroundColor: 'white',

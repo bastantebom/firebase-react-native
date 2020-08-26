@@ -1,14 +1,74 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TextInput, StyleSheet, Animated} from 'react-native';
 import {Colors, normalize} from '@/globals';
 import AppText from '../AppText/AppText';
+import ValidationList from './Validation';
+import ValidationFunctions from './ValidationFunctions';
+import {debounce} from 'lodash';
 
 // create a component
 const FloatingAppInput = (props) => {
+  const {
+    value,
+    placeholder,
+    label,
+    validation = [],
+    onChangeText,
+    valueHandler,
+  } = props;
+
+  const [internalValue, setInternalValue] = useState(value)
+
+  const inputDebounce = useCallback(
+    debounce(() => validateInput(value), 2000),
+    [],
+  );
+
+  const [showValidationError, setShowValidationError] = useState(false);
+  const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
-  //const [font]
+
+
+  const onValueChange = (value) => {
+    valueHandler(value);
+    inputDebounce()
+  }
+
+  const validateInput = (value) => {
+    console.log("Validate input")
+    setInternalValue(value)
+    if (validation.includes('username'))
+      ValidationFunctions.usernameValidator(value)
+        .then((res) => {
+          setShowValidationError(res);
+        })
+        .catch((err) => {
+          setShowValidationError(false);
+          setValidationError(err);
+        });
+
+    if (validation.includes('email'))
+      ValidationFunctions.emailValidator(value)
+        .then((res) => {
+          setShowValidationError(res);
+        })
+        .catch((err) => {
+          setShowValidationError(false);
+          setValidationError(err);
+        });
+
+    if (validation.includes('number'))
+      ValidationFunctions.MobileNumberValidator(value)
+        .then((res) => {
+          setShowValidationError(res);
+        })
+        .catch((err) => {
+          setShowValidationError(false);
+          setValidationError(err);
+        });
+  };
 
   const onFocusInput = () => {
     setIsActive(true);
@@ -21,12 +81,10 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
-    //console.log(props.invalidField);
-    //console.log(props.value + ' ' + props.placeholder);
-    if (props.value !== undefined || props.placeholder !== undefined) {
+    if (value !== undefined || placeholder !== undefined) {
       animateFocus();
     }
-  }, [props.value, props.placeholder]);
+  }, [value, placeholder]);
 
   const animateFocus = () => {
     Animated.timing(labelPosition, {
@@ -37,7 +95,7 @@ const FloatingAppInput = (props) => {
   };
 
   const animateBlur = () => {
-    if (props.placeholder === undefined && props.value === undefined)
+    if (placeholder === undefined && value === undefined)
       Animated.timing(labelPosition, {
         toValue: 0,
         duration: 300,
@@ -59,7 +117,7 @@ const FloatingAppInput = (props) => {
     : Colors.contentPlaceholder;
 
   const fontSize =
-    !isActive && props.value === undefined && props.placeholder === undefined
+    !isActive && value === undefined && placeholder === undefined
       ? normalize(16)
       : normalize(12);
 
@@ -75,30 +133,46 @@ const FloatingAppInput = (props) => {
   return (
     <View
       style={{
-        paddingVertical: normalize(4),
-        paddingHorizontal: normalize(16),
-        borderColor: activeBorderColor,
-        borderWidth: 1,
-        borderRadius: 4,
-        height: normalize(50),
         ...props.customStyle,
       }}>
-      <Animated.Text style={[styles.label, paddingLeftCustom, labelStyle]}>
+      <View
+        style={{
+          paddingVertical: normalize(4),
+          paddingHorizontal: normalize(16),
+          borderColor: activeBorderColor,
+          borderWidth: 1,
+          borderRadius: 4,
+          height: normalize(50),
+        }}>
+        <Animated.Text style={[styles.label, paddingLeftCustom, labelStyle]}>
+          <AppText
+            textStyle="body1"
+            color={activeTextColor}
+            customStyle={{fontSize: fontSize}}>
+            {label}
+          </AppText>
+        </Animated.Text>
+        <TextInput
+          onChangeText={onValueChange}
+          {...props}
+          style={styles.floatingInput}
+          underlineColorAndroid="transparent"
+          onFocus={onFocusInput}
+          onBlur={onBlurInput}
+          blurOnSubmit
+        />
+      </View>
+      {validation.length > 0 && (
         <AppText
-          textStyle="body1"
-          color={activeTextColor}
-          customStyle={{fontSize: fontSize}}>
-          {props.label}
+          customStyle={{
+            marginLeft: normalize(16),
+            display: showValidationError ? 'none' : 'flex',
+          }}
+          textStyle="metadata"
+          color={'red'}>
+          {validationError}
         </AppText>
-      </Animated.Text>
-      <TextInput
-        {...props}
-        style={styles.floatingInput}
-        underlineColorAndroid="transparent"
-        onFocus={onFocusInput}
-        onBlur={onBlurInput}
-        blurOnSubmit
-      />
+      )}
     </View>
   );
 };
