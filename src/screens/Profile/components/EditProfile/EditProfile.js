@@ -534,11 +534,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 <AppText textStyle="caption2">{uName}</AppText>
               </View>
 
-              <AppText
+              {/* <AppText
                 textStyle="caption"
                 color={invalidUserFormat ? Colors.errorInput : ''}>
                 Only use characters, numbers, dash and a dot (.){' '}
-              </AppText>
+              </AppText> */}
 
               <TextInput
                 value={desc}
@@ -566,8 +566,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 valueHandler={setAddName}
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
-                validation={['email', '']}
-                errorsCount={countErrors}
+                // validation={['email', '']}
+                validation={['email']}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
