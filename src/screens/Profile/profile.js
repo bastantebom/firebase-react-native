@@ -21,7 +21,7 @@ import {
   ProfileLinks,
   WhiteOpacity,
   Notification,
-  Posts,
+  UserPosts,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -128,7 +128,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       key: 'ownpost',
       title: 'Posts',
       renderPage: (
-        <Posts
+        <UserPosts
           type="own"
           data={posts}
           isLoading={isLoading}

@@ -49,6 +49,8 @@ const SinglePostView = (props) => {
     post_id,
   } = props.route?.params?.data;
 
+  console.log(images)
+
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState(false);
   const [ellipsisState, setEllipsisState] = useState(false);
@@ -105,24 +107,10 @@ const SinglePostView = (props) => {
     uid: uid,
   };
 
-  const dummyPostImage = [
+  const defaultImage = [
     {
       key: 0,
-      uri:
-        'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
-    },
-    {
-      key: 1,
-      uri: 'https://i.insider.com/55fc68f7bd86ef11008bb735',
-    },
-    {
-      key: 2,
-      uri:
-        'https://nypost.com/wp-content/uploads/sites/2/2019/02/in-n-out_french_fries-02.jpg?quality=90&strip=all&w=1200',
-    },
-    {
-      key: 3,
-      uri: 'https://i.ytimg.com/vi/fD9xj7vKlns/maxresdefault.jpg',
+      uri: 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
     },
   ];
   const deletePost = async () => {
@@ -218,15 +206,35 @@ const SinglePostView = (props) => {
             dotColor={Colors.neutralsIron}
             dotStyle={{marginRight: 9}}
             activeDotStyle={{marginRight: 9}}>
-            {dummyPostImage.map((item) => {
-              return (
-                <TouchableWithoutFeedback
-                  key={item.id}
-                  onPress={togglePostImageModal}>
-                  <Image style={GlobalStyle.image} source={{uri: item.uri}} />
-                </TouchableWithoutFeedback>
-              );
-            })}
+            {images === undefined || images.length == 0
+              ? defaultImage.map((item) => {
+                  return (
+                    <TouchableWithoutFeedback
+                      key={item.id}
+                      onPress={togglePostImageModal}>
+                      <Image
+                        style={GlobalStyle.image}
+                        source={{
+                          uri:
+                            'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                        }}
+                      />
+                    </TouchableWithoutFeedback>
+                  );
+                })
+              : images.map((item) => {
+                  return (
+                    <TouchableWithoutFeedback
+                      onPress={togglePostImageModal}>
+                      <Image
+                        style={GlobalStyle.image}
+                        source={{
+                          uri: item,
+                        }}
+                      />
+                    </TouchableWithoutFeedback>
+                  );
+                })}
           </Swiper>
         </View>
         <View style={styles.postInfoContainer}>
@@ -333,7 +341,7 @@ const SinglePostView = (props) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <ImageModal close={togglePostImageModal} data={dummyPostImage} />
+        <ImageModal close={togglePostImageModal} data={defaultImage} />
       </Modal>
     </>
   );

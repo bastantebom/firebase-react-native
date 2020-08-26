@@ -11,6 +11,17 @@ const getPosts = (payload) => {
   });
 };
 
+const getUserPosts = (payload) => {
+  return BaseAPI({
+    url: `post/user`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const getPostsLocation = (payload) => {
   return BaseAPI({
     url: `post/location`,
@@ -20,7 +31,7 @@ const getPostsLocation = (payload) => {
     },
     data: payload,
   });
-}
+};
 
 const createPost = (payload) => {
   return BaseAPI({
@@ -60,6 +71,13 @@ const deletePost = (PID) => {
   });
 };
 
-const PostService = {createPost, getPosts, editPost, deletePost, getPostsLocation};
+const PostService = {
+  createPost,
+  getPosts,
+  editPost,
+  deletePost,
+  getPostsLocation,
+  getUserPosts,
+};
 
 export default PostService;
