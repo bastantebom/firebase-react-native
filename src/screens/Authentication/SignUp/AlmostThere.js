@@ -16,7 +16,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import {useNavigation} from '@react-navigation/native';
 
-import GooglePlacesInput from '@/components/LocationSearchInput';
+//import GooglePlacesInput from '@/components/LocationSearchInput';
 
 import Config from '@/services/Config';
 import SignUpService from '@/services/SignUpService';

@@ -2,7 +2,7 @@ import axios from 'axios';
 import APIURL from '@/services/Config';
 
 const client = axios.create({
-  baseURL: APIURL.apiUrlProd,
+  baseURL: APIURL.production.api,
 });
 
 const BaseAPI = function (options) {
