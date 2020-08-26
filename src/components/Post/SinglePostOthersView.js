@@ -40,10 +40,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
     payment_method,
     price,
     store_location: {longitude, city, province, latitude, country},
-    delivery_method: {
-      pickup,
-      delivery
-    },
+    delivery_method: {pickup, delivery},
     available,
     username,
     profile_photo,
@@ -62,7 +59,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
     profile_photo: profile_photo,
     account_verified: account_verified,
     display_name: display_name,
-    uid: uid
+    uid: uid,
   };
 
   let timeAgo = (time) => {
@@ -92,7 +89,11 @@ const SinglePostOthersView = ({data, backFunction}) => {
           />
         </View>
         <View style={styles.postInfoContainer}>
-          <ProfileInfo userInfo={userInfo} type="own-post" closePostModal={backFunction} />
+          <ProfileInfo
+            userInfo={userInfo}
+            type="own-post"
+            closePostModal={backFunction}
+          />
 
           <AppText
             textStyle="subtitle1"
@@ -154,64 +155,67 @@ const SinglePostOthersView = ({data, backFunction}) => {
   return (
     <>
       <ScrollView>
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, position: 'relative', backgroundColor: 'green'}}>
           <TransparentHeader type={'post-other'} backFunction={backFunction} />
-          <SinglePostContent>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                paddingHorizontal: 20,
-                // backgroundColor: 'red',
-                paddingTop: 40,
-                paddingBottom: 40,
-                alignItems: 'flex-end',
-              }}>
-              {phone_number ? (
-                <TouchableOpacity
-                  style={{flex: 1, marginRight: 8}}
-                  activeOpacity={0.7}
-                  // onPress={() => Linking.openURL(`tel:${phone_number}`)}
-                  onPress={makeCall}>
-                  <View style={styles.contactButtonContainer}>
-                    <ContactTelephone
-                      width={normalize(24)}
-                      height={normalize(24)}
-                    />
-                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
-                      Call Seller
-                    </AppText>
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <></>
-              )}
-              {email ? (
-                <TouchableOpacity
-                  style={{flex: 1, marginLeft: 8}}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    Linking.openURL(
-                      `mailto:${email}?subject=Servbees: Is this still available?`,
-                    );
-                  }}>
-                  <View style={styles.contactButtonContainer}>
-                    <ContactEmail
-                      width={normalize(24)}
-                      height={normalize(24)}
-                    />
-                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
-                      Send Email
-                    </AppText>
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <></>
-              )}
-            </View>
-          </SinglePostContent>
+          <SinglePostContent></SinglePostContent>
         </View>
       </ScrollView>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          position: 'absolute',
+          bottom: 0,
+        }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+          }}>
+          {phone_number ? (
+            <TouchableOpacity
+              style={{flex: 1, marginRight: email ? 8 : 0}}
+              activeOpacity={0.7}
+              // onPress={() => Linking.openURL(`tel:${phone_number}`)}
+              onPress={makeCall}>
+              <View style={styles.contactButtonContainer}>
+                <ContactTelephone
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
+                <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                  Call Seller
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
+          {email ? (
+            <TouchableOpacity
+              style={{flex: 1, marginLeft: phone_number ? 8 : 0}}
+              activeOpacity={0.7}
+              onPress={() => {
+                Linking.openURL(
+                  `mailto:${email}?subject=Servbees: Is this still available?`,
+                );
+              }}>
+              <View style={styles.contactButtonContainer}>
+                <ContactEmail width={normalize(24)} height={normalize(24)} />
+                <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                  Send Email
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
+        </View>
+      </SafeAreaView>
     </>
   );
 };
