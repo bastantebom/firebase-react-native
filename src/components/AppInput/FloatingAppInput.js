@@ -21,7 +21,7 @@ const FloatingAppInput = (props) => {
   const [internalValue, setInternalValue] = useState(value)
 
   const inputDebounce = useCallback(
-    debounce(() => validateInput(value), 2000),
+    debounce(() => validateInput(value), 100),
     [],
   );
 
@@ -33,6 +33,7 @@ const FloatingAppInput = (props) => {
 
   const onValueChange = (value) => {
     valueHandler(value);
+    console.log('valueHandler', value);
     inputDebounce()
   }
 
@@ -53,9 +54,11 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.emailValidator(value)
         .then((res) => {
           setShowValidationError(res);
+          // console.log('email is valid')
         })
         .catch((err) => {
           setShowValidationError(false);
+          // console.log('email is not valid')
           setValidationError(err);
         });
 
