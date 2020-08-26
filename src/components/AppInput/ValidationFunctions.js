@@ -27,11 +27,11 @@ const emailValidator = async (email) => {
 
   return await new Promise((resolve, reject) => {
     if (!emailReg.test(email)) {
-      console.log('invalid!!!', email)
+      console.log('invalid', email)
       reject('Invalid email address.');
     } 
 
-    return resolve(true);
+    return resolve('email is', true);
   });
 };
 
