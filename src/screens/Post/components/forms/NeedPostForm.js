@@ -15,6 +15,8 @@ import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {PostImageUpload} from '../PostImageUpload';
+import {Context} from '@/context';
+
 /*Map Essentials*/
 import {ArrowRight} from '@/assets/images/icons';
 import Geocoder from 'react-native-geocoding';
@@ -24,9 +26,13 @@ import StoreLocation from '../StoreLocation';
 /*Map Essentials*/
 const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user, userInfo, setUserInfo} = useContext(UserContext);
+  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(
+    Context,
+  );
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   // console.log('post images', postImages);
 
@@ -138,6 +144,10 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   }, [title, price, storeLocation, paymentMethod, description]);
 
   const navigateToPost = async () => {
+    setLoadingSubmit(true);
+    setPostImage([]);
+    setImageCount(0);
+    setImageCurrent('');
     let type = 'Need';
     let data = {
       uid: user.uid,
@@ -154,11 +164,14 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       },
     };
 
+    // Upload images
+
     if (initialData.post_id) {
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
           navToPost({...res, viewing: false, created: false, edited: true});
+          setLoadingSubmit(false);
         },
       );
     }
@@ -167,6 +180,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       togglePostModal();
       setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       navToPost({...res, viewing: false, created: true, edited: false});
+      setLoadingSubmit(false);
     });
   };
 
@@ -258,7 +272,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       <TouchableOpacity
         onPress={navigateToPost}
         activeOpacity={0.7}
-        // disabled={buttonEnabled}
+        disabled={buttonEnabled || loadingSubmit}
         style={{
           backgroundColor: buttonEnabled
             ? Colors.neutralsGainsboro
@@ -266,9 +280,13 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingVertical: 12,
           alignItems: 'center',
         }}>
-        <AppText textStyle="button2">
-          {initialData.post_id ? 'Update' : 'Publish'}
-        </AppText>
+        {loadingSubmit ? (
+          <ActivityIndicator />
+        ) : (
+          <AppText textStyle="button2">
+            {initialData.post_id ? 'Update' : 'Publish'}
+          </AppText>
+        )}
       </TouchableOpacity>
       <Modal
         isVisible={map}
