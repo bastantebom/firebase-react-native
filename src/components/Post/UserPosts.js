@@ -49,7 +49,9 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       .then((res) => {
         setLastPID(res.last_pid);
         if (res.data.length > 0) setUserPosts(res.data);
-        else setUserPosts([]);
+        else {
+          setUserPosts([]);
+        }
         setRefresh(false);
       })
       .catch((err) => {
@@ -129,6 +131,9 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   }
 
   if (type === 'own' && data.length == 0) {
+    if (refresh) {
+      return <ActivityIndicator />;
+    }
     return <PostOwnEmpty isLoading={isLoading} />;
   }
 
