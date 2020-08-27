@@ -525,11 +525,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 <AppText textStyle="caption2">{uName}</AppText>
               </View>
 
-              {/* <AppText
+              <AppText
                 textStyle="caption"
                 color={invalidUserFormat ? Colors.errorInput : ''}>
                 Only use characters, numbers, dash and a dot (.){' '}
-              </AppText> */}
+              </AppText>
 
               <TextInput
                 value={desc}
