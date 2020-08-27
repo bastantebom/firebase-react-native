@@ -102,12 +102,12 @@ const SinglePostOthersView = ({data, backFunction}) => {
             }}
           /> */}
           {images === undefined || images.length == 0 ? (
-            post_type === 'Need' || post_type ==='need' ? (
+            post_type === 'Need' || post_type === 'need' ? (
               <Image
                 style={GlobalStyle.image}
                 source={require('@/assets/images/cover-need.png')}
               />
-            ) : post_type === 'Sell' || post_type ==='sell' ? (
+            ) : post_type === 'Sell' || post_type === 'sell' ? (
               <Image
                 style={GlobalStyle.image}
                 source={require('@/assets/images/cover-sell.png')}
@@ -317,6 +317,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     alignItems: 'center',
+    backgroundColor: Colors.neutralsWhite,
   },
 });
 

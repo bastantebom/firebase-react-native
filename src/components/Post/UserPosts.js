@@ -47,6 +47,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
     await PostService.getUserPosts(getPostsParams)
       .then((res) => {
+        console.log(res);
         setLastPID(res.last_pid);
         if (res.data.length > 0) setUserPosts(res.data);
         else setUserPosts([]);
@@ -69,7 +70,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       }
 
       let getPostsParams = {
-        uid: user.uid,
+        uid: userID,
         limit: 5,
         last_pid: lastPID,
       };
