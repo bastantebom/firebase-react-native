@@ -5,15 +5,18 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
+import storage from '@react-native-firebase/storage';
 
 import {AppText, AppInput} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 /*Map Essentials*/
 import {ArrowRight} from '@/assets/images/icons';
@@ -30,6 +33,9 @@ const ServicePostForm = ({
   initialData,
 }) => {
   const {user, userInfo, setUserInfo} = useContext(UserContext);
+  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(
+    Context,
+  );
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -138,12 +144,42 @@ const ServicePostForm = ({
     return setButtonEnabled(true);
   };
 
+  const uploadImageHandler = async (image) => {
+    console.log('I got the image Need');
+    console.log(image);
+
+    if (image) {
+      const {uri, filename} = image;
+      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
+
+      const newFilename =
+        Platform.OS === 'ios'
+          ? filename.substring(0, filename.lastIndexOf('.'))
+          : uri.substring(uri.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      await fileRef.putFile(uploadUri);
+      const downloadURL = await fileRef.getDownloadURL();
+
+      return Promise.resolve(downloadURL);
+    } else {
+      return Promise.reject('Failed to upload');
+    }
+  };
+
   useEffect(() => {
     checkFormContent();
   }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
-    // set4  states 
+    // set4  states
+    setPostImage([]);
+    //console.log(postImage);
+    setImageCount(0);
+    setImageCurrent('');
 
     let type = 'service';
     let data = {
@@ -162,6 +198,25 @@ const ServicePostForm = ({
     };
 
     // upload image
+    // Upload images
+    const uploadAllImage = () =>
+      Promise.all(
+        postImage.map((image) => {
+          return uploadImageHandler(image)
+            .then((res) => {
+              console.log(res);
+              return res;
+            })
+            .catch((err) => {
+              console.log(err);
+              return err;
+            });
+        }),
+      );
+
+    await uploadAllImage().then((response) => {
+      data.images = response;
+    });
 
     if (initialData.post_id) {
       // console.log('I will edit post with id: ');
