@@ -101,7 +101,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   /*MAP Essentials */
 
   // console.log('SellPostForm', postImage);
-  
+
   const {
     title,
     setTitle,
@@ -189,9 +189,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       const {uri, filename} = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
 
-      const newFilename =  
-        Platform.OS === 'ios' ? filename.substring(0, filename.lastIndexOf('.')) 
-        : uri.substring(uri.lastIndexOf('/') + 1);
+      const newFilename =
+        Platform.OS === 'ios'
+          ? filename.substring(0, filename.lastIndexOf('.'))
+          : uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
@@ -207,6 +208,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   const navigateToPost = async () => {
+    //console.log(postImage);
     setLoadingSubmit(true);
     setPostImage([]);
     setImageCount(0);
