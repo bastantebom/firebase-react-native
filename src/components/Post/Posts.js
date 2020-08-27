@@ -160,7 +160,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   if (type !== 'own') {
     if (refresh) {
       // I SHOULD SHOW SKELETON
-      return <ActivityIndicator />;
+      return (
+        <View>
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+        </View>
+      );
     }
     return (
       <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>

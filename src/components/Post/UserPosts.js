@@ -131,7 +131,14 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
   if (type === 'own' && data.length == 0) {
     if (refresh) {
-      return <ActivityIndicator />;
+      return (
+        <View>
+          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingOwnPost />
+        </View>
+      );
     }
     return <PostOwnEmpty isLoading={isLoading} />;
   }
