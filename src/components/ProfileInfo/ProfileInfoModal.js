@@ -20,6 +20,7 @@ import {
   TabNavigation,
   ProfileLinks,
   WhiteOpacity,
+  UserPosts,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -27,13 +28,15 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 import {ProfileHeaderDefault} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context/index';
 
-// import {Posts, MoreInfo, Reviews} from './Tabs';
+import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'other', backFunction, uid}) {
   const {user, signOut} = useContext(UserContext);
+  const {userPosts} = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
   const [userInfo, setUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
@@ -100,6 +103,27 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
       });
   }, []);
 
+  const profileTabs = [
+    {
+      key: 'ownpost',
+      title: 'Posts',
+      renderPage: (
+        <UserPosts
+          type="own"
+          data={userPosts}
+          isLoading={isDataLoading}
+          setIsLoading={setIsDataLoading}
+          userID={uid}
+        />
+      ),
+    },
+    {
+      key: 'moreinfo',
+      title: 'More Info',
+      renderPage: <MoreInfo />,
+    },
+  ];
+
   return (
     <>
       <TransparentHeader
@@ -144,7 +168,7 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
 
       <View style={{flex: 1}}>
         <View style={styles.container}>
-          {/* <TabNavigation routesList={profileTabs} /> */}
+          <TabNavigation routesList={profileTabs} />
         </View>
       </View>
       <WhiteOpacity />

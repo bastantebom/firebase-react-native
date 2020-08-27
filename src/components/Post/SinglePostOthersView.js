@@ -26,6 +26,7 @@ import {
 } from '@/assets/images/icons';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
+import {ImageModal} from '@/screens/Post/components/ImageModal';
 
 const SinglePostOthersView = ({data, backFunction}) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
@@ -54,6 +55,13 @@ const SinglePostOthersView = ({data, backFunction}) => {
 
   const {user} = useContext(UserContext);
 
+  const defaultImage = [
+    {
+      key: 0,
+      image: require('@/assets/images/logo.png'),
+    },
+  ];
+
   const userInfo = {
     username: username,
     profile_photo: profile_photo,
@@ -76,17 +84,60 @@ const SinglePostOthersView = ({data, backFunction}) => {
     Linking.openURL(phoneNumber);
   };
 
+  const [postImageModal, setPostImageModal] = useState(false);
+
+  const togglePostImageModal = () => {
+    setPostImageModal(!postImageModal);
+  };
+
   const SinglePostContent = ({children}) => {
     return (
       <View style={{flex: 1}}>
         <View style={styles.postImageContainer}>
-          <Image
+          {/* <Image
             style={GlobalStyle.image}
             source={{
               uri:
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
-          />
+          /> */}
+          {images === undefined || images.length == 0 ? (
+            post_type === 'Need' || post_type ==='need' ? (
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-need.png')}
+              />
+            ) : post_type === 'Sell' || post_type ==='sell' ? (
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-sell.png')}
+              />
+            ) : (
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-service.png')}
+              />
+            )
+          ) : (
+            images.map((item) => {
+              return (
+                <Swiper
+                  activeDotColor={Colors.primaryYellow}
+                  dotColor={Colors.neutralsIron}
+                  dotStyle={{marginRight: 9}}
+                  activeDotStyle={{marginRight: 9}}>
+                  <TouchableWithoutFeedback onPress={togglePostImageModal}>
+                    <Image
+                      style={GlobalStyle.image}
+                      source={{
+                        uri: item,
+                      }}
+                    />
+                  </TouchableWithoutFeedback>
+                </Swiper>
+              );
+            })
+          )}
         </View>
         <View style={styles.postInfoContainer}>
           <ProfileInfo
@@ -158,6 +209,18 @@ const SinglePostOthersView = ({data, backFunction}) => {
         <View style={{flex: 1, position: 'relative', backgroundColor: 'green'}}>
           <TransparentHeader type={'post-other'} backFunction={backFunction} />
           <SinglePostContent></SinglePostContent>
+
+          <Modal
+            isVisible={postImageModal}
+            animationIn="bounceIn"
+            animationOut="bounceOut"
+            style={{
+              margin: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <ImageModal close={togglePostImageModal} data={defaultImage} />
+          </Modal>
         </View>
       </ScrollView>
       <SafeAreaView

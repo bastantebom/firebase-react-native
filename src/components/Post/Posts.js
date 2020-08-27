@@ -126,8 +126,6 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           }
         })
         .catch((err) => {
-          // console.log('GET POST SERVICE ERROR');
-          // // console.log(err);
           setFecthMore(false);
         });
     }
