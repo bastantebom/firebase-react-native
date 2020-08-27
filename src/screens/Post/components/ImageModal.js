@@ -77,7 +77,7 @@ export const ImageModal = ({ close, data }) => {
         >
           {data.map((item) => {
             return (
-              <View key={item.id} style={styles.child}>
+              <View key={item} style={styles.child}>
                 <Image
                   style={{ minHeight: 450, width: width - 15 }}
                   source={{ uri: item }}
