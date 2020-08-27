@@ -24,6 +24,8 @@ import {
   CircleTickWhite,
   CloseLight,
 } from '@/assets/images/icons';
+import {CoverNeed, CoverSell, CoverService} from '@/assets/images';
+
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import EditPostScreen from './EditPostScreen';
@@ -110,7 +112,7 @@ const SinglePostView = (props) => {
   const defaultImage = [
     {
       key: 0,
-      uri: 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+      image: require('@/assets/images/logo.png'),
     },
   ];
   const deletePost = async () => {
@@ -201,39 +203,43 @@ const SinglePostView = (props) => {
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
           /> */}
-          <Swiper
-            activeDotColor={Colors.primaryYellow}
-            dotColor={Colors.neutralsIron}
-            dotStyle={{marginRight: 9}}
-            activeDotStyle={{marginRight: 9}}>
-            {images === undefined || images.length == 0
-              ? defaultImage.map((item) => {
-                  return (
-                    <TouchableWithoutFeedback
-                      key={item.id}
-                      onPress={togglePostImageModal}>
-                      <Image
-                        style={GlobalStyle.image}
-                        source={{
-                          uri: item.uri,
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  );
-                })
-              : images.map((item) => {
-                  return (
-                    <TouchableWithoutFeedback onPress={togglePostImageModal}>
-                      <Image
-                        style={GlobalStyle.image}
-                        source={{
-                          uri: item,
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  );
-                })}
-          </Swiper>
+          {images === undefined || images.length == 0 ? (
+            post_type === 'Need' || post_type === 'need' ? (
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-need.png')}
+              />
+            ) : post_type === 'Sell' || post_type === 'sell' ? (
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-sell.png')}
+              />
+            ) : (
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-service.png')}
+              />
+            )
+          ) : (
+            images.map((item) => {
+              return (
+                <Swiper
+                  activeDotColor={Colors.primaryYellow}
+                  dotColor={Colors.neutralsIron}
+                  dotStyle={{marginRight: 9}}
+                  activeDotStyle={{marginRight: 9}}>
+                  <TouchableWithoutFeedback onPress={togglePostImageModal}>
+                    <Image
+                      style={GlobalStyle.image}
+                      source={{
+                        uri: item,
+                      }}
+                    />
+                  </TouchableWithoutFeedback>
+                </Swiper>
+              );
+            })
+          )}
         </View>
         <View style={styles.postInfoContainer}>
           <CustomNotification />
@@ -243,7 +249,7 @@ const SinglePostView = (props) => {
           <AppText
             textStyle="subtitle1"
             customStyle={{marginTop: 24, marginBottom: 16}}>
-            {title}
+            {title} {post_type}
           </AppText>
 
           <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>

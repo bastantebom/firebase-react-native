@@ -119,7 +119,7 @@ const OwnPost = ({data, isLoading}) => {
               ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
               post_type === 'service' ? (
                 <DefaultService width={normalize(64)} height={normalize(72)} />
-              ) : post_type === 'need' ? (
+              ) : post_type === 'Need' ? (
                 <DefaultNeed width={normalize(64)} height={normalize(72)} />
               ) : (
                 <DefaultSell width={normalize(64)} height={normalize(72)} />

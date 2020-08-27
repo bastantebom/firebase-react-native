@@ -100,8 +100,11 @@ const Post = ({data, type, isLoading}) => {
                   <Image style={GlobalStyle.image} source={{uri: images[0]}} />
                 ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
                 post_type === 'service' ? (
-                  <DefaultService width={normalize(122)} height={normalize(126)} />
-                ) : post_type === 'need' ? (
+                  <DefaultService
+                    width={normalize(122)}
+                    height={normalize(126)}
+                  />
+                ) : post_type === 'need' || post_type === 'Need' ? (
                   <DefaultNeed width={normalize(122)} height={normalize(126)} />
                 ) : (
                   <DefaultSell width={normalize(122)} height={normalize(126)} />
