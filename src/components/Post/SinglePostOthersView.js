@@ -12,6 +12,7 @@ import {
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
+import Swiper from 'react-native-swiper';
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
