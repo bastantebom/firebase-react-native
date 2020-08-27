@@ -11,6 +11,7 @@ import Modal from 'react-native-modal';
 
 import {AppText, MarginView, ProfileInfo} from '@/components';
 import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
+import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 import {UserContext} from '@/context/UserContext';
 import LoadingScreen from './loading';
@@ -40,6 +41,7 @@ const OwnPost = ({data, isLoading}) => {
     account_verified,
     email,
     phone_number,
+    post_type,
   } = data;
 
   const VerifiedBadge = () => {
@@ -112,15 +114,16 @@ const OwnPost = ({data, isLoading}) => {
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
             <View style={styles.postImageContainer}>
-              <Image
-                style={GlobalStyle.image}
-                source={{
-                  uri:
-                    images.length > 0
-                      ? images[0]
-                      : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
-                }}
-              />
+              {images.length > 0 ? (
+                <Image style={GlobalStyle.image} source={{uri: images[0]}} />
+              ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
+              post_type === 'service' ? (
+                <DefaultService width={normalize(64)} height={normalize(72)} />
+              ) : post_type === 'need' ? (
+                <DefaultNeed width={normalize(64)} height={normalize(72)} />
+              ) : (
+                <DefaultSell width={normalize(64)} height={normalize(72)} />
+              )}
             </View>
           </TouchableOpacity>
           <View style={{paddingLeft: 12, flex: 1}}>

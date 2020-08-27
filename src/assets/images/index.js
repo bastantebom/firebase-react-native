@@ -27,7 +27,14 @@ import CoverPhoto from './upload-cover.svg';
 
 import AboutServbeesImage from './Glyph-High-Five.svg';
 
+import DefaultNeed from './default-need.svg';
+import DefaultSell from './default-sell.svg';
+import DefaultService from './default-service.svg';
+
 export {
+  DefaultNeed,
+  DefaultSell,
+  DefaultService,
   Location,
   ResetPassword,
   Verify,

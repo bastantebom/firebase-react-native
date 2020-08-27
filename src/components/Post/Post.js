@@ -22,6 +22,8 @@ import {
   NavigationArrow,
   TransportationBox,
 } from '@/assets/images/icons';
+import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
+
 import LoadingScreen from './loading';
 import SinglePostOthersView from './SinglePostOthersView';
 
@@ -94,15 +96,16 @@ const Post = ({data, type, isLoading}) => {
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
-                <Image
-                  style={GlobalStyle.image}
-                  source={{
-                    uri:
-                      images.length > 0
-                        ? images[0]
-                        : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
-                  }}
-                />
+                {images.length > 0 ? (
+                  <Image style={GlobalStyle.image} source={{uri: images[0]}} />
+                ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
+                post_type === 'service' ? (
+                  <DefaultService width={normalize(122)} height={normalize(126)} />
+                ) : post_type === 'need' ? (
+                  <DefaultNeed width={normalize(122)} height={normalize(126)} />
+                ) : (
+                  <DefaultSell width={normalize(122)} height={normalize(126)} />
+                )}
               </View>
             </TouchableOpacity>
             <View style={styles.postDetailContainer}>
