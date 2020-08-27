@@ -11,9 +11,6 @@ import PropTypes from 'prop-types';
 const { width, height } = Dimensions.get('window');
 
 export const ImageModal = ({ close, data }) => {
-
-  console.log(data)
-
   const Pagination = ({
     size,
     paginationIndex,
@@ -21,7 +18,6 @@ export const ImageModal = ({ close, data }) => {
     paginationDefaultColor,
     paginationActiveColor,
   }) => {
-  
     return (
       <View style={styles.paginationContainer}>
         {Array.from({ length: size }).map((_, index) => (
@@ -36,7 +32,7 @@ export const ImageModal = ({ close, data }) => {
                     ? { borderColor: paginationActiveColor, borderWidth: 3 }
                     : { borderColor: paginationDefaultColor }
               ]}
-              source={{ uri: data[index].uri }}
+              source={{ uri: data[index]}}
             />
           </TouchableOpacity>
         ))}
@@ -84,7 +80,7 @@ export const ImageModal = ({ close, data }) => {
               <View key={item.id} style={styles.child}>
                 <Image
                   style={{ minHeight: 450, width: width - 15 }}
-                  source={{ uri: item.uri }}
+                  source={{ uri: item }}
                 />
               </View>
             )

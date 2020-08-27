@@ -69,7 +69,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       }
 
       let getPostsParams = {
-        uid: user.uid,
+        uid: userID,
         limit: 5,
         last_pid: lastPID,
       };

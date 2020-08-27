@@ -12,6 +12,7 @@ import {
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
+import Swiper from 'react-native-swiper';
 
 import {AppText, TransparentHeader, ProfileInfo} from '@/components';
 import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
@@ -119,13 +120,14 @@ const SinglePostOthersView = ({data, backFunction}) => {
               />
             )
           ) : (
-            images.map((item) => {
-              return (
-                <Swiper
-                  activeDotColor={Colors.primaryYellow}
-                  dotColor={Colors.neutralsIron}
-                  dotStyle={{marginRight: 9}}
-                  activeDotStyle={{marginRight: 9}}>
+            <Swiper
+              activeDotColor={Colors.primaryYellow}
+              dotColor={Colors.neutralsIron}
+              dotStyle={{marginRight: 9}}
+              activeDotStyle={{marginRight: 9}}>
+              {images.map((item) => {
+                console.log(item);
+                return (
                   <TouchableWithoutFeedback onPress={togglePostImageModal}>
                     <Image
                       style={GlobalStyle.image}
@@ -134,9 +136,9 @@ const SinglePostOthersView = ({data, backFunction}) => {
                       }}
                     />
                   </TouchableWithoutFeedback>
-                </Swiper>
-              );
-            })
+                );
+              })}
+            </Swiper>
           )}
         </View>
         <View style={styles.postInfoContainer}>
@@ -219,7 +221,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <ImageModal close={togglePostImageModal} data={defaultImage} />
+            <ImageModal close={togglePostImageModal} data={images} />
           </Modal>
         </View>
       </ScrollView>
