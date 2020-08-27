@@ -58,9 +58,9 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       .then((res) => {
         // console.log('Refresh function response');
         // console.log(res);
-        res.data.map((item) => {
-          console.log(item.post_id);
-        });
+        // res.data.map((item) => {
+        //   console.log(item.post_id);
+        // });
 
         // console.log('LAST ID');
         // console.log(res.last_pid);
@@ -79,7 +79,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     setOnEndReachedCalledDuringMomentum(false);
 
   const getMorePost = async () => {
-    console.log("Call GET MORE")
+    // console.log("Call GET MORE")
 
     if (!onEndReachedCalledDuringMomentum) {
       setOnEndReachedCalledDuringMomentum(true);
@@ -88,7 +88,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       // console.log(thereIsMoreFlag);
       if (!thereIsMoreFlag) {
         setFecthMore(false);
-        console.log('Stopping getting more post');
+        // console.log('Stopping getting more post');
         return;
       }
 
@@ -104,20 +104,20 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
       await PostService.getPostsLocation(getPostsParams)
         .then((res) => {
-          console.log('Get more posts function response');
+          // console.log('Get more posts function response');
 
-          res.data.map((item) => {
-            console.log(item.post_id);
-          });
+          // res.data.map((item) => {
+          //   console.log(item.post_id);
+          // });
 
-          console.log('res.sucess: ', res.success);
+          // console.log('res.sucess: ', res.success);
           // console.log(res.success);
 
           // console.log(res.data);
           // if (res.success) setLastPID(res.last_pid);
           if (res.success) {
             setLastPID(res.last_pid);
-            console.log('INSIDE SUCCESS TRUE');
+            // console.log('INSIDE SUCCESS TRUE');
             setPosts(res.data ? [...posts, ...res.data] : [...posts]);
             setFecthMore(false);
           } else {
