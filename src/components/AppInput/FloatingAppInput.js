@@ -20,25 +20,26 @@ const FloatingAppInput = (props) => {
 
   const [internalValue, setInternalValue] = useState(value)
 
-  const inputDebounce = useCallback(
-    debounce(() => validateInput(value), 100),
-    [],
-  );
-
   const [showValidationError, setShowValidationError] = useState(false);
   const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
 
-
   const onValueChange = (value) => {
     valueHandler(value);
+    console.log('************************************************');
     console.log('valueHandler', value);
-    inputDebounce()
+    inputDebounce(value)
   }
 
+  const inputDebounce = useCallback(
+    debounce((value) => validateInput(value), 2000),
+    [],
+  );
+
+
   const validateInput = (value) => {
-    console.log("Validate input")
+    // console.log("Validate input")
     setInternalValue(value)
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
@@ -54,11 +55,11 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.emailValidator(value)
         .then((res) => {
           setShowValidationError(res);
-          // console.log('email is valid')
+          console.log('email is valid', res)
         })
         .catch((err) => {
           setShowValidationError(false);
-          // console.log('email is not valid')
+          console.log('email is not valid')
           setValidationError(err);
         });
 

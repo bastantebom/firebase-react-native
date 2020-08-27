@@ -341,7 +341,7 @@ const SinglePostView = (props) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <ImageModal close={togglePostImageModal} data={defaultImage} />
+        <ImageModal close={togglePostImageModal} data={images === undefined || images.length == 0 ? defaultImage : images} />
       </Modal>
     </>
   );
