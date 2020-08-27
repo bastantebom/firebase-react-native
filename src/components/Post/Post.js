@@ -47,7 +47,8 @@ const Post = ({data, type, isLoading}) => {
     images,
     account_verified,
     email,
-    phone_number
+    phone_number,
+    post_type,
   } = data;
 
   const VerifiedBadge = () => {
@@ -64,7 +65,7 @@ const Post = ({data, type, isLoading}) => {
     account_verified: account_verified,
     display_name: display_name,
     date_posted: date_posted,
-    uid: uid
+    uid: uid,
   };
 
   const navigation = useNavigation();
@@ -100,8 +101,7 @@ const Post = ({data, type, isLoading}) => {
                     uri:
                       images.length > 0
                         ? images[0]
-                        : 
-                        'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                        : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
                   }}
                 />
               </View>
@@ -174,9 +174,12 @@ const Post = ({data, type, isLoading}) => {
             margin: 0,
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
-            justifyContent: 'flex-start'
+            justifyContent: 'flex-start',
           }}>
-          <SinglePostOthersView data={data} backFunction={() => setShowPost(false)} />
+          <SinglePostOthersView
+            data={data}
+            backFunction={() => setShowPost(false)}
+          />
         </Modal>
       </LoadingScreen.LoadingPublicPost>
     );
