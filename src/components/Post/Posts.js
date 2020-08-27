@@ -22,6 +22,10 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const [lastPID, setLastPID] = useState('');
   const [fetchMore, setFecthMore] = useState(false);
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
+  const [
+    onEndReachedCalledDuringMomentum,
+    setOnEndReachedCalledDuringMomentum,
+  ] = useState(true);
 
   const initialLocation = userInfo?.address?.city
     ? userInfo?.address?.city
@@ -54,14 +58,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       .then((res) => {
         // console.log('Refresh function response');
         // console.log(res);
-        // res.data.map((item) => {
-        //   console.log(item.post_id);
-        // });
+        res.data.map((item) => {
+          console.log(item.post_id);
+        });
 
         // console.log('LAST ID');
         // console.log(res.last_pid);
 
-        setLastPID(res.last_pid);
+        // setLastPID(res.last_pid);
         if (res.data.length > 0) setPosts(res.data);
         else setPosts([]);
         setRefresh(false);
@@ -71,54 +75,62 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       });
   };
 
+  const onMomentumScrollBegin = () =>
+    setOnEndReachedCalledDuringMomentum(false);
+
   const getMorePost = async () => {
-    setFecthMore(true);
-    // console.log('FLAGGER');
-    // console.log(thereIsMoreFlag);
-    if (!thereIsMoreFlag) {
-      setFecthMore(false);
-      console.log('Stopping getting more post');
-      return;
-    }
+    console.log("Call GET MORE")
 
-    let getPostsParams = {
-      uid: user.uid,
-      limit: 5,
-      last_pid: lastPID,
-      city: locationFilter ? locationFilter : initialLocation,
-    };
-    // console.log('GET MORE POST');
-    // console.log(lastPID);
-    // console.log(getPostsParams);
-
-    await PostService.getPostsLocation(getPostsParams)
-      .then((res) => {
-        console.log('Get more posts function response');
-
-        res.data.map((item) => {
-          console.log(item.post_id);
-        });
-
-        console.log('res.sucess: ', res.success);
-        // console.log(res.success);
-
-        // console.log(res.data);
-        // if (res.success) setLastPID(res.last_pid);
-        if (res.success) {
-          setLastPID(res.last_pid);
-          console.log('INSIDE SUCCESS TRUE');
-          setPosts(res.data ? [...posts, ...res.data] : [...posts]);
-          setFecthMore(false);
-        } else {
-          setThereIsMoreFlag(false);
-          setFecthMore(false);
-        }
-      })
-      .catch((err) => {
-        // console.log('GET POST SERVICE ERROR');
-        // // console.log(err);
+    if (!onEndReachedCalledDuringMomentum) {
+      setOnEndReachedCalledDuringMomentum(true);
+      setFecthMore(true);
+      // console.log('FLAGGER');
+      // console.log(thereIsMoreFlag);
+      if (!thereIsMoreFlag) {
         setFecthMore(false);
-      });
+        console.log('Stopping getting more post');
+        return;
+      }
+
+      let getPostsParams = {
+        uid: user.uid,
+        limit: 5,
+        last_pid: lastPID,
+        city: locationFilter ? locationFilter : initialLocation,
+      };
+      // console.log('GET MORE POST');
+      // console.log(lastPID);
+      // console.log(getPostsParams);
+
+      await PostService.getPostsLocation(getPostsParams)
+        .then((res) => {
+          console.log('Get more posts function response');
+
+          res.data.map((item) => {
+            console.log(item.post_id);
+          });
+
+          console.log('res.sucess: ', res.success);
+          // console.log(res.success);
+
+          // console.log(res.data);
+          // if (res.success) setLastPID(res.last_pid);
+          if (res.success) {
+            setLastPID(res.last_pid);
+            console.log('INSIDE SUCCESS TRUE');
+            setPosts(res.data ? [...posts, ...res.data] : [...posts]);
+            setFecthMore(false);
+          } else {
+            setThereIsMoreFlag(false);
+            setFecthMore(false);
+          }
+        })
+        .catch((err) => {
+          // console.log('GET POST SERVICE ERROR');
+          // // console.log(err);
+          setFecthMore(false);
+        });
+    }
   };
 
   if (data.length > 0) {
@@ -131,6 +143,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         refreshing={refresh}
         onEndReached={() => getMorePost()}
         onEndReachedThreshold={0.1}
+        onMomentumScrollBegin={onMomentumScrollBegin}
         ListFooterComponent={
           <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
             {fetchMore ? (

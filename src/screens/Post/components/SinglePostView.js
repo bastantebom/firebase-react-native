@@ -49,7 +49,7 @@ const SinglePostView = (props) => {
     post_id,
   } = props.route?.params?.data;
 
-  console.log(images)
+  console.log(images);
 
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState(false);
@@ -215,8 +215,7 @@ const SinglePostView = (props) => {
                       <Image
                         style={GlobalStyle.image}
                         source={{
-                          uri:
-                            'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                          uri: item.uri,
                         }}
                       />
                     </TouchableWithoutFeedback>
@@ -224,8 +223,7 @@ const SinglePostView = (props) => {
                 })
               : images.map((item) => {
                   return (
-                    <TouchableWithoutFeedback
-                      onPress={togglePostImageModal}>
+                    <TouchableWithoutFeedback onPress={togglePostImageModal}>
                       <Image
                         style={GlobalStyle.image}
                         source={{

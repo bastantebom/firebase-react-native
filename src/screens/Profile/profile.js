@@ -37,7 +37,7 @@ import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
-  const {openNotification, closeNotification, posts} = useContext(Context);
+  const {openNotification, closeNotification, posts, userPosts} = useContext(Context);
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
@@ -130,7 +130,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       renderPage: (
         <UserPosts
           type="own"
-          data={posts}
+          data={userPosts}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           //hideLocationComponent={hideLocationComponent}

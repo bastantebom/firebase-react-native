@@ -32,6 +32,7 @@ const ServicePostForm = ({
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   /*MAP Essentials */
   const [map, setMap] = useState(false);
   const {address} = userInfo;
@@ -142,18 +143,9 @@ const ServicePostForm = ({
   }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
+    // set4  states 
+
     let type = 'service';
-    // let data = {
-    //   uid: user.uid,
-    //   post_type: type,
-    //   images: [],
-    //   title: title,
-    //   price: price,
-    //   description: description,
-    //   payment_method: paymentMethod,
-    //   store_location: storeLocation,
-    //   delivery_method: [],
-    // };
     let data = {
       uid: user.uid,
       post_type: type,
@@ -169,8 +161,7 @@ const ServicePostForm = ({
       },
     };
 
-    // console.log('im saving');
-    // console.log(initialData);
+    // upload image
 
     if (initialData.post_id) {
       // console.log('I will edit post with id: ');
@@ -278,7 +269,7 @@ const ServicePostForm = ({
       <TouchableOpacity
         onPress={navigateToPost}
         activeOpacity={0.7}
-        disabled={buttonEnabled}
+        disabled={buttonEnabled || loadingSubmit}
         style={{
           backgroundColor: buttonEnabled
             ? Colors.neutralsGainsboro
@@ -286,9 +277,13 @@ const ServicePostForm = ({
           paddingVertical: 12,
           alignItems: 'center',
         }}>
-        <AppText textStyle="button2">
-          {initialData.post_id ? 'Update' : 'Publish'}
-        </AppText>
+        {loadingSubmit ? (
+          <ActivityIndicator />
+        ) : (
+          <AppText textStyle="button2">
+            {initialData.post_id ? 'Update' : 'Publish'}
+          </AppText>
+        )}
       </TouchableOpacity>
 
       <Modal

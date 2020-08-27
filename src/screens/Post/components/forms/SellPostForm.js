@@ -248,11 +248,14 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       data.images = response;
     });
 
+    // Upload Image
+
     if (initialData.post_id) {
       return await PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
           navToPost({...res, viewing: false, created: false, edited: true});
+          setLoadingSubmit(false);
         },
       );
     }
@@ -401,7 +404,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         <TouchableOpacity
           onPress={navigateToPost}
           activeOpacity={0.7}
-          disabled={buttonEnabled}
+          disabled={buttonEnabled || loadingSubmit}
           style={{
             backgroundColor: buttonEnabled
               ? Colors.neutralsGainsboro
