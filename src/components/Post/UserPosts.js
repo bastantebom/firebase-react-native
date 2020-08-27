@@ -138,6 +138,9 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   }
 
   if (type !== 'own') {
+    if (refresh) {
+      return <ActivityIndicator />;
+    }
     return (
       <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
         <AppText>No user posts</AppText>

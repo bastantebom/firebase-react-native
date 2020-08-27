@@ -157,11 +157,11 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     );
   }
 
-  if (type === 'own' && data.length == 0) {
-    return <PostOwnEmpty isLoading={isLoading} />;
-  }
-
   if (type !== 'own') {
+    if (refresh) {
+      // I SHOULD SHOW SKELETON
+      return <ActivityIndicator />;
+    }
     return (
       <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
         <AppText>No posts in your area.</AppText>
