@@ -221,13 +221,14 @@ const SinglePostView = (props) => {
               />
             )
           ) : (
-            images.map((item) => {
-              return (
-                <Swiper
-                  activeDotColor={Colors.primaryYellow}
-                  dotColor={Colors.neutralsIron}
-                  dotStyle={{marginRight: 9}}
-                  activeDotStyle={{marginRight: 9}}>
+            <Swiper
+              activeDotColor={Colors.primaryYellow}
+              dotColor={Colors.neutralsIron}
+              dotStyle={{marginRight: 9}}
+              activeDotStyle={{marginRight: 9}}>
+              {images.map((item) => {
+                console.log(item);
+                return (
                   <TouchableWithoutFeedback onPress={togglePostImageModal}>
                     <Image
                       style={GlobalStyle.image}
@@ -236,9 +237,9 @@ const SinglePostView = (props) => {
                       }}
                     />
                   </TouchableWithoutFeedback>
-                </Swiper>
-              );
-            })
+                );
+              })}
+            </Swiper>
           )}
         </View>
         <View style={styles.postInfoContainer}>
@@ -345,7 +346,7 @@ const SinglePostView = (props) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <ImageModal close={togglePostImageModal} data={defaultImage} />
+        <ImageModal close={togglePostImageModal} data={images} />
       </Modal>
     </>
   );
