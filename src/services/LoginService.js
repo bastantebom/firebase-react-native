@@ -1,12 +1,13 @@
 import BaseAPI from '@/services/BaseAPI';
+import Config from '@/services/Config';
 
 import auth from '@react-native-firebase/auth';
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
-import { GoogleSignin } from '@react-native-community/google-signin';
+import {AccessToken, LoginManager} from 'react-native-fbsdk';
+import {GoogleSignin} from '@react-native-community/google-signin';
 import SignUpService from '@/services/SignUpService';
 
 GoogleSignin.configure({
-  webClientId: '960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com',
+  webClientId: Config.dev.googleSignIn,
 });
 
 const loginMobile = (payload) => {
@@ -21,7 +22,10 @@ const loginMobile = (payload) => {
 };
 
 async function facebookSignIn() {
-  const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  const result = await LoginManager.logInWithPermissions([
+    'public_profile',
+    'email',
+  ]);
   if (result.isCancelled) {
     throw 'User cancelled the login process';
   }
@@ -30,52 +34,62 @@ async function facebookSignIn() {
     throw 'Something went wrong obtaining access token';
   }
 
-  const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken)
-  auth().signInWithCredential(facebookCredential)
-  .then(result => {
-    console.log('Data', JSON.stringify(result))
-    SignUpService.saveSocials({
-      uid: result.user.uid,
-      full_name: result.user.displayName,
-    }).then((response) => {
-      if (response.success) {
-        console.log('SUCCESS');
-      }
-    }).catch((error) => {
-      console.log('FAILED');
-      console.log('With Error in the API Login ' + error);
+  const facebookCredential = auth.FacebookAuthProvider.credential(
+    data.accessToken,
+  );
+  auth()
+    .signInWithCredential(facebookCredential)
+    .then((result) => {
+      console.log('Data', JSON.stringify(result));
+      SignUpService.saveSocials({
+        uid: result.user.uid,
+        full_name: result.user.displayName,
+      })
+        .then((response) => {
+          if (response.success) {
+            console.log('SUCCESS');
+          }
+        })
+        .catch((error) => {
+          console.log('FAILED');
+          console.log('With Error in the API Login ' + error);
+        });
+    })
+    .catch((error) => {
+      console.log('Error fetching data', error);
     });
-  }).catch(error => {
-    console.log('Error fetching data', error)
-  })
 }
 
 async function googleLogin() {
-  const { idToken } = await GoogleSignin.signIn();
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-  auth().signInWithCredential(googleCredential)
-  .then(result => {
-    console.log('Data', JSON.stringify(result))
-    SignUpService.saveSocials({
-      uid: result.user.uid,
-      full_name: result.user.displayName,
-    }).then((response) => {
-      if (response.success) {
-        console.log('SUCCESS');
-      }
-    }).catch((error) => {
-      console.log('FAILED');
-      console.log('With Error in the API Login ' + error);
+  const {idToken} = await GoogleSignin.signIn();
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  auth()
+    .signInWithCredential(googleCredential)
+    .then((result) => {
+      console.log('Data', JSON.stringify(result));
+      SignUpService.saveSocials({
+        uid: result.user.uid,
+        full_name: result.user.displayName,
+      })
+        .then((response) => {
+          if (response.success) {
+            console.log('SUCCESS');
+          }
+        })
+        .catch((error) => {
+          console.log('FAILED');
+          console.log('With Error in the API Login ' + error);
+        });
+    })
+    .catch((error) => {
+      console.log('Error fetching data', error);
     });
-  }).catch(error => {
-    console.log('Error fetching data', error)
-  })
-};
+}
 
 const LoginService = {
   loginMobile,
   facebookSignIn,
-  googleLogin
+  googleLogin,
 };
 
 export default LoginService;

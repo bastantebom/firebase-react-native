@@ -44,6 +44,7 @@ export const UserContextProvider = ({children}) => {
       .signOut()
       .then(() => {
         setUser(null);
+        setUserInfo({});
         console.log('User signed out');
       })
       .catch(function (error) {

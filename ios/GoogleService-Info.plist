@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>960850345935-eturloplsh13to62kj0abf6a4mh35s91.apps.googleusercontent.com</string>
+	<string>960850345935-vikjeeqroaq3240mtcloup2abi6c97sd.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.960850345935-eturloplsh13to62kj0abf6a4mh35s91</string>
+	<string>com.googleusercontent.apps.960850345935-vikjeeqroaq3240mtcloup2abi6c97sd</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>960850345935-qds3cmcsqsjl6b1tad8aaul59sn8ec2n.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.example.servbees</string>
+	<string>com.servbees</string>
 	<key>PROJECT_ID</key>
 	<string>codes-servbees</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:960850345935:ios:688847791f3a1e34079cba</string>
+	<string>1:960850345935:ios:62814da9f6fb0e3a079cba</string>
 	<key>DATABASE_URL</key>
 	<string>https://codes-servbees.firebaseio.com</string>
 </dict>
