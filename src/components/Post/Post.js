@@ -1,7 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {
   View,
-  Text,
   Image,
   StyleSheet,
   TouchableOpacity,

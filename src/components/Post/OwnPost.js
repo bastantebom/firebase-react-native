@@ -1,12 +1,27 @@
-import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 import {AppText, MarginView, ProfileInfo} from '@/components';
 import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
+import {UserContext} from '@/context/UserContext';
 import LoadingScreen from './loading';
+import SinglePostOthersView from './SinglePostOthersView';
 
 const OwnPost = ({data, isLoading}) => {
+  const {user} = useContext(UserContext);
+  const [showPost, setShowPost] = useState(false);
+
+  const navigation = useNavigation();
+
   const {
     display_name,
     date_posted,
@@ -60,6 +75,22 @@ const OwnPost = ({data, isLoading}) => {
     );
   };
 
+  const navToPost = () => {
+    let computedData = {
+      data: data,
+      viewing: true,
+      created: false,
+      edited: false,
+    };
+
+    if (user.uid === uid)
+      navigation.navigate('Post', {
+        screen: 'SinglePostView',
+        params: computedData,
+      });
+    else setShowPost(true);
+  };
+
   return (
     <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
       <MarginView
@@ -79,17 +110,19 @@ const OwnPost = ({data, isLoading}) => {
           elevation: 4,
         }}>
         <View style={{flexDirection: 'row'}}>
-          <View style={styles.postImageContainer}>
-            <Image
-              style={GlobalStyle.image}
-              source={{
-                uri:
-                  images.length > 0
-                    ? images[0]
-                    : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
-              }}
-            />
-          </View>
+          <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+            <View style={styles.postImageContainer}>
+              <Image
+                style={GlobalStyle.image}
+                source={{
+                  uri:
+                    images.length > 0
+                      ? images[0]
+                      : 'https://s3.amazonaws.com/vulture-food-photos/defaultvulture.png',
+                }}
+              />
+            </View>
+          </TouchableOpacity>
           <View style={{paddingLeft: 12, flex: 1}}>
             <View
               style={{
@@ -141,6 +174,24 @@ const OwnPost = ({data, isLoading}) => {
           </View>
         </View>
       </MarginView>
+
+      <Modal
+        isVisible={showPost}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutLeft"
+        animationOutTiming={500}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+          justifyContent: 'flex-start',
+        }}>
+        <SinglePostOthersView
+          data={data}
+          backFunction={() => setShowPost(false)}
+        />
+      </Modal>
     </LoadingScreen.LoadingOwnPost>
   );
 };
