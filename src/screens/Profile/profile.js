@@ -133,6 +133,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
           data={userPosts}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+          userID={user.uid}
           //hideLocationComponent={hideLocationComponent}
           //showLocationComponent={showLocationComponent}
         />

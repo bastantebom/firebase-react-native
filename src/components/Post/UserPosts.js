@@ -19,8 +19,14 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   const [refresh, setRefresh] = useState(false);
   const [lastPID, setLastPID] = useState('');
   const [fetchMore, setFecthMore] = useState(false);
+  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
+  const [
+    onEndReachedCalledDuringMomentum,
+    setOnEndReachedCalledDuringMomentum,
+  ] = useState(true);
 
   useEffect(() => {
+    console.log('USER POSTS');
     refreshPosts().then(() => {
       setIsLoading(false);
     });
@@ -36,10 +42,11 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       limit: 5,
     };
 
+    console.log('REFRESH USER POSTS');
+    console.log(getPostsParams);
+
     await PostService.getUserPosts(getPostsParams)
       .then((res) => {
-        // console.log('Refresh function response');
-        // console.log(res);
         setLastPID(res.last_pid);
         if (res.data.length > 0) setUserPosts(res.data);
         else setUserPosts([]);
@@ -51,34 +58,49 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   };
 
   const getMorePost = async () => {
-    setFecthMore(true);
-    if (lastPID === 'none') {
-      setFecthMore(false);
-      console.log('Stopping getting more post');
-      return;
-    }
+    if (!onEndReachedCalledDuringMomentum) {
+      setOnEndReachedCalledDuringMomentum(true);
+      setFecthMore(true);
 
-    let getPostsParams = {
-      uid: user.uid,
-      limit: 5,
-      last_pid: lastPID,
-    };
-    // console.log('GET MORE POST');
-    // console.log(lastPID);
-    // console.log(getPostsParams);
-
-    await PostService.getUserPosts(getPostsParams)
-      .then((res) => {
-        console.log('Get more userPosts function response');
-        console.log(res);
-        // if (res.success) setLastPID(res.last_pid);
-        setLastPID(res.last_pid ? res.last_pid : 'none');
+      if (!thereIsMoreFlag) {
         setFecthMore(false);
+        console.log('Stopping getting more post');
+        return;
+      }
 
-        setUserPosts(res.data ? [...userPosts, ...res.data] : [...userPosts]);
-      })
-      .catch((err) => {});
+      let getPostsParams = {
+        uid: user.uid,
+        limit: 5,
+        last_pid: lastPID,
+      };
+      // console.log('GET MORE POST');
+      // console.log(lastPID);
+      // console.log(getPostsParams);
+
+      await PostService.getUserPosts(getPostsParams)
+        .then((res) => {
+          console.log('Get more userPosts function response');
+          console.log(res);
+          // if (res.success) setLastPID(res.last_pid);
+          if (res.success) {
+            setLastPID(res.last_pid);
+            setUserPosts(
+              res.data ? [...userPosts, ...res.data] : [...userPosts],
+            );
+            setFecthMore(false);
+          } else {
+            setThereIsMoreFlag(false);
+            setFecthMore(false);
+          }
+        })
+        .catch((err) => {
+          setFecthMore(false);
+        });
+    }
   };
+
+  const onMomentumScrollBegin = () =>
+    setOnEndReachedCalledDuringMomentum(false);
 
   if (data.length > 0) {
     return (
@@ -90,6 +112,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
         refreshing={refresh}
         onEndReached={getMorePost}
         onEndReachedThreshold={0.1}
+        onMomentumScrollBegin={onMomentumScrollBegin}
         ListFooterComponent={
           <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
             {fetchMore ? (
