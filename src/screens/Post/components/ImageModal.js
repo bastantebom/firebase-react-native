@@ -32,7 +32,7 @@ export const ImageModal = ({ close, data }) => {
                     ? { borderColor: paginationActiveColor, borderWidth: 3 }
                     : { borderColor: paginationDefaultColor }
               ]}
-              source={{ uri: data[index]}}
+              source={{ uri: data[index] }}
             />
           </TouchableOpacity>
         ))}
