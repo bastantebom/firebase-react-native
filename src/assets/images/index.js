@@ -31,14 +31,7 @@ import DefaultNeed from './default-need.svg';
 import DefaultSell from './default-sell.svg';
 import DefaultService from './default-service.svg';
 
-import CoverNeed from './cover-need.svg';
-import CoverSell from './cover-sell.svg';
-import CoverService from './cover-service.svg';
-
 export {
-  CoverNeed,
-  CoverSell,
-  CoverService,
   DefaultNeed,
   DefaultSell,
   DefaultService,
