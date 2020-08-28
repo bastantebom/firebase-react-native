@@ -103,6 +103,10 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
     closeNotificationTimer();
   };
 
+  if (!user) {
+    return <GuestProfile />;
+  }
+
   const notificationErrorTextStyle = {
     flex: 1,
     marginLeft: 12,
@@ -161,10 +165,6 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   }, []);
 
   const width = Dimensions.get('window').width;
-
-  if (!user) {
-    return <GuestProfile />;
-  }
 
   const triggerNotify = (notify) => {
     if (notify) {
