@@ -268,11 +268,195 @@ const TermsOfUse = ({toggleTermsOfUse}) => {
                 marginTop: normalize(24),
                 paddingLeft: normalize(8),
               }}>
-              <AppText textStyle="body1">
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
                 1. headings, underlines and bold type are for ease of reference
                 only and shall not affect the interpretation of this Agreement;
               </AppText>
+
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                2. the singular includes the plural and the plural includes the
+                singular;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                3. other parts of speech and grammatical forms of a word or
+                phrase defined in this Agreement have a corresponding meaning;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                4. references to a document include all amendments or
+                supplements to, or replacements or novations of that document;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                5. references to a party to a document includes the successors
+                and permitted assigns;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                6. references to time is a reference to Singapore time;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                7. no provision of this Agreement shall be construed adversely
+                to a party because that party was responsible for the
+                preparation of this Agreement or that provision;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                8. a reference to a clause, attachment, exhibit or schedule is a
+                reference to a clause, attachment, exhibit or schedule to this
+                Agreement, and a reference to this Agreement includes any
+                attachment, exhibit and schedule;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                9. a reference to any legislation includes all delegated
+                legislation made under it and amendments, consolidations,
+                replacements or re-enactments of any of them;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                10. the terms “
+                <AppText textStyle="body1medium">personal data</AppText>” and “
+                <AppText textStyle="body1medium">processing</AppText>” (when
+                used in relation to personal data) shall have the meanings given
+                to them in the Personal Data Protection Act 2012 (Act 26 of
+                2012) of Singapore;
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                11. the terms “
+                <AppText textStyle="body1medium">related corporation</AppText>”
+                and “<AppText textStyle="body1medium">corporation</AppText>”
+                shall have the meanings given to them in the Companies Act
+                (Chapter 50) of Singapore; and
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                12. the expression “<AppText>including</AppText>” or similar
+                expression does not limit what else is included.
+              </AppText>
             </View>
+          </View>
+          <View style={{marginTop: normalize(24)}}>
+            <AppText textStyle="body1medium">THE PLATFORM</AppText>
+          </View>
+          <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <AppText textStyle="body1" customStyle={{marginTop: normalize(24)}}>
+              1. Eligibility. We grant you the limited, worldwide,
+              non-exclusive, non-transferable, non-sublicensable, revocable
+              licence to use the Platform, subject to you complying with all of
+              the following conditions:
+            </AppText>
+            <View
+              style={{
+                marginTop: normalize(8),
+                paddingLeft: normalize(8),
+              }}>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                1. if you are an individual, you must be at least 18 years old;
+              </AppText>
+
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                2. if you are not an individual:
+              </AppText>
+              <View
+                style={{
+                  marginTop: normalize(8),
+                  paddingLeft: normalize(8),
+                }}>
+                <AppText
+                  textStyle="body1"
+                  customStyle={{marginTop: normalize(8)}}>
+                  1. you must be validly existing under the laws of the
+                  jurisdiction of your incorporation or registration; and
+                </AppText>
+                <AppText
+                  textStyle="body1"
+                  customStyle={{marginTop: normalize(8)}}>
+                  2. the individual using the Platform on your behalf must have
+                  full legal authority to bind you;
+                </AppText>
+              </View>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                3. you must at all times comply with and satisfy all of our due
+                diligence procedures and requirements (including, but not
+                limited to, complying with our Identity Checks from time to
+                time);
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                4. all provisions of this Agreement, the Acceptable Use Policy
+                and the Privacy Policy (each of which you hereby confirm that
+                you have read and understood, and which shall be deemed
+                incorporated into this Agreement by reference); and
+              </AppText>
+              <AppText
+                textStyle="body1"
+                customStyle={{marginTop: normalize(8)}}>
+                5. all such other terms and conditions (including, but not
+                limited to, your representations and warranties) as are set out
+                or incorporated herein and as we way from time to time amend
+                and/or notify you of on the Platform.
+              </AppText>
+            </View>
+            <AppText textStyle="body1" customStyle={{marginTop: normalize(8)}}>
+              2. Marketplace Venue. The Platform is a marketplace venue enabling
+              connections to be made between Users for the publication of Task
+              Postings, communication of Task Offers and the fulfilment of
+              Service Contracts. We are not responsible for the performance,
+              communications, or any aspect of interaction between the Users and
+              we make no representation or warranty as to the truth or accuracy
+              of any aspect of any information provided by any User. We do not
+              guarantee the fulfilment of any Task Postings, Task Offers and/or
+              Service Contracts and you agree to assume all risks of
+              non-performance and non-payment. We do not have control over the
+              quality, timing, legality, failure to provide, or any aspect
+              whatsoever of the Task Postings, the Task Offers, the Service
+              Contracts, the Services and/or the Users (including, but not
+              limited to, the ability of any User to perform tasks, supply
+              items, or pay for the services requested).
+            </AppText>
+
+            <AppText textStyle="body1" customStyle={{marginTop: normalize(8)}}>
+              3. Restriction of Features and Functionalities. Certain features
+              and/or functionalities on the Platform may be restricted from time
+              to time in our sole and absolute discretion.
+            </AppText>
+            <AppText textStyle="body1" customStyle={{marginTop: normalize(8)}}>
+              4. Ancillary Items. In order to use the Platform, an Internet
+              connection and certain equipment (such as a computer and
+              smartphone) may be required. You are responsible at your own cost
+              and expense for all connections and/or equipment required to use
+              the Platform.
+            </AppText>
+            <AppText textStyle="body1" customStyle={{marginTop: normalize(8)}}>
+              Support. If you require any assistance with the Platform, you may
+              contact us at help@servbees.com. We make no representation or
+              warranty on the level of support we will provide to you.
+            </AppText>
           </View>
         </ScrollView>
       </PaddingView>
