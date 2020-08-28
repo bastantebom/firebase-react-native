@@ -16,6 +16,8 @@ export const ContextProvider = ({children}) => {
 
   const [posts, setPosts] = useState([]);
   const [userPosts, setUserPosts] = useState([]);
+  const [otherUserPosts, setOtherUserPosts] = useState([]);
+
   const [locationFilter, setLocationFilter] = useState(userInfo?.address?.city);
 
   const [postImage, setPostImage] = useState([]);
@@ -99,6 +101,8 @@ export const ContextProvider = ({children}) => {
         isInternetReachable,
         userPosts,
         setUserPosts,
+        otherUserPosts,
+        setOtherUserPosts,
       }}>
       {children}
     </Context.Provider>

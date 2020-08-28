@@ -22,6 +22,7 @@ import {
   WhiteOpacity,
   Notification,
   UserPosts,
+  CacheableImage,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -37,7 +38,9 @@ import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid}) {
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
-  const {openNotification, closeNotification, posts, userPosts} = useContext(Context);
+  const {openNotification, closeNotification, posts, userPosts} = useContext(
+    Context,
+  );
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
@@ -196,7 +199,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       <View
         style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
         {userInfo.cover_photo ? (
-          <Image
+          <CacheableImage
             source={{uri: userInfo.cover_photo}}
             style={{width: normalize(375), height: normalize(158 * 1.2)}}
           />

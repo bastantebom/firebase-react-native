@@ -36,6 +36,7 @@
     "react-native-camera-roll-picker": "^2.0.0",
     "react-native-countdown-circle": "^3.0.1",
     "react-native-dash": "^0.0.11",
+    "react-native-fast-image": "^8.3.2",
     "react-native-fbsdk": "^2.0.0",
     "react-native-fluid-animations": "^0.1.1",
     "react-native-fluid-transitions": "^0.1.1",
@@ -68,7 +69,8 @@
     "react-native-textarea": "^1.0.4",
     "react-native-vector-icons": "^7.0.0",
     "react-navigation": "^4.4.0",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.20"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.20",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

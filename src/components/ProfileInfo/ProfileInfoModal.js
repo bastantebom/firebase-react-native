@@ -21,6 +21,7 @@ import {
   ProfileLinks,
   WhiteOpacity,
   UserPosts,
+  OtherUserPosts
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -36,7 +37,7 @@ import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 
 function Profile({profileViewType = 'other', backFunction, uid}) {
   const {user, signOut} = useContext(UserContext);
-  const {userPosts} = useContext(Context);
+  const {userPosts, otherUserPosts} = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
   const [userInfo, setUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
@@ -108,9 +109,9 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
       key: 'ownpost',
       title: 'Posts',
       renderPage: (
-        <UserPosts
+        <OtherUserPosts
           type="own"
-          data={userPosts}
+          data={otherUserPosts}
           isLoading={isDataLoading}
           setIsLoading={setIsDataLoading}
           userID={uid}

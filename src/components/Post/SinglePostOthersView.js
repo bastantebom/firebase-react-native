@@ -14,7 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
-import {AppText, TransparentHeader, ProfileInfo} from '@/components';
+import {AppText, TransparentHeader, ProfileInfo, CacheableImage} from '@/components';
 import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
 import {
   PostClock,
@@ -129,7 +129,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
                 console.log(item);
                 return (
                   <TouchableWithoutFeedback onPress={togglePostImageModal}>
-                    <Image
+                    <CacheableImage
                       style={GlobalStyle.image}
                       source={{
                         uri: item,

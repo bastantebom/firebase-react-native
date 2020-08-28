@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 
-import {AppText} from '@/components';
+import {AppText, CacheableImage} from '@/components';
 import {normalize, GlobalStyle, Colors} from '@/globals';
 import {FollowingEllipsis} from '@/assets/images/icons';
 
@@ -48,7 +48,7 @@ const Profile = ({data, type}) => {
   return (
     <View style={styles.container}>
       <View style={styles.userInfoImageContainer}>
-        <Image
+        <CacheableImage
           style={GlobalStyle.image}
           source={{
             uri: user_image,

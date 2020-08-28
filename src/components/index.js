@@ -8,7 +8,13 @@ import AppText from '@/components/AppText/AppText';
 import {AppViewContainer, PaddingView} from '@/components/AppViewContainer';
 import {HexagonBorder, ProfileImageUpload} from '@/components/ImageUpload';
 import Notification from '@/components/Notification';
-import {Post, Posts, PostFilter, UserPosts} from '@/components/Post';
+import {
+  Post,
+  Posts,
+  PostFilter,
+  UserPosts,
+  OtherUserPosts,
+} from '@/components/Post';
 import Reviews from '@/components/Review/Reviews';
 import Switch from '@/components/Switch/Switch';
 import AppRadio from '@/components/AppRadio/Radio';
@@ -30,7 +36,11 @@ import WhiteOpacity from './WhiteOpacity/WhiteOpacity';
 
 import OfflineNotice from '@/components/OfflineNotice';
 
+import CacheableImage from './ImageCache/CacheableImage';
+
 export {
+  CacheableImage,
+  OtherUserPosts,
   UserPosts,
   WhiteOpacity,
   ProfileInfo,

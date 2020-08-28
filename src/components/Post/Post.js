@@ -12,7 +12,7 @@ import Modal from 'react-native-modal';
 
 import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
 import OwnPost from './OwnPost';
-import {PaddingView, AppText, ProfileInfo} from '@/components';
+import {PaddingView, AppText, ProfileInfo, CacheableImage} from '@/components';
 import {UserContext} from '@/context/UserContext';
 import {
   Verified,
@@ -97,7 +97,7 @@ const Post = ({data, type, isLoading}) => {
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
                 {images.length > 0 ? (
-                  <Image style={GlobalStyle.image} source={{uri: images[0]}} />
+                  <CacheableImage style={GlobalStyle.image} source={{uri: images[0]}} />
                 ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
                 post_type === 'service' ? (
                   <DefaultService

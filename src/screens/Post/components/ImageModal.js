@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { AppText, PaddingView } from '@/components';
-import { View, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Image, StyleSheet, Text } from 'react-native';
-import { CloseLight } from '@/assets/images/icons';
-import { normalize, Colors } from '@/globals';
-import Swiper from 'react-native-swiper'
+import React, {useEffect, useState} from 'react';
+import {AppText, PaddingView, CacheableImage} from '@/components';
+import {
+  View,
+  Dimensions,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Image,
+  StyleSheet,
+  Text,
+} from 'react-native';
+import {CloseLight} from '@/assets/images/icons';
+import {normalize, Colors} from '@/globals';
+import Swiper from 'react-native-swiper';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 // import Pagination from './Pagination';
 import PropTypes from 'prop-types';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-export const ImageModal = ({ close, data }) => {
+export const ImageModal = ({close, data}) => {
   const Pagination = ({
     size,
     paginationIndex,
@@ -20,26 +28,24 @@ export const ImageModal = ({ close, data }) => {
   }) => {
     return (
       <View style={styles.paginationContainer}>
-        {Array.from({ length: size }).map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => scrollToIndex({ index })}
-          >
-            <Image
+        {Array.from({length: size}).map((_, index) => (
+          <TouchableOpacity key={index} onPress={() => scrollToIndex({index})}>
+            <CacheableImage
               // key={item.id}
-              style={[{ height: 40, width: 40, borderRadius: 5, marginHorizontal: 4 }, 
+              style={[
+                {height: 40, width: 40, borderRadius: 5, marginHorizontal: 4},
                 paginationIndex === index
-                    ? { borderColor: paginationActiveColor, borderWidth: 3 }
-                    : { borderColor: paginationDefaultColor }
+                  ? {borderColor: paginationActiveColor, borderWidth: 3}
+                  : {borderColor: paginationDefaultColor},
               ]}
-              source={{ uri: data[index]}}
+              source={{uri: data[index]}}
             />
           </TouchableOpacity>
         ))}
       </View>
     );
   };
-  
+
   Pagination.propTypes = {
     scrollToIndex: PropTypes.func.isRequired,
     size: PropTypes.number.isRequired,
@@ -47,7 +53,7 @@ export const ImageModal = ({ close, data }) => {
     paginationActiveColor: PropTypes.string,
     paginationDefaultColor: PropTypes.string,
   };
-  
+
   Pagination.defaultProps = {
     data: [],
     paginationIndex: 0,
@@ -64,32 +70,32 @@ export const ImageModal = ({ close, data }) => {
         justifyContent: 'center',
         backgroundColor: '#000',
         // padding: 8
-      }}
-    >
-      <TouchableOpacity onPress={close} style={{ position: 'absolute', right: 15, top: 35, zIndex: 999 }}>
+      }}>
+      <TouchableOpacity
+        onPress={close}
+        style={{position: 'absolute', right: 15, top: 35, zIndex: 999}}>
         <CloseLight width={normalize(25)} height={normalize(25)} />
       </TouchableOpacity>
       <View style={styles.container}>
         <SwiperFlatList
           paginationActiveColor={Colors.primaryYellow}
           showPagination
-          PaginationComponent={Pagination}
-        >
+          PaginationComponent={Pagination}>
           {data.map((item) => {
             return (
               <View key={item.id} style={styles.child}>
-                <Image
-                  style={{ minHeight: 450, width: width - 15 }}
-                  source={{ uri: item }}
+                <CacheableImage
+                  style={{minHeight: 450, width: width - 15}}
+                  source={{uri: item}}
                 />
               </View>
-            )
+            );
           })}
         </SwiperFlatList>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
     // height: height,
     width: width,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   paginationContainer: {
     position: 'absolute',
@@ -111,4 +117,3 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
-

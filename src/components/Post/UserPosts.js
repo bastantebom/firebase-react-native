@@ -11,7 +11,12 @@ import LoadingScreen from './loading';
 
 const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   const {user, userInfo} = useContext(UserContext);
-  const {setUserPosts, userPosts} = useContext(Context);
+  const {
+    setUserPosts,
+    userPosts,
+    setOtherUserPosts,
+    otherUserPosts,
+  } = useContext(Context);
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
   );
@@ -41,14 +46,16 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       limit: 5,
     };
 
-    // console.log('REFRESH USER POSTS');
-    // console.log(getPostsParams);
+    console.log('REFRESH USER POSTS');
+    console.log(getPostsParams);
 
     await PostService.getUserPosts(getPostsParams)
       .then((res) => {
+        console.log('API CALL');
         setLastPID(res.last_pid);
-        if (res.data.length > 0) setUserPosts(res.data);
-        else {
+        if (res.data.length > 0) {
+          setUserPosts(res.data);
+        } else {
           setUserPosts([]);
         }
         setRefresh(false);
@@ -74,15 +81,13 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
         limit: 5,
         last_pid: lastPID,
       };
-      // console.log('GET MORE POST');
-      // console.log(lastPID);
+      console.log('GET MORE POST');
+      console.log(lastPID);
       // console.log(getPostsParams);
 
       await PostService.getUserPosts(getPostsParams)
         .then((res) => {
-          // console.log('Get more userPosts function response');
-          // console.log(res);
-          // if (res.success) setLastPID(res.last_pid);
+          console.log('API CALL');
           if (res.success) {
             setLastPID(res.last_pid);
             setUserPosts(

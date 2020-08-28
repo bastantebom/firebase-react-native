@@ -2,7 +2,12 @@ import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {Divider} from 'react-native-paper';
 
-import {AppText, BottomSheetHeader, PaddingView} from '@/components';
+import {
+  AppText,
+  BottomSheetHeader,
+  PaddingView,
+  CacheableImage,
+} from '@/components';
 import {normalize, GlobalStyle, Colors} from '@/globals';
 import {ProfileListMute} from '@/assets/images/icons';
 
@@ -21,7 +26,7 @@ const RemoveFollowerContent = ({data, showMuteToggle}) => {
       <PaddingView paddingSize={2}>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <View style={styles.userInfoImageContainer}>
-            <Image
+            <CacheableImage
               style={GlobalStyle.image}
               source={{
                 uri: user_image,
@@ -34,7 +39,8 @@ const RemoveFollowerContent = ({data, showMuteToggle}) => {
           <AppText
             textStyle="body2"
             customStyle={{textAlign: 'center', paddingHorizontal: 8}}>
-            When you mute {user_name}, you won't be able to see her posts on your feed.
+            When you mute {user_name}, you won't be able to see her posts on
+            your feed.
           </AppText>
           <Divider style={styles.dividerStyle} />
 
