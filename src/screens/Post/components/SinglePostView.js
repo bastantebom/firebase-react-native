@@ -270,13 +270,17 @@ const SinglePostView = (props) => {
           </View>
           <View style={styles.iconText}>
             <PostNavigation width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+            <AppText
+              textStyle="body2"
+              customStyle={{marginLeft: 8, marginRight: 20}}>
               {city}, {province}, {country}
             </AppText>
           </View>
           <View style={styles.iconText}>
             <PostInfo width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+            <AppText
+              textStyle="body2"
+              customStyle={{marginLeft: 8, marginRight: 20}}>
               {description}
             </AppText>
           </View>

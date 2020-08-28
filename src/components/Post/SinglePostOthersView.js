@@ -14,7 +14,12 @@ import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
-import {AppText, TransparentHeader, ProfileInfo, CacheableImage} from '@/components';
+import {
+  AppText,
+  TransparentHeader,
+  ProfileInfo,
+  CacheableImage,
+} from '@/components';
 import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
 import {
   PostClock,
@@ -103,12 +108,12 @@ const SinglePostOthersView = ({data, backFunction}) => {
             }}
           /> */}
           {images === undefined || images.length == 0 ? (
-            post_type === 'Need' || post_type ==='need' ? (
+            post_type === 'Need' || post_type === 'need' ? (
               <Image
                 style={GlobalStyle.image}
                 source={require('@/assets/images/cover-need.png')}
               />
-            ) : post_type === 'Sell' || post_type ==='sell' ? (
+            ) : post_type === 'Sell' || post_type === 'sell' ? (
               <Image
                 style={GlobalStyle.image}
                 source={require('@/assets/images/cover-sell.png')}
@@ -166,14 +171,16 @@ const SinglePostOthersView = ({data, backFunction}) => {
           </View>
           <View style={styles.iconText}>
             <PostNavigation width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+            <AppText
+              textStyle="body2"
+              customStyle={{marginLeft: 8, marginRight: 20}}>
               {city}, {province}, {country}
             </AppText>
           </View>
           <View style={styles.iconText}>
             <PostInfo width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-              {description}
+            <AppText textStyle="body2" customStyle={{marginLeft: 8, marginRight: 20}}>
+              {description} 
             </AppText>
           </View>
           <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
