@@ -29,7 +29,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
   const initialLocation = userInfo?.address?.city
     ? userInfo?.address?.city
-    : 'Manila';
+    : 'San Mateo';
 
   useEffect(() => {
     // console.log('Useffect posts LOCATION IS CHANGED');
@@ -48,7 +48,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
     setRefresh(true);
     let getPostsParams = {
-      uid: user.uid,
+      uid: user?.uid ? user.uid : '',
       limit: 5,
       city: locationFilter ? locationFilter : initialLocation,
       last_pid: null,
@@ -94,7 +94,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
       }
 
       let getPostsParams = {
-        uid: user.uid,
+        uid: user.uid || 'JlW54zJC8EVqLhxeLsP7H0dvUuT2',
         limit: 5,
         last_pid: lastPID,
         city: locationFilter ? locationFilter : initialLocation,

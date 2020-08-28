@@ -201,7 +201,6 @@ function Dashboard({navigation}) {
           <Posts
             type="dashboard"
             data={posts}
-            // data={posts}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
           />
@@ -256,7 +255,9 @@ const SearchBarWithFilter = () => {
   const [cityName, setCityName] = useState('');
 
   useEffect(() => {
-    if (address) {
+    if (address === undefined) {
+      getStringAddress(14.608045, 120.989477);
+    } else {
       getStringAddress(address.latitude, address.longitude);
     }
   }, [address]);

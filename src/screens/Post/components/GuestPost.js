@@ -1,15 +1,17 @@
 import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
-import { View, SafeAreaView, StyleSheet, Dimensions  } from 'react-native';
-import { AppText, AppButton, PaddingView, } from '@/components';
-import { OnboardingIllustration4, OnboardingIllustration3 } from '@/assets/images';
+import {View, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
+import {AppText, AppButton, PaddingView} from '@/components';
+import {
+  OnboardingIllustration4,
+  OnboardingIllustration3,
+} from '@/assets/images';
 import SignUp from '@/screens/Authentication/SignUp/SignUp';
 import Login from '@/screens/Authentication/Login/login';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-
-import { Colors } from '@/globals';
+import {Colors} from '@/globals';
 import {Context} from '@/context';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const {height, width} = Dimensions.get('window');
 
@@ -60,7 +62,13 @@ export const GuestPost = () => {
   const renderContent = () => {
     if (authType === 'signup') {
       return (
-        <View style={{backgroundColor: 'white', height: '100%', position: 'relative', zIndex: 9999}}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: '100%',
+            position: 'relative',
+            zIndex: 9999,
+          }}>
           <SignUp />
         </View>
       );
@@ -91,34 +99,38 @@ export const GuestPost = () => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <ScrollView>
-        <PaddingView paddingSize={3}> 
-          <OnboardingIllustration3 width={width} height={width * .8}/>
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <AppText 
-              textStyle="display5" 
-              customStyle={styles.textStyle}
-              color={Colors.primaryMidnightBlue}
-            >
-              Some text here encouraging them to be part of the Servbees community so they could Post
-            </AppText>
-            <AppText textStyle="caption" customStyle={styles.textStyle}>Additional benefits of joining Servbees here </AppText>
-            <AppButton
-              text="Join Now"
-              type="primary"
-              size="sm"
-              customStyle={{ marginTop: 18 }}
-              onPress={() => {
-                clickHandler();
-                setAuthType('signup');
-                bottomSheetRef.current.snapTo(0);
-                // console.log('hasjjhjh');
-              }}
-            />
-          </View>
-        </PaddingView>
-      </ScrollView>
+    <>
+      <SafeAreaView style={{flex: 1}}>
+        <ScrollView>
+          <PaddingView paddingSize={3}>
+            <OnboardingIllustration3 width={width} height={width * 0.8} />
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <AppText
+                textStyle="display5"
+                customStyle={styles.textStyle}
+                color={Colors.primaryMidnightBlue}>
+                Some text here encouraging them to be part of the Servbees
+                community so they could Post
+              </AppText>
+              <AppText textStyle="caption" customStyle={styles.textStyle}>
+                Additional benefits of joining Servbees here{' '}
+              </AppText>
+              <AppButton
+                text="Join Now"
+                type="primary"
+                size="sm"
+                customStyle={{marginTop: 18}}
+                onPress={() => {
+                  clickHandler();
+                  setAuthType('signup');
+                  bottomSheetRef.current.snapTo(0);
+                  // console.log('hasjjhjh');
+                }}
+              />
+            </View>
+          </PaddingView>
+        </ScrollView>
+      </SafeAreaView>
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={['85%', '0%']}
@@ -126,13 +138,13 @@ export const GuestPost = () => {
         renderHeader={renderHeader}
         initialSnap={1}
       />
-    </SafeAreaView>
-  )
-}
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   textStyle: {
-    textAlign: 'center', 
-    marginBottom: 8
-  }
-})
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+});

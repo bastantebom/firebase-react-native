@@ -79,7 +79,7 @@ const Post = ({data, type, isLoading}) => {
       edited: false,
     };
 
-    if (user.uid === uid)
+    if (user && user.uid === uid)
       navigation.navigate('Post', {
         screen: 'SinglePostView',
         params: computedData,
