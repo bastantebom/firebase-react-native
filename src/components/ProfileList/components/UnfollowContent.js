@@ -2,7 +2,12 @@ import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {Divider} from 'react-native-paper';
 
-import {AppText, BottomSheetHeader, PaddingView} from '@/components';
+import {
+  AppText,
+  BottomSheetHeader,
+  PaddingView,
+  CacheableImage,
+} from '@/components';
 import {normalize, GlobalStyle, Colors} from '@/globals';
 import {ProfileListUnfollow} from '@/assets/images/icons';
 
@@ -21,7 +26,7 @@ const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
       <PaddingView paddingSize={2}>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <View style={styles.userInfoImageContainer}>
-            <Image
+            <CacheableImage
               style={GlobalStyle.image}
               source={{
                 uri: user_image,

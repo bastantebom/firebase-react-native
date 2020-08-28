@@ -10,9 +10,7 @@ import {
 import CameraRollPicker from 'react-native-camera-roll-picker';
 import Modal from 'react-native-modal';
 
-import {
-  AppText,
-} from '@/components';
+import {AppText, CacheableImage} from '@/components';
 import {Context} from '@/context';
 import {normalize, Colors} from '@/globals';
 import {ArrowDown} from '@/assets/images/icons';
@@ -20,12 +18,15 @@ import {PhotoAlbums} from './PhotoAlbums';
 
 const {height} = Dimensions.get('window');
 
-export const Library = ({
-  cancel,
-  next
-}) => {
-
-  const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
+export const Library = ({cancel, next}) => {
+  const {
+    setPostImage,
+    postImage,
+    setImageCount,
+    imageCount,
+    setImageCurrent,
+    imageCurrent,
+  } = useContext(Context);
 
   const [selectedCount, setSelectedCount] = useState([]);
   const [showFolderList, setShowFolderList] = useState(false);
@@ -42,7 +43,7 @@ export const Library = ({
 
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    setSelectedCount(prev => [...prev, imageCount])
+    setSelectedCount((prev) => [...prev, imageCount]);
     // getData();
     // console.log('Selected', selected)
     // console.log('PostImage', postImage)
@@ -52,17 +53,16 @@ export const Library = ({
   const setToContext = (selected, photoCount) => {
     setPostImage(selected);
     setImageCount(photoCount);
-  }
-  
+  };
 
   // const lastItem = selectedCount.pop();
   // const lastItem = selectedCount;
-  
+
   // const getData = () => {
   //   const arr = selectedCount;
 
   //   arr.forEach(function(i, idx, array){
-  //     if (idx === array.length - 1){ 
+  //     if (idx === array.length - 1){
   //       setCount(i)
   //     }
   //   });
@@ -79,16 +79,15 @@ export const Library = ({
   // }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }} >
-      <View style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
             height: 45,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={cancel}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
@@ -104,18 +103,24 @@ export const Library = ({
             </View>
           </TouchableOpacity> */}
           <TouchableOpacity
-            disabled={ postImage.length < 1 && true }
+            disabled={postImage.length < 1 && true}
             onPress={() => {
               setToContext(selected, photoCount),
-              next(postImage, imageCount, imageCurrent)
+                next(postImage, imageCount, imageCurrent);
             }}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
-            <AppText textStyle="body3" color={ postImage.length < 1 ? Colors.buttonDisable : Colors.contentOcean}>
+            <AppText
+              textStyle="body3"
+              color={
+                postImage.length < 1
+                  ? Colors.buttonDisable
+                  : Colors.contentOcean
+              }>
               Next
             </AppText>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <View
             style={{
               position: 'absolute',
@@ -138,7 +143,7 @@ export const Library = ({
             </AppText>
           </View>
           {imageCurrent ? (
-            <Image
+            <CacheableImage
               source={{uri: imageCurrent}}
               style={{
                 width: '100%',
@@ -146,7 +151,13 @@ export const Library = ({
               }}
             />
           ) : null}
-          <View style={{height: imageCurrent ? (height / 1.8) - normalize(122) : height - normalize(117), zIndex: -1}}>
+          <View
+            style={{
+              height: imageCurrent
+                ? height / 1.8 - normalize(122)
+                : height - normalize(117),
+              zIndex: -1,
+            }}>
             <CameraRollPicker
               groupTypes="All"
               maximum={10}
@@ -155,30 +166,29 @@ export const Library = ({
               imagesPerRow={3}
               imageMargin={2}
               selectedMarker={
-                <View 
-                  style={{ 
-                    backgroundColor: Colors.contentOcean, 
-                    width: 25, 
-                    height: 25, 
-                    borderRadius: 50, 
-                    position: 'absolute', 
-                    right: 4, 
-                    top: 6 
-                  }}
-                >
+                <View
+                  style={{
+                    backgroundColor: Colors.contentOcean,
+                    width: 25,
+                    height: 25,
+                    borderRadius: 50,
+                    position: 'absolute',
+                    right: 4,
+                    top: 6,
+                  }}>
                   {/* {selectedCount.map((item, index) =>  */}
                   {/* {Array.from({ length: postImage.length }).map((_, index) => ( */}
-                    <AppText 
-                      textStyle="subtitle1" 
-                      color={Colors.neutralsWhite} 
-                      customStyle={{ textAlign: 'center' }}
-                      // key={index}
-                    >
-                      {/* {imageCount} */}
-                      {selectedCount.pop()}
-                      {/* {count} */}
-                    </AppText>
-                   {/* ))}  */}
+                  <AppText
+                    textStyle="subtitle1"
+                    color={Colors.neutralsWhite}
+                    customStyle={{textAlign: 'center'}}
+                    // key={index}
+                  >
+                    {/* {imageCount} */}
+                    {selectedCount.pop()}
+                    {/* {count} */}
+                  </AppText>
+                  {/* ))}  */}
                   {/* )} */}
                 </View>
               }

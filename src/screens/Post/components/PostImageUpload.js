@@ -16,19 +16,26 @@ import {
   AppText,
   TabNavigation,
   BottomSheetHeader,
+  CacheableImage,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostImages, CloseLight} from '@/assets/images/icons';
 import {PostCamera} from './Camera';
-import { Library } from './Library';
+import {Library} from './Library';
 
 const {height, width} = Dimensions.get('window');
 
 export const PostImageUpload = () => {
-
-  const {setPostImage, postImage, setImageCount, imageCount, setImageCurrent, imageCurrent} = useContext(Context);
+  const {
+    setPostImage,
+    postImage,
+    setImageCount,
+    imageCount,
+    setImageCurrent,
+    imageCurrent,
+  } = useContext(Context);
 
   const [photoCount, setPhotoCount] = useState(0);
   const [selected, setSelected] = useState([]);
@@ -72,21 +79,21 @@ export const PostImageUpload = () => {
           console.log('NOT ALLOWEDD!!');
         });
     } else
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        // PermissionsAndroid.PERMISSIONS.CAMERA
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can access your camera roll');
-        // setShowPickerModal(true);
-        togglePickerModal();
-      } else {
-        return null;
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          // PermissionsAndroid.PERMISSIONS.CAMERA
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can access your camera roll');
+          // setShowPickerModal(true);
+          togglePickerModal();
+        } else {
+          return null;
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   const togglePickerModal = () => {
@@ -97,7 +104,9 @@ export const PostImageUpload = () => {
 
   const handleRemove = (image) => {
     const imageToRemove = image.uri;
-    const newImageList = postImage.filter((image) => image.uri !== imageToRemove);
+    const newImageList = postImage.filter(
+      (image) => image.uri !== imageToRemove,
+    );
     setPostImage(newImageList);
     setImageCount(imageCount - 1);
   };
@@ -116,22 +125,22 @@ export const PostImageUpload = () => {
   // };
 
   const continueUploadPhoto = (postImage, imageCount) => {
-    setPostImage(postImage)
-    setImageCount(imageCount)
+    setPostImage(postImage);
+    setImageCount(imageCount);
     togglePickerModal();
   };
-  
+
   const cancelCamera = () => {
     togglePickerModal();
   };
 
   const continueCamera = (selected, photoCount) => {
     setPostImage([...postImage, selected]);
-    setImageCount(imageCount + photoCount)
+    setImageCount(imageCount + photoCount);
     // setCurrentImage(currentImage)
     togglePickerModal();
   };
-  
+
   const uploadTabs = [
     {
       key: 'camera',
@@ -142,7 +151,12 @@ export const PostImageUpload = () => {
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} imageArray={postImages} current={currentImage} />
+        <Library
+          cancel={cancelUploadPhoto}
+          next={continueUploadPhoto}
+          imageArray={postImages}
+          current={currentImage}
+        />
       ),
     },
   ];
@@ -202,15 +216,14 @@ export const PostImageUpload = () => {
                         borderRadius: 50,
                       }}
                     />
-                    <View
-                      style={{left: normalize(3.75), top: normalize(3.5)}}>
+                    <View style={{left: normalize(3.75), top: normalize(3.5)}}>
                       <CloseLight
                         width={normalize(20)}
                         height={normalize(20)}
                       />
                     </View>
                   </TouchableOpacity>
-                  <Image
+                  <CacheableImage
                     source={{uri: image.uri}}
                     style={{
                       width:
@@ -245,12 +258,12 @@ export const PostImageUpload = () => {
               disabled={imageCount === 10 && true}
               activeOpacity={0.7}
               onPress={() => requestPermission()}>
-              <View style={{
-                  alignSelf: 'center', 
+              <View
+                style={{
+                  alignSelf: 'center',
                   alignItems: 'center',
-                  opacity: imageCount === 10 ? .5 : 1
-                }}
-              >
+                  opacity: imageCount === 10 ? 0.5 : 1,
+                }}>
                 <PostImages width={normalize(56)} height={normalize(56)} />
                 <AppText
                   textStyle="body2"
@@ -268,10 +281,10 @@ export const PostImageUpload = () => {
         <AppText customStyle={{fontWeight: 'bold'}}>
           Photos - {imageCount}/10
         </AppText>{' '}
-        Choose your listing’s main photo first for Cover Photo. And more
-        photos with multiple angles to show any damage or wear.
+        Choose your listing’s main photo first for Cover Photo. And more photos
+        with multiple angles to show any damage or wear.
       </AppText>
-      
+
       <Modal
         isVisible={showPickerModal}
         onBackButtonPress={() => togglePickerModal()}
@@ -293,8 +306,8 @@ export const PostImageUpload = () => {
         </View>
       </Modal>
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

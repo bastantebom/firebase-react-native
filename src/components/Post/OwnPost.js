@@ -9,7 +9,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 
-import {AppText, MarginView, ProfileInfo} from '@/components';
+import {AppText, MarginView, ProfileInfo, CacheableImage} from '@/components';
 import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
 import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
@@ -66,7 +66,7 @@ const OwnPost = ({data, isLoading}) => {
 
   const ProfilePhoto = ({size}) => {
     return profile_photo ? (
-      <Image
+      <CacheableImage
         style={GlobalStyle.image}
         source={{
           uri: profile_photo,
@@ -115,7 +115,7 @@ const OwnPost = ({data, isLoading}) => {
           <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
             <View style={styles.postImageContainer}>
               {images.length > 0 ? (
-                <Image style={GlobalStyle.image} source={{uri: images[0]}} />
+                <CacheableImage style={GlobalStyle.image} source={{uri: images[0]}} />
               ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
               post_type === 'service' ? (
                 <DefaultService width={normalize(64)} height={normalize(72)} />

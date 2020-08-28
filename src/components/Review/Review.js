@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Image, StyleSheet} from 'react-native';
 
-import {AppText, MarginView} from '@/components';
+import {AppText, MarginView, CacheableImage} from '@/components';
 import {GlobalStyle, normalize, timePassed, Colors} from '@/globals';
 import {Verified, StarRating} from '@/assets/images/icons';
 
@@ -43,7 +43,7 @@ const Review = ({data}) => {
       <View>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={styles.userInfoImageContainer}>
-            <Image
+            <CacheableImage
               style={GlobalStyle.image}
               source={{
                 uri: userImage,

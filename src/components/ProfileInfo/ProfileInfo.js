@@ -13,7 +13,7 @@ import {
 import Modal from 'react-native-modal';
 import {useNavigation} from '@react-navigation/native';
 
-import {AppText} from '@/components';
+import {AppText, CacheableImage} from '@/components';
 import {GlobalStyle, Colors, normalize, timePassed} from '@/globals';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 import {UserContext} from '@/context/UserContext';
@@ -46,7 +46,7 @@ const ProfileInfo = ({userInfo, type, closePostModal}) => {
 
   const ProfilePhoto = ({size}) => {
     return profile_photo ? (
-      <Image
+      <CacheableImage
         style={GlobalStyle.image}
         source={{
           uri: profile_photo,

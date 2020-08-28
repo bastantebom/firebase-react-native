@@ -198,13 +198,13 @@ function Dashboard({navigation}) {
           <SearchBarWithFilter />
           {/* <Location /> */}
 
-          {/* <Posts
+          <Posts
             type="dashboard"
             data={posts}
             // data={posts}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
-          /> */}
+          />
           {/* <View style={{width: 300, height: 500}}>
             <CacheableImage
               style={GlobalStyle.image}
