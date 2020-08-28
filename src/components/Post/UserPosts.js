@@ -51,6 +51,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
     await PostService.getUserPosts(getPostsParams)
       .then((res) => {
+        console.log('API CALL');
         setLastPID(res.last_pid);
         if (res.data.length > 0) {
           setUserPosts(res.data);
@@ -86,6 +87,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
       await PostService.getUserPosts(getPostsParams)
         .then((res) => {
+          console.log('API CALL');
           if (res.success) {
             setLastPID(res.last_pid);
             setUserPosts(

@@ -56,6 +56,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
     await PostService.getPostsLocation(getPostsParams)
       .then((res) => {
+        console.log('API CALL');
         // console.log('Refresh function response');
         // console.log(res);
         // res.data.map((item) => {
@@ -104,6 +105,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
       await PostService.getPostsLocation(getPostsParams)
         .then((res) => {
+          console.log('API CALL');
           // console.log('Get more posts function response');
 
           // res.data.map((item) => {

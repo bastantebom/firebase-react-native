@@ -36,7 +36,10 @@ import WhiteOpacity from './WhiteOpacity/WhiteOpacity';
 
 import OfflineNotice from '@/components/OfflineNotice';
 
+import CacheableImage from './ImageCache/CacheableImage';
+
 export {
+  CacheableImage,
   OtherUserPosts,
   UserPosts,
   WhiteOpacity,
