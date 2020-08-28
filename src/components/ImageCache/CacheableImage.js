@@ -14,7 +14,7 @@ const CacheableImage = (props) => {
         // headers: {Authorization: 'someAuthToken'},
         priority: FastImage.priority.normal,
       }}
-      resizeMode={FastImage.resizeMode.contain}
+      resizeMode={FastImage.resizeMode.cover}
       {...props}
     />
   );
