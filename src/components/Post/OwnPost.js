@@ -135,7 +135,7 @@ const OwnPost = ({data, isLoading}) => {
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={styles.userInfoImageContainer}>
-                  <ProfilePhoto size={16} />
+                  <ProfilePhoto size={24} />
                 </View>
                 <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
                   {display_name}
