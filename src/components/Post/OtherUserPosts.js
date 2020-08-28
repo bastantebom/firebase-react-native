@@ -37,7 +37,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   }, []);
 
   const refreshPosts = async () => {
-    setUserPosts([]);
+    setOtherUserPosts([]);
     setLastPID('none');
     setRefresh(true);
 
@@ -53,9 +53,9 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       .then((res) => {
         setLastPID(res.last_pid);
         if (res.data.length > 0) {
-          setUserPosts(res.data);
+          setOtherUserPosts(res.data);
         } else {
-          setUserPosts([]);
+          setOtherUserPosts([]);
         }
         setRefresh(false);
       })
@@ -88,8 +88,8 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
         .then((res) => {
           if (res.success) {
             setLastPID(res.last_pid);
-            setUserPosts(
-              res.data ? [...userPosts, ...res.data] : [...userPosts],
+            setOtherUserPosts(
+              res.data ? [...otherUserPosts, ...res.data] : [...otherUserPosts],
             );
             setFecthMore(false);
           } else {
