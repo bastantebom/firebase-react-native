@@ -105,24 +105,24 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
   // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
-  const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
+  // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
 
-  const onChangeUsername = (uName) => {
-    console.log("On change function")
+  // const onChangeUsername = (uName) => {
+  //   console.log("On change function")
 
-    setVerified(false);
-    let userNameReg = /^[a-z0-9.-]*$/;
-    if (userNameReg.test(uName) && uName.length > 2) {
-      setInvalidUserFormat(false);
-      setUName(uName);
-      usernameHandler(uName);
-      // delayedUsernameValidation(uName);
-    } else {
-      setUName(uName);
-      setInvalidUserFormat(true);
-      setButtonState(true);
-    }
-  };
+  //   setVerified(false);
+  //   let userNameReg = /^[a-z0-9.-]*$/;
+  //   if (userNameReg.test(uName) && uName.length > 2) {
+  //     setInvalidUserFormat(false);
+  //     setUName(uName);
+  //     usernameHandler(uName);
+  //     // delayedUsernameValidation(uName);
+  //   } else {
+  //     setUName(uName);
+  //     setInvalidUserFormat(true);
+  //     setButtonState(true);
+  //   }
+  // };
 
   const sendValidation = async (un) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
@@ -486,16 +486,25 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 }}
               />
               <View style={{position: 'relative'}}>
-                <FloatingAppInput
+                {/* <FloatingAppInput
                   value={uName}
                   label="Username"
                   customStyle={{
                     marginBottom: 4,
                   }}
                   invalidField={!invalidUser || invalidUserFormat}
-                  onChangeText={(uName) => onChangeUsername(uName)}
                   autoCapitalize="none"
                   validation={['username']}
+                /> */}
+
+                <FloatingAppInput
+                  value={uName}
+                  valueHandler={setUName}
+                  label="Username"
+                  customStyle={{marginBottom: normalize(16)}}
+                  // invalidField={!invalidUser || invalidUserFormat}
+                  validation={['username']}
+                  // onChangeText={(uName) => onChangeUsername(uName)}
                 />
                 <View style={styles.passwordToggle}>
                   {verified ? (
@@ -549,7 +558,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 validation={['email', '']}
-                // validation={['email']}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -627,8 +635,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   setSEm(sEm);
                 }}
               />
-              <FloatingAppInput
-                editable={false}
+              {/* <FloatingAppInput
+                // editable={false}
                 selectTextOnFocus={false}
                 value={mobile}
                 label="Mobile Number"
@@ -637,6 +645,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 onChangeText={(mobile) => {
                   mobileChangeHandler(mobile);
                 }}
+              /> */}
+              <FloatingAppInput
+                // editable={false}
+                value={mobile}
+                selectTextOnFocus={false}
+                valueHandler={setMobile}
+                label="Mobile Number"
+                customStyle={{marginBottom: normalize(16)}}
+                keyboardType="phone-pad"
+                validation={['number']}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>
