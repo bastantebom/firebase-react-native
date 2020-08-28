@@ -26,7 +26,6 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   ] = useState(true);
 
   useEffect(() => {
-    console.log('USER POSTS');
     refreshPosts().then(() => {
       setIsLoading(false);
     });
@@ -42,14 +41,16 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       limit: 5,
     };
 
-    console.log('REFRESH USER POSTS');
-    console.log(getPostsParams);
+    // console.log('REFRESH USER POSTS');
+    // console.log(getPostsParams);
 
     await PostService.getUserPosts(getPostsParams)
       .then((res) => {
         setLastPID(res.last_pid);
         if (res.data.length > 0) setUserPosts(res.data);
-        else setUserPosts([]);
+        else {
+          setUserPosts([]);
+        }
         setRefresh(false);
       })
       .catch((err) => {
@@ -64,7 +65,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
       if (!thereIsMoreFlag) {
         setFecthMore(false);
-        console.log('Stopping getting more post');
+        // console.log('Stopping getting more post');
         return;
       }
 
@@ -79,8 +80,8 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
       await PostService.getUserPosts(getPostsParams)
         .then((res) => {
-          console.log('Get more userPosts function response');
-          console.log(res);
+          // console.log('Get more userPosts function response');
+          // console.log(res);
           // if (res.success) setLastPID(res.last_pid);
           if (res.success) {
             setLastPID(res.last_pid);
@@ -129,10 +130,23 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   }
 
   if (type === 'own' && data.length == 0) {
+    if (refresh) {
+      return (
+        <View>
+          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingOwnPost />
+        </View>
+      );
+    }
     return <PostOwnEmpty isLoading={isLoading} />;
   }
 
   if (type !== 'own') {
+    if (refresh) {
+      return <ActivityIndicator />;
+    }
     return (
       <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
         <AppText>No user posts</AppText>
