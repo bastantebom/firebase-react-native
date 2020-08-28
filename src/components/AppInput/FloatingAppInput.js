@@ -7,6 +7,10 @@ import ValidationList from './Validation';
 import ValidationFunctions from './ValidationFunctions';
 import {debounce} from 'lodash';
 
+import {
+  VerifiedGreen
+} from '@/assets/images/icons';
+
 // create a component
 const FloatingAppInput = (props) => {
   const {
@@ -20,6 +24,7 @@ const FloatingAppInput = (props) => {
 
   const [internalValue, setInternalValue] = useState(value)
 
+  const [verified, setVerified] = useState(false);
   const [showValidationError, setShowValidationError] = useState(false);
   const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
@@ -45,9 +50,14 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.usernameValidator(value)
         .then((res) => {
           setShowValidationError(res);
+          console.log('username is valid', res)
+          setVerified(true);
+          // hideIcon();
         })
         .catch((err) => {
           setShowValidationError(false);
+          console.log('username is not valid')
+          setVerified(false);
           setValidationError(err);
         });
 
@@ -67,9 +77,11 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.MobileNumberValidator(value)
         .then((res) => {
           setShowValidationError(res);
+          console.log('number is valid', res)
         })
         .catch((err) => {
           setShowValidationError(false);
+          console.log('number is invalid')
           setValidationError(err);
         });
   };
@@ -165,6 +177,14 @@ const FloatingAppInput = (props) => {
           onBlur={onBlurInput}
           blurOnSubmit
         />
+        <View style={styles.passwordToggle}>
+          {verified ? (
+            <VerifiedGreen
+              width={normalize(16)}
+              height={normalize(16)}
+            />
+          ) : null}
+        </View>
       </View>
       {validation.length > 0 && (
         <AppText
@@ -196,6 +216,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     paddingTop: normalize(12),
     //paddingLeft: normalize(16),
+  },
+
+  passwordToggle: {
+    position: 'absolute',
+    right: normalize(10),
+    top: normalize(18),
   },
 });
 
