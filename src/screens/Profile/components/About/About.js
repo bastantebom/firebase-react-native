@@ -49,10 +49,10 @@ const About = ({toggleAbout}) => {
       id: 1,
       title: 'Privacy Policy',
     },
-    {
-      id: 2,
-      title: 'Payment Terms of Service',
-    },
+    // {
+    //   id: 2,
+    //   title: 'Payment Terms of Service',
+    // },
     {
       id: 3,
       title: 'Terms of Use',

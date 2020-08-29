@@ -14,7 +14,8 @@ import {Context} from '@/context';
 import SwitchComponent from '@/components/Switch/Switch';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import ModalComponent from '@/screens/Authentication/SignUp/components/Modal';
+import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy';
+import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse';
 
 // create a component
 const SignUp = (props) => {
@@ -26,6 +27,10 @@ const SignUp = (props) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible((previousState) => !previousState);
+  };
+  const [isModalVisibleT, setModalVisibleT] = useState(false);
+  const toggleModalT = () => {
+    setModalVisibleT((previousState) => !previousState);
   };
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
   const [isVisible, setIsVisible] = useState(false);
@@ -306,8 +311,8 @@ const SignUp = (props) => {
           </AppText>
           <TouchableOpacity
             onPress={() => {
-              modalContent(0);
-              toggleModal();
+              //modalContent(0);
+              toggleModalT();
             }}>
             <AppText
               textStyle="promo"
@@ -315,36 +320,18 @@ const SignUp = (props) => {
                 color: AppColor.promoCopy,
                 textDecorationLine: 'underline',
               }}>
-              Terms of Service
+              Terms of Use
             </AppText>
           </TouchableOpacity>
+
           <AppText
             textStyle="caption"
             customStyle={{color: AppColor.promoCopy}}>
-            ,{' '}
+            {' '}
+            and{' '}
           </AppText>
           <TouchableOpacity
             onPress={() => {
-              modalContent(1);
-              toggleModal();
-            }}>
-            <AppText
-              textStyle="promo"
-              customStyle={{
-                color: AppColor.promoCopy,
-                textDecorationLine: 'underline',
-              }}>
-              Payments Terms of Servbees
-            </AppText>
-          </TouchableOpacity>
-          <AppText
-            textStyle="caption"
-            customStyle={{color: AppColor.promoCopy}}>
-            , and{' '}
-          </AppText>
-          <TouchableOpacity
-            onPress={() => {
-              modalContent(2);
               toggleModal();
             }}>
             <AppText
@@ -476,11 +463,8 @@ const SignUp = (props) => {
             </View>
 
             <TandC />
-            <ModalComponent
-              isModalVisible={isModalVisible}
-              onClose={toggleModal}
-              modalContentNumber={modalContentNumber}
-            />
+            <Privacy isModalVisible={isModalVisible} onClose={toggleModal} />
+            <Terms isModalVisibleT={isModalVisibleT} onClose={toggleModalT} />
 
             <View>
               <AppButton

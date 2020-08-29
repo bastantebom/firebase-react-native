@@ -281,7 +281,7 @@ const TransparentHeader = ({
 
             {/* Right aligned icons */}
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
+              {/* <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
                 <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
                   {following ? (
                     <HeaderFollowing
@@ -307,9 +307,9 @@ const TransparentHeader = ({
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderShare width={normalize(16)} height={normalize(16)} />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={toggleEllipsisState}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
@@ -318,7 +318,7 @@ const TransparentHeader = ({
                     height={normalize(16)}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </SafeAreaView>

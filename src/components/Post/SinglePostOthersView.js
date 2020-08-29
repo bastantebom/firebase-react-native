@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     alignItems: 'center',
+    backgroundColor: Colors.neutralsWhite,
   },
 });
 

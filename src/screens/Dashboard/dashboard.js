@@ -391,7 +391,11 @@ const SearchBarWithFilter = () => {
           height: Dimensions.get('window').height,
         }}>
         <LocationMap
-          address={userInfo.address}
+          address={
+            userInfo.address !== undefined
+              ? userInfo.address
+              : {latitude: 14.5831, longitude: 120.9794}
+          }
           back={() => setShowLocation(false)}
           changeFromMapHandler={(fullAddress) =>
             changeFromMapHandler(fullAddress)

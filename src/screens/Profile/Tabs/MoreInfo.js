@@ -74,30 +74,32 @@ const MoreInfo = () => {
       {hasInfo ? (
         <WithInfo />
       ) : (
-        <View style={styles.container}>
-          <View style={styles.imageWrapper}>
-            <NoInfo width={normalize(140)} height={normalize(140)} />
-          </View>
-          <View style={styles.copyWrapper}>
-            <AppText textStyle="display6" customStyle={styles.centerCopy}>
-              Complete your profile
-            </AppText>
-            <AppText
-              textStyle="body3"
-              color={Colors.profileLink}
-              customStyle={styles.centerCopy}>
-              Additional information about you will be posted here. Complete
-              your profile now.
-            </AppText>
-          </View>
-          {/* <View style={styles.linksWrapper}>
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.imageWrapper}>
+              <NoInfo width={normalize(140)} height={normalize(140)} />
+            </View>
+            <View style={styles.copyWrapper}>
+              <AppText textStyle="display6" customStyle={styles.centerCopy}>
+                Complete your profile
+              </AppText>
+              <AppText
+                textStyle="body3"
+                color={Colors.profileLink}
+                customStyle={styles.centerCopy}>
+                Additional information about you will be posted here. Complete
+                your profile now.
+              </AppText>
+            </View>
+            {/* <View style={styles.linksWrapper}>
             <TouchableOpacity>
               <AppText textStyle="body1" color={Colors.contentOcean}>
                 Complete your Profile
               </AppText>
             </TouchableOpacity>
           </View> */}
-        </View>
+          </View>
+        </ScrollView>
       )}
     </>
   );
