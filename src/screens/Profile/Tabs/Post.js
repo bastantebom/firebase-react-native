@@ -1,6 +1,6 @@
 //import liraries
 import React, {useContext} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {Colors, normalize} from '@/globals';
 
 import {NoPost} from '@/assets/images';
@@ -14,7 +14,7 @@ const PostOwnEmpty = ({isLoading}) => {
   const {openPostButtons} = useContext(Context);
   const navigation = useNavigation();
   return (
-    <>
+    <ScrollView>
       <View style={styles.container}>
         <View style={styles.imageWrapper}>
           <NoPost width={normalize(140)} height={normalize(140)} />
@@ -48,7 +48,7 @@ const PostOwnEmpty = ({isLoading}) => {
           </TouchableOpacity>
         </View>
       </View>
-    </>
+    </ScrollView>
   );
 };
 
