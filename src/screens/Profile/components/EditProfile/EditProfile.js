@@ -150,6 +150,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       setVerified(false);
     }, 5000);
   };
+  // const 
   const [verified, setVerified] = useState(false);
   /*Username Validations */
   const [desc, setDesc] = useState(description);
