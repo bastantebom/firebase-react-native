@@ -30,15 +30,24 @@ const FloatingAppInput = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
 
+  // const error = {
+  //   username: false,
+  //   email: false,
+  //   mobile: false
+  // }
+
   const onValueChange = (value) => {
     valueHandler(value);
     console.log('************************************************');
-    console.log('valueHandler', value);
+    setShowValidationError(true)
+    // setValidationError();
+    console.log(value);
+    // console.log(error.username)
     inputDebounce(value)
   }
 
   const inputDebounce = useCallback(
-    debounce((value) => validateInput(value), 2000),
+    debounce((value) => validateInput(value), 1000),
     [],
   );
 
@@ -50,7 +59,7 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.usernameValidator(value)
         .then((res) => {
           setShowValidationError(res);
-          console.log('username is valid', res)
+          console.log('username is valid')
           setVerified(true);
           // hideIcon();
         })
@@ -65,7 +74,7 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.emailValidator(value)
         .then((res) => {
           setShowValidationError(res);
-          console.log('email is valid', res)
+          console.log('email is valid')
         })
         .catch((err) => {
           setShowValidationError(false);
@@ -77,7 +86,7 @@ const FloatingAppInput = (props) => {
       ValidationFunctions.MobileNumberValidator(value)
         .then((res) => {
           setShowValidationError(res);
-          console.log('number is valid', res)
+          console.log('number is valid')
         })
         .catch((err) => {
           setShowValidationError(false);
