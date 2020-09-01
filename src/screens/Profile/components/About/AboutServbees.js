@@ -30,42 +30,27 @@ const AboutServbees = ({toggleServbees}) => {
               customStyle={{marginBottom: normalize(8)}}>
               Get to know Servbees
             </AppText>
-            <AppText textStyle="body2">Some text here or tagline</AppText>
+            <AppText textStyle="body2">Are you a Buzzybee?</AppText>
           </View>
           <View style={{marginTop: normalize(24)}}>
             <AppText textStyle="body1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              If you’re a freelancer, seller, or service provider, we’re ready
+              to connect you with other Buzzybees in the metro! And if you’re
+              just looking for goods and services around your community for ease
+              and convenience, we’ve got you covered as well.
             </AppText>
           </View>
 
           <View style={{marginTop: normalize(24)}}>
             <AppText textStyle="body1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Servbees is a mobile marketplace and gig hub, all rolled into one
+              app. We help you find your market, book gigs, work flexibly, sell
+              your goods, and earn — all in one app.
             </AppText>
           </View>
 
           <View style={{marginTop: normalize(24)}}>
-            <AppText textStyle="body1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </AppText>
+            <AppText textStyle="body1">Explore Servbees today!</AppText>
           </View>
         </ScrollView>
       </PaddingView>
