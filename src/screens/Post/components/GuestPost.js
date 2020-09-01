@@ -109,11 +109,11 @@ export const GuestPost = () => {
                 textStyle="display5"
                 customStyle={styles.textStyle}
                 color={Colors.primaryMidnightBlue}>
-                Some text here encouraging them to be part of the Servbees
-                community so they could Post
+                Post your goods, offer your services, and find what you’re
+                looking for.
               </AppText>
               <AppText textStyle="caption" customStyle={styles.textStyle}>
-                Additional benefits of joining Servbees here{' '}
+                Joining Servbees only takes minutes!{' '}
               </AppText>
               <AppButton
                 text="Join Now"

@@ -106,11 +106,10 @@ export const GuestProfile = () => {
               textStyle="display5"
               customStyle={styles.textStyle}
               color={Colors.primaryMidnightBlue}>
-              Some text here encouraging them to be part of the Servbees
-              community
+              Bee part of the Servbees community today!
             </AppText>
             <AppText textStyle="caption" customStyle={styles.textStyle}>
-              Additional benefits of joining Servbees here{' '}
+              Connect, post, and sell with other Buzzybees instantly.{' '}
             </AppText>
             <AppButton
               text="Join Now"
