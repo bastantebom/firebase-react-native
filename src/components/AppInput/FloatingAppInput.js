@@ -20,6 +20,7 @@ const FloatingAppInput = (props) => {
     validation = [],
     onChangeText,
     valueHandler,
+    errorsCount
   } = props;
 
   const [internalValue, setInternalValue] = useState(value)
@@ -30,20 +31,26 @@ const FloatingAppInput = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
 
-  // const error = {
+  // const [error, setError] = useState({
   //   username: false,
   //   email: false,
   //   mobile: false
-  // }
+  // })
 
+  const [errorCount, setErrorCount] = useState(0);
+  
   const onValueChange = (value) => {
     valueHandler(value);
     console.log('************************************************');
     setShowValidationError(true)
-    // setValidationError();
     console.log(value);
-    // console.log(error.username)
     inputDebounce(value)
+
+
+    // const errorCount = Object.values(error).filter(e=>e).length
+    // console.log('errorCount', errorCount)
+    console.log('error', errorCount)
+    // errorsCount(errorCount)
   }
 
   const inputDebounce = useCallback(
@@ -51,19 +58,19 @@ const FloatingAppInput = (props) => {
     [],
   );
 
-
   const validateInput = (value) => {
     // console.log("Validate input")
     setInternalValue(value)
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
         .then((res) => {
+          setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
           setShowValidationError(res);
           console.log('username is valid')
           setVerified(true);
-          // hideIcon();
         })
         .catch((err) => {
+          setErrorCount(errorCount + 1)
           setShowValidationError(false);
           console.log('username is not valid')
           setVerified(false);
@@ -73,10 +80,12 @@ const FloatingAppInput = (props) => {
     if (validation.includes('email'))
       ValidationFunctions.emailValidator(value)
         .then((res) => {
+          setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
           setShowValidationError(res);
           console.log('email is valid')
         })
         .catch((err) => {
+          setErrorCount(errorCount + 1)
           setShowValidationError(false);
           console.log('email is not valid')
           setValidationError(err);
@@ -85,10 +94,12 @@ const FloatingAppInput = (props) => {
     if (validation.includes('number'))
       ValidationFunctions.MobileNumberValidator(value)
         .then((res) => {
+          setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
           setShowValidationError(res);
           console.log('number is valid')
         })
         .catch((err) => {
+          setErrorCount(errorCount + 1)
           setShowValidationError(false);
           console.log('number is invalid')
           setValidationError(err);

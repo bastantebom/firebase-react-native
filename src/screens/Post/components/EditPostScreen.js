@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -12,9 +12,11 @@ import Modal from 'react-native-modal';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {Colors, normalize} from '@/globals';
+import {Context} from '@/context';
 
 const EditPostScreen = ({data, togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const {setPostImage, setImageCount, setImageCurrent} = useContext(Context);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -22,6 +24,9 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
   const closeHandler = (value) => {
     if (value === 'continue') {
       cancelModalToggle();
+      setPostImage([]);
+      setImageCount(0);
+      setImageCurrent('');
       setTimeout(() => {
         togglePostModal();
       }, 200);
