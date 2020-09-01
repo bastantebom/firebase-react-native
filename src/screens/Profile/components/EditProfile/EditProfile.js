@@ -152,6 +152,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   };
   // const 
   const [verified, setVerified] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
   /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);
@@ -372,6 +373,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     });
   };
 
+  const countErrors = (errorCount) =>{
+    setErrorCount(errorCount)
+  }
+
+  // console.log('errorCount', errorCount)
+
   useEffect(() => {
     if (userInfo) {
       getStringAddress(address.latitude, address.longitude);
@@ -505,20 +512,21 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   customStyle={{marginBottom: normalize(16)}}
                   // invalidField={!invalidUser || invalidUserFormat}
                   validation={['username']}
+                  errorsCount={countErrors}
                   // onChangeText={(uName) => onChangeUsername(uName)}
                 />
-                <View style={styles.passwordToggle}>
+                {/* <View style={styles.passwordToggle}>
                   {verified ? (
                     <VerifiedGreen
                       width={normalize(16)}
                       height={normalize(16)}
                     />
                   ) : null}
-                </View>
+                </View> */}
               </View>
               {!invalidUser ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                  Username is already been used
+                  Username has already been used
                 </AppText>
               ) : null}
               <View style={{flexDirection: 'row'}}>
@@ -559,6 +567,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 validation={['email', '']}
+                errorsCount={countErrors}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -656,6 +665,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 keyboardType="phone-pad"
                 validation={['number']}
+                errorsCount={countErrors}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>

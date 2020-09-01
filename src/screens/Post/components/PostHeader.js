@@ -638,6 +638,7 @@ const RenderActiveForm = ({
 }) => {
 
   const [title, setTitle] = useState(initialData.title);
+  const [images, setImages] = useState(initialData.images);
   const [price, setPrice] = useState(initialData.price?.toString());
   const [description, setDescription] = useState(initialData.description);
   const [pickupState, setPickupState] = useState(initialData ? initialData?.delivery_method?.pickup : false);
@@ -652,6 +653,8 @@ const RenderActiveForm = ({
   const formState = {
     title: title,
     setTitle: setTitle,
+    images: images,
+    setImages: setImages,
     price: price,
     setPrice: setPrice,
     description: description,

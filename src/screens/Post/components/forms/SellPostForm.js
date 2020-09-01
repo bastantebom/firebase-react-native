@@ -18,7 +18,7 @@ import StoreLocation from '../StoreLocation';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 
-import {AppText, AppInput, Switch, AppButton} from '@/components';
+import {AppText, AppInput, Switch, AppButton, CacheableImage} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
@@ -105,6 +105,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
     title,
     setTitle,
+    images,
     price,
     setPrice,
     description,
@@ -283,7 +284,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload />
+
+        <PostImageUpload data={images === undefined || images.length == 0 ? null : images} />
 
         <AppInput
           customStyle={{marginBottom: 16}}
