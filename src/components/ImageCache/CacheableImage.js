@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import FastImage from 'react-native-fast-image';
 
 const CacheableImage = (props) => {
-  console.log('PROPS');
-  console.log(props.source.uri);
+  // console.log('PROPS');
+  // console.log(props.source.uri);
 
   return (
     <FastImage
