@@ -512,6 +512,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   customStyle={{marginBottom: normalize(16)}}
                   // invalidField={!invalidUser || invalidUserFormat}
                   validation={['username']}
+                  errorsCount={countErrors}
                   // onChangeText={(uName) => onChangeUsername(uName)}
                 />
                 {/* <View style={styles.passwordToggle}>
@@ -566,6 +567,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 validation={['email', '']}
+                errorsCount={countErrors}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -663,6 +665,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 keyboardType="phone-pad"
                 validation={['number']}
+                errorsCount={countErrors}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>
