@@ -30,14 +30,19 @@ const FloatingAppInput = (props) => {
   const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
-
-  // const [error, setError] = useState({
-  //   username: false,
-  //   email: false,
-  //   mobile: false
-  // })
-
   const [errorCount, setErrorCount] = useState(0);
+
+  const [error, setError] = useState({
+    username: false,
+    email: false,
+    mobile: false
+  })
+
+  // const [error, setError] = useState[
+  //   { username: false },
+  //   { email: false },
+  //   { mobile: false }
+  // ]
   
   const onValueChange = (value) => {
     valueHandler(value);
@@ -46,17 +51,22 @@ const FloatingAppInput = (props) => {
     console.log(value);
     inputDebounce(value)
 
-
-    // const errorCount = Object.values(error).filter(e=>e).length
-    // console.log('errorCount', errorCount)
-    console.log('error', errorCount)
-    // errorsCount(errorCount)
+    const errorC = Object.values(error).filter(e=>e).length
+    errorsCount(errorC)
+    // console.log('error', errorCount)
+    // console.log('error', errorC)
   }
+  console.log('error', error)
+  
+  
 
   const inputDebounce = useCallback(
     debounce((value) => validateInput(value), 1000),
     [],
   );
+
+  useEffect(() => {
+  }, [errorCount]);
 
   const validateInput = (value) => {
     // console.log("Validate input")
@@ -64,13 +74,17 @@ const FloatingAppInput = (props) => {
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
         .then((res) => {
-          setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
+          // setError(error => [{...error,  username: false}]);
+          setError({...error, username: false});
+          // setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
           setShowValidationError(res);
           console.log('username is valid')
           setVerified(true);
         })
         .catch((err) => {
-          setErrorCount(errorCount + 1)
+          // setErrorCount(errorCount + 1)
+          // setError(error => [{...error,  username: true}]);
+          setError({...error, username: true});
           setShowValidationError(false);
           console.log('username is not valid')
           setVerified(false);
@@ -80,12 +94,16 @@ const FloatingAppInput = (props) => {
     if (validation.includes('email'))
       ValidationFunctions.emailValidator(value)
         .then((res) => {
-          setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
+          // setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
+          // setError(error => [{...error,  email: false}]);
+          setError({...error, email: false});
           setShowValidationError(res);
           console.log('email is valid')
         })
         .catch((err) => {
-          setErrorCount(errorCount + 1)
+          // setErrorCount(errorCount + 2)
+          // setError(error => [{...error,  email: true}]);
+          setError({...error, email: true});
           setShowValidationError(false);
           console.log('email is not valid')
           setValidationError(err);
@@ -94,12 +112,16 @@ const FloatingAppInput = (props) => {
     if (validation.includes('number'))
       ValidationFunctions.MobileNumberValidator(value)
         .then((res) => {
-          setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
+          // setErrorCount(errorCount >= 1 ? errorCount - 1 : errorCount)
+          // setError(error => [{...error,  mobile: false}]);
+          setError({...error, mobile: false});
           setShowValidationError(res);
           console.log('number is valid')
         })
         .catch((err) => {
-          setErrorCount(errorCount + 1)
+          // setErrorCount(errorCount + 3)
+          // setError(error => [{...error,  mobile: true}]);
+          setError({...error, mobile: true});
           setShowValidationError(false);
           console.log('number is invalid')
           setValidationError(err);

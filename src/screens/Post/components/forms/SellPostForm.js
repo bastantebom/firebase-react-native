@@ -157,6 +157,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   useEffect(() => {
     checkFormContent();
+    setPostImage([]);
+    setImageCount(0);
+    setImageCurrent('');
   }, [
     title,
     price,
