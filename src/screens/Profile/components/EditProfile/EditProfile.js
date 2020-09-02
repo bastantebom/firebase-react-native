@@ -373,8 +373,13 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     });
   };
 
-  const countErrors = (errorCount) =>{
+  const countErrors = (errorCount) => {
     setErrorCount(errorCount)
+    if (errorCount > 0) {
+      setButtonState(true);
+    } else {
+      setButtonState(false);
+    }
   }
 
   // console.log('errorCount', errorCount)
@@ -385,6 +390,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       setDateFromString();
     }
   }, [userInfo.birth_date, userInfo.address]);
+
+  useEffect(() => {
+    countErrors(errorCount);
+  }, [errorCount]);
 
   return (
     <>
@@ -732,6 +741,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               type="primary"
               height="xl"
               disabled={buttonDisable}
+              // disabled
               customStyle={{...buttonStyle}}
               onPress={() => updateProfile()}
             />
