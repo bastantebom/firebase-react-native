@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>78822170583-a1j0r1u10g21orgolbj3do6qdl8t3mpv.apps.googleusercontent.com</string>
+	<string>78822170583-2avr0pabne9tns01p4eci49s37tf9065.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.78822170583-a1j0r1u10g21orgolbj3do6qdl8t3mpv</string>
+	<string>com.googleusercontent.apps.78822170583-2avr0pabne9tns01p4eci49s37tf9065</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAzJclyuKZ3AQsS_RdfDR3MOF-vC1gU2Is</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.servbees</string>
+	<string>com.servbees.appservbees</string>
 	<key>PROJECT_ID</key>
 	<string>servbees</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:78822170583:ios:cb53678fdbb9f910723592</string>
+	<string>1:78822170583:ios:5be270db1109cf06723592</string>
 	<key>DATABASE_URL</key>
 	<string>https://servbees.firebaseio.com</string>
 </dict>
