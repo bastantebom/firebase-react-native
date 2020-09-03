@@ -150,9 +150,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       setVerified(false);
     }, 5000);
   };
+
   // const 
+  const [error, setError] = useState([])
   const [verified, setVerified] = useState(false);
-  const [errorCount, setErrorCount] = useState(0);
+
   /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);
@@ -164,6 +166,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [mobile, setMobile] = useState(phone_number);
   const [bDate, setBDate] = useState(birth_date);
   const [g, setG] = useState(gender);
+
 
   const toggleMap = () => {
     setMap(!map);
@@ -373,27 +376,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     });
   };
 
-  const countErrors = (errorCount) => {
-    setErrorCount(errorCount)
-    if (errorCount > 0) {
-      setButtonState(true);
-    } else {
-      setButtonState(false);
-    }
-  }
-
-  // console.log('errorCount', errorCount)
-
   useEffect(() => {
     if (userInfo) {
       getStringAddress(address.latitude, address.longitude);
       setDateFromString();
     }
   }, [userInfo.birth_date, userInfo.address]);
-
-  useEffect(() => {
-    countErrors(errorCount);
-  }, [errorCount]);
 
   return (
     <>
@@ -503,17 +491,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 }}
               />
               <View style={{position: 'relative'}}>
-                {/* <FloatingAppInput
-                  value={uName}
-                  label="Username"
-                  customStyle={{
-                    marginBottom: 4,
-                  }}
-                  invalidField={!invalidUser || invalidUserFormat}
-                  autoCapitalize="none"
-                  validation={['username']}
-                /> */}
-
                 <FloatingAppInput
                   value={uName}
                   valueHandler={setUName}
@@ -521,7 +498,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   customStyle={{marginBottom: normalize(16)}}
                   // invalidField={!invalidUser || invalidUserFormat}
                   validation={['username']}
-                  errorsCount={countErrors}
+                  setError={setError}
+                  error={error}
+                  setButtonState={setButtonState}
                   // onChangeText={(uName) => onChangeUsername(uName)}
                 />
                 {/* <View style={styles.passwordToggle}>
@@ -576,7 +555,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 validation={['email', '']}
-                errorsCount={countErrors}
+                setError={setError}
+                error={error}
+                setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -674,7 +655,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 keyboardType="phone-pad"
                 validation={['number']}
-                errorsCount={countErrors}
+                setError={setError}
+                error={error}
+                setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>
