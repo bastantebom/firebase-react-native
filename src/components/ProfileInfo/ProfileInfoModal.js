@@ -21,7 +21,7 @@ import {
   ProfileLinks,
   WhiteOpacity,
   UserPosts,
-  OtherUserPosts
+  OtherUserPosts,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -85,9 +85,9 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
 
   const width = Dimensions.get('window').width;
 
-  if (!user) {
-    return <GuestProfile />;
-  }
+  // if (!user) {
+  //   return <GuestProfile />;
+  // }
 
   useEffect(() => {
     setIsDataLoading(true);
