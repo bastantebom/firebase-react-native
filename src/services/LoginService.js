@@ -7,7 +7,7 @@ import {GoogleSignin} from '@react-native-community/google-signin';
 import SignUpService from '@/services/SignUpService';
 
 GoogleSignin.configure({
-  webClientId: Config.dev.googleSignIn,
+  webClientId: Config.prod.googleSignIn,
 });
 
 const loginMobile = (payload) => {
