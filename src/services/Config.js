@@ -13,6 +13,6 @@ export default {
   prod: {
     api: 'https://api.servbees.com/',
     googleSignIn:
-      '960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com',
+      '78822170583-7gtfq9r1n2q25rujl2sjtq46q0sspv6d.apps.googleusercontent.com',
   },
 };
