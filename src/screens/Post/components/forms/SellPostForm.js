@@ -186,7 +186,31 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   // console.log(postImage)
 
   const uploadImageHandler = async (image) => {
-    if (initialData.post_id) {
+    // if (initialData.post_id) {
+    //   console.log('I got the image');
+    //   console.log(image);
+  
+    //   if (image) {
+    //     const {uri, filename} = image;
+    //     // const filename = uri.substring(uri.lastIndexOf('/') + 1);
+  
+    //     const newFilename =
+    //       Platform.OS === 'ios'
+    //         ? filename.substring(0, filename.lastIndexOf('.'))
+    //         : uri.substring(uri.lastIndexOf('/') + 1);
+    //     const uploadUri =
+    //       Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+  
+    //     const task = storage().ref();
+    //     const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+    //     await fileRef.putFile(uploadUri);
+    //     const downloadURL = await fileRef.getDownloadURL();
+  
+    //     return Promise.resolve(downloadURL);
+    //   } else {
+    //     return Promise.reject('Failed to upload');
+    //   }
+    // } else {
       console.log('I got the image');
       console.log(image);
   
@@ -210,31 +234,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       } else {
         return Promise.reject('Failed to upload');
       }
-    } else {
-      console.log('I got the image');
-      console.log(image);
-  
-      if (image) {
-        const {uri, filename} = image;
-        // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-  
-        const newFilename =
-          Platform.OS === 'ios'
-            ? filename.substring(0, filename.lastIndexOf('.'))
-            : uri.substring(uri.lastIndexOf('/') + 1);
-        const uploadUri =
-          Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-  
-        const task = storage().ref();
-        const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-        await fileRef.putFile(uploadUri);
-        const downloadURL = await fileRef.getDownloadURL();
-  
-        return Promise.resolve(downloadURL);
-      } else {
-        return Promise.reject('Failed to upload');
-      }
-    }
+    // }
   };
 
   const navigateToPost = async () => {
