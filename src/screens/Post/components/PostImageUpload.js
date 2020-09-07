@@ -167,10 +167,10 @@ export const PostImageUpload = ({ data }) => {
     if (data === null || data.length === 0 ) {
       return console.log('no data');
     } 
-    // if (data !== null || data.length !== 0) {
-    //   setImageCount(data.length)
-    //   setPostImage(data)
-    // }
+    if (data !== null || data.length !== 0) {
+      setImageCount(data.length)
+      setPostImage(data)
+    }
   }, [imageCount, postImage]); 
 
   return (
@@ -207,7 +207,7 @@ export const PostImageUpload = ({ data }) => {
             marginBottom: 8,
             // justifyContent: 'center',
           }}>
-          {/* {data !== null ? 
+          {data !== null ? 
             <ScrollView horizontal>
               {data.map((image, i) => {
                 return (
@@ -254,7 +254,7 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>  
-            : */}
+            :
             <ScrollView horizontal>
               {postImage.map((image, i) => {
                 return (
@@ -301,7 +301,7 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>
-           {/* } */}
+           }
           <View
             style={{
               // flex: 1,
