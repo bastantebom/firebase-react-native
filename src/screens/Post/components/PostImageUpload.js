@@ -254,7 +254,7 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>  
-            : */}
+            :
             <ScrollView horizontal>
               {postImage.map((image, i) => {
                 return (
