@@ -231,10 +231,12 @@ const SinglePostView = (props) => {
               dotColor={Colors.neutralsIron}
               dotStyle={{marginRight: 9}}
               activeDotStyle={{marginRight: 9}}>
-              {images.map((item) => {
+              {images.map((item, index) => {
                 console.log(item);
                 return (
-                  <TouchableWithoutFeedback onPress={togglePostImageModal}>
+                  <TouchableWithoutFeedback
+                    key={index}
+                    onPress={togglePostImageModal}>
                     <CacheableImage
                       style={GlobalStyle.image}
                       source={{

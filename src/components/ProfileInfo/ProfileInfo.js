@@ -58,15 +58,15 @@ const ProfileInfo = ({userInfo, type, closePostModal}) => {
   };
 
   openProfileHandler = () => {
-    console.log(user.uid);
-    console.log(uid);
-
-    if (user.uid === uid) {
-      return navigation.navigate('Profile', {
-        screen: 'Profile',
-      });
+    //console.log(user.uid);
+    //console.log(uid);
+    if (user) {
+      if (user.uid === uid) {
+        return navigation.navigate('Profile', {
+          screen: 'Profile',
+        });
+      }
     }
-
     // return
     console.log('OPENING MODAL');
 

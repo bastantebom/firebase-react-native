@@ -255,11 +255,17 @@ const SearchBarWithFilter = () => {
   const [cityName, setCityName] = useState('');
 
   useEffect(() => {
-    if (address === undefined) {
-      getStringAddress(14.608045, 120.989477);
-    } else {
-      getStringAddress(address.latitude, address.longitude);
+    let isMounted = true;
+    if (isMounted) {
+      if (address === undefined) {
+        getStringAddress(14.608045, 120.989477);
+      } else {
+        getStringAddress(address.latitude, address.longitude);
+      }
     }
+    return () => {
+      isMounted = false;
+    };
   }, [address]);
 
   const getStringAddress = (lat, lng) => {
