@@ -27,7 +27,7 @@ import {Library} from './Library';
 
 const {height, width} = Dimensions.get('window');
 
-export const PostImageUpload = () => {
+export const PostImageUpload = ({ data }) => {
   const {
     setPostImage,
     postImage,
@@ -154,12 +154,24 @@ export const PostImageUpload = () => {
         <Library
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
-          imageArray={postImages}
-          current={currentImage}
         />
       ),
     },
   ];
+
+  console.log('postImage', postImage)
+  console.log('imageCount', imageCount)
+  // console.log('data', data)
+
+  useEffect(() => {
+    if (data === null || data.length === 0 ) {
+      return console.log('no data');
+    } 
+    // if (data !== null || data.length !== 0) {
+    //   setImageCount(data.length)
+    //   setPostImage(data)
+    // }
+  }, [imageCount, postImage]); 
 
   return (
     <>
@@ -195,52 +207,101 @@ export const PostImageUpload = () => {
             marginBottom: 8,
             // justifyContent: 'center',
           }}>
-          <ScrollView horizontal>
-            {postImage.map((image, i) => {
-              return (
-                <View key={i}>
-                  <TouchableOpacity
-                    onPress={() => handleRemove(image)}
-                    style={{
-                      zIndex: 999,
-                      position: 'absolute',
-                      right: 20,
-                      top: 5,
-                    }}>
-                    <View
+          {/* {data !== null ? 
+            <ScrollView horizontal>
+              {data.map((image, i) => {
+                return (
+                  <View key={i}>
+                    <TouchableOpacity
+                      onPress={() => handleRemove(image)}
                       style={{
+                        zIndex: 999,
                         position: 'absolute',
-                        backgroundColor: 'rgba(0,0,0,.6)',
-                        width: normalize(28),
-                        height: normalize(28),
-                        borderRadius: 50,
+                        right: 20,
+                        top: 5,
+                      }}>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          backgroundColor: 'rgba(0,0,0,.6)',
+                          width: normalize(28),
+                          height: normalize(28),
+                          borderRadius: 50,
+                        }}
+                      />
+                      <View style={{left: normalize(3.75), top: normalize(3.5)}}>
+                        <CloseLight
+                          width={normalize(20)}
+                          height={normalize(20)}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                    <CacheableImage
+                      source={{uri: image}}
+                      style={{
+                        width:
+                          imageCount === 1
+                            ? width / 2
+                            : imageCount === 2
+                            ? width / 3.333
+                            : width / 4,
+                        height: normalize(114),
+                        marginRight: 8,
+                        borderRadius: 4,
                       }}
                     />
-                    <View style={{left: normalize(3.75), top: normalize(3.5)}}>
-                      <CloseLight
-                        width={normalize(20)}
-                        height={normalize(20)}
+                  </View>
+                );
+              })}
+            </ScrollView>  
+            : */}
+            <ScrollView horizontal>
+              {postImage.map((image, i) => {
+                return (
+                  <View key={i}>
+                    <TouchableOpacity
+                      onPress={() => handleRemove(image)}
+                      style={{
+                        zIndex: 999,
+                        position: 'absolute',
+                        right: 20,
+                        top: 5,
+                      }}>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          backgroundColor: 'rgba(0,0,0,.6)',
+                          width: normalize(28),
+                          height: normalize(28),
+                          borderRadius: 50,
+                        }}
                       />
-                    </View>
-                  </TouchableOpacity>
-                  <CacheableImage
-                    source={{uri: image.uri}}
-                    style={{
-                      width:
-                        imageCount === 1
-                          ? width / 2
-                          : imageCount === 2
-                          ? width / 3.333
-                          : width / 4,
-                      height: normalize(114),
-                      marginRight: 8,
-                      borderRadius: 4,
-                    }}
-                  />
-                </View>
-              );
-            })}
-          </ScrollView>
+                      <View style={{left: normalize(3.75), top: normalize(3.5)}}>
+                        <CloseLight
+                          width={normalize(20)}
+                          height={normalize(20)}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                    <CacheableImage
+                      source={{uri: image.uri}}
+                      style={{
+                        width:
+                          imageCount === 1
+                            ? width / 2
+                            : imageCount === 2
+                            ? width / 3.333
+                            : width / 4,
+                        height: normalize(114),
+                        marginRight: 8,
+                        borderRadius: 4,
+                      }}
+                    />
+                  </View>
+                );
+              })}
+            </ScrollView>
+           {/* } */}
           <View
             style={{
               // flex: 1,

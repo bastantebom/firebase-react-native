@@ -105,24 +105,24 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
   // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
-  const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
+  // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
 
-  const onChangeUsername = (uName) => {
-    console.log("On change function")
+  // const onChangeUsername = (uName) => {
+  //   console.log("On change function")
 
-    setVerified(false);
-    let userNameReg = /^[a-z0-9.-]*$/;
-    if (userNameReg.test(uName) && uName.length > 2) {
-      setInvalidUserFormat(false);
-      setUName(uName);
-      usernameHandler(uName);
-      // delayedUsernameValidation(uName);
-    } else {
-      setUName(uName);
-      setInvalidUserFormat(true);
-      setButtonState(true);
-    }
-  };
+  //   setVerified(false);
+  //   let userNameReg = /^[a-z0-9.-]*$/;
+  //   if (userNameReg.test(uName) && uName.length > 2) {
+  //     setInvalidUserFormat(false);
+  //     setUName(uName);
+  //     usernameHandler(uName);
+  //     // delayedUsernameValidation(uName);
+  //   } else {
+  //     setUName(uName);
+  //     setInvalidUserFormat(true);
+  //     setButtonState(true);
+  //   }
+  // };
 
   const sendValidation = async (un) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
@@ -150,7 +150,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       setVerified(false);
     }, 5000);
   };
+
+  // const 
+  const [error, setError] = useState([])
   const [verified, setVerified] = useState(false);
+
   /*Username Validations */
   const [desc, setDesc] = useState(description);
   const [addName, setAddName] = useState(address.name);
@@ -162,6 +166,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [mobile, setMobile] = useState(phone_number);
   const [bDate, setBDate] = useState(birth_date);
   const [g, setG] = useState(gender);
+
 
   const toggleMap = () => {
     setMap(!map);
@@ -488,27 +493,28 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               <View style={{position: 'relative'}}>
                 <FloatingAppInput
                   value={uName}
+                  valueHandler={setUName}
                   label="Username"
-                  customStyle={{
-                    marginBottom: 4,
-                  }}
-                  invalidField={!invalidUser || invalidUserFormat}
-                  onChangeText={(uName) => onChangeUsername(uName)}
-                  autoCapitalize="none"
+                  customStyle={{marginBottom: normalize(16)}}
+                  // invalidField={!invalidUser || invalidUserFormat}
                   validation={['username']}
+                  setError={setError}
+                  error={error}
+                  setButtonState={setButtonState}
+                  // onChangeText={(uName) => onChangeUsername(uName)}
                 />
-                <View style={styles.passwordToggle}>
+                {/* <View style={styles.passwordToggle}>
                   {verified ? (
                     <VerifiedGreen
                       width={normalize(16)}
                       height={normalize(16)}
                     />
                   ) : null}
-                </View>
+                </View> */}
               </View>
               {!invalidUser ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                  Username is already been used
+                  Username has already been used
                 </AppText>
               ) : null}
               <View style={{flexDirection: 'row'}}>
@@ -549,6 +555,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 validation={['email', '']}
+                setError={setError}
+                error={error}
+                setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -626,8 +635,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   setSEm(sEm);
                 }}
               />
-              <FloatingAppInput
-                editable={false}
+              {/* <FloatingAppInput
+                // editable={false}
                 selectTextOnFocus={false}
                 value={mobile}
                 label="Mobile Number"
@@ -636,6 +645,19 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 onChangeText={(mobile) => {
                   mobileChangeHandler(mobile);
                 }}
+              /> */}
+              <FloatingAppInput
+                // editable={false}
+                value={mobile}
+                selectTextOnFocus={false}
+                valueHandler={setMobile}
+                label="Mobile Number"
+                customStyle={{marginBottom: normalize(16)}}
+                keyboardType="phone-pad"
+                validation={['number']}
+                setError={setError}
+                error={error}
+                setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={showDatepicker}>
@@ -702,6 +724,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               type="primary"
               height="xl"
               disabled={buttonDisable}
+              // disabled
               customStyle={{...buttonStyle}}
               onPress={() => updateProfile()}
             />

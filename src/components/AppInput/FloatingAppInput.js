@@ -7,6 +7,10 @@ import ValidationList from './Validation';
 import ValidationFunctions from './ValidationFunctions';
 import {debounce} from 'lodash';
 
+import {
+  VerifiedGreen
+} from '@/assets/images/icons';
+
 // create a component
 const FloatingAppInput = (props) => {
   const {
@@ -16,56 +20,118 @@ const FloatingAppInput = (props) => {
     validation = [],
     onChangeText,
     valueHandler,
+    setError,
+    error,
+    setButtonState
   } = props;
 
   const [internalValue, setInternalValue] = useState(value)
 
-  const inputDebounce = useCallback(
-    debounce(() => validateInput(value), 2000),
-    [],
-  );
-
+  const [verified, setVerified] = useState(false);
   const [showValidationError, setShowValidationError] = useState(false);
   const [validationError, setValidationError] = useState();
   const [isActive, setIsActive] = useState(false);
   const [labelPosition] = useState(new Animated.Value(0));
-
+  
+  const checkIndex = (arr) => {
+    const index = error.indexOf(arr)
+    return index
+  }
 
   const onValueChange = (value) => {
     valueHandler(value);
-    inputDebounce()
+    console.log('************************************************');
+    setShowValidationError(true)
+    console.log(value);
+    inputDebounce(value)
+
+    console.log('err', error.length)
+    if(error.length > 0) {
+      setButtonState(true)
+    } else {
+      setButtonState(false)
+    }
   }
 
+  const inputDebounce = useCallback(
+    debounce((value) => validateInput(value), 1000),
+    [],
+  );
+
   const validateInput = (value) => {
-    console.log("Validate input")
+    // console.log("Validate input")
     setInternalValue(value)
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
         .then((res) => {
+          const currentError = error
+          const index = checkIndex('username')
+          currentError.splice(index, 1)
+          setError(currentError)
+
           setShowValidationError(res);
+          console.log('username is valid')
+          setVerified(true);
         })
         .catch((err) => {
+          const currentError = error
+          const index = checkIndex('username')
+          if (index === -1) {
+            currentError.push('username')
+            setError(currentError)
+          }
+
           setShowValidationError(false);
+          console.log('username is not valid')
+          setVerified(false);
           setValidationError(err);
         });
 
     if (validation.includes('email'))
       ValidationFunctions.emailValidator(value)
         .then((res) => {
+          const currentError = error
+          const index = checkIndex('email')
+          currentError.splice(index, 1)
+          setError(currentError)
+
           setShowValidationError(res);
+          console.log('email is valid')
         })
         .catch((err) => {
+          const currentError = error
+          const index = checkIndex('email')
+          if (index === -1) {
+            currentError.push('email')
+            setError(currentError)
+          }
+
           setShowValidationError(false);
+          console.log('email is not valid')
           setValidationError(err);
         });
 
     if (validation.includes('number'))
       ValidationFunctions.MobileNumberValidator(value)
         .then((res) => {
+          const currentError = error
+          const index = checkIndex('number')
+          currentError.splice(index, 1)
+          setError(currentError)
+
           setShowValidationError(res);
+          console.log('number is valid')
         })
         .catch((err) => {
+          const currentError = error
+          const index = checkIndex('number')
+          if (index === -1) {
+            currentError.push('number')
+            setError(currentError)
+          }
+
           setShowValidationError(false);
+          console.log('number is invalid')
           setValidationError(err);
         });
   };
@@ -161,6 +227,14 @@ const FloatingAppInput = (props) => {
           onBlur={onBlurInput}
           blurOnSubmit
         />
+        <View style={styles.passwordToggle}>
+          {verified ? (
+            <VerifiedGreen
+              width={normalize(16)}
+              height={normalize(16)}
+            />
+          ) : null}
+        </View>
       </View>
       {validation.length > 0 && (
         <AppText
@@ -192,6 +266,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     paddingTop: normalize(12),
     //paddingLeft: normalize(16),
+  },
+
+  passwordToggle: {
+    position: 'absolute',
+    right: normalize(10),
+    top: normalize(18),
   },
 });
 
