@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "960850345935-eturloplsh13to62kj0abf6a4mh35s91.apps.googleusercontent.com",
+              "client_id": "960850345935-vikjeeqroaq3240mtcloup2abi6c97sd.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "org.reactjs.native.example.servbees"
+                "bundle_id": "com.servbees"
               }
             }
           ]

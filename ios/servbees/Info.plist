@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.717890893531-qii7clpj1dusu6upbu3gokr1cadnuoln</string>
+				<string>com.googleusercontent.apps.960850345935-vikjeeqroaq3240mtcloup2abi6c97sd</string>
 				<string>fb2732862826943177</string>
 			</array>
 		</dict>
@@ -53,6 +53,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to access your Media Library to add images to your post.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Your message to user when the camera is accessed for the first time</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -85,5 +87,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIUserInterfaceStyle</key>
+    <string>Light</string>
 </dict>
 </plist>
