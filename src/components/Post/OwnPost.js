@@ -84,13 +84,13 @@ const OwnPost = ({data, isLoading}) => {
       created: false,
       edited: false,
     };
-
-    if (user.uid === uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params: computedData,
-      });
-    else setShowPost(true);
+    if (user) {
+      if (user.uid === uid)
+        navigation.navigate('Post', {
+          screen: 'SinglePostView',
+          params: computedData,
+        });
+    } else setShowPost(true);
   };
 
   return (
@@ -115,7 +115,10 @@ const OwnPost = ({data, isLoading}) => {
           <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
             <View style={styles.postImageContainer}>
               {images.length > 0 ? (
-                <CacheableImage style={GlobalStyle.image} source={{uri: images[0]}} />
+                <CacheableImage
+                  style={GlobalStyle.image}
+                  source={{uri: images[0]}}
+                />
               ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
               post_type === 'service' ? (
                 <DefaultService width={normalize(64)} height={normalize(72)} />

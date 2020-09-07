@@ -130,10 +130,12 @@ const SinglePostOthersView = ({data, backFunction}) => {
               dotColor={Colors.neutralsIron}
               dotStyle={{marginRight: 9}}
               activeDotStyle={{marginRight: 9}}>
-              {images.map((item) => {
+              {images.map((item, index) => {
                 console.log(item);
                 return (
-                  <TouchableWithoutFeedback onPress={togglePostImageModal}>
+                  <TouchableWithoutFeedback
+                    key={index}
+                    onPress={togglePostImageModal}>
                     <CacheableImage
                       style={GlobalStyle.image}
                       source={{
@@ -179,8 +181,10 @@ const SinglePostOthersView = ({data, backFunction}) => {
           </View>
           <View style={styles.iconText}>
             <PostInfo width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8, marginRight: 20}}>
-              {description} 
+            <AppText
+              textStyle="body2"
+              customStyle={{marginLeft: 8, marginRight: 20}}>
+              {description}
             </AppText>
           </View>
           <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
