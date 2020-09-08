@@ -287,11 +287,10 @@ const SignUp = (props) => {
         setIsLoading(false);
         cleanSignUpForm();
         if (response.success) {
-          console.log('*******************');
-          console.log(response);
-          console.log('*******************');
           navigation.navigate('VerifyAccount', {...response, ...formValues});
         } else {
+          //console.log('_________________');
+          alert(response.message);
           navigation.navigate('Onboarding');
         }
       })
