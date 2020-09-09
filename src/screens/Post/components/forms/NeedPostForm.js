@@ -28,7 +28,7 @@ import StoreLocation from '../StoreLocation';
 /*Map Essentials*/
 const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {user, userInfo, setUserInfo} = useContext(UserContext);
-  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(
+  const { postImage, setPostImage, setImageCount, setImageCurrent, setNeedsRefresh } = useContext(
     Context,
   );
 
@@ -224,6 +224,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       navToPost({...res, viewing: false, created: true, edited: false});
       setLoadingSubmit(false);
+      setNeedsRefresh(true)
     });
   };
 

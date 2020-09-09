@@ -33,7 +33,7 @@ const ServicePostForm = ({
   initialData,
 }) => {
   const {user, userInfo, setUserInfo} = useContext(UserContext);
-  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(
+  const {postImage, setPostImage, setImageCount, setImageCurrent, setNeedsRefresh} = useContext(
     Context,
   );
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -233,6 +233,7 @@ const ServicePostForm = ({
       togglePostModal();
       setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       navToPost({...res, viewing: false, created: true, edited: false});
+      setNeedsRefresh(true)
     });
   };
 

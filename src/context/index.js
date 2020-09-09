@@ -26,6 +26,8 @@ export const ContextProvider = ({children}) => {
 
   const [isInternetReachable, setIsInternetReachable] = useState(false);
 
+  const [needsRefresh, setNeedsRefresh] = useState(false)
+
   const closeSlider = () => {
     setSliderState('close');
   };
@@ -102,7 +104,8 @@ export const ContextProvider = ({children}) => {
         userPosts,
         setUserPosts,
         otherUserPosts,
-        setOtherUserPosts,
+        needsRefresh,
+        setNeedsRefresh
       }}>
       {children}
     </Context.Provider>

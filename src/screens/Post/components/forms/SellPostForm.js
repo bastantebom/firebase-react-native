@@ -26,7 +26,7 @@ import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
-  const {postImage, setPostImage, setImageCount, setImageCurrent} = useContext(
+  const { postImage, setPostImage, setImageCount, setImageCurrent, setNeedsRefresh } = useContext(
     Context,
   );
   const {user, userInfo, setUserInfo} = useContext(UserContext);
@@ -296,6 +296,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       setLoadingSubmit(false);
       setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       togglePostModal();
+      setNeedsRefresh(true)
       setTimeout(() => {
         navToPost({...res, viewing: false, created: true, edited: false});
       }, 500);
