@@ -275,7 +275,7 @@ const SinglePostView = (props) => {
             <AppText
               textStyle="body2"
               customStyle={{marginLeft: 8, marginRight: 20}}>
-              {city}, {province}, {country}
+              {city}, {province}
             </AppText>
           </View>
           <View style={styles.iconText}>
