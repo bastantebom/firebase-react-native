@@ -37,7 +37,6 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
     
     if (isMounted) {
       if(needsRefresh) {
-        console.log(1)
         refreshPosts()
       }
     }
