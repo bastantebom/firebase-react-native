@@ -98,7 +98,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
 
   const SinglePostContent = ({children}) => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, color: 'red'}}>
         <View style={styles.postImageContainer}>
           {/* <Image
             style={GlobalStyle.image}
@@ -176,7 +176,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
             <AppText
               textStyle="body2"
               customStyle={{marginLeft: 8, marginRight: 20}}>
-              {city}, {province}, {country}
+              {city}, {province}
             </AppText>
           </View>
           <View style={styles.iconText}>
@@ -242,7 +242,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
           flexDirection: 'row',
           alignItems: 'flex-end',
           position: 'absolute',
-          bottom: 0,
+          bottom: 0
         }}>
         <View
           style={{
@@ -308,7 +308,10 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 60,
+    // padding: 16,
     // backgroundColor: 'blue',
     // height: '100%',
   },
