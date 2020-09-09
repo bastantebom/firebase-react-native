@@ -26,7 +26,7 @@ export const ContextProvider = ({children}) => {
 
   const [isInternetReachable, setIsInternetReachable] = useState(false);
 
-  const [needsRefresh, setNeedsRefresh] = useState(false)
+  const [needsRefresh, setNeedsRefresh] = useState(true)
 
   const closeSlider = () => {
     setSliderState('close');
