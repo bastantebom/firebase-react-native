@@ -548,78 +548,79 @@ const Post = ({card, togglePostModal, initialData}) => {
 
   return (
     <SafeAreaView>
-      <View
-        style={[
-          styles.postAnimationContainer,
-          {
-            // justifyContent: pickingState ? 'flex-start' : 'space-around',
-            // position: pickingState ? 'relative' : 'absolute',
-            paddingLeft: normalize(8),
-          },
-        ]}>
-        <Animated.View style={[styles.postCard, PostAnimationStyle]}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              selectActive('post');
-              if (activeCard !== 'none' && activeCard !== 'post') {
-                resetPicking();
-              }
-            }}>
-            <PostContent />
-          </TouchableOpacity>
+      {!initialData ? (
+        <View
+          style={[
+            styles.postAnimationContainer,
+            {
+              // justifyContent: pickingState ? 'flex-start' : 'space-around',
+              // position: pickingState ? 'relative' : 'absolute',
+              paddingLeft: normalize(8),
+            },
+          ]}>
+          <Animated.View style={[styles.postCard, PostAnimationStyle]}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                selectActive('post');
+                if (activeCard !== 'none' && activeCard !== 'post') {
+                  resetPicking();
+                }
+              }}>
+              <PostContent />
+            </TouchableOpacity>
 
-          <Animated.View
-            style={[
-              styles.needDot,
-              {backgroundColor: Colors.secondaryMountainMeadow},
-              PostDotAnimationStyle,
-            ]}
-          />
-        </Animated.View>
+            <Animated.View
+              style={[
+                styles.needDot,
+                {backgroundColor: Colors.secondaryMountainMeadow},
+                PostDotAnimationStyle,
+              ]}
+            />
+          </Animated.View>
 
-        <Animated.View style={[styles.sellCard, SellAnimationStyle]}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              selectActive('sell');
-              if (activeCard !== 'none' && activeCard !== 'sell') {
-                resetPicking();
-              }
-            }}>
-            <SellContent />
-          </TouchableOpacity>
-          <Animated.View
-            style={[
-              styles.needDot,
-              {backgroundColor: Colors.secondaryRoyalBlue},
-              SellDotAnimationStyle,
-            ]}
-          />
-        </Animated.View>
+          <Animated.View style={[styles.sellCard, SellAnimationStyle]}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                selectActive('sell');
+                if (activeCard !== 'none' && activeCard !== 'sell') {
+                  resetPicking();
+                }
+              }}>
+              <SellContent />
+            </TouchableOpacity>
+            <Animated.View
+              style={[
+                styles.needDot,
+                {backgroundColor: Colors.secondaryRoyalBlue},
+                SellDotAnimationStyle,
+              ]}
+            />
+          </Animated.View>
 
-        <Animated.View style={[styles.needCard, NeedAnimationStyle]}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              selectActive('need');
-              if (activeCard !== 'none' && activeCard !== 'need') {
-                resetPicking();
-              }
-            }}>
-            <NeedContent />
-          </TouchableOpacity>
+          <Animated.View style={[styles.needCard, NeedAnimationStyle]}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                selectActive('need');
+                if (activeCard !== 'none' && activeCard !== 'need') {
+                  resetPicking();
+                }
+              }}>
+              <NeedContent />
+            </TouchableOpacity>
 
-          <Animated.View
-            style={[
-              styles.needDot,
-              {backgroundColor: Colors.secondaryBrinkPink},
-              NeedDotAnimationStyle,
-            ]}
-          />
-        </Animated.View>
-      </View>
-
+            <Animated.View
+              style={[
+                styles.needDot,
+                {backgroundColor: Colors.secondaryBrinkPink},
+                NeedDotAnimationStyle,
+              ]}
+            />
+          </Animated.View>
+        </View>
+      ) : null}
       <RenderActiveForm
         activeScreen={activeScreen}
         navToPost={navToPost}
@@ -636,13 +637,16 @@ const RenderActiveForm = ({
   togglePostModal,
   initialData,
 }) => {
-
   const [title, setTitle] = useState(initialData.title);
   const [images, setImages] = useState(initialData.images);
   const [price, setPrice] = useState(initialData.price?.toString());
   const [description, setDescription] = useState(initialData.description);
-  const [pickupState, setPickupState] = useState(initialData ? initialData?.delivery_method?.pickup : false);
-  const [deliveryState, setDeliveryState] = useState(initialData ? initialData?.delivery_method?.delivery : false);
+  const [pickupState, setPickupState] = useState(
+    initialData ? initialData?.delivery_method?.pickup : false,
+  );
+  const [deliveryState, setDeliveryState] = useState(
+    initialData ? initialData?.delivery_method?.delivery : false,
+  );
   const [storeLocation, setStoreLocation] = useState(
     initialData.store_location,
   );
