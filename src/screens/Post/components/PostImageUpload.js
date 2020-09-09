@@ -37,6 +37,8 @@ export const PostImageUpload = ({ data }) => {
     imageCurrent,
   } = useContext(Context);
 
+  
+
   const [photoCount, setPhotoCount] = useState(0);
   const [selected, setSelected] = useState([]);
   const [currentImage, setCurrentImage] = useState();
@@ -134,9 +136,9 @@ export const PostImageUpload = ({ data }) => {
     togglePickerModal();
   };
 
-  const continueCamera = (selected, photoCount) => {
-    setPostImage([...postImage, selected]);
-    setImageCount(imageCount + photoCount);
+  const continueCamera = () => {
+    setPostImage([...postImage]);
+    setImageCount(imageCount);
     // setCurrentImage(currentImage)
     togglePickerModal();
   };
@@ -154,13 +156,14 @@ export const PostImageUpload = ({ data }) => {
         <Library
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
+          data={data}
         />
       ),
     },
   ];
 
-  console.log('postImage', postImage)
-  console.log('imageCount', imageCount)
+  // console.log('postImage', postImage)
+  // console.log('imageCount', imageCount)
   // console.log('data', data)
 
   useEffect(() => {
@@ -208,6 +211,7 @@ export const PostImageUpload = ({ data }) => {
             // justifyContent: 'center',
           }}>
           {data !== null ? 
+          // <></>
             <ScrollView horizontal>
               {data.map((image, i) => {
                 return (
