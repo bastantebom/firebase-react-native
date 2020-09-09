@@ -211,6 +211,7 @@ export const PostImageUpload = ({ data }) => {
             // justifyContent: 'center',
           }}>
           {data !== null ? 
+          // <></>
             <ScrollView horizontal>
               {data.map((image, i) => {
                 return (
