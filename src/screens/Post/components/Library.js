@@ -16,9 +16,9 @@ import {normalize, Colors} from '@/globals';
 import {ArrowDown} from '@/assets/images/icons';
 import {PhotoAlbums} from './PhotoAlbums';
 
-const {height} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
-export const Library = ({cancel, next}) => {
+export const Library = ({cancel, next, data}) => {
   const {
     setPostImage,
     postImage,
@@ -30,48 +30,29 @@ export const Library = ({cancel, next}) => {
 
   // const [selectedCount, setSelectedCount] = useState([]);
   const [showFolderList, setShowFolderList] = useState(false);
-  // const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState([]);
   // const [photoCount, setPhotoCount] = useState(0);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
-    setPostImage(images);
-    setImageCount(num);
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
-
-    // setSelectedCount(prev => [...prev, {count: num}])
-    // getData();
+    setImageCount(num);
+    setPostImage(images);
   };
 
-  // console.log(selectedCount)
-
-  // const setToContext = (selected, photoCount) => {
-  //   setPostImage(selected);
-  //   setImageCount(photoCount);
-  // }
-
-  // const lastItem = selectedCount.pop();
-  // const lastItem = selectedCount;
-
-  // const getData = () => {
-  //   const arr = selectedCount;
-
-  //   arr.forEach(function(i, idx, array){
-  //     if (idx === array.length - 1){
-  //       setCount(i)
-  //     }
-  //   });
-  // }
-
+  useEffect(() => {
+    if (data === null) {
+      return console.log('no data');
+    } 
+    if (data !== null) {
+      // console.log(data)
+      setPostImage(data)
+    }
+  }, [data])
+  
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
-
-  // console.log('Library', postImage)
-
-  // useEffect(() => {
-  //   // getData();
-  // }, [selectedCount])
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -152,6 +133,7 @@ export const Library = ({cancel, next}) => {
                 ? height / 1.8 - normalize(122)
                 : height - normalize(117),
               zIndex: -1,
+              width: width
             }}>
             <CameraRollPicker
               groupTypes="All"
@@ -171,22 +153,23 @@ export const Library = ({cancel, next}) => {
                     right: 4,
                     top: 6,
                   }}>
-                  {/* {selectedCount.map((item, index) =>  */}
-                  {/* {Array.from({ length: postImage.length }).map((_, index) => ( */}
-                    <AppText 
-                      textStyle="subtitle1" 
-                      color={Colors.neutralsWhite} 
-                      customStyle={{ textAlign: 'center' }}
-                      // key={index}
-                    >
-                      {/* {selectedCount[index].count} */}
-                      {imageCount}
-                    </AppText>
-                   {/* ))}   */}
-                  {/* )} */}
+                  <AppText 
+                    textStyle="subtitle1" 
+                    color={Colors.neutralsWhite} 
+                    customStyle={{ textAlign: 'center' }}
+                  >
+                    {imageCount}
+                  </AppText>
                 </View>
               }
-              callback={() => getSelectedImages(postImage)}
+              callback={
+                () => { 
+                  // data !== null ?
+                  getSelectedImages(postImage) 
+                  // :
+                  // getSelectedImages(selected)
+                }
+              }
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,
