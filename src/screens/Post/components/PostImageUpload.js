@@ -156,7 +156,7 @@ export const PostImageUpload = ({ data }) => {
         <Library
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
-          data={data}
+          data={data === null ? null : data}
         />
       ),
     },
@@ -166,16 +166,17 @@ export const PostImageUpload = ({ data }) => {
   // console.log('imageCount', imageCount)
   // console.log('data', data)
 
-  useEffect(() => {
-    // if (data === null || data.length === 0 ) {
-    //   return console.log('no data');
-    // } 
-    // if (data !== null || data.length !== 0) {
-    //   setImageCount(data.length)
-    //   setPostImage(data)
-    // }
-  }, [imageCount, postImage]);
 
+  useEffect(() => {
+    if (data === null) {
+      return console.log('no data');
+    } else {
+      setImageCount(data.length)
+      // setPostImage(data)
+      return console.log('with data');
+    }
+  }, [data]);
+  
   return (
     <>
       {imageCount === 0 ? (
@@ -201,63 +202,16 @@ export const PostImageUpload = ({ data }) => {
           </TouchableOpacity>
         </View>
       ) : (
-          <View
-            style={{
-              // height: 150,
-              height: normalize(114),
-              width: '100%',
-              flexDirection: 'row',
-              marginBottom: 8,
-              // justifyContent: 'center',
-            }}>
-            {/* {data !== null ? 
-            <ScrollView horizontal>
-              {data.map((image, i) => {
-                return (
-                  <View key={i}>
-                    <TouchableOpacity
-                      onPress={() => handleRemove(image)}
-                      style={{
-                        zIndex: 999,
-                        position: 'absolute',
-                        right: 20,
-                        top: 5,
-                      }}>
-                      <View
-                        style={{
-                          position: 'absolute',
-                          backgroundColor: 'rgba(0,0,0,.6)',
-                          width: normalize(28),
-                          height: normalize(28),
-                          borderRadius: 50,
-                        }}
-                      />
-                      <View style={{left: normalize(3.75), top: normalize(3.5)}}>
-                        <CloseLight
-                          width={normalize(20)}
-                          height={normalize(20)}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <CacheableImage
-                      source={{uri: image}}
-                      style={{
-                        width:
-                          imageCount === 1
-                            ? width / 2
-                            : imageCount === 2
-                            ? width / 3.333
-                            : width / 4,
-                        height: normalize(114),
-                        marginRight: 8,
-                        borderRadius: 4,
-                      }}
-                    />
-                  </View>
-                );
-              })}
-            </ScrollView>  
-            :
+        <View
+          style={{
+            // height: 150,
+            height: normalize(114),
+            width: '100%',
+            flexDirection: 'row',
+            marginBottom: 8,
+            // justifyContent: 'center',
+          }}>
+          {data === null ? 
             <ScrollView horizontal>
               {postImage.map((image, i) => {
                 return (
@@ -287,7 +241,7 @@ export const PostImageUpload = ({ data }) => {
                       </View>
                     </TouchableOpacity>
                     <CacheableImage
-                      source={{ uri: image.uri }}
+                      source={{ uri: image.uri ? image.uri : image }}
                       style={{
                         width:
                           imageCount === 1
@@ -304,42 +258,90 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>
-            {/* } */}
-            <View
-              style={{
-                // flex: 1,
-                height: normalize(114),
-                borderStyle: 'dashed',
-                borderRadius: 4,
-                borderWidth: 1,
-                borderColor: Colors.neutralGray,
-                justifyContent: 'center',
-                // marginBottom: 8,
-                width: imageCount <= 1 ? width / 3 : width / 4,
-                marginLeft: imageCount >= 3 ? 8 : 0,
-              }}>
-              <TouchableOpacity
-                disabled={imageCount === 10 && true}
-                activeOpacity={0.7}
-                onPress={() => requestPermission()}>
-                <View
-                  style={{
-                    alignSelf: 'center',
-                    alignItems: 'center',
-                    opacity: imageCount === 10 ? 0.5 : 1,
-                  }}>
-                  <PostImages width={normalize(56)} height={normalize(56)} />
-                  <AppText
-                    textStyle="body2"
-                    color={Colors.contentOcean}
-                    customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
-                    Upload Photo
-                </AppText>
-                </View>
-              </TouchableOpacity>
-            </View>
+          :
+            <ScrollView horizontal>
+              {data.map((image, i) => {
+                return (
+                  <View key={i}>
+                    <TouchableOpacity
+                      onPress={() => handleRemove(image)}
+                      style={{
+                        zIndex: 999,
+                        position: 'absolute',
+                        right: 20,
+                        top: 5,
+                      }}>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          backgroundColor: 'rgba(0,0,0,.6)',
+                          width: normalize(28),
+                          height: normalize(28),
+                          borderRadius: 50,
+                        }}
+                      />
+                      <View style={{left: normalize(3.75), top: normalize(3.5)}}>
+                        <CloseLight
+                          width={normalize(20)}
+                          height={normalize(20)}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                    <CacheableImage
+                      source={{ uri: image.uri ? image.uri : image }}
+                      style={{
+                        width:
+                          imageCount === 1
+                            ? width / 2
+                            : imageCount === 2
+                            ? width / 3.333
+                            : width / 4,
+                        height: normalize(114),
+                        marginRight: 8,
+                        borderRadius: 4,
+                      }}
+                    />
+                  </View>
+                );
+              })}
+            </ScrollView>  
+          }
+          <View
+            style={{
+              // flex: 1,
+              height: normalize(114),
+              borderStyle: 'dashed',
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: Colors.neutralGray,
+              justifyContent: 'center',
+              // marginBottom: 8,
+              width: imageCount <= 1 ? width / 3 : width / 4,
+              marginLeft: imageCount >= 3 ? 8 : 0,
+            }}>
+            <TouchableOpacity
+              disabled={imageCount === 10 && true}
+              activeOpacity={0.7}
+              onPress={() => requestPermission()}>
+              <View
+                style={{
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  opacity: imageCount === 10 ? 0.5 : 1,
+                }}>
+                <PostImages width={normalize(56)} height={normalize(56)} />
+                <AppText
+                  textStyle="body2"
+                  color={Colors.contentOcean}
+                  customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
+                  Upload Photo
+              </AppText>
+              </View>
+            </TouchableOpacity>
           </View>
-        )}
+        </View>
+      )
+    }
 
       <AppText textStyle="metadata" customStyle={{ marginBottom: 16 }}>
         <AppText customStyle={{ fontWeight: 'bold' }}>

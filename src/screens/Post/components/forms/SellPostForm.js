@@ -157,9 +157,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   useEffect(() => {
     checkFormContent();
-    setPostImage([]);
-    setImageCount(0);
-    setImageCurrent('');
   }, [
     title,
     price,
@@ -314,7 +311,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
 
-        <PostImageUpload data={images === undefined || images.length == 0 ? null : images} />
+        <PostImageUpload data={images === undefined || images.length == 0 ? null : images}
+         />
 
         <AppInput
           customStyle={{marginBottom: 16}}

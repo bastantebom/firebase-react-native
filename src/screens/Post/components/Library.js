@@ -33,57 +33,22 @@ export const Library = ({cancel, next, data}) => {
   const [selected, setSelected] = useState([]);
   // const [photoCount, setPhotoCount] = useState(0);
 
-  useEffect(() => {
-    // getData();
-    // if (data === null || data.length === 0 ) {
-    //   return console.log('no data');
-    // } 
-    // if (data !== null || data.length !== 0) {
-    //   console.log(data)
-    // }
-  }, [])
-
   const getSelectedImages = async (images) => {
-    // setImageCurrent(num > 0 ? images[num - 1].uri : '');
-    // var num = images.length;
-    // setImageCount(num);
-
-    if (data === null || data.length === 0 ) {
-      setPostImage(images);
-      console.log('no data');
-    } 
-    if (data !== null || data.length !== 0) {
-
-      // const setValue = async () => {
-        // setSelected(images[num - 1].uri);
-        const newImages = []
-        images.forEach(image => {
-          if (image.uri) {
-            newImages.push(image.uri)
-          } else {
-            newImages.push(image)
-          }
-        })
-
-        console.log('newImages1');
-        setPostImage(newImages)
-        console.log(postImage)
-      // }
-      
-      // setValue()
-      // .then(() => {
-      //   setPostImage(selected);
-      //   console.log('newImages2');
-      //   console.log(postImage)
-      // })
-    }
+    var num = images.length;
+    setImageCurrent(num > 0 ? images[num - 1].uri : '');
+    setImageCount(num);
+    setPostImage(images);
   };
 
-  // console.log('postImage')
-  // console.log(postImage)
-
-  // console.log('selected')
-  // console.log(selected)
+  useEffect(() => {
+    if (data === null) {
+      return console.log('no data');
+    } 
+    if (data !== null) {
+      // console.log(data)
+      setPostImage(data)
+    }
+  }, [data])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);

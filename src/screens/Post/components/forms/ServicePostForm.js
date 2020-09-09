@@ -116,6 +116,7 @@ const ServicePostForm = ({
   const {
     title,
     setTitle,
+    images,
     price,
     setPrice,
     description,
@@ -246,7 +247,8 @@ const ServicePostForm = ({
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-      <PostImageUpload getImage={getImage} />
+
+      <PostImageUpload data={images === undefined || images.length == 0 ? null : images} />
 
       <AppInput
         customStyle={{marginBottom: 16}}
