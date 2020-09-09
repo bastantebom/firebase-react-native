@@ -165,6 +165,8 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   }, []);
 
   const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height;
+  console.log(height);
 
   const triggerNotify = (notify) => {
     if (notify) {
@@ -201,7 +203,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         {userInfo.cover_photo ? (
           <CacheableImage
             source={{uri: userInfo.cover_photo}}
-            style={{width: normalize(375), height: normalize(158 * 1.2)}}
+            style={{width: normalize(375), height: normalize(158)}}
           />
         ) : (
           <ProfileHeaderDefault
@@ -259,9 +261,9 @@ const styles = StyleSheet.create({
   },
 
   profileImageWrapper: {
-    width: '40%',
+    width: normalize(160),
     height: normalize(160),
-    top: '-21%',
+    top: Dimensions.get('window').height > 800 ? -normalize(70) : '-22%',
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },
