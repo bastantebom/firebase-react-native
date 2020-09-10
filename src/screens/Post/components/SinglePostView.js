@@ -257,7 +257,8 @@ const SinglePostView = (props) => {
           <AppText
             textStyle="subtitle1"
             customStyle={{marginTop: 24, marginBottom: 16}}>
-            {title} {post_type}
+            {title} 
+            {/* {post_type} */}
           </AppText>
 
           <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>
