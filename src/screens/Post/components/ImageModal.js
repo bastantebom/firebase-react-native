@@ -1,20 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {AppText, PaddingView, CacheableImage} from '@/components';
+import React, { useState } from 'react';
+import {CacheableImage} from '@/components';
 import {
   View,
   Dimensions,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Image,
   StyleSheet,
-  Text,
+  Animated,
+  Alert
 } from 'react-native';
+
 import {CloseLight} from '@/assets/images/icons';
 import {normalize, Colors} from '@/globals';
-import Swiper from 'react-native-swiper';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-// import Pagination from './Pagination';
 import PropTypes from 'prop-types';
+import ImageZoom from 'react-native-image-pan-zoom';
 
 const {width, height} = Dimensions.get('window');
 
@@ -26,6 +25,7 @@ export const ImageModal = ({close, data}) => {
     paginationDefaultColor,
     paginationActiveColor,
   }) => {
+
     return (
       <View style={styles.paginationContainer}>
         {Array.from({length: size}).map((_, index) => (
@@ -50,15 +50,11 @@ export const ImageModal = ({close, data}) => {
     scrollToIndex: PropTypes.func.isRequired,
     size: PropTypes.number.isRequired,
     paginationIndex: PropTypes.number,
-    paginationActiveColor: PropTypes.string,
-    paginationDefaultColor: PropTypes.string,
   };
 
   Pagination.defaultProps = {
     data: [],
-    paginationIndex: 0,
-    paginationActiveColor: 'pink',
-    paginationDefaultColor: 'black',
+    paginationIndex: 0
   };
 
   return (
@@ -69,7 +65,6 @@ export const ImageModal = ({close, data}) => {
         width: '100%',
         justifyContent: 'center',
         backgroundColor: '#000',
-        // padding: 8
       }}>
       <TouchableOpacity
         onPress={close}
@@ -84,10 +79,39 @@ export const ImageModal = ({close, data}) => {
           {data.map((item) => {
             return (
               <View key={item.id} style={styles.child}>
-                <CacheableImage
-                  style={{minHeight: 450, width: width - 15}}
-                  source={{uri: item}}
-                />
+                <ImageZoom 
+                  cropWidth={width}
+                  cropHeight={height}
+                  imageWidth={width - 15}
+                  imageHeight={450}
+                  // maxOverflow={0}
+                  minScale={1}
+                  maxScale={3}
+                  // panToMove={false}
+                  // pinchToZoom={true}
+                  useNativeDriver={true}
+                  // onMove={(positionX, positionY) => console.log(positionX, positionY)}
+                  // onMoveShouldSetPanResponder={() => true}
+                >
+                  <CacheableImage
+                    style={{
+                      minHeight: 450, width: width - 15
+                      // height: 450,
+                      // width: 450
+                    }}
+                    source={{uri: item}}
+                  />
+                </ImageZoom>
+                {/* <PinchGestureHandler
+                  onGestureEvent={onPinchEvent}
+                  onHandlerStateChange={onPinchStateChange}
+                >
+                  <Animated.Image
+                    style={{minHeight: 450, width: width - 15, transform: [{  scale: scale }]}}
+                    source={{uri: item}}
+                    // resizeMode='contain'
+                  />
+                </PinchGestureHandler> */}
               </View>
             );
           })}

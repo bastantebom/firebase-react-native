@@ -126,8 +126,8 @@ function TabStack() {
     <Tab.Navigator
       tabBarOptions={{
         style: {
-          borderTopWidth: 0,
-          elevation: 0,
+          // borderTopWidth: 0,
+          // elevation: 25,
           position: 'relative',
           paddingHorizontal: normalize(60),
         },
