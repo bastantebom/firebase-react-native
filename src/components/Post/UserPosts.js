@@ -17,7 +17,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
     setOtherUserPosts,
     otherUserPosts,
     needsRefresh,
-    setNeedsRefresh
+    setNeedsRefresh,
   } = useContext(Context);
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
@@ -33,17 +33,17 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   ] = useState(true);
 
   useEffect(() => {
-    let isMounted = true
-    
+    let isMounted = true;
+
     if (isMounted) {
-      if(needsRefresh) {
-        refreshPosts()
+      if (needsRefresh) {
+        refreshPosts();
       }
     }
 
     return () => {
-      isMounted = false
-    }
+      isMounted = false;
+    };
   }, [needsRefresh]);
 
   const refreshPosts = async () => {
@@ -51,23 +51,23 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       setUserPosts([]);
       setLastPID('none');
       setRefresh(true);
-      
+
       const params = {
         uid: userID,
         limit: 5,
       };
 
-      const res = await PostService.getUserPosts(params)
-      setLastPID(res.last_pid)
-      setIsLoading(false)
-  
+      const res = await PostService.getUserPosts(params);
+      setLastPID(res.last_pid);
+      setIsLoading(false);
+
       if (res.data.length > 0) {
         setUserPosts(res.data);
       }
 
-      setNeedsRefresh(false)
+      setNeedsRefresh(false);
       setRefresh(false);
-    } catch(err) {
+    } catch (err) {
       setRefresh(false);
     }
   };
@@ -88,8 +88,8 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
         limit: 5,
         last_pid: lastPID,
       };
-      console.log('GET MORE POST');
-      console.log(lastPID);
+      //console.log('GET MORE POST');
+      //console.log(lastPID);
       // console.log(getPostsParams);
 
       await PostService.getUserPosts(getPostsParams)

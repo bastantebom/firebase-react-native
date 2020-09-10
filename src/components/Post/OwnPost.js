@@ -95,24 +95,24 @@ const OwnPost = ({data, isLoading}) => {
 
   return (
     <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
-      <MarginView
-        marginSize={2}
-        style={{
-          marginBottom: 0,
-          padding: 12,
-          borderRadius: 8,
-          backgroundColor: 'white',
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.06,
-          shadowRadius: 8,
-          elevation: 4,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+      <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+        <MarginView
+          marginSize={2}
+          style={{
+            marginBottom: 0,
+            padding: 12,
+            borderRadius: 8,
+            backgroundColor: 'white',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.06,
+            shadowRadius: 8,
+            elevation: 4,
+          }}>
+          <View style={{flexDirection: 'row'}}>
             <View style={styles.postImageContainer}>
               {images.length > 0 ? (
                 <CacheableImage
@@ -128,33 +128,33 @@ const OwnPost = ({data, isLoading}) => {
                 <DefaultSell width={normalize(64)} height={normalize(72)} />
               )}
             </View>
-          </TouchableOpacity>
-          <View style={{paddingLeft: 12, flex: 1}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={styles.userInfoImageContainer}>
-                  <ProfilePhoto size={24} />
-                </View>
-                <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
-                  {display_name}
-                </AppText>
-                <VerifiedBadge />
-              </View>
 
-              <AppText>{timeAgo(date_posted)}</AppText>
-            </View>
-            <View
-              style={{
-                marginTop: 8,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              {/* <View
+            <View style={{paddingLeft: 12, flex: 1}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={styles.userInfoImageContainer}>
+                    <ProfilePhoto size={24} />
+                  </View>
+                  <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
+                    {display_name}
+                  </AppText>
+                  <VerifiedBadge />
+                </View>
+
+                <AppText>{timeAgo(date_posted)}</AppText>
+              </View>
+              <View
+                style={{
+                  marginTop: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                {/* <View
                 style={{
                   backgroundColor: statusBackground(),
                   borderRadius: 20,
@@ -167,20 +167,20 @@ const OwnPost = ({data, isLoading}) => {
                   {status}
                 </AppText>
               </View> */}
-              {/* <AppText
+                {/* <AppText
                 textStyle="metadata"
                 customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
                 2 Offers
               </AppText> */}
+              </View>
+              <AppText customStyle={{marginTop: 4}} textStyle="caption2">
+                {title}
+              </AppText>
+              {/* <AppText textStyle="metadata">{description}</AppText> */}
             </View>
-            <AppText customStyle={{marginTop: 4}} textStyle="caption2">
-              {title}
-            </AppText>
-            {/* <AppText textStyle="metadata">{description}</AppText> */}
           </View>
-        </View>
-      </MarginView>
-
+        </MarginView>
+      </TouchableOpacity>
       <Modal
         isVisible={showPost}
         animationIn="slideInUp"

@@ -166,7 +166,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
 
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-  console.log(height);
+  //console.log(height);
 
   const triggerNotify = (notify) => {
     if (notify) {

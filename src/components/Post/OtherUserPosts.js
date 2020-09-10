@@ -46,8 +46,8 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       limit: 5,
     };
 
-    console.log('REFRESH USER POSTS');
-    console.log(getPostsParams);
+    //console.log('REFRESH USER POSTS');
+    //console.log(getPostsParams);
 
     await PostService.getUserPosts(getPostsParams)
       .then((res) => {
@@ -81,13 +81,13 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
         limit: 5,
         last_pid: lastPID,
       };
-      console.log('GET MORE POST');
-      console.log(lastPID);
+      //console.log('GET MORE POST');
+      //console.log(lastPID);
       // console.log(getPostsParams);
 
       await PostService.getUserPosts(getPostsParams)
         .then((res) => {
-          console.log('API CALL');
+          //console.log('API CALL');
           if (res.success) {
             setLastPID(res.last_pid);
             setOtherUserPosts(
