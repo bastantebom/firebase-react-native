@@ -104,6 +104,7 @@ export const ContextProvider = ({children}) => {
         userPosts,
         setUserPosts,
         otherUserPosts,
+        setOtherUserPosts,
         needsRefresh,
         setNeedsRefresh
       }}>

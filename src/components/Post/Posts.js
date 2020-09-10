@@ -74,13 +74,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   };
 
   const onMomentumScrollBegin = () =>
-    setOnEndReachedCalledDuringMomentum(false)
+    setOnEndReachedCalledDuringMomentum(true)
 
 
   const getMorePost = async () => {
     try {
-      if (!onEndReachedCalledDuringMomentum) {
-        setOnEndReachedCalledDuringMomentum(true)
+      console.log(onEndReachedCalledDuringMomentum)
+      if (onEndReachedCalledDuringMomentum) {
+        setOnEndReachedCalledDuringMomentum(false)
 
         if (locationFilter) {
           if (lastPID !== undefined) {
