@@ -6,7 +6,7 @@ import {UserContext} from '@/context/UserContext';
 export const Context = createContext();
 
 export const ContextProvider = ({children}) => {
-  const {userInfo} = useContext(UserContext);
+  // const {userInfo} = useContext(UserContext);
 
   const [sliderState, setSliderState] = useState('');
   const [notificationState, setNotificationState] = useState('');
@@ -18,7 +18,7 @@ export const ContextProvider = ({children}) => {
   const [userPosts, setUserPosts] = useState([]);
   const [otherUserPosts, setOtherUserPosts] = useState([]);
 
-  const [locationFilter, setLocationFilter] = useState(userInfo?.address?.city);
+  const [locationFilter, setLocationFilter] = useState(null);
 
   const [postImage, setPostImage] = useState([]);
   const [imageCount, setImageCount] = useState(0);
