@@ -21,6 +21,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const [refresh, setRefresh] = useState(false);
   const [lastPID, setLastPID] = useState(null);
   const [fetchMore, setFecthMore] = useState(true);
+  const limit = 5
   // const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
   const [
     onEndReachedCalledDuringMomentum,
@@ -38,17 +39,33 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const refreshPosts = async () => {
     try {
       setRefresh(true)
-  
-      const params = {
-        limit: 5,
-        last_pid: lastPID
-      }
-      const res = await PostService.getPosts(params)
-      if (res.data.length > 0) {
-        setPosts(res.data)
-      } 
+      
+      if (locationFilter) {
+        const params = {
+          city: locationFilter,
+          limit: limit,
+          last_pid: null
+        }
 
-      setLastPID(res.last_pid)
+        const res = await PostService.getPostsLocation(params)
+        if (res.data.length > 0) {
+          setPosts(res.data)
+        }
+
+        setLastPID(res.last_pid)
+      } else {
+        const params = {
+          limit: limit,
+          last_pid: null
+        }
+        const res = await PostService.getPosts(params)
+        if (res.data.length > 0) {
+          setPosts(res.data)
+        } 
+  
+        setLastPID(res.last_pid)
+      }
+      
       setRefresh(false)
       setIsLoading(false);
     } catch(err) {
@@ -64,25 +81,52 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
     try {
       if (!onEndReachedCalledDuringMomentum) {
         setOnEndReachedCalledDuringMomentum(true)
-  
-        const params = {
-          limit: 5,
-          last_pid: lastPID
-        }
-        const res = await PostService.getPosts(params)
-        console.log(res)
-        if (!res.success && res.message === "No more post available") {
-          setFecthMore(false)
-          setIsLoading(false)
 
-          return
-        }
-      
-        if (res.data.length > 0) {
-          setPosts(prev => [...prev, ...res.data])
+        if (locationFilter) {
+          if (lastPID !== undefined) {
+            const params = {
+              city: locationFilter,
+              limit: limit,
+              last_pid: lastPID
+            }
+  
+            const res = await PostService.getPostsLocation(params)
+            if (!res.success && res.message === "No more post available") {
+              setFecthMore(false)
+              setIsLoading(false)
+    
+              return
+            }
+  
+            if (res.data.length > 0) {
+              setPosts(prev => [...prev, ...res.data])
+            }
+  
+            setLastPID(res.last_pid)
+          } else {
+            setIsLoading(false)
+            setFecthMore(false)
+          }
+        } else {
+          const params = {
+            limit: limit,
+            last_pid: lastPID
+          }
+          const res = await PostService.getPosts(params)
+          if (!res.success && res.message === "No more post available") {
+            setFecthMore(false)
+            setIsLoading(false)
+  
+            return
+          }
+        
+          if (res.data.length > 0) {
+            setPosts(prev => [...prev, ...res.data])
+          }
+    
+          setLastPID(res.last_pid)
         }
   
-        setLastPID(res.last_pid)
         setIsLoading(false)
       }
     } catch(err) {
