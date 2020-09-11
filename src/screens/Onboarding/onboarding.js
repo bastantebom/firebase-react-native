@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
+import Modal from 'react-native-modal';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 import {AppText, AppButton, AppViewContainer} from '@/components';
@@ -43,17 +44,19 @@ const Onboarding = ({navigation, illustration}) => {
   } = useContext(Context);
   // const [authType, setAuthType] = useState('');
 
-  useEffect(() => {
-    if (authType === '') {
-      return bottomSheetRef?.current.snapTo(1);
-    }
+  const [authenticationSheet, showAuthenticationSheet] = useState(false);
 
-    bottomSheetRef?.current.snapTo(1);
+  // useEffect(() => {
+  //   if (authType === '') {
+  //     return bottomSheetRef?.current.snapTo(1);
+  //   }
 
-    setTimeout(() => {
-      bottomSheetRef?.current.snapTo(0);
-    }, 1200);
-  }, [authType, setAuthType]);
+  //   bottomSheetRef?.current.snapTo(1);
+
+  //   setTimeout(() => {
+  //     bottomSheetRef?.current.snapTo(0);
+  //   }, 1200);
+  // }, [authType, setAuthType]);
 
   const renderHeader = () => {
     return (
@@ -89,6 +92,23 @@ const Onboarding = ({navigation, illustration}) => {
         <View style={{backgroundColor: 'white', height: '100%'}}>
           <Login />
         </View>
+      );
+    }
+  };
+
+  const RenderContent = () => {
+    if (authType === 'signup') {
+      return (
+        // <View style={{backgroundColor: 'white', height: '100%'}}>
+        <SignUp />
+        // </View>
+      );
+    }
+    if (authType === 'login') {
+      return (
+        // <View style={{backgroundColor: 'white', height: '100%'}}>
+        <Login />
+        // </View>
       );
     }
   };
@@ -165,7 +185,6 @@ const Onboarding = ({navigation, illustration}) => {
         <TouchableOpacity
           // onPress={() => navigation.push('Dashboard')}
           onPress={() => navigation.push('TabStack')}
-
           style={styles.link}>
           <AppText textStyle="body2">Skip</AppText>
         </TouchableOpacity>
@@ -200,9 +219,11 @@ const Onboarding = ({navigation, illustration}) => {
             height="xl"
             borderColor="primary"
             onPress={() => {
-              clickHandler();
+              // clickHandler();
+              // setAuthType('login');
+              // bottomSheetRef.current.snapTo(0);
               setAuthType('login');
-              bottomSheetRef.current.snapTo(0);
+              showAuthenticationSheet(true);
             }}
           />
           <AppButton
@@ -212,14 +233,39 @@ const Onboarding = ({navigation, illustration}) => {
             borderColor="primary"
             propsButtonCustomStyle=""
             onPress={() => {
-              clickHandler();
+              // clickHandler();
               setAuthType('signup');
-              bottomSheetRef.current.snapTo(0);
+              showAuthenticationSheet(true);
+              // bottomSheetRef.current.snapTo(0);
               //console.log(bottomSheetRef);
             }}
           />
         </View>
       </View>
+
+      <Modal
+        isVisible={authenticationSheet}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{margin: 0, justifyContent: 'flex-end'}}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showAuthenticationSheet(false)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View style={{backgroundColor: 'white', height: '82%'}}>
+          <TouchableOpacity
+            onPress={() => {
+              showAuthenticationSheet(false);
+            }}>
+            <AppText>HEllo</AppText>
+            <RenderContent />
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       <BottomSheet
         ref={bottomSheetRef}
