@@ -333,6 +333,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
 
+         {/* <AppButton
+          text="Upload"
+          onPress={() => uploadAllImage()}
+         /> */}
+
         <AppInput
           customStyle={{marginBottom: 16}}
           label="Title"

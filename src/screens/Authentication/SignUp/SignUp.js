@@ -41,7 +41,6 @@ const SignUp = (props) => {
     // setError([]);
     setSignUpLabel((previousState) => !previousState);
   };
-  console.log(error.length)
   const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -563,7 +562,7 @@ const SignUp = (props) => {
                 text="Sign up"
                 type="primary"
                 height="xl"
-                disabled={buttonDisabled}
+                // disabled={buttonDisabled}
                 customStyle={{...styles.customButtonStyle, ...buttonStyle}}
                 onPress={() => {
                   signUpEmail(signUpForm);
