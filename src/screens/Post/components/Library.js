@@ -33,26 +33,33 @@ export const Library = ({cancel, next, data}) => {
   const [selected, setSelected] = useState([]);
   // const [photoCount, setPhotoCount] = useState(0);
 
+  const [imageselected, setImageselected] = useState();
+
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
+    // setImageCurrent(num > 0 ? images[num - 1].filename : '');
     setImageCount(num);
     setPostImage(images);
+
+    // console.log(imageCurrent);
+    // console.log(images);
   };
 
   useEffect(() => {
     if (data === null) {
       return console.log('no data');
-    } 
-    if (data !== null) {
-      // console.log(data)
-      setPostImage(data)
     }
-  }, [data])
-  
+    if (data !== null) {
+      setPostImage(data);
+    }
+  }, [data]);
+
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
+
+  // let x = 0;
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -82,7 +89,7 @@ export const Library = ({cancel, next, data}) => {
             disabled={postImage.length < 1 && true}
             onPress={() => {
               // setToContext(selected, photoCount),
-              next(postImage, imageCount, imageCurrent)
+              next(postImage, imageCount, imageCurrent);
             }}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
@@ -119,7 +126,7 @@ export const Library = ({cancel, next, data}) => {
             </AppText>
           </View>
           {imageCurrent ? (
-            <CacheableImage
+            <Image
               source={{uri: imageCurrent}}
               style={{
                 width: '100%',
@@ -133,7 +140,7 @@ export const Library = ({cancel, next, data}) => {
                 ? height / 1.8 - normalize(122)
                 : height - normalize(117),
               zIndex: -1,
-              width: width
+              width: width,
             }}>
             <CameraRollPicker
               groupTypes="All"
@@ -153,23 +160,20 @@ export const Library = ({cancel, next, data}) => {
                     right: 4,
                     top: 6,
                   }}>
-                  <AppText 
-                    textStyle="subtitle1" 
-                    color={Colors.neutralsWhite} 
-                    customStyle={{ textAlign: 'center' }}
-                  >
+                  <AppText
+                    textStyle="subtitle1"
+                    color={Colors.neutralsWhite}
+                    customStyle={{textAlign: 'center'}}>
                     {imageCount}
                   </AppText>
                 </View>
               }
-              callback={
-                () => { 
-                  // data !== null ?
-                  getSelectedImages(postImage) 
-                  // :
-                  // getSelectedImages(selected)
-                }
-              }
+              callback={() => {
+                // data !== null ?
+                getSelectedImages(postImage);
+                // :
+                // getSelectedImages(selected)
+              }}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,
