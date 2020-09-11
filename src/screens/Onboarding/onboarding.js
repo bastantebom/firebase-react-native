@@ -12,9 +12,15 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
+import Modal from 'react-native-modal';
 import BottomSheet from 'reanimated-bottom-sheet';
 
-import {AppText, AppButton, AppViewContainer} from '@/components';
+import {
+  AppText,
+  AppButton,
+  AppViewContainer,
+  BottomSheetHeader,
+} from '@/components';
 
 import Colors from '@/globals/Colors';
 import Login from '@/screens/Authentication/Login/login';
@@ -31,8 +37,6 @@ import {Context} from '@/context';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
-let bottomSheetRef = createRef();
-
 const Onboarding = ({navigation, illustration}) => {
   const {
     sliderState,
@@ -40,73 +44,17 @@ const Onboarding = ({navigation, illustration}) => {
     openSlider,
     authType,
     setAuthType,
+    authenticationSheet,
+    showAuthenticationSheet,
   } = useContext(Context);
-  // const [authType, setAuthType] = useState('');
 
-  useEffect(() => {
-    if (authType === '') {
-      return bottomSheetRef?.current.snapTo(1);
-    }
-
-    bottomSheetRef?.current.snapTo(1);
-
-    setTimeout(() => {
-      bottomSheetRef?.current.snapTo(0);
-    }, 1200);
-  }, [authType, setAuthType]);
-
-  const renderHeader = () => {
-    return (
-      <View
-        style={{
-          backgroundColor: 'white',
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            backgroundColor: '#EAEAEA',
-            width: 40,
-            height: 5,
-            marginVertical: 8,
-          }}
-        />
-      </View>
-    );
-  };
-
-  const renderContent = () => {
+  const RenderContent = () => {
     if (authType === 'signup') {
-      return (
-        <View style={{backgroundColor: 'white', height: '100%'}}>
-          <SignUp />
-        </View>
-      );
+      return <SignUp />;
     }
     if (authType === 'login') {
-      return (
-        <View style={{backgroundColor: 'white', height: '100%'}}>
-          <Login />
-        </View>
-      );
+      return <Login />;
     }
-  };
-
-  if (sliderState === 'close') {
-    bottomSheetRef?.current.snapTo(1);
-  }
-
-  const clickHandler = () => {
-    openSlider();
-    // _panel.current.show();
-    bottomSheetRef?.current.snapTo(0);
-  };
-
-  const closeHandler = () => {
-    openSlider();
-    // _panel.current.hide();
-    bottomSheetRef?.current.snapTo(1);
   };
 
   const animation = new Animated.Value(0);
@@ -152,20 +100,15 @@ const Onboarding = ({navigation, illustration}) => {
     },
   ]);
 
-  //console.log('Auth Type: ' + authType);
-
   return (
     <>
       <View style={styles.contentHolder}>
-        <TouchableWithoutFeedback onPress={closeHandler}>
-          <Animated.View style={styles.bgImageHolder}>
-            <PolygonStatic width={width} height={height} />
-          </Animated.View>
-        </TouchableWithoutFeedback>
+        <Animated.View style={styles.bgImageHolder}>
+          <PolygonStatic width={width} height={height} />
+        </Animated.View>
         <TouchableOpacity
           // onPress={() => navigation.push('Dashboard')}
           onPress={() => navigation.push('TabStack')}
-
           style={styles.link}>
           <AppText textStyle="body2">Skip</AppText>
         </TouchableOpacity>
@@ -200,9 +143,8 @@ const Onboarding = ({navigation, illustration}) => {
             height="xl"
             borderColor="primary"
             onPress={() => {
-              clickHandler();
               setAuthType('login');
-              bottomSheetRef.current.snapTo(0);
+              showAuthenticationSheet(true);
             }}
           />
           <AppButton
@@ -212,22 +154,37 @@ const Onboarding = ({navigation, illustration}) => {
             borderColor="primary"
             propsButtonCustomStyle=""
             onPress={() => {
-              clickHandler();
               setAuthType('signup');
-              bottomSheetRef.current.snapTo(0);
-              //console.log(bottomSheetRef);
+              showAuthenticationSheet(true);
             }}
           />
         </View>
       </View>
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={['85%', '0%']}
-        renderContent={renderContent}
-        renderHeader={renderHeader}
-        initialSnap={1}
-      />
+      <Modal
+        isVisible={authenticationSheet}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{margin: 0, justifyContent: 'flex-end'}}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showAuthenticationSheet(false)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: '82%',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          }}>
+          <BottomSheetHeader />
+          <RenderContent />
+        </View>
+      </Modal>
     </>
   );
 };

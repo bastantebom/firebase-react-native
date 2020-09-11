@@ -9,6 +9,8 @@ export const ContextProvider = ({children}) => {
   // const {userInfo} = useContext(UserContext);
 
   const [sliderState, setSliderState] = useState('');
+  const [authenticationSheet, showAuthenticationSheet] = useState(false);
+
   const [notificationState, setNotificationState] = useState('');
   const [authType, setAuthType] = useState('');
   const [showButtons, setShowButtons] = useState();
@@ -26,14 +28,16 @@ export const ContextProvider = ({children}) => {
 
   const [isInternetReachable, setIsInternetReachable] = useState(false);
 
-  const [needsRefresh, setNeedsRefresh] = useState(true)
+  const [needsRefresh, setNeedsRefresh] = useState(true);
 
   const closeSlider = () => {
     setSliderState('close');
+    showAuthenticationSheet(false);
   };
 
   const openSlider = () => {
     setSliderState('open');
+    showAuthenticationSheet(true);
   };
 
   const openNotification = () => {
@@ -75,6 +79,8 @@ export const ContextProvider = ({children}) => {
   return (
     <Context.Provider
       value={{
+        authenticationSheet,
+        showAuthenticationSheet,
         sliderState,
         notificationState,
         closeSlider,
@@ -106,7 +112,7 @@ export const ContextProvider = ({children}) => {
         otherUserPosts,
         setOtherUserPosts,
         needsRefresh,
-        setNeedsRefresh
+        setNeedsRefresh,
       }}>
       {children}
     </Context.Provider>
