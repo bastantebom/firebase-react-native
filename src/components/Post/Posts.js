@@ -48,6 +48,15 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         }
 
         const res = await PostService.getPostsLocation(params)
+
+        if (res.message === "You have reached the end of the post, no more available posts") {
+          setPosts([])
+          setFecthMore(false)
+          setRefresh(false)
+          setIsLoading(false);
+          return
+        }
+
         if (res.data.length > 0) {
           setPosts(res.data)
         }
