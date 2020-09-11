@@ -151,8 +151,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     }, 5000);
   };
 
-  // const 
-  const [error, setError] = useState([])
+  // const
+  const [error, setError] = useState([]);
   const [verified, setVerified] = useState(false);
 
   /*Username Validations */
@@ -166,7 +166,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [mobile, setMobile] = useState(phone_number);
   const [bDate, setBDate] = useState(birth_date);
   const [g, setG] = useState(gender);
-
 
   const toggleMap = () => {
     setMap(!map);
@@ -539,6 +538,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 onChangeText={(desc) => {
                   setDesc(desc);
                 }}
+                underlineColorAndroid={'transparent'}
               />
             </PaddingView>
           </View>
@@ -802,12 +802,16 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    color: Colors.contentEbony,
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(16),
+    letterSpacing: 0.5,
     borderColor: Colors.neutralGray,
     borderWidth: 1,
     borderRadius: 4,
-    marginTop: normalize(16),
-    padding: normalize(8),
-    fontSize: normalize(14),
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginBottom: 16,
   },
 
   errorCopy: {

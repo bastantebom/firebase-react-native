@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Dimensions,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
@@ -33,9 +34,13 @@ const ServicePostForm = ({
   initialData,
 }) => {
   const {user, userInfo, setUserInfo} = useContext(UserContext);
-  const {postImage, setPostImage, setImageCount, setImageCurrent, setNeedsRefresh} = useContext(
-    Context,
-  );
+  const {
+    postImage,
+    setPostImage,
+    setImageCount,
+    setImageCurrent,
+    setNeedsRefresh,
+  } = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -234,7 +239,7 @@ const ServicePostForm = ({
       togglePostModal();
       setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       navToPost({...res, viewing: false, created: true, edited: false});
-      setNeedsRefresh(true)
+      setNeedsRefresh(true);
     });
   };
 
@@ -248,8 +253,9 @@ const ServicePostForm = ({
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-
-      <PostImageUpload data={images === undefined || images.length == 0 ? null : images} />
+      <PostImageUpload
+        data={images === undefined || images.length == 0 ? null : images}
+      />
 
       <AppInput
         customStyle={{marginBottom: 16}}
@@ -273,27 +279,26 @@ const ServicePostForm = ({
         numberOfLines={5}
       /> */}
 
-      <Textarea
-        containerStyle={{
-          // backgroundColor: 'red',
-          borderColor: Colors.neutralGray,
-          borderRadius: 4,
-          borderWidth: 1,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          marginBottom: 16,
-        }}
-        defaultValue={description}
-        onChangeText={(text) => setDescription(text)}
+      <TextInput
+        value={description}
+        multiline={true}
+        placeholder="Description"
+        placeholderTextColor={Colors.neutralGray}
+        numberOfLines={Platform.OS === 'ios' ? null : 6}
+        minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
         style={{
           color: Colors.contentEbony,
           fontFamily: 'RoundedMplus1c-Regular',
           fontSize: normalize(16),
           letterSpacing: 0.5,
+          borderColor: Colors.neutralGray,
+          borderWidth: 1,
+          borderRadius: 4,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          marginBottom: 16,
         }}
-        maxLength={1000}
-        placeholder={'Description'}
-        placeholderTextColor={'#c7c7c7'}
+        onChangeText={(text) => setDescription(text)}
         underlineColorAndroid={'transparent'}
       />
       <View style={{position: 'relative'}}>
