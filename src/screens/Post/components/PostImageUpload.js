@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 import {
   AppText,
@@ -18,16 +18,16 @@ import {
   BottomSheetHeader,
   CacheableImage,
 } from '@/components';
-import { normalize, Colors } from '@/globals';
-import { UserContext } from '@/context/UserContext';
-import { Context } from '@/context';
-import { PostImages, CloseLight } from '@/assets/images/icons';
-import { PostCamera } from './Camera';
-import { Library } from './Library';
+import {normalize, Colors} from '@/globals';
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
+import {PostImages, CloseLight} from '@/assets/images/icons';
+import {PostCamera} from './Camera';
+import {Library} from './Library';
 
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
-export const PostImageUpload = ({ data }) => {
+export const PostImageUpload = ({data}) => {
   const {
     setPostImage,
     postImage,
@@ -36,8 +36,6 @@ export const PostImageUpload = ({ data }) => {
     setImageCurrent,
     imageCurrent,
   } = useContext(Context);
-
-  
 
   const [photoCount, setPhotoCount] = useState(0);
   const [selected, setSelected] = useState([]);
@@ -166,17 +164,16 @@ export const PostImageUpload = ({ data }) => {
   // console.log('imageCount', imageCount)
   // console.log('data', data)
 
-
   useEffect(() => {
     if (data === null) {
       return console.log('no data');
     } else {
-      setImageCount(data.length)
+      setImageCount(data.length);
       // setPostImage(data)
       return console.log('with data');
     }
   }, [data]);
-  
+
   return (
     <>
       {imageCount === 0 ? (
@@ -193,7 +190,7 @@ export const PostImageUpload = ({ data }) => {
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => requestPermission()}>
-            <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+            <View style={{alignSelf: 'center', alignItems: 'center'}}>
               <PostImages width={normalize(56)} height={normalize(56)} />
               <AppText textStyle="body2" color={Colors.contentOcean}>
                 Upload Cover Photos
@@ -211,7 +208,7 @@ export const PostImageUpload = ({ data }) => {
             marginBottom: 8,
             // justifyContent: 'center',
           }}>
-          {data === null ? 
+          {data === null ? (
             <ScrollView horizontal>
               {postImage.map((image, i) => {
                 return (
@@ -233,22 +230,23 @@ export const PostImageUpload = ({ data }) => {
                           borderRadius: 50,
                         }}
                       />
-                      <View style={{ left: normalize(3.75), top: normalize(3.5) }}>
+                      <View
+                        style={{left: normalize(3.75), top: normalize(3.5)}}>
                         <CloseLight
                           width={normalize(20)}
                           height={normalize(20)}
                         />
                       </View>
                     </TouchableOpacity>
-                    <CacheableImage
-                      source={{ uri: image.uri ? image.uri : image }}
+                    <Image
+                      source={{uri: image.uri ? image.uri : image}}
                       style={{
                         width:
                           imageCount === 1
                             ? width / 2
                             : imageCount === 2
-                              ? width / 3.333
-                              : width / 4,
+                            ? width / 3.333
+                            : width / 4,
                         height: normalize(114),
                         marginRight: 8,
                         borderRadius: 4,
@@ -258,7 +256,7 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>
-          :
+          ) : (
             <ScrollView horizontal>
               {data.map((image, i) => {
                 return (
@@ -280,7 +278,8 @@ export const PostImageUpload = ({ data }) => {
                           borderRadius: 50,
                         }}
                       />
-                      <View style={{left: normalize(3.75), top: normalize(3.5)}}>
+                      <View
+                        style={{left: normalize(3.75), top: normalize(3.5)}}>
                         <CloseLight
                           width={normalize(20)}
                           height={normalize(20)}
@@ -288,7 +287,7 @@ export const PostImageUpload = ({ data }) => {
                       </View>
                     </TouchableOpacity>
                     <CacheableImage
-                      source={{ uri: image.uri ? image.uri : image }}
+                      source={{uri: image.uri ? image.uri : image}}
                       style={{
                         width:
                           imageCount === 1
@@ -304,8 +303,8 @@ export const PostImageUpload = ({ data }) => {
                   </View>
                 );
               })}
-            </ScrollView>  
-          }
+            </ScrollView>
+          )}
           <View
             style={{
               // flex: 1,
@@ -333,18 +332,17 @@ export const PostImageUpload = ({ data }) => {
                 <AppText
                   textStyle="body2"
                   color={Colors.contentOcean}
-                  customStyle={{ paddingHorizontal: 15, textAlign: 'center' }}>
+                  customStyle={{paddingHorizontal: 15, textAlign: 'center'}}>
                   Upload Photo
-              </AppText>
+                </AppText>
               </View>
             </TouchableOpacity>
           </View>
         </View>
-      )
-    }
+      )}
 
-      <AppText textStyle="metadata" customStyle={{ marginBottom: 16 }}>
-        <AppText customStyle={{ fontWeight: 'bold' }}>
+      <AppText textStyle="metadata" customStyle={{marginBottom: 16}}>
+        <AppText customStyle={{fontWeight: 'bold'}}>
           Photos - {imageCount}/10
         </AppText>{' '}
         Choose your listing’s main photo first for Cover Photo. And more photos
