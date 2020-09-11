@@ -305,6 +305,18 @@ const SignUp = (props) => {
     setButtonDisable(j);
   };
 
+  const setButtonState = (j) => {
+    if (j) {
+      setButtonStyle({
+        backgroundColor: AppColor.buttonDisable,
+        borderColor: AppColor.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    setButtonDisable(j);
+  };
+
   const signUpEmail = (formValues) => {
     //console.log(formValues);
 
