@@ -102,14 +102,14 @@ const PostEllipsis = ({
               padding: 16,
             }}>
             <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
-              Delete Post?
+              Remove Post?
           </AppText>
 
             <AppText
               textStyle="caption"
               customStyle={{ textAlign: 'center' }}
               customStyle={{ marginBottom: 16 }}>
-              Are you sure you want to delete this post?
+              Are you sure you want to remove this post?
           </AppText>
 
             <TouchableOpacity
