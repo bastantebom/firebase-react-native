@@ -277,7 +277,7 @@ const SignUp = (props) => {
     setIsValidPassword(true);
   };
 
-  const {closeSlider, authType, setAuthType} = useContext(Context);
+  const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
 
   const signUpEmail = (formValues) => {
     //console.log(formValues);
@@ -510,7 +510,14 @@ const SignUp = (props) => {
 
             <View style={styles.loginLinkCopy}>
               <AppText textStyle="button2">Already have an account?</AppText>
-              <TouchableOpacity onPress={() => setAuthType('login')}>
+              <TouchableOpacity
+                onPress={() => {
+                  closeSlider();
+                  setTimeout(() => {
+                    setAuthType('login');
+                    openSlider();
+                  }, 450);
+                }}>
                 <AppText textStyle="button2" customStyle={styles.underLineText}>
                   Login
                 </AppText>

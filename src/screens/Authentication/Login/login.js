@@ -34,7 +34,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [isVisble, setIsVisible] = useState(false);
 
-  const {closeSlider, authType, setAuthType} = useContext(Context);
+  const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -153,7 +153,14 @@ function Login() {
             />
             <View style={styles.cta}>
               <AppText textStyle="button2">Don't have an account? </AppText>
-              <TouchableOpacity onPress={() => setAuthType('signup')}>
+              <TouchableOpacity
+                onPress={() => {
+                  closeSlider();
+                  setTimeout(() => {
+                    setAuthType('signup');
+                    openSlider();
+                  }, 450);
+                }}>
                 <AppText textStyle="button2" customStyle={styles.link}>
                   Sign up
                 </AppText>
