@@ -160,6 +160,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         <GooglePlacesInput
           onResultsClick={(data) => {
             //alert(data);
+            console.log('nag click sa textbox');
             onSearchLocationHandler(data);
             //alert(data);
           }}
@@ -181,6 +182,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         longitude={address.longitude}
         reCenter={newCoords}
         onRegionChange={(region) => {
+          console.log('nagalaw ang mapa');
           onRegionChange(region);
         }}
         withCurrentMarker={false}
