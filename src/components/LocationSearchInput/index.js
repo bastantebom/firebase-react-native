@@ -16,7 +16,6 @@ const GooglePlacesInput = ({
 
   useEffect(() => {
     if (currentValue) {
-      console.log('text chnage' + currentValue);
       placesRef.current.setAddressText(currentValue);
     }
   }, [currentValue]);

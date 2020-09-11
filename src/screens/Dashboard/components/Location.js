@@ -59,17 +59,20 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     longitude: 0,
     latitude: 0,
   });
+  const [changeAddressTrigger, setChangeAddressTrigger] = useState('');
   //const [isScreenLoading, setIsScreenLoading] = useState(false);
 
+  //MAP DRAG
   const onRegionChange = (region) => {
     //console.log(region);
+    setChangeAddressTrigger('mapDrag');
     getStringAddress(region);
     //setButtonDisabled(false);
     setButtonDisabled(false);
     setButtonStyle({});
   };
 
-  const getStringAddress = (location) => {
+  const getStringAddress = (location, strAddress) => {
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
         const addressComponent = json.results[1].formatted_address;
@@ -87,8 +90,12 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             : json.results.length < 8
             ? 2
             : 2;
+        if (changeAddressTrigger === 'mapDrag' || changeAddressTrigger === '') {
+          console.log('update dahil na drag ang map');
+          console.log(changeAddressTrigger);
+          setChangeMapAddress(addressComponent);
+        }
 
-        setChangeMapAddress(addressComponent);
         setAddressComponents({
           ...addressComponents,
           ...{
@@ -109,7 +116,9 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   };
 
   const getPositionFromString = (address) => {
-    //console.log('Dito Sya');
+    console.log('getPositionFromString ' + address);
+    //console.log('getStringAddress ' + strAddress);
+
     Geocoder.from(address)
       .then((json) => {
         const location = json.results[0].geometry.location;
@@ -118,7 +127,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
           latitude: location.lat,
           longitude: location.lng,
         };
-        getStringAddress(convertedLocation);
+        getStringAddress(convertedLocation, address);
         setNewCoords(location);
         setButtonDisabled(false);
         setButtonStyle({});
@@ -126,8 +135,11 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       .catch((error) => console.warn(error));
   };
 
+  //SEARCH ADDRESS
   const onSearchLocationHandler = (data) => {
-    //console.log(JSON.stringify(data));
+    console.log('onSearchLocationHandler ' + data);
+    setChangeMapAddress(data);
+
     //setChangeMapAddress(data);
     //getStringAddress(data);
     getPositionFromString(data);
@@ -160,19 +172,13 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         <GooglePlacesInput
           onResultsClick={(data) => {
             //alert(data);
-            console.log('nag click sa textbox');
+            console.log('nag search');
+            setChangeAddressTrigger('searchText');
             onSearchLocationHandler(data);
             //alert(data);
           }}
-          onClearInput={(textValue) => {
-            console.log('setvalue');
-          }}
-          currentValue={
-            changeMapAddress.length > 0
-              ? changeMapAddress
-              : route?.route?.params.address
-          }
-          cityOnly={true}
+          onClearInput={() => {}}
+          currentValue={changeMapAddress}
         />
       </View>
       <MapComponent
@@ -182,7 +188,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         longitude={address.longitude}
         reCenter={newCoords}
         onRegionChange={(region) => {
-          console.log('nagalaw ang mapa');
           onRegionChange(region);
         }}
         withCurrentMarker={false}
