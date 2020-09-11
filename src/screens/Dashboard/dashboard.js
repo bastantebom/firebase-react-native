@@ -250,7 +250,6 @@ const SearchBarWithFilter = () => {
   const [showLocation, setShowLocation] = useState(false);
 
   const { userInfo } = useContext(UserContext);
-  const { longitude, latitude } = userInfo.address
 
   changeFromMapHandler = async (fullAddress) => {
     setLocationFilter(fullAddress.city)
@@ -414,7 +413,7 @@ const SearchBarWithFilter = () => {
         <LocationMap
           address={
             userInfo.address 
-              ? { latitude: latitude, longitude: longitude }
+              ? { latitude: userInfo.address.latitude, longitude: userInfo.address.longitude }
               : { latitude: 14.5831, longitude: 120.9794 } 
           }
           back={() => setShowLocation(false)}
