@@ -136,9 +136,9 @@ export const PostImageUpload = ({ data }) => {
     togglePickerModal();
   };
 
-  const continueCamera = () => {
-    setPostImage([...postImage]);
-    setImageCount(imageCount);
+  const continueCamera = (selected, photoCount) => {
+    setPostImage([...postImage, selected]);
+    setImageCount(imageCount + photoCount);
     // setCurrentImage(currentImage)
     togglePickerModal();
   };
@@ -156,13 +156,13 @@ export const PostImageUpload = ({ data }) => {
         <Library
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
-          data={data === null ? null : data}
+          // data={data === null ? null : data}
         />
       ),
     },
   ];
 
-  // console.log('postImage', postImage)
+  console.log('postImage', postImage)
   // console.log('imageCount', imageCount)
   // console.log('data', data)
 
@@ -211,7 +211,8 @@ export const PostImageUpload = ({ data }) => {
             marginBottom: 8,
             // justifyContent: 'center',
           }}>
-          {data === null ? 
+          {/* {data === null ?  */}
+          {/* // <></> */}
             <ScrollView horizontal>
               {postImage.map((image, i) => {
                 return (
@@ -240,7 +241,7 @@ export const PostImageUpload = ({ data }) => {
                         />
                       </View>
                     </TouchableOpacity>
-                    <CacheableImage
+                    <Image
                       source={{ uri: image.uri ? image.uri : image }}
                       style={{
                         width:
@@ -258,7 +259,7 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>
-          :
+          {/* :
             <ScrollView horizontal>
               {data.map((image, i) => {
                 return (
@@ -305,7 +306,7 @@ export const PostImageUpload = ({ data }) => {
                 );
               })}
             </ScrollView>  
-          }
+          } */}
           <View
             style={{
               // flex: 1,
