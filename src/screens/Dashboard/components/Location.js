@@ -171,6 +171,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
               ? changeMapAddress
               : route?.route?.params.address
           }
+          cityOnly={true}
         />
       </View>
       <MapComponent
