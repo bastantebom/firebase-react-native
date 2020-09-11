@@ -373,7 +373,12 @@ const SinglePostView = (props) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <ImageModal close={togglePostImageModal} data={images === undefined || images.length == 0 ? defaultImage : images} />
+        <ImageModal
+          close={togglePostImageModal}
+          data={
+            images === undefined || images.length == 0 ? defaultImage : images
+          }
+        />
       </Modal>
     </>
   );
@@ -395,7 +400,9 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-    padding: 16,
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(16),
+    paddingBottom: normalize(70),
   },
   userInfoImageContainer: {
     height: normalize(42),

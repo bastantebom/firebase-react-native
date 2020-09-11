@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import storage from '@react-native-firebase/storage';
@@ -18,7 +19,13 @@ import StoreLocation from '../StoreLocation';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 
-import {AppText, AppInput, Switch, AppButton, CacheableImage} from '@/components';
+import {
+  AppText,
+  AppInput,
+  Switch,
+  AppButton,
+  CacheableImage,
+} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
@@ -26,9 +33,13 @@ import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
-  const { postImage, setPostImage, setImageCount, setImageCurrent, setNeedsRefresh } = useContext(
-    Context,
-  );
+  const {
+    postImage,
+    setPostImage,
+    setImageCount,
+    setImageCurrent,
+    setNeedsRefresh,
+  } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
 
@@ -186,51 +197,51 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     // if (initialData.post_id) {
     //   console.log('I got the image');
     //   console.log(image);
-  
+
     //   if (image) {
     //     const {uri, filename} = image;
     //     // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-  
+
     //     const newFilename =
     //       Platform.OS === 'ios'
     //         ? filename.substring(0, filename.lastIndexOf('.'))
     //         : uri.substring(uri.lastIndexOf('/') + 1);
     //     const uploadUri =
     //       Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-  
+
     //     const task = storage().ref();
     //     const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
     //     await fileRef.putFile(uploadUri);
     //     const downloadURL = await fileRef.getDownloadURL();
-  
+
     //     return Promise.resolve(downloadURL);
     //   } else {
     //     return Promise.reject('Failed to upload');
     //   }
     // } else {
-      console.log('I got the image');
-      console.log(image);
-  
-      if (image) {
-        const {uri, filename} = image;
-        // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-  
-        const newFilename =
-          Platform.OS === 'ios'
-            ? filename.substring(0, filename.lastIndexOf('.'))
-            : uri.substring(uri.lastIndexOf('/') + 1);
-        const uploadUri =
-          Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-  
-        const task = storage().ref();
-        const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-        await fileRef.putFile(uploadUri);
-        const downloadURL = await fileRef.getDownloadURL();
-  
-        return Promise.resolve(downloadURL);
-      } else {
-        return Promise.reject('Failed to upload');
-      }
+    console.log('I got the image');
+    console.log(image);
+
+    if (image) {
+      const {uri, filename} = image;
+      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
+
+      const newFilename =
+        Platform.OS === 'ios'
+          ? filename.substring(0, filename.lastIndexOf('.'))
+          : uri.substring(uri.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      await fileRef.putFile(uploadUri);
+      const downloadURL = await fileRef.getDownloadURL();
+
+      return Promise.resolve(downloadURL);
+    } else {
+      return Promise.reject('Failed to upload');
+    }
     // }
   };
 
@@ -293,7 +304,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       setLoadingSubmit(false);
       setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
       togglePostModal();
-      setNeedsRefresh(true)
+      setNeedsRefresh(true);
       setTimeout(() => {
         navToPost({...res, viewing: false, created: true, edited: false});
       }, 500);
@@ -311,9 +322,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-
-        <PostImageUpload data={images === undefined || images.length == 0 ? null : images}
-         />
+        <PostImageUpload
+          data={images === undefined || images.length == 0 ? null : images}
+        />
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -337,26 +348,26 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         numberOfLines={5}
       /> */}
 
-        <Textarea
-          containerStyle={{
-            // backgroundColor: 'red',
-            borderColor: Colors.neutralGray,
-            borderRadius: 4,
-            borderWidth: 1,
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-          }}
-          defaultValue={description}
-          onChangeText={(text) => setDescription(text)}
+        <TextInput
+          value={description}
+          multiline={true}
+          placeholder="Description"
+          placeholderTextColor={Colors.neutralGray}
+          numberOfLines={Platform.OS === 'ios' ? null : 6}
+          minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
           style={{
             color: Colors.contentEbony,
             fontFamily: 'RoundedMplus1c-Regular',
             fontSize: normalize(16),
             letterSpacing: 0.5,
+            borderColor: Colors.neutralGray,
+            borderWidth: 1,
+            borderRadius: 4,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            marginBottom: 16,
           }}
-          maxLength={1000}
-          placeholder={'Description'}
-          placeholderTextColor={'#c7c7c7'}
+          onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}
         />
       </View>
