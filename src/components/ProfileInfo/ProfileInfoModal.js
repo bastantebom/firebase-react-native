@@ -150,7 +150,7 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}
-          <HexagonBorder size={150} imgSrc={userInfo.profile_photo} />
+          <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
         </View>
 
         <ProfileLinks
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: '40%',
     height: normalize(160),
-    top: normalize(-70),
+    top: Dimensions.get('window').height > 800 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },

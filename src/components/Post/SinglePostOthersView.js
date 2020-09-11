@@ -242,7 +242,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
           flexDirection: 'row',
           alignItems: 'flex-end',
           position: 'absolute',
-          bottom: 0
+          bottom: 0,
         }}>
         <View
           style={{
@@ -309,8 +309,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 60,
+    paddingTop: normalize(16),
+    paddingBottom: normalize(85),
     // padding: 16,
     // backgroundColor: 'blue',
     // height: '100%',
