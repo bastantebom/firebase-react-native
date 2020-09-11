@@ -149,25 +149,25 @@ export const Library = ({cancel, next, data}) => {
               selected={postImage}
               imagesPerRow={3}
               imageMargin={2}
-              selectedMarker={
-                <View
-                  style={{
-                    backgroundColor: Colors.contentOcean,
-                    width: 25,
-                    height: 25,
-                    borderRadius: 50,
-                    position: 'absolute',
-                    right: 4,
-                    top: 6,
-                  }}>
-                  <AppText
-                    textStyle="subtitle1"
-                    color={Colors.neutralsWhite}
-                    customStyle={{textAlign: 'center'}}>
-                    {imageCount}
-                  </AppText>
-                </View>
-              }
+              // selectedMarker={
+              //   <View
+              //     style={{
+              //       backgroundColor: Colors.contentOcean,
+              //       width: 25,
+              //       height: 25,
+              //       borderRadius: 50,
+              //       position: 'absolute',
+              //       right: 4,
+              //       top: 6,
+              //     }}>
+              //     <AppText
+              //       textStyle="subtitle1"
+              //       color={Colors.neutralsWhite}
+              //       customStyle={{textAlign: 'center'}}>
+              //       {imageCount}
+              //     </AppText>
+              //   </View>
+              // }
               callback={() => {
                 // data !== null ?
                 getSelectedImages(postImage);
