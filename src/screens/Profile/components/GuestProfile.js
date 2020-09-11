@@ -1,6 +1,13 @@
 import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
-import {View, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
-import {AppText, AppButton, PaddingView} from '@/components';
+import Modal from 'react-native-modal';
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import {AppText, AppButton, PaddingView, BottomSheetHeader} from '@/components';
 import {
   OnboardingIllustration4,
   OnboardingIllustration3,
@@ -15,8 +22,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 const {height, width} = Dimensions.get('window');
 
-let bottomSheetRef = createRef();
-
 export const GuestProfile = () => {
   const {
     sliderState,
@@ -24,77 +29,25 @@ export const GuestProfile = () => {
     openSlider,
     authType,
     setAuthType,
+    authenticationSheet,
+    showAuthenticationSheet,
   } = useContext(Context);
-  useEffect(() => {
-    if (authType === '') {
-      return bottomSheetRef?.current.snapTo(1);
-    }
 
-    bottomSheetRef?.current.snapTo(1);
-
-    setTimeout(() => {
-      bottomSheetRef?.current.snapTo(0);
-    }, 1200);
-  }, [authType, setAuthType]);
-
-  const renderHeader = () => {
-    return (
-      <View
-        style={{
-          backgroundColor: 'white',
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            backgroundColor: '#EAEAEA',
-            width: 40,
-            height: 5,
-            marginVertical: 8,
-          }}
-        />
-      </View>
-    );
-  };
-
-  const renderContent = () => {
+  const RenderContent = () => {
     if (authType === 'signup') {
-      return (
-        <View
-          style={{
-            backgroundColor: 'white',
-            height: '100%',
-            position: 'relative',
-            zIndex: 9999,
-          }}>
-          <SignUp />
-        </View>
-      );
+      return <SignUp />;
     }
     if (authType === 'login') {
-      return (
-        <View style={{backgroundColor: 'white', height: '100%'}}>
-          <Login />
-        </View>
-      );
+      return <Login />;
     }
   };
-
-  if (sliderState === 'close') {
-    bottomSheetRef?.current.snapTo(1);
-  }
 
   const clickHandler = () => {
     openSlider();
-    // _panel.current.show();
-    bottomSheetRef?.current.snapTo(0);
   };
 
   const closeHandler = () => {
     openSlider();
-    // _panel.current.hide();
-    bottomSheetRef?.current.snapTo(1);
   };
   return (
     <>
@@ -119,20 +72,37 @@ export const GuestProfile = () => {
               onPress={() => {
                 clickHandler();
                 setAuthType('signup');
-                bottomSheetRef.current.snapTo(0);
+                // bottomSheetRef.current.snapTo(0);
                 // console.log('hasjjhjh');
               }}
             />
           </View>
         </PaddingView>
       </SafeAreaView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={['85%', '0%']}
-        renderContent={renderContent}
-        renderHeader={renderHeader}
-        initialSnap={1}
-      />
+      <Modal
+        isVisible={authenticationSheet}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{margin: 0, justifyContent: 'flex-end'}}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showAuthenticationSheet(false)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: '82%',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          }}>
+          <BottomSheetHeader />
+          <RenderContent />
+        </View>
+      </Modal>
     </>
   );
 };

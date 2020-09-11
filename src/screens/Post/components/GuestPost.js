@@ -22,7 +22,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 const {height, width} = Dimensions.get('window');
 
-
 export const GuestPost = () => {
   const {
     sliderState,
@@ -43,20 +42,13 @@ export const GuestPost = () => {
     }
   };
 
-  // if (sliderState === 'close') {
-  //   bottomSheetRef?.current.snapTo(1);
-  // }
 
   const clickHandler = () => {
     openSlider();
-    // _panel.current.show();
-    // bottomSheetRef?.current.snapTo(0);
   };
 
   const closeHandler = () => {
     openSlider();
-    // _panel.current.hide();
-    // bottomSheetRef?.current.snapTo(1);
   };
 
   return (
