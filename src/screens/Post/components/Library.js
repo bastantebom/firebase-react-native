@@ -42,19 +42,42 @@ export const Library = ({cancel, next, data}) => {
     setImageCount(num);
     setPostImage(images);
 
-    // console.log(imageCurrent);
-    // console.log(images);
+    // if (images) {
+    //   const uri = images.map((image) => image.uri);
+    //   const filename = images.map((image) => image.filename);
+
+    //   console.log('uri', uri)
+    //   console.log('filename', filename)
+
+    //   // if (!uri || !filename) {
+    //   //   const uri = images.map((image) => image.uri);
+    //   //   setPostImage(uri);
+    //   //   console.log('URI')
+    //   //   // return Promise.resolve('image');
+    //   // } else {
+    //   //   setPostImage(images);
+    //   //   console.log('IMAGES')
+    //   //   // return Promise.resolve(images);
+    //   // }
+    // } 
+    // else {
+    //   return console.log('Error getting images');
+    // }
+    
   };
 
-  useEffect(() => {
-    if (data === null) {
-      return console.log('no data');
-    }
-    if (data !== null) {
-      setPostImage(data);
-    }
-  }, [data]);
+  
 
+  // useEffect(() => {
+  //   if (data === null) {
+  //     return console.log('no data');
+  //   } 
+  //   if (data !== null) {
+  //     // console.log(data)
+  //     setPostImage(data)
+  //   }
+  // }, [data])
+  
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };

@@ -4,7 +4,7 @@ import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AppColor from '@/globals/Colors';
 
-import {AppText, AppInput, AppButton} from '@/components';
+import {AppText, AppInput, AppButton, FloatingAppInput} from '@/components';
 
 import SignUpService from '@/services/SignUpService';
 import LoginService from '@/services/LoginService';
@@ -16,6 +16,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy';
 import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse';
+import { normalize } from '@/globals';
 
 // create a component
 const SignUp = (props) => {
@@ -33,7 +34,16 @@ const SignUp = (props) => {
     setModalVisibleT((previousState) => !previousState);
   };
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
+  const [error, setError] = useState([]);
+  const [isToggleVisible, setIsToggleVisible] = useState(false);
+  const toggleSignUpMethod = () => {
+    setEmail('');
+    // setError([]);
+    setSignUpLabel((previousState) => !previousState);
+  };
+  const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [buttonDisable, setButtonDisable] = useState(false);
   const [loginUse, setLoginUse] = useState('');
   const [isValidLogin, setIsValidLogin] = useState(true);
   const [isValidMobileNumber, setIsValidMobileNumber] = useState(false);
@@ -230,6 +240,7 @@ const SignUp = (props) => {
 
   const onBlurEmail = () => {
     setEmailBorder({});
+    setIsToggleVisible(false)
     if (loginUse === 'email') {
       if (!isValidEmail) {
         setIsValidLogin(false);
@@ -258,6 +269,8 @@ const SignUp = (props) => {
   const onFocusEmail = () => {
     setIsValidLogin(true);
     setEmailBorder({borderColor: AppColor.contentOcean});
+    // setSignUpLabel('Email Address');
+    setIsToggleVisible(true)
   };
 
   const onBlurName = () => {
@@ -278,6 +291,18 @@ const SignUp = (props) => {
   };
 
   const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
+
+  const setButtonState = (j) => {
+    if (j) {
+      setButtonStyle({
+        backgroundColor: AppColor.buttonDisable,
+        borderColor: AppColor.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    setButtonDisable(j);
+  };
 
   const signUpEmail = (formValues) => {
     //console.log(formValues);
@@ -381,8 +406,58 @@ const SignUp = (props) => {
               Join Servbees today. It’s free!
             </AppText>
             <View style={styles.formWrapper}>
-              <AppInput
-                label="Email or Mobile Number"
+              { !signUpLabel ?
+                <FloatingAppInput
+                  value={email}
+                  valueHandler={setEmail}
+                  label="Email"
+                  customStyle={{marginBottom: normalize(8)}}
+                  validation={['email', '']}
+                  keyboardType="email-address"
+                  onInputFocus={onFocusEmail}
+                  setError={setError}
+                  error={error}
+                  setButtonState={setButtonState}
+                  onChangeTextInput={(email) => onEmailChange(email)}
+                /> : 
+                <FloatingAppInput
+                  value={email}
+                  selectTextOnFocus={false}
+                  valueHandler={setEmail}
+                  label="Mobile Number"
+                  customStyle={{marginBottom: normalize(8)}}
+                  validation={['number']}
+                  keyboardType="phone-pad"
+                  onInputFocus={onFocusEmail}
+                  setError={setError}
+                  error={error}
+                  setButtonState={setButtonState}
+                  onChangeTextInput={(email) => onEmailChange(email)}
+                />
+              }
+              {/* <FloatingAppInput
+                // label="Email or Mobile Number"
+                label={signUpLabel}
+                // placeholder="Hi"
+                // value={email}
+                onBlur={onBlurEmail}
+                onFocus={onFocusEmail}
+                keyboardType="email-address"
+                customStyle={{
+                  ...styles.customInputStyle,
+                  ...(!isValidLogin && email.length > 0
+                    ? styles.withError
+                    : isValidLogin && email.length > 0
+                    ? styles.withoutError
+                    : styles.defaultBorder),
+                  ...emailBorder,
+                }}
+                // onChangeText={(email) => onEmailChange(email)}
+              /> */}
+              {/* <AppInput
+                // label="Email or Mobile Number"
+                label={signUpLabel}
+                // placeholder="Hi"
                 value={email}
                 onBlur={onBlurEmail}
                 onFocus={onFocusEmail}
@@ -397,12 +472,27 @@ const SignUp = (props) => {
                   ...emailBorder,
                 }}
                 onChangeText={(email) => onEmailChange(email)}
-              />
-              {!isValidLogin && email.length > 0 ? (
+              /> */}
+              {/* {!isValidLogin && email.length > 0 ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
                   Enter a valid {loginUse}
                 </AppText>
-              ) : null}
+              ) : null} */}
+
+              <View style={{ display: isToggleVisible ? 'flex' : 'none' }}>
+                <TouchableOpacity onPress={() => toggleSignUpMethod()}>
+                  <AppText 
+                    textStyle="body2" 
+                    color={AppColor.contentOcean}
+                    customStyle={{ marginBottom: 16 }}
+                    >
+                    { !signUpLabel ? 
+                      "Use mobile number" :
+                      "Use email"
+                    }
+                  </AppText>
+                </TouchableOpacity>
+              </View>
 
               <AppInput
                 label="Full Name"
@@ -472,7 +562,7 @@ const SignUp = (props) => {
                 text="Sign up"
                 type="primary"
                 height="xl"
-                disabled={buttonDisabled}
+                // disabled={buttonDisabled}
                 customStyle={{...styles.customButtonStyle, ...buttonStyle}}
                 onPress={() => {
                   signUpEmail(signUpForm);
