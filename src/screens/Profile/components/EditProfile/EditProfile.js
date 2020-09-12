@@ -188,13 +188,17 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     }
   };
 
-  const getStringAddress = (lat, lng) => {
+  const getStringAddress = (lat, lng, addStr) => {
     Geocoder.init(Config.apiKey);
     Geocoder.from(lat, lng)
       .then((json) => {
-        setStringAddress(json.results[1].formatted_address);
+        setStringAddress(addStr ? addStr : json.results[1].formatted_address);
         const arrayToExtract =
-          json.results.length == 12
+          json.results.length == 14
+            ? 9
+            : json.results.length == 13
+            ? 8
+            : json.results.length == 12
             ? 7
             : json.results.length == 11
             ? 6
@@ -207,15 +211,17 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
             : json.results.length < 8
             ? 2
             : 2;
+        const splitAddress = json.results[
+          arrayToExtract
+        ].formatted_address.split(',');
         setAddressComponents({
           ...addressComponents,
           ...{
             latitude: lat,
             longitude: lng,
-            city: json.results[arrayToExtract].address_components[0].long_name,
-            province:
-              json.results[arrayToExtract].address_components[1].long_name,
-            country: 'Philippines',
+            city: splitAddress[0],
+            province: splitAddress[1],
+            country: splitAddress[2],
           },
           //setChangeMapAddress(addressComponent);
         });
@@ -279,8 +285,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     setButtonDisable(j);
   };
 
-  const prepareAddressUpdate = (fullAddress) => {
-    getStringAddress(fullAddress.latitude, fullAddress.longitude);
+  const prepareAddressUpdate = (fullAddress, addStr) => {
+    getStringAddress(fullAddress.latitude, fullAddress.longitude, addStr);
   };
 
   const uploadImageHandler = async (image) => {
@@ -746,8 +752,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           <EditAddress
             address={userInfo.address}
             back={() => setMap(false)}
-            changeFromMapHandler={(fullAddress) =>
-              prepareAddressUpdate(fullAddress)
+            changeFromMapHandler={(fullAddress, addStr) =>
+              prepareAddressUpdate(fullAddress, addStr)
             }
           />
         </Modal>
