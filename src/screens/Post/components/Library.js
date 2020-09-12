@@ -28,61 +28,49 @@ export const Library = ({cancel, next, data}) => {
     imageCurrent,
   } = useContext(Context);
 
-  // const [selectedCount, setSelectedCount] = useState([]);
   const [showFolderList, setShowFolderList] = useState(false);
   const [selected, setSelected] = useState([]);
-  // const [photoCount, setPhotoCount] = useState(0);
-
-  const [imageselected, setImageselected] = useState();
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
-    // setImageCurrent(num > 0 ? images[num - 1].filename : '');
     setImageCount(num);
     setPostImage(images);
 
-    // if (images) {
-    //   const uri = images.map((image) => image.uri);
-    //   const filename = images.map((image) => image.filename);
+    // const filter = async (images) => {
+    //   const imageToRemove = images.uri;
+    //   const newImageList = postImage.filter(
+    //     (images) => images.uri !== imageToRemove,
+    //   );
 
-    //   console.log('uri', uri)
-    //   console.log('filename', filename)
+    //   const filterList = newImageList.map((list) => list.uri)
 
-    //   // if (!uri || !filename) {
-    //   //   const uri = images.map((image) => image.uri);
-    //   //   setPostImage(uri);
-    //   //   console.log('URI')
-    //   //   // return Promise.resolve('image');
-    //   // } else {
-    //   //   setPostImage(images);
-    //   //   console.log('IMAGES')
-    //   //   // return Promise.resolve(images);
-    //   // }
-    // } 
-    // else {
-    //   return console.log('Error getting images');
-    // }
-    
+    //   return filterList;
+    //   // console.log("newImageList", newImageList)
+    //   // setPostImage(newImageList);
+    //   // setImageCount(imageCount - 1);
+    // };
+
+    // filter(images).then((res) => {
+    //   console.log('new list', res)
+    //   setPostImage([data, res])
+    //   console.log('postImage', postImage)
+    // })
   };
-
-  
 
   // useEffect(() => {
   //   if (data === null) {
   //     return console.log('no data');
   //   } 
   //   if (data !== null) {
-  //     // console.log(data)
-  //     setPostImage(data)
+  //     // setPostImage({uri: data});
+  //     console.log('with data')
   //   }
   // }, [data])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
-
-  // let x = 0;
 
   return (
     <SafeAreaView style={{flex: 1}}>

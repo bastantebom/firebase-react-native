@@ -41,6 +41,7 @@ const SignUp = (props) => {
     // setError([]);
     setSignUpLabel((previousState) => !previousState);
   };
+  console.log(error.length)
   const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -304,18 +305,6 @@ const SignUp = (props) => {
     setButtonDisable(j);
   };
 
-  const setButtonState = (j) => {
-    if (j) {
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-    } else {
-      setButtonStyle({});
-    }
-    setButtonDisable(j);
-  };
-
   const signUpEmail = (formValues) => {
     //console.log(formValues);
 
@@ -424,7 +413,7 @@ const SignUp = (props) => {
                   valueHandler={setEmail}
                   label="Email"
                   customStyle={{marginBottom: normalize(8)}}
-                  validation={['email', '']}
+                  validation={['email']}
                   keyboardType="email-address"
                   onInputFocus={onFocusEmail}
                   setError={setError}
@@ -574,7 +563,7 @@ const SignUp = (props) => {
                 text="Sign up"
                 type="primary"
                 height="xl"
-                // disabled={buttonDisabled}
+                disabled={buttonDisabled}
                 customStyle={{...styles.customButtonStyle, ...buttonStyle}}
                 onPress={() => {
                   signUpEmail(signUpForm);

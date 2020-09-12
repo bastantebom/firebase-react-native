@@ -176,6 +176,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   useEffect(() => {
     if (images !== undefined) {
       setPostImage(images)
+      // const obj = {};
+      // obj["uri"] = [];
+      // obj.newKey = [imag]
+      // setPostImage(prevState => prevState.uri, ...images)
     }
     checkFormContent();
   }, [
@@ -210,20 +214,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     if (image) {
       const {uri, filename} = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-
-      // const newFilename =
-      //   Platform.OS === 'ios'
-      //     ? filename.substring(0, filename.lastIndexOf('.'))
-      //     : uri.substring(uri.lastIndexOf('/') + 1);
-      // const uploadUri =
-      //   Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-
-      // const task = storage().ref();
-      // const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-      // await fileRef.putFile(uploadUri);
-      // const downloadURL = await fileRef.getDownloadURL();
-
-      // return Promise.resolve(downloadURL);
 
       if (uri || filename) {
         const newFilename =
@@ -340,19 +330,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload
-          data={images === undefined || images.length == 0 ? null : images}
-        />
 
-         {/* <AppButton
-          text="Upload"
-          onPress={() => uploadAllImage()}
-         /> */}
-
-         {/* <AppButton
-          text="Upload"
-          onPress={() => uploadAllImage()}
-         /> */}
+        <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -397,6 +376,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           }}
           onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}
+          textAlignVertical="top"
         />
       </View>
 

@@ -37,13 +37,7 @@ export const PostImageUpload = ({data}) => {
     imageCurrent,
   } = useContext(Context);
 
-  const [photoCount, setPhotoCount] = useState(0);
-  const [selected, setSelected] = useState([]);
-  const [currentImage, setCurrentImage] = useState();
   const [showPickerModal, setShowPickerModal] = useState(false);
-
-  const [postImageCount, setPostImageCount] = useState(0);
-  const [postImages, setPostImages] = useState([]);
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -98,8 +92,6 @@ export const PostImageUpload = ({data}) => {
 
   const togglePickerModal = () => {
     setShowPickerModal(!showPickerModal);
-    // setSelected(selected);
-    // setPhotoCount(photoCount);
   };
 
   const handleRemove = (image) => {
@@ -160,17 +152,16 @@ export const PostImageUpload = ({data}) => {
     },
   ];
 
-  console.log('postImage', postImage)
+  // console.log('postImage', postImage)
   // console.log('imageCount', imageCount)
   // console.log('data', data)
 
   useEffect(() => {
     if (data === null) {
-      return console.log('no data');
+      return console.log(data);
     } else {
       setImageCount(data.length);
       // setPostImage(data)
-      return console.log('with data');
     }
   }, [data]);
 
@@ -206,106 +197,54 @@ export const PostImageUpload = ({data}) => {
             width: '100%',
             flexDirection: 'row',
             marginBottom: 8,
-            // justifyContent: 'center',
           }}>
-          {/* {data === null ?  */}
-          {/* // <></> */}
-            <ScrollView horizontal>
-              {postImage.map((image, i) => {
-                return (
-                  <View key={i}>
-                    <TouchableOpacity
-                      onPress={() => handleRemove(image)}
+          <ScrollView horizontal>
+            {postImage.map((image, i) => {
+              return (
+                <View key={i}>
+                  <TouchableOpacity
+                    onPress={() => handleRemove(image)}
+                    style={{
+                      zIndex: 999,
+                      position: 'absolute',
+                      right: 20,
+                      top: 5,
+                    }}>
+                    <View
                       style={{
-                        zIndex: 999,
                         position: 'absolute',
-                        right: 20,
-                        top: 5,
-                      }}>
-                      <View
-                        style={{
-                          position: 'absolute',
-                          backgroundColor: 'rgba(0,0,0,.6)',
-                          width: normalize(28),
-                          height: normalize(28),
-                          borderRadius: 50,
-                        }}
-                      />
-                      <View
-                        style={{left: normalize(3.75), top: normalize(3.5)}}>
-                        <CloseLight
-                          width={normalize(20)}
-                          height={normalize(20)}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <Image
-                      source={{ uri: image.uri ? image.uri : image }}
-                      style={{
-                        width:
-                          imageCount === 1
-                            ? width / 2
-                            : imageCount === 2
-                            ? width / 3.333
-                            : width / 4,
-                        height: normalize(114),
-                        marginRight: 8,
-                        borderRadius: 4,
+                        backgroundColor: 'rgba(0,0,0,.6)',
+                        width: normalize(28),
+                        height: normalize(28),
+                        borderRadius: 50,
                       }}
                     />
-                  </View>
-                );
-              })}
-            </ScrollView>
-          {/* :
-            <ScrollView horizontal>
-              {data.map((image, i) => {
-                return (
-                  <View key={i}>
-                    <TouchableOpacity
-                      onPress={() => handleRemove(image)}
-                      style={{
-                        zIndex: 999,
-                        position: 'absolute',
-                        right: 20,
-                        top: 5,
-                      }}>
-                      <View
-                        style={{
-                          position: 'absolute',
-                          backgroundColor: 'rgba(0,0,0,.6)',
-                          width: normalize(28),
-                          height: normalize(28),
-                          borderRadius: 50,
-                        }}
+                    <View
+                      style={{left: normalize(3.75), top: normalize(3.5)}}>
+                      <CloseLight
+                        width={normalize(20)}
+                        height={normalize(20)}
                       />
-                      <View
-                        style={{left: normalize(3.75), top: normalize(3.5)}}>
-                        <CloseLight
-                          width={normalize(20)}
-                          height={normalize(20)}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <CacheableImage
-                      source={{uri: image.uri ? image.uri : image}}
-                      style={{
-                        width:
-                          imageCount === 1
-                            ? width / 2
-                            : imageCount === 2
-                            ? width / 3.333
-                            : width / 4,
-                        height: normalize(114),
-                        marginRight: 8,
-                        borderRadius: 4,
-                      }}
-                    />
-                  </View>
-                );
-              })}
-            </ScrollView>  
-          } */}
+                    </View>
+                  </TouchableOpacity>
+                  <Image
+                    source={{ uri: image.uri ? image.uri : image }}
+                    style={{
+                      width:
+                        imageCount === 1
+                          ? width / 2
+                          : imageCount === 2
+                          ? width / 3.333
+                          : width / 4,
+                      height: normalize(114),
+                      marginRight: 8,
+                      borderRadius: 4,
+                    }}
+                  />
+                </View>
+              );
+            })}
+          </ScrollView>
           <View
             style={{
               // flex: 1,
@@ -353,10 +292,6 @@ export const PostImageUpload = ({data}) => {
       <Modal
         isVisible={showPickerModal}
         onBackButtonPress={() => togglePickerModal()}
-        // Comment this out to disable closing on swipe down
-        // onSwipeComplete={() => togglePickerModal(selected, photoCount)}
-        // swipeDirection="down"
-        // Comment this out to disable closing on swipe down
         style={{
           margin: 0,
           alignItems: 'center',
