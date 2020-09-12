@@ -31,7 +31,6 @@ const GooglePlacesInput = ({
           key: Global.apiKey,
           language: 'en', // language of the results
           components: 'country:ph',
-          types: cityOnly ? '(cities)' : 'geocode',
         }}
         onPress={(data, details = null) => {
           //let coordinates = data.geometry.location;
