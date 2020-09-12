@@ -78,7 +78,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   };
 
   const getPositionFromString = (address) => {
-    console.log('getPositionFromString ' + address);
+    //console.log('getPositionFromString ' + address);
     //console.log('getStringAddress ' + strAddress);
 
     Geocoder.from(address)
@@ -89,7 +89,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
           latitude: location.lat,
           longitude: location.lng,
         };
-        getStringAddressSearch(convertedLocation, address);
+        getStringAddress(convertedLocation, address);
         setAddressRunCount(addressRunCount + 1);
         setNewCoords(location);
         setButtonDisabled(false);
@@ -98,7 +98,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       .catch((error) => console.warn(error));
   };
 
-  const getStringAddress = (location) => {
+  const getStringAddress = (location, strAddress) => {
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
         const stringMapDrag = json.results[1].formatted_address;
@@ -116,46 +116,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             : json.results.length < 8
             ? 2
             : 2;
-        setChangeMapAddress(stringMapDrag);
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            city: json.results[arrayToExtract].address_components[0].long_name,
-            province:
-              json.results[arrayToExtract].address_components[1].long_name,
-            country: 'Philippines',
-          },
-          //setChangeMapAddress(addressComponent);
-        });
-      })
-      .catch((error) => console.warn(error));
-
-    //console.log(addressComponents);
-    //setButtonDisabled(false);
-    //setButtonStyle({});
-  };
-
-  const getStringAddressSearch = (location, strAddress) => {
-    Geocoder.from(location.latitude, location.longitude)
-      .then((json) => {
-        //const stringMapDrag = json.results[1].formatted_address;
-        const arrayToExtract =
-          json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
-        setChangeMapAddress(strAddress);
+        setChangeMapAddress(strAddress ? strAddress : stringMapDrag);
         setAddressComponents({
           ...addressComponents,
           ...{
@@ -178,7 +139,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
 
   //SEARCH ADDRESS
   const onSearchLocationHandler = (data) => {
-    console.log('onSearchLocationHandler ' + data);
+    //console.log('onSearchLocationHandler ' + data);
     //setChangeMapAddress(data);
     //getStringAddress(data);
     getPositionFromString(data);
