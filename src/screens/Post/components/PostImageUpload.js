@@ -152,7 +152,7 @@ export const PostImageUpload = ({data}) => {
     },
   ];
 
-  console.log('postImage', postImage)
+  // console.log('postImage', postImage)
   // console.log('imageCount', imageCount)
   // console.log('data', data)
 

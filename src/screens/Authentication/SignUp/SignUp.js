@@ -41,6 +41,7 @@ const SignUp = (props) => {
     // setError([]);
     setSignUpLabel((previousState) => !previousState);
   };
+  console.log(error.length)
   const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -291,18 +292,6 @@ const SignUp = (props) => {
   };
 
   const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
-
-  const setButtonState = (j) => {
-    if (j) {
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-    } else {
-      setButtonStyle({});
-    }
-    setButtonDisable(j);
-  };
 
   const setButtonState = (j) => {
     if (j) {
@@ -574,7 +563,7 @@ const SignUp = (props) => {
                 text="Sign up"
                 type="primary"
                 height="xl"
-                // disabled={buttonDisabled}
+                disabled={buttonDisabled}
                 customStyle={{...styles.customButtonStyle, ...buttonStyle}}
                 onPress={() => {
                   signUpEmail(signUpForm);
