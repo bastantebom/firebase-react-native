@@ -10,6 +10,7 @@ const GooglePlacesInput = ({
   onClearInput,
   currentValue,
   adjustListPosition,
+  cityOnly,
 }) => {
   const placesRef = useRef(null);
 

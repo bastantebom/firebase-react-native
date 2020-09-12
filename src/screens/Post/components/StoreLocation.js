@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TouchableOpacity, View, StyleSheet, SafeAreaView} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 //import {useNavigation} from '@react-navigation/native';
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 });
 
 // create a component
-const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
+const Location = ({back, address, changeFromMapHandler}, route) => {
   //const {userInfo, setUserInfo} = useContext(UserContext);
   //const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
@@ -52,6 +52,7 @@ const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   Geocoder.init(Config.apiKey);
   const [newCoords, setNewCoords] = useState({});
+  const [newLoc, setNewLoc] = useState({});
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
@@ -60,21 +61,54 @@ const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
     latitude: 0,
   });
   //const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [addressRunCount, setAddressRunCount] = useState(0);
 
+  //MAP DRAG
   const onRegionChange = (region) => {
-    //console.log(region);
-    getStringAddress(region);
-    //setButtonDisabled(false);
+    console.log('addressRunCount ' + addressRunCount);
+
+    if (addressRunCount === 0) {
+      getStringAddress(region, null);
+    } else {
+      setAddressRunCount(addressRunCount - 1);
+    }
+
     setButtonDisabled(false);
     setButtonStyle({});
   };
 
-  const getStringAddress = (location) => {
+  const getPositionFromString = (address) => {
+    //console.log('getPositionFromString ' + address);
+    //console.log('getStringAddress ' + strAddress);
+
+    Geocoder.from(address)
+      .then((json) => {
+        const location = json.results[0].geometry.location;
+        //console.log(location);
+        const convertedLocation = {
+          latitude: location.lat,
+          longitude: location.lng,
+        };
+        getStringAddress(convertedLocation, address);
+        setAddressRunCount(addressRunCount + 1);
+        setNewCoords(location);
+        setButtonDisabled(false);
+        setButtonStyle({});
+      })
+      .catch((error) => console.warn(error));
+  };
+
+  const getStringAddress = (location, strAddress) => {
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
-        const addressComponent = json.results[1].formatted_address;
+        const stringMapDrag = json.results[1].formatted_address;
+        //console.log(json.results);
         const arrayToExtract =
-          json.results.length == 12
+          json.results.length == 14
+            ? 9
+            : json.results.length == 13
+            ? 8
+            : json.results.length == 12
             ? 7
             : json.results.length == 11
             ? 6
@@ -88,46 +122,33 @@ const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
             ? 2
             : 2;
 
-        setChangeMapAddress(addressComponent);
+        setChangeMapAddress(strAddress ? strAddress : stringMapDrag);
+        const splitAddress = json.results[
+          arrayToExtract
+        ].formatted_address.split(',');
+
         setAddressComponents({
           ...addressComponents,
           ...{
             latitude: location.latitude,
             longitude: location.longitude,
-            city: json.results[arrayToExtract].address_components[0].long_name,
-            province:
-              json.results[arrayToExtract].address_components[1].long_name,
-            country: 'Philippines',
+            city: splitAddress[0],
+            province: splitAddress[1],
+            country: splitAddress[2],
           },
           //setChangeMapAddress(addressComponent);
         });
       })
       .catch((error) => console.warn(error));
+
     //console.log(addressComponents);
     //setButtonDisabled(false);
     //setButtonStyle({});
   };
 
-  const getPositionFromString = (address) => {
-    //console.log('Dito Sya');
-    Geocoder.from(address)
-      .then((json) => {
-        const location = json.results[0].geometry.location;
-        //console.log(location);
-        const convertedLocation = {
-          latitude: location.lat,
-          longitude: location.lng,
-        };
-        getStringAddress(convertedLocation);
-        setNewCoords(location);
-        setButtonDisabled(false);
-        setButtonStyle({});
-      })
-      .catch((error) => console.warn(error));
-  };
-
+  //SEARCH ADDRESS
   const onSearchLocationHandler = (data) => {
-    //console.log(JSON.stringify(data));
+    //console.log('onSearchLocationHandler ' + data);
     //setChangeMapAddress(data);
     //getStringAddress(data);
     getPositionFromString(data);
@@ -138,7 +159,7 @@ const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
     //   address: addressComponents,
     // };
     //setUserInfo({...userInfo, ...dataToUpdate});
-    changeFromMapHandler(addressComponents);
+    changeFromMapHandler(addressComponents, changeMapAddress);
     back();
   };
 
@@ -160,17 +181,13 @@ const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
         <GooglePlacesInput
           onResultsClick={(data) => {
             //alert(data);
+            //console.log('nag search');
+
             onSearchLocationHandler(data);
             //alert(data);
           }}
-          onClearInput={(textValue) => {
-            console.log('setvalue');
-          }}
-          currentValue={
-            changeMapAddress.length > 0
-              ? changeMapAddress
-              : route?.route?.params.address
-          }
+          onClearInput={() => {}}
+          currentValue={changeMapAddress}
         />
       </View>
       <MapComponent
@@ -202,4 +219,4 @@ const StoreLocation = ({back, address, changeFromMapHandler}, route) => {
 };
 
 //make this component available to the app
-export default StoreLocation;
+export default Location;
