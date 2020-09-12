@@ -62,7 +62,11 @@ const AlmostThereMap = (route) => {
         console.log(json);
         const addressComponent = json.results[1].formatted_address;
         const arrayToExtract =
-          json.results.length == 12
+          json.results.length == 14
+            ? 9
+            : json.results.length == 13
+            ? 8
+            : json.results.length == 12
             ? 7
             : json.results.length == 11
             ? 6
@@ -75,16 +79,18 @@ const AlmostThereMap = (route) => {
             : json.results.length < 8
             ? 2
             : 2;
+        const splitAddress = json.results[
+          arrayToExtract
+        ].formatted_address.split(',');
 
         setAddressComponents({
           ...addressComponents,
           ...{
             latitude: location.latitude,
             longitude: location.longitude,
-            city: json.results[arrayToExtract].address_components[0].long_name,
-            province:
-              json.results[arrayToExtract].address_components[1].long_name,
-            country: 'Philippines',
+            city: splitAddress[0],
+            province: splitAddress[1],
+            country: splitAddress[2],
           },
         });
         setChangeMapAddress(addressComponent);
