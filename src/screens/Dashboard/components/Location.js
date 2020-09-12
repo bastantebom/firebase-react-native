@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TouchableOpacity, View, StyleSheet, SafeAreaView} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 //import {useNavigation} from '@react-navigation/native';
@@ -52,6 +52,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   Geocoder.init(Config.apiKey);
   const [newCoords, setNewCoords] = useState({});
+  const [newLoc, setNewLoc] = useState({});
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
@@ -59,60 +60,21 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     longitude: 0,
     latitude: 0,
   });
-  const [changeAddressTrigger, setChangeAddressTrigger] = useState('');
   //const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [addressRunCount, setAddressRunCount] = useState(0);
 
   //MAP DRAG
   const onRegionChange = (region) => {
-    //console.log(region);
-    setChangeAddressTrigger('mapDrag');
-    getStringAddress(region);
-    //setButtonDisabled(false);
+    console.log('addressRunCount ' + addressRunCount);
+
+    if (addressRunCount === 0) {
+      getStringAddress(region, null);
+    } else {
+      setAddressRunCount(addressRunCount - 1);
+    }
+
     setButtonDisabled(false);
     setButtonStyle({});
-  };
-
-  const getStringAddress = (location, strAddress) => {
-    Geocoder.from(location.latitude, location.longitude)
-      .then((json) => {
-        const addressComponent = json.results[1].formatted_address;
-        const arrayToExtract =
-          json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
-        if (changeAddressTrigger === 'mapDrag' || changeAddressTrigger === '') {
-          console.log('update dahil na drag ang map');
-          console.log(changeAddressTrigger);
-          setChangeMapAddress(addressComponent);
-        }
-
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            city: json.results[arrayToExtract].address_components[0].long_name,
-            province:
-              json.results[arrayToExtract].address_components[1].long_name,
-            country: 'Philippines',
-          },
-          //setChangeMapAddress(addressComponent);
-        });
-      })
-      .catch((error) => console.warn(error));
-    //console.log(addressComponents);
-    //setButtonDisabled(false);
-    //setButtonStyle({});
   };
 
   const getPositionFromString = (address) => {
@@ -127,7 +89,8 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
           latitude: location.lat,
           longitude: location.lng,
         };
-        getStringAddress(convertedLocation, address);
+        getStringAddressSearch(convertedLocation, address);
+        setAddressRunCount(addressRunCount + 1);
         setNewCoords(location);
         setButtonDisabled(false);
         setButtonStyle({});
@@ -135,11 +98,87 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       .catch((error) => console.warn(error));
   };
 
+  const getStringAddress = (location) => {
+    Geocoder.from(location.latitude, location.longitude)
+      .then((json) => {
+        const stringMapDrag = json.results[1].formatted_address;
+        const arrayToExtract =
+          json.results.length == 12
+            ? 7
+            : json.results.length == 11
+            ? 6
+            : json.results.length == 10
+            ? 5
+            : json.results.length == 9
+            ? 4
+            : json.results.length == 8
+            ? 3
+            : json.results.length < 8
+            ? 2
+            : 2;
+        setChangeMapAddress(stringMapDrag);
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country: 'Philippines',
+          },
+          //setChangeMapAddress(addressComponent);
+        });
+      })
+      .catch((error) => console.warn(error));
+
+    //console.log(addressComponents);
+    //setButtonDisabled(false);
+    //setButtonStyle({});
+  };
+
+  const getStringAddressSearch = (location, strAddress) => {
+    Geocoder.from(location.latitude, location.longitude)
+      .then((json) => {
+        //const stringMapDrag = json.results[1].formatted_address;
+        const arrayToExtract =
+          json.results.length == 12
+            ? 7
+            : json.results.length == 11
+            ? 6
+            : json.results.length == 10
+            ? 5
+            : json.results.length == 9
+            ? 4
+            : json.results.length == 8
+            ? 3
+            : json.results.length < 8
+            ? 2
+            : 2;
+        setChangeMapAddress(strAddress);
+        setAddressComponents({
+          ...addressComponents,
+          ...{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            city: json.results[arrayToExtract].address_components[0].long_name,
+            province:
+              json.results[arrayToExtract].address_components[1].long_name,
+            country: 'Philippines',
+          },
+          //setChangeMapAddress(addressComponent);
+        });
+      })
+      .catch((error) => console.warn(error));
+
+    //console.log(addressComponents);
+    //setButtonDisabled(false);
+    //setButtonStyle({});
+  };
+
   //SEARCH ADDRESS
   const onSearchLocationHandler = (data) => {
     console.log('onSearchLocationHandler ' + data);
-    setChangeMapAddress(data);
-
     //setChangeMapAddress(data);
     //getStringAddress(data);
     getPositionFromString(data);
@@ -172,8 +211,8 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         <GooglePlacesInput
           onResultsClick={(data) => {
             //alert(data);
-            console.log('nag search');
-            setChangeAddressTrigger('searchText');
+            //console.log('nag search');
+
             onSearchLocationHandler(data);
             //alert(data);
           }}
