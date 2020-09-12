@@ -103,7 +103,11 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       .then((json) => {
         const stringMapDrag = json.results[1].formatted_address;
         const arrayToExtract =
-          json.results.length == 12
+          json.results.length == 14
+            ? 9
+            : json.results.length == 13
+            ? 8
+            : json.results.length == 12
             ? 7
             : json.results.length == 11
             ? 6
@@ -117,6 +121,9 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             ? 2
             : 2;
         setChangeMapAddress(strAddress ? strAddress : stringMapDrag);
+        const splitAddress = json.results[
+          arrayToExtract
+        ].formatted_address.split(',');
         setAddressComponents({
           ...addressComponents,
           ...{
