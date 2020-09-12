@@ -176,6 +176,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   useEffect(() => {
     if (images !== undefined) {
       setPostImage(images)
+      // const obj = {};
+      // obj["uri"] = [];
+      // obj.newKey = [imag]
+      // setPostImage(prevState => prevState.uri, ...images)
     }
     checkFormContent();
   }, [
@@ -334,10 +338,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           onPress={() => uploadAllImage()}
          /> */}
 
-         {/* <AppButton
-          text="Upload"
-          onPress={() => uploadAllImage()}
-         /> */}
+        <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
 
         <AppInput
           customStyle={{marginBottom: 16}}
