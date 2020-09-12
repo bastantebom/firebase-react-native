@@ -281,6 +281,7 @@ const SignUp = (props) => {
 
   const signUpEmail = (formValues) => {
     //console.log(formValues);
+
     setIsLoading(true);
     SignUpService.createUser(JSON.stringify(formValues))
       .then((response) => {
@@ -293,6 +294,7 @@ const SignUp = (props) => {
           alert(response.message);
           navigation.navigate('Onboarding');
         }
+        closeSlider();
       })
       .catch((error) => {
         console.log('With Error in the API SignUp ' + error);
@@ -490,7 +492,7 @@ const SignUp = (props) => {
                 iconPosition="left"
                 customStyle={styles.disableButton}
                 onPress={() => {
-                  LoginService.facebookSignIn();
+                  LoginService.facebookSignIn().then(() => closeSlider());
                 }}
               />
               <AppButton
@@ -500,11 +502,13 @@ const SignUp = (props) => {
                 icon="Google"
                 iconPosition="left"
                 customStyle={styles.disableButton}
-                onPress={() =>
-                  LoginService.googleLogin().then(() =>
-                    console.log('Signed in with Google!'),
-                  )
-                }
+                onPress={() => {
+                  closeSlider();
+                  LoginService.googleLogin().then(() => {
+                    console.log('Signed in with Google!');
+                    closeSlider();
+                  });
+                }}
               />
             </View>
 

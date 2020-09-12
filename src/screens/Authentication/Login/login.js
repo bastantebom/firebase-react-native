@@ -39,12 +39,16 @@ function Login() {
 
   const handleLogin = async () => {
     setIsLoading(true);
+    console.log('Handle login');
+
     await LoginService.loginMobile({
       login: emailAddress,
       password: password,
     })
       .then((response) => {
-        if (response.success) {
+        console.log('Response');
+        console.log(response);
+        if (response.success && response.verified) {
           console.log('SUCCESS---------------');
           return auth()
             .signInWithCustomToken(response.custom_token)
@@ -57,6 +61,13 @@ function Login() {
               console.log(err);
             });
         }
+        if (response.success && !response.verified) {
+          closeSlider();
+          navigation.navigate('VerifyAccount', {
+            uid: response.uid,
+            login: emailAddress,
+          });
+        }
 
         if (!response.success) {
           setIsLoading(false);
@@ -68,6 +79,9 @@ function Login() {
       .catch((error) => {
         console.log('FAILED---------------');
         console.log('With Error in the API Login ' + error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -124,7 +138,9 @@ function Login() {
                 type="primary"
                 height="xl"
                 customStyle={styles.customLogin}
-                onPress={() => handleLogin()}
+                onPress={() => {
+                  handleLogin();
+                }}
                 loading={isLoading}
               />
             </AppViewContainer>
@@ -136,7 +152,9 @@ function Login() {
               icon="Facebook"
               iconPosition="left"
               customStyle={styles.customButton}
-              onPress={() => LoginService.facebookSignIn()}
+              onPress={() => {
+                LoginService.facebookSignIn().then(() => closeSlider());
+              }}
             />
             <AppButton
               text={'Log in with Google'}
@@ -146,11 +164,12 @@ function Login() {
               iconPosition="left"
               customStyle={styles.customButton}
               // onPress={console.log('PRESS')}
-              onPress={() =>
-                LoginService.googleLogin().then(() =>
-                  console.log('Signed in with Google!'),
-                )
-              }
+              onPress={() => {
+                LoginService.googleLogin().then(() => {
+                  console.log('Signed in with Google!');
+                  closeSlider();
+                });
+              }}
             />
             <View style={styles.cta}>
               <AppText textStyle="button2">Don't have an account? </AppText>
