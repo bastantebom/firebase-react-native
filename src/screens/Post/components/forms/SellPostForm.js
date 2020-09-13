@@ -238,20 +238,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       return Promise.reject('Failed to upload');
     }
   };
-
-  // const uploadAllImage = () => Promise.all(
-  //   postImage.map((image) => {
-  //     return uploadImageHandler(image)
-  //       .then((res) => {
-  //         console.log('res', res);
-  //         return res;
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         return err;
-  //       });
-  //   }),
-  // );
   
   const navigateToPost = async () => {
     //console.log(postImage);
