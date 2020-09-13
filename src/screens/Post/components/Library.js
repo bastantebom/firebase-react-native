@@ -179,12 +179,7 @@ export const Library = ({cancel, next, data}) => {
               //     </AppText>
               //   </View>
               // }
-              callback={() => {
-                // data !== null ?
-                getSelectedImages(postImage);
-                // :
-                // getSelectedImages(selected)
-              }}
+              callback={() => getSelectedImages(postImage)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,
