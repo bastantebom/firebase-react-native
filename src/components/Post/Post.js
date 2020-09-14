@@ -50,6 +50,7 @@ const Post = ({data, type, isLoading}) => {
     email,
     phone_number,
     post_type,
+    full_name,
   } = data;
 
   const VerifiedBadge = () => {
@@ -64,7 +65,7 @@ const Post = ({data, type, isLoading}) => {
     username: username,
     profile_photo: profile_photo,
     account_verified: account_verified,
-    display_name: display_name,
+    display_name: display_name ? display_name : full_name,
     date_posted: date_posted,
     uid: uid,
   };
@@ -97,7 +98,10 @@ const Post = ({data, type, isLoading}) => {
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
                 {images.length > 0 ? (
-                  <CacheableImage style={GlobalStyle.image} source={{uri: images[0]}} />
+                  <CacheableImage
+                    style={GlobalStyle.image}
+                    source={{uri: images[0]}}
+                  />
                 ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
                 post_type === 'service' ? (
                   <DefaultService

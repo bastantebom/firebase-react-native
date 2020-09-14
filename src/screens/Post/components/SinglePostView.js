@@ -55,6 +55,7 @@ const SinglePostView = (props) => {
     display_name,
     date_posted,
     post_id,
+    full_name,
   } = props.route?.params?.data;
 
   console.log(images);
@@ -111,7 +112,7 @@ const SinglePostView = (props) => {
     username: username,
     profile_photo: profile_photo,
     account_verified: account_verified,
-    display_name: display_name,
+    display_name: display_name ? display_name : full_name,
     uid: uid,
   };
 
@@ -209,7 +210,7 @@ const SinglePostView = (props) => {
   const SinglePostContent = () => {
     return (
       <View style={{flex: 1}}>
-        <ScrollView style={{backgroundColor: 'white'}} >
+        <ScrollView style={{backgroundColor: 'white'}}>
           <View style={styles.postImageContainer}>
             {/* <Image
             style={GlobalStyle.image}

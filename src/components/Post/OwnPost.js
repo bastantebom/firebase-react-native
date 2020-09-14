@@ -42,6 +42,7 @@ const OwnPost = ({data, isLoading}) => {
     email,
     phone_number,
     post_type,
+    full_name,
   } = data;
 
   const VerifiedBadge = () => {
@@ -141,7 +142,7 @@ const OwnPost = ({data, isLoading}) => {
                     <ProfilePhoto size={20} />
                   </View>
                   <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
-                    {display_name}
+                    {display_name ? display_name : full_name}
                   </AppText>
                   <VerifiedBadge />
                 </View>

@@ -13,7 +13,7 @@ import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 import storage from '@react-native-firebase/storage';
 
-import {AppText, AppInput} from '@/components';
+import {AppText, AppInput, TransitionIndicator} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
@@ -316,6 +316,7 @@ const ServicePostForm = ({
         onChangeText={(text) => setDescription(text)}
         underlineColorAndroid={'transparent'}
         textAlignVertical="top"
+        onScroll={() => Keyboard.dismiss()}
       />
       <View style={{position: 'relative'}}>
         <TouchableOpacity onPress={() => toggleMap()}>
@@ -385,6 +386,7 @@ const ServicePostForm = ({
           }
         />
       </Modal>
+      <TransitionIndicator loading={loadingSubmit} />
     </View>
   );
 };
