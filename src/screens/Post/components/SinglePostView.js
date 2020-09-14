@@ -261,7 +261,6 @@ const SinglePostView = (props) => {
         </View>
 
         <ScrollView style={styles.postInfoContainer}>
-          <View style={{paddingHorizontal: 16}}>
             <ProfileInfo userInfo={userInfo} type="own-post" />
 
             {/* <Animated.View ref="stickyHeader" style={[styles.stickyStuff, {top: stickySegmentControlX}]}>
@@ -328,7 +327,6 @@ const SinglePostView = (props) => {
                 </AppText>
               </View>
             )}
-          </View>
         </ScrollView>
       </View>
     );
@@ -404,7 +402,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-    // paddingHorizontal: normalize(16),
+    paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
     paddingBottom: normalize(70),
     overflow: 'visible',
