@@ -96,7 +96,7 @@ export const PostImageUpload = ({data}) => {
 
   const handleRemove = (image) => {
     const imageToRemove = image;
-    const newImageList = postImage.filter(
+    const newImageList = coverPhoto.filter(
       (image) => image !== imageToRemove
     );
     setPostImage(newImageList);

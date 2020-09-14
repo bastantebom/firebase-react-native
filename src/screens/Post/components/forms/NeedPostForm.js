@@ -164,16 +164,16 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     console.log(image);
 
     if (image) {
-      const {uri, filename} = image;
+      // const {uri, filename} = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
 
-      if (uri || filename) {
+      // if (uri || filename) {
         const newFilename =
           Platform.OS === 'ios'
-            ? filename.substring(0, filename.lastIndexOf('.'))
-            : uri.substring(uri.lastIndexOf('/') + 1);
+            ? image.substring(0, image.lastIndexOf('.'))
+            : image.substring(image.lastIndexOf('/') + 1);
         const uploadUri =
-          Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+          Platform.OS === 'ios' ? image.replace('file://', '') : image;
 
         const task = storage().ref();
         const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
@@ -181,9 +181,9 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         const downloadURL = await fileRef.getDownloadURL();
 
         return Promise.resolve(downloadURL);
-      } else {
-        return Promise.resolve(image);
-      }
+      // } else {
+      //   return Promise.resolve(image);
+      // }
     } else {
       return Promise.reject('Failed to upload');
     }
