@@ -25,6 +25,8 @@ import {
   Switch,
   AppButton,
   CacheableImage,
+  TransitionIndicator,
+  Keyboard,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
@@ -363,6 +365,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}
           textAlignVertical="top"
+          scrollEnabled={false}
         />
       </View>
 
@@ -479,6 +482,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }
           />
         </Modal>
+        <TransitionIndicator loading={loadingSubmit} />
       </View>
     </>
   );
