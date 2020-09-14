@@ -34,11 +34,12 @@ import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
-    postImage,
     setPostImage,
     setImageCount,
     setImageCurrent,
     setNeedsRefresh,
+    coverPhoto,
+    setCoverPhoto
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -118,7 +119,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
   /*MAP Essentials */
 
-  // console.log('SellPostForm', postImage);
+  // console.log('SellPostForm', coverPhoto);
 
   const {
     title,
@@ -174,9 +175,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   useEffect(() => {
-    if (images !== undefined) {
-      setPostImage(images);
-    }
+    // if (images !== undefined) {
+    //   setPostImage(images)
+    // }
     checkFormContent();
   }, [
     title,
@@ -208,16 +209,16 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     console.log('image', image);
 
     if (image) {
-      const {uri, filename} = image;
+      // const { uri, filename } = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
 
-      if (uri || filename) {
+      // if (uri || filename) {
         const newFilename =
           Platform.OS === 'ios'
-            ? filename.substring(0, filename.lastIndexOf('.'))
-            : uri.substring(uri.lastIndexOf('/') + 1);
+            ? image.substring(0, image.lastIndexOf('.'))
+            : image.substring(image.lastIndexOf('/') + 1);
         const uploadUri =
-          Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+          Platform.OS === 'ios' ? image.replace('file://', '') : image;
 
         const task = storage().ref();
         const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
@@ -227,9 +228,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         return Promise.resolve(downloadURL);
 
         // return Promise.resolve('image');
-      } else {
-        return Promise.resolve(image);
-      }
+      // } else {
+      //   return Promise.resolve(image);
+      // }
     } else {
       return Promise.reject('Failed to upload');
     }
@@ -238,6 +239,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const navigateToPost = async () => {
     //console.log(postImage);
     setLoadingSubmit(true);
+    setCoverPhoto([]);
     setPostImage([]);
     setImageCount(0);
     setImageCurrent('');
@@ -259,21 +261,20 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
     // compare if images are the same with initial data --- when editing
     // Upload images
-
-    const uploadAllImage = () =>
-      Promise.all(
-        postImage.map((image) => {
-          return uploadImageHandler(image)
-            .then((res) => {
-              console.log('res', res);
-              return res;
-            })
-            .catch((err) => {
-              console.log(err);
-              return err;
-            });
-        }),
-      );
+    
+    const uploadAllImage = () => Promise.all(
+      coverPhoto.map((image) => {
+        return uploadImageHandler(image)
+          .then((res) => {
+            console.log('res', res);
+            return res;
+          })
+          .catch((err) => {
+            console.log(err);
+            return err;
+          });
+      }),
+    );
 
     await uploadAllImage().then((response) => {
       data.images = response;

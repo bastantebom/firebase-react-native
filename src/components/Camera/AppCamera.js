@@ -44,7 +44,7 @@ export const AppCamera = ({
   
   const [cameraRatio, setCameraRatio] = useState('')
   const [flash, setFlash] = useState('off')
-  const [cameraType, setCameraType] = useState('front')
+  const [cameraType, setCameraType] = useState('back')
   const [imageUrl, setImageUrl] = useState([])
   const cameraRef = useRef(null)
   
@@ -88,7 +88,11 @@ export const AppCamera = ({
 
       cameraRef.current.pausePreview()
 
-      setImageUrl(data)
+      const cameraUrl = data.uri
+
+      setImageUrl(cameraUrl)
+
+      console.log(cameraUrl)
     }
   };
 

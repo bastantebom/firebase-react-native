@@ -40,6 +40,8 @@ const ServicePostForm = ({
     setImageCount,
     setImageCurrent,
     setNeedsRefresh,
+    coverPhoto,
+    setCoverPhoto
   } = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
@@ -162,16 +164,16 @@ const ServicePostForm = ({
     console.log(image);
 
     if (image) {
-      const {uri, filename} = image;
+      // const {uri, filename} = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
 
-      if (uri || filename) {
+      // if (uri || filename) {
         const newFilename =
           Platform.OS === 'ios'
-            ? filename.substring(0, filename.lastIndexOf('.'))
-            : uri.substring(uri.lastIndexOf('/') + 1);
+            ? image.substring(0, image.lastIndexOf('.'))
+            : image.substring(image.lastIndexOf('/') + 1);
         const uploadUri =
-          Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+          Platform.OS === 'ios' ? image.replace('file://', '') : image;
 
         const task = storage().ref();
         const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
@@ -179,25 +181,25 @@ const ServicePostForm = ({
         const downloadURL = await fileRef.getDownloadURL();
 
         return Promise.resolve(downloadURL);
-      } else {
-        return Promise.resolve(image);
-      }
+      // } else {
+      //   return Promise.resolve(image);
+      // }
     } else {
       return Promise.reject('Failed to upload');
     }
   };
 
   useEffect(() => {
-    if (images !== undefined) {
-      setPostImage(images);
-    }
+    // if (images !== undefined) {
+    //   setPostImage(images)
+    // }
     checkFormContent();
   }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
     // set4  states
     setPostImage([]);
-    //console.log(postImage);
+    setCoverPhoto([]);
     setImageCount(0);
     setImageCurrent('');
 
@@ -221,7 +223,7 @@ const ServicePostForm = ({
     // Upload images
     const uploadAllImage = () =>
       Promise.all(
-        postImage.map((image) => {
+        coverPhoto.map((image) => {
           return uploadImageHandler(image)
             .then((res) => {
               console.log(res);

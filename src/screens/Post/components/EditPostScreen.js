@@ -16,7 +16,7 @@ import {Context} from '@/context';
 
 const EditPostScreen = ({data, togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const {setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+  const {setCoverPhoto, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -25,6 +25,7 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
     if (value === 'continue') {
       cancelModalToggle();
       setPostImage([]);
+      setCoverPhoto([]);
       setImageCount(0);
       setImageCurrent('');
       setTimeout(() => {

@@ -33,8 +33,8 @@ export const PostImageUpload = ({data}) => {
     postImage,
     setImageCount,
     imageCount,
-    setImageCurrent,
-    imageCurrent,
+    coverPhoto,
+    setCoverPhoto
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
@@ -95,12 +95,13 @@ export const PostImageUpload = ({data}) => {
   };
 
   const handleRemove = (image) => {
-    const imageToRemove = image.uri || image;
-    const newImageList = postImage.filter(
-      (image) => image.uri || image !== imageToRemove,
+    const imageToRemove = image;
+    const newImageList = coverPhoto.filter(
+      (image) => image !== imageToRemove
     );
     setPostImage(newImageList);
     setImageCount(imageCount - 1);
+    console.log(imageToRemove)
   };
 
   const cancelUploadPhoto = () => {
@@ -109,16 +110,10 @@ export const PostImageUpload = ({data}) => {
     togglePickerModal();
   };
 
-  // const continueUploadPhoto = (postImage, imageCount) => {
-  //   setPostImage(postImage)
-  //   setImageCount(imageCount)
-  //   // setPostImageCount(imageCount)
-  //   togglePickerModal();
-  // };
-
-  const continueUploadPhoto = (postImage, imageCount) => {
-    setPostImage(postImage);
-    setImageCount(imageCount);
+  const continueUploadPhoto = () => {
+    // setCoverPhoto(data, [...postImage]);
+    // setPostImage(postImage);
+    // setImageCount(imageCount);
     togglePickerModal();
   };
 
@@ -147,23 +142,34 @@ export const PostImageUpload = ({data}) => {
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
           // data={data === null ? null : data}
+          count={data === null ? 0 : data.length}
         />
       ),
     },
   ];
 
-  // console.log('postImage', postImage)
-  // console.log('imageCount', imageCount)
-  // console.log('data', data)
+  // console.log(postImage, 'postImage - postImageUpload')
+  // console.log(data, 'data - postImageUpload')
+  // console.log(coverPhoto, 'coverPhoto - postImageUpload')
 
   useEffect(() => {
     if (data === null) {
-      return console.log(data);
+      return console.log(data, 'data on post image');
     } else {
       setImageCount(data.length);
-      // setPostImage(data)
     }
   }, [data]);
+
+  useEffect(() => {
+    if (data === null) {
+      setCoverPhoto([...postImage]);
+    } 
+    else {
+      // setCoverPhoto(data);
+      setCoverPhoto([...data, ...postImage]);
+    }
+    
+  }, [data, postImage]);
 
   return (
     <>
@@ -199,7 +205,7 @@ export const PostImageUpload = ({data}) => {
             marginBottom: 8,
           }}>
           <ScrollView horizontal>
-            {postImage.map((image, i) => {
+            {coverPhoto.map((image, i) => {
               return (
                 <View key={i}>
                   <TouchableOpacity
@@ -228,7 +234,7 @@ export const PostImageUpload = ({data}) => {
                     </View>
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: image.uri ? image.uri : image }}
+                    source={{ uri: image }}
                     style={{
                       width:
                         imageCount === 1
