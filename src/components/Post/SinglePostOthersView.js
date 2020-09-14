@@ -149,69 +149,67 @@ const SinglePostOthersView = ({data, backFunction}) => {
           )}
         </View>
         <ScrollView style={styles.postInfoContainer}>
-          <View style={{paddingHorizontal: normalize(16)}}>
-            <ProfileInfo
-              userInfo={userInfo}
-              type="own-post"
-              closePostModal={backFunction}
-            />
+          <ProfileInfo
+            userInfo={userInfo}
+            type="own-post"
+            closePostModal={backFunction}
+          />
 
-            <AppText
-              textStyle="subtitle1"
-              customStyle={{marginTop: 24, marginBottom: 16}}>
-              {title}
+          <AppText
+            textStyle="subtitle1"
+            customStyle={{marginTop: 24, marginBottom: 16}}>
+            {title}
+          </AppText>
+
+          <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>
+            ₱ {price}
+          </AppText>
+
+          <View style={styles.iconText}>
+            <PostClock width={normalize(24)} height={normalize(24)} />
+            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+              {timeAgo(date_posted)}
             </AppText>
-
-            <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>
-              ₱ {price}
-            </AppText>
-
-            <View style={styles.iconText}>
-              <PostClock width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {timeAgo(date_posted)}
-              </AppText>
-            </View>
-            <View style={styles.iconText}>
-              <PostNavigation width={normalize(24)} height={normalize(24)} />
-              <AppText
-                textStyle="body2"
-                customStyle={{marginLeft: 8, marginRight: 20}}>
-                {city}, {province}
-              </AppText>
-            </View>
-            <View style={styles.iconText}>
-              <PostInfo width={normalize(24)} height={normalize(24)} />
-              <AppText
-                textStyle="body2"
-                customStyle={{marginLeft: 8, marginRight: 20}}>
-                {description}
-              </AppText>
-            </View>
-            <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
-            <View style={styles.iconText}>
-              <PostCash width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {payment_method}
-              </AppText>
-            </View>
-            {!pickup && !delivery ? (
-              <></>
-            ) : (
-              <View style={styles.iconText}>
-                <PostBox width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                  {pickup && delivery
-                    ? 'Pickup & Delivery'
-                    : delivery
-                    ? 'Delivery'
-                    : pickup
-                    ? 'Pickup'
-                    : ''}
-                </AppText>
-              </View>
-            )}
           </View>
+          <View style={styles.iconText}>
+            <PostNavigation width={normalize(24)} height={normalize(24)} />
+            <AppText
+              textStyle="body2"
+              customStyle={{marginLeft: 8, marginRight: 20}}>
+              {city}, {province}
+            </AppText>
+          </View>
+          <View style={styles.iconText}>
+            <PostInfo width={normalize(24)} height={normalize(24)} />
+            <AppText
+              textStyle="body2"
+              customStyle={{marginLeft: 8, marginRight: 20}}>
+              {description}
+            </AppText>
+          </View>
+          <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
+          <View style={styles.iconText}>
+            <PostCash width={normalize(24)} height={normalize(24)} />
+            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+              {payment_method}
+            </AppText>
+          </View>
+          {!pickup && !delivery ? (
+            <></>
+          ) : (
+            <View style={styles.iconText}>
+              <PostBox width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+                {pickup && delivery
+                  ? 'Pickup & Delivery'
+                  : delivery
+                  ? 'Delivery'
+                  : pickup
+                  ? 'Pickup'
+                  : ''}
+              </AppText>
+            </View>
+          )}
         </ScrollView>
         {children}
       </View>
@@ -310,7 +308,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-    // paddingHorizontal: 16,
+    paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
     paddingBottom: normalize(85),
     // padding: 16,
