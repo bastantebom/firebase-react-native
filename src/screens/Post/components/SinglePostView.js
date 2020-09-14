@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   ScrollView,
@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { Divider } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import {Divider} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
@@ -18,7 +18,7 @@ import {
   ProfileInfo,
   CacheableImage,
 } from '@/components';
-import { normalize, GlobalStyle, Colors, timePassed } from '@/globals';
+import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
 import {
   PostClock,
   PostNavigation,
@@ -30,12 +30,12 @@ import {
   CircleTickWhite,
   CloseLight,
 } from '@/assets/images/icons';
-import { CoverNeed, CoverSell, CoverService } from '@/assets/images';
+import {CoverNeed, CoverSell, CoverService} from '@/assets/images';
 
-import { PostService } from '@/services';
-import { UserContext } from '@/context/UserContext';
+import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
 import EditPostScreen from './EditPostScreen';
-import { ImageModal } from './ImageModal';
+import {ImageModal} from './ImageModal';
 
 const SinglePostView = (props) => {
   const {
@@ -46,8 +46,8 @@ const SinglePostView = (props) => {
     description,
     payment_method,
     price,
-    store_location: { longitude, city, province, latitude, country },
-    delivery_method: { pickup, delivery },
+    store_location: {longitude, city, province, latitude, country},
+    delivery_method: {pickup, delivery},
     available,
     username,
     profile_photo,
@@ -67,7 +67,7 @@ const SinglePostView = (props) => {
   const [editPost, showEditPost] = useState(false);
   const [postImageModal, setPostImageModal] = useState(false);
 
-  const { user, setUserInfo } = useContext(UserContext);
+  const {user, setUserInfo} = useContext(UserContext);
 
   const toggleEditPost = () => {
     toggleEllipsisState();
@@ -103,8 +103,8 @@ const SinglePostView = (props) => {
     return props.route.params?.created
       ? props.route.params?.created
       : props.route.params?.edited
-        ? props.route.params?.edited
-        : false;
+      ? props.route.params?.edited
+      : false;
   };
 
   const userInfo = {
@@ -126,7 +126,7 @@ const SinglePostView = (props) => {
     console.log(post_id);
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState();
-      setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 });
+      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
       navigation.goBack();
     });
   };
@@ -156,25 +156,25 @@ const SinglePostView = (props) => {
       return props.route.params?.created ? (
         <CircleTick width={normalize(24)} height={normalize(24)} />
       ) : (
-          <CircleTickWhite width={normalize(24)} height={normalize(24)} />
-        );
+        <CircleTickWhite width={normalize(24)} height={normalize(24)} />
+      );
     };
 
     const NotificationClose = () => {
       return props.route.params?.created ? (
         <CloseDark width={normalize(24)} height={normalize(24)} />
       ) : (
-          <CloseLight width={normalize(24)} height={normalize(24)} />
-        );
+        <CloseLight width={normalize(24)} height={normalize(24)} />
+      );
     };
 
-    if (!showNotification)
+    if (showNotification)
       return (
         <View
           style={{
             backgroundColor: backgroundColor,
             position: 'absolute',
-            // top: -58,
+            top: -73,
             width: normalize(375),
             paddingHorizontal: 16,
             alignItems: 'center',
@@ -182,10 +182,11 @@ const SinglePostView = (props) => {
             borderTopRightRadius: 8,
             borderTopLeftRadius: 8,
             flexDirection: 'row',
+            zIndex: 5,
           }}>
           <NotificationCheckbox />
           <AppText
-            customStyle={{ flex: 1, marginLeft: 8 }}
+            customStyle={{flex: 1, marginLeft: 8}}
             color={notificationColor}
             textStyle="body2">
             {notificationMessage}
@@ -206,7 +207,7 @@ const SinglePostView = (props) => {
 
   const SinglePostContent = () => {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <View style={styles.postImageContainer}>
           {/* <Image
             style={GlobalStyle.image}
@@ -227,104 +228,106 @@ const SinglePostView = (props) => {
                 source={require('@/assets/images/cover-sell.png')}
               />
             ) : (
-                  <Image
-                    style={GlobalStyle.image}
-                    source={require('@/assets/images/cover-service.png')}
-                  />
-                )
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-service.png')}
+              />
+            )
           ) : (
-              <Swiper
-                activeDotColor={Colors.primaryYellow}
-                dotColor={Colors.neutralsIron}
-                dotStyle={{ marginRight: 9 }}
-                activeDotStyle={{ marginRight: 9 }}>
-                {images.map((item, index) => {
-                  console.log(item);
-                  return (
-                    <TouchableWithoutFeedback
-                      key={index}
-                      onPress={togglePostImageModal}>
-                      <CacheableImage
-                        style={GlobalStyle.image}
-                        source={{
-                          uri: item,
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  );
-                })}
-              </Swiper>
-            )}
+            <Swiper
+              activeDotColor={Colors.primaryYellow}
+              dotColor={Colors.neutralsIron}
+              dotStyle={{marginRight: 9}}
+              activeDotStyle={{marginRight: 9}}>
+              {images.map((item, index) => {
+                console.log(item);
+                return (
+                  <TouchableWithoutFeedback
+                    key={index}
+                    onPress={togglePostImageModal}>
+                    <CacheableImage
+                      style={GlobalStyle.image}
+                      source={{
+                        uri: item,
+                      }}
+                    />
+                  </TouchableWithoutFeedback>
+                );
+              })}
+            </Swiper>
+          )}
         </View>
+
         <ScrollView style={styles.postInfoContainer}>
           <CustomNotification />
+          <View style={{paddingHorizontal: 16}}>
+            <ProfileInfo userInfo={userInfo} type="own-post" />
 
-          <ProfileInfo userInfo={userInfo} type="own-post" />
+            {/* <Animated.View ref="stickyHeader" style={[styles.stickyStuff, {top: stickySegmentControlX}]}>
+              <AppText
+                textStyle="subtitle1"
+                customStyle={{ marginTop: 24, marginBottom: 16 }}>
+                {title}
+              </AppText>
+            </Animated.View> */}
 
-          {/* <Animated.View ref="stickyHeader" style={[styles.stickyStuff, {top: stickySegmentControlX}]}>
             <AppText
               textStyle="subtitle1"
-              customStyle={{ marginTop: 24, marginBottom: 16 }}>
+              customStyle={{marginTop: 24, marginBottom: 16}}>
               {title}
+              {/* {post_type} */}
             </AppText>
-          </Animated.View> */}
 
-          <AppText
-            textStyle="subtitle1"
-            customStyle={{ marginTop: 24, marginBottom: 16 }}>
-            {title}
-            {/* {post_type} */}
-          </AppText>
+            <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>
+              ₱ {price}
+            </AppText>
 
-          <AppText textStyle="subtitle1" customStyle={{ marginBottom: 12 }}>
-            ₱ {price}
-          </AppText>
-
-          <View style={styles.iconText}>
-            <PostClock width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-              {timeAgo(date_posted)}
-            </AppText>
-          </View>
-          <View style={styles.iconText}>
-            <PostNavigation width={normalize(24)} height={normalize(24)} />
-            <AppText
-              textStyle="body2"
-              customStyle={{ marginLeft: 8, marginRight: 20 }}>
-              {city}, {province}
-            </AppText>
-          </View>
-          <View style={styles.iconText}>
-            <PostInfo width={normalize(24)} height={normalize(24)} />
-            <AppText
-              textStyle="body2"
-              customStyle={{ marginLeft: 8, marginRight: 20 }}>
-              {description}
-            </AppText>
-          </View>
-          <Divider style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]} />
-          <View style={styles.iconText}>
-            <PostCash width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-              {payment_method}
-            </AppText>
-          </View>
-          {!pickup && !delivery ? (
-            <></>
-          ) : (
+            <View style={styles.iconText}>
+              <PostClock width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+                {timeAgo(date_posted)}
+              </AppText>
+            </View>
+            <View style={styles.iconText}>
+              <PostNavigation width={normalize(24)} height={normalize(24)} />
+              <AppText
+                textStyle="body2"
+                customStyle={{marginLeft: 8, marginRight: 20}}>
+                {city}, {province}
+              </AppText>
+            </View>
+            <View style={styles.iconText}>
+              <PostInfo width={normalize(24)} height={normalize(24)} />
+              <AppText
+                textStyle="body2"
+                customStyle={{marginLeft: 8, marginRight: 20}}>
+                {description}
+              </AppText>
+            </View>
+            <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
+            <View style={styles.iconText}>
+              <PostCash width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+                {payment_method}
+              </AppText>
+            </View>
+            {!pickup && !delivery ? (
+              <></>
+            ) : (
               <View style={styles.iconText}>
                 <PostBox width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
                   {pickup && delivery
                     ? 'Pickup & Delivery'
                     : delivery
-                      ? 'Delivery'
-                      : pickup
-                        ? 'Pickup'
-                        : ''}
+                    ? 'Delivery'
+                    : pickup
+                    ? 'Pickup'
+                    : ''}
                 </AppText>
               </View>
             )}
+          </View>
         </ScrollView>
       </View>
     );
@@ -355,7 +358,7 @@ const SinglePostView = (props) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => showEditPost(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
+            <View style={{flex: 1, backgroundColor: 'black'}} />
           </TouchableWithoutFeedback>
         }>
         <EditPostScreen
@@ -403,6 +406,9 @@ const styles = StyleSheet.create({
     // paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
     paddingBottom: normalize(70),
+    overflow: 'visible',
+    zIndex: 10,
+    position: 'relative',
   },
   userInfoImageContainer: {
     height: normalize(42),
