@@ -209,58 +209,59 @@ const SinglePostView = (props) => {
   const SinglePostContent = () => {
     return (
       <View style={{flex: 1}}>
-        <View style={styles.postImageContainer}>
-          {/* <Image
+        <ScrollView style={{backgroundColor: 'white'}} >
+          <View style={styles.postImageContainer}>
+            {/* <Image
             style={GlobalStyle.image}
             source={{
               uri:
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
           /> */}
-          {images === undefined || images.length == 0 ? (
-            post_type === 'Need' || post_type === 'need' ? (
-              <Image
-                style={GlobalStyle.image}
-                source={require('@/assets/images/cover-need.png')}
-              />
-            ) : post_type === 'Sell' || post_type === 'sell' ? (
-              <Image
-                style={GlobalStyle.image}
-                source={require('@/assets/images/cover-sell.png')}
-              />
+            {images === undefined || images.length == 0 ? (
+              post_type === 'Need' || post_type === 'need' ? (
+                <Image
+                  style={GlobalStyle.image}
+                  source={require('@/assets/images/cover-need.png')}
+                />
+              ) : post_type === 'Sell' || post_type === 'sell' ? (
+                <Image
+                  style={GlobalStyle.image}
+                  source={require('@/assets/images/cover-sell.png')}
+                />
+              ) : (
+                <Image
+                  style={GlobalStyle.image}
+                  source={require('@/assets/images/cover-service.png')}
+                />
+              )
             ) : (
-              <Image
-                style={GlobalStyle.image}
-                source={require('@/assets/images/cover-service.png')}
-              />
-            )
-          ) : (
-            <Swiper
-              activeDotColor={Colors.primaryYellow}
-              dotColor={Colors.neutralsIron}
-              dotStyle={{marginRight: 9}}
-              activeDotStyle={{marginRight: 9}}>
-              {images.map((item, index) => {
-                console.log(item);
-                return (
-                  <TouchableWithoutFeedback
-                    key={index}
-                    onPress={togglePostImageModal}>
-                    <CacheableImage
-                      style={GlobalStyle.image}
-                      source={{
-                        uri: item,
-                      }}
-                    />
-                  </TouchableWithoutFeedback>
-                );
-              })}
-            </Swiper>
-          )}
-          <CustomNotification />
-        </View>
+              <Swiper
+                activeDotColor={Colors.primaryYellow}
+                dotColor={Colors.neutralsIron}
+                dotStyle={{marginRight: 9}}
+                activeDotStyle={{marginRight: 9}}>
+                {images.map((item, index) => {
+                  console.log(item);
+                  return (
+                    <TouchableWithoutFeedback
+                      key={index}
+                      onPress={togglePostImageModal}>
+                      <CacheableImage
+                        style={GlobalStyle.image}
+                        source={{
+                          uri: item,
+                        }}
+                      />
+                    </TouchableWithoutFeedback>
+                  );
+                })}
+              </Swiper>
+            )}
+            <CustomNotification />
+          </View>
 
-        <ScrollView style={styles.postInfoContainer}>
+          <View style={styles.postInfoContainer}>
             <ProfileInfo userInfo={userInfo} type="own-post" />
 
             {/* <Animated.View ref="stickyHeader" style={[styles.stickyStuff, {top: stickySegmentControlX}]}>
@@ -327,6 +328,7 @@ const SinglePostView = (props) => {
                 </AppText>
               </View>
             )}
+          </View>
         </ScrollView>
       </View>
     );
