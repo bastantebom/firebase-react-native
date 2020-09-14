@@ -95,9 +95,9 @@ export const PostImageUpload = ({data}) => {
   };
 
   const handleRemove = (image) => {
-    const imageToRemove = image.uri;
+    const imageToRemove = image.uri || image;
     const newImageList = postImage.filter(
-      (image) => image.uri !== imageToRemove,
+      (image) => image.uri || image !== imageToRemove,
     );
     setPostImage(newImageList);
     setImageCount(imageCount - 1);
