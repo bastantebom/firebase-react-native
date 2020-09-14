@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,8 +9,8 @@ import {
   Linking,
   ScrollView,
 } from 'react-native';
-import { Divider } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import {Divider} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
@@ -20,7 +20,7 @@ import {
   ProfileInfo,
   CacheableImage,
 } from '@/components';
-import { normalize, GlobalStyle, Colors, timePassed } from '@/globals';
+import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
 import {
   PostClock,
   PostNavigation,
@@ -30,11 +30,11 @@ import {
   ContactEmail,
   ContactTelephone,
 } from '@/assets/images/icons';
-import { PostService } from '@/services';
-import { UserContext } from '@/context/UserContext';
-import { ImageModal } from '@/screens/Post/components/ImageModal';
+import {PostService} from '@/services';
+import {UserContext} from '@/context/UserContext';
+import {ImageModal} from '@/screens/Post/components/ImageModal';
 
-const SinglePostOthersView = ({ data, backFunction }) => {
+const SinglePostOthersView = ({data, backFunction}) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
 
@@ -46,8 +46,8 @@ const SinglePostOthersView = ({ data, backFunction }) => {
     description,
     payment_method,
     price,
-    store_location: { longitude, city, province, latitude, country },
-    delivery_method: { pickup, delivery },
+    store_location: {longitude, city, province, latitude, country},
+    delivery_method: {pickup, delivery},
     available,
     username,
     profile_photo,
@@ -59,7 +59,7 @@ const SinglePostOthersView = ({ data, backFunction }) => {
     phone_number,
   } = data;
 
-  const { user } = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   const defaultImage = [
     {
@@ -96,9 +96,9 @@ const SinglePostOthersView = ({ data, backFunction }) => {
     setPostImageModal(!postImageModal);
   };
 
-  const SinglePostContent = ({ children }) => {
+  const SinglePostContent = ({children}) => {
     return (
-      <View style={{ flex: 1, color: 'red' }}>
+      <View style={{flex: 1, color: 'red'}}>
         <View style={styles.postImageContainer}>
           {/* <Image
             style={GlobalStyle.image}
@@ -119,97 +119,99 @@ const SinglePostOthersView = ({ data, backFunction }) => {
                 source={require('@/assets/images/cover-sell.png')}
               />
             ) : (
-                  <Image
-                    style={GlobalStyle.image}
-                    source={require('@/assets/images/cover-service.png')}
-                  />
-                )
+              <Image
+                style={GlobalStyle.image}
+                source={require('@/assets/images/cover-service.png')}
+              />
+            )
           ) : (
-              <Swiper
-                activeDotColor={Colors.primaryYellow}
-                dotColor={Colors.neutralsIron}
-                dotStyle={{ marginRight: 9 }}
-                activeDotStyle={{ marginRight: 9 }}>
-                {images.map((item, index) => {
-                  console.log(item);
-                  return (
-                    <TouchableWithoutFeedback
-                      key={index}
-                      onPress={togglePostImageModal}>
-                      <CacheableImage
-                        style={GlobalStyle.image}
-                        source={{
-                          uri: item,
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  );
-                })}
-              </Swiper>
-            )}
+            <Swiper
+              activeDotColor={Colors.primaryYellow}
+              dotColor={Colors.neutralsIron}
+              dotStyle={{marginRight: 9}}
+              activeDotStyle={{marginRight: 9}}>
+              {images.map((item, index) => {
+                console.log(item);
+                return (
+                  <TouchableWithoutFeedback
+                    key={index}
+                    onPress={togglePostImageModal}>
+                    <CacheableImage
+                      style={GlobalStyle.image}
+                      source={{
+                        uri: item,
+                      }}
+                    />
+                  </TouchableWithoutFeedback>
+                );
+              })}
+            </Swiper>
+          )}
         </View>
         <ScrollView style={styles.postInfoContainer}>
-          <ProfileInfo
-            userInfo={userInfo}
-            type="own-post"
-            closePostModal={backFunction}
-          />
+          <View style={{paddingHorizontal: normalize(16)}}>
+            <ProfileInfo
+              userInfo={userInfo}
+              type="own-post"
+              closePostModal={backFunction}
+            />
 
-          <AppText
-            textStyle="subtitle1"
-            customStyle={{ marginTop: 24, marginBottom: 16 }}>
-            {title}
-          </AppText>
-
-          <AppText textStyle="subtitle1" customStyle={{ marginBottom: 12 }}>
-            ₱ {price}
-          </AppText>
-
-          <View style={styles.iconText}>
-            <PostClock width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-              {timeAgo(date_posted)}
-            </AppText>
-          </View>
-          <View style={styles.iconText}>
-            <PostNavigation width={normalize(24)} height={normalize(24)} />
             <AppText
-              textStyle="body2"
-              customStyle={{ marginLeft: 8, marginRight: 20 }}>
-              {city}, {province}
+              textStyle="subtitle1"
+              customStyle={{marginTop: 24, marginBottom: 16}}>
+              {title}
             </AppText>
-          </View>
-          <View style={styles.iconText}>
-            <PostInfo width={normalize(24)} height={normalize(24)} />
-            <AppText
-              textStyle="body2"
-              customStyle={{ marginLeft: 8, marginRight: 20 }}>
-              {description}
+
+            <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>
+              ₱ {price}
             </AppText>
-          </View>
-          <Divider style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]} />
-          <View style={styles.iconText}>
-            <PostCash width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-              {payment_method}
-            </AppText>
-          </View>
-          {!pickup && !delivery ? (
-            <></>
-          ) : (
+
+            <View style={styles.iconText}>
+              <PostClock width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+                {timeAgo(date_posted)}
+              </AppText>
+            </View>
+            <View style={styles.iconText}>
+              <PostNavigation width={normalize(24)} height={normalize(24)} />
+              <AppText
+                textStyle="body2"
+                customStyle={{marginLeft: 8, marginRight: 20}}>
+                {city}, {province}
+              </AppText>
+            </View>
+            <View style={styles.iconText}>
+              <PostInfo width={normalize(24)} height={normalize(24)} />
+              <AppText
+                textStyle="body2"
+                customStyle={{marginLeft: 8, marginRight: 20}}>
+                {description}
+              </AppText>
+            </View>
+            <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
+            <View style={styles.iconText}>
+              <PostCash width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+                {payment_method}
+              </AppText>
+            </View>
+            {!pickup && !delivery ? (
+              <></>
+            ) : (
               <View style={styles.iconText}>
                 <PostBox width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
                   {pickup && delivery
                     ? 'Pickup & Delivery'
                     : delivery
-                      ? 'Delivery'
-                      : pickup
-                        ? 'Pickup'
-                        : ''}
+                    ? 'Delivery'
+                    : pickup
+                    ? 'Pickup'
+                    : ''}
                 </AppText>
               </View>
             )}
+          </View>
         </ScrollView>
         {children}
       </View>
@@ -219,7 +221,7 @@ const SinglePostOthersView = ({ data, backFunction }) => {
   return (
     <>
       <ScrollView>
-        <View style={{ flex: 1, position: 'relative', backgroundColor: 'green' }}>
+        <View style={{flex: 1, position: 'relative', backgroundColor: 'green'}}>
           <TransparentHeader type={'post-other'} backFunction={backFunction} />
           <SinglePostContent></SinglePostContent>
 
@@ -254,7 +256,7 @@ const SinglePostOthersView = ({ data, backFunction }) => {
           }}>
           {phone_number ? (
             <TouchableOpacity
-              style={{ flex: 1, marginRight: email ? 8 : 0 }}
+              style={{flex: 1, marginRight: email ? 8 : 0}}
               activeOpacity={0.7}
               // onPress={() => Linking.openURL(`tel:${phone_number}`)}
               onPress={makeCall}>
@@ -263,17 +265,17 @@ const SinglePostOthersView = ({ data, backFunction }) => {
                   width={normalize(24)}
                   height={normalize(24)}
                 />
-                <AppText textStyle="button2" customStyle={{ marginLeft: 8 }}>
+                <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
                   Call Seller
                 </AppText>
               </View>
             </TouchableOpacity>
           ) : (
-              <></>
-            )}
+            <></>
+          )}
           {email ? (
             <TouchableOpacity
-              style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
+              style={{flex: 1, marginLeft: phone_number ? 8 : 0}}
               activeOpacity={0.7}
               onPress={() => {
                 Linking.openURL(
@@ -282,14 +284,14 @@ const SinglePostOthersView = ({ data, backFunction }) => {
               }}>
               <View style={styles.contactButtonContainer}>
                 <ContactEmail width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="button2" customStyle={{ marginLeft: 8 }}>
+                <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
                   Send Email
                 </AppText>
               </View>
             </TouchableOpacity>
           ) : (
-              <></>
-            )}
+            <></>
+          )}
         </View>
       </SafeAreaView>
     </>
@@ -308,7 +310,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     paddingTop: normalize(16),
     paddingBottom: normalize(85),
     // padding: 16,

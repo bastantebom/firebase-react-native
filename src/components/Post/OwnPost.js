@@ -84,13 +84,13 @@ const OwnPost = ({data, isLoading}) => {
       created: false,
       edited: false,
     };
-    if (user) {
-      if (user.uid === uid)
-        navigation.navigate('Post', {
-          screen: 'SinglePostView',
-          params: computedData,
-        });
-    } else setShowPost(true);
+
+    if (user && user.uid === uid)
+      navigation.navigate('Post', {
+        screen: 'SinglePostView',
+        params: computedData,
+      });
+    else setShowPost(true);
   };
 
   return (
