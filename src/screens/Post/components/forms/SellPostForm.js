@@ -174,6 +174,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   useEffect(() => {
+    if (images !== undefined) {
+      setPostImage(images)
+    }
     checkFormContent();
   }, [
     title,
@@ -201,57 +204,37 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   // console.log(postImage)
 
   const uploadImageHandler = async (image) => {
-    // if (initialData.post_id) {
-    //   console.log('I got the image');
-    //   console.log(image);
-
-    //   if (image) {
-    //     const {uri, filename} = image;
-    //     // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-
-    //     const newFilename =
-    //       Platform.OS === 'ios'
-    //         ? filename.substring(0, filename.lastIndexOf('.'))
-    //         : uri.substring(uri.lastIndexOf('/') + 1);
-    //     const uploadUri =
-    //       Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-
-    //     const task = storage().ref();
-    //     const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-    //     await fileRef.putFile(uploadUri);
-    //     const downloadURL = await fileRef.getDownloadURL();
-
-    //     return Promise.resolve(downloadURL);
-    //   } else {
-    //     return Promise.reject('Failed to upload');
-    //   }
-    // } else {
     console.log('I got the image');
-    console.log(image);
+    console.log('image', image);
 
     if (image) {
       const {uri, filename} = image;
       // const filename = uri.substring(uri.lastIndexOf('/') + 1);
 
-      const newFilename =
-        Platform.OS === 'ios'
-          ? filename.substring(0, filename.lastIndexOf('.'))
-          : uri.substring(uri.lastIndexOf('/') + 1);
-      const uploadUri =
-        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      if (uri || filename) {
+        const newFilename =
+          Platform.OS === 'ios'
+            ? filename.substring(0, filename.lastIndexOf('.'))
+            : uri.substring(uri.lastIndexOf('/') + 1);
+        const uploadUri =
+          Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
-      const task = storage().ref();
-      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-      await fileRef.putFile(uploadUri);
-      const downloadURL = await fileRef.getDownloadURL();
+        const task = storage().ref();
+        const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+        await fileRef.putFile(uploadUri);
+        const downloadURL = await fileRef.getDownloadURL();
 
-      return Promise.resolve(downloadURL);
+        return Promise.resolve(downloadURL)
+
+        // return Promise.resolve('image');
+      } else {
+        return Promise.resolve(image);
+      }
     } else {
       return Promise.reject('Failed to upload');
     }
-    // }
   };
-
+  
   const navigateToPost = async () => {
     //console.log(postImage);
     setLoadingSubmit(true);
@@ -276,20 +259,20 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
     // compare if images are the same with initial data --- when editing
     // Upload images
-    const uploadAllImage = () =>
-      Promise.all(
-        postImage.map((image) => {
-          return uploadImageHandler(image)
-            .then((res) => {
-              console.log(res);
-              return res;
-            })
-            .catch((err) => {
-              console.log(err);
-              return err;
-            });
-        }),
-      );
+    
+    const uploadAllImage = () => Promise.all(
+      postImage.map((image) => {
+        return uploadImageHandler(image)
+          .then((res) => {
+            console.log('res', res);
+            return res;
+          })
+          .catch((err) => {
+            console.log(err);
+            return err;
+          });
+      }),
+    );
 
     await uploadAllImage().then((response) => {
       data.images = response;
@@ -329,9 +312,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload
-          data={images === undefined || images.length == 0 ? null : images}
-        />
+
+        <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -376,6 +358,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           }}
           onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}
+          textAlignVertical="top"
         />
       </View>
 

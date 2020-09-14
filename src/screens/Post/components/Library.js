@@ -28,38 +28,49 @@ export const Library = ({cancel, next, data}) => {
     imageCurrent,
   } = useContext(Context);
 
-  // const [selectedCount, setSelectedCount] = useState([]);
   const [showFolderList, setShowFolderList] = useState(false);
   const [selected, setSelected] = useState([]);
-  // const [photoCount, setPhotoCount] = useState(0);
-
-  const [imageselected, setImageselected] = useState();
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
-    // setImageCurrent(num > 0 ? images[num - 1].filename : '');
     setImageCount(num);
     setPostImage(images);
 
-    // console.log(imageCurrent);
-    // console.log(images);
+    // const filter = async (images) => {
+    //   const imageToRemove = images.uri;
+    //   const newImageList = postImage.filter(
+    //     (images) => images.uri !== imageToRemove,
+    //   );
+
+    //   const filterList = newImageList.map((list) => list.uri)
+
+    //   return filterList;
+    //   // console.log("newImageList", newImageList)
+    //   // setPostImage(newImageList);
+    //   // setImageCount(imageCount - 1);
+    // };
+
+    // filter(images).then((res) => {
+    //   console.log('new list', res)
+    //   setPostImage([data, res])
+    //   console.log('postImage', postImage)
+    // })
   };
 
-  useEffect(() => {
-    if (data === null) {
-      return console.log('no data');
-    }
-    if (data !== null) {
-      setPostImage(data);
-    }
-  }, [data]);
-
+  // useEffect(() => {
+  //   if (data === null) {
+  //     return console.log('no data');
+  //   } 
+  //   if (data !== null) {
+  //     // setPostImage({uri: data});
+  //     console.log('with data')
+  //   }
+  // }, [data])
+  
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
-
-  // let x = 0;
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -168,12 +179,7 @@ export const Library = ({cancel, next, data}) => {
               //     </AppText>
               //   </View>
               // }
-              callback={() => {
-                // data !== null ?
-                getSelectedImages(postImage);
-                // :
-                // getSelectedImages(selected)
-              }}
+              callback={() => getSelectedImages(postImage)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,
