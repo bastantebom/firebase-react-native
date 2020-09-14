@@ -107,22 +107,22 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
   // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
 
-  // const onChangeUsername = (uName) => {
-  //   console.log("On change function")
+  const onChangeUsername = (uName) => {
+    console.log("On change function")
 
-  //   setVerified(false);
-  //   let userNameReg = /^[a-z0-9.-]*$/;
-  //   if (userNameReg.test(uName) && uName.length > 2) {
-  //     setInvalidUserFormat(false);
-  //     setUName(uName);
-  //     usernameHandler(uName);
-  //     // delayedUsernameValidation(uName);
-  //   } else {
-  //     setUName(uName);
-  //     setInvalidUserFormat(true);
-  //     setButtonState(true);
-  //   }
-  // };
+    setVerified(false);
+    let userNameReg = /^[a-z0-9.-]*$/;
+    if (userNameReg.test(uName) && uName.length > 2) {
+      setInvalidUserFormat(false);
+      setUName(uName);
+      usernameHandler(uName);
+      // delayedUsernameValidation(uName);
+    } else {
+      setUName(uName);
+      setInvalidUserFormat(true);
+      setButtonState(true);
+    }
+  };
 
   const sendValidation = async (un) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
@@ -545,6 +545,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   setDesc(desc);
                 }}
                 underlineColorAndroid={'transparent'}
+                textAlignVertical="top"
               />
             </PaddingView>
           </View>

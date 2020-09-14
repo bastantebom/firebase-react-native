@@ -18,7 +18,8 @@ import {PhotoAlbums} from './PhotoAlbums';
 
 const {height, width} = Dimensions.get('window');
 
-export const Library = ({cancel, next, data}) => {
+export const Library = ({cancel, next, data, count}) => {
+
   const {
     setPostImage,
     postImage,
@@ -26,47 +27,32 @@ export const Library = ({cancel, next, data}) => {
     imageCount,
     setImageCurrent,
     imageCurrent,
+    coverPhotos,
+    setCoverPhoto
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
-  const [selected, setSelected] = useState([]);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
-    setImageCount(num);
-    setPostImage(images);
+    setImageCount(count + num);
+    
+    const imageUrl = [];
+    images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
 
-    // const filter = async (images) => {
-    //   const imageToRemove = images.uri;
-    //   const newImageList = postImage.filter(
-    //     (images) => images.uri !== imageToRemove,
-    //   );
-
-    //   const filterList = newImageList.map((list) => list.uri)
-
-    //   return filterList;
-    //   // console.log("newImageList", newImageList)
-    //   // setPostImage(newImageList);
-    //   // setImageCount(imageCount - 1);
-    // };
-
-    // filter(images).then((res) => {
-    //   console.log('new list', res)
-    //   setPostImage([data, res])
-    //   console.log('postImage', postImage)
-    // })
+    setPostImage(imageUrl);
   };
 
-  // useEffect(() => {
-  //   if (data === null) {
-  //     return console.log('no data');
-  //   } 
-  //   if (data !== null) {
-  //     // setPostImage({uri: data});
-  //     console.log('with data')
-  //   }
-  // }, [data])
+  useEffect(() => {
+    if (data === null) {
+      return console.log('no data');
+    } 
+    if (data !== null) {
+      // setPostImage({uri: data});
+      console.log('with data')
+    }
+  }, [data])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
@@ -98,10 +84,7 @@ export const Library = ({cancel, next, data}) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             disabled={postImage.length < 1 && true}
-            onPress={() => {
-              // setToContext(selected, photoCount),
-              next(postImage, imageCount, imageCurrent);
-            }}
+            onPress={() => {next()}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"

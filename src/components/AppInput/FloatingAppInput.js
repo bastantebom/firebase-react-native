@@ -54,7 +54,7 @@ const FloatingAppInput = (props) => {
       setButtonState(false)
     }
 
-    onChangeTextInput(value);
+    onChangeTextInput ? onChangeTextInput(value) : null;
   }
 
   const inputDebounce = useCallback(
@@ -144,7 +144,7 @@ const FloatingAppInput = (props) => {
     setIsActive(true);
     animateFocus();
 
-    onInputFocus();
+    onInputFocus ? onInputFocus() : null;
   };
 
   const onBlurInput = () => {

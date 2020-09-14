@@ -20,7 +20,7 @@ import {UserContext} from '@/context/UserContext';
 const PostScreen = ({togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const {user} = useContext(UserContext);
-  const {setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+  const {setCoverPhoto, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -29,6 +29,7 @@ const PostScreen = ({togglePostModal, card}) => {
     if (value === 'continue') {
       cancelModalToggle();
       setPostImage([]);
+      setCoverPhoto([]);
       setImageCount(0);
       setImageCurrent('');
       setTimeout(() => {
