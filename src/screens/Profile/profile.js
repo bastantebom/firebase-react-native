@@ -166,7 +166,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
 
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-  //console.log(height);
+  console.log(height);
 
   const triggerNotify = (notify) => {
     if (notify) {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: normalize(160),
     height: normalize(160),
-    top: Dimensions.get('window').height > 800 ? '-17%' : '-21%',
+    top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },
