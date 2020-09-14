@@ -175,7 +175,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   useEffect(() => {
     if (images !== undefined) {
-      setPostImage(images)
+      setPostImage(images);
     }
     checkFormContent();
   }, [
@@ -224,7 +224,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         await fileRef.putFile(uploadUri);
         const downloadURL = await fileRef.getDownloadURL();
 
-        return Promise.resolve(downloadURL)
+        return Promise.resolve(downloadURL);
 
         // return Promise.resolve('image');
       } else {
@@ -234,7 +234,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       return Promise.reject('Failed to upload');
     }
   };
-  
+
   const navigateToPost = async () => {
     //console.log(postImage);
     setLoadingSubmit(true);
@@ -259,20 +259,21 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
     // compare if images are the same with initial data --- when editing
     // Upload images
-    
-    const uploadAllImage = () => Promise.all(
-      postImage.map((image) => {
-        return uploadImageHandler(image)
-          .then((res) => {
-            console.log('res', res);
-            return res;
-          })
-          .catch((err) => {
-            console.log(err);
-            return err;
-          });
-      }),
-    );
+
+    const uploadAllImage = () =>
+      Promise.all(
+        postImage.map((image) => {
+          return uploadImageHandler(image)
+            .then((res) => {
+              console.log('res', res);
+              return res;
+            })
+            .catch((err) => {
+              console.log(err);
+              return err;
+            });
+        }),
+      );
 
     await uploadAllImage().then((response) => {
       data.images = response;
@@ -312,8 +313,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-
-        <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
+        <PostImageUpload
+          data={images === undefined || images.length == 0 ? null : images}
+        />
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -355,6 +357,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             paddingHorizontal: 16,
             paddingVertical: 8,
             marginBottom: 16,
+            textAlign: 'left',
           }}
           onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}

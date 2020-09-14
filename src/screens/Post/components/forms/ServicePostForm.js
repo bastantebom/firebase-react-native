@@ -172,12 +172,12 @@ const ServicePostForm = ({
             : uri.substring(uri.lastIndexOf('/') + 1);
         const uploadUri =
           Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-  
+
         const task = storage().ref();
         const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
         await fileRef.putFile(uploadUri);
         const downloadURL = await fileRef.getDownloadURL();
-  
+
         return Promise.resolve(downloadURL);
       } else {
         return Promise.resolve(image);
@@ -189,7 +189,7 @@ const ServicePostForm = ({
 
   useEffect(() => {
     if (images !== undefined) {
-      setPostImage(images)
+      setPostImage(images);
     }
     checkFormContent();
   }, [title, price, paymentMethod, description]);
@@ -311,6 +311,7 @@ const ServicePostForm = ({
           paddingHorizontal: 16,
           paddingVertical: 8,
           marginBottom: 16,
+          textAlign: 'left',
         }}
         onChangeText={(text) => setDescription(text)}
         underlineColorAndroid={'transparent'}
