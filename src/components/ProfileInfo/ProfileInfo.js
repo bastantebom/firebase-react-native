@@ -151,25 +151,27 @@ const ProfileInfo = ({userInfo, type}) => {
   // OWN POST VIEW
   if (type === 'own-post')
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={styles.userInfoImageContainer}>
-            <ProfilePhoto size={42} />
-          </View>
-          <View style={{marginLeft: 8, justifyContent: 'center'}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
-                {display_name}
-              </AppText>
-              <VerifiedBadge />
+      <>
+        {/* <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}> */}
+          <View style={{flexDirection: 'row'}}>
+            <View style={styles.userInfoImageContainer}>
+              <ProfilePhoto size={42} />
             </View>
-            <View style={{}}>
-              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                @{username.toLowerCase()}
-              </AppText>
+            <View style={{marginLeft: 8, justifyContent: 'center'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
+                  {display_name}
+                </AppText>
+                <VerifiedBadge />
+              </View>
+              <View style={{}}>
+                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+                  @{username.toLowerCase()}
+                </AppText>
+              </View>
             </View>
           </View>
-        </View>
+        {/* </TouchableOpacity> */}
         <Modal
           isVisible={profileModal}
           animationIn="slideInUp"
@@ -183,18 +185,18 @@ const ProfileInfo = ({userInfo, type}) => {
             justifyContent: 'flex-start',
           }}>
           <View>
-            <SafeAreaView>
+            {/* <SafeAreaView>
               <TouchableOpacity onPress={() => setProfileModal(false)}>
                 <AppText>Hello</AppText>
               </TouchableOpacity>
-            </SafeAreaView>
-            {/* <ProfileInfoModal
+            </SafeAreaView> */}
+            <ProfileInfoModal
               backFunction={() => setProfileModal(false)}
               uid={uid}
-            /> */}
+            />
           </View>
         </Modal>
-      </TouchableOpacity>
+      </>
     );
 };
 
