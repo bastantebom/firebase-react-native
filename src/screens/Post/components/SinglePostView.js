@@ -174,13 +174,14 @@ const SinglePostView = (props) => {
           style={{
             backgroundColor: backgroundColor,
             position: 'absolute',
-            top: -73,
+            bottom: 0,
             width: normalize(375),
             paddingHorizontal: 16,
             alignItems: 'center',
             height: normalize(58),
             borderTopRightRadius: 8,
             borderTopLeftRadius: 8,
+            paddingBottom: 8,
             flexDirection: 'row',
             zIndex: 5,
           }}>
@@ -256,10 +257,10 @@ const SinglePostView = (props) => {
               })}
             </Swiper>
           )}
+          <CustomNotification />
         </View>
 
         <ScrollView style={styles.postInfoContainer}>
-          <CustomNotification />
           <View style={{paddingHorizontal: 16}}>
             <ProfileInfo userInfo={userInfo} type="own-post" />
 
