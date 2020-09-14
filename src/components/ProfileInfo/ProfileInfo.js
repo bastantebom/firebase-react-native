@@ -83,6 +83,7 @@ const ProfileInfo = ({userInfo, type}) => {
               width: normalize(32),
               borderRadius: normalize(32 / 2),
               overflow: 'hidden',
+              alignSelf: "center"
             }}>
             {/* <Image
               style={GlobalStyle.image}

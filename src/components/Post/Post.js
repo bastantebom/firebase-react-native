@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
 
   postContainer: {
     width: '100%',
-    paddingTop: 8,
+    paddingTop: 12,
     paddingBottom: 16,
     flexDirection: 'row',
   },
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   },
   postDetailContainer: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 12,
   },
   dividerStyle: {
     backgroundColor: Colors.neutralsZirconLight,
