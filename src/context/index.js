@@ -23,6 +23,7 @@ export const ContextProvider = ({children}) => {
   const [locationFilter, setLocationFilter] = useState(null);
 
   const [postImage, setPostImage] = useState([]);
+  const [coverPhoto, setCoverPhoto] = useState([]);
   const [imageCount, setImageCount] = useState(0);
   const [imageCurrent, setImageCurrent] = useState('');
 
@@ -113,6 +114,8 @@ export const ContextProvider = ({children}) => {
         setOtherUserPosts,
         needsRefresh,
         setNeedsRefresh,
+        coverPhoto,
+        setCoverPhoto
       }}>
       {children}
     </Context.Provider>

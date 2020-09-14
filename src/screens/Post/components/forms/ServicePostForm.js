@@ -40,6 +40,8 @@ const ServicePostForm = ({
     setImageCount,
     setImageCurrent,
     setNeedsRefresh,
+    coverPhoto,
+    setCoverPhoto
   } = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
@@ -188,16 +190,16 @@ const ServicePostForm = ({
   };
 
   useEffect(() => {
-    if (images !== undefined) {
-      setPostImage(images);
-    }
+    // if (images !== undefined) {
+    //   setPostImage(images)
+    // }
     checkFormContent();
   }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
     // set4  states
     setPostImage([]);
-    //console.log(postImage);
+    setCoverPhoto([]);
     setImageCount(0);
     setImageCurrent('');
 
@@ -221,7 +223,7 @@ const ServicePostForm = ({
     // Upload images
     const uploadAllImage = () =>
       Promise.all(
-        postImage.map((image) => {
+        coverPhoto.map((image) => {
           return uploadImageHandler(image)
             .then((res) => {
               console.log(res);
