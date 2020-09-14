@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {useNavigation} from '@react-navigation/native';
@@ -20,7 +21,7 @@ import {UserContext} from '@/context/UserContext';
 import {Profile} from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
 
-const ProfileInfo = ({userInfo, type, closePostModal}) => {
+const ProfileInfo = ({userInfo, type}) => {
   const {user} = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
@@ -58,19 +59,18 @@ const ProfileInfo = ({userInfo, type, closePostModal}) => {
   };
 
   openProfileHandler = () => {
-    //console.log(user.uid);
-    //console.log(uid);
-    if (user) {
-      if (user.uid === uid) {
-        return navigation.navigate('Profile', {
-          screen: 'Profile',
-        });
-      }
-    }
-    // return
-    console.log('OPENING MODAL');
+    console.log(user.uid);
 
-    setProfileModal(true);
+    if (user && user.uid === uid) {
+      console.log('HELLO');
+      return navigation.navigate('Profile', {
+        screen: 'Profile',
+      });
+    } else {
+      console.log('OPENING MODAL');
+
+      setProfileModal(true);
+    }
   };
 
   if (type === 'dashboard')
@@ -174,18 +174,25 @@ const ProfileInfo = ({userInfo, type, closePostModal}) => {
           isVisible={profileModal}
           animationIn="slideInUp"
           animationInTiming={500}
-          animationOut="slideOutDown"
+          animationOut="slideOutLeft"
           animationOutTiming={300}
           style={{
             margin: 0,
-            backgroundColor: 'white',
+            // backgroundColor: 'white',
             height: Dimensions.get('window').height,
             justifyContent: 'flex-start',
           }}>
-          <ProfileInfoModal
-            backFunction={() => setProfileModal(false)}
-            uid={uid}
-          />
+          <View>
+            <SafeAreaView>
+              <TouchableOpacity onPress={() => setProfileModal(false)}>
+                <AppText>Hello</AppText>
+              </TouchableOpacity>
+            </SafeAreaView>
+            {/* <ProfileInfoModal
+              backFunction={() => setProfileModal(false)}
+              uid={uid}
+            /> */}
+          </View>
         </Modal>
       </TouchableOpacity>
     );

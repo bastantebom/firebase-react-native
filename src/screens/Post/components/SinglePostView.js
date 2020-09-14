@@ -168,13 +168,13 @@ const SinglePostView = (props) => {
         );
     };
 
-    if (showNotification)
+    if (!showNotification)
       return (
         <View
           style={{
             backgroundColor: backgroundColor,
             position: 'absolute',
-            top: -58,
+            // top: -58,
             width: normalize(375),
             paddingHorizontal: 16,
             alignItems: 'center',
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-    paddingHorizontal: normalize(16),
+    // paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
     paddingBottom: normalize(70),
   },

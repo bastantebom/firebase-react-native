@@ -35,7 +35,7 @@ import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
-function Profile({profileViewType = 'other', backFunction, uid}) {
+function ProfileInfoModal({profileViewType = 'other', backFunction, uid}) {
   const {user, signOut} = useContext(UserContext);
   const {userPosts, otherUserPosts} = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
@@ -90,18 +90,26 @@ function Profile({profileViewType = 'other', backFunction, uid}) {
   // }
 
   useEffect(() => {
+    let mounted = true;
+
     setIsDataLoading(true);
     ProfileInfoService.getUser(uid)
       .then((response) => {
-        setUserInfo(response);
+        if (mounted) setUserInfo(response);
       })
       .catch((err) => {
         console.log('Err: ' + err);
       })
       .finally(() => {
-        console.log('FINALLY');
-        setIsDataLoading(false);
+        if (mounted) {
+          console.log('FINALLY');
+          setIsDataLoading(false);
+        }
       });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const profileTabs = [
@@ -232,7 +240,7 @@ const LoadingUserInfo = ({children, isLoading}) => {
   );
 };
 
-export default Profile;
+export default ProfileInfoModal;
 
 const styles = StyleSheet.create({
   container: {
