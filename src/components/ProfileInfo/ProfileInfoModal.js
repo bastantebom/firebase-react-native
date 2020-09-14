@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: '40%',
     height: normalize(160),
-    top: Dimensions.get('window').height > 800 ? '-17%' : '-21%',
+    top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
     //backgroundColor: 'red',
   },
