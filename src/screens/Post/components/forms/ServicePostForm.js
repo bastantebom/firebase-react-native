@@ -7,6 +7,7 @@ import {
   Dimensions,
   ActivityIndicator,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Switch} from 'react-native-switch';
@@ -316,7 +317,7 @@ const ServicePostForm = ({
         onChangeText={(text) => setDescription(text)}
         underlineColorAndroid={'transparent'}
         textAlignVertical="top"
-        onScroll={() => Keyboard.dismiss()}
+        scrollEnabled={false}
       />
       <View style={{position: 'relative'}}>
         <TouchableOpacity onPress={() => toggleMap()}>
