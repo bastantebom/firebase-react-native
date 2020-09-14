@@ -11,7 +11,7 @@ import LoadingScreen from './loading';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user, userInfo} = useContext(UserContext);
-  const { setPosts, posts, locationFilter, setLocationFilter } = useContext(
+  const {setPosts, posts, locationFilter, setLocationFilter} = useContext(
     Context,
   );
   const renderItem = ({item}) => (
@@ -21,7 +21,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const [refresh, setRefresh] = useState(false);
   const [lastPID, setLastPID] = useState(null);
   const [fetchMore, setFecthMore] = useState(true);
-  const limit = 5
+  const limit = 5;
   // const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
   const [
     onEndReachedCalledDuringMomentum,
@@ -33,116 +33,117 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   //   : '';
 
   useEffect(() => {
-    refreshPosts()
+    refreshPosts();
   }, [locationFilter]);
 
   const refreshPosts = async () => {
     try {
-      setRefresh(true)
-      
+      setRefresh(true);
+
       if (locationFilter) {
         const params = {
           city: locationFilter,
           limit: limit,
-          last_pid: null
-        }
+          last_pid: null,
+        };
 
-        const res = await PostService.getPostsLocation(params)
+        const res = await PostService.getPostsLocation(params);
 
-        if (res.message === "You have reached the end of the post, no more available posts") {
-          setPosts([])
-          setFecthMore(false)
-          setRefresh(false)
+        if (
+          res.message ===
+          'You have reached the end of the post, no more available posts'
+        ) {
+          setPosts([]);
+          setFecthMore(false);
+          setRefresh(false);
           setIsLoading(false);
-          return
+          return;
         }
 
         if (res.data.length > 0) {
-          setPosts(res.data)
+          setPosts(res.data);
         }
 
-        setLastPID(res.last_pid)
+        setLastPID(res.last_pid);
       } else {
         const params = {
           limit: limit,
-          last_pid: null
-        }
-        const res = await PostService.getPosts(params)
+          last_pid: null,
+        };
+        const res = await PostService.getPosts(params);
         if (res.data.length > 0) {
-          setPosts(res.data)
-        } 
-  
-        setLastPID(res.last_pid)
+          setPosts(res.data);
+        }
+
+        setLastPID(res.last_pid);
       }
-      
-      setRefresh(false)
+
+      setRefresh(false);
       setIsLoading(false);
-    } catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  const onMomentumScrollBegin = () =>
-    setOnEndReachedCalledDuringMomentum(true)
-
+  const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(true);
 
   const getMorePost = async () => {
     try {
-      console.log(onEndReachedCalledDuringMomentum)
+      console.log(onEndReachedCalledDuringMomentum);
       if (onEndReachedCalledDuringMomentum) {
-        setOnEndReachedCalledDuringMomentum(false)
+        setOnEndReachedCalledDuringMomentum(false);
 
         if (locationFilter) {
           if (lastPID !== undefined) {
             const params = {
               city: locationFilter,
               limit: limit,
-              last_pid: lastPID
+              last_pid: lastPID,
+            };
+
+            const res = await PostService.getPostsLocation(params);
+            if (!res.success && res.message === 'No more post available') {
+              setFecthMore(false);
+              setIsLoading(false);
+
+              return;
             }
-  
-            const res = await PostService.getPostsLocation(params)
-            if (!res.success && res.message === "No more post available") {
-              setFecthMore(false)
-              setIsLoading(false)
-    
-              return
-            }
-  
+
             if (res.data.length > 0) {
-              setPosts(prev => [...prev, ...res.data])
+              setPosts((prev) => [...prev, ...res.data]);
             }
-  
-            setLastPID(res.last_pid)
+
+            setLastPID(res.last_pid);
           } else {
-            setIsLoading(false)
-            setFecthMore(false)
+            setIsLoading(false);
+            setFecthMore(false);
           }
         } else {
           const params = {
             limit: limit,
-            last_pid: lastPID
+            last_pid: lastPID,
+          };
+          const res = await PostService.getPosts(params);
+          if (!res.success && res.message === 'No more post available') {
+            setFecthMore(false);
+            setIsLoading(false);
+
+            return;
           }
-          const res = await PostService.getPosts(params)
-          if (!res.success && res.message === "No more post available") {
-            setFecthMore(false)
-            setIsLoading(false)
-  
-            return
-          }
-        
+
           if (res.data.length > 0) {
-            setPosts(prev => [...prev, ...res.data])
+            setPosts((prev) => [...prev, ...res.data]);
           }
-    
-          setLastPID(res.last_pid)
+
+          setLastPID(res.last_pid);
         }
-  
-        setIsLoading(false)
+
+        setIsLoading(false);
       }
-    } catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   // const getMorePost = async () => {
   //   // console.log("Call GET MORE")
@@ -214,9 +215,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
             {fetchMore ? (
               <ActivityIndicator />
             ) : (
-              <AppText>
-                {'No more posts available'}
-              </AppText>
+              <AppText>{'Oops, you’ve run out of posts.'}</AppText>
             )}
           </View>
         }
