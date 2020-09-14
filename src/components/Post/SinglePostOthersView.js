@@ -57,6 +57,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
     post_id,
     email,
     phone_number,
+    full_name,
   } = data;
 
   const {user} = useContext(UserContext);
@@ -72,7 +73,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
     username: username,
     profile_photo: profile_photo,
     account_verified: account_verified,
-    display_name: display_name,
+    display_name: display_name ? display_name : full_name,
     uid: uid,
   };
 

@@ -43,6 +43,7 @@ import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
@@ -58,6 +59,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [show, setShow] = useState(false);
   const [genderVisible, setGenderVisible] = useState(false);
   const {userInfo, user, setUserInfo} = useContext(UserContext);
+  const {setNeedsRefresh} = useContext(Context);
   const [buttonStyle, setButtonStyle] = useState({});
   const [buttonDisable, setButtonDisable] = useState(false);
   const [addressComponents, setAddressComponents] = useState({
@@ -367,6 +369,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           if (response.success) {
             setIS_UPDATING(false);
             setUserInfo({...userInfo, ...response.data});
+            setNeedsRefresh(true);
             toggleEditProfile();
             toggleMenu();
             triggerNotify(true);
