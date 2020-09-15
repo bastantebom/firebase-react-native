@@ -99,9 +99,9 @@ export const PostImageUpload = ({data}) => {
     const newImageList = coverPhoto.filter(
       (image) => image !== imageToRemove
     );
-    setPostImage(newImageList);
+    setCoverPhoto(newImageList);
     setImageCount(imageCount - 1);
-    console.log(imageToRemove)
+    // console.log('imageToRemove', imageToRemove)
   };
 
   const cancelUploadPhoto = () => {
@@ -162,8 +162,7 @@ export const PostImageUpload = ({data}) => {
   useEffect(() => {
     if (data === null) {
       setCoverPhoto([...postImage]);
-    } 
-    else {
+    } else {
       setCoverPhoto([...data, ...postImage]);
     }
   }, [data, postImage]);
