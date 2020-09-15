@@ -116,7 +116,10 @@ const Onboarding = ({navigation, illustration}) => {
           <Swiper
             dot={<View style={styles.dot} />}
             activeDot={<View style={[styles.dot, styles.dotActive]} />}
-            loop={false}
+            // loop={false}
+            loop
+            autoplay
+            autoplayTimeout={4.0}
             onIndexChanged={onSwipe}>
             {slideInfo.map((item, i) => {
               return (
