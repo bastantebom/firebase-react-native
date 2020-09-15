@@ -36,13 +36,13 @@ const ServicePostForm = ({
 }) => {
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const {
-    postImage,
     setPostImage,
     setImageCount,
     setImageCurrent,
     setNeedsRefresh,
     coverPhoto,
-    setCoverPhoto
+    setCoverPhoto,
+    setSelected
   } = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
@@ -160,39 +160,60 @@ const ServicePostForm = ({
     return setButtonEnabled(true);
   };
 
-  const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
+  // const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
+
+  // const uploadImageHandler = async (image) => {
+  //   console.log('I got the image Service');
+  //   console.log(image);
+
+  //   if (image) {
+  //     if (!filteredImage.includes(image)) {
+  //       const newFilename =
+  //         Platform.OS === 'ios'
+  //           ? image.substring(0, image.lastIndexOf('.'))
+  //           : image.substring(image.lastIndexOf('/') + 1);
+  //       const uploadUri =
+  //         Platform.OS === 'ios' ? image.replace('file://', '') : image;
+
+  //       const task = storage().ref();
+  //       const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+  //       await fileRef.putFile(uploadUri);
+  //       const downloadURL = await fileRef.getDownloadURL();
+
+  //       return Promise.resolve(downloadURL);
+  //     } else {
+  //       return Promise.resolve(image);
+  //     }
+  //   } else {
+  //     return Promise.reject('Failed to upload');
+  //   }
+  // };
 
   const uploadImageHandler = async (image) => {
-    console.log('I got the image Service');
-    console.log(image);
+    try {
+      if (image.includes('firebasestorage.googleapis.com')) return image
 
-    if (image) {
-      if (!filteredImage.includes(image)) {
-        const newFilename =
-          Platform.OS === 'ios'
-            ? image.substring(0, image.lastIndexOf('.'))
-            : image.substring(image.lastIndexOf('/') + 1);
-        const uploadUri =
-          Platform.OS === 'ios' ? image.replace('file://', '') : image;
+      const newFilename =
+        Platform.OS === 'ios'
+          ? image.substring(0, image.lastIndexOf('.'))
+          : image.substring(image.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? image.replace('file://', '') : image;
 
-        const task = storage().ref();
-        const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-        await fileRef.putFile(uploadUri);
-        const downloadURL = await fileRef.getDownloadURL();
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      await fileRef.putFile(uploadUri);
+      const downloadURL = await fileRef.getDownloadURL();
 
-        return Promise.resolve(downloadURL);
-      } else {
-        return Promise.resolve(image);
-      }
-    } else {
-      return Promise.reject('Failed to upload');
+      // return Promise.resolve(downloadURL)
+      return downloadURL
+    } catch(err) {
+      console.log(err)
+      // return Promise.reject("Failed to upload")
     }
   };
 
   useEffect(() => {
-    // if (images !== undefined) {
-    //   setPostImage(images)
-    // }
     checkFormContent();
   }, [title, price, paymentMethod, description]);
 
@@ -200,6 +221,7 @@ const ServicePostForm = ({
     // set4  states
     setPostImage([]);
     setCoverPhoto([]);
+    setSelected([]);
     setImageCount(0);
     setImageCurrent('');
 
@@ -207,7 +229,7 @@ const ServicePostForm = ({
     let data = {
       uid: user.uid,
       post_type: type,
-      images: [],
+      images: await Promise.all(coverPhoto.map(async image => await uploadImageHandler(image))),
       title: title,
       price: price,
       description: description,
@@ -219,44 +241,63 @@ const ServicePostForm = ({
       },
     };
 
-    // upload image
-    // Upload images
-    const uploadAllImage = () =>
-      Promise.all(
-        coverPhoto.map((image) => {
-          return uploadImageHandler(image)
-            .then((res) => {
-              console.log(res);
-              return res;
-            })
-            .catch((err) => {
-              console.log(err);
-              return err;
-            });
-        }),
-      );
-
-    await uploadAllImage().then((response) => {
-      data.images = response;
-    });
-
     if (initialData.post_id) {
-      // console.log('I will edit post with id: ');
-      // console.log(initialData.post_id)
-      return await PostService.editPost(initialData.post_id, data).then(
+      PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
           navToPost({...res, viewing: false, created: false, edited: true});
+          setLoadingSubmit(false);
         },
       );
-    }
+    } else {
+      PostService.createPost(data).then((res) => {
+        setLoadingSubmit(false);
+        setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
+        togglePostModal();
+        setNeedsRefresh(true);
+        setTimeout(() => {
+          navToPost({...res, viewing: false, created: true, edited: false});
+        }, 500);
+      });
+    } 
 
-    return await PostService.createPost(data).then((res) => {
-      togglePostModal();
-      setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
-      navToPost({...res, viewing: false, created: true, edited: false});
-      setNeedsRefresh(true);
-    });
+    // Upload images
+    // const uploadAllImage = () =>
+    //   Promise.all(
+    //     coverPhoto.map((image) => {
+    //       return uploadImageHandler(image)
+    //         .then((res) => {
+    //           console.log(res);
+    //           return res;
+    //         })
+    //         .catch((err) => {
+    //           console.log(err);
+    //           return err;
+    //         });
+    //     }),
+    //   );
+
+    // await uploadAllImage().then((response) => {
+    //   data.images = response;
+    // });
+
+    // if (initialData.post_id) {
+    //   // console.log('I will edit post with id: ');
+    //   // console.log(initialData.post_id)
+    //   return await PostService.editPost(initialData.post_id, data).then(
+    //     (res) => {
+    //       togglePostModal();
+    //       navToPost({...res, viewing: false, created: false, edited: true});
+    //     },
+    //   );
+    // }
+
+    // return await PostService.createPost(data).then((res) => {
+    //   togglePostModal();
+    //   setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
+    //   navToPost({...res, viewing: false, created: true, edited: false});
+    //   setNeedsRefresh(true);
+    // });
   };
 
   return (
