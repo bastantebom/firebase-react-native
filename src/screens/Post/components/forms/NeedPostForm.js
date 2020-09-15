@@ -307,7 +307,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         paddingBottom: 48,
       }}>
 
-      <PostImageUpload data={images}/>
+      <PostImageUpload data={images === 0 || images === undefined ? null : images} />
 
       <AppInput
         customStyle={{marginBottom: 16}}

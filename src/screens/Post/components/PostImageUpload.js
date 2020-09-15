@@ -173,16 +173,17 @@ export const PostImageUpload = ({ data }) => {
   // console.log(coverPhoto, 'coverPhoto - postImageUpload')
 
   useEffect(() => {
-    if (data.length <= 0) {
+    if (data === null || data === undefined) {
       return console.log(data, 'data on post image');
     } else {
       setImageCount(data.length);
       // setCount(data.length);
     }
+    // console.log(data)
   }, [data]);
 
   useEffect(() => {
-    if (data.length <= 0) {
+    if (data === null || data === undefined) {
       setCoverPhoto(postImage)
     } else {
       setCoverPhoto([...currentData, ...postImage])

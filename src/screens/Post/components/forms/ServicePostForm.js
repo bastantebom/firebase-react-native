@@ -310,9 +310,8 @@ const ServicePostForm = ({
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-      <PostImageUpload
-        data={images === undefined || images.length == 0 ? null : images}
-      />
+
+      <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
 
       <AppInput
         customStyle={{marginBottom: 16}}

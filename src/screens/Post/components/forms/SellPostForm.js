@@ -286,7 +286,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
 
-        <PostImageUpload data={images} />
+        <PostImageUpload data={images === 0 || images === undefined ? null : images} />
 
         <AppInput
           customStyle={{marginBottom: 16}}
