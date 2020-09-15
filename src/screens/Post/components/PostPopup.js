@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 16,
     padding: 15,
     width: 340,
     borderRadius: 8,
@@ -385,6 +385,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     overflow: 'hidden',
     height: normalize(50),
+
   },
   iconHolder: {
     marginRight: 12,
