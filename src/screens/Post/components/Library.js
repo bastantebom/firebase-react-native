@@ -28,12 +28,13 @@ export const Library = ({cancel, next, data, count}) => {
     setImageCurrent,
     imageCurrent,
     selected,
-    setSelected
+    setSelected,
+    // countSelect,
+    // setCountSelect
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
   const [countSelect, setCountSelect] = useState(0);
-  // const [selected, setSelected] = useState([]);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
@@ -41,8 +42,9 @@ export const Library = ({cancel, next, data, count}) => {
 
     setCountSelect(num)
 
+    // console.log(num, 'num')
+
     // setImageCount(count + 1);
-    
     setSelected(images);
     // setPostImage(images);
     
@@ -52,6 +54,10 @@ export const Library = ({cancel, next, data, count}) => {
     setPostImage(imageUrl);
   };
 
+  console.log('countSelect', countSelect)
+  console.log('count', count)
+  console.log('imageCount', imageCount)
+
   useEffect(() => {
     if (data === null) {
       return console.log('no data');
@@ -59,10 +65,15 @@ export const Library = ({cancel, next, data, count}) => {
     if (data !== null) {
       console.log('with data')
     }
-  }, [data])
+  }, [data, countSelect])
 
-  // console.log('selected', selected)
-  // console.log('postImage', postImage)
+  const sum = count + countSelect
+
+  // console.log(sum, 'sum')
+
+  useEffect(() => {
+    // setCountSelect(0)
+  }, [imageCount])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
@@ -94,7 +105,7 @@ export const Library = ({cancel, next, data, count}) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             disabled={postImage.length < 1 && true}
-            onPress={() => {next(countSelect)}}
+            onPress={() => {next(countSelect === 0 ? imageCount : sum)}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
@@ -124,7 +135,7 @@ export const Library = ({cancel, next, data, count}) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {countSelect + count}/10{' '}
+                Photos - {countSelect === 0 ? imageCount : sum}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
