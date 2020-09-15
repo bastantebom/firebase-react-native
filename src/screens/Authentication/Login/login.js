@@ -128,7 +128,10 @@ function Login() {
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => navigation.push('ResetPassword')}>
+                onPress={() => {
+                  closeSlider();
+                  navigation.push('ResetPassword');
+                }}>
                 <AppText textStyle="caption" customStyle={styles.caption}>
                   Forgot Password?
                 </AppText>
