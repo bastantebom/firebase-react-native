@@ -32,15 +32,19 @@ export const Library = ({cancel, next, data, count}) => {
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
+  const [selected, setSelected] = useState([]);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
     setImageCount(count + num);
     
+    setSelected(images);
+    // setPostImage(images);
+    
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
-
+    
     setPostImage(imageUrl);
   };
 
@@ -49,10 +53,12 @@ export const Library = ({cancel, next, data, count}) => {
       return console.log('no data');
     } 
     if (data !== null) {
-      // setPostImage({uri: data});
       console.log('with data')
     }
   }, [data])
+
+  // console.log('selected', selected)
+  // console.log('postImage', postImage)
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
@@ -140,7 +146,7 @@ export const Library = ({cancel, next, data, count}) => {
               groupTypes="All"
               maximum={10}
               scrollRenderAheadDistance={500}
-              selected={postImage}
+              selected={selected}
               imagesPerRow={3}
               imageMargin={2}
               // selectedMarker={
@@ -162,7 +168,7 @@ export const Library = ({cancel, next, data, count}) => {
               //     </AppText>
               //   </View>
               // }
-              callback={() => getSelectedImages(postImage)}
+              callback={() => getSelectedImages(selected)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
                 color: Colors.primaryYellow,

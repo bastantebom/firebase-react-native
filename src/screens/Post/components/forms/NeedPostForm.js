@@ -14,7 +14,7 @@ import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
 import storage from '@react-native-firebase/storage';
 
-import {AppText, AppInput, TransitionIndicator} from '@/components';
+import {AppText, AppInput, TransitionIndicator, AppButton} from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
@@ -160,15 +160,14 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     checkFormContent();
   }, [title, price, storeLocation, paymentMethod, description]);
 
+  const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
+
   const uploadImageHandler = async (image) => {
     console.log('I got the image Need');
     console.log(image);
 
     if (image) {
-      // const {uri, filename} = image;
-      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-
-      // if (uri || filename) {
+      if (!filteredImage.includes(image)) {
         const newFilename =
           Platform.OS === 'ios'
             ? image.substring(0, image.lastIndexOf('.'))
@@ -182,9 +181,9 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         const downloadURL = await fileRef.getDownloadURL();
 
         return Promise.resolve(downloadURL);
-      // } else {
-      //   return Promise.resolve(image);
-      // }
+      } else {
+        return Promise.resolve(image);
+      }
     } else {
       return Promise.reject('Failed to upload');
     }
@@ -218,7 +217,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         coverPhoto.map((image) => {
           return uploadImageHandler(image)
             .then((res) => {
-              console.log(res);
+              console.log('res', res);
               return res;
             })
             .catch((err) => {
@@ -261,9 +260,8 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-      <PostImageUpload
-        data={images === undefined || images.length == 0 ? null : images}
-      />
+
+      <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
 
       <AppInput
         customStyle={{marginBottom: 16}}
