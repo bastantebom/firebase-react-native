@@ -124,7 +124,6 @@ export const PostImageUpload = ({data}) => {
   const continueCamera = (selected, photoCount) => {
     setPostImage([...postImage, selected]);
     setImageCount(imageCount + photoCount);
-    // setCurrentImage(currentImage)
     togglePickerModal();
   };
 
@@ -165,10 +164,8 @@ export const PostImageUpload = ({data}) => {
       setCoverPhoto([...postImage]);
     } 
     else {
-      // setCoverPhoto(data);
       setCoverPhoto([...data, ...postImage]);
     }
-    
   }, [data, postImage]);
 
   return (
