@@ -18,7 +18,7 @@ import {PhotoAlbums} from './PhotoAlbums';
 
 const {height, width} = Dimensions.get('window');
 
-export const Library = ({cancel, next, data, count}) => {
+export const Library = ({cancel, next, data}) => {
 
   const {
     setPostImage,
@@ -28,35 +28,49 @@ export const Library = ({cancel, next, data, count}) => {
     setImageCurrent,
     imageCurrent,
     selected,
-    setSelected,
-    // countSelect,
-    // setCountSelect
+    setSelected
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
   const [countSelect, setCountSelect] = useState(0);
+  const [count, setCount] = useState([]);
+
+  const checkIndex = (arr) => {
+    const index = count.indexOf(arr);
+    return index;
+  };
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    setCountSelect(num)
-
-    // console.log(num, 'num')
-
-    // setImageCount(count + 1);
     setSelected(images);
-    // setPostImage(images);
+
+    setCountSelect(num)
     
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
     
     setPostImage(imageUrl);
+
+    const currentCount = count;
+    const index = checkIndex(imageUrl);
+    if (index === -1) {
+      currentCount.push(imageUrl);
+      setCount(currentCount);
+    }
   };
 
-  console.log('countSelect', countSelect)
-  console.log('count', count)
-  console.log('imageCount', imageCount)
+  // console.log(count, 'count')
+
+  const sum = imageCount + count.length
+
+  // console.log(sum, 'sum')
+  // console.log(num, 'num outside')
+
+  // console.log('countSelect number of items/images selected on lib', countSelect)
+  // console.log('count (data.length from postimageupload)', count)
+  // console.log('imageCount', imageCount)
 
   useEffect(() => {
     if (data === null) {
@@ -67,12 +81,7 @@ export const Library = ({cancel, next, data, count}) => {
     }
   }, [data, countSelect])
 
-  const sum = count + countSelect
-
-  // console.log(sum, 'sum')
-
   useEffect(() => {
-    // setCountSelect(0)
   }, [imageCount])
   
   const toggleFolderList = () => {
@@ -157,16 +166,13 @@ export const Library = ({cancel, next, data, count}) => {
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: imageCount === 10 ? .5 : 1
+              opacity: sum >= 10 ? .5 : 1
             }}>
             <CameraRollPicker
               groupTypes="All"
-              maximum={10}
+              maximum={sum >= 10 ? countSelect : 10}
               scrollRenderAheadDistance={500}
-              selected={
-                selected
-                // imageCount === 10 ? selected : null
-              }
+              selected={selected}
               imagesPerRow={3}
               imageMargin={2}
               // selectedMarker={

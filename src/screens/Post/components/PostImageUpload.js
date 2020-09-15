@@ -37,10 +37,11 @@ export const PostImageUpload = ({ data }) => {
     setCoverPhoto,
     setSelected,
     selected,
+    postCameraImage
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const [cameraImage, setCameraImage] = useState([]);
 
   const requestPermission = async () => {
@@ -98,7 +99,7 @@ export const PostImageUpload = ({ data }) => {
     setShowPickerModal(!showPickerModal);
   };
 
-  const handleRemove = (image) => {
+  const handleRemove = async (image) => {
     // remove selected image in library
     const newSelected = selected.filter(item => item.uri !== image)
     setSelected(newSelected)
@@ -113,12 +114,17 @@ export const PostImageUpload = ({ data }) => {
     setCoverPhoto([...currentCoverPhoto])
 
     setImageCount(imageCount - 1);
-    setCount(imageCount - 1);
+    // setCount(imageCount - 1);
+  
     // const imageToRemove = image;
     // const newImageList = coverPhoto.filter((image) => image !== imageToRemove);
     // setCoverPhoto(newImageList);
     // console.log('imageToRemove', imageToRemove)
   };
+
+  // handleRemove.then((res) => {
+  //   setCount(res - 1);
+  // })
 
   const cancelUploadPhoto = () => {
     // setPostImage([...postImage])
@@ -141,14 +147,13 @@ export const PostImageUpload = ({ data }) => {
   };
 
   // console.log('cameraImage', cameraImage)
-  const continueCamera = (selected, photoCount) => {
+  const continueCamera = (photoCount) => {
     // console.log(selected)
     // const cameraImages = [];
     // selected.push(cameraImages)
 
     // console.log(cameraImages)
-
-    setCoverPhoto([...currentData, selected]);
+    // setCoverPhoto([...currentData, ...postCameraImage]);
     // setCameraImage(selected)
     setImageCount(imageCount + photoCount);
     togglePickerModal();
@@ -168,7 +173,7 @@ export const PostImageUpload = ({ data }) => {
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
           // data={data === null ? null : data}
-          count={count}
+          // count={count}
         />
       ),
     },
@@ -176,14 +181,17 @@ export const PostImageUpload = ({ data }) => {
 
   // console.log(postImage, 'postImage - postImageUpload')
   // console.log(data, 'data - postImageUpload')
-  // console.log(coverPhoto, 'coverPhoto - postImageUpload')
+  console.log(coverPhoto, 'coverPhoto - postImageUpload')
+  // console.log(imageCount, 'imageCount - postImageUpload')
+  // console.log(count, 'count - postImageUpload')
+  // console.log(postCameraImage, 'postCameraImage - postImageUpload')
 
   useEffect(() => {
     if (data === null || data === undefined) {
       return console.log(data, 'data on post image');
     } else {
       setImageCount(data.length);
-      setCount(data.length)
+      // setCount(data.length)
     }
   }, [data]);
 
@@ -192,9 +200,12 @@ export const PostImageUpload = ({ data }) => {
       setCoverPhoto(postImage)
     } else {
       setCoverPhoto([...currentData, ...postImage])
-      // setImageCount()
+      if (postCameraImage.length !== 0) {
+        setCoverPhoto([...coverPhoto, ...postCameraImage]);
+      }
+      // setCoverPhoto([...currentData], postCameraImage);
     }
-  }, [postImage])
+  }, [postImage, postCameraImage])
 
   return (
     <>

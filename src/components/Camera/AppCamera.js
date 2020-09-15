@@ -45,7 +45,7 @@ export const AppCamera = ({
   const [cameraRatio, setCameraRatio] = useState('')
   const [flash, setFlash] = useState('off')
   const [cameraType, setCameraType] = useState('back')
-  const [imageUrl, setImageUrl] = useState([])
+  const [imageUrl, setImageUrl] = useState('')
   const cameraRef = useRef(null)
   
   const prepareRatio = async () => {
@@ -92,7 +92,14 @@ export const AppCamera = ({
 
       setImageUrl(cameraUrl)
 
-      console.log(cameraUrl)
+      captureImage(cameraUrl)
+
+      // const url = [];
+      // data.uri.forEach(image => url.push(image.uri))
+      
+      // setImageUrl(url);
+
+      // console.log(cameraUrl)
     }
   };
 
@@ -100,13 +107,13 @@ export const AppCamera = ({
   
   const retake = () => {
     cameraRef.current.resumePreview()
-    setImageUrl([]);
+    setImageUrl('');
   }
 
-  useEffect(() => {
-    prepareRatio;
-    captureImage(imageUrl)
-  }, [imageUrl]);
+  // useEffect(() => {
+  //   prepareRatio;
+  //   captureImage(imageUrl)
+  // }, [imageUrl]);
 
   return (
     <View style={styles.container}>
@@ -160,7 +167,7 @@ export const AppCamera = ({
         >
           <View style={styles.captureButton} />
         </TouchableOpacity>
-        { imageUrl.length != 0 ?
+        { imageUrl !== '' ?
           <TouchableOpacity onPress={retake}>
             <AppText textStyle="body1" customStyle={{ marginTop: 20 }}>Retake</AppText>
           </TouchableOpacity> : null

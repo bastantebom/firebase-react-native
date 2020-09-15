@@ -16,7 +16,7 @@ import {Context} from '@/context';
 
 const EditPostScreen = ({data, togglePostModal, card}) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const {setCoverPhoto, setCountSelect, setSelected, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+  const {setCoverPhoto, setPostCameraImage, setSelected, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -26,7 +26,7 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
       cancelModalToggle();
       setPostImage([]);
       setCoverPhoto([]);
-      setCountSelect([]);
+      setPostCameraImage([]);
       setSelected([]);
       setImageCount(0);
       setImageCurrent('');
