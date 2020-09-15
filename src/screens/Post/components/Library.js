@@ -56,8 +56,10 @@ export const Library = ({cancel, next, data}) => {
     const currentCount = count;
     const index = checkIndex(imageUrl);
     if (index === -1) {
-      currentCount.push(imageUrl);
-      setCount(currentCount);
+      if (sum < 10) {
+        currentCount.push(imageUrl);
+        setCount(currentCount);
+      }
     }
   };
 
