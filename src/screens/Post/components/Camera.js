@@ -7,7 +7,7 @@ import {AppCamera} from '@/components/Camera/AppCamera';
 export const PostCamera = ({cancel, next}) => {
   
   const [photoCount, setPhotoCount] = useState(0);
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState('');
 
   const captureImage = (imageUrl) => {
     setSelected(imageUrl)

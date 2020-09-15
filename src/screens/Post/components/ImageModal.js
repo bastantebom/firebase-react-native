@@ -14,6 +14,7 @@ import {normalize, Colors} from '@/globals';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import PropTypes from 'prop-types';
 import ImageZoom from 'react-native-image-pan-zoom';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const {width, height} = Dimensions.get('window');
 
@@ -28,20 +29,22 @@ export const ImageModal = ({close, data}) => {
 
     return (
       <View style={styles.paginationContainer}>
-        {Array.from({length: size}).map((_, index) => (
-          <TouchableOpacity key={index} onPress={() => scrollToIndex({index})}>
-            <CacheableImage
-              // key={item.id}
-              style={[
-                {height: 40, width: 40, borderRadius: 5, marginHorizontal: 4},
-                paginationIndex === index
-                  ? {borderColor: paginationActiveColor, borderWidth: 3}
-                  : {borderColor: paginationDefaultColor},
-              ]}
-              source={{uri: data[index]}}
-            />
-          </TouchableOpacity>
-        ))}
+        <ScrollView horizontal contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} >
+          {Array.from({length: size}).map((_, index) => (
+              <TouchableOpacity key={index} onPress={() => scrollToIndex({index})}>
+                <CacheableImage
+                  // key={item.id}
+                  style={[
+                    {height: 40, width: 40, borderRadius: 5, marginHorizontal: 4},
+                    paginationIndex === index
+                      ? {borderColor: paginationActiveColor, borderWidth: 3}
+                      : {borderColor: paginationDefaultColor},
+                  ]}
+                  source={{uri: data[index]}}
+                />
+              </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
     );
   };
@@ -131,13 +134,16 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative'
   },
   paginationContainer: {
+    paddingHorizontal: 15,
     position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    width: width,
+    // flexDirection: 'row',
+    // justifyContent: 'center',
     bottom: 50,
-    left: 0,
-    right: 0,
+    // left: 0,
+    // right: 0,
   },
 });

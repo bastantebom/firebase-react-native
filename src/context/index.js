@@ -22,11 +22,18 @@ export const ContextProvider = ({children}) => {
 
   const [locationFilter, setLocationFilter] = useState(null);
 
+  //images from lib (url only)
   const [postImage, setPostImage] = useState([]);
+  //images from firebase with local
   const [coverPhoto, setCoverPhoto] = useState([]);
+  //overall img count
   const [imageCount, setImageCount] = useState(0);
+  //current image shown on library
   const [imageCurrent, setImageCurrent] = useState('');
+  //postImage in array
   const [selected, setSelected] = useState([]);
+  //count on library
+  const [countSelect, setCountSelect] = useState(0);
 
   const [isInternetReachable, setIsInternetReachable] = useState(false);
 
@@ -118,7 +125,9 @@ export const ContextProvider = ({children}) => {
         coverPhoto,
         setCoverPhoto,
         selected,
-        setSelected
+        setSelected,
+        countSelect,
+        setCountSelect
       }}>
       {children}
     </Context.Provider>

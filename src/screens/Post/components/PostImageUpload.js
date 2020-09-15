@@ -30,14 +30,13 @@ const {height, width} = Dimensions.get('window');
 export const PostImageUpload = ({ data }) => {
   const currentData = data
   const {
-    setPostImage,
     postImage,
     setImageCount,
     imageCount,
     coverPhoto,
     setCoverPhoto,
     setSelected,
-    selected
+    selected,
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
@@ -114,6 +113,7 @@ export const PostImageUpload = ({ data }) => {
     setCoverPhoto([...currentCoverPhoto])
 
     setImageCount(imageCount - 1);
+    setCount(imageCount - 1);
     // const imageToRemove = image;
     // const newImageList = coverPhoto.filter((image) => image !== imageToRemove);
     // setCoverPhoto(newImageList);
@@ -126,8 +126,9 @@ export const PostImageUpload = ({ data }) => {
     togglePickerModal();
   };
 
-  const continueUploadPhoto = (countSelect) => {
-    setImageCount(imageCount + countSelect)
+  const continueUploadPhoto = (sum) => {
+    setImageCount(sum)
+    // setCount(sum)
     // setCoverPhoto(data, [...postImage]);
     // setPostImage(postImage);
     // setImageCount(imageCount);
@@ -141,7 +142,12 @@ export const PostImageUpload = ({ data }) => {
 
   // console.log('cameraImage', cameraImage)
   const continueCamera = (selected, photoCount) => {
-    console.log(selected)
+    // console.log(selected)
+    // const cameraImages = [];
+    // selected.push(cameraImages)
+
+    // console.log(cameraImages)
+
     setCoverPhoto([...currentData, selected]);
     // setCameraImage(selected)
     setImageCount(imageCount + photoCount);
@@ -162,7 +168,7 @@ export const PostImageUpload = ({ data }) => {
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
           // data={data === null ? null : data}
-          count={data === null ? 0 : imageCount}
+          count={count}
         />
       ),
     },
@@ -177,9 +183,8 @@ export const PostImageUpload = ({ data }) => {
       return console.log(data, 'data on post image');
     } else {
       setImageCount(data.length);
-      // setCount(data.length);
+      setCount(data.length)
     }
-    // console.log(data)
   }, [data]);
 
   useEffect(() => {
