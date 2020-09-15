@@ -27,17 +27,21 @@ export const Library = ({cancel, next, data, count}) => {
     imageCount,
     setImageCurrent,
     imageCurrent,
-    coverPhotos,
-    setCoverPhoto
+    selected,
+    setSelected
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
-  const [selected, setSelected] = useState([]);
+  const [countSelect, setCountSelect] = useState(0);
+  // const [selected, setSelected] = useState([]);
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
-    setImageCount(count + num);
+
+    setCountSelect(num)
+
+    // setImageCount(count + 1);
     
     setSelected(images);
     // setPostImage(images);
@@ -90,7 +94,7 @@ export const Library = ({cancel, next, data, count}) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             disabled={postImage.length < 1 && true}
-            onPress={() => {next()}}
+            onPress={() => {next(countSelect)}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
@@ -120,7 +124,7 @@ export const Library = ({cancel, next, data, count}) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {imageCount}/10{' '}
+                Photos - {countSelect + count}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
@@ -135,18 +139,23 @@ export const Library = ({cancel, next, data, count}) => {
             />
           ) : null}
           <View
+            // pointerEvents={imageCount === 10 ? 'none' : 'auto'}
             style={{
               height: imageCurrent
                 ? height / 1.8 - normalize(122)
                 : height - normalize(117),
               zIndex: -1,
               width: width,
+              opacity: imageCount === 10 ? .5 : 1
             }}>
             <CameraRollPicker
               groupTypes="All"
               maximum={10}
               scrollRenderAheadDistance={500}
-              selected={selected}
+              selected={
+                selected
+                // imageCount === 10 ? selected : null
+              }
               imagesPerRow={3}
               imageMargin={2}
               // selectedMarker={

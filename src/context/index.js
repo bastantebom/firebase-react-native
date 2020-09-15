@@ -26,6 +26,7 @@ export const ContextProvider = ({children}) => {
   const [coverPhoto, setCoverPhoto] = useState([]);
   const [imageCount, setImageCount] = useState(0);
   const [imageCurrent, setImageCurrent] = useState('');
+  const [selected, setSelected] = useState([]);
 
   const [isInternetReachable, setIsInternetReachable] = useState(false);
 
@@ -115,7 +116,9 @@ export const ContextProvider = ({children}) => {
         needsRefresh,
         setNeedsRefresh,
         coverPhoto,
-        setCoverPhoto
+        setCoverPhoto,
+        selected,
+        setSelected
       }}>
       {children}
     </Context.Provider>

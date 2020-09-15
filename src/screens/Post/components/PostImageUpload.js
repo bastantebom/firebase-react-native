@@ -27,17 +27,22 @@ import {Library} from './Library';
 
 const {height, width} = Dimensions.get('window');
 
-export const PostImageUpload = ({data}) => {
+export const PostImageUpload = ({ data }) => {
+  const currentData = data
   const {
     setPostImage,
     postImage,
     setImageCount,
     imageCount,
     coverPhoto,
-    setCoverPhoto
+    setCoverPhoto,
+    setSelected,
+    selected
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
+  const [count, setCount] = useState(0);
+  const [cameraImage, setCameraImage] = useState([]);
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -95,12 +100,23 @@ export const PostImageUpload = ({data}) => {
   };
 
   const handleRemove = (image) => {
-    const imageToRemove = image;
-    const newImageList = coverPhoto.filter(
-      (image) => image !== imageToRemove
-    );
-    setCoverPhoto(newImageList);
+    // remove selected image in library
+    const newSelected = selected.filter(item => item.uri !== image)
+    setSelected(newSelected)
+
+    // remove select image in post image upload
+    const currentCoverPhoto = coverPhoto
+    const index = currentCoverPhoto.indexOf(image)
+    currentCoverPhoto.splice(index, 1)
+    
+    const indexData = currentData.indexOf(image)
+    currentData.splice(indexData, 1)
+    setCoverPhoto([...currentCoverPhoto])
+
     setImageCount(imageCount - 1);
+    // const imageToRemove = image;
+    // const newImageList = coverPhoto.filter((image) => image !== imageToRemove);
+    // setCoverPhoto(newImageList);
     // console.log('imageToRemove', imageToRemove)
   };
 
@@ -110,10 +126,12 @@ export const PostImageUpload = ({data}) => {
     togglePickerModal();
   };
 
-  const continueUploadPhoto = () => {
+  const continueUploadPhoto = (countSelect) => {
+    setImageCount(imageCount + countSelect)
     // setCoverPhoto(data, [...postImage]);
     // setPostImage(postImage);
     // setImageCount(imageCount);
+    // setCoverPhoto([...coverPhoto, ...postImage]);
     togglePickerModal();
   };
 
@@ -121,8 +139,11 @@ export const PostImageUpload = ({data}) => {
     togglePickerModal();
   };
 
+  // console.log('cameraImage', cameraImage)
   const continueCamera = (selected, photoCount) => {
-    setPostImage([...postImage, selected]);
+    console.log(selected)
+    setCoverPhoto([...currentData, selected]);
+    // setCameraImage(selected)
     setImageCount(imageCount + photoCount);
     togglePickerModal();
   };
@@ -141,7 +162,7 @@ export const PostImageUpload = ({data}) => {
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
           // data={data === null ? null : data}
-          count={data === null ? 0 : data.length}
+          count={data === null ? 0 : imageCount}
         />
       ),
     },
@@ -152,20 +173,22 @@ export const PostImageUpload = ({data}) => {
   // console.log(coverPhoto, 'coverPhoto - postImageUpload')
 
   useEffect(() => {
-    if (data === null) {
+    if (data.length <= 0) {
       return console.log(data, 'data on post image');
     } else {
       setImageCount(data.length);
+      // setCount(data.length);
     }
   }, [data]);
 
   useEffect(() => {
-    if (data === null) {
-      setCoverPhoto([...postImage]);
+    if (data.length <= 0) {
+      setCoverPhoto(postImage)
     } else {
-      setCoverPhoto([...data, ...postImage]);
+      setCoverPhoto([...currentData, ...postImage])
+      // setImageCount()
     }
-  }, [data, postImage]);
+  }, [postImage])
 
   return (
     <>
