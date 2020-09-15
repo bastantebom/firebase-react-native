@@ -713,21 +713,21 @@ const styles = StyleSheet.create({
   },
   sellCard: {
     backgroundColor: Colors.secondaryRoyalBlue,
-    height: normalize(82),
+    height: normalize(88),
     borderRadius: 8,
     marginLeft: normalize(9),
   },
   postCard: {
     // ACTS AS NEED CARD
     backgroundColor: Colors.secondaryMountainMeadow,
-    height: normalize(82),
+    height: normalize(88),
     borderRadius: 8,
 
     // marginLeft: normalize(8)
   },
   needCard: {
     backgroundColor: Colors.secondaryBrinkPink,
-    height: normalize(82),
+    height: normalize(88),
     borderRadius: 8,
     marginLeft: normalize(9),
   },
