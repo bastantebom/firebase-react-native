@@ -122,7 +122,7 @@ export const PostImageUpload = ({data}) => {
   };
 
   const continueCamera = (selected, photoCount) => {
-    setPostImage([...postImage, selected]);
+    setCoverPhoto([...coverPhoto, selected]);
     setImageCount(imageCount + photoCount);
     togglePickerModal();
   };
