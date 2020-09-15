@@ -160,15 +160,14 @@ const ServicePostForm = ({
     return setButtonEnabled(true);
   };
 
+  const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
+
   const uploadImageHandler = async (image) => {
-    console.log('I got the image Need');
+    console.log('I got the image Service');
     console.log(image);
 
     if (image) {
-      // const {uri, filename} = image;
-      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-
-      // if (uri || filename) {
+      if (!filteredImage.includes(image)) {
         const newFilename =
           Platform.OS === 'ios'
             ? image.substring(0, image.lastIndexOf('.'))
@@ -182,9 +181,9 @@ const ServicePostForm = ({
         const downloadURL = await fileRef.getDownloadURL();
 
         return Promise.resolve(downloadURL);
-      // } else {
-      //   return Promise.resolve(image);
-      // }
+      } else {
+        return Promise.resolve(image);
+      }
     } else {
       return Promise.reject('Failed to upload');
     }

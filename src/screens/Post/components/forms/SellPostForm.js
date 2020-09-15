@@ -25,8 +25,6 @@ import {
   Switch,
   AppButton,
   CacheableImage,
-  TransitionIndicator,
-  Keyboard,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
@@ -203,18 +201,15 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   //   });
   // };
 
-  // console.log("POST IMAGES")
-  // console.log(postImage)
+
+  const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
 
   const uploadImageHandler = async (image) => {
     console.log('I got the image');
     console.log('image', image);
 
     if (image) {
-      // const { uri, filename } = image;
-      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-
-      // if (uri || filename) {
+      if (!filteredImage.includes(image)) {
         const newFilename =
           Platform.OS === 'ios'
             ? image.substring(0, image.lastIndexOf('.'))
@@ -228,11 +223,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         const downloadURL = await fileRef.getDownloadURL();
 
         return Promise.resolve(downloadURL);
-
-        // return Promise.resolve('image');
-      // } else {
-      //   return Promise.resolve(image);
-      // }
+      } else {
+        return Promise.resolve(image);
+      }
     } else {
       return Promise.reject('Failed to upload');
     }
@@ -316,9 +309,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload
-          data={images === undefined || images.length == 0 ? null : images}
-        />
+
+        <PostImageUpload data={images === undefined || images.length == 0 ? null : images} />
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -365,7 +357,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}
           textAlignVertical="top"
-          scrollEnabled={false}
         />
       </View>
 
@@ -482,7 +473,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }
           />
         </Modal>
-        <TransitionIndicator loading={loadingSubmit} />
       </View>
     </>
   );
