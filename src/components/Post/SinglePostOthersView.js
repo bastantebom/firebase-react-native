@@ -132,7 +132,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
               dotStyle={{marginRight: 9}}
               activeDotStyle={{marginRight: 9}}>
               {images.map((item, index) => {
-                console.log(item);
+                // console.log(item);
                 return (
                   <TouchableWithoutFeedback
                     key={index}

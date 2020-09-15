@@ -39,7 +39,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setImageCurrent,
     setNeedsRefresh,
     coverPhoto,
-    setCoverPhoto
+    setCoverPhoto,
+    setSelected
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -202,32 +203,29 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   // };
 
 
-  const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
+  // const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
 
   const uploadImageHandler = async (image) => {
-    console.log('I got the image');
-    console.log('image', image);
+    try {
+      if (image.includes('firebasestorage.googleapis.com')) return image
 
-    if (image) {
-      if (!filteredImage.includes(image)) {
-        const newFilename =
-          Platform.OS === 'ios'
-            ? image.substring(0, image.lastIndexOf('.'))
-            : image.substring(image.lastIndexOf('/') + 1);
-        const uploadUri =
-          Platform.OS === 'ios' ? image.replace('file://', '') : image;
+      const newFilename =
+        Platform.OS === 'ios'
+          ? image.substring(0, image.lastIndexOf('.'))
+          : image.substring(image.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? image.replace('file://', '') : image;
 
-        const task = storage().ref();
-        const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-        await fileRef.putFile(uploadUri);
-        const downloadURL = await fileRef.getDownloadURL();
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      await fileRef.putFile(uploadUri);
+      const downloadURL = await fileRef.getDownloadURL();
 
-        return Promise.resolve(downloadURL);
-      } else {
-        return Promise.resolve(image);
-      }
-    } else {
-      return Promise.reject('Failed to upload');
+      // return Promise.resolve(downloadURL)
+      return downloadURL
+    } catch(err) {
+      console.log(err)
+      // return Promise.reject("Failed to upload")
     }
   };
 
@@ -235,6 +233,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     //console.log(postImage);
     setLoadingSubmit(true);
     setCoverPhoto([]);
+    setSelected([]);
     setPostImage([]);
     setImageCount(0);
     setImageCurrent('');
@@ -242,7 +241,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     let data = {
       uid: user.uid,
       post_type: type,
-      images: [],
+      images: await Promise.all(coverPhoto.map(async image => await uploadImageHandler(image))),
       title: title,
       price: price,
       description: description,
@@ -254,48 +253,25 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       },
     };
 
-    // compare if images are the same with initial data --- when editing
-    // Upload images
-    
-    const uploadAllImage = () => Promise.all(
-      coverPhoto.map((image) => {
-        return uploadImageHandler(image)
-          .then((res) => {
-            console.log('res', res);
-            return res;
-          })
-          .catch((err) => {
-            console.log(err);
-            return err;
-          });
-      }),
-    );
-
-    await uploadAllImage().then((response) => {
-      data.images = response;
-    });
-
-    // Upload Image
-
     if (initialData.post_id) {
-      return await PostService.editPost(initialData.post_id, data).then(
+      PostService.editPost(initialData.post_id, data).then(
         (res) => {
           togglePostModal();
           navToPost({...res, viewing: false, created: false, edited: true});
           setLoadingSubmit(false);
         },
       );
-    }
-
-    return await PostService.createPost(data).then((res) => {
-      setLoadingSubmit(false);
-      setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
-      togglePostModal();
-      setNeedsRefresh(true);
-      setTimeout(() => {
-        navToPost({...res, viewing: false, created: true, edited: false});
-      }, 500);
-    });
+    } else {
+      PostService.createPost(data).then((res) => {
+        setLoadingSubmit(false);
+        setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
+        togglePostModal();
+        setNeedsRefresh(true);
+        setTimeout(() => {
+          navToPost({...res, viewing: false, created: true, edited: false});
+        }, 500);
+      });
+    } 
   };
 
   return (
@@ -310,7 +286,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           paddingBottom: 32,
         }}>
 
-        <PostImageUpload data={images === undefined || images.length == 0 ? null : images} />
+        <PostImageUpload data={images} />
 
         <AppInput
           customStyle={{marginBottom: 16}}

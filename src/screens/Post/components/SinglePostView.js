@@ -58,7 +58,7 @@ const SinglePostView = (props) => {
     full_name,
   } = props.route?.params?.data;
 
-  console.log(images);
+  // console.log(images);
 
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState(false);
@@ -243,7 +243,7 @@ const SinglePostView = (props) => {
                 dotStyle={{marginRight: 9}}
                 activeDotStyle={{marginRight: 9}}>
                 {images.map((item, index) => {
-                  console.log(item);
+                  // console.log(item);
                   return (
                     <TouchableWithoutFeedback
                       key={index}
