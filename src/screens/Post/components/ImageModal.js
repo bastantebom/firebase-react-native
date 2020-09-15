@@ -76,9 +76,9 @@ export const ImageModal = ({close, data}) => {
           paginationActiveColor={Colors.primaryYellow}
           showPagination
           PaginationComponent={Pagination}>
-          {data.map((item) => {
+          {data.map((item, i) => {
             return (
-              <View key={item.id} style={styles.child}>
+              <View key={i} style={styles.child}>
                 <ImageZoom 
                   cropWidth={width}
                   cropHeight={height}
