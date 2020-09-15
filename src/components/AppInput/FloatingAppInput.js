@@ -38,6 +38,9 @@ const FloatingAppInput = (props) => {
     return index;
   };
 
+  console.log("Validation rules")
+  console.log(validation)
+
   const onValueChange = (value) => {
     valueHandler(value);
     console.log('************************************************');
@@ -151,7 +154,11 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
-    if (value !== undefined || placeholder !== undefined) {
+    setShowValidationError(true);
+
+    console.log('Value useeffect');
+    console.log(value);
+    if (value !== '' && (value !== undefined || placeholder !== undefined)) {
       animateFocus();
     }
   }, [value, placeholder]);
@@ -165,12 +172,16 @@ const FloatingAppInput = (props) => {
   };
 
   const animateBlur = () => {
-    if (placeholder === undefined && value === undefined)
+    console.log('Animate blur');
+    console.log(value);
+    if (placeholder === undefined && (value === undefined || value === '')) {
+      console.log('Animate blur condition');
       Animated.timing(labelPosition, {
         toValue: 0,
         duration: 300,
         useNativeDriver: false,
       }).start();
+    }
   };
 
   let labelStyle = {
@@ -187,7 +198,9 @@ const FloatingAppInput = (props) => {
     : Colors.contentPlaceholder;
 
   const fontSize =
-    !isActive && value === undefined && placeholder === undefined
+    !isActive &&
+    (value === undefined || value === '') &&
+    placeholder === undefined
       ? normalize(16)
       : normalize(12);
 

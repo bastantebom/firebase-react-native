@@ -16,7 +16,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy';
 import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse';
-import { normalize } from '@/globals';
+import {normalize} from '@/globals';
 
 // create a component
 const SignUp = (props) => {
@@ -37,11 +37,11 @@ const SignUp = (props) => {
   const [error, setError] = useState([]);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const toggleSignUpMethod = () => {
-    setEmail('');
+    // setEmail('');
     // setError([]);
     setSignUpLabel((previousState) => !previousState);
   };
-  console.log(error.length)
+  console.log(error.length);
   const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -65,9 +65,12 @@ const SignUp = (props) => {
     backgroundColor: AppColor.buttonDisable,
     borderColor: AppColor.buttonDisable,
   });
+
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
+  const [validationRule, setValidationRule] = useState('email');
+
   const cleanSignUpForm = () => {
     setLoginUse('');
     setIsValidLogin(true);
@@ -241,7 +244,7 @@ const SignUp = (props) => {
 
   const onBlurEmail = () => {
     setEmailBorder({});
-    setIsToggleVisible(false)
+    setIsToggleVisible(false);
     if (loginUse === 'email') {
       if (!isValidEmail) {
         setIsValidLogin(false);
@@ -271,7 +274,7 @@ const SignUp = (props) => {
     setIsValidLogin(true);
     setEmailBorder({borderColor: AppColor.contentOcean});
     // setSignUpLabel('Email Address');
-    setIsToggleVisible(true)
+    setIsToggleVisible(true);
   };
 
   const onBlurName = () => {
@@ -407,35 +410,36 @@ const SignUp = (props) => {
               Join Servbees today. It’s free!
             </AppText>
             <View style={styles.formWrapper}>
-              { !signUpLabel ?
-                <FloatingAppInput
-                  value={email}
-                  valueHandler={setEmail}
-                  label="Email"
-                  customStyle={{marginBottom: normalize(8)}}
-                  validation={['email']}
-                  keyboardType="email-address"
-                  onInputFocus={onFocusEmail}
-                  setError={setError}
-                  error={error}
-                  setButtonState={setButtonState}
-                  onChangeTextInput={(email) => onEmailChange(email)}
-                /> : 
-                <FloatingAppInput
+              <FloatingAppInput
+                value={email}
+                valueHandler={setEmail}
+                label={!signUpLabel ? 'Email' : 'Mobile Number'}
+                customStyle={{marginBottom: normalize(8)}}
+                validation={[validationRule]}
+                // validation={['email', 'number']}
+                keyboardType={!signUpLabel ? 'email-address' : 'phone-pad'}
+                onInputFocus={onFocusEmail}
+                setError={setError}
+                error={error}
+                setButtonState={setButtonState}
+                onChangeTextInput={(email) => onEmailChange(email)}
+              />
+
+              {/* <FloatingAppInput
                   value={email}
                   selectTextOnFocus={false}
                   valueHandler={setEmail}
                   label="Mobile Number"
                   customStyle={{marginBottom: normalize(8)}}
-                  validation={['number']}
+                  validation={}
                   keyboardType="phone-pad"
-                  onInputFocus={onFocusEmail}
+                  // onInputFocus={onFocusEmail}
                   setError={setError}
                   error={error}
                   setButtonState={setButtonState}
                   onChangeTextInput={(email) => onEmailChange(email)}
-                />
-              }
+                /> */}
+
               {/* <FloatingAppInput
                 // label="Email or Mobile Number"
                 label={signUpLabel}
@@ -480,17 +484,27 @@ const SignUp = (props) => {
                 </AppText>
               ) : null} */}
 
-              <View style={{ display: isToggleVisible ? 'flex' : 'none' }}>
-                <TouchableOpacity onPress={() => toggleSignUpMethod()}>
-                  <AppText 
-                    textStyle="body2" 
+              <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log('Clicking toggler: ');
+                    // console.log(signUpLabel);
+                    // console.log(error);
+                    // console.log(email);
+                    console.log(validationRule);
+
+                    !signUpLabel
+                      ? setValidationRule('email')
+                      : setValidationRule('number');
+
+                    setError([]);
+                    toggleSignUpMethod();
+                  }}>
+                  <AppText
+                    textStyle="body2"
                     color={AppColor.contentOcean}
-                    customStyle={{ marginBottom: 16 }}
-                    >
-                    { !signUpLabel ? 
-                      "Use mobile number" :
-                      "Use email"
-                    }
+                    customStyle={{marginBottom: 16}}>
+                    {!signUpLabel ? 'Use mobile number' : 'Use email'}
                   </AppText>
                 </TouchableOpacity>
               </View>
