@@ -43,7 +43,7 @@ const ServicePostForm = ({
     coverPhoto,
     setCoverPhoto,
     setSelected,
-    setPostCameraImage
+    setPostCameraImage,
   } = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
@@ -192,7 +192,7 @@ const ServicePostForm = ({
 
   const uploadImageHandler = async (image) => {
     try {
-      if (image.includes('firebasestorage.googleapis.com')) return image
+      if (image.includes('firebasestorage.googleapis.com')) return image;
 
       const newFilename =
         Platform.OS === 'ios'
@@ -207,9 +207,9 @@ const ServicePostForm = ({
       const downloadURL = await fileRef.getDownloadURL();
 
       // return Promise.resolve(downloadURL)
-      return downloadURL
-    } catch(err) {
-      console.log(err)
+      return downloadURL;
+    } catch (err) {
+      console.log(err);
       // return Promise.reject("Failed to upload")
     }
   };
@@ -219,6 +219,8 @@ const ServicePostForm = ({
   }, [title, price, paymentMethod, description]);
 
   const navigateToPost = async () => {
+    // ACTIVATE LOADING TRANSITION
+    setLoadingSubmit(true);
     // set4  states
     setPostImage([]);
     setCoverPhoto([]);
@@ -231,7 +233,9 @@ const ServicePostForm = ({
     let data = {
       uid: user.uid,
       post_type: type,
-      images: await Promise.all(coverPhoto.map(async image => await uploadImageHandler(image))),
+      images: await Promise.all(
+        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+      ),
       title: title,
       price: price,
       description: description,
@@ -244,13 +248,11 @@ const ServicePostForm = ({
     };
 
     if (initialData.post_id) {
-      PostService.editPost(initialData.post_id, data).then(
-        (res) => {
-          togglePostModal();
-          navToPost({...res, viewing: false, created: false, edited: true});
-          setLoadingSubmit(false);
-        },
-      );
+      PostService.editPost(initialData.post_id, data).then((res) => {
+        togglePostModal();
+        navToPost({...res, viewing: false, created: false, edited: true});
+        setLoadingSubmit(false);
+      });
     } else {
       PostService.createPost(data).then((res) => {
         setLoadingSubmit(false);
@@ -261,7 +263,7 @@ const ServicePostForm = ({
           navToPost({...res, viewing: false, created: true, edited: false});
         }, 500);
       });
-    } 
+    }
 
     // Upload images
     // const uploadAllImage = () =>
@@ -312,8 +314,9 @@ const ServicePostForm = ({
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-
-      <PostImageUpload data={images === undefined || images.length == 0 ? null : images}/>
+      <PostImageUpload
+        data={images === undefined || images.length == 0 ? null : images}
+      />
 
       <AppInput
         customStyle={{marginBottom: 16}}
