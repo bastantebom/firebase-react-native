@@ -38,8 +38,8 @@ const FloatingAppInput = (props) => {
     return index;
   };
 
-  console.log("Validation rules")
-  console.log(validation)
+  console.log('Validation rules');
+  console.log(validation);
 
   const onValueChange = (value) => {
     valueHandler(value);
@@ -111,9 +111,11 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
+          console.log(validationError)
           setShowValidationError(false);
           console.log('email is not valid');
           setValidationError(err);
+          console.log(err);
         });
 
     if (validation.includes('number'))
@@ -135,9 +137,11 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
+          console.log(validationError)
           setShowValidationError(false);
           console.log('number is invalid');
           setValidationError(err);
+          console.log(err);
         });
   };
 
