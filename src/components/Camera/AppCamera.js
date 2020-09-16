@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { 
   StyleSheet, 
   TouchableOpacity, 
-  View, 
-  Platform, 
-  Dimensions, 
-  Image 
+  View,
+  Dimensions,
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { normalize, Colors } from '@/globals';
@@ -14,12 +12,11 @@ import {
   Flash,
   Flip
 } from '@/assets/images/icons';
+import { Context } from '@/context'
 
 const { height, width } = Dimensions.get('window');
 const maskRowHeight = Math.round((height - 300) / 20);
 const maskColWidth = (width - 300) / 2;
-
-const DESIRED_RATIO = "1:1";
 
 function OverlayMask() {
   return (
@@ -38,29 +35,14 @@ function OverlayMask() {
 export const AppCamera = ({ 
   message, 
   instruction, 
-  withMask, 
-  captureImage,
-  retakeImage
+  withMask,
+  setCameraCapture
 }) => {
-  
-  const [cameraRatio, setCameraRatio] = useState('')
+  const { setCoverPhoto, coverPhoto } = useContext(Context)
   const [flash, setFlash] = useState('off')
   const [cameraType, setCameraType] = useState('back')
-  const [imageUrl, setImageUrl] = useState('')
   const cameraRef = useRef(null)
-
-  const [selected] = useState(false)
-  
-  const prepareRatio = async () => {
-    if (Platform.OS === 'android' && cameraRef) {
-      const ratios = await cameraRef.getSupportedRatiosAsync();
-
-      // const ratio = ratios.find((ratio) => ratio === DESIRED_RATIO) || ratios[ratios.length - 1];
-
-      // setCameraRatio(ratio)
-      console.log(ratios)
-    }
-  }
+  const [retakeState, setRetakeState] = useState(false)
 
   const toggleCameraType = () => {
     if(cameraType === 'front') {
@@ -82,43 +64,28 @@ export const AppCamera = ({
 
   const takePicture = async () => {
     if (cameraRef) {
-      const options = { 
+      const data = await cameraRef.current.takePictureAsync({
         quality: 1, 
         pauseAfterCapture: true,
-      };
-
-      const data = await cameraRef.current.takePictureAsync(options);
-
+      });
       cameraRef.current.pausePreview()
-
       const cameraUrl = data.uri
-
-      setImageUrl(cameraUrl)
-
-      captureImage(cameraUrl)
-
-      // const url = [];
-      // data.uri.forEach(image => url.push(image.uri))
-      
-      // setImageUrl(url);
-
-      // console.log(cameraUrl)
+      setCoverPhoto(prev => [...prev, cameraUrl])
+      setCameraCapture(true)
+      setRetakeState(true)
     }
   };
-
-  // console.log(imageUrl)
   
   const retake = () => {
-    cameraRef.current.resumePreview();
-    retakeImage(selected, imageUrl)
-    setImageUrl('');
-    // retakeImage(cameraUrl)
-  }
+    const index = coverPhoto.length - 1
+    const newCoverPhoto = coverPhoto
+    newCoverPhoto.splice(index, 1)
 
-  // useEffect(() => {
-  //   prepareRatio;
-  //   captureImage(imageUrl)
-  // }, [imageUrl]);
+    cameraRef.current.resumePreview();
+    setCoverPhoto(newCoverPhoto)
+    setCameraCapture(false)
+    setRetakeState(false)
+  }
 
   return (
     <View style={styles.container}>
@@ -134,8 +101,6 @@ export const AppCamera = ({
         captureAudio={false}
         flashMode={flash}
         type={cameraType}
-        // ratio={cameraRatio}
-        // onCameraReady={prepareRatio}
       >
         { withMask &&  <OverlayMask/> }
         <View style={{ justifyContent: 'space-between', width: '100%', flexDirection: 'row',  position: 'absolute', bottom: 25, paddingHorizontal: 25}}>
@@ -167,16 +132,17 @@ export const AppCamera = ({
           {instruction}
         </AppText>
         </View>
-        <TouchableOpacity onPress={() => takePicture()} 
-          style={styles.capture}
-        >
-          <View style={styles.captureButton} />
-        </TouchableOpacity>
-        { imageUrl !== '' ?
+        { retakeState ? (
           <TouchableOpacity onPress={retake}>
             <AppText textStyle="body1" customStyle={{ marginTop: 20 }}>Retake</AppText>
-          </TouchableOpacity> : null
-        }
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => takePicture()} 
+            style={styles.capture}
+          >
+            <View style={styles.captureButton} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   )
@@ -185,24 +151,11 @@ export const AppCamera = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: 500
-    // flexDirection: 'column',
-    // backgroundColor: 'pink',
   },
   preview: {
     flex: 1,
-    // opacity: .5,
-    // position: 'relative',
-    // zIndex: -2
-    // height: height/5,
-    // paddingTop: 150
-    // justifyContent: 'flex-end',
-    // alignItems: 'center',
   },
   capture: {
-    // position: 'relative',
-    // zIndex: 2,
-    // flex: 0,
     backgroundColor: Colors.primaryYellow,
     borderRadius: 50,
     width: normalize(75),
@@ -234,14 +187,11 @@ const styles = StyleSheet.create({
   maskInner: {
     width: width - 20,
     backgroundColor: 'transparent',
-    // borderColor: 'white',
     borderRadius: 16,
     borderColor: Colors.yellow2,
     borderWidth: 4
-    // borderBottomColor: 'white',
   },
   maskFrame: {
-    // backgroundColor: 'rgba(0,0,0,4);',
     backgroundColor: 'rgba(0,0,0,.5)',
   },
   maskRow: {

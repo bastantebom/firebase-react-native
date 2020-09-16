@@ -21,17 +21,22 @@ export const ContextProvider = ({children}) => {
   const [otherUserPosts, setOtherUserPosts] = useState([]);
 
   const [locationFilter, setLocationFilter] = useState(null);
-
-  const [postImage, setPostImage] = useState([]);
-  const [coverPhoto, setCoverPhoto] = useState([]);
-  const [imageCount, setImageCount] = useState(0);
+ 
   const [imageCurrent, setImageCurrent] = useState('');
-  const [selected, setSelected] = useState([]);
   const [postCameraImage, setPostCameraImage] = useState([]);
-
   const [isInternetReachable, setIsInternetReachable] = useState(false);
-
   const [needsRefresh, setNeedsRefresh] = useState(true);
+
+  // Post Images states
+  const [imageCount, setImageCount] = useState(0);
+  const [coverPhoto, setCoverPhoto] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [recentImages, setRecentImages] = useState([])
+  
+  useEffect(() => {
+    // console.log(coverPhoto, 'cover photos')
+    setImageCount(coverPhoto.length)
+  }, [coverPhoto])
 
   const closeSlider = () => {
     setSliderState('close');
@@ -101,8 +106,6 @@ export const ContextProvider = ({children}) => {
         fetchPosts,
         deleteNotif,
         setDeleteNotif,
-        postImage,
-        setPostImage,
         imageCount,
         setImageCount,
         imageCurrent,
@@ -121,7 +124,9 @@ export const ContextProvider = ({children}) => {
         selected,
         setSelected,
         postCameraImage,
-        setPostCameraImage
+        setPostCameraImage,
+        recentImages,
+        setRecentImages
       }}>
       {children}
     </Context.Provider>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -10,16 +10,16 @@ import {
 import CameraRollPicker from 'react-native-camera-roll-picker';
 import Modal from 'react-native-modal';
 
-import {AppText, CacheableImage} from '@/components';
-import {Context} from '@/context';
-import {normalize, Colors} from '@/globals';
-import {ArrowDown} from '@/assets/images/icons';
-import {PhotoAlbums} from './PhotoAlbums';
+import { AppText } from '@/components';
+import { Context } from '@/context';
+import { normalize, Colors } from '@/globals';
+// import { ArrowDown } from '@/assets/images/icons';
+import { PhotoAlbums } from './PhotoAlbums';
+import { CoverPhoto } from '@/assets/images';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
-export const Library = ({cancel, next, data}) => {
-
+export const Library = ({ cancel, next, data }) => {
   const {
     setPostImage,
     postImage,
@@ -28,58 +28,81 @@ export const Library = ({cancel, next, data}) => {
     setImageCurrent,
     imageCurrent,
     selected,
-    setSelected
+    setSelected,
+    recentImages,
+    coverPhoto,
+    setCoverPhoto
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
-  const [countSelect, setCountSelect] = useState(0);
-  const [count, setCount] = useState([]);
+  // const [countSelect, setCountSelect] = useState(0);
+  // const [count, setCount] = useState([]);
+  const [totalCount, setTotalCount] = useState(imageCount)
+  const [selectedImageUrl, setSelectedImageUrl] = useState([])
+  const [imageSelected, setImageSelected] = useState('')
 
-  const checkIndex = (arr) => {
-    const index = count.indexOf(arr);
-    return index;
-  };
+  // const checkIndex = (arr) => {
+  //   const index = count.indexOf(arr);
+  //   return index;
+  // };
 
   const getSelectedImages = async (images) => {
+    const imageUrl = [];
+    images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
+    setSelectedImageUrl(imageUrl)
+
+    const index = recentImages.findIndex(url => !imageUrl.includes(url))
+    if (!~index) return
+    const coverPhotoPlaceholder = coverPhoto
+    coverPhotoPlaceholder.splice(index, 1)
+    setCoverPhoto(coverPhotoPlaceholder)
+
+    // const jointArray = [...recentImages, ...imageUrl]
+    // const deselectedImage = Array.from(new Set(jointArray)).filter((url, i, arr) => arr.includes(url))
+
+    // console.log(deselectedImage)
+
+    
+
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    setSelected(images);
+    // setSelected(images);
 
-    setCountSelect(num)
+    // setCountSelect(num)
     
-    const imageUrl = [];
-    images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
+    // const imageUrl = [];
+    // images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
     
-    setPostImage(imageUrl);
+    // setPostImage(imageUrl);
 
-    const currentCount = count;
-    const index = checkIndex(imageUrl);
-    if (index === -1) {
-      if (sum < 10) {
-        currentCount.push(imageUrl);
-        setCount(currentCount);
-      }
-    }
+    // const currentCount = count;
+    // const index = checkIndex(imageUrl);
+    // if (index === -1) {
+    //   if (sum < 10) {
+    //     currentCount.push(imageUrl);
+    //     setCount(currentCount);
+    //   }
+    // }
   };
 
-  const sum = imageCount + count.length
+  // const sum = imageCount + count.length
 
   // console.log('countSelect number of items/images selected on lib', countSelect)
   // console.log('count (data.length from postimageupload)', count)
   // console.log('imageCount', imageCount)
 
-  useEffect(() => {
-    if (data === null) {
-      return console.log('no data');
-    } 
-    if (data !== null) {
-      console.log('with data')
-    }
-  }, [data])
+  // useEffect(() => {
+  //   if (data === null) {
+  //     return console.log('no data');
+  //   } 
+  //   if (data !== null) {
+  //     console.log('with data')
+  //   }
+  // }, [data])
 
-  useEffect(() => {
-  }, [imageCount])
+  // useEffect(() => {
+  // }, [imageCount])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
@@ -110,16 +133,17 @@ export const Library = ({cancel, next, data}) => {
             </View>
           </TouchableOpacity> */}
           <TouchableOpacity
-            disabled={postImage.length < 1 && true}
-            onPress={() => {next(sum)}}
+            // disabled={postImage.length < 1 && true}
+            onPress={() => {next(selectedImageUrl)}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
-              color={
-                postImage.length < 1
-                  ? Colors.buttonDisable
-                  : Colors.contentOcean
-              }>
+              // color={
+              //   postImage.length < 1
+              //     ? Colors.buttonDisable
+              //     : Colors.contentOcean
+              // }
+            >
               Next
             </AppText>
           </TouchableOpacity>
@@ -141,7 +165,7 @@ export const Library = ({cancel, next, data}) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {sum}/10{' '}
+                Photos - {totalCount}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
@@ -163,11 +187,11 @@ export const Library = ({cancel, next, data}) => {
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: sum >= 10 ? .5 : 1
+              opacity: totalCount >= 10 ? .5 : 1
             }}>
             <CameraRollPicker
               groupTypes="All"
-              maximum={sum >= 10 ? countSelect : 10}
+              // maximum={totalCount >= 10 ? countSelect : 10}
               scrollRenderAheadDistance={500}
               selected={selected}
               imagesPerRow={3}
