@@ -4,54 +4,38 @@ import {AppText} from '@/components';
 import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
 import {Context} from '@/context';
+import { PostImageUpload } from './PostImageUpload';
 
 export const PostCamera = ({cancel, next}) => {
 
   const { setPostCameraImage, postCameraImage } = useContext(Context);
 
   const [photoCount, setPhotoCount] = useState(0);
-  const [selected, setSelected] = useState(true);
+  const [selected, setSelected] = useState(false);
 
   const captureImage = (imageUrl) => {
-
-    // console.log(imageUrl, 'hajdasjgv')
 
     const url = [];
     url.push(imageUrl)
 
-    // console.log('url!!!', url)
-
     setPostCameraImage(url)
-
-    // const url = imageUrl.map((image) => image.uri)
-
-    // console.log(url, 'url')
-
-    // setPostCameraImage(prev => [...prev, imageUrl])
-
-    // if (postCameraImage.length > 0) {
-    //   const imageArray = [];
-    //   imageArray.push(imageUrl)
-      
-    //   setPostCameraImage(imageArray);
-    // } else {
-    //   setPostCameraImage(imageUrl)
-    // }
-
     setPhotoCount(1)
-    // setSelected(!selected)
+    setSelected(!selected)
   }
 
+  console.log(postCameraImage, 'post camera imggg')
+  console.log(postCameraImage.length, 'post camera imhhg')
   // console.log(selected)
 
-  // console.log(postCameraImage, 'post camera img')
-  // console.log(postCameraImage.length, 'post camera img')
+  const retakeImage = (selected, imageUrl) => {
 
+    const currentPostCameraImage = postCameraImage
+    currentPostCameraImage.splice(-1, 1)
+    setPostCameraImage([...currentPostCameraImage])
 
-  // useEffect(() => {
-  //   console.log(postCameraImage)
-  // }, [postCameraImage])
-
+    setSelected(selected)
+    console.log(postCameraImage, 'pop')
+  } 
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -75,12 +59,12 @@ export const PostCamera = ({cancel, next}) => {
           // disabled={ selected && true }
           onPress={() => next(photoCount)}
           style={{paddingVertical: 5, paddingHorizontal: 25}}>
-          <AppText textStyle="body3" color={ selected ? Colors.buttonDisable : Colors.contentOcean}>
+          <AppText textStyle="body3" color={ !selected ? Colors.buttonDisable : Colors.contentOcean}>
             Next
           </AppText>
         </TouchableOpacity>
       </View>
-      <AppCamera captureImage={captureImage} />
+      <AppCamera captureImage={captureImage} retakeImage={retakeImage} />
     </SafeAreaView>
   );
 };

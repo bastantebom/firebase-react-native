@@ -39,7 +39,8 @@ export const AppCamera = ({
   message, 
   instruction, 
   withMask, 
-  captureImage
+  captureImage,
+  retakeImage
 }) => {
   
   const [cameraRatio, setCameraRatio] = useState('')
@@ -47,6 +48,8 @@ export const AppCamera = ({
   const [cameraType, setCameraType] = useState('back')
   const [imageUrl, setImageUrl] = useState('')
   const cameraRef = useRef(null)
+
+  const [selected] = useState(false)
   
   const prepareRatio = async () => {
     if (Platform.OS === 'android' && cameraRef) {
@@ -106,8 +109,10 @@ export const AppCamera = ({
   // console.log(imageUrl)
   
   const retake = () => {
-    cameraRef.current.resumePreview()
+    cameraRef.current.resumePreview();
+    retakeImage(selected, imageUrl)
     setImageUrl('');
+    // retakeImage(cameraUrl)
   }
 
   // useEffect(() => {

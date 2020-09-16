@@ -122,9 +122,6 @@ export const PostImageUpload = ({ data }) => {
     // console.log('imageToRemove', imageToRemove)
   };
 
-  // handleRemove.then((res) => {
-  //   setCount(res - 1);
-  // })
 
   const cancelUploadPhoto = () => {
     // setPostImage([...postImage])
@@ -134,11 +131,6 @@ export const PostImageUpload = ({ data }) => {
 
   const continueUploadPhoto = (sum) => {
     setImageCount(sum)
-    // setCount(sum)
-    // setCoverPhoto(data, [...postImage]);
-    // setPostImage(postImage);
-    // setImageCount(imageCount);
-    // setCoverPhoto([...coverPhoto, ...postImage]);
     togglePickerModal();
   };
 
@@ -148,13 +140,6 @@ export const PostImageUpload = ({ data }) => {
 
   // console.log('cameraImage', cameraImage)
   const continueCamera = (photoCount) => {
-    // console.log(selected)
-    // const cameraImages = [];
-    // selected.push(cameraImages)
-
-    // console.log(cameraImages)
-    // setCoverPhoto([...currentData, ...postCameraImage]);
-    // setCameraImage(selected)
     setImageCount(imageCount + photoCount);
     togglePickerModal();
   };
@@ -172,8 +157,6 @@ export const PostImageUpload = ({ data }) => {
         <Library
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
-          // data={data === null ? null : data}
-          // count={count}
         />
       ),
     },
@@ -181,10 +164,10 @@ export const PostImageUpload = ({ data }) => {
 
   // console.log(postImage, 'postImage - postImageUpload')
   // console.log(data, 'data - postImageUpload')
-  console.log(coverPhoto, 'coverPhoto - postImageUpload')
+  // console.log(coverPhoto, 'coverPhoto - postImageUpload')
   // console.log(imageCount, 'imageCount - postImageUpload')
   // console.log(count, 'count - postImageUpload')
-  // console.log(postCameraImage, 'postCameraImage - postImageUpload')
+  console.log(postCameraImage, 'postCameraImage - postImageUpload')
 
   useEffect(() => {
     if (data === null || data === undefined) {
@@ -199,10 +182,10 @@ export const PostImageUpload = ({ data }) => {
     if (data === null || data === undefined) {
       setCoverPhoto(postImage)
     } else {
-      setCoverPhoto([...currentData, ...postImage])
-      if (postCameraImage.length !== 0) {
-        setCoverPhoto([...coverPhoto, ...postCameraImage]);
-      }
+      setCoverPhoto([...currentData, ...postImage, ...postCameraImage])
+      // if (postCameraImage.length !== 0) {
+        // setCoverPhoto([...coverPhoto, ...postCameraImage]);
+      // }
       // setCoverPhoto([...currentData], postCameraImage);
     }
   }, [postImage, postCameraImage])
