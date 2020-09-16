@@ -31,14 +31,15 @@ export const Library = ({ cancel, next, data }) => {
     setSelected,
     recentImages,
     coverPhoto,
-    setCoverPhoto
+    setCoverPhoto,
+    setLibImages
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
   // const [countSelect, setCountSelect] = useState(0);
   // const [count, setCount] = useState([]);
   const [totalCount, setTotalCount] = useState(imageCount)
-  const [selectedImageUrl, setSelectedImageUrl] = useState([])
+  // const [selectedImageUrl, setSelectedImageUrl] = useState([])
   const [imageSelected, setImageSelected] = useState('')
 
   // const checkIndex = (arr) => {
@@ -49,13 +50,14 @@ export const Library = ({ cancel, next, data }) => {
   const getSelectedImages = async (images) => {
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
-    setSelectedImageUrl(imageUrl)
+    setLibImages(imageUrl)
+    // setSelectedImageUrl(imageUrl)
 
-    const index = recentImages.findIndex(url => !imageUrl.includes(url))
-    if (!~index) return
-    const coverPhotoPlaceholder = coverPhoto
-    coverPhotoPlaceholder.splice(index, 1)
-    setCoverPhoto(coverPhotoPlaceholder)
+    // const index = recentImages.findIndex(url => !imageUrl.includes(url))
+    // if (!~index) return
+    // const coverPhotoPlaceholder = coverPhoto
+    // coverPhotoPlaceholder.splice(index, 1)
+    // setCoverPhoto(coverPhotoPlaceholder)
 
     // const jointArray = [...recentImages, ...imageUrl]
     // const deselectedImage = Array.from(new Set(jointArray)).filter((url, i, arr) => arr.includes(url))
@@ -134,7 +136,7 @@ export const Library = ({ cancel, next, data }) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             // disabled={postImage.length < 1 && true}
-            onPress={() => {next(selectedImageUrl)}}
+            onPress={() => {next()}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"

@@ -457,7 +457,7 @@ import { ArrowRight } from '@/assets/images/icons';
 import { UserContext } from '@/context/UserContext';
 
 const ServicePostForm = ({ formState, initialData }) => {
-  const { userInfo } = useContext(UserContext)
+  const { userInfo, setCameraImage, setLibImages } = useContext(UserContext)
   const [stringAddress, setStringAddress] = useState('');
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -475,6 +475,9 @@ const ServicePostForm = ({ formState, initialData }) => {
   } = formState;
 
   useEffect(() => {
+    setCameraImage([])
+    setLibImages([])
+    
     if (userInfo.address) {
       const { address } = userInfo
       getStringAddress(address.latitude, address.longitude);

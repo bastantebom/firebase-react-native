@@ -29,14 +29,19 @@ export const ContextProvider = ({children}) => {
 
   // Post Images states
   const [imageCount, setImageCount] = useState(0);
-  const [coverPhoto, setCoverPhoto] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [recentImages, setRecentImages] = useState([])
+  
+  const [coverPhoto, setCoverPhoto] = useState([]);
+  const [cameraImage, setCameraImage] = useState([])
+  const [libImages, setLibImages] = useState([])
   
   useEffect(() => {
-    // console.log(coverPhoto, 'cover photos')
     setImageCount(coverPhoto.length)
   }, [coverPhoto])
+
+  useEffect(() => {
+    setCoverPhoto([...cameraImage, ...libImages])
+  }, [libImages, cameraImage])
 
   const closeSlider = () => {
     setSliderState('close');
@@ -125,8 +130,10 @@ export const ContextProvider = ({children}) => {
         setSelected,
         postCameraImage,
         setPostCameraImage,
-        recentImages,
-        setRecentImages
+        setCameraImage,
+        cameraImage,
+        libImages,
+        setLibImages
       }}>
       {children}
     </Context.Provider>

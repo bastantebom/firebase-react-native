@@ -38,7 +38,7 @@ export const AppCamera = ({
   withMask,
   setCameraCapture
 }) => {
-  const { setCoverPhoto, coverPhoto } = useContext(Context)
+  const { setCameraImage, cameraImage, coverPhoto } = useContext(Context)
   const [flash, setFlash] = useState('off')
   const [cameraType, setCameraType] = useState('back')
   const cameraRef = useRef(null)
@@ -70,7 +70,7 @@ export const AppCamera = ({
       });
       cameraRef.current.pausePreview()
       const cameraUrl = data.uri
-      setCoverPhoto(prev => [...prev, cameraUrl])
+      setCameraImage(prev => [...prev, cameraUrl])
       setCameraCapture(true)
       setRetakeState(true)
     }
@@ -78,11 +78,11 @@ export const AppCamera = ({
   
   const retake = () => {
     const index = coverPhoto.length - 1
-    const newCoverPhoto = coverPhoto
+    const newCoverPhoto = cameraImage
     newCoverPhoto.splice(index, 1)
 
     cameraRef.current.resumePreview();
-    setCoverPhoto(newCoverPhoto)
+    setCameraImage(newCoverPhoto)
     setCameraCapture(false)
     setRetakeState(false)
   }
