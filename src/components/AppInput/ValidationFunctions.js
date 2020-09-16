@@ -22,14 +22,14 @@ const usernameValidator = async (username) => {
 const emailValidator = async (email) => {
   let emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-  console.log(email)
-  console.log(!emailReg.test(email))
+  console.log(email);
+  console.log(!emailReg.test(email));
 
   return await new Promise((resolve, reject) => {
     if (!emailReg.test(email)) {
       // console.log('invalid', email)
       reject('Invalid email address.');
-    } 
+    }
 
     return resolve(true);
   });
@@ -47,10 +47,21 @@ const MobileNumberValidator = async (number) => {
   });
 };
 
+const PasswordValidator = async (password) => {
+  return await new Promise((resolve, reject) => {
+    if (password.length <= 6) {
+      reject('Password must be 6 characters or more.');
+    }
+
+    return resolve(true);
+  });
+};
+
 const Validator = {
   usernameValidator,
   emailValidator,
-  MobileNumberValidator
+  MobileNumberValidator,
+  PasswordValidator
 };
 
 export default Validator;

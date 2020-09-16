@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import LoginService from '@/services/LoginService';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AppButton, AppInput, AppText} from '@/components';
+import {AppButton, AppInput, AppText, FloatingAppInput} from '@/components';
 import Colors from '@/globals/Colors';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
 import Close from '@/assets/images/icons/close.svg';
@@ -32,7 +32,8 @@ function Login() {
   const [emailAddress, setEmailAddress] = useState('');
 
   const [password, setPassword] = useState('');
-  const [isVisble, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState([]);
 
   const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,7 +108,7 @@ function Login() {
             <AppViewContainer
               marginSize={3}
               customStyle={{marginHorizontal: 0, marginBottom: 0}}>
-              <AppInput
+              <FloatingAppInput
                 label="Email or Mobile Number"
                 customStyle={styles.inputText}
                 onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
@@ -115,15 +116,29 @@ function Login() {
                 keyboardType={'email-address'}
               />
               <View style={{position: 'relative'}}>
-                <AppInput
+                {/* <AppInput
                   label="Password"
                   onChangeText={(password) => setPassword(password)}
                   value={password}
-                  secureTextEntry={!isVisble ? true : false}
+                  secureTextEntry={!isVisible ? true : false}
+                /> */}
+                <FloatingAppInput
+                  label="Password"
+                  // onBlur={onBlurPassword}
+                  // onFocus={onFocusPassword}
+                  secureTextEntry={!isVisible ? true : false}
+                  password
+                  value={password}
+                  valueHandler={setPassword}
+                  keyboardType="default"
+                  setError={setError}
+                  error={error}
+                  validation={['password']}
+                  setButtonState={() => {}}
                 />
                 <View style={styles.passwordToggle}>
-                  <TouchableOpacity onPress={() => setIsVisible(!isVisble)}>
-                    {!isVisble ? <EyeDark /> : <EyeLight />}
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                    {!isVisible ? <EyeDark /> : <EyeLight />}
                   </TouchableOpacity>
                 </View>
               </View>

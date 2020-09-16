@@ -111,7 +111,7 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
-          console.log(validationError)
+          console.log(validationError);
           setShowValidationError(false);
           console.log('email is not valid');
           setValidationError(err);
@@ -137,9 +137,35 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
-          console.log(validationError)
+          console.log(validationError);
           setShowValidationError(false);
           console.log('number is invalid');
+          setValidationError(err);
+          console.log(err);
+        });
+
+    if (validation.includes('password'))
+      ValidationFunctions.PasswordValidator(value)
+        .then((res) => {
+          const currentError = error;
+          const index = checkIndex('password');
+          currentError.splice(index, 1);
+          setError(currentError);
+
+          setShowValidationError(res);
+          console.log('password is valid');
+        })
+        .catch((err) => {
+          const currentError = error;
+          const index = checkIndex('password');
+          if (index === -1) {
+            currentError.push('password');
+            setError(currentError);
+          }
+
+          console.log(validationError);
+          setShowValidationError(false);
+          console.log('password is not valid');
           setValidationError(err);
           console.log(err);
         });

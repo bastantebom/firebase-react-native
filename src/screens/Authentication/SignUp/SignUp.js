@@ -509,7 +509,7 @@ const SignUp = (props) => {
                 </TouchableOpacity>
               </View>
 
-              <AppInput
+              <FloatingAppInput
                 label="Full Name"
                 value={name}
                 onBlur={onBlurName}
@@ -532,24 +532,19 @@ const SignUp = (props) => {
                 </AppText>
               ) : null}
               <View style={{position: 'relative'}}>
-                <AppInput
+                <FloatingAppInput
                   label="Password"
                   onBlur={onBlurPassword}
                   onFocus={onFocusPassword}
                   secureTextEntry={!isVisible ? true : false}
                   password
                   value={password}
+                  valueHandler={setPassword}
                   keyboardType="default"
-                  customStyle={{
-                    ...styles.customInputStyle,
-                    ...(!isValidPassword && password.length > 0
-                      ? styles.withError
-                      : isValidPassword && password.length > 0
-                      ? styles.withoutError
-                      : styles.defaultBorder),
-                    ...passwordBorder,
-                  }}
-                  onChangeText={(password) => onPasswordChange(password)}
+                  setError={setError}
+                  error={error}
+                  validation={['password']}
+                  setButtonState={setButtonState}
                 />
                 <View style={styles.passwordToggle}>
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
@@ -557,7 +552,7 @@ const SignUp = (props) => {
                   </TouchableOpacity>
                 </View>
               </View>
-              {!isValidPassword ? (
+              {/* {!isValidPassword ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
                   Must be at least 6 characters
                 </AppText>
@@ -565,7 +560,7 @@ const SignUp = (props) => {
                 <AppText
                   textStyle="caption"
                   customStyle={styles.emptyErrorCopy}></AppText>
-              )}
+              )} */}
             </View>
 
             <TandC />
