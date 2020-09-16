@@ -42,7 +42,8 @@ const ServicePostForm = ({
     setNeedsRefresh,
     coverPhoto,
     setCoverPhoto,
-    setSelected
+    setSelected,
+    setPostCameraImage
   } = useContext(Context);
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [postImages, setPostImages] = useState([]);
@@ -221,6 +222,7 @@ const ServicePostForm = ({
     // set4  states
     setPostImage([]);
     setCoverPhoto([]);
+    setPostCameraImage([]);
     setSelected([]);
     setImageCount(0);
     setImageCurrent('');

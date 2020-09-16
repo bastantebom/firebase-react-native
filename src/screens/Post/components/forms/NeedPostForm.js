@@ -38,6 +38,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setNeedsRefresh,
     coverPhoto,
     setCoverPhoto,
+    setPostCameraImage,
     setSelected
   } = useContext(Context);
 
@@ -218,6 +219,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setLoadingSubmit(true);
     setPostImage([]);
     setCoverPhoto([]);
+    setPostCameraImage([]);
     setSelected([]);
     setImageCount(0);
     setImageCurrent('');

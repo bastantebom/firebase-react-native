@@ -40,7 +40,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setNeedsRefresh,
     coverPhoto,
     setCoverPhoto,
-    setSelected
+    setSelected,
+    setPostCameraImage
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -233,6 +234,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     //console.log(postImage);
     setLoadingSubmit(true);
     setCoverPhoto([]);
+    setPostCameraImage([]);
     setSelected([]);
     setPostImage([]);
     setImageCount(0);

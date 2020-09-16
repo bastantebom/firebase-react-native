@@ -18,7 +18,7 @@ import {PhotoAlbums} from './PhotoAlbums';
 
 const {height, width} = Dimensions.get('window');
 
-export const Library = ({cancel, next, data, count}) => {
+export const Library = ({cancel, next, data}) => {
 
   const {
     setPostImage,
@@ -33,24 +33,46 @@ export const Library = ({cancel, next, data, count}) => {
 
   const [showFolderList, setShowFolderList] = useState(false);
   const [countSelect, setCountSelect] = useState(0);
-  // const [selected, setSelected] = useState([]);
+  const [count, setCount] = useState([]);
+
+  const checkIndex = (arr) => {
+    const index = count.indexOf(arr);
+    return index;
+  };
 
   const getSelectedImages = async (images) => {
     var num = images.length;
     setImageCurrent(num > 0 ? images[num - 1].uri : '');
 
-    setCountSelect(num)
-
-    // setImageCount(count + 1);
-    
     setSelected(images);
-    // setPostImage(images);
+
+    setCountSelect(num)
     
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
     
     setPostImage(imageUrl);
+
+    const currentCount = count;
+    const index = checkIndex(imageUrl);
+    if (index === -1) {
+      if (sum < 10) {
+        currentCount.push(imageUrl);
+        setCount(currentCount);
+      }
+    }
   };
+
+  // console.log(count, 'count')
+
+  const sum = imageCount + count.length
+
+  // console.log(sum, 'sum')
+  // console.log(num, 'num outside')
+
+  // console.log('countSelect number of items/images selected on lib', countSelect)
+  // console.log('count (data.length from postimageupload)', count)
+  // console.log('imageCount', imageCount)
 
   useEffect(() => {
     if (data === null) {
@@ -59,10 +81,10 @@ export const Library = ({cancel, next, data, count}) => {
     if (data !== null) {
       console.log('with data')
     }
-  }, [data])
+  }, [data, countSelect])
 
-  // console.log('selected', selected)
-  // console.log('postImage', postImage)
+  useEffect(() => {
+  }, [imageCount])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
@@ -94,7 +116,7 @@ export const Library = ({cancel, next, data, count}) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             disabled={postImage.length < 1 && true}
-            onPress={() => {next(countSelect)}}
+            onPress={() => {next(countSelect === 0 ? imageCount : sum)}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
@@ -124,7 +146,7 @@ export const Library = ({cancel, next, data, count}) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {countSelect + count}/10{' '}
+                Photos - {countSelect === 0 ? imageCount : sum}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
@@ -146,16 +168,13 @@ export const Library = ({cancel, next, data, count}) => {
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: imageCount === 10 ? .5 : 1
+              opacity: sum >= 10 ? .5 : 1
             }}>
             <CameraRollPicker
               groupTypes="All"
-              maximum={10}
+              maximum={sum >= 10 ? countSelect : 10}
               scrollRenderAheadDistance={500}
-              selected={
-                selected
-                // imageCount === 10 ? selected : null
-              }
+              selected={selected}
               imagesPerRow={3}
               imageMargin={2}
               // selectedMarker={
