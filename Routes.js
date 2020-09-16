@@ -67,26 +67,27 @@ const PostStack = createStackNavigator();
 const ActivityStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
-function HomeTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Sampley"
-        component={SampleScreen}
-        // options={{tabBarVisible: false}}
-      />
-      <Tab.Screen name="Samplez" component={SampleScreen2} />
-    </Tab.Navigator>
-  );
-}
+const Stack = createStackNavigator();
+const NoBottomTabScreenStack = createStackNavigator();
+
+// function HomeTabs() {
+//   return (
+//     <Tab.Navigator>
+//       <Tab.Screen
+//         name="Sampley"
+//         component={SampleScreen}
+//         // options={{tabBarVisible: false}}
+//       />
+//       <Tab.Screen name="Samplez" component={SampleScreen2} />
+//     </Tab.Navigator>
+//   );
+// }
 
 function DashboardStackScreen() {
   return (
     <DashboardStack.Navigator headerMode="none">
       <DashboardStack.Screen name="Servbees" component={Dashboard} />
-      <DashboardStack.Screen name="Samplex" component={HomeTabs} />
     </DashboardStack.Navigator>
   );
 }
@@ -130,6 +131,15 @@ function ProfileStackScreen() {
       </ProfileStack.Navigator>
     </>
   );
+}
+
+function NoBottomTabScreens() {
+  return (
+    <NoBottomTabScreenStack.Navigator >
+      <NoBottomTabScreenStack.Screen name="OtherProfile" component={Profile} />
+      <NoBottomTabScreenStack.Screen name="Sampley" component={SampleScreen} />
+    </NoBottomTabScreenStack.Navigator>
+  )
 }
 
 function TabStack() {
@@ -330,8 +340,8 @@ function Routes() {
         ) : (
           // <TabStack />
           <Stack.Navigator headerMode="none">
-            <Stack.Screen name="Home" component={HomeTabs} />
-            <Stack.Screen name="Profile" component={ProfileStackScreen} />
+            <Stack.Screen name="Home" component={TabStack} />
+            <Stack.Screen name="NoBottomTabScreens" component={NoBottomTabScreens} />
           </Stack.Navigator>
         )}
       </NavigationContainer>
