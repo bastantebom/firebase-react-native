@@ -63,12 +63,7 @@ export const Library = ({cancel, next, data}) => {
     }
   };
 
-  // console.log(count, 'count')
-
   const sum = imageCount + count.length
-
-  // console.log(sum, 'sum')
-  // console.log(num, 'num outside')
 
   // console.log('countSelect number of items/images selected on lib', countSelect)
   // console.log('count (data.length from postimageupload)', count)
@@ -81,7 +76,7 @@ export const Library = ({cancel, next, data}) => {
     if (data !== null) {
       console.log('with data')
     }
-  }, [data, countSelect])
+  }, [data])
 
   useEffect(() => {
   }, [imageCount])
@@ -116,7 +111,7 @@ export const Library = ({cancel, next, data}) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             disabled={postImage.length < 1 && true}
-            onPress={() => {next(countSelect === 0 ? imageCount : sum)}}
+            onPress={() => {next(sum)}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
@@ -146,7 +141,7 @@ export const Library = ({cancel, next, data}) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {countSelect === 0 ? imageCount : sum}/10{' '}
+                Photos - {sum}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
