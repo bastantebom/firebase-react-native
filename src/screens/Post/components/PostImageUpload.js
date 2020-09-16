@@ -134,10 +134,10 @@ export const PostImageUpload = ({ data }) => {
   };
 
   const continueUploadPhoto = (localPath) => {
-    const jointArray = [...coverPhoto, ...localPath]
-    const newCoverPhoto = Array.from(new Set(jointArray))
-    setRecentImages(localPath)
-    setCoverPhoto(newCoverPhoto)
+    // const jointArray = [...coverPhoto, ...localPath]
+    // const newCoverPhoto = Array.from(new Set(jointArray))
+    // setRecentImages(localPath)
+    // setCoverPhoto(newCoverPhoto)
     togglePickerModal();
   };
 
