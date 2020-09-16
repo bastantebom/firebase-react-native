@@ -39,7 +39,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     coverPhoto,
     setCoverPhoto,
     setPostCameraImage,
-    setSelected
+    setSelected,
   } = useContext(Context);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -193,7 +193,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   const uploadImageHandler = async (image) => {
     try {
-      if (image.includes('firebasestorage.googleapis.com')) return image
+      if (image.includes('firebasestorage.googleapis.com')) return image;
 
       const newFilename =
         Platform.OS === 'ios'
@@ -208,9 +208,9 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       const downloadURL = await fileRef.getDownloadURL();
 
       // return Promise.resolve(downloadURL)
-      return downloadURL
-    } catch(err) {
-      console.log(err)
+      return downloadURL;
+    } catch (err) {
+      console.log(err);
       // return Promise.reject("Failed to upload")
     }
   };
@@ -227,7 +227,9 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     let data = {
       uid: user.uid,
       post_type: type,
-      images: await Promise.all(coverPhoto.map(async image => await uploadImageHandler(image))),
+      images: await Promise.all(
+        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+      ),
       title: title,
       price: price,
       description: description,
@@ -240,13 +242,11 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     };
 
     if (initialData.post_id) {
-      PostService.editPost(initialData.post_id, data).then(
-        (res) => {
-          togglePostModal();
-          navToPost({...res, viewing: false, created: false, edited: true});
-          setLoadingSubmit(false);
-        },
-      );
+      PostService.editPost(initialData.post_id, data).then((res) => {
+        togglePostModal();
+        navToPost({...res, viewing: false, created: false, edited: true});
+        setLoadingSubmit(false);
+      });
     } else {
       PostService.createPost(data).then((res) => {
         setLoadingSubmit(false);
@@ -257,7 +257,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           navToPost({...res, viewing: false, created: true, edited: false});
         }, 500);
       });
-    } 
+    }
 
     // Upload images
     // const uploadAllImage = () =>
@@ -298,6 +298,8 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     // });
   };
 
+  
+
   return (
     <View
       style={{
@@ -308,8 +310,9 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-
-      <PostImageUpload data={images === 0 || images === undefined ? null : images} />
+      <PostImageUpload
+        data={images === 0 || images === undefined ? null : images}
+      />
 
       <AppInput
         customStyle={{marginBottom: 16}}
@@ -405,6 +408,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           </AppText>
         )}
       </TouchableOpacity>
+      
       <Modal
         isVisible={map}
         animationIn="slideInRight"

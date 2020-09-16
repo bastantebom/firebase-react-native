@@ -25,7 +25,7 @@ import {
   Switch,
   AppButton,
   CacheableImage,
-  TransitionIndicator,
+  TransitionIndicator
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';

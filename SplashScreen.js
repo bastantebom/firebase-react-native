@@ -7,21 +7,33 @@ import {Colors} from '@/globals';
 
 const SplashScreenComponent = () => {
   const [copyrightOpacity] = useState(new Animated.Value(0));
+  const [containerOpacity] = useState(new Animated.Value(1));
 
   useEffect(() => {
-    Animated.timing(copyrightOpacity, {
-      toValue: 1,
-      duration: 2500,
-      useNativeDriver: false,
-    }).start();
+    Animated.sequence([
+      Animated.timing(copyrightOpacity, {
+        toValue: 1,
+        duration: 2200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(containerOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start();
   }, []);
 
   let copyrightAnimationStyle = {
     opacity: copyrightOpacity,
   };
 
+  let fadingAnimationStyle = {
+    opacity: containerOpacity,
+  };
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, fadingAnimationStyle]}>
       <SafeAreaView style={styles.safeArea}>
         <LottieView
           source={require('./assets/Servbees-splash.json')}
@@ -37,7 +49,7 @@ const SplashScreenComponent = () => {
           </AppText>
         </Animated.View>
       </SafeAreaView>
-    </View>
+    </Animated.View>
   );
 };
 
