@@ -310,7 +310,7 @@ function Routes() {
 
       Animated.timing(containerOpacity, {
         toValue: 1,
-        duration: 1000,
+        duration: 750,
         useNativeDriver: false,
       }).start();
     }, 2500);
