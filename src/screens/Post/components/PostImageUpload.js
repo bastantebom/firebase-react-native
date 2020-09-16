@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 
 import {
   AppText,
@@ -18,14 +18,14 @@ import {
   BottomSheetHeader,
   CacheableImage,
 } from '@/components';
-import {normalize, Colors} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context';
-import {PostImages, CloseLight} from '@/assets/images/icons';
-import {PostCamera} from './Camera';
-import {Library} from './Library';
+import { normalize, Colors } from '@/globals';
+import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context';
+import { PostImages, CloseLight } from '@/assets/images/icons';
+import { PostCamera } from './Camera';
+import { Library } from './Library';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 export const PostImageUpload = ({ data }) => {
   const currentData = data
@@ -37,12 +37,13 @@ export const PostImageUpload = ({ data }) => {
     setCoverPhoto,
     setSelected,
     selected,
-    postCameraImage
+    postCameraImage,
+    setRecentImages
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
-  // const [count, setCount] = useState(0);
-  const [cameraImage, setCameraImage] = useState([]);
+  // // const [count, setCount] = useState(0);
+  // const [cameraImage, setCameraImage] = useState([]);
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -100,20 +101,23 @@ export const PostImageUpload = ({ data }) => {
   };
 
   const handleRemove = async (image) => {
-    // remove selected image in library
-    const newSelected = selected.filter(item => item.uri !== image)
-    setSelected(newSelected)
-
-    // remove select image in post image upload
-    const currentCoverPhoto = coverPhoto
-    const index = currentCoverPhoto.indexOf(image)
-    currentCoverPhoto.splice(index, 1)
+    const newCoverPhoto = coverPhoto.filter(item => item !== image)
+    setCoverPhoto(newCoverPhoto)
     
-    const indexData = currentData.indexOf(image)
-    currentData.splice(indexData, 1)
-    setCoverPhoto([...currentCoverPhoto])
+    // // remove selected image in library
+    // const newSelected = selected.filter(item => item.uri !== image)
+    // setSelected(newSelected)
 
-    setImageCount(imageCount - 1);
+    // // remove select image in post image upload
+    // const currentCoverPhoto = coverPhoto
+    // const index = currentCoverPhoto.indexOf(image)
+    // currentCoverPhoto.splice(index, 1)
+    
+    // const indexData = currentData.indexOf(image)
+    // currentData.splice(indexData, 1)
+    // setCoverPhoto([...currentCoverPhoto])
+
+    // setImageCount(imageCount - 1);
     // setCount(imageCount - 1);
   
     // const imageToRemove = image;
@@ -129,18 +133,26 @@ export const PostImageUpload = ({ data }) => {
     togglePickerModal();
   };
 
-  const continueUploadPhoto = (sum) => {
-    setImageCount(sum)
+  const continueUploadPhoto = (localPath) => {
+    const jointArray = [...coverPhoto, ...localPath]
+    const newCoverPhoto = Array.from(new Set(jointArray))
+    setRecentImages(localPath)
+    setCoverPhoto(newCoverPhoto)
     togglePickerModal();
   };
 
   const cancelCamera = () => {
+    const newCoverPhoto = coverPhoto
+    const index = newCoverPhoto.length - 1
+    newCoverPhoto.splice(index, 1)
+    setCoverPhoto(newCoverPhoto)
+    setImageCount(newCoverPhoto.length)
     togglePickerModal();
   };
 
-  // console.log('cameraImage', cameraImage)
+  // // console.log('cameraImage', cameraImage)
   const continueCamera = (photoCount) => {
-    setImageCount(imageCount + photoCount);
+    // setImageCount(imageCount + photoCount);
     togglePickerModal();
   };
 
@@ -167,28 +179,28 @@ export const PostImageUpload = ({ data }) => {
   // console.log(coverPhoto, 'coverPhoto - postImageUpload')
   // console.log(imageCount, 'imageCount - postImageUpload')
   // console.log(count, 'count - postImageUpload')
-  console.log(postCameraImage, 'postCameraImage - postImageUpload')
+  // console.log(postCameraImage, 'postCameraImage - postImageUpload')
 
-  useEffect(() => {
-    if (data === null || data === undefined) {
-      return console.log(data, 'data on post image');
-    } else {
-      setImageCount(data.length);
-      // setCount(data.length)
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data === null || data === undefined) {
+  //     return console.log(data, 'data on post image');
+  //   } else {
+  //     setImageCount(data.length);
+  //     // setCount(data.length)
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (data === null || data === undefined) {
-      setCoverPhoto(postImage)
-    } else {
-      setCoverPhoto([...currentData, ...postImage, ...postCameraImage])
-      // if (postCameraImage.length !== 0) {
-        // setCoverPhoto([...coverPhoto, ...postCameraImage]);
-      // }
-      // setCoverPhoto([...currentData], postCameraImage);
-    }
-  }, [postImage, postCameraImage])
+  // useEffect(() => {
+  //   if (data === null || data === undefined) {
+  //     setCoverPhoto(postImage)
+  //   } else {
+  //     setCoverPhoto([...currentData, ...postImage, ...postCameraImage])
+  //     // if (postCameraImage.length !== 0) {
+  //       // setCoverPhoto([...coverPhoto, ...postCameraImage]);
+  //     // }
+  //     // setCoverPhoto([...currentData], postCameraImage);
+  //   }
+  // }, [postImage, postCameraImage])
 
   return (
     <>
