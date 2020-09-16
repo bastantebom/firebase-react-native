@@ -375,10 +375,10 @@ const Post = ({card, togglePostModal, initialData}) => {
             PostTextOpacity,
           ]}>
           <Animated.View style={{flex: 1, justifyContent: 'center'}}>
-            <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>
+            <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
               Find What You Need
             </AppText>
-            <AppText textStyle="caption" color={Colors.neutralsWhite}>
+            <AppText textStyle="captionConstant" color={Colors.neutralsWhite}>
               {postText}
             </AppText>
           </Animated.View>
@@ -400,7 +400,7 @@ const Post = ({card, togglePostModal, initialData}) => {
         ]}>
         <PostNeed width={normalize(24)} height={normalize(24)} />
         <Animated.View style={{flex: 1, justifyContent: 'center'}}>
-          <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>
+          <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
             {postText}
           </AppText>
         </Animated.View>
@@ -444,10 +444,10 @@ const Post = ({card, togglePostModal, initialData}) => {
             PostTextOpacity,
           ]}>
           <Animated.View style={{flex: 1, justifyContent: 'center'}}>
-            <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>
+            <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
               Start Selling
             </AppText>
-            <AppText textStyle="caption" color={Colors.neutralsWhite}>
+            <AppText textStyle="captionConstant" color={Colors.neutralsWhite}>
               {sellText}
             </AppText>
           </Animated.View>
@@ -469,7 +469,7 @@ const Post = ({card, togglePostModal, initialData}) => {
         ]}>
         <PostSell width={normalize(24)} height={normalize(24)} />
         <Animated.View style={{flex: 1, justifyContent: 'center'}}>
-          <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>
+          <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
             {sellText}
           </AppText>
         </Animated.View>
@@ -513,10 +513,10 @@ const Post = ({card, togglePostModal, initialData}) => {
             PostTextOpacity,
           ]}>
           <Animated.View style={{flex: 1, justifyContent: 'center'}}>
-            <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>
+            <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
               Offer Your Services
             </AppText>
-            <AppText textStyle="caption" color={Colors.neutralsWhite}>
+            <AppText textStyle="captionConstant" color={Colors.neutralsWhite}>
               {needText}
             </AppText>
           </Animated.View>
@@ -538,7 +538,7 @@ const Post = ({card, togglePostModal, initialData}) => {
         ]}>
         <PostService width={normalize(24)} height={normalize(24)} />
         <Animated.View style={{flex: 1, justifyContent: 'center'}}>
-          <AppText textStyle="subtitle2" color={Colors.neutralsWhite}>
+          <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
             {needText}
           </AppText>
         </Animated.View>
@@ -713,21 +713,21 @@ const styles = StyleSheet.create({
   },
   sellCard: {
     backgroundColor: Colors.secondaryRoyalBlue,
-    height: normalize(88),
+    height: normalize(82),
     borderRadius: 8,
     marginLeft: normalize(9),
   },
   postCard: {
     // ACTS AS NEED CARD
     backgroundColor: Colors.secondaryMountainMeadow,
-    height: normalize(88),
+    height: normalize(82),
     borderRadius: 8,
 
     // marginLeft: normalize(8)
   },
   needCard: {
     backgroundColor: Colors.secondaryBrinkPink,
-    height: normalize(88),
+    height: normalize(82),
     borderRadius: 8,
     marginLeft: normalize(9),
   },
