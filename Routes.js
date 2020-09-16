@@ -6,7 +6,7 @@ import {
 import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View} from 'react-native';
+import {View, Animated} from 'react-native';
 import SplashScreenComponent from './SplashScreen';
 
 import {Notification} from '@/components';
@@ -90,7 +90,7 @@ function PostStackScreen({navigation}) {
       {/* { !user ? null :  */}
       <PostStack.Navigator headerMode="none">
         <PostStack.Screen name="PostScreen" component={PostScreen} />
-        <PostStack.Screen name="SinglePostView" component={SinglePostView}  />
+        <PostStack.Screen name="SinglePostView" component={SinglePostView} />
       </PostStack.Navigator>
       {/* } */}
     </>
@@ -98,8 +98,6 @@ function PostStackScreen({navigation}) {
 }
 
 function ActivityStackScreen() {
-
-
   return (
     <ActivityStack.Navigator headerMode="none">
       <ActivityStack.Screen name="Activity" component={Activity} />
@@ -272,32 +270,47 @@ function Routes() {
   const {user} = useContext(UserContext);
   const {deleteNotif, setDeleteNotif} = useContext(Context);
 
+  const [containerOpacity] = useState(new Animated.Value(0));
+
+  let fadingContainerStyle = {
+    opacity: containerOpacity,
+    flex: 1,
+  };
+
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-    }, 3000);
+
+      Animated.timing(containerOpacity, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    }, 2500);
   }, []);
 
   const [showSplash, setShowSplash] = useState(true);
 
   if (showSplash) return <SplashScreenComponent />;
 
-  const DeleteNotification = () => {
-    if (deleteNotif) {
-      return (
-        <SafeAreaView>
-          <Notification type={'verified'} position="relative" />
-        </SafeAreaView>
-      );
-    }
+  // const DeleteNotification = () => {
+  //   if (deleteNotif) {
+  //     return (
+  //       <SafeAreaView>
+  //         <Notification type={'verified'} position="relative" />
+  //       </SafeAreaView>
+  //     );
+  //   }
 
-    return <></>;
-  };
+  //   return <></>;
+  // };
 
   return (
-    <NavigationContainer>
-      {!user ? <AuthStackScreen /> : <TabStack />}
-    </NavigationContainer>
+    <Animated.View style={fadingContainerStyle}>
+      <NavigationContainer>
+        {!user ? <AuthStackScreen /> : <TabStack />}
+      </NavigationContainer>
+    </Animated.View>
   );
 }
 
