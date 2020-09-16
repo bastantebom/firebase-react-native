@@ -38,7 +38,8 @@ export const PostImageUpload = ({ data }) => {
     setSelected,
     selected,
     postCameraImage,
-    setRecentImages
+    setRecentImages,
+    setCameraImage
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
@@ -145,7 +146,7 @@ export const PostImageUpload = ({ data }) => {
     const newCoverPhoto = coverPhoto
     const index = newCoverPhoto.length - 1
     newCoverPhoto.splice(index, 1)
-    setCoverPhoto(newCoverPhoto)
+    setCameraImage(newCoverPhoto)
     setImageCount(newCoverPhoto.length)
     togglePickerModal();
   };
