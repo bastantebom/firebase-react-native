@@ -59,17 +59,24 @@ const ProfileInfo = ({userInfo, type}) => {
   };
 
   openProfileHandler = () => {
-    console.log(user.uid);
+    // console.log(user.uid);
+    console.log('I HAVE THIS UID');
+    console.log(uid);
 
     if (user && user.uid === uid) {
-      console.log('HELLO');
-      return navigation.navigate('Profile', {
+      navigation.navigate('Profile', {
         screen: 'Profile',
       });
     } else {
-      console.log('OPENING MODAL');
-
-      setProfileModal(true);
+      console.log('Going to NBTS');
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: uid},
+      });
+      // navigation.navigate('Post', {
+      //   screen: 'SinglePostView',
+      //   params: computedData,
+      // });
     }
   };
 
@@ -83,7 +90,7 @@ const ProfileInfo = ({userInfo, type}) => {
               width: normalize(32),
               borderRadius: normalize(32 / 2),
               overflow: 'hidden',
-              alignSelf: "center"
+              alignSelf: 'center',
             }}>
             {/* <Image
               style={GlobalStyle.image}
@@ -129,7 +136,7 @@ const ProfileInfo = ({userInfo, type}) => {
         </View>
 
         {/* FOR MODAL */}
-        <Modal
+        {/* <Modal
           isVisible={profileModal}
           animationIn="slideInUp"
           animationInTiming={500}
@@ -145,59 +152,33 @@ const ProfileInfo = ({userInfo, type}) => {
             backFunction={() => setProfileModal(false)}
             uid={uid}
           />
-        </Modal>
+        </Modal> */}
       </TouchableOpacity>
     );
 
   // OWN POST VIEW
   if (type === 'own-post')
     return (
-      <>
-        {/* <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}> */}
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.userInfoImageContainer}>
-              <ProfilePhoto size={42} />
+      <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.userInfoImageContainer}>
+            <ProfilePhoto size={42} />
+          </View>
+          <View style={{marginLeft: 8, justifyContent: 'center'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
+                {display_name}
+              </AppText>
+              <VerifiedBadge />
             </View>
-            <View style={{marginLeft: 8, justifyContent: 'center'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
-                  {display_name}
-                </AppText>
-                <VerifiedBadge />
-              </View>
-              <View style={{}}>
-                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                  @{username.toLowerCase()}
-                </AppText>
-              </View>
+            <View style={{}}>
+              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+                @{username.toLowerCase()}
+              </AppText>
             </View>
           </View>
-        {/* </TouchableOpacity> */}
-        <Modal
-          isVisible={profileModal}
-          animationIn="slideInUp"
-          animationInTiming={500}
-          animationOut="slideOutLeft"
-          animationOutTiming={300}
-          style={{
-            margin: 0,
-            // backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-            justifyContent: 'flex-start',
-          }}>
-          <View>
-            {/* <SafeAreaView>
-              <TouchableOpacity onPress={() => setProfileModal(false)}>
-                <AppText>Hello</AppText>
-              </TouchableOpacity>
-            </SafeAreaView> */}
-            <ProfileInfoModal
-              backFunction={() => setProfileModal(false)}
-              uid={uid}
-            />
-          </View>
-        </Modal>
-      </>
+        </View>
+      </TouchableOpacity>
     );
 };
 

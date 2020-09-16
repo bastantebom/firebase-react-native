@@ -346,7 +346,7 @@ const SearchBarWithFilter = () => {
   const navigation = useNavigation();
 
   const goTo = () => {
-    navigation.navigate('NoBottomTabScreens', {
+    navigation.navigate('NBTScreen', {
       screen: 'Sampley',
     });
   };
@@ -404,10 +404,6 @@ const SearchBarWithFilter = () => {
         </View>
       </TouchableOpacity> */}
       </View>
-
-      <TouchableOpacity onPress={goTo}>
-        <AppText>asdads</AppText>
-      </TouchableOpacity>
 
       <Modal
         isVisible={showLocation}

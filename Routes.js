@@ -19,8 +19,7 @@ import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
 import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
-import SampleScreen from '@/screens/SampleScreen';
-import SampleScreen2 from '@/screens/SampleScreen2';
+import {ProfileInfoModal, SinglePostOthersView} from '@/components';
 
 import {
   AlmostThere,
@@ -84,6 +83,23 @@ const NoBottomTabScreenStack = createStackNavigator();
 //   );
 // }
 
+// START: Put screens without bottom tab navigation here
+function NoBottomTabScreens() {
+  return (
+    <NoBottomTabScreenStack.Navigator headerMode="none">
+      <NoBottomTabScreenStack.Screen
+        name="OthersProfile"
+        component={ProfileInfoModal}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="OthersPost"
+        component={SinglePostView}
+      />
+    </NoBottomTabScreenStack.Navigator>
+  );
+}
+// END: Put screens without bottom tab navigation here
+
 function DashboardStackScreen() {
   return (
     <DashboardStack.Navigator headerMode="none">
@@ -131,15 +147,6 @@ function ProfileStackScreen() {
       </ProfileStack.Navigator>
     </>
   );
-}
-
-function NoBottomTabScreens() {
-  return (
-    <NoBottomTabScreenStack.Navigator >
-      <NoBottomTabScreenStack.Screen name="OtherProfile" component={Profile} />
-      <NoBottomTabScreenStack.Screen name="Sampley" component={SampleScreen} />
-    </NoBottomTabScreenStack.Navigator>
-  )
 }
 
 function TabStack() {
@@ -341,7 +348,7 @@ function Routes() {
           // <TabStack />
           <Stack.Navigator headerMode="none">
             <Stack.Screen name="Home" component={TabStack} />
-            <Stack.Screen name="NoBottomTabScreens" component={NoBottomTabScreens} />
+            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

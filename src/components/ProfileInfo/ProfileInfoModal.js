@@ -10,6 +10,7 @@ import {
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import {useNavigation} from '@react-navigation/native';
 
 import {
   AppText,
@@ -35,7 +36,13 @@ import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
-function ProfileInfoModal({profileViewType = 'other', backFunction, uid}) {
+function ProfileInfoModal(props) {
+  console.log('PROPS');
+  console.log(props.route.params);
+
+  const {profileViewType = 'other', uid} = props.route?.params;
+
+  const navigation = useNavigation();
   const {user, signOut} = useContext(UserContext);
   const {userPosts, otherUserPosts} = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
@@ -146,7 +153,7 @@ function ProfileInfoModal({profileViewType = 'other', backFunction, uid}) {
         signOut={signOut}
         toggleQR={toggleQR}
         QR={QR}
-        backFunction={backFunction}
+        backFunction={() => navigation.goBack()}
         userInfo={userInfo}
       />
       <View style={{backgroundColor: 'red', height: normalize(158)}}>
@@ -180,7 +187,6 @@ function ProfileInfoModal({profileViewType = 'other', backFunction, uid}) {
           <TabNavigation routesList={profileTabs} />
         </View>
       </View>
-      <WhiteOpacity />
     </>
   );
 }

@@ -8,9 +8,9 @@ import {
   SafeAreaView,
   Linking,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
@@ -34,9 +34,13 @@ import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {ImageModal} from '@/screens/Post/components/ImageModal';
 
-const SinglePostOthersView = ({data, backFunction}) => {
+const SinglePostOthersView = (props) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
+
+  const {navigation} = props;
+
+  const {data} = props.route.params;
 
   const {
     uid,
@@ -99,7 +103,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
 
   const SinglePostContent = ({children}) => {
     return (
-      <View style={{flex: 1, color: 'red'}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         <View style={styles.postImageContainer}>
           {/* <Image
             style={GlobalStyle.image}
@@ -153,7 +157,7 @@ const SinglePostOthersView = ({data, backFunction}) => {
           <ProfileInfo
             userInfo={userInfo}
             type="own-post"
-            closePostModal={backFunction}
+            closePostModal={() => navigation.goBack()}
           />
 
           <AppText
@@ -220,8 +224,16 @@ const SinglePostOthersView = ({data, backFunction}) => {
   return (
     <>
       <ScrollView>
-        <View style={{flex: 1, position: 'relative', backgroundColor: 'green'}}>
-          <TransparentHeader type={'post-other'} backFunction={backFunction} />
+        <View
+          style={{
+            flex: 1,
+            position: 'relative',
+            backgroundColor: Colors.primaryYellow,
+          }}>
+          <TransparentHeader
+            type={'post-other'}
+            backFunction={() => navigation.goBack()}
+          />
           <SinglePostContent></SinglePostContent>
 
           <Modal
@@ -312,8 +324,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
     paddingBottom: normalize(85),
-    // padding: 16,
-    // backgroundColor: 'blue',
     // height: '100%',
   },
   userInfoImageContainer: {

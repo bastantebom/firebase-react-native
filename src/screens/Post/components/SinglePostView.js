@@ -6,6 +6,8 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  SafeAreaView,
+  Linking,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -29,6 +31,8 @@ import {
   CloseDark,
   CircleTickWhite,
   CloseLight,
+  ContactEmail,
+  ContactTelephone,
 } from '@/assets/images/icons';
 import {CoverNeed, CoverSell, CoverService} from '@/assets/images';
 
@@ -38,6 +42,8 @@ import EditPostScreen from './EditPostScreen';
 import {ImageModal} from './ImageModal';
 
 const SinglePostView = (props) => {
+  const {othersView = false} = props.route?.params;
+
   const {
     uid,
     post_type,
@@ -56,6 +62,8 @@ const SinglePostView = (props) => {
     date_posted,
     post_id,
     full_name,
+    email,
+    phone_number,
   } = props.route?.params?.data;
 
   // console.log(images);
@@ -138,6 +146,16 @@ const SinglePostView = (props) => {
     }
 
     return timePassed(time) + ' ago';
+  };
+
+  let makeCall = () => {
+    let phoneNumber = '';
+    if (Platform.OS === 'android') {
+      phoneNumber = `tel:${phone_number}`;
+    } else {
+      phoneNumber = `telprompt:${phone_number}`;
+    }
+    Linking.openURL(phoneNumber);
   };
 
   const CustomNotification = () => {
@@ -331,6 +349,67 @@ const SinglePostView = (props) => {
             )}
           </View>
         </ScrollView>
+        {othersView && (
+          <SafeAreaView
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'flex-end',
+              position: 'absolute',
+              bottom: 0,
+            }}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                paddingHorizontal: 20,
+                paddingVertical: 20,
+              }}>
+              {phone_number ? (
+                <TouchableOpacity
+                  style={{flex: 1, marginRight: email ? 8 : 0}}
+                  activeOpacity={0.7}
+                  // onPress={() => Linking.openURL(`tel:${phone_number}`)}
+                  onPress={makeCall}>
+                  <View style={styles.contactButtonContainer}>
+                    <ContactTelephone
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
+                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                      Call Seller
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+              {email ? (
+                <TouchableOpacity
+                  style={{flex: 1, marginLeft: phone_number ? 8 : 0}}
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL(
+                      `mailto:${email}?subject=Servbees: Is this still available?`,
+                    );
+                  }}>
+                  <View style={styles.contactButtonContainer}>
+                    <ContactEmail
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
+                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                      Send Email
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+            </View>
+          </SafeAreaView>
+        )}
       </View>
     );
   };
@@ -418,11 +497,20 @@ const styles = StyleSheet.create({
     borderRadius: normalize(42 / 2),
     overflow: 'hidden',
   },
+
   iconText: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    // backgroundColor: 'red'
     marginBottom: 16,
+  },
+  contactButtonContainer: {
+    flexDirection: 'row',
+    borderWidth: 1.2,
+    borderColor: Colors.primaryYellow,
+    justifyContent: 'center',
+    paddingVertical: 12,
+    alignItems: 'center',
+    backgroundColor: Colors.neutralsWhite,
   },
 });
 

@@ -91,20 +91,15 @@ const OwnPost = ({data, isLoading}) => {
         screen: 'SinglePostView',
         params: computedData,
       });
-    else setShowPost(true);
+    else
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
+        params: computedData,
+      });
   };
 
   return (
     <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            console.log('HELLO');
-            navigation.navigate('Home');
-          }}>
-          <AppText>asdasdjkhasdkj</AppText>
-        </TouchableOpacity>
-      </View>
       <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
         <MarginView
           marginSize={2}
