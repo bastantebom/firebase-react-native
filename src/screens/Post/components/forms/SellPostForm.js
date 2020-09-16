@@ -25,6 +25,7 @@ import {
   Switch,
   AppButton,
   CacheableImage,
+  TransitionIndicator,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
@@ -41,7 +42,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     coverPhoto,
     setCoverPhoto,
     setSelected,
-    setPostCameraImage
+    setPostCameraImage,
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -203,12 +204,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   //   });
   // };
 
-
   // const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
 
   const uploadImageHandler = async (image) => {
     try {
-      if (image.includes('firebasestorage.googleapis.com')) return image
+      if (image.includes('firebasestorage.googleapis.com')) return image;
 
       const newFilename =
         Platform.OS === 'ios'
@@ -223,9 +223,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       const downloadURL = await fileRef.getDownloadURL();
 
       // return Promise.resolve(downloadURL)
-      return downloadURL
-    } catch(err) {
-      console.log(err)
+      return downloadURL;
+    } catch (err) {
+      console.log(err);
       // return Promise.reject("Failed to upload")
     }
   };
@@ -243,7 +243,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     let data = {
       uid: user.uid,
       post_type: type,
-      images: await Promise.all(coverPhoto.map(async image => await uploadImageHandler(image))),
+      images: await Promise.all(
+        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+      ),
       title: title,
       price: price,
       description: description,
@@ -256,13 +258,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     };
 
     if (initialData.post_id) {
-      PostService.editPost(initialData.post_id, data).then(
-        (res) => {
-          togglePostModal();
-          navToPost({...res, viewing: false, created: false, edited: true});
-          setLoadingSubmit(false);
-        },
-      );
+      PostService.editPost(initialData.post_id, data).then((res) => {
+        togglePostModal();
+        navToPost({...res, viewing: false, created: false, edited: true});
+        setLoadingSubmit(false);
+      });
     } else {
       PostService.createPost(data).then((res) => {
         setLoadingSubmit(false);
@@ -273,7 +273,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           navToPost({...res, viewing: false, created: true, edited: false});
         }, 500);
       });
-    } 
+    }
   };
 
   return (
@@ -287,8 +287,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-
-        <PostImageUpload data={images === 0 || images === undefined ? null : images} />
+        <PostImageUpload
+          data={images === 0 || images === undefined ? null : images}
+        />
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -335,6 +336,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           onChangeText={(text) => setDescription(text)}
           underlineColorAndroid={'transparent'}
           textAlignVertical="top"
+          scrollEnabled={false}
         />
       </View>
 
@@ -451,6 +453,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }
           />
         </Modal>
+        <TransitionIndicator loading={loadingSubmit} />
       </View>
     </>
   );
