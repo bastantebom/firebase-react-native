@@ -347,7 +347,7 @@ const SearchBarWithFilter = () => {
 
   const goTo = () => {
     navigation.navigate('NoBottomTabScreens', {
-      screen: 'OtherProfile',
+      screen: 'Sampley',
     });
   };
 
