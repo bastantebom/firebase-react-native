@@ -19,6 +19,8 @@ import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
 import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
+import SampleScreen from '@/screens/SampleScreen';
+import SampleScreen2 from '@/screens/SampleScreen2';
 
 import {
   AlmostThere,
@@ -65,11 +67,26 @@ const PostStack = createStackNavigator();
 const ActivityStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function HomeTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Sampley"
+        component={SampleScreen}
+        // options={{tabBarVisible: false}}
+      />
+      <Tab.Screen name="Samplez" component={SampleScreen2} />
+    </Tab.Navigator>
+  );
+}
 
 function DashboardStackScreen() {
   return (
     <DashboardStack.Navigator headerMode="none">
       <DashboardStack.Screen name="Servbees" component={Dashboard} />
+      <DashboardStack.Screen name="Samplex" component={HomeTabs} />
     </DashboardStack.Navigator>
   );
 }
@@ -308,7 +325,15 @@ function Routes() {
   return (
     <Animated.View style={fadingContainerStyle}>
       <NavigationContainer>
-        {!user ? <AuthStackScreen /> : <TabStack />}
+        {!user ? (
+          <AuthStackScreen />
+        ) : (
+          // <TabStack />
+          <Stack.Navigator headerMode="none">
+            <Stack.Screen name="Home" component={HomeTabs} />
+            <Stack.Screen name="Profile" component={ProfileStackScreen} />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </Animated.View>
   );

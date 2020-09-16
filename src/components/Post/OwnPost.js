@@ -96,6 +96,15 @@ const OwnPost = ({data, isLoading}) => {
 
   return (
     <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('HELLO');
+            navigation.navigate('Home');
+          }}>
+          <AppText>asdasdjkhasdkj</AppText>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
         <MarginView
           marginSize={2}
