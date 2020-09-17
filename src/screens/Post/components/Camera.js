@@ -3,7 +3,6 @@ import {View, TouchableOpacity, SafeAreaView} from 'react-native';
 import {AppText} from '@/components';
 import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
-import {Context} from '@/context';
 
 export const PostCamera = ({ cancel, next }) => {
   const [cameraCapture, setCameraCapture] = useState(false)
