@@ -500,10 +500,10 @@ const SignUp = (props) => {
                     toggleSignUpMethod();
                   }}>
                   <AppText
-                    textStyle="body2"
+                    textStyle="button3"
                     color={AppColor.contentOcean}
                     customStyle={{marginBottom: 16}}>
-                    {!signUpLabel ? 'Use mobile number' : 'Use email'}
+                    {!signUpLabel ? 'Use mobile number instead' : 'Use email instead'}
                   </AppText>
                 </TouchableOpacity>
               </View>
