@@ -156,6 +156,10 @@ const styles = StyleSheet.create({
     fontSize: normalize(defaultFontSize-4),
     letterSpacing: 0.8,
   },
+  nav: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(13),
+  }
 });
 
 export default AppText;
