@@ -42,7 +42,9 @@ export const PostImageUpload = ({ data }) => {
     libImages,
     setLibImages,
     cameraImage,
-    setCameraImage
+    setCameraImage,
+    singleCameraImage,
+    setSingleCameraImage
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
@@ -128,12 +130,15 @@ export const PostImageUpload = ({ data }) => {
   };
 
   const cancelCamera = () => {
-    const newCameraImage = cameraImage
-    const index = newCameraImage.length - 1
-    newCameraImage.splice(index, 1)
-    const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
-    setCoverPhoto([...newCoverPhoto])
-    setImageCount(newCameraImage.length)
+    if (singleCameraImage !== null) {
+      const newCameraImage = cameraImage
+      const index = newCameraImage.length - 1
+      newCameraImage.splice(index, 1)
+      const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
+      setCoverPhoto([...newCoverPhoto])
+      setImageCount(newCameraImage.length)
+      setSingleCameraImage(null)
+    }
     togglePickerModal();
   };
 

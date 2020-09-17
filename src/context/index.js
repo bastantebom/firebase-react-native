@@ -31,7 +31,8 @@ export const ContextProvider = ({children}) => {
   const [imageCount, setImageCount] = useState(0);
   const [selected, setSelected] = useState([]);
   
-  const [coverPhoto, setCoverPhoto] = useState([]);
+  const [coverPhoto, setCoverPhoto] = useState([])
+  const [singleCameraImage, setSingleCameraImage] = useState(null)
   const [cameraImage, setCameraImage] = useState([])
   const [libImages, setLibImages] = useState([])
   
@@ -136,7 +137,9 @@ export const ContextProvider = ({children}) => {
         setCameraImage,
         cameraImage,
         libImages,
-        setLibImages
+        setLibImages,
+        setSingleCameraImage,
+        singleCameraImage
       }}>
       {children}
     </Context.Provider>
