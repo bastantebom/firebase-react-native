@@ -25,7 +25,8 @@ export const Library = ({ cancel, next, data }) => {
     setImageCurrent,
     imageCurrent,
     selected,
-    setLibImages
+    setLibImages,
+    coverPhoto
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
@@ -35,7 +36,9 @@ export const Library = ({ cancel, next, data }) => {
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
     setLibImages(imageUrl)
-    // setImageCurrent(num > 0 ? images[num - 1].uri : '');
+
+    const num = imageUrl.length - 1
+    setImageCurrent(images[num].uri);
   };
   
   const toggleFolderList = () => {
@@ -99,7 +102,7 @@ export const Library = ({ cancel, next, data }) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {totalCount}/10{' '}
+                Photos - {coverPhoto.length}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
@@ -125,7 +128,7 @@ export const Library = ({ cancel, next, data }) => {
             }}>
             <CameraRollPicker
               groupTypes="All"
-              // maximum={totalCount >= 10 ? countSelect : 10}
+              maximum={coverPhoto.length >= 10 ? selected.length : 10}
               scrollRenderAheadDistance={500}
               selected={selected}
               imagesPerRow={3}

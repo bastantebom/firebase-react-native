@@ -43,6 +43,7 @@ export const ContextProvider = ({children}) => {
   useEffect(() => {
     const newCoverPhoto = [...cameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
     setCoverPhoto([...newCoverPhoto])
+    setImageCount(newCoverPhoto.length)
   }, [libImages, cameraImage])
 
   const closeSlider = () => {
