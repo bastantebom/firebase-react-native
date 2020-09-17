@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -21,6 +21,7 @@ import {
   // CacheableImage,
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
+import {useNavigation} from '@react-navigation/native';
 
 import {
   // Filter,
@@ -29,11 +30,11 @@ import {
   // NavigationPin,
   NavigationPinRed,
 } from '@/assets/images/icons';
-import { GlobalStyle, Colors, normalize } from '@/globals';
+import {GlobalStyle, Colors, normalize} from '@/globals';
 
 import Modal from 'react-native-modal';
-import { Context } from '@/context';
-import { UserContext } from '@/context/UserContext';
+import {Context} from '@/context';
+import {UserContext} from '@/context/UserContext';
 import LocationMap from '@/screens/Dashboard/components/Location';
 // import {VerificationScreen} from '@/screens/Dashboard/Verification';
 // import {PostService} from '@/services';
@@ -44,8 +45,8 @@ import LocationMap from '@/screens/Dashboard/components/Location';
 function Dashboard() {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
-  const { posts } = useContext(Context);
+
+  const {posts} = useContext(Context);
 
   const toggleModal = () => {
     setModalState(!modalState);
@@ -53,20 +54,17 @@ function Dashboard() {
 
   // const {openNotification, closeNotification, posts} = useContext(Context);
   // const {user} = useContext(UserContext);
-  
 
   // const [scrollState, setScrollState] = useState(0);
   // const [margin, setMargin] = useState(16);
 
   //const {address} = userInfo;
 
-
   // const [menu, setMenu] = useState(false);
 
   // const toggleMenu = () => {
   //   setMenu(!menu);
   // };
-
 
   // const DummyData = [
   //   {
@@ -246,14 +244,14 @@ function Dashboard() {
 }
 
 const SearchBarWithFilter = () => {
-  const { setLocationFilter, locationFilter } = useContext(Context);
+  const {setLocationFilter, locationFilter} = useContext(Context);
   const [showLocation, setShowLocation] = useState(false);
 
-  const { userInfo } = useContext(UserContext);
+  const {userInfo} = useContext(UserContext);
 
   changeFromMapHandler = async (fullAddress) => {
-    setLocationFilter(fullAddress.city)
-  }
+    setLocationFilter(fullAddress.city);
+  };
 
   // const {posts, setPosts, setLocationFilter, locationFilter} = useContext(Context);
   // const {userInfo, user} = useContext(UserContext);
@@ -345,6 +343,14 @@ const SearchBarWithFilter = () => {
   //   await prepareAddressUpdate(fullAddress);
   // };
 
+  const navigation = useNavigation();
+
+  const goTo = () => {
+    navigation.navigate('NBTScreen', {
+      screen: 'Sampley',
+    });
+  };
+
   return (
     <>
       <View
@@ -398,6 +404,7 @@ const SearchBarWithFilter = () => {
         </View>
       </TouchableOpacity> */}
       </View>
+
       <Modal
         isVisible={showLocation}
         animationIn="slideInRight"
@@ -412,9 +419,12 @@ const SearchBarWithFilter = () => {
         }}>
         <LocationMap
           address={
-            userInfo.address 
-              ? { latitude: userInfo.address.latitude, longitude: userInfo.address.longitude }
-              : { latitude: 14.5831, longitude: 120.9794 } 
+            userInfo.address
+              ? {
+                  latitude: userInfo.address.latitude,
+                  longitude: userInfo.address.longitude,
+                }
+              : {latitude: 14.5831, longitude: 120.9794}
           }
           back={() => setShowLocation(false)}
           changeFromMapHandler={(fullAddress) =>

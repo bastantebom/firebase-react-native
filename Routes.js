@@ -19,6 +19,7 @@ import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
 import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
+import {ProfileInfoModal, SinglePostOthersView} from '@/components';
 
 import {
   AlmostThere,
@@ -65,6 +66,39 @@ const PostStack = createStackNavigator();
 const ActivityStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const Stack = createStackNavigator();
+const NoBottomTabScreenStack = createStackNavigator();
+
+// function HomeTabs() {
+//   return (
+//     <Tab.Navigator>
+//       <Tab.Screen
+//         name="Sampley"
+//         component={SampleScreen}
+//         // options={{tabBarVisible: false}}
+//       />
+//       <Tab.Screen name="Samplez" component={SampleScreen2} />
+//     </Tab.Navigator>
+//   );
+// }
+
+// START: Put screens without bottom tab navigation here
+function NoBottomTabScreens() {
+  return (
+    <NoBottomTabScreenStack.Navigator headerMode="none">
+      <NoBottomTabScreenStack.Screen
+        name="OthersProfile"
+        component={ProfileInfoModal}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="OthersPost"
+        component={SinglePostView}
+      />
+    </NoBottomTabScreenStack.Navigator>
+  );
+}
+// END: Put screens without bottom tab navigation here
 
 function DashboardStackScreen() {
   return (
@@ -283,7 +317,7 @@ function Routes() {
 
       Animated.timing(containerOpacity, {
         toValue: 1,
-        duration: 500,
+        duration: 750,
         useNativeDriver: false,
       }).start();
     }, 2500);
@@ -308,7 +342,15 @@ function Routes() {
   return (
     <Animated.View style={fadingContainerStyle}>
       <NavigationContainer>
-        {!user ? <AuthStackScreen /> : <TabStack />}
+        {!user ? (
+          <AuthStackScreen />
+        ) : (
+          // <TabStack />
+          <Stack.Navigator headerMode="none">
+            <Stack.Screen name="Home" component={TabStack} />
+            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </Animated.View>
   );

@@ -14,6 +14,7 @@ import {
   PostFilter,
   UserPosts,
   OtherUserPosts,
+  SinglePostOthersView,
 } from '@/components/Post';
 import Reviews from '@/components/Review/Reviews';
 import Switch from '@/components/Switch/Switch';
@@ -32,6 +33,7 @@ import ProfileList from './ProfileList/ProfileList';
 import ScreenHeaderTitle from './ScreenHeaderTitle';
 
 import ProfileInfo from './ProfileInfo/ProfileInfo';
+import ProfileInfoModal from './ProfileInfo/ProfileInfoModal';
 import WhiteOpacity from './WhiteOpacity/WhiteOpacity';
 
 import OfflineNotice from '@/components/OfflineNotice';
@@ -39,6 +41,7 @@ import OfflineNotice from '@/components/OfflineNotice';
 import CacheableImage from './ImageCache/CacheableImage';
 
 export {
+  ProfileInfoModal,
   CacheableImage,
   OtherUserPosts,
   UserPosts,
@@ -71,4 +74,5 @@ export {
   Reviews,
   FloatingAppInput,
   OfflineNotice,
+  SinglePostOthersView
 };

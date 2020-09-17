@@ -91,7 +91,11 @@ const OwnPost = ({data, isLoading}) => {
         screen: 'SinglePostView',
         params: computedData,
       });
-    else setShowPost(true);
+    else
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
+        params: computedData,
+      });
   };
 
   return (

@@ -85,7 +85,11 @@ const Post = ({data, type, isLoading}) => {
         screen: 'SinglePostView',
         params: computedData,
       });
-    else setShowPost(true);
+    else
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
+        params: {...computedData, othersView: true},
+      });
   };
 
   if (type === 'dashboard')
