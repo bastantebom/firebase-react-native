@@ -114,19 +114,16 @@ export const PostImageUpload = ({ data }) => {
 
     const newLibImage = libImages.filter(item => item !== image)
     setLibImages(newLibImage)
+
+    const newCameraImage = cameraImage.filter(item => item !== image)
+    setCameraImage(newCameraImage)
   };
 
   const cancelUploadPhoto = () => {
-    // setPostImage([...postImage])
-    // setPhotoCount(photoCount);
     togglePickerModal();
   };
 
-  const continueUploadPhoto = (localPath) => {
-    // const jointArray = [...coverPhoto, ...localPath]
-    // const newCoverPhoto = Array.from(new Set(jointArray))
-    // setRecentImages(localPath)
-    // setCoverPhoto(newCoverPhoto)
+  const continueUploadPhoto = () => {
     togglePickerModal();
   };
 
@@ -140,11 +137,7 @@ export const PostImageUpload = ({ data }) => {
     togglePickerModal();
   };
 
-  console.log(cameraImage)
-
-  // // console.log('cameraImage', cameraImage)
-  const continueCamera = (photoCount) => {
-    // setImageCount(imageCount + photoCount);
+  const continueCamera = () => {;
     togglePickerModal();
   };
 
@@ -165,34 +158,6 @@ export const PostImageUpload = ({ data }) => {
       ),
     },
   ];
-
-  // console.log(postImage, 'postImage - postImageUpload')
-  // console.log(data, 'data - postImageUpload')
-  // console.log(coverPhoto, 'coverPhoto - postImageUpload')
-  // console.log(imageCount, 'imageCount - postImageUpload')
-  // console.log(count, 'count - postImageUpload')
-  // console.log(postCameraImage, 'postCameraImage - postImageUpload')
-
-  // useEffect(() => {
-  //   if (data === null || data === undefined) {
-  //     return console.log(data, 'data on post image');
-  //   } else {
-  //     setImageCount(data.length);
-  //     // setCount(data.length)
-  //   }
-  // }, [data]);
-
-  // useEffect(() => {
-  //   if (data === null || data === undefined) {
-  //     setCoverPhoto(postImage)
-  //   } else {
-  //     setCoverPhoto([...currentData, ...postImage, ...postCameraImage])
-  //     // if (postCameraImage.length !== 0) {
-  //       // setCoverPhoto([...coverPhoto, ...postCameraImage]);
-  //     // }
-  //     // setCoverPhoto([...currentData], postCameraImage);
-  //   }
-  // }, [postImage, postCameraImage])
 
   return (
     <>
@@ -337,14 +302,3 @@ export const PostImageUpload = ({ data }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // width: width,
-    height: '100%',
-    // paddingTop: 25,
-    // backgroundColor: '#F6AE2D',
-    zIndex: -2,
-  },
-});
