@@ -99,7 +99,7 @@ const SinglePostView = (props) => {
 
   useEffect(() => {
     // console.log('LOGGING ROUTE PROPS');
-    if (!(uid === user.uid)) setOtherPostModal(true);
+    // if (!(uid === user?.uid)) setOtherPostModal(true);
 
     setShowNotification(setNotification());
 
@@ -418,7 +418,7 @@ const SinglePostView = (props) => {
     <>
       <SinglePostContent />
       <TransparentHeader
-        type={uid === user.uid ? 'post-own' : 'post-other'}
+        type={uid === user?.uid ? 'post-own' : 'post-other'}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         backFunction={() => navigation.goBack()}
