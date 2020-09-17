@@ -25,6 +25,7 @@ import {
   Switch,
   AppButton,
   CacheableImage,
+  TransitionIndicator,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
@@ -34,14 +35,13 @@ import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
-    setPostImage,
-    setImageCount,
-    setImageCurrent,
-    setNeedsRefresh,
     coverPhoto,
+    setNeedsRefresh,
     setCoverPhoto,
+    setLibImages,
+    setCameraImage,
+    setSingleCameraImage,
     setSelected,
-    setPostCameraImage
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -60,6 +60,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [stringAddress, setStringAddress] = useState('');
 
   useEffect(() => {
+    if (images) {
+      setCoverPhoto(images);
+    }
     // Notification for Verifying the profile
     // openNotification();
     if (address) {
@@ -203,12 +206,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   //   });
   // };
 
-
   // const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
 
   const uploadImageHandler = async (image) => {
     try {
-      if (image.includes('firebasestorage.googleapis.com')) return image
+      if (image.includes('firebasestorage.googleapis.com')) return image;
 
       const newFilename =
         Platform.OS === 'ios'
@@ -223,27 +225,22 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       const downloadURL = await fileRef.getDownloadURL();
 
       // return Promise.resolve(downloadURL)
-      return downloadURL
-    } catch(err) {
-      console.log(err)
+      return downloadURL;
+    } catch (err) {
+      console.log(err);
       // return Promise.reject("Failed to upload")
     }
   };
 
-  const navigateToPost = async () => {
-    //console.log(postImage);
+  const publish = async () => {
     setLoadingSubmit(true);
-    setCoverPhoto([]);
-    setPostCameraImage([]);
-    setSelected([]);
-    setPostImage([]);
-    setImageCount(0);
-    setImageCurrent('');
-    let type = 'Sell';
-    let data = {
+
+    const data = {
       uid: user.uid,
-      post_type: type,
-      images: await Promise.all(coverPhoto.map(async image => await uploadImageHandler(image))),
+      post_type: 'sell',
+      images: await Promise.all(
+        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+      ),
       title: title,
       price: price,
       description: description,
@@ -256,24 +253,35 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     };
 
     if (initialData.post_id) {
-      PostService.editPost(initialData.post_id, data).then(
-        (res) => {
-          togglePostModal();
-          navToPost({...res, viewing: false, created: false, edited: true});
-          setLoadingSubmit(false);
-        },
-      );
-    } else {
-      PostService.createPost(data).then((res) => {
-        setLoadingSubmit(false);
-        setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
-        togglePostModal();
-        setNeedsRefresh(true);
-        setTimeout(() => {
-          navToPost({...res, viewing: false, created: true, edited: false});
-        }, 500);
+      const res = await PostService.editPost(initialData.post_id, data);
+      navToPost({
+        ...res,
+        viewing: false,
+        created: false,
+        edited: true,
       });
-    } 
+    } else {
+      const res = await PostService.createPost(data);
+      setUserInfo({
+        ...userInfo,
+        post_count: userInfo.post_count + 1,
+      });
+      navToPost({
+        ...res,
+        viewing: false,
+        created: true,
+        edited: false,
+      });
+    }
+
+    togglePostModal();
+    setLoadingSubmit(false);
+    setNeedsRefresh(true);
+    setCoverPhoto([]);
+    setLibImages([]);
+    setCameraImage([]);
+    setSingleCameraImage([]);
+    setSelected([]);
   };
 
   return (
@@ -287,8 +295,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-
-        <PostImageUpload data={images === 0 || images === undefined ? null : images} />
+        <PostImageUpload />
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -411,7 +418,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         />
 
         <TouchableOpacity
-          onPress={navigateToPost}
+          onPress={publish}
           activeOpacity={0.7}
           disabled={buttonEnabled || loadingSubmit}
           style={{
@@ -451,6 +458,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             }
           />
         </Modal>
+        <TransitionIndicator loading={loadingSubmit} />
       </View>
     </>
   );
