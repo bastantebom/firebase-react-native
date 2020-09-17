@@ -29,6 +29,7 @@ import {
   // NavigationArrow,
   // NavigationPin,
   NavigationPinRed,
+  CloseDark,
 } from '@/assets/images/icons';
 import {GlobalStyle, Colors, normalize} from '@/globals';
 
@@ -362,25 +363,50 @@ const SearchBarWithFilter = () => {
           {/* <NavigationPinRed width={24} height={24} /> */}
           {/* <AppInput label="Search your location"></AppInput> */}
           <View style={{position: 'relative'}}>
-            <TouchableOpacity
-              onPress={() => {
-                setShowLocation(true);
-              }}>
-              <View style={{paddingLeft: normalize(48)}}>
+            <View style={{paddingLeft: normalize(48)}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowLocation(true);
+                }}>
                 <View>
                   <AppText textStyle="caption">Your location</AppText>
                 </View>
-                <View
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: Colors.primaryMidnightBlue,
-                  }}>
-                  <AppText textStyle="body3" color={Colors.primaryMidnightBlue}>
-                    {locationFilter}
-                  </AppText>
-                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: Colors.primaryMidnightBlue,
+                  flexDirection: 'row',
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowLocation(true);
+                  }}
+                  style={{width: '90%'}}>
+                  <View style={{paddingVertical: normalize(1)}}>
+                    <AppText
+                      textStyle="body3"
+                      color={Colors.primaryMidnightBlue}>
+                      {locationFilter}
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+                {locationFilter ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setLocationFilter(null);
+                    }}
+                    style={{
+                      width: '10%',
+                    }}>
+                    <View style={{paddingVertical: normalize(4)}}>
+                      <CloseDark height={normalize(16)} />
+                    </View>
+                  </TouchableOpacity>
+                ) : null}
               </View>
-            </TouchableOpacity>
+            </View>
+
             <View
               style={{
                 position: 'absolute',
