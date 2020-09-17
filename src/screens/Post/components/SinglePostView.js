@@ -58,6 +58,8 @@ const SinglePostView = (props) => {
     full_name,
   } = props.route?.params?.data;
 
+  // console.log("Images in single post view")
+
   // console.log(images);
 
   const navigation = useNavigation();
