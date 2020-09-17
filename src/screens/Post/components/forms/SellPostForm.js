@@ -61,11 +61,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   useEffect(() => {
     if (images) {
-      setCoverPhoto(images);
+      setCameraImage(images);
     }
-    // Notification for Verifying the profile
-    // openNotification();
-    if (address) {
+
+    if (userInfo.address) {
+      const {address} = userInfo;
       getStringAddress(address.latitude, address.longitude);
     }
   }, [address]);
@@ -214,7 +214,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
       const newFilename =
         Platform.OS === 'ios'
-          ? image.substring(0, image.lastIndexOf('.'))
+          ? image
           : image.substring(image.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? image.replace('file://', '') : image;

@@ -471,7 +471,11 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
+  return card === 'service'
+    ? 'need'
+    : card === 'Need' || card === 'need'
+    ? 'post'
+    : 'sell';
 };
 
 const styles = StyleSheet.create({
