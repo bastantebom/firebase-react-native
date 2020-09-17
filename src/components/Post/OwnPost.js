@@ -91,11 +91,14 @@ const OwnPost = ({data, isLoading}) => {
         screen: 'SinglePostView',
         params: computedData,
       });
+
+    // change navigation.push to navigate 
     else
-      navigation.navigate('NBTScreen', {
+      navigation.push('NBTScreen', {
         screen: 'OthersPost',
         params: computedData,
       });
+
   };
 
   return (
