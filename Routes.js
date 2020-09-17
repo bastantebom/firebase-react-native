@@ -190,7 +190,6 @@ function TabStack() {
           tabBarOnPress: () => {
             closePostButtons;
           },
-          
         }}
       />
       {/* <Tab.Screen
