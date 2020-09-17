@@ -152,7 +152,7 @@ function ProfileStackScreen() {
 
 function TabStack() {
   const [activityNotification, setActivityNotification] = useState(true);
-  const [profileNotification, setProfileNotification] = useState(true);
+  const [profileNotification, setProfileNotification] = useState(false);
   const {closePostButtons} = useContext(Context);
 
   return (
@@ -169,8 +169,8 @@ function TabStack() {
           alignItems: 'center',
         },
         labelStyle: {
-          fontSize: normalize(12),
-          fontFamily: 'RoundedMplus1c-Medium',
+          fontSize: normalize(13),
+          fontFamily: 'RoundedMplus1c-Regular',
         },
         inactiveTintColor: '#8C8B98',
         activeTintColor: '#1F1A54',
@@ -190,6 +190,7 @@ function TabStack() {
           tabBarOnPress: () => {
             closePostButtons;
           },
+          
         }}
       />
       {/* <Tab.Screen
