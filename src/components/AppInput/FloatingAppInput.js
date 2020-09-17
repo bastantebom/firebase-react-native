@@ -38,17 +38,17 @@ const FloatingAppInput = (props) => {
     return index;
   };
 
-  console.log('Validation rules');
-  console.log(validation);
+  // //console.log('Validation rules');
+  // //console.log(validation);
 
   const onValueChange = (value) => {
     valueHandler(value);
-    console.log('************************************************');
+    // //console.log('************************************************');
     setShowValidationError(true);
-    console.log(value);
+    // //console.log(value);
     inputDebounce(value);
 
-    console.log('err', error.length);
+    // //console.log('err', error.length);
     if (error.length > 0) {
       setButtonState(true);
     } else {
@@ -59,12 +59,14 @@ const FloatingAppInput = (props) => {
   };
 
   const inputDebounce = useCallback(
-    debounce((value) => validateInput(value), 1000),
-    [],
+    debounce((value) => {
+      validateInput(value), 1000;
+    }),
+    [validation],
   );
 
   const validateInput = (value) => {
-    // console.log("Validate input")
+    // //console.log("Validate input")
     setInternalValue(value);
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
@@ -75,7 +77,7 @@ const FloatingAppInput = (props) => {
           setError(currentError);
 
           setShowValidationError(res);
-          console.log('username is valid');
+          //console.log('username is valid');
           setVerified(true);
         })
         .catch((err) => {
@@ -87,7 +89,7 @@ const FloatingAppInput = (props) => {
           }
 
           setShowValidationError(false);
-          console.log('username is not valid');
+          //console.log('username is not valid');
           setVerified(false);
           setValidationError(err);
         });
@@ -101,7 +103,7 @@ const FloatingAppInput = (props) => {
           setError(currentError);
 
           setShowValidationError(res);
-          console.log('email is valid');
+          // //console.log('email is valid');
         })
         .catch((err) => {
           const currentError = error;
@@ -111,11 +113,11 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
-          console.log(validationError);
+          //console.log(validationError);
           setShowValidationError(false);
-          console.log('email is not valid');
+          // //console.log('email is not valid');
           setValidationError(err);
-          console.log(err);
+          // //console.log(err);
         });
 
     if (validation.includes('number'))
@@ -127,7 +129,7 @@ const FloatingAppInput = (props) => {
           setError(currentError);
 
           setShowValidationError(res);
-          console.log('number is valid');
+          //console.log('number is valid');
         })
         .catch((err) => {
           const currentError = error;
@@ -137,11 +139,11 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
-          console.log(validationError);
+          //console.log(validationError);
           setShowValidationError(false);
-          console.log('number is invalid');
+          // //console.log('number is invalid');
           setValidationError(err);
-          console.log(err);
+          // //console.log(err);
         });
 
     if (validation.includes('password'))
@@ -153,7 +155,7 @@ const FloatingAppInput = (props) => {
           setError(currentError);
 
           setShowValidationError(res);
-          console.log('password is valid');
+          //console.log('password is valid');
         })
         .catch((err) => {
           const currentError = error;
@@ -163,11 +165,11 @@ const FloatingAppInput = (props) => {
             setError(currentError);
           }
 
-          console.log(validationError);
+          //console.log(validationError);
           setShowValidationError(false);
-          console.log('password is not valid');
+          //console.log('password is not valid');
           setValidationError(err);
-          console.log(err);
+          //console.log(err);
         });
   };
 
@@ -186,12 +188,13 @@ const FloatingAppInput = (props) => {
   useEffect(() => {
     setShowValidationError(true);
 
-    console.log('Value useeffect');
-    console.log(value);
+    // //console.log('Value useeffect');
+    // //console.log(value);
+
     if (value !== '' && (value !== undefined || placeholder !== undefined)) {
       animateFocus();
     }
-  }, [value, placeholder]);
+  }, [value, placeholder, validation]);
 
   const animateFocus = () => {
     Animated.timing(labelPosition, {
@@ -202,10 +205,10 @@ const FloatingAppInput = (props) => {
   };
 
   const animateBlur = () => {
-    console.log('Animate blur');
-    console.log(value);
+    // //console.log('Animate blur');
+    // //console.log(value);
     if (placeholder === undefined && (value === undefined || value === '')) {
-      console.log('Animate blur condition');
+      //console.log('Animate blur condition');
       Animated.timing(labelPosition, {
         toValue: 0,
         duration: 300,
