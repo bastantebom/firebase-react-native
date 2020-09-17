@@ -42,6 +42,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setCameraImage,
     setSingleCameraImage,
     setSelected,
+    setImageCurrent,
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -282,6 +283,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setCameraImage([]);
     setSingleCameraImage([]);
     setSelected([]);
+    setImageCurrent('');
   };
 
   return (

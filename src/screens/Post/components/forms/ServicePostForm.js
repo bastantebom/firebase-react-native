@@ -35,6 +35,7 @@ const ServicePostForm = ({
     setCameraImage,
     setSingleCameraImage,
     setSelected,
+    setImageCurrent,
   } = useContext(Context);
   const [stringAddress, setStringAddress] = useState('');
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -215,6 +216,7 @@ const ServicePostForm = ({
     setCameraImage([]);
     setSingleCameraImage(null);
     setSelected([]);
+    setImageCurrent('');
   };
 
   return (
