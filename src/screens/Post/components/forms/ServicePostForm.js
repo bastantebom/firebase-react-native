@@ -135,12 +135,19 @@ const ServicePostForm = ({
     try {
       if (image.includes('firebasestorage.googleapis.com')) return image;
 
+      console.log('IMAGE');
+      console.log(image);
+
       const newFilename =
         Platform.OS === 'ios'
-          ? image.substring(0, image.lastIndexOf('.'))
+          ? image
           : image.substring(image.lastIndexOf('/') + 1);
+
       const uploadUri =
-        Platform.OS === 'ios' ? image.replace('ph://', 'ph-upload://') : image;
+        Platform.OS === 'ios' ? image.replace('file://', '') : image;
+
+      // console.log('new file name');
+      // console.log(newFilename);
 
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
