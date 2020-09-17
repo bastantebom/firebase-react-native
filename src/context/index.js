@@ -42,7 +42,7 @@ export const ContextProvider = ({children}) => {
 
   // Set post coverphoto
   useEffect(() => {
-    const newCoverPhoto = [...cameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
+    const newCoverPhoto = [...coverPhoto, ...cameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
     setCoverPhoto([...newCoverPhoto])
     setImageCount(newCoverPhoto.length)
   }, [libImages, cameraImage])

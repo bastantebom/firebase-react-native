@@ -28,7 +28,7 @@ const PostScreen = ({togglePostModal, card}) => {
   const closeHandler = (value) => {
     if (value === 'continue') {
       cancelModalToggle();
-      setPostImage([]);
+      // setPostImage([]);
       setCoverPhoto([]);
       setPostCameraImage([]);
       setSelected([]);

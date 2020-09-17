@@ -134,7 +134,7 @@ export const PostImageUpload = ({ data }) => {
       const newCameraImage = cameraImage
       const index = newCameraImage.length - 1
       newCameraImage.splice(index, 1)
-      const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
+      const newCoverPhoto = [...coverPhoto, ...newCameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
       setCoverPhoto([...newCoverPhoto])
       setImageCount(newCameraImage.length)
       setSingleCameraImage(null)
