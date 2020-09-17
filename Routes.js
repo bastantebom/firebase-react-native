@@ -56,6 +56,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="AlmostThereMap" component={AlmostThereMap} />
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
       <AuthStack.Screen name="TabStack" component={TabStack} />
+      <AuthStack.Screen name="NBTScreen" component={NoBottomTabScreens} />
     </AuthStack.Navigator>
   );
 }
