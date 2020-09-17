@@ -21,7 +21,7 @@ export const ContextProvider = ({children}) => {
   const [otherUserPosts, setOtherUserPosts] = useState([]);
 
   const [locationFilter, setLocationFilter] = useState(null);
- 
+
   const [imageCurrent, setImageCurrent] = useState('');
   const [postCameraImage, setPostCameraImage] = useState([]);
   const [isInternetReachable, setIsInternetReachable] = useState(false);
@@ -30,22 +30,31 @@ export const ContextProvider = ({children}) => {
   // Post Images states
   const [imageCount, setImageCount] = useState(0);
   const [selected, setSelected] = useState([]);
-  
-  const [coverPhoto, setCoverPhoto] = useState([])
-  const [singleCameraImage, setSingleCameraImage] = useState(null)
-  const [cameraImage, setCameraImage] = useState([])
-  const [libImages, setLibImages] = useState([])
-  
-  useEffect(() => {
-    setImageCount(coverPhoto.length)
-  }, [coverPhoto])
 
+  const [coverPhoto, setCoverPhoto] = useState([]);
+  const [singleCameraImage, setSingleCameraImage] = useState(null);
+  const [cameraImage, setCameraImage] = useState([]);
+  const [libImages, setLibImages] = useState([]);
+
+  useEffect(() => {
+    setImageCount(coverPhoto.length);
+  }, [coverPhoto]);
+
+  useEffect(() => {
+    setCameraImage(coverPhoto);
+  }, []);
   // Set post coverphoto
   useEffect(() => {
-    const newCoverPhoto = [...coverPhoto, ...cameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
-    setCoverPhoto([...newCoverPhoto])
-    setImageCount(newCoverPhoto.length)
-  }, [libImages, cameraImage])
+    const newCoverPhoto = [...cameraImage, ...libImages].sort((a, b) =>
+      !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a)
+        ? -1
+        : !~coverPhoto.indexOf(a)
+        ? 1
+        : coverPhoto.indexOf(a) - coverPhoto.indexOf(b),
+    );
+    setCoverPhoto([...newCoverPhoto]);
+    setImageCount(newCoverPhoto.length);
+  }, [libImages, cameraImage]);
 
   const closeSlider = () => {
     setSliderState('close');
@@ -139,7 +148,7 @@ export const ContextProvider = ({children}) => {
         libImages,
         setLibImages,
         setSingleCameraImage,
-        singleCameraImage
+        singleCameraImage,
       }}>
       {children}
     </Context.Provider>

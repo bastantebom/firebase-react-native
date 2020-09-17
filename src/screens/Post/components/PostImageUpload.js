@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 import {
   AppText,
@@ -18,17 +18,17 @@ import {
   BottomSheetHeader,
   CacheableImage,
 } from '@/components';
-import { normalize, Colors } from '@/globals';
-import { UserContext } from '@/context/UserContext';
-import { Context } from '@/context';
-import { PostImages, CloseLight } from '@/assets/images/icons';
-import { PostCamera } from './Camera';
-import { Library } from './Library';
+import {normalize, Colors} from '@/globals';
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
+import {PostImages, CloseLight} from '@/assets/images/icons';
+import {PostCamera} from './Camera';
+import {Library} from './Library';
 
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
-export const PostImageUpload = ({ data }) => {
-  const currentData = data
+export const PostImageUpload = ({data}) => {
+  const currentData = data;
   const {
     postImage,
     setImageCount,
@@ -44,7 +44,7 @@ export const PostImageUpload = ({ data }) => {
     cameraImage,
     setCameraImage,
     singleCameraImage,
-    setSingleCameraImage
+    setSingleCameraImage,
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
@@ -108,17 +108,17 @@ export const PostImageUpload = ({ data }) => {
 
   // Remove image on x icon
   const handleRemove = async (image) => {
-    const newCoverPhoto = coverPhoto.filter(item => item !== image)
-    setCoverPhoto(newCoverPhoto)
+    const newCoverPhoto = coverPhoto.filter((item) => item !== image);
+    setCoverPhoto(newCoverPhoto);
 
-    const newSelected = selected.filter(item => item.uri !== image)
-    setSelected(newSelected)
+    const newSelected = selected.filter((item) => item.uri !== image);
+    setSelected(newSelected);
 
-    const newLibImage = libImages.filter(item => item !== image)
-    setLibImages(newLibImage)
+    const newLibImage = libImages.filter((item) => item !== image);
+    setLibImages(newLibImage);
 
-    const newCameraImage = cameraImage.filter(item => item !== image)
-    setCameraImage(newCameraImage)
+    const newCameraImage = cameraImage.filter((item) => item !== image);
+    setCameraImage(newCameraImage);
   };
 
   const cancelUploadPhoto = () => {
@@ -131,19 +131,25 @@ export const PostImageUpload = ({ data }) => {
 
   const cancelCamera = () => {
     if (singleCameraImage !== null) {
-      const newCameraImage = cameraImage
-      const index = newCameraImage.length - 1
-      newCameraImage.splice(index, 1)
-      const newCoverPhoto = [...coverPhoto, ...newCameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
-      setCoverPhoto([...newCoverPhoto])
-      setImageCount(newCameraImage.length)
-      setSingleCameraImage(null)
+      const newCameraImage = cameraImage;
+      const index = newCameraImage.length - 1;
+      newCameraImage.splice(index, 1);
+      const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) =>
+        !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a)
+          ? -1
+          : !~coverPhoto.indexOf(a)
+          ? 1
+          : coverPhoto.indexOf(a) - coverPhoto.indexOf(b),
+      );
+      setCoverPhoto([...newCoverPhoto]);
+      setImageCount(newCameraImage.length);
+      setSingleCameraImage(null);
     }
     togglePickerModal();
   };
 
   const continueCamera = () => {
-    setSingleCameraImage(null)
+    setSingleCameraImage(null);
     togglePickerModal();
   };
 
@@ -157,10 +163,7 @@ export const PostImageUpload = ({ data }) => {
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library
-          cancel={cancelUploadPhoto}
-          next={continueUploadPhoto}
-        />
+        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} />
       ),
     },
   ];
@@ -219,8 +222,7 @@ export const PostImageUpload = ({ data }) => {
                         borderRadius: 50,
                       }}
                     />
-                    <View
-                      style={{left: normalize(3.75), top: normalize(3.5)}}>
+                    <View style={{left: normalize(3.75), top: normalize(3.5)}}>
                       <CloseLight
                         width={normalize(20)}
                         height={normalize(20)}
@@ -228,7 +230,7 @@ export const PostImageUpload = ({ data }) => {
                     </View>
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: image }}
+                    source={{uri: image}}
                     style={{
                       width:
                         imageCount === 1

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -12,17 +12,30 @@ import storage from '@react-native-firebase/storage';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
-import { PostService } from '@/services';
-import { PostImageUpload } from '../PostImageUpload';
-import { AppText, AppInput, TransitionIndicator } from '@/components';
-import { normalize, Colors } from '@/globals';
-import { ArrowRight } from '@/assets/images/icons';
-import { UserContext } from '@/context/UserContext';
-import { Context } from '@/context';
+import {PostService} from '@/services';
+import {PostImageUpload} from '../PostImageUpload';
+import {AppText, AppInput, TransitionIndicator} from '@/components';
+import {normalize, Colors} from '@/globals';
+import {ArrowRight} from '@/assets/images/icons';
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
 
-const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
-  const { userInfo, user, setUserInfo } = useContext(UserContext)
-  const { coverPhoto, setNeedsRefresh, setCoverPhoto, setLibImages, setCameraImage, setSingleCameraImage, setSelected } = useContext(Context)
+const ServicePostForm = ({
+  navToPost,
+  togglePostModal,
+  formState,
+  initialData,
+}) => {
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
+  const {
+    coverPhoto,
+    setNeedsRefresh,
+    setCoverPhoto,
+    setLibImages,
+    setCameraImage,
+    setSingleCameraImage,
+    setSelected,
+  } = useContext(Context);
   const [stringAddress, setStringAddress] = useState('');
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -45,23 +58,23 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
     paymentMethod,
     setPaymentMethod,
     pickupState,
-    deliveryState
+    deliveryState,
   } = formState;
 
   useEffect(() => {
     if (images) {
-      setCoverPhoto(images)
+      setCoverPhoto(images);
     }
 
     if (userInfo.address) {
-      const { address } = userInfo
+      const {address} = userInfo;
       getStringAddress(address.latitude, address.longitude);
     }
-  }, [])
+  }, []);
 
   const toggleMap = () => {
-    setMap(!map)
-  }
+    setMap(!map);
+  };
 
   const prepareAddressUpdate = (fullAddress, addStr) => {
     getStringAddress(fullAddress.latitude, fullAddress.longitude, addStr);
@@ -127,25 +140,26 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
           ? image.substring(0, image.lastIndexOf('.'))
           : image.substring(image.lastIndexOf('/') + 1);
       const uploadUri =
-        Platform.OS === 'ios' ? image.replace('file://', '') : image;
+        Platform.OS === 'ios' ? image.replace('ph://', 'ph-upload://') : image;
 
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      console.log('uploadUri ' + uploadUri);
       await fileRef.putFile(uploadUri);
       const downloadURL = await fileRef.getDownloadURL();
-
+      console.log('downloadURL ' + downloadURL);
       return downloadURL;
-    } catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const publish = async () => {
     setLoadingSubmit(true);
 
     const data = {
       uid: user.uid,
-      post_type: "service",
+      post_type: 'service',
       images: await Promise.all(
         coverPhoto.map(async (image) => await uploadImageHandler(image)),
       ),
@@ -158,52 +172,54 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
         pickup: pickupState,
         delivery: deliveryState,
       },
-    };  
+    };
 
     if (initialData.post_id) {
-      const res = await PostService.editPost(initialData.post_id, data)
+      const res = await PostService.editPost(initialData.post_id, data);
+      clearContextState();
       navToPost({
-        ...res, 
-        viewing: false, 
+        ...res,
+        viewing: false,
         created: false,
-        edited: true
+        edited: true,
       });
-   
     } else {
-      const res = await PostService.createPost(data)
+      const res = await PostService.createPost(data);
       setUserInfo({
         ...userInfo,
-        post_count: userInfo.post_count + 1
-      })
+        post_count: userInfo.post_count + 1,
+      });
+      clearContextState();
       navToPost({
-        ...res, 
-        viewing: false, 
-        created: true, 
-        edited: false
+        ...res,
+        viewing: false,
+        created: true,
+        edited: false,
       });
     }
+  };
 
-    togglePostModal()
-    setLoadingSubmit(false)
+  const clearContextState = () => {
+    togglePostModal();
+    setLoadingSubmit(false);
     setNeedsRefresh(true);
-    setCoverPhoto([])
-    setLibImages([])
-    setCameraImage([])
-    setSingleCameraImage([])
-    setSelected([])
-  }
+    setCoverPhoto([]);
+    setLibImages([]);
+    setCameraImage([]);
+    setSingleCameraImage(null);
+    setSelected([]);
+  };
 
   return (
     <View
-     style={{
-      backgroundColor: 'white',
-      padding: 24,
-      marginBottom: 8,
-      borderBottomLeftRadius: 4,
-      borderBottomRightRadius: 4,
-      paddingBottom: 48,
-     }}
-    >
+      style={{
+        backgroundColor: 'white',
+        padding: 24,
+        marginBottom: 8,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        paddingBottom: 48,
+      }}>
       <PostImageUpload />
 
       <AppInput
@@ -245,7 +261,7 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
         scrollEnabled={false}
       />
       <View style={{position: 'relative'}}>
-       <TouchableOpacity onPress={() => toggleMap()}>
+        <TouchableOpacity onPress={() => toggleMap()}>
           <AppInput
             label="Location Address"
             customStyle={{marginBottom: 16}}
@@ -282,8 +298,7 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
             : Colors.primaryYellow,
           paddingVertical: 12,
           alignItems: 'center',
-        }}
-      >
+        }}>
         {loadingSubmit ? (
           <ActivityIndicator />
         ) : (
@@ -315,7 +330,7 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
       </Modal>
       <TransitionIndicator loading={loadingSubmit} />
     </View>
-  )
-}
+  );
+};
 
-export default ServicePostForm
+export default ServicePostForm;
