@@ -37,11 +37,10 @@ const SignUp = (props) => {
   const [error, setError] = useState([]);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const toggleSignUpMethod = () => {
-    // setEmail('');
+    setEmail('');
     // setError([]);
     setSignUpLabel((previousState) => !previousState);
   };
-  console.log(error.length);
   const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -487,15 +486,15 @@ const SignUp = (props) => {
               <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    console.log('Clicking toggler: ');
+                    // console.log('Clicking toggler: ');
                     // console.log(signUpLabel);
                     // console.log(error);
                     // console.log(email);
-                    console.log(validationRule);
+                    // console.log(validationRule);
 
                     !signUpLabel
-                      ? setValidationRule('email')
-                      : setValidationRule('number');
+                      ? setValidationRule('number')
+                      : setValidationRule('email');
 
                     setError([]);
                     toggleSignUpMethod();
