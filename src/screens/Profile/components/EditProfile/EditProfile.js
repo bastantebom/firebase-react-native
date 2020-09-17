@@ -110,7 +110,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
 
   const onChangeUsername = (uName) => {
-    console.log("On change function")
+    console.log('On change function');
 
     setVerified(false);
     let userNameReg = /^[a-z0-9.-]*$/;
@@ -295,9 +295,13 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     if (image) {
       const {uri} = image;
       //console.log('Sa If');
-      const filename = uri.substring(uri.lastIndexOf('/') + 1);
+      let filename = uri;
+      if (!Platform.OS === 'ios')
+        filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+
+
       setTransferred(0);
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
