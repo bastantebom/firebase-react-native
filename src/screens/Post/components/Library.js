@@ -21,7 +21,6 @@ const { height, width } = Dimensions.get('window');
 
 export const Library = ({ cancel, next, data }) => {
   const {
-    imageCount,
     setImageCurrent,
     imageCurrent,
     selected,
@@ -30,7 +29,6 @@ export const Library = ({ cancel, next, data }) => {
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
-  const [totalCount, setTotalCount] = useState(imageCount)
 
   const getSelectedImages = async (images) => {
     const imageUrl = [];
@@ -124,7 +122,7 @@ export const Library = ({ cancel, next, data }) => {
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: totalCount >= 10 ? .5 : 1
+              opacity: coverPhoto.length >= 10 ? .5 : 1
             }}>
             <CameraRollPicker
               groupTypes="All"
