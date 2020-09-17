@@ -68,16 +68,17 @@ export const Library = ({ cancel, next, data }) => {
             </View>
           </TouchableOpacity> */}
           <TouchableOpacity
-            disabled={selected.length < 1 && true}
+            // disabled={selected.length < 1 && true}
             onPress={() => {next()}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
-              color={
-                selected.length < 1
-                  ? Colors.buttonDisable
-                  : Colors.contentOcean
-              }
+              // color={
+              //   selected.length < 1
+              //     ? Colors.buttonDisable
+              //     : Colors.contentOcean
+              // }
+              color={Colors.contentOcean}
             >
               Next
             </AppText>
