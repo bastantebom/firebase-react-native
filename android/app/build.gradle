@@ -135,7 +135,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-        versionCode 2
+        versionCode 3
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
