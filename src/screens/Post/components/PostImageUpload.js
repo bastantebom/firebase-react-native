@@ -142,7 +142,8 @@ export const PostImageUpload = ({ data }) => {
     togglePickerModal();
   };
 
-  const continueCamera = () => {;
+  const continueCamera = () => {
+    setSingleCameraImage(null)
     togglePickerModal();
   };
 
