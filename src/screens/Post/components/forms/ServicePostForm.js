@@ -63,7 +63,7 @@ const ServicePostForm = ({
 
   useEffect(() => {
     if (images) {
-      setCoverPhoto(images);
+      setCameraImage(images);
     }
 
     if (userInfo.address) {
