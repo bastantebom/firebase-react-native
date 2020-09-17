@@ -22,7 +22,7 @@ import { Context } from '@/context';
 
 const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
   const { userInfo, user, setUserInfo } = useContext(UserContext)
-  const { coverPhoto, setNeedsRefresh } = useContext(Context)
+  const { coverPhoto, setNeedsRefresh, setCoverPhoto, setLibImages, setCameraImage, setSingleCameraImage, setSelected } = useContext(Context)
   const [stringAddress, setStringAddress] = useState('');
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -49,6 +49,10 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
   } = formState;
 
   useEffect(() => {
+    if (images) {
+      setCoverPhoto(images)
+    }
+
     if (userInfo.address) {
       const { address } = userInfo
       getStringAddress(address.latitude, address.longitude);
@@ -158,23 +162,19 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
 
     if (initialData.post_id) {
       const res = await PostService.editPost(initialData.post_id, data)
-      togglePostModal()
-      setLoadingSubmit(false)
       navToPost({
         ...res, 
         viewing: false, 
         created: false,
         edited: true
       });
+   
     } else {
       const res = await PostService.createPost(data)
       setUserInfo({
         ...userInfo,
         post_count: userInfo.post_count + 1
       })
-      togglePostModal();
-      setNeedsRefresh(true);
-      setLoadingSubmit(false)
       navToPost({
         ...res, 
         viewing: false, 
@@ -182,6 +182,15 @@ const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData })
         edited: false
       });
     }
+
+    togglePostModal()
+    setLoadingSubmit(false)
+    setNeedsRefresh(true);
+    setCoverPhoto([])
+    setLibImages([])
+    setCameraImage([])
+    setSingleCameraImage([])
+    setSelected([])
   }
 
   return (
