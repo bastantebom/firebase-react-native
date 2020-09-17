@@ -1,203 +1,178 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  StyleSheet, 
-  TouchableOpacity, 
-  View, 
-  Platform, 
-  Dimensions, 
-  Image 
-} from 'react-native';
-import { RNCamera } from 'react-native-camera';
-import { normalize, Colors } from '@/globals';
-import { AppText } from '@/components';
-import {
-  Flash,
-  Flip
-} from '@/assets/images/icons';
+import React, {useState, useRef, useContext} from 'react';
+import {StyleSheet, TouchableOpacity, View, Dimensions} from 'react-native';
+import {RNCamera} from 'react-native-camera';
+import {normalize, Colors} from '@/globals';
+import {AppText} from '@/components';
+import {Flash, Flip} from '@/assets/images/icons';
+import {Context} from '@/context';
 
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const maskRowHeight = Math.round((height - 300) / 20);
 const maskColWidth = (width - 300) / 2;
-
-const DESIRED_RATIO = "1:1";
 
 function OverlayMask() {
   return (
     <View style={styles.maskOutter}>
-      <View style={[{ flex: maskRowHeight  }, styles.maskRow, styles.maskFrame]} />
-      <View style={[{ flex: height / 10 }, styles.maskCenter]}>
-        <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+      <View style={[{flex: maskRowHeight}, styles.maskRow, styles.maskFrame]} />
+      <View style={[{flex: height / 10}, styles.maskCenter]}>
+        <View style={[{width: maskColWidth}, styles.maskFrame]} />
         <View style={styles.maskInner} />
-        <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+        <View style={[{width: maskColWidth}, styles.maskFrame]} />
       </View>
-      <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
+      <View style={[{flex: maskRowHeight}, styles.maskRow, styles.maskFrame]} />
     </View>
-  )
+  );
 }
 
-export const AppCamera = ({ 
-  message, 
-  instruction, 
-  withMask, 
-  captureImage
+export const AppCamera = ({
+  message,
+  instruction,
+  withMask,
+  setCameraCapture,
 }) => {
-  
-  const [cameraRatio, setCameraRatio] = useState('')
-  const [flash, setFlash] = useState('off')
-  const [cameraType, setCameraType] = useState('back')
-  const [imageUrl, setImageUrl] = useState('')
-  const cameraRef = useRef(null)
-  
-  const prepareRatio = async () => {
-    if (Platform.OS === 'android' && cameraRef) {
-      const ratios = await cameraRef.getSupportedRatiosAsync();
-
-      // const ratio = ratios.find((ratio) => ratio === DESIRED_RATIO) || ratios[ratios.length - 1];
-
-      // setCameraRatio(ratio)
-      console.log(ratios)
-    }
-  }
+  const {
+    setCameraImage,
+    cameraImage,
+    setCoverPhoto,
+    coverPhoto,
+    libImages,
+    setImageCount,
+    setSingleCameraImage,
+  } = useContext(Context);
+  const [flash, setFlash] = useState('off');
+  const [cameraType, setCameraType] = useState('back');
+  const cameraRef = useRef(null);
+  const [retakeState, setRetakeState] = useState(false);
 
   const toggleCameraType = () => {
-    if(cameraType === 'front') {
-      setCameraType('back')
+    if (cameraType === 'front') {
+      setCameraType('back');
     } else {
-      setCameraType('front')
-    }
-  }
-
-  const toggleFlash = () => {
-    if(flash === 'off') {
-      setFlash('on')
-    } else if (flash === 'on') {
-      setFlash('torch')
-    } else {
-      setFlash('off')
-    }
-  }
-
-  const takePicture = async () => {
-    if (cameraRef) {
-      const options = { 
-        quality: 1, 
-        pauseAfterCapture: true,
-      };
-
-      const data = await cameraRef.current.takePictureAsync(options);
-
-      cameraRef.current.pausePreview()
-
-      const cameraUrl = data.uri
-
-      setImageUrl(cameraUrl)
-
-      captureImage(cameraUrl)
-
-      // const url = [];
-      // data.uri.forEach(image => url.push(image.uri))
-      
-      // setImageUrl(url);
-
-      // console.log(cameraUrl)
+      setCameraType('front');
     }
   };
 
-  // console.log(imageUrl)
-  
-  const retake = () => {
-    cameraRef.current.resumePreview()
-    setImageUrl('');
-  }
+  const toggleFlash = () => {
+    if (flash === 'off') {
+      setFlash('on');
+    } else if (flash === 'on') {
+      setFlash('torch');
+    } else {
+      setFlash('off');
+    }
+  };
 
-  // useEffect(() => {
-  //   prepareRatio;
-  //   captureImage(imageUrl)
-  // }, [imageUrl]);
+  const takePicture = async () => {
+    if (cameraRef) {
+      const data = await cameraRef.current.takePictureAsync({
+        quality: 1,
+        pauseAfterCapture: true,
+      });
+      cameraRef.current.pausePreview();
+      const cameraUrl = data.uri;
+      setCameraImage((prev) => [...prev, cameraUrl]);
+      setSingleCameraImage(cameraUrl);
+      setCameraCapture(true);
+      setRetakeState(true);
+    }
+  };
+
+  const retake = () => {
+    cameraRef.current.resumePreview();
+
+    const newCameraImage = cameraImage;
+    const index = newCameraImage.length - 1;
+    newCameraImage.splice(index, 1);
+    const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) =>
+      !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a)
+        ? -1
+        : !~coverPhoto.indexOf(a)
+        ? 1
+        : coverPhoto.indexOf(a) - coverPhoto.indexOf(b),
+    );
+    setCoverPhoto([...newCoverPhoto]);
+    setImageCount(newCameraImage.length);
+    setSingleCameraImage(null);
+
+    setCameraCapture(false);
+    setRetakeState(false);
+  };
 
   return (
     <View style={styles.container}>
       <RNCamera
         ref={cameraRef}
-        style={{ 
+        style={{
           flexDirection: 'column',
           alignItems: 'center',
           height: height / 2,
-          overflow: 'hidden'
-         }}
+          overflow: 'hidden',
+        }}
         type={'front'}
         captureAudio={false}
         flashMode={flash}
-        type={cameraType}
-        // ratio={cameraRatio}
-        // onCameraReady={prepareRatio}
-      >
-        { withMask &&  <OverlayMask/> }
-        <View style={{ justifyContent: 'space-between', width: '100%', flexDirection: 'row',  position: 'absolute', bottom: 25, paddingHorizontal: 25}}>
-          <TouchableOpacity
-            onPress={() => toggleCameraType()}
-          >
-            <Flip width={normalize(25)} height={normalize(25)}/>
+        type={cameraType}>
+        {withMask && <OverlayMask />}
+        <View
+          style={{
+            justifyContent: 'space-between',
+            width: '100%',
+            flexDirection: 'row',
+            position: 'absolute',
+            bottom: 25,
+            paddingHorizontal: 25,
+          }}>
+          <TouchableOpacity onPress={() => toggleCameraType()}>
+            <Flip width={normalize(25)} height={normalize(25)} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => toggleFlash()}
-          >
+          <TouchableOpacity onPress={() => toggleFlash()}>
             <Flash width={normalize(25)} height={normalize(25)} />
           </TouchableOpacity>
         </View>
       </RNCamera>
-      <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingVertical: 25 }}>
-        <View style={{ width: width }}>
-        <AppText 
-          textStyle="body1" 
-          customStyle={{ display: message && 'none' }}
-        >
-          {message}
-        </AppText>
-        <AppText 
-          textStyle="body2" 
-          color={Colors.contentPlaceholder}
-          customStyle={{ display: instruction && 'none' }}
-        >
-          {instruction}
-        </AppText>
+      <View
+        style={{
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingVertical: 25,
+        }}>
+        <View style={{width: width}}>
+          <AppText textStyle="body1" customStyle={{display: message && 'none'}}>
+            {message}
+          </AppText>
+          <AppText
+            textStyle="body2"
+            color={Colors.contentPlaceholder}
+            customStyle={{display: instruction && 'none'}}>
+            {instruction}
+          </AppText>
         </View>
-        <TouchableOpacity onPress={() => takePicture()} 
-          style={styles.capture}
-        >
-          <View style={styles.captureButton} />
-        </TouchableOpacity>
-        { imageUrl !== '' ?
+        {retakeState ? (
           <TouchableOpacity onPress={retake}>
-            <AppText textStyle="body1" customStyle={{ marginTop: 20 }}>Retake</AppText>
-          </TouchableOpacity> : null
-        }
+            <AppText textStyle="body1" customStyle={{marginTop: 20}}>
+              Retake
+            </AppText>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => takePicture()}
+            style={styles.capture}>
+            <View style={styles.captureButton} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: 500
-    // flexDirection: 'column',
-    // backgroundColor: 'pink',
   },
   preview: {
     flex: 1,
-    // opacity: .5,
-    // position: 'relative',
-    // zIndex: -2
-    // height: height/5,
-    // paddingTop: 150
-    // justifyContent: 'flex-end',
-    // alignItems: 'center',
   },
   capture: {
-    // position: 'relative',
-    // zIndex: 2,
-    // flex: 0,
     backgroundColor: Colors.primaryYellow,
     borderRadius: 50,
     width: normalize(75),
@@ -229,20 +204,15 @@ const styles = StyleSheet.create({
   maskInner: {
     width: width - 20,
     backgroundColor: 'transparent',
-    // borderColor: 'white',
     borderRadius: 16,
     borderColor: Colors.yellow2,
-    borderWidth: 4
-    // borderBottomColor: 'white',
+    borderWidth: 4,
   },
   maskFrame: {
-    // backgroundColor: 'rgba(0,0,0,4);',
     backgroundColor: 'rgba(0,0,0,.5)',
   },
   maskRow: {
     width: '100%',
   },
-  maskCenter: { flexDirection: 'row' },
+  maskCenter: {flexDirection: 'row'},
 });
-
-

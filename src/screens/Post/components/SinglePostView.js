@@ -66,6 +66,8 @@ const SinglePostView = (props) => {
     phone_number,
   } = props.route?.params?.data;
 
+  // console.log("Images in single post view")
+
   // console.log(images);
 
   const navigation = useNavigation();
@@ -469,7 +471,11 @@ const SinglePostView = (props) => {
 };
 
 const cardMap = (card) => {
-  return card === 'service' ? 'need' : card === 'Need' ? 'post' : 'sell';
+  return card === 'service'
+    ? 'need'
+    : card === 'Need' || card === 'need'
+    ? 'post'
+    : 'sell';
 };
 
 const styles = StyleSheet.create({

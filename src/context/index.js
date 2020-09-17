@@ -22,16 +22,36 @@ export const ContextProvider = ({children}) => {
 
   const [locationFilter, setLocationFilter] = useState(null);
 
-  const [postImage, setPostImage] = useState([]);
-  const [coverPhoto, setCoverPhoto] = useState([]);
-  const [imageCount, setImageCount] = useState(0);
   const [imageCurrent, setImageCurrent] = useState('');
-  const [selected, setSelected] = useState([]);
   const [postCameraImage, setPostCameraImage] = useState([]);
-
   const [isInternetReachable, setIsInternetReachable] = useState(false);
-
   const [needsRefresh, setNeedsRefresh] = useState(true);
+
+  // Post Images states
+  const [imageCount, setImageCount] = useState(0);
+  const [selected, setSelected] = useState([]);
+
+  const [coverPhoto, setCoverPhoto] = useState([]);
+  const [singleCameraImage, setSingleCameraImage] = useState(null);
+  const [cameraImage, setCameraImage] = useState([]);
+  const [libImages, setLibImages] = useState([]);
+
+  useEffect(() => {
+    setImageCount(coverPhoto.length);
+  }, [coverPhoto]);
+
+  // Set post coverphoto
+  useEffect(() => {
+    const newCoverPhoto = [...cameraImage, ...libImages].sort((a, b) =>
+      !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a)
+        ? -1
+        : !~coverPhoto.indexOf(a)
+        ? 1
+        : coverPhoto.indexOf(a) - coverPhoto.indexOf(b),
+    );
+    setCoverPhoto([...newCoverPhoto]);
+    setImageCount(newCoverPhoto.length);
+  }, [libImages, cameraImage]);
 
   const closeSlider = () => {
     setSliderState('close');
@@ -101,8 +121,6 @@ export const ContextProvider = ({children}) => {
         fetchPosts,
         deleteNotif,
         setDeleteNotif,
-        postImage,
-        setPostImage,
         imageCount,
         setImageCount,
         imageCurrent,
@@ -121,7 +139,13 @@ export const ContextProvider = ({children}) => {
         selected,
         setSelected,
         postCameraImage,
-        setPostCameraImage
+        setPostCameraImage,
+        setCameraImage,
+        cameraImage,
+        libImages,
+        setLibImages,
+        setSingleCameraImage,
+        singleCameraImage,
       }}>
       {children}
     </Context.Provider>

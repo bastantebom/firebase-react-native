@@ -1,56 +1,46 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
   Dimensions,
   ActivityIndicator,
   TextInput,
-  Keyboard,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Switch} from 'react-native-switch';
-import Textarea from 'react-native-textarea';
+import Geocoder from 'react-native-geocoding';
 import storage from '@react-native-firebase/storage';
 
-import {AppText, AppInput, TransitionIndicator, AppButton} from '@/components';
-import {normalize, Colors} from '@/globals';
-import {PostService} from '@/services';
-import {UserContext} from '@/context/UserContext';
-import {PostImageUpload} from '../PostImageUpload';
-import {Context} from '@/context';
-
-/*Map Essentials*/
-import {ArrowRight} from '@/assets/images/icons';
-import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
-/*Map Essentials*/
-const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
-  const {user, userInfo, setUserInfo} = useContext(UserContext);
+import {PostService} from '@/services';
+import {PostImageUpload} from '../PostImageUpload';
+import {AppText, AppInput, TransitionIndicator} from '@/components';
+import {normalize, Colors} from '@/globals';
+import {ArrowRight} from '@/assets/images/icons';
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
+
+const ServicePostForm = ({
+  navToPost,
+  togglePostModal,
+  formState,
+  initialData,
+}) => {
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
   const {
-    postImage,
-    setPostImage,
-    setImageCount,
-    setImageCurrent,
-    setNeedsRefresh,
     coverPhoto,
+    setNeedsRefresh,
     setCoverPhoto,
-    setPostCameraImage,
+    setLibImages,
+    setCameraImage,
+    setSingleCameraImage,
     setSelected,
+    setImageCurrent
   } = useContext(Context);
-
+  const [stringAddress, setStringAddress] = useState('');
   const [buttonEnabled, setButtonEnabled] = useState(false);
-  //const [postImages, setPostImages] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-
-  // console.log('post images', postImages);
-
-  /*MAP Essentials */
   const [map, setMap] = useState(false);
-  const {address} = userInfo;
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
@@ -58,16 +48,38 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     longitude: 0,
     latitude: 0,
   });
-  const [showLocation, setShowLocation] = useState(false);
-  const [stringAddress, setStringAddress] = useState('');
+  const {
+    title,
+    setTitle,
+    images,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    paymentMethod,
+    setPaymentMethod,
+    pickupState,
+    deliveryState,
+  } = formState;
 
   useEffect(() => {
-    // Notification for Verifying the profile
-    // openNotification();
-    if (address) {
+    if (images) {
+      setCameraImage(images);
+    }
+
+    if (userInfo.address) {
+      const {address} = userInfo;
       getStringAddress(address.latitude, address.longitude);
     }
-  }, [address]);
+  }, []);
+
+  const toggleMap = () => {
+    setMap(!map);
+  };
+
+  const prepareAddressUpdate = (fullAddress, addStr) => {
+    getStringAddress(fullAddress.latitude, fullAddress.longitude, addStr);
+  };
 
   const getStringAddress = (lat, lng, addStr) => {
     Geocoder.init(Config.apiKey);
@@ -92,9 +104,6 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             : json.results.length < 8
             ? 2
             : 2;
-        /*setCityName(
-          json.results[arrayToExtract].address_components[0].long_name,
-        );*/
         const splitAddress = json.results[
           arrayToExtract
         ].formatted_address.split(',');
@@ -108,45 +117,9 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             province: splitAddress[1],
             country: splitAddress[2],
           },
-          //setChangeMapAddress(addressComponent);
         });
       })
       .catch((error) => console.warn(error));
-  };
-
-  const prepareAddressUpdate = (fullAddress, addStr) => {
-    getStringAddress(fullAddress.latitude, fullAddress.longitude, addStr);
-  };
-
-  const toggleMap = () => {
-    setMap(!map);
-  };
-  /*MAP Essentials */
-
-  const {
-    title,
-    setTitle,
-    images,
-    price,
-    setPrice,
-    description,
-    setDescription,
-    pickupState,
-    setPickupState,
-    deliveryState,
-    setDeliveryState,
-    storeLocation,
-    setStoreLocation,
-    paymentMethod,
-    setPaymentMethod,
-  } = formState;
-
-  const clearForm = () => {
-    setTitle('');
-    setPrice('');
-    setDescription('');
-    setStoreLocation('');
-    setPaymentMethod('');
   };
 
   const checkFormContent = () => {
@@ -156,77 +129,45 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   useEffect(() => {
-    // if (images !== undefined) {
-    //   setPostImage(images)
-    // }
     checkFormContent();
-  }, [title, price, storeLocation, paymentMethod, description]);
-
-  // const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
-
-  // const uploadImageHandler = async (image) => {
-  //   console.log('I got the image Need');
-  //   console.log(image);
-
-  //   if (image) {
-  //     if (!filteredImage.includes(image)) {
-  //       const newFilename =
-  //         Platform.OS === 'ios'
-  //           ? image.substring(0, image.lastIndexOf('.'))
-  //           : image.substring(image.lastIndexOf('/') + 1);
-  //       const uploadUri =
-  //         Platform.OS === 'ios' ? image.replace('file://', '') : image;
-
-  //       const task = storage().ref();
-  //       const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-  //       await fileRef.putFile(uploadUri);
-  //       const downloadURL = await fileRef.getDownloadURL();
-
-  //       return Promise.resolve(downloadURL);
-  //     } else {
-  //       return Promise.resolve(image);
-  //     }
-  //   } else {
-  //     return Promise.reject('Failed to upload');
-  //   }
-  // };
+  }, [title, price, paymentMethod, description]);
 
   const uploadImageHandler = async (image) => {
     try {
       if (image.includes('firebasestorage.googleapis.com')) return image;
 
+      console.log('IMAGE');
+      console.log(image);
+
       const newFilename =
         Platform.OS === 'ios'
-          ? image.substring(0, image.lastIndexOf('.'))
+          ? image
           : image.substring(image.lastIndexOf('/') + 1);
+
       const uploadUri =
         Platform.OS === 'ios' ? image.replace('file://', '') : image;
 
+      // console.log('new file name');
+      // console.log(newFilename);
+
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      console.log('uploadUri ' + uploadUri);
       await fileRef.putFile(uploadUri);
       const downloadURL = await fileRef.getDownloadURL();
-
-      // return Promise.resolve(downloadURL)
+      console.log('downloadURL ' + downloadURL);
       return downloadURL;
     } catch (err) {
       console.log(err);
-      // return Promise.reject("Failed to upload")
     }
   };
 
-  const navigateToPost = async () => {
+  const publish = async () => {
     setLoadingSubmit(true);
-    setPostImage([]);
-    setCoverPhoto([]);
-    setPostCameraImage([]);
-    setSelected([]);
-    setImageCount(0);
-    setImageCurrent('');
-    let type = 'Need';
-    let data = {
+
+    const data = {
       uid: user.uid,
-      post_type: type,
+      post_type: 'Need',
       images: await Promise.all(
         coverPhoto.map(async (image) => await uploadImageHandler(image)),
       ),
@@ -242,63 +183,42 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     };
 
     if (initialData.post_id) {
-      PostService.editPost(initialData.post_id, data).then((res) => {
-        togglePostModal();
-        navToPost({...res, viewing: false, created: false, edited: true});
-        setLoadingSubmit(false);
+      const res = await PostService.editPost(initialData.post_id, data);
+      clearContextState();
+      navToPost({
+        ...res,
+        viewing: false,
+        created: false,
+        edited: true,
       });
     } else {
-      PostService.createPost(data).then((res) => {
-        setLoadingSubmit(false);
-        setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
-        togglePostModal();
-        setNeedsRefresh(true);
-        setTimeout(() => {
-          navToPost({...res, viewing: false, created: true, edited: false});
-        }, 500);
+      const res = await PostService.createPost(data);
+      setUserInfo({
+        ...userInfo,
+        post_count: userInfo.post_count + 1,
+      });
+      clearContextState();
+      navToPost({
+        ...res,
+        viewing: false,
+        created: true,
+        edited: false,
       });
     }
-
-    // Upload images
-    // const uploadAllImage = () =>
-    //   Promise.all(
-    //     coverPhoto.map((image) => {
-    //       return uploadImageHandler(image)
-    //         .then((res) => {
-    //           console.log('res', res);
-    //           return res;
-    //         })
-    //         .catch((err) => {
-    //           console.log(err);
-    //           return err;
-    //         });
-    //     }),
-    //   );
-
-    // await uploadAllImage().then((response) => {
-    //   data.images = response;
-    // });
-
-    // if (initialData.post_id) {
-    //   return await PostService.editPost(initialData.post_id, data).then(
-    //     (res) => {
-    //       togglePostModal();
-    //       navToPost({...res, viewing: false, created: false, edited: true});
-    //       setLoadingSubmit(false);
-    //     },
-    //   );
-    // }
-
-    // return await PostService.createPost(data).then((res) => {
-    //   togglePostModal();
-    //   setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
-    //   navToPost({...res, viewing: false, created: true, edited: false});
-    //   setLoadingSubmit(false);
-    //   setNeedsRefresh(true);
-    // });
   };
 
-  
+  const clearContextState = () => {
+    togglePostModal();
+    setLoadingSubmit(false);
+    setNeedsRefresh(true);
+    setCoverPhoto([]);
+    setLibImages([]);
+    setCameraImage([]);
+    setSingleCameraImage(null);
+    setSelected([]);
+    setImageCurrent('')
+
+  };
 
   return (
     <View
@@ -310,9 +230,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         borderBottomRightRadius: 4,
         paddingBottom: 48,
       }}>
-      <PostImageUpload
-        data={images === 0 || images === undefined ? null : images}
-      />
+      <PostImageUpload />
 
       <AppInput
         customStyle={{marginBottom: 16}}
@@ -327,15 +245,6 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         value={price}
         onChangeText={(text) => setPrice(text)}
       />
-
-      {/* <AppInput
-        // wont work because of fixed height
-        customStyle={{marginBottom: 16, height: undefined}}
-        label="Description"
-        multiline="true"
-        numberOfLines={5}
-      /> */}
-
       <TextInput
         value={description}
         multiline={true}
@@ -390,7 +299,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       />
 
       <TouchableOpacity
-        onPress={navigateToPost}
+        onPress={publish}
         activeOpacity={0.7}
         disabled={buttonEnabled || loadingSubmit}
         style={{
@@ -408,7 +317,7 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           </AppText>
         )}
       </TouchableOpacity>
-      
+
       <Modal
         isVisible={map}
         animationIn="slideInRight"
@@ -434,4 +343,4 @@ const NeedPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   );
 };
 
-export default NeedPostForm;
+export default ServicePostForm;

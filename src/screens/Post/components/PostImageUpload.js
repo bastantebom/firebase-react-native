@@ -27,8 +27,8 @@ import {Library} from './Library';
 
 const {height, width} = Dimensions.get('window');
 
-export const PostImageUpload = ({ data }) => {
-  const currentData = data
+export const PostImageUpload = ({data}) => {
+  const currentData = data;
   const {
     postImage,
     setImageCount,
@@ -37,12 +37,19 @@ export const PostImageUpload = ({ data }) => {
     setCoverPhoto,
     setSelected,
     selected,
-    postCameraImage
+    postCameraImage,
+    setRecentImages,
+    libImages,
+    setLibImages,
+    cameraImage,
+    setCameraImage,
+    singleCameraImage,
+    setSingleCameraImage,
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
-  // const [count, setCount] = useState(0);
-  const [cameraImage, setCameraImage] = useState([]);
+  // // const [count, setCount] = useState(0);
+  // const [cameraImage, setCameraImage] = useState([]);
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -99,63 +106,50 @@ export const PostImageUpload = ({ data }) => {
     setShowPickerModal(!showPickerModal);
   };
 
+  // Remove image on x icon
   const handleRemove = async (image) => {
-    // remove selected image in library
-    const newSelected = selected.filter(item => item.uri !== image)
-    setSelected(newSelected)
+    const newCoverPhoto = coverPhoto.filter((item) => item !== image);
+    setCoverPhoto(newCoverPhoto);
 
-    // remove select image in post image upload
-    const currentCoverPhoto = coverPhoto
-    const index = currentCoverPhoto.indexOf(image)
-    currentCoverPhoto.splice(index, 1)
-    
-    const indexData = currentData.indexOf(image)
-    currentData.splice(indexData, 1)
-    setCoverPhoto([...currentCoverPhoto])
+    const newSelected = selected.filter((item) => item.uri !== image);
+    setSelected(newSelected);
 
-    setImageCount(imageCount - 1);
-    // setCount(imageCount - 1);
-  
-    // const imageToRemove = image;
-    // const newImageList = coverPhoto.filter((image) => image !== imageToRemove);
-    // setCoverPhoto(newImageList);
-    // console.log('imageToRemove', imageToRemove)
+    const newLibImage = libImages.filter((item) => item !== image);
+    setLibImages(newLibImage);
+
+    const newCameraImage = cameraImage.filter((item) => item !== image);
+    setCameraImage(newCameraImage);
   };
 
-  // handleRemove.then((res) => {
-  //   setCount(res - 1);
-  // })
-
   const cancelUploadPhoto = () => {
-    // setPostImage([...postImage])
-    // setPhotoCount(photoCount);
     togglePickerModal();
   };
 
-  const continueUploadPhoto = (sum) => {
-    setImageCount(sum)
-    // setCount(sum)
-    // setCoverPhoto(data, [...postImage]);
-    // setPostImage(postImage);
-    // setImageCount(imageCount);
-    // setCoverPhoto([...coverPhoto, ...postImage]);
+  const continueUploadPhoto = () => {
     togglePickerModal();
   };
 
   const cancelCamera = () => {
+    if (singleCameraImage !== null) {
+      const newCameraImage = cameraImage;
+      const index = newCameraImage.length - 1;
+      newCameraImage.splice(index, 1);
+      const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) =>
+        !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a)
+          ? -1
+          : !~coverPhoto.indexOf(a)
+          ? 1
+          : coverPhoto.indexOf(a) - coverPhoto.indexOf(b),
+      );
+      setCoverPhoto([...newCoverPhoto]);
+      setImageCount(newCameraImage.length);
+      setSingleCameraImage(null);
+    }
     togglePickerModal();
   };
 
-  // console.log('cameraImage', cameraImage)
-  const continueCamera = (photoCount) => {
-    // console.log(selected)
-    // const cameraImages = [];
-    // selected.push(cameraImages)
-
-    // console.log(cameraImages)
-    // setCoverPhoto([...currentData, ...postCameraImage]);
-    // setCameraImage(selected)
-    setImageCount(imageCount + photoCount);
+  const continueCamera = () => {
+    setSingleCameraImage(null);
     togglePickerModal();
   };
 
@@ -169,43 +163,10 @@ export const PostImageUpload = ({ data }) => {
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library
-          cancel={cancelUploadPhoto}
-          next={continueUploadPhoto}
-          // data={data === null ? null : data}
-          // count={count}
-        />
+        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} />
       ),
     },
   ];
-
-  // console.log(postImage, 'postImage - postImageUpload')
-  // console.log(data, 'data - postImageUpload')
-  console.log(coverPhoto, 'coverPhoto - postImageUpload')
-  // console.log(imageCount, 'imageCount - postImageUpload')
-  // console.log(count, 'count - postImageUpload')
-  // console.log(postCameraImage, 'postCameraImage - postImageUpload')
-
-  useEffect(() => {
-    if (data === null || data === undefined) {
-      return console.log(data, 'data on post image');
-    } else {
-      setImageCount(data.length);
-      // setCount(data.length)
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (data === null || data === undefined) {
-      setCoverPhoto(postImage)
-    } else {
-      setCoverPhoto([...currentData, ...postImage])
-      if (postCameraImage.length !== 0) {
-        setCoverPhoto([...coverPhoto, ...postCameraImage]);
-      }
-      // setCoverPhoto([...currentData], postCameraImage);
-    }
-  }, [postImage, postCameraImage])
 
   return (
     <>
@@ -261,8 +222,7 @@ export const PostImageUpload = ({ data }) => {
                         borderRadius: 50,
                       }}
                     />
-                    <View
-                      style={{left: normalize(3.75), top: normalize(3.5)}}>
+                    <View style={{left: normalize(3.75), top: normalize(3.5)}}>
                       <CloseLight
                         width={normalize(20)}
                         height={normalize(20)}
@@ -270,7 +230,7 @@ export const PostImageUpload = ({ data }) => {
                     </View>
                   </TouchableOpacity>
                   <Image
-                    source={{ uri: image }}
+                    source={{uri: image}}
                     style={{
                       width:
                         imageCount === 1
@@ -350,14 +310,3 @@ export const PostImageUpload = ({ data }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // width: width,
-    height: '100%',
-    // paddingTop: 25,
-    // backgroundColor: '#F6AE2D',
-    zIndex: -2,
-  },
-});

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -10,81 +10,34 @@ import {
 import CameraRollPicker from 'react-native-camera-roll-picker';
 import Modal from 'react-native-modal';
 
-import {AppText, CacheableImage} from '@/components';
-import {Context} from '@/context';
-import {normalize, Colors} from '@/globals';
-import {ArrowDown} from '@/assets/images/icons';
-import {PhotoAlbums} from './PhotoAlbums';
+import { AppText } from '@/components';
+import { Context } from '@/context';
+import { normalize, Colors } from '@/globals';
+// import { ArrowDown } from '@/assets/images/icons';
+import { PhotoAlbums } from './PhotoAlbums';
+import { CoverPhoto } from '@/assets/images';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
-export const Library = ({cancel, next, data}) => {
-
+export const Library = ({ cancel, next, data }) => {
   const {
-    setPostImage,
-    postImage,
-    setImageCount,
-    imageCount,
     setImageCurrent,
     imageCurrent,
     selected,
-    setSelected
+    setLibImages,
+    coverPhoto
   } = useContext(Context);
 
   const [showFolderList, setShowFolderList] = useState(false);
-  const [countSelect, setCountSelect] = useState(0);
-  const [count, setCount] = useState([]);
-
-  const checkIndex = (arr) => {
-    const index = count.indexOf(arr);
-    return index;
-  };
 
   const getSelectedImages = async (images) => {
-    var num = images.length;
-    setImageCurrent(num > 0 ? images[num - 1].uri : '');
-
-    setSelected(images);
-
-    setCountSelect(num)
-    
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
-    
-    setPostImage(imageUrl);
+    setLibImages(imageUrl)
 
-    const currentCount = count;
-    const index = checkIndex(imageUrl);
-    if (index === -1) {
-      if (sum < 10) {
-        currentCount.push(imageUrl);
-        setCount(currentCount);
-      }
-    }
+    const num = imageUrl.length - 1
+    setImageCurrent(num >= 0 ? images[num].uri : "");
   };
-
-  // console.log(count, 'count')
-
-  const sum = imageCount + count.length
-
-  // console.log(sum, 'sum')
-  // console.log(num, 'num outside')
-
-  // console.log('countSelect number of items/images selected on lib', countSelect)
-  // console.log('count (data.length from postimageupload)', count)
-  // console.log('imageCount', imageCount)
-
-  useEffect(() => {
-    if (data === null) {
-      return console.log('no data');
-    } 
-    if (data !== null) {
-      console.log('with data')
-    }
-  }, [data, countSelect])
-
-  useEffect(() => {
-  }, [imageCount])
   
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
@@ -115,16 +68,18 @@ export const Library = ({cancel, next, data}) => {
             </View>
           </TouchableOpacity> */}
           <TouchableOpacity
-            disabled={postImage.length < 1 && true}
-            onPress={() => {next(countSelect === 0 ? imageCount : sum)}}
+            // disabled={selected.length < 1 && true}
+            onPress={() => {next()}}
             style={{paddingVertical: 5, paddingHorizontal: 25}}>
             <AppText
               textStyle="body3"
-              color={
-                postImage.length < 1
-                  ? Colors.buttonDisable
-                  : Colors.contentOcean
-              }>
+              // color={
+              //   selected.length < 1
+              //     ? Colors.buttonDisable
+              //     : Colors.contentOcean
+              // }
+              color={Colors.contentOcean}
+            >
               Next
             </AppText>
           </TouchableOpacity>
@@ -146,7 +101,7 @@ export const Library = ({cancel, next, data}) => {
               <AppText
                 customStyle={{fontWeight: '700'}}
                 color={Colors.neutralsWhite}>
-                Photos - {countSelect === 0 ? imageCount : sum}/10{' '}
+                Photos - {coverPhoto.length}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
@@ -168,11 +123,11 @@ export const Library = ({cancel, next, data}) => {
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: sum >= 10 ? .5 : 1
+              opacity: coverPhoto.length >= 10 ? .5 : 1
             }}>
             <CameraRollPicker
               groupTypes="All"
-              maximum={sum >= 10 ? countSelect : 10}
+              maximum={coverPhoto.length >= 10 ? selected.length : 10}
               scrollRenderAheadDistance={500}
               selected={selected}
               imagesPerRow={3}

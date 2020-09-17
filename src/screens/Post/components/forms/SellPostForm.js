@@ -25,7 +25,7 @@ import {
   Switch,
   AppButton,
   CacheableImage,
-  TransitionIndicator
+  TransitionIndicator,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService} from '@/services';
@@ -35,14 +35,14 @@ import {PostImageUpload} from '../PostImageUpload';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
-    setPostImage,
-    setImageCount,
-    setImageCurrent,
-    setNeedsRefresh,
     coverPhoto,
+    setNeedsRefresh,
     setCoverPhoto,
+    setLibImages,
+    setCameraImage,
+    setSingleCameraImage,
     setSelected,
-    setPostCameraImage,
+    setImageCurrent,
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
@@ -61,9 +61,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [stringAddress, setStringAddress] = useState('');
 
   useEffect(() => {
-    // Notification for Verifying the profile
-    // openNotification();
-    if (address) {
+    if (images) {
+      setCameraImage(images);
+    }
+
+    if (userInfo.address) {
+      const {address} = userInfo;
       getStringAddress(address.latitude, address.longitude);
     }
   }, [address]);
@@ -212,7 +215,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
       const newFilename =
         Platform.OS === 'ios'
-          ? image.substring(0, image.lastIndexOf('.'))
+          ? image
           : image.substring(image.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? image.replace('file://', '') : image;
@@ -230,19 +233,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     }
   };
 
-  const navigateToPost = async () => {
-    //console.log(postImage);
+  const publish = async () => {
     setLoadingSubmit(true);
-    setCoverPhoto([]);
-    setPostCameraImage([]);
-    setSelected([]);
-    setPostImage([]);
-    setImageCount(0);
-    setImageCurrent('');
-    let type = 'Sell';
-    let data = {
+
+    const data = {
       uid: user.uid,
-      post_type: type,
+      post_type: 'sell',
       images: await Promise.all(
         coverPhoto.map(async (image) => await uploadImageHandler(image)),
       ),
@@ -258,22 +254,36 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     };
 
     if (initialData.post_id) {
-      PostService.editPost(initialData.post_id, data).then((res) => {
-        togglePostModal();
-        navToPost({...res, viewing: false, created: false, edited: true});
-        setLoadingSubmit(false);
+      const res = await PostService.editPost(initialData.post_id, data);
+      navToPost({
+        ...res,
+        viewing: false,
+        created: false,
+        edited: true,
       });
     } else {
-      PostService.createPost(data).then((res) => {
-        setLoadingSubmit(false);
-        setUserInfo({...userInfo, post_count: userInfo.post_count + 1});
-        togglePostModal();
-        setNeedsRefresh(true);
-        setTimeout(() => {
-          navToPost({...res, viewing: false, created: true, edited: false});
-        }, 500);
+      const res = await PostService.createPost(data);
+      setUserInfo({
+        ...userInfo,
+        post_count: userInfo.post_count + 1,
+      });
+      navToPost({
+        ...res,
+        viewing: false,
+        created: true,
+        edited: false,
       });
     }
+
+    togglePostModal();
+    setLoadingSubmit(false);
+    setNeedsRefresh(true);
+    setCoverPhoto([]);
+    setLibImages([]);
+    setCameraImage([]);
+    setSingleCameraImage([]);
+    setSelected([]);
+    setImageCurrent('');
   };
 
   return (
@@ -287,9 +297,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <PostImageUpload
-          data={images === 0 || images === undefined ? null : images}
-        />
+        <PostImageUpload />
 
         <AppInput
           customStyle={{marginBottom: 16}}
@@ -413,7 +421,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         />
 
         <TouchableOpacity
-          onPress={navigateToPost}
+          onPress={publish}
           activeOpacity={0.7}
           disabled={buttonEnabled || loadingSubmit}
           style={{
