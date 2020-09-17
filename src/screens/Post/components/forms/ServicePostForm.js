@@ -7,18 +7,22 @@ import {
   TextInput,
 } from 'react-native';
 import Geocoder from 'react-native-geocoding';
+import storage from '@react-native-firebase/storage';
 
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
+import { PostService } from '@/services';
 import { PostImageUpload } from '../PostImageUpload';
 import { AppText, AppInput, TransitionIndicator } from '@/components';
 import { normalize, Colors } from '@/globals';
 import { ArrowRight } from '@/assets/images/icons';
 import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context';
 
-const ServicePostForm = ({ formState, initialData }) => {
-  const { userInfo } = useContext(UserContext)
+const ServicePostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const { coverPhoto, setNeedsRefresh } = useContext(Context)
   const [stringAddress, setStringAddress] = useState('');
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -40,6 +44,8 @@ const ServicePostForm = ({ formState, initialData }) => {
     setDescription,
     paymentMethod,
     setPaymentMethod,
+    pickupState,
+    deliveryState
   } = formState;
 
   useEffect(() => {
@@ -107,6 +113,76 @@ const ServicePostForm = ({ formState, initialData }) => {
   useEffect(() => {
     checkFormContent();
   }, [title, price, paymentMethod, description]);
+
+  const uploadImageHandler = async (image) => {
+    try {
+      if (image.includes('firebasestorage.googleapis.com')) return image;
+
+      const newFilename =
+        Platform.OS === 'ios'
+          ? image.substring(0, image.lastIndexOf('.'))
+          : image.substring(image.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? image.replace('file://', '') : image;
+
+      const task = storage().ref();
+      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
+      await fileRef.putFile(uploadUri);
+      const downloadURL = await fileRef.getDownloadURL();
+
+      return downloadURL;
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  const publish = async () => {
+    setLoadingSubmit(true);
+
+    const data = {
+      uid: user.uid,
+      post_type: "service",
+      images: await Promise.all(
+        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+      ),
+      title: title,
+      price: price,
+      description: description,
+      payment_method: paymentMethod,
+      store_location: addressComponents,
+      delivery_method: {
+        pickup: pickupState,
+        delivery: deliveryState,
+      },
+    };  
+
+    if (initialData.post_id) {
+      const res = await PostService.editPost(initialData.post_id, data)
+      togglePostModal()
+      setLoadingSubmit(false)
+      navToPost({
+        ...res, 
+        viewing: false, 
+        created: false,
+        edited: true
+      });
+    } else {
+      const res = await PostService.createPost(data)
+      setUserInfo({
+        ...userInfo,
+        post_count: userInfo.post_count + 1
+      })
+      togglePostModal();
+      setNeedsRefresh(true);
+      setLoadingSubmit(false)
+      navToPost({
+        ...res, 
+        viewing: false, 
+        created: true, 
+        edited: false
+      });
+    }
+  }
 
   return (
     <View
@@ -188,9 +264,9 @@ const ServicePostForm = ({ formState, initialData }) => {
       />
 
       <TouchableOpacity
-        // onPress={navigateToPost}
+        onPress={publish}
         activeOpacity={0.7}
-        // disabled={buttonEnabled || loadingSubmit}
+        disabled={buttonEnabled || loadingSubmit}
         style={{
           backgroundColor: buttonEnabled
             ? Colors.neutralsGainsboro
