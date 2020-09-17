@@ -39,6 +39,9 @@ export const PostImageUpload = ({ data }) => {
     selected,
     postCameraImage,
     setRecentImages,
+    libImages,
+    setLibImages,
+    cameraImage,
     setCameraImage
   } = useContext(Context);
 
@@ -101,32 +104,17 @@ export const PostImageUpload = ({ data }) => {
     setShowPickerModal(!showPickerModal);
   };
 
+  // Remove image on x icon
   const handleRemove = async (image) => {
     const newCoverPhoto = coverPhoto.filter(item => item !== image)
     setCoverPhoto(newCoverPhoto)
-    
-    // // remove selected image in library
-    // const newSelected = selected.filter(item => item.uri !== image)
-    // setSelected(newSelected)
 
-    // // remove select image in post image upload
-    // const currentCoverPhoto = coverPhoto
-    // const index = currentCoverPhoto.indexOf(image)
-    // currentCoverPhoto.splice(index, 1)
-    
-    // const indexData = currentData.indexOf(image)
-    // currentData.splice(indexData, 1)
-    // setCoverPhoto([...currentCoverPhoto])
+    const newSelected = selected.filter(item => item.uri !== image)
+    setSelected(newSelected)
 
-    // setImageCount(imageCount - 1);
-    // setCount(imageCount - 1);
-  
-    // const imageToRemove = image;
-    // const newImageList = coverPhoto.filter((image) => image !== imageToRemove);
-    // setCoverPhoto(newImageList);
-    // console.log('imageToRemove', imageToRemove)
+    const newLibImage = libImages.filter(item => item !== image)
+    setLibImages(newLibImage)
   };
-
 
   const cancelUploadPhoto = () => {
     // setPostImage([...postImage])
@@ -143,13 +131,16 @@ export const PostImageUpload = ({ data }) => {
   };
 
   const cancelCamera = () => {
-    const newCoverPhoto = coverPhoto
-    const index = newCoverPhoto.length - 1
-    newCoverPhoto.splice(index, 1)
-    setCameraImage(newCoverPhoto)
-    setImageCount(newCoverPhoto.length)
+    const newCameraImage = cameraImage
+    const index = newCameraImage.length - 1
+    newCameraImage.splice(index, 1)
+    const newCoverPhoto = [...newCameraImage, ...libImages].sort((a, b) => !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a) ? -1 : !~coverPhoto.indexOf(a) ? 1 : coverPhoto.indexOf(a) - coverPhoto.indexOf(b))
+    setCoverPhoto([...newCoverPhoto])
+    setImageCount(newCameraImage.length)
     togglePickerModal();
   };
+
+  console.log(cameraImage)
 
   // // console.log('cameraImage', cameraImage)
   const continueCamera = (photoCount) => {

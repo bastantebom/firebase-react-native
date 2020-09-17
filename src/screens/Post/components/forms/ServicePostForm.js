@@ -462,6 +462,13 @@ const ServicePostForm = ({ formState, initialData }) => {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [map, setMap] = useState(false);
+  const [addressComponents, setAddressComponents] = useState({
+    city: '',
+    province: '',
+    country: '',
+    longitude: 0,
+    latitude: 0,
+  });
   const {
     title,
     setTitle,

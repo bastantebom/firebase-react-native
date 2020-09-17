@@ -35,7 +35,7 @@ export const Library = ({ cancel, next, data }) => {
     const imageUrl = [];
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
     setLibImages(imageUrl)
-    setImageCurrent(num > 0 ? images[num - 1].uri : '');
+    // setImageCurrent(num > 0 ? images[num - 1].uri : '');
   };
   
   const toggleFolderList = () => {
