@@ -41,15 +41,15 @@ export const UserContextProvider = ({children}) => {
 
   const fetch = () => {
     // console.log("Fetchfetch")
-
-    ProfileInfoService.getUser(user.uid)
-      .then((response) => {
-        setUserInfo({...userInfo, ...response});
-        setUserDataAvailable(true);
-      })
-      .catch((error) => {
-        setUserDataAvailable(false);
-      });
+    if (user)
+      ProfileInfoService.getUser(user.uid)
+        .then((response) => {
+          setUserInfo({...userInfo, ...response});
+          setUserDataAvailable(true);
+        })
+        .catch((error) => {
+          setUserDataAvailable(false);
+        });
   };
 
   const signOut = async () => {
