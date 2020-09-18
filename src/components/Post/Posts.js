@@ -60,7 +60,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           return;
         }
 
-        if (res.data.length > 0) {
+        if (res.data && res.data?.length > 0) {
           setPosts(res.data);
         }
 
@@ -71,7 +71,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           last_pid: null,
         };
         const res = await PostService.getPosts(params);
-        if (res.data.length > 0) {
+        if (res.data && res.data.length > 0) {
           setPosts(res.data);
         }
 
@@ -109,7 +109,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
               return;
             }
 
-            if (res.data.length > 0) {
+            if (res.data && res.data.length > 0) {
               setPosts((prev) => [...prev, ...res.data]);
             }
 
@@ -131,7 +131,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
             return;
           }
 
-          if (res.data.length > 0) {
+          if (res.data && res.data.length > 0) {
             setPosts((prev) => [...prev, ...res.data]);
           }
 
