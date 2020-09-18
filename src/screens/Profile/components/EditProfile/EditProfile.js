@@ -15,6 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 
 import {
@@ -186,6 +187,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     if (show) {
       setShow(false);
     } else {
+      Keyboard.dismiss();
       showMode('date');
     }
   };
@@ -685,6 +687,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                     label="Birthday"
                     customStyle={{marginBottom: normalize(16)}}
                     onFocus={showDatepicker}
+                    editable={false}
                   />
                   <View
                     style={{
@@ -712,6 +715,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                     label="Gender"
                     onFocus={toggleGender}
                     customStyle={{marginBottom: normalize(16)}}
+                    editable={false}
                   />
                   <View
                     style={{
