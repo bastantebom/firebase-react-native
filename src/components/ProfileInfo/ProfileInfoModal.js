@@ -23,6 +23,7 @@ import {
   WhiteOpacity,
   UserPosts,
   OtherUserPosts,
+  CacheableImage,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -156,11 +157,19 @@ function ProfileInfoModal(props) {
         backFunction={() => navigation.goBack()}
         userInfo={userInfo}
       />
-      <View style={{backgroundColor: 'red', height: normalize(158)}}>
-        <ProfileHeaderDefault
-          width={normalize(375 * 1.2)}
-          height={normalize(158 * 1.2)}
-        />
+      <View
+        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        {userInfo.cover_photo ? (
+          <CacheableImage
+            source={{uri: userInfo.cover_photo}}
+            style={{width: normalize(375), height: normalize(158)}}
+          />
+        ) : (
+          <ProfileHeaderDefault
+            width={normalize(375 * 1.2)}
+            height={normalize(158 * 1.2)}
+          />
+        )}
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
