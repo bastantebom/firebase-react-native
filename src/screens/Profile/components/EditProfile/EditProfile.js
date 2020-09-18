@@ -301,7 +301,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
-
       setTransferred(0);
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
@@ -389,11 +388,17 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   };
 
   useEffect(() => {
+    //let isMounted = true;
+    //if (isMounted) {
+    let isSubscribed = true;
     if (userInfo) {
-      getStringAddress(address.latitude, address.longitude);
-      setDateFromString();
+      if (isSubscribed) {
+        getStringAddress(address.latitude, address.longitude);
+        setDateFromString();
+      }
     }
-  }, [userInfo.birth_date, userInfo.address]);
+    return () => (isSubscribed = false);
+  }, []);
 
   return (
     <>
