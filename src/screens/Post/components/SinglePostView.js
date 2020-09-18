@@ -452,8 +452,8 @@ const SinglePostView = (props) => {
       </Modal>
       <Modal
         isVisible={postImageModal}
-        animationIn="bounceIn"
-        animationOut="bounceOut"
+        animationIn="zoomIn"
+        animationOut="zoomOut"
         style={{
           margin: 0,
           alignItems: 'center',
