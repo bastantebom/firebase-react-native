@@ -304,17 +304,20 @@ const SignUp = (props) => {
     } else {
       setButtonStyle({});
     }
-    setButtonDisable(j);
+    setButtonDisabled(j);
   };
 
   const signUpEmail = (formValues) => {
-    //console.log(formValues);
+    console.log(formValues);
+    console.log('Signup button clicked');
+    console.log(password);
 
     setIsLoading(true);
     SignUpService.createUser(JSON.stringify(formValues))
       .then((response) => {
-        setIsLoading(false);
         cleanSignUpForm();
+        console.log(response);
+
         if (response.success) {
           navigation.navigate('VerifyAccount', {...response, ...formValues});
         } else {
@@ -326,6 +329,9 @@ const SignUp = (props) => {
       })
       .catch((error) => {
         console.log('With Error in the API SignUp ' + error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -503,7 +509,9 @@ const SignUp = (props) => {
                     textStyle="button3"
                     color={AppColor.contentOcean}
                     customStyle={{marginBottom: 16}}>
-                    {!signUpLabel ? 'Use mobile number instead' : 'Use email instead'}
+                    {!signUpLabel
+                      ? 'Use mobile number instead'
+                      : 'Use email instead'}
                   </AppText>
                 </TouchableOpacity>
               </View>
@@ -544,6 +552,7 @@ const SignUp = (props) => {
                   error={error}
                   validation={['password']}
                   setButtonState={setButtonState}
+                  onChangeText={(val) => onPasswordChange(val)}
                 />
                 <View style={styles.passwordToggle}>
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>

@@ -68,6 +68,10 @@ const FloatingAppInput = (props) => {
   const validateInput = (value) => {
     // //console.log("Validate input")
     setInternalValue(value);
+    // console.log("Compare values")
+    // console.log(internalValue)
+    // console.log(value)
+    
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
         .then((res) => {

@@ -45,7 +45,7 @@ const MobileNumberValidator = async (number) => {
 
 const PasswordValidator = async (password) => {
   return await new Promise((resolve, reject) => {
-    if (password.length <= 6) {
+    if (password.length < 6) {
       reject('Password must be 6 characters or more.');
     }
 

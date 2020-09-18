@@ -349,7 +349,7 @@ function Routes() {
         ) : (
           // <TabStack />
           <Stack.Navigator headerMode="none">
-            <Stack.Screen name="Home" component={TabStack} />
+            <Stack.Screen name="TabStack" component={TabStack} />
             <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
           </Stack.Navigator>
         )}
