@@ -7,12 +7,11 @@ import {
   Dimensions,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 import {AppText, BottomSheetHeader, PaddingView} from '@/components';
 import {Colors, normalize} from '@/globals';
-
-import Modal from 'react-native-modal';
-
 import {
   ProfileMute,
   ProfileReport,
@@ -34,6 +33,7 @@ import About from '@/screens/Profile/components/About/About';
 import ChangePassword from '@/screens/Profile/components/ChangePassword/ChangePassword';
 
 const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
+  const navigation = useNavigation();
   const [editProfile, setEditProfile] = useState(false);
 
   const toggleEditProfile = () => {

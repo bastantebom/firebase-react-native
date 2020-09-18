@@ -39,8 +39,8 @@ export const UserContextProvider = ({children}) => {
     }
   }, [user]);
 
-  const signOut = () => {
-    auth()
+  const signOut = async () => {
+    await auth()
       .signOut()
       .then(() => {
         setUser(null);

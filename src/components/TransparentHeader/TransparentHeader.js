@@ -229,7 +229,12 @@ const TransparentHeader = ({
           }}>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
           <OwnMenu
-            signOut={signOut}
+            signOut={() => {
+              signOut().then(() => {
+                console.log('helluu');
+                navigation.navigate('Onboarding');
+              });
+            }}
             toggleMenu={toggleMenu}
             triggerNotify={triggerNotify}
           />
