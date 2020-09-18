@@ -419,7 +419,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           style={styles.container}
           extraScrollHeight={40}
           keyboardOpeningTime={50}
-          keyboardShouldPersistTaps={'handled'}
           enableOnAndroid={true}>
           <View
             style={[
