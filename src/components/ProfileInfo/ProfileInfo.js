@@ -166,13 +166,13 @@ const ProfileInfo = ({userInfo, type}) => {
           </View>
           <View style={{marginLeft: 8, justifyContent: 'center'}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <AppText textStyle="body1medium" customStyle={{marginRight: 4}}>
+              <AppText textStyle="body2" customStyle={{marginRight: 4}}>
                 {display_name}
               </AppText>
               <VerifiedBadge />
             </View>
             <View style={{}}>
-              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+              <AppText textStyle="caption" color={Colors.contentPlaceholder}>
                 @{username.toLowerCase()}
               </AppText>
             </View>

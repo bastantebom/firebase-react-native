@@ -32,8 +32,6 @@ const ProfileInfo = ({profileData}) => {
   const {fetch} = useContext(UserContext);
 
   useEffect(() => {
-    console.log('PROFILE DATA');
-    console.log(profileData);
     if (!profileData.success) {
       fetch();
     }

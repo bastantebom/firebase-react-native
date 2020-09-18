@@ -64,10 +64,15 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     if (images) {
       setCameraImage(images);
     }
-
-    if (userInfo.address) {
-      const {address} = userInfo;
-      getStringAddress(address.latitude, address.longitude);
+    if (initialData.post_id) {
+      console.log('edit post');
+      const {store_location} = initialData;
+      getStringAddress(store_location.latitude, store_location.longitude);
+    } else {
+      if (userInfo.address) {
+        const {address} = userInfo;
+        getStringAddress(address.latitude, address.longitude);
+      }
     }
   }, [address]);
 
@@ -454,7 +459,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             height: Dimensions.get('window').height,
           }}>
           <StoreLocation
-            address={userInfo.address}
+            address={
+              initialData.post_id
+                ? initialData.store_location
+                : userInfo.address
+            }
             back={() => setMap(false)}
             changeFromMapHandler={(fullAddress, addStr) =>
               prepareAddressUpdate(fullAddress, addStr)

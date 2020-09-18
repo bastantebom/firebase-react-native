@@ -146,13 +146,19 @@ const OwnPost = ({data, isLoading}) => {
                   <View style={styles.userInfoImageContainer}>
                     <ProfilePhoto size={20} />
                   </View>
-                  <AppText customStyle={{marginLeft: 8, marginRight: 4}}>
+                  <AppText
+                    textStyle="caption"
+                    customStyle={{marginLeft: 8, marginRight: 4}}>
                     {display_name ? display_name : full_name}
                   </AppText>
                   <VerifiedBadge />
                 </View>
 
-                <AppText>{timeAgo(date_posted)}</AppText>
+                <AppText
+                  textStyle="captionConstant"
+                  color={Colors.contentPlaceholder}>
+                  {timeAgo(date_posted)}
+                </AppText>
               </View>
               <View
                 style={{

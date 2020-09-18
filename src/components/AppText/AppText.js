@@ -30,12 +30,12 @@ const defaultFontSize = 16;
 const styles = StyleSheet.create({
   body1: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize+2),
+    fontSize: normalize(defaultFontSize + 2),
     letterSpacing: 0.5,
   },
   body1medium: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize +2),
+    fontSize: normalize(defaultFontSize + 2),
     letterSpacing: 0.5,
   },
   body2: {
@@ -61,12 +61,12 @@ const styles = StyleSheet.create({
   },
   button3: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize-2),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 1.25,
   },
   caption: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize-2),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.4,
   },
   captionConstant: {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   caption2: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize-2),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.4,
   },
   display1: {
@@ -106,28 +106,28 @@ const styles = StyleSheet.create({
   },
   display6: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize+6),
+    fontSize: normalize(defaultFontSize + 6),
     letterSpacing: 0.15,
   },
   eyebrow1: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize-4),
+    fontSize: normalize(defaultFontSize - 4),
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
   eyebrow2: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize-4),
+    fontSize: normalize(defaultFontSize - 4),
     letterSpacing: 0.8,
   },
   price: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize-2),
+    fontSize: normalize(defaultFontSize - 2),
     lineHeight: 18,
   },
   subtitle1: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize+4),
+    fontSize: normalize(defaultFontSize + 4),
     letterSpacing: 0.15,
   },
   subtitle2: {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   promo: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize-2),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.4,
   },
   tabNavigation: {
@@ -153,13 +153,13 @@ const styles = StyleSheet.create({
   },
   metadata: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize-4),
+    fontSize: normalize(defaultFontSize - 4),
     letterSpacing: 0.8,
   },
   nav: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(13),
-  }
+  },
 });
 
 export default AppText;
