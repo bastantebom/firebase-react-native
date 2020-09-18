@@ -176,6 +176,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
   const toggleGender = () => {
     setGenderVisible(!genderVisible);
+    if (show) setShow(!show);
   };
 
   const showMode = (currentMode) => {
@@ -668,7 +669,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 }}
               /> */}
               <FloatingAppInput
-                // editable={false}
+                editable={false}
                 value={mobile}
                 selectTextOnFocus={false}
                 valueHandler={setMobile}
@@ -681,21 +682,22 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
-                <TouchableOpacity onPress={showDatepicker}>
-                  <FloatingAppInput
-                    value={bDate}
-                    label="Birthday"
-                    customStyle={{marginBottom: normalize(16)}}
-                    onFocus={showDatepicker}
-                    editable={false}
-                  />
-                  <View
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: 12,
-                      right: 12,
-                    }}>
+                <FloatingAppInput
+                  value={bDate}
+                  label="Birthday"
+                  customStyle={{marginBottom: normalize(16)}}
+                  onFocus={showDatepicker}
+                  editable={false}
+                />
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 12,
+                    right: 12,
+                  }}
+                  onPress={showDatepicker}>
+                  <View>
                     <Calendar height={normalize(24)} width={normalize(24)} />
                   </View>
                 </TouchableOpacity>
@@ -709,21 +711,22 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 )}
               </View>
               <View style={{position: 'relative'}}>
-                <TouchableOpacity onPress={toggleGender}>
-                  <FloatingAppInput
-                    value={g}
-                    label="Gender"
-                    onFocus={toggleGender}
-                    customStyle={{marginBottom: normalize(16)}}
-                    editable={false}
-                  />
-                  <View
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: 12,
-                      right: 12,
-                    }}>
+                <FloatingAppInput
+                  value={g}
+                  label="Gender"
+                  onFocus={toggleGender}
+                  customStyle={{marginBottom: normalize(16)}}
+                  editable={false}
+                />
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 12,
+                    right: 12,
+                  }}
+                  onPress={toggleGender}>
+                  <View>
                     <ArrowDown height={normalize(24)} width={normalize(24)} />
                   </View>
                 </TouchableOpacity>
