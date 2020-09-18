@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -12,6 +12,8 @@ import {
   NavigationPinRed,
 } from '@/assets/images/icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+
+import {UserContext} from '@/context/UserContext';
 //import {joinedDate} from '@/globals/Utils';
 
 const ProfileInfo = ({profileData}) => {
@@ -26,6 +28,16 @@ const ProfileInfo = ({profileData}) => {
     date_joined,
     address,
   } = profileData;
+
+  const {fetch} = useContext(UserContext);
+
+  useEffect(() => {
+    console.log('PROFILE DATA');
+    console.log(profileData);
+    if (!profileData.success) {
+      fetch();
+    }
+  }, []);
 
   return (
     <View style={{paddingHorizontal: 16, backgroundColor: 'white'}}>
