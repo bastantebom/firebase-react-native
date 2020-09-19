@@ -575,10 +575,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 valueHandler={setAddName}
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
-                validation={['email', '']}
-                setError={setError}
-                error={error}
-                setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>

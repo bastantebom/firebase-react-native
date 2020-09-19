@@ -78,7 +78,7 @@ const SinglePostView = (props) => {
   const [editPost, showEditPost] = useState(false);
   const [postImageModal, setPostImageModal] = useState(false);
 
-  const {user, setUserInfo} = useContext(UserContext);
+  const {user, setUserInfo, userInfo} = useContext(UserContext);
 
   const toggleEditPost = () => {
     toggleEllipsisState();
@@ -118,7 +118,7 @@ const SinglePostView = (props) => {
       : false;
   };
 
-  const userInfo = {
+  const profileInfo = {
     username: username,
     profile_photo: profile_photo,
     account_verified: account_verified,
@@ -137,6 +137,7 @@ const SinglePostView = (props) => {
     console.log(post_id);
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState();
+      console.log('deletePost ' + userInfo.post_count);
       setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
       navigation.goBack();
     });
@@ -283,7 +284,7 @@ const SinglePostView = (props) => {
           </View>
 
           <View style={styles.postInfoContainer}>
-            <ProfileInfo userInfo={userInfo} type="own-post" />
+            <ProfileInfo userInfo={profileInfo} type="own-post" />
 
             {/* <Animated.View ref="stickyHeader" style={[styles.stickyStuff, {top: stickySegmentControlX}]}>
               <AppText

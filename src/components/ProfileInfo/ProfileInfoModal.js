@@ -137,7 +137,7 @@ function ProfileInfoModal(props) {
     {
       key: 'moreinfo',
       title: 'More Info',
-      renderPage: <MoreInfo />,
+      renderPage: <MoreInfo profileInfo={userInfo} />,
     },
   ];
 
