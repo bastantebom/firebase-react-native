@@ -153,7 +153,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
     {
       key: 'moreinfo',
       title: 'More Info',
-      renderPage: <MoreInfo />,
+      renderPage: <MoreInfo profileInfo={userInfo} />,
     },
   ];
 

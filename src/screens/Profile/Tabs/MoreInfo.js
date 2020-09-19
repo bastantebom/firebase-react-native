@@ -9,22 +9,23 @@ import {UserContext} from '@/context/UserContext';
 import {ScrollView} from 'react-native-gesture-handler';
 
 // create a component
-const MoreInfo = () => {
+const MoreInfo = ({profileInfo}) => {
   const {userInfo} = useContext(UserContext);
   const [hasInfo, setHasInfo] = useState(false);
   //const [email, setEmail] = useState('');
   //const [name, setName] = useState('');
-  const {description} = userInfo;
+  const {description, full_name} = profileInfo;
 
   useEffect(() => {
-    //console.log(description);
+    ///console.log(description);
     if (description) {
+      console.log('More Info ' + full_name);
       if (description.trim().length > 0) {
         //console.log('moreinfo');
         setHasInfo(true);
       }
     }
-  }, [description]);
+  }, [userInfo]);
 
   const WithInfo = () => {
     return (
