@@ -19,13 +19,13 @@ const MoreInfo = ({profileInfo}) => {
   useEffect(() => {
     ///console.log(description);
     if (description) {
-      console.log('More Info ' + full_name);
+      //console.log('More Info ' + full_name);
       if (description.trim().length > 0) {
         //console.log('moreinfo');
         setHasInfo(true);
       }
     }
-  }, [userInfo]);
+  }, [profileInfo]);
 
   const WithInfo = () => {
     return (
