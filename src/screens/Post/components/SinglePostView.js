@@ -493,10 +493,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
-    paddingBottom: normalize(70),
+    paddingBottom: normalize(120),
     overflow: 'visible',
     zIndex: 10,
     position: 'relative',
+    
   },
   userInfoImageContainer: {
     height: normalize(42),
