@@ -122,7 +122,7 @@ const Post = ({data, type, isLoading}) => {
             <View style={styles.postDetailContainer}>
               <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
                 <AppText
-                  textStyle="body2"
+                  textStyle="body2Dashboard"
                   customStyle={GlobalStyle.marginBottom1}>
                   {title}
                 </AppText>

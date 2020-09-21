@@ -98,14 +98,14 @@ const LoadingOwnPost = ({children, isLoading}) => {
           backgroundColor: 'white',
           margin: 16,
           borderRadius: 8,
-          elevation: 5,
           shadowColor: '#000',
           shadowOffset: {
             width: 0,
             height: 2,
           },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
+          shadowOpacity: 0.06,
+          shadowRadius: 8,
+          elevation: 4,
           children: [
             {
               flexDirection: 'row',

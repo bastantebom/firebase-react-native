@@ -105,7 +105,7 @@ const ProfileInfo = ({userInfo, type}) => {
           <View style={styles.userInfoDetailsContainer}>
             <View style={styles.userInfoDetailsNameContainer}>
               <AppText
-                textStyle="caption"
+                textStyle="captionDashboard"
                 customStyle={styles.userInfoDetailsName}>
                 {display_name}
               </AppText>

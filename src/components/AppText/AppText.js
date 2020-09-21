@@ -38,11 +38,35 @@ const styles = StyleSheet.create({
     fontSize: normalize(defaultFontSize + 2),
     letterSpacing: 0.5,
   },
+
   body2: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(defaultFontSize),
     letterSpacing: 0.25,
   },
+  caption: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(defaultFontSize-2),
+    letterSpacing: 0.4,
+  },
+
+  body2Dashboard: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(defaultFontSize),
+    letterSpacing: 0.25,
+  },
+  captionDashboard: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(defaultFontSize-4),
+    letterSpacing: 0.4,
+  },
+
+  caption2: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(defaultFontSize - 2),
+    letterSpacing: 0.4,
+  },
+
   body3: {
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(defaultFontSize),
@@ -64,11 +88,7 @@ const styles = StyleSheet.create({
     fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 1.25,
   },
-  caption: {
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize - 2),
-    letterSpacing: 0.4,
-  },
+
   captionConstant: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(12),

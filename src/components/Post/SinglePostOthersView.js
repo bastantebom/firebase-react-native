@@ -103,7 +103,7 @@ const SinglePostOthersView = (props) => {
 
   const SinglePostContent = ({children}) => {
     return (
-      <View style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={{flex: 1}}>
         <View style={styles.postImageContainer}>
           {/* <Image
             style={GlobalStyle.image}
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
-    paddingBottom: normalize(85),
+    paddingBottom: normalize(120),
     // height: '100%',
   },
   userInfoImageContainer: {
