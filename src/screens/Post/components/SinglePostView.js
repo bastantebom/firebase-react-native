@@ -8,6 +8,9 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Linking,
+  Animated,
+  Platform,
+  RefreshControl
 } from 'react-native';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -40,6 +43,10 @@ import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import EditPostScreen from './EditPostScreen';
 import {ImageModal} from './ImageModal';
+
+  const HEADER_MAX_HEIGHT = normalize(248);
+  const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? normalize(70) : normalize(70);
+  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const SinglePostView = (props) => {
   const {othersView = false} = props.route?.params;
@@ -79,6 +86,8 @@ const SinglePostView = (props) => {
   const [postImageModal, setPostImageModal] = useState(false);
 
   const {user, setUserInfo, userInfo} = useContext(UserContext);
+
+  const [scrollY] = useState(new Animated.Value(0))
 
   const toggleEditPost = () => {
     toggleEllipsisState();
@@ -228,18 +237,35 @@ const SinglePostView = (props) => {
   //   extrapolate: 'clamp'
   // })
 
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: 'clamp',
+  });
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE / .5],
+    outputRange: [1, 1, 1, 0],
+    extrapolate: 'clamp',
+  });
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -50],
+    // outputRange: [0, HEADER_SCROLL_DISTANCE],
+    extrapolate: 'clamp',
+  });
+
   const SinglePostContent = () => {
     return (
-      <View style={{flex: 1}}>
-        <ScrollView style={{backgroundColor: 'white'}}>
-          <View style={styles.postImageContainer}>
-            {/* <Image
-            style={GlobalStyle.image}
-            source={{
-              uri:
-                'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
-            }}
-          /> */}
+      <View style={{ flex: 1 }}>
+        <ScrollView 
+          style={{ backgroundColor: 'white', flex: 1 }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y: scrollY}}}
+          ])}
+        >
+          {/* <View style={styles.postImageContainer}>
             {images === undefined || images.length == 0 ? (
               post_type === 'Need' || post_type === 'need' ? (
                 <Image
@@ -281,7 +307,7 @@ const SinglePostView = (props) => {
               </Swiper>
             )}
             <CustomNotification />
-          </View>
+          </View> */}
 
           <View style={styles.postInfoContainer}>
             <ProfileInfo userInfo={profileInfo} type="own-post" />
@@ -352,6 +378,70 @@ const SinglePostView = (props) => {
             )}
           </View>
         </ScrollView>
+
+        <Animated.View style={[styles.header, {height: headerHeight}]}>
+          <View style={{ paddingLeft: normalize(65) }}>
+            <AppText
+              textStyle="subtitle1"
+              customStyle={{ marginTop: 8 }}>
+              {title}
+            </AppText>
+            <AppText textStyle="body2" customStyle={{ marginBottom: 8 }}>
+              ₱ {price}
+            </AppText>
+          </View>
+          <Animated.View
+            style={[
+              styles.backgroundImage,
+              {opacity: imageOpacity, transform: [{translateY: imageTranslate}]},
+            ]}
+          >
+            <View style={styles.postImageContainer}>
+              {images === undefined || images.length == 0 ? (
+                post_type === 'Need' || post_type === 'need' ? (
+                  <Image
+                    style={GlobalStyle.image}
+                    source={require('@/assets/images/cover-need.png')}
+                  />
+                ) : post_type === 'Sell' || post_type === 'sell' ? (
+                  <Image
+                    style={GlobalStyle.image}
+                    source={require('@/assets/images/cover-sell.png')}
+                  />
+                ) : (
+                  <Image
+                    style={GlobalStyle.image}
+                    source={require('@/assets/images/cover-service.png')}
+                  />
+                )
+              ) : (
+                <Swiper
+                  activeDotColor={Colors.primaryYellow}
+                  dotColor={Colors.neutralsIron}
+                  dotStyle={{marginRight: 9}}
+                  activeDotStyle={{marginRight: 9}}>
+                  {images.map((item, index) => {
+                    // console.log(item);
+                    return (
+                      <TouchableWithoutFeedback
+                        key={index}
+                        onPress={togglePostImageModal}>
+                        <CacheableImage
+                          style={GlobalStyle.image}
+                          source={{
+                            uri: item,
+                          }}
+                        />
+                      </TouchableWithoutFeedback>
+                    );
+                  })}
+                </Swiper>
+              )}
+              <CustomNotification />
+            </View>
+          </Animated.View>
+        </Animated.View>
+
         {othersView && (
           <SafeAreaView
             style={{
@@ -497,6 +587,7 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     zIndex: 10,
     position: 'relative',
+    marginTop: normalize(248)
   },
   userInfoImageContainer: {
     height: normalize(42),
@@ -518,6 +609,37 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
     backgroundColor: Colors.neutralsWhite,
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.neutralsWhite,
+    overflow: 'hidden',
+  },
+  // bar: {
+  //   marginTop: 28,
+  //   height: 32,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  title: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontSize: 18,
+  },
+  scrollViewContent: {
+    marginTop: HEADER_MAX_HEIGHT,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: HEADER_MAX_HEIGHT,
+    resizeMode: 'cover',
   },
 });
 
