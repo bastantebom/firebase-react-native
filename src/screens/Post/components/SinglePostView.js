@@ -261,9 +261,9 @@ const SinglePostView = (props) => {
               <Swiper
                 activeDotColor={Colors.primaryYellow}
                 dotColor={Colors.neutralsIron}
-                dotStyle={{marginRight: 9}}
-                activeDotStyle={{marginRight: 9}}>
-                {images.map((item, index) => {
+                dotStyle={{ marginRight: 7,  width: normalize(6), height: normalize(6) }}
+                activeDotStyle={{ marginRight: 7, width: normalize(6), height: normalize(6) }}>
+                {images.map((item, index) => { 
                   // console.log(item);
                   return (
                     <TouchableWithoutFeedback

@@ -16,6 +16,7 @@ import { normalize, Colors } from '@/globals';
 // import { ArrowDown } from '@/assets/images/icons';
 import { PhotoAlbums } from './PhotoAlbums';
 import { CoverPhoto } from '@/assets/images';
+import { CircleTickWhite } from '@/assets/images/icons';
 
 const { height, width } = Dimensions.get('window');
 
@@ -132,25 +133,21 @@ export const Library = ({ cancel, next, data }) => {
               selected={selected}
               imagesPerRow={3}
               imageMargin={2}
-              // selectedMarker={
-              //   <View
-              //     style={{
-              //       backgroundColor: Colors.contentOcean,
-              //       width: 25,
-              //       height: 25,
-              //       borderRadius: 50,
-              //       position: 'absolute',
-              //       right: 4,
-              //       top: 6,
-              //     }}>
-              //     <AppText
-              //       textStyle="subtitle1"
-              //       color={Colors.neutralsWhite}
-              //       customStyle={{textAlign: 'center'}}>
-              //       {imageCount}
-              //     </AppText>
-              //   </View>
-              // }
+              selectedMarker={
+                <View
+                  style={{
+                    backgroundColor: Colors.primaryYellow,
+                    width: normalize(23),
+                    height: normalize(23),
+                    borderRadius: 50,
+                    position: 'absolute',
+                    right: 4,
+                    top: 6,
+                  }}
+                >
+                  <CircleTickWhite width={normalize(28)} height={normalize(28)} style={{ backgroundColor: 'transparent', marginTop: -3, marginLeft: -3}} />
+                </View>
+              }
               callback={() => getSelectedImages(selected)}
               emptyText={<AppText textStyle="body2">No photos</AppText>}
               emptyTextStyle={{
