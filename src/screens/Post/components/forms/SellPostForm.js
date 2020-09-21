@@ -220,10 +220,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
       const newFilename =
         Platform.OS === 'ios'
-          ? image
+          ? image.split('/')[2]
           : image.substring(image.lastIndexOf('/') + 1);
       const uploadUri =
         Platform.OS === 'ios' ? image.replace('file://', '') : image;
+
+      console.log('NEW FILE NAME');
+      console.log(newFilename);
 
       const task = storage().ref();
       const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
