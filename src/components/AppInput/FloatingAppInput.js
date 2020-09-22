@@ -6,6 +6,7 @@ import AppText from '../AppText/AppText';
 import ValidationList from './Validation';
 import ValidationFunctions from './ValidationFunctions';
 import {debounce} from 'lodash';
+import _ from 'lodash';
 
 import {VerifiedGreen} from '@/assets/images/icons';
 
@@ -23,6 +24,9 @@ const FloatingAppInput = (props) => {
     setButtonState,
     onInputFocus,
     onChangeTextInput,
+    setChangingValidation,
+    changingValidation,
+    setValidationRule,
   } = props;
 
   const [internalValue, setInternalValue] = useState(value);
@@ -46,6 +50,13 @@ const FloatingAppInput = (props) => {
     // //console.log('************************************************');
     setShowValidationError(true);
     // //console.log(value);
+    // validateInput(value);
+
+    // console.log(changingValidation);
+
+    // console.log(validation);
+    // console.log(validationError);
+
     inputDebounce(value);
 
     // //console.log('err', error.length);
@@ -60,24 +71,30 @@ const FloatingAppInput = (props) => {
 
   const inputDebounce = useCallback(
     debounce((value) => {
-      validateInput(value), 1000;
-    }),
-    [validation],
+      // console.log('hello debounce');
+      // console.log(value);
+      validateInput(value);
+    }, 1000),
+    [],
   );
 
   const validateInput = (value) => {
     // //console.log("Validate input")
     setInternalValue(value);
     // console.log("Compare values")
-    // console.log(internalValue)
-    // console.log(value)
-    
+    let currentError = error;
+
+    console.log('VALIDATION:', validation);
+
+    setValidationError();
+
     if (validation.includes('username'))
       ValidationFunctions.usernameValidator(value)
         .then((res) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('username');
           currentError.splice(index, 1);
+
           setError(currentError);
 
           setShowValidationError(res);
@@ -85,7 +102,7 @@ const FloatingAppInput = (props) => {
           setVerified(true);
         })
         .catch((err) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('username');
           if (index === -1) {
             currentError.push('username');
@@ -98,36 +115,46 @@ const FloatingAppInput = (props) => {
           setValidationError(err);
         });
 
-    if (validation.includes('email'))
+    if (validation.includes('email')) {
+      console.log('validating email?');
       ValidationFunctions.emailValidator(value)
         .then((res) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('email');
           currentError.splice(index, 1);
+          console.log('SUCCESS RESPONSE');
+          console.log(res);
+
+          // console.log('CURRENT ERR EMAIL');
+          // console.log(currentError);
           setError(currentError);
 
           setShowValidationError(res);
           // //console.log('email is valid');
         })
         .catch((err) => {
-          const currentError = error;
+          // console.log('CURRENT ERR EMAIL');
+          // console.log(currentError);
+          currentError = error;
           const index = checkIndex('email');
           if (index === -1) {
             currentError.push('email');
             setError(currentError);
           }
 
-          //console.log(validationError);
+          // show validation error text
           setShowValidationError(false);
-          // //console.log('email is not valid');
+
+          // set validation message.
           setValidationError(err);
-          // //console.log(err);
+          console.log(err);
         });
+    }
 
     if (validation.includes('number'))
       ValidationFunctions.MobileNumberValidator(value)
         .then((res) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('number');
           currentError.splice(index, 1);
           setError(currentError);
@@ -136,7 +163,7 @@ const FloatingAppInput = (props) => {
           //console.log('number is valid');
         })
         .catch((err) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('number');
           if (index === -1) {
             currentError.push('number');
@@ -147,13 +174,13 @@ const FloatingAppInput = (props) => {
           setShowValidationError(false);
           // //console.log('number is invalid');
           setValidationError(err);
-          // //console.log(err);
+          console.log(err);
         });
 
     if (validation.includes('password'))
       ValidationFunctions.PasswordValidator(value)
         .then((res) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('password');
           currentError.splice(index, 1);
           setError(currentError);
@@ -162,7 +189,7 @@ const FloatingAppInput = (props) => {
           //console.log('password is valid');
         })
         .catch((err) => {
-          const currentError = error;
+          currentError = error;
           const index = checkIndex('password');
           if (index === -1) {
             currentError.push('password');
@@ -176,6 +203,15 @@ const FloatingAppInput = (props) => {
           //console.log(err);
         });
   };
+
+  useEffect(() => {
+    console.log('Validation Current:', validation);
+    // setValidationError('');
+    if (setValidationRule)
+      changingValidation
+        ? setValidationRule(['email'])
+        : setValidationRule(['number']);
+  }, [changingValidation]);
 
   const onFocusInput = () => {
     setIsActive(true);
