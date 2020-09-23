@@ -36,11 +36,6 @@ const SignUp = (props) => {
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
   const [error, setError] = useState([]);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
-  const toggleSignUpMethod = () => {
-    setEmail('');
-    // setError([]);
-    setSignUpLabel((previousState) => !previousState);
-  };
   const [signUpLabel, setSignUpLabel] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -64,11 +59,19 @@ const SignUp = (props) => {
     backgroundColor: AppColor.buttonDisable,
     borderColor: AppColor.buttonDisable,
   });
+  const [changingValidation, setChangingValidation] = useState(false);
+
+  const toggleSignUpMethod = () => {
+    setEmail('');
+    // setError([]);
+    setChangingValidation(!changingValidation);
+    setSignUpLabel((previousState) => !previousState);
+  };
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
-  const [validationRule, setValidationRule] = useState('email');
+  const [validationRule, setValidationRule] = useState(['email']);
 
   const cleanSignUpForm = () => {
     setLoginUse('');
@@ -420,7 +423,8 @@ const SignUp = (props) => {
                 valueHandler={setEmail}
                 label={!signUpLabel ? 'Email' : 'Mobile Number'}
                 customStyle={{marginBottom: normalize(8)}}
-                validation={[validationRule]}
+                validation={validationRule}
+                setValidationRule={setValidationRule}
                 // validation={['email', 'number']}
                 keyboardType={!signUpLabel ? 'email-address' : 'phone-pad'}
                 onInputFocus={onFocusEmail}
@@ -428,6 +432,8 @@ const SignUp = (props) => {
                 error={error}
                 setButtonState={setButtonState}
                 onChangeTextInput={(email) => onEmailChange(email)}
+                setChangingValidation={setChangingValidation}
+                changingValidation={changingValidation}
               />
 
               {/* <FloatingAppInput
@@ -499,10 +505,10 @@ const SignUp = (props) => {
                     // console.log(validationRule);
 
                     !signUpLabel
-                      ? setValidationRule('number')
-                      : setValidationRule('email');
+                      ? setValidationRule(['number'])
+                      : setValidationRule(['email']);
 
-                    setError([]);
+                    !signUpLabel ? setError(['number']) : setError(['email']);
                     toggleSignUpMethod();
                   }}>
                   <AppText
