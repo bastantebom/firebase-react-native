@@ -44,7 +44,7 @@ const Notification = ({message, type, position = 'absolute', top}) => {
       top: 0 + (top ? top : 0),
       left: 0,
       flexDirection: 'row',
-      zIndex: 1,
+      zIndex: 5,
       backgroundColor:
         type === 'success'
           ? Colors.yellow2
@@ -56,7 +56,7 @@ const Notification = ({message, type, position = 'absolute', top}) => {
 
   if (notificationState === 'open') {
     return (
-      <SafeAreaView style={{zIndex: 1}}>
+      // <SafeAreaView style={{zIndex: 1}}>
         <PaddingView paddingSize={2} style={styles.container}>
           {type === 'success' ? (
             <CircleTick width={normalize(24)} height={normalize(24)} />
@@ -78,7 +78,7 @@ const Notification = ({message, type, position = 'absolute', top}) => {
             )}
           </TouchableOpacity>
         </PaddingView>
-      </SafeAreaView>
+      // </SafeAreaView>
     );
   }
 

@@ -177,7 +177,13 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   };
 
   return (
-    <>
+    <View style={{flex: 1}}>
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+        top={normalize(30)}
+        position="absolute"
+      />
       <TransparentHeader
         type={headerState}
         ellipsisState={ellipsisState}
@@ -191,11 +197,6 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
         QR={QR}
         backFunction={backFunction}
         triggerNotify={triggerNotify}
-      />
-      <Notification
-        message={notificationMessage}
-        type={notificationType}
-        top={normalize(30)}
       />
 
       <View
@@ -212,7 +213,6 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
           />
         )}
       </View>
-
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}
@@ -230,14 +230,13 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       <View style={{backgroundColor: Colors.primaryYellow}}>
         <ProfileInfo profileData={userInfo} />
       </View>
-
       <View style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
       </View>
       <WhiteOpacity />
-    </>
+    </View>
   );
 }
 
