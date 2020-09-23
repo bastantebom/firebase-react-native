@@ -148,7 +148,11 @@ const OwnPost = ({data, isLoading}) => {
                   </View>
                   <AppText
                     textStyle="caption"
-                    customStyle={{marginLeft: 8, marginRight: 4}}>
+                    customStyle={{
+                      marginLeft: 8,
+                      marginRight: 4,
+                      flex: 1,
+                    }}>
                     {display_name ? display_name : full_name}
                   </AppText>
                   <VerifiedBadge />
