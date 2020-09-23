@@ -572,9 +572,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               </AppText>
               <FloatingAppInput
                 value={addName}
-                valueHandler={setAddName}
+                onChangeText={(addName) => {
+                  setAddName(addName);
+                }}
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
+                placeholder="ex. Home"
                 // validation={['email', '']}
                 // setError={setError}
                 // error={error}
