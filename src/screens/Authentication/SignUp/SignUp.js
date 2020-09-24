@@ -4,7 +4,7 @@ import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AppColor from '@/globals/Colors';
 
-import {AppText, AppInput, AppButton, FloatingAppInput} from '@/components';
+import {AppText, AppCheckbox, AppButton, FloatingAppInput} from '@/components';
 
 import SignUpService from '@/services/SignUpService';
 import LoginService from '@/services/LoginService';
@@ -15,10 +15,12 @@ import {
   LoginApple,
   LoginFB,
   LoginGoogle,
+  CheckboxCheck,
 } from '@/assets/images/icons/';
 
 import {Context} from '@/context';
 import SwitchComponent from '@/components/Switch/Switch';
+
 import {ScrollView} from 'react-native-gesture-handler';
 
 import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy';
@@ -348,51 +350,57 @@ const SignUp = (props) => {
   const TandC = () => {
     return (
       <>
-        <View style={styles.terms}>
-          <AppText
-            textStyle="caption"
-            customStyle={{color: AppColor.promoCopy}}>
-            By signing up, I agree to Servbees’{' '}
-          </AppText>
-          <TouchableOpacity
-            onPress={() => {
-              //modalContent(0);
-              toggleModalT();
-            }}>
-            <AppText
-              textStyle="promo"
-              customStyle={{
-                color: AppColor.promoCopy,
-                textDecorationLine: 'underline',
-              }}>
-              Terms of Use
-            </AppText>
-          </TouchableOpacity>
-
-          <AppText
-            textStyle="caption"
-            customStyle={{color: AppColor.promoCopy}}>
-            {' '}
-            and{' '}
-          </AppText>
-          <TouchableOpacity
-            onPress={() => {
-              toggleModal();
-            }}>
-            <AppText
-              textStyle="promo"
-              customStyle={{
-                color: AppColor.promoCopy,
-                textDecorationLine: 'underline',
-              }}>
-              Privacy Policy
-            </AppText>
+        <View style={styles.promos}>
+          <View>
+            <AppCheckbox
+              Icon=""
+              label=""
+              value={!signUpForm.terms_conditions}
+              valueChangeHandler={toggleSwitch}
+              style={{marginBottom: 16}}
+            />
+          </View>
+          <View style={styles.terms}>
             <AppText
               textStyle="caption"
               customStyle={{color: AppColor.promoCopy}}>
-              .
+              By signing up, I agree to Servbees
             </AppText>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                //modalContent(0);
+                toggleModalT();
+              }}>
+              <AppText
+                textStyle="promo"
+                customStyle={{
+                  color: AppColor.promoCopy,
+                  textDecorationLine: 'underline',
+                }}>
+                Terms of Use
+              </AppText>
+            </TouchableOpacity>
+
+            <AppText
+              textStyle="caption"
+              customStyle={{color: AppColor.promoCopy}}>
+              {' '}
+              and{' '}
+            </AppText>
+            <TouchableOpacity
+              onPress={() => {
+                toggleModal();
+              }}>
+              <AppText
+                textStyle="promo"
+                customStyle={{
+                  color: AppColor.promoCopy,
+                  textDecorationLine: 'underline',
+                }}>
+                Privacy Policy.
+              </AppText>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.promos}>
           <View style={styles.promoCopy}>
@@ -443,74 +451,9 @@ const SignUp = (props) => {
                 changingValidation={changingValidation}
               />
 
-              {/* <FloatingAppInput
-                  value={email}
-                  selectTextOnFocus={false}
-                  valueHandler={setEmail}
-                  label="Mobile Number"
-                  customStyle={{marginBottom: normalize(8)}}
-                  validation={}
-                  keyboardType="phone-pad"
-                  // onInputFocus={onFocusEmail}
-                  setError={setError}
-                  error={error}
-                  setButtonState={setButtonState}
-                  onChangeTextInput={(email) => onEmailChange(email)}
-                /> */}
-
-              {/* <FloatingAppInput
-                // label="Email or Mobile Number"
-                label={signUpLabel}
-                // placeholder="Hi"
-                // value={email}
-                onBlur={onBlurEmail}
-                onFocus={onFocusEmail}
-                keyboardType="email-address"
-                customStyle={{
-                  ...styles.customInputStyle,
-                  ...(!isValidLogin && email.length > 0
-                    ? styles.withError
-                    : isValidLogin && email.length > 0
-                    ? styles.withoutError
-                    : styles.defaultBorder),
-                  ...emailBorder,
-                }}
-                // onChangeText={(email) => onEmailChange(email)}
-              /> */}
-              {/* <AppInput
-                // label="Email or Mobile Number"
-                label={signUpLabel}
-                // placeholder="Hi"
-                value={email}
-                onBlur={onBlurEmail}
-                onFocus={onFocusEmail}
-                keyboardType="email-address"
-                customStyle={{
-                  ...styles.customInputStyle,
-                  ...(!isValidLogin && email.length > 0
-                    ? styles.withError
-                    : isValidLogin && email.length > 0
-                    ? styles.withoutError
-                    : styles.defaultBorder),
-                  ...emailBorder,
-                }}
-                onChangeText={(email) => onEmailChange(email)}
-              /> */}
-              {/* {!isValidLogin && email.length > 0 ? (
-                <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                  Enter a valid {loginUse}
-                </AppText>
-              ) : null} */}
-
               <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    // console.log('Clicking toggler: ');
-                    // console.log(signUpLabel);
-                    // console.log(error);
-                    // console.log(email);
-                    // console.log(validationRule);
-
                     !signUpLabel
                       ? setValidationRule(['number'])
                       : setValidationRule(['email']);
@@ -573,15 +516,6 @@ const SignUp = (props) => {
                   </TouchableOpacity>
                 </View>
               </View>
-              {/* {!isValidPassword ? (
-                <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                  Must be at least 6 characters
-                </AppText>
-              ) : (
-                <AppText
-                  textStyle="caption"
-                  customStyle={styles.emptyErrorCopy}></AppText>
-              )} */}
             </View>
 
             <TandC />
@@ -602,7 +536,7 @@ const SignUp = (props) => {
               />
             </View>
             <View style={styles.orCopyWrapper}>
-              <AppText>or</AppText>
+              <AppText textStyle="body1">or</AppText>
             </View>
             <View style={styles.socialMediaLogin}>
               {Platform.OS === 'ios' ? (
@@ -757,6 +691,7 @@ const styles = StyleSheet.create({
     //justifyContent: 'center',
     alignItems: 'flex-start',
     marginBottom: 16,
+    marginTop: 16,
   },
 
   promos: {

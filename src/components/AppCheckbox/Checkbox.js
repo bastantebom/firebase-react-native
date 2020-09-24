@@ -8,7 +8,7 @@ import {CheckboxCheck} from '@/assets/images/icons';
 
 const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
   return (
-    <TouchableOpacity activeOpacity={.7} onPress={() => valueChangeHandler()}>
+    <TouchableOpacity activeOpacity={0.7} onPress={() => valueChangeHandler()}>
       <View
         style={{
           // backgroundColor: 'blue',
@@ -23,7 +23,7 @@ const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
           justifyContent: 'space-between',
         }}>
         <View style={{flexDirection: 'row'}}>
-          <Icon />
+          {Icon ? <Icon /> : null}
           <AppText textStyle="body3" customStyle={{marginLeft: 8}}>
             {label}
           </AppText>
