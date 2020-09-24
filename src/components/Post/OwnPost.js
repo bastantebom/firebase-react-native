@@ -139,35 +139,32 @@ const OwnPost = ({data, isLoading}) => {
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
                 }}>
+                <View style={styles.userInfoImageContainer}>
+                  <ProfilePhoto size={20} />
+                </View>
                 <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: 'red',
+                    flex: 1,
                   }}>
-                  <View style={styles.userInfoImageContainer}>
-                    <ProfilePhoto size={20} />
-                  </View>
                   <AppText
                     textStyle="caption"
                     customStyle={{
-                      marginLeft: 8,
-                      marginRight: 4,
                       flex: 1,
+                      paddingLeft: 8,
+                      paddingRight: 4,
                     }}>
                     {display_name ? display_name : full_name}
                   </AppText>
                   <VerifiedBadge />
-                </View>
 
-                <AppText
-                  textStyle="captionConstant"
-                  color={Colors.contentPlaceholder}>
-                  {timeAgo(date_posted)}
-                </AppText>
+                  <AppText
+                    textStyle="captionConstant"
+                    color={Colors.contentPlaceholder}>
+                    {timeAgo(date_posted)}
+                  </AppText>
+                </View>
               </View>
               <View
                 style={{
