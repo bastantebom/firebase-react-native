@@ -66,6 +66,7 @@ import SortLowHigh from './sort-low-high.svg';
 import SortPopular from './sort-popular.svg';
 import SortRecent from './sort-recent.svg';
 import SortNearest from './sort-nearest.svg';
+import SortCondition from './star-condition.svg'
 
 import CheckboxCheck from './checkbox-check.svg';
 import RadioDot from './radiobutton-dot.svg';
@@ -194,6 +195,7 @@ export {
   SortPopular,
   SortRecent,
   SortNearest,
+  SortCondition,
   FilterNeeds,
   FilterSeller,
   FilterServices,

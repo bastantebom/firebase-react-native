@@ -8,7 +8,7 @@ import {Colors, scaleFont, normalize} from '@/globals';
  * @param {listed on Apptext.scss} textStyle
  */
 
-const AppText = ({children, textStyle, customStyle, color}) => {
+const AppText = ({children, textStyle, customStyle, color, numberOfLines}) => {
   let computedTextStyle = styles[textStyle];
 
   if (customStyle || color) {
@@ -21,7 +21,7 @@ const AppText = ({children, textStyle, customStyle, color}) => {
 
   // console.log(color)
 
-  return <Text style={computedTextStyle}>{children}</Text>;
+  return <Text style={computedTextStyle} numberOfLines={numberOfLines}>{children}</Text>;
 };
 
 // first value is 14
