@@ -205,6 +205,28 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
                   'Needs'
                 }
               </AppText>
+              <AppText
+                textStyle="eyebrow2"
+                color={Colors.contentPlaceholder}
+                customStyle={{paddingHorizontal: 4}}
+              >
+                • in
+              </AppText>
+              <AppText
+                textStyle="eyebrow2"
+                color={
+                  post_type === 'service' ? Colors.secondaryBrinkPink : 
+                  post_type === 'sell' ? Colors.contentOcean : 
+                  Colors.secondaryMountainMeadow
+                }
+                customStyle={{paddingHorizontal: 4}}
+              >
+                { 
+                  post_type === 'sell' ? 'Sell' : 
+                  post_type === 'service' ? 'Services' :
+                  'Needs'
+                }
+              </AppText>
             </View>
           </View>
         </View>
