@@ -1,7 +1,9 @@
 import React from 'react'
 import {
   SafeAreaView,
-  TouchableOpacity
+  View,
+  TouchableOpacity,
+  StyleSheet
 } from 'react-native';
 
 import { AppText } from '@/components';
@@ -11,18 +13,41 @@ import IllustActivity from '@/assets/images/activity-img1.svg';
 
 const Activity = () => {
   return (
-    <SafeAreaView style={{flex: 1, alignItems: 'center', backgroundColor: 'white'}}>
+    <SafeAreaView style={styles.contentWrapper}>
       <IllustActivity />
-      <AppText>Get Active and Whatnots & Click Like or Whatever eh!</AppText>
-      <AppText>Ang mas-tarush mong Shamcey Supsup ay nag-jembot-jembot ng eklat.</AppText>
+      <AppText 
+        textStyle="body1"
+        customStyle={{textAlign: 'center', marginTop: normalize(10)}}>
+        Get Active and Whatnots {"\n"} & Click Like or Whatever eh!
+      </AppText>
+      <View style={styles.descHolder}>
+        <AppText 
+          customStyle={{textAlign: 'center'}}>
+          Ang mas-tarush mong Shamcey Supsup ay nag-jembot-jembot ng eklat.
+        </AppText>
+      </View>
       <TouchableOpacity
         style={{ paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400'}}>
         <AppText textStyle="button2">
-        Explore Posting Near You
+        Explore Postings Near You
         </AppText>
       </TouchableOpacity>
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  contentWrapper: {
+    flex: 1, 
+    alignItems: 'center', 
+    padding: normalize(16),
+    textAlign: 'center',
+    backgroundColor: 'white',
+  },
+  descHolder: {
+    paddingTop: 10,
+    paddingBottom: 30
+  }
+});
 
 export default Activity;
