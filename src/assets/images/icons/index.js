@@ -142,6 +142,10 @@ import ProfileImageDefault from './profile-image-default.svg';
 import ContactTelephone from './contact-telephone.svg';
 import ContactEmail from './contact-email.svg';
 
+import LoginFB from './new-facebook.svg';
+import LoginGoogle from './new-google.svg';
+import LoginApple from './apple.svg';
+
 export {
   ContactTelephone,
   ContactEmail,
@@ -243,4 +247,7 @@ export {
   ArrowDown,
   UploadIcon,
   EmptyAvatar,
+  LoginFB,
+  LoginGoogle,
+  LoginApple,
 };
