@@ -162,11 +162,11 @@ function TabStack() {
           // borderTopWidth: 0,
           // elevation: 25,
           position: 'relative',
-          paddingHorizontal: normalize(60),
+          // paddingHorizontal: normalize(60),
         },
         tabStyle: {
           flex: 1,
-          alignItems: 'center',
+          alignItems: 'center'
         },
         labelStyle: {
           fontSize: normalize(13),

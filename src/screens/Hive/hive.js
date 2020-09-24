@@ -19,7 +19,8 @@ const Hive = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <TouchableOpacity onPress={toggleFollowersModal}>
+      <Text>Hive Screen</Text>
+      {/* <TouchableOpacity onPress={toggleFollowersModal}>
         <AppText>Open modal</AppText>
       </TouchableOpacity>
 
@@ -35,10 +36,10 @@ const Hive = () => {
           height: Dimensions.get('window').height,
           justifyContent: 'flex-start'
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <FilterSlider modalToggler={toggleModal} />
 
         <ProfileList closeModal={toggleFollowersModal} />
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   );
 };
