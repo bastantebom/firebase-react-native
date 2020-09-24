@@ -57,6 +57,7 @@ function Dashboard() {
   // const {openNotification} = useContext(Context);
 
   const {posts} = useContext(Context);
+  const {user} = useContext(UserContext);
 
   const toggleModal = () => {
     setModalState(!modalState);
