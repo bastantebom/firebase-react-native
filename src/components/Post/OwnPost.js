@@ -142,7 +142,12 @@ const OwnPost = ({data, isLoading}) => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: 'red',
+                  }}>
                   <View style={styles.userInfoImageContainer}>
                     <ProfilePhoto size={20} />
                   </View>
