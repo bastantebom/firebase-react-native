@@ -513,6 +513,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 <FloatingAppInput
                   value={uName}
                   valueHandler={setUName}
+                  lowercase={true}
                   label="Username"
                   customStyle={{marginBottom: normalize(16)}}
                   // invalidField={!invalidUser || invalidUserFormat}

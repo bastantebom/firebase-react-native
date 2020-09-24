@@ -27,6 +27,7 @@ const FloatingAppInput = (props) => {
     setChangingValidation,
     changingValidation,
     setValidationRule,
+    lowercase,
   } = props;
 
   const [internalValue, setInternalValue] = useState(value);
@@ -46,7 +47,7 @@ const FloatingAppInput = (props) => {
   // //console.log(validation);
 
   const onValueChange = (value) => {
-    valueHandler(value);
+    valueHandler(lowercase ? value.toLowerCase() : value);
     // //console.log('************************************************');
     setShowValidationError(true);
     // //console.log(value);
