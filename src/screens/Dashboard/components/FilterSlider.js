@@ -19,13 +19,15 @@ import {
   SortPopular,
   SortLowHigh,
   SortHighLow,
-  SortNearest
+  SortNearest, SortCondition
 } from '@/assets/images/icons';
 
 const FilterSlider = ({modalToggler}) => {
   const [checkboxServices, setCheckboxServices] = useState(false);
   const [checkboxSeller, setCheckboxSeller] = useState(false);
   const [checkboxNeeds, setCheckboxNeeds] = useState(false);
+  const [checkboxBrandNew, setCheckboxBrandNew] = useState(false);
+  const [checkboxUsed, setCheckboxUsed] = useState(false);
 
   const [radioButtons, setRadioButtons] = useState({
     Popular: false,
@@ -41,7 +43,7 @@ const FilterSlider = ({modalToggler}) => {
     //   checkboxSeller,
     //   checkboxNeeds,
     // ]);
-  }, [checkboxServices, checkboxSeller, checkboxNeeds, radioButtons]);
+  }, [checkboxServices, checkboxSeller, checkboxNeeds, checkboxBrandNew, checkboxUsed, radioButtons]);
 
   const checkboxServicesHandler = () => {
     setCheckboxServices(!checkboxServices);
@@ -55,10 +57,20 @@ const FilterSlider = ({modalToggler}) => {
     setCheckboxNeeds(!checkboxNeeds);
   };
 
+  const checkboxBrandNewHandler = () => {
+    setCheckboxBrandNew(!checkboxBrandNew);
+  };
+
+  const checkboxUsedHandler = () => {
+    setCheckboxUsed(!checkboxUsed);
+  };
+
   const resetFilters = () => {
     setCheckboxServices(false);
     setCheckboxSeller(false);
     setCheckboxNeeds(false);
+    setCheckboxBrandNew(false);
+    setCheckboxUsed(false);
     setRadioButtons({
       Popular: false,
       Recent: false,
@@ -239,6 +251,27 @@ const FilterSlider = ({modalToggler}) => {
               name="LowHigh"
               value={radioButtons.LowHigh}
               valueChangeHandler={radioHandler}
+              style={{marginBottom: 16}}
+            />
+            <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+              Condition
+            </AppText>
+            <AppCheckbox
+              Icon={() => {
+                return <SortCondition />;
+              }}
+              label="Brand New"
+              value={checkboxBrandNew}
+              valueChangeHandler={checkboxBrandNewHandler}
+              style={{marginBottom: 16}}
+            />
+            <AppCheckbox
+              Icon={() => {
+                return <SortCondition />;
+              }}
+              label="Used"
+              value={checkboxUsed}
+              valueChangeHandler={checkboxUsedHandler}
               style={{marginBottom: 16}}
             />
           </View>
