@@ -5,31 +5,31 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   SafeAreaView,
-  // ScrollView,
-  // Animated,
+  ScrollView,
+  Animated,
   Dimensions,
 } from 'react-native';
 // import {TextInput} from 'react-native-paper';
 
 import {
   Posts,
-  // AppInput,
+  AppInput,
   AppText,
   WhiteOpacity,
-  // Notification,
-  // FloatingAppInput,
-  // CacheableImage,
+  Notification,
+  FloatingAppInput
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
 import {useNavigation} from '@react-navigation/native';
 
 import {
-  // Filter,
-  // JarHeart,
-  // NavigationArrow,
-  // NavigationPin,
+  Filter,
+  JarHeart,
+  NavigationArrow,
+  NavigationPin,
   NavigationPinRed,
-  CloseDark,
+  CloseDark, 
+  FilterServices
 } from '@/assets/images/icons';
 import {GlobalStyle, Colors, normalize} from '@/globals';
 
@@ -37,7 +37,7 @@ import Modal from 'react-native-modal';
 import {Context} from '@/context';
 import {UserContext} from '@/context/UserContext';
 import LocationMap from '@/screens/Dashboard/components/Location';
-// import {VerificationScreen} from '@/screens/Dashboard/Verification';
+import {VerificationScreen} from '@/screens/Dashboard/Verification';
 // import {PostService} from '@/services';
 // import Geocoder from 'react-native-geocoding';
 // import Config from '@/services/Config';
@@ -48,159 +48,42 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   const {posts} = useContext(Context);
+  const {user} = useContext(UserContext);
 
   const toggleModal = () => {
     setModalState(!modalState);
   };
 
-  // const {openNotification, closeNotification, posts} = useContext(Context);
-  // const {user} = useContext(UserContext);
+  const [scrollState, setScrollState] = useState(0);
+  const [margin, setMargin] = useState(16);
 
-  // const [scrollState, setScrollState] = useState(0);
-  // const [margin, setMargin] = useState(16);
+  // const {address} = userInfo;
 
-  //const {address} = userInfo;
+  const [menu, setMenu] = useState(false);
 
-  // const [menu, setMenu] = useState(false);
-
-  // const toggleMenu = () => {
-  //   setMenu(!menu);
-  // };
-
-  // const DummyData = [
-  //   {
-  //     post_id: 1,
-  //     profile_photo:
-  //       'https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2019/07/931/524/Gigi-Hadid-Getty.jpg?ve=1&tl=1',
-  //     display_name: 'Pia Samson',
-  //     username: 'Piasamson',
-  //     date_posted: {_seconds: 8088},
-  //     account_verified: false,
-
-  //     post_type: 'need',
-  //     images: [
-  //       'data:image/png;base64,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',
-  //     ],
-  //     postName: 'Pasabuy Service - SM Light, Mandaluyong',
-  //     price: 500,
-  //     store_location: '#8 Atis Street',
-  //     delivery_method: {
-  //       pickup: true,
-  //       delivery: true,
-  //     },
-  //   },
-  //   {
-  //     post_id: 2,
-  //     profile_photo:
-  //       'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-  //     display_name: 'Mark Santiago',
-  //     username: 'Markee',
-  //     date_posted: {_seconds: 5575482},
-  //     account_verified: true,
-
-  //     post_type: 'Service',
-  //     images: [
-  //       'https://i.pinimg.com/600x315/9c/84/20/9c84201f88ef5c55a7bf723e81fb4e3d.jpg',
-  //     ],
-  //     postName: 'Haircut Service every Sat & Sun Haircut Service every',
-  //     price: 20,
-  //     store_location: '#8 Kaimito Street',
-  //     delivery_method: {
-  //       pickup: true,
-  //       delivery: true,
-  //     },
-  //   },
-  //   {
-  //     post_id: 3,
-  //     profile_photo:
-  //       'https://media.glamour.com/photos/56958105085ae0a85037019e/master/pass/entertainment-2015-03-zayn-malik-one-direction-main.jpg',
-  //     display_name: 'Wayne Santiago',
-  //     username: 'Wayne',
-  //     date_posted: {_seconds: 53482},
-  //     account_verified: true,
-
-  //     post_type: 'Service',
-  //     images: [
-  //       'https://www.tarladalal.com/products/images/B_S_Cover_image_300.jpg',
-  //     ],
-  //     postName: '🍔 Wayne’s Burgers and Smoothies!',
-  //     price: 20,
-  //     store_location: '#8 Kaimito Street',
-  //     delivery_method: {
-  //       pickup: true,
-  //       delivery: true,
-  //     },
-  //   },
-  //   {
-  //     post_id: 4,
-  //     profile_photo:
-  //       'https://i.pinimg.com/originals/f9/0c/9e/f90c9e170d4b553a9d0a79735113365b.jpg',
-  //     display_name: 'Hayley Williams',
-  //     username: 'hayley',
-  //     date_posted: {_seconds: 777482},
-  //     account_verified: true,
-
-  //     post_type: 'Service',
-  //     images: [
-  //       'https://i.pinimg.com/736x/1c/06/c5/1c06c5e5ed415c5fc60b3ca488f7ead6.jpg',
-  //     ],
-  //     postName: 'Haircut Service every Sat & Sun Haircut Service every Sat',
-  //     price: 20,
-  //     store_location: '#8 Kaimito Street',
-  //     delivery_method: {
-  //       pickup: true,
-  //       delivery: true,
-  //     },
-  //   },
-  //   {
-  //     post_id: 5,
-  //     profile_photo:
-  //       'https://www.cheatsheet.com/wp-content/uploads/2020/03/ursula-corbero.png',
-  //     display_name: 'Pot Bernabe',
-  //     username: 'pot',
-  //     date_posted: {_seconds: 53482},
-  //     account_verified: true,
-
-  //     post_type: 'Service',
-  //     images: [
-  //       'https://www.animetric.net/wp-content/uploads/2020/06/yumini_mart_ramen_kit1.jpg',
-  //     ],
-  //     postName: 'Satisfy your ramen cravings with our DIY Ramen Kits! 🍜',
-  //     price: 20,
-  //     store_location: '#8 Kaimito Street',
-  //     delivery_method: {
-  //       pickup: true,
-  //       delivery: true,
-  //     },
-  //   },
-  // ];
-
-  // const showLoading = () => {
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 500);
-  // };
+  const toggleMenu = () => {
+    setMenu(!menu);
+  };
 
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
         {/* ---- Verification Notification ---- */}
-        {/* <Notification
-          message={
-            <VerificationScreen
-              onPress={() => toggleMenu()}
-              menu={menu}
-              toggleMenu={() => toggleMenu()}
-              modalBack={() => setMenu(false)}
-            />
-          }
-          type={'verified'}
-          position="relative"
-        /> */}
+          {/* <Notification
+            message={
+              <VerificationScreen
+                onPress={() => toggleMenu()}
+                menu={menu}
+                toggleMenu={() => toggleMenu()}
+                modalBack={() => setMenu(false)}
+              />
+            }
+            type={'verified'}
+            position="relative"
+          /> */}
         {/* ---- Verification Notification ---- */}
         <View style={styles.container}>
-          <SearchBarWithFilter />
-          {/* <Location /> */}
+          <SearchBarWithFilter toggleFilter={toggleModal} />
 
           <Posts
             type="dashboard"
@@ -208,15 +91,6 @@ function Dashboard() {
             isLoading={isLoading}
             setIsLoading={setIsLoading}
           />
-          {/* <View style={{width: 300, height: 500}}>
-            <CacheableImage
-              style={GlobalStyle.image}
-              source={{
-                uri:
-                  'https://firebasestorage.googleapis.com/v0/b/codes-servbees.appspot.com/o/JlW54zJC8EVqLhxeLsP7H0dvUuT2%2Fpost-photo%2FIMG_0005?alt=media&token=f3aa3382-2be0-4693-aefc-22e665dd7436',
-              }}
-            />
-          </View> */}
         </View>
         <WhiteOpacity />
       </SafeAreaView>
@@ -244,105 +118,16 @@ function Dashboard() {
   );
 }
 
-const SearchBarWithFilter = () => {
+const SearchBarWithFilter = ({ toggleFilter }) => {
   const {setLocationFilter, locationFilter} = useContext(Context);
   const [showLocation, setShowLocation] = useState(false);
 
   const {userInfo} = useContext(UserContext);
+  // const {address} = userInfo;
 
   changeFromMapHandler = async (fullAddress) => {
     setLocationFilter(fullAddress.city);
   };
-
-  // const {posts, setPosts, setLocationFilter, locationFilter} = useContext(Context);
-  // const {userInfo, user} = useContext(UserContext);
-  // const {address} = userInfo;
-  // const [addressComponents, setAddressComponents] = useState({
-  //   city: '',
-  //   province: '',
-  //   country: '',
-  //   longitude: 0,
-  //   latitude: 0,
-  // });
-  // const [showLocation, setShowLocation] = useState(false);
-  // const [cityName, setCityName] = useState('');
-
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   if (isMounted) {
-  //     if (address === undefined) {
-  //       getStringAddress(14.608045, 120.989477);
-  //     } else {
-  //       getStringAddress(address.latitude, address.longitude);
-  //     }
-  //   }
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [address]);
-
-  // const getStringAddress = (lat, lng) => {
-  //   Geocoder.init(Config.apiKey);
-  //   Geocoder.from(lat, lng)
-  //     .then((json) => {
-  //       //setStringAddress(json.results[1].formatted_address);
-  //       const arrayToExtract =
-  //         json.results.length == 12
-  //           ? 7
-  //           : json.results.length == 11
-  //           ? 6
-  //           : json.results.length == 10
-  //           ? 5
-  //           : json.results.length == 9
-  //           ? 4
-  //           : json.results.length == 8
-  //           ? 3
-  //           : json.results.length < 8
-  //           ? 2
-  //           : 2;
-  //       setCityName(
-  //         json.results[arrayToExtract].address_components[0].long_name,
-  //       );
-  //       setAddressComponents({
-  //         ...addressComponents,
-  //         ...{
-  //           latitude: lat,
-  //           longitude: lng,
-  //           city: json.results[arrayToExtract].address_components[0].long_name,
-  //           province:
-  //             json.results[arrayToExtract].address_components[1].long_name,
-  //           country: 'Philippines',
-  //         },
-  //         //setChangeMapAddress(addressComponent);
-  //       });
-  //     })
-  //     .catch((error) => console.warn(error));
-  // };
-
-  // const prepareAddressUpdate = (fullAddress) => {
-  //   getStringAddress(fullAddress.latitude, fullAddress.longitude);
-  // };
-
-  // changeFromMapHandler = async (fullAddress) => {
-  //   // console.log('CLICKYCLICK');
-  //   // console.log(fullAddress);
-
-  //   // let getPostsParams = {
-  //   //   uid: user.uid,
-  //   //   limit: 5,
-  //   //   city: fullAddress?.city,
-  //   // };
-
-  //   // console.log('GET POST PARAMS');
-  //   // console.log(getPostsParams);
-
-  //   console.log('Changing location filter on context to: ');
-  //   console.log(fullAddress.city);
-
-  //   setLocationFilter(fullAddress?.city);
-
-  //   await prepareAddressUpdate(fullAddress);
-  // };
 
   const navigation = useNavigation();
 
@@ -352,83 +137,146 @@ const SearchBarWithFilter = () => {
     });
   };
 
+
   return (
-    <>
-      <View
-        style={[
-          GlobalStyle.rowCenter,
-          {marginHorizontal: 16, marginVertical: 8},
-        ]}>
-        <View style={{flex: 1}}>
-          {/* <NavigationPinRed width={24} height={24} /> */}
-          {/* <AppInput label="Search your location"></AppInput> */}
-          <View style={{position: 'relative'}}>
-            <View style={{paddingLeft: normalize(48)}}>
+    <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
+      <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
+        <AppInput
+          customStyle={{ flex: 1, marginRight: normalize(5) }}
+          placeholder="Start your search"
+        />
+        <TouchableOpacity onPress={toggleFilter}>
+          <View style={styles.circleButton}>
+            <Filter />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={styles.circleButton}>
+            <JarHeart />
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={GlobalStyle.rowCenter}>
+        <View 
+          style={{ 
+            paddingLeft: normalize(40), 
+            paddingRight: normalize(15), 
+            // marginRight: normalize(10), 
+            maxWidth: '60%',
+            minWidth: '60%' 
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              setShowLocation(true);
+            }}>
+            <View>
+              <AppText textStyle="caption">Your location</AppText>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: Colors.primaryMidnightBlue,
+              flexDirection: 'row',
+              // flex: 1,
+              justifyContent: 'space-between',
+              width: '100%'
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowLocation(true);
+              }}
+              style={{ marginRight: normalize(25) }}
+            >
+              <View style={{paddingVertical: normalize(1)}}>
+                <AppText
+                  textStyle="body3"
+                  color={Colors.primaryMidnightBlue}
+                  // customStyle={{ marginRight: normalize(22) }}
+                  numberOfLines={1}
+                >
+                  {locationFilter}
+                </AppText>
+              </View>
+            </TouchableOpacity>
+            {locationFilter ? (
               <TouchableOpacity
                 onPress={() => {
-                  setShowLocation(true);
-                }}>
-                <View>
-                  <AppText textStyle="caption">Your location</AppText>
-                </View>
+                  setLocationFilter(null);
+                }}
+                // style={{width: '10%'}}
+                style={{ 
+                  paddingVertical: normalize(4), 
+                  right: normalize(0), 
+                  position: 'absolute', 
+                  zIndex: 999
+                }}
+              >
+                <CloseDark height={normalize(16)} />
               </TouchableOpacity>
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: Colors.primaryMidnightBlue,
-                  flexDirection: 'row',
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setShowLocation(true);
-                  }}
-                  style={{width: '90%'}}>
-                  <View style={{paddingVertical: normalize(1)}}>
-                    <AppText
-                      textStyle="body3"
-                      color={Colors.primaryMidnightBlue}>
-                      {locationFilter}
-                    </AppText>
-                  </View>
-                </TouchableOpacity>
-                {locationFilter ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setLocationFilter(null);
-                    }}
-                    style={{
-                      width: '10%',
-                    }}>
-                    <View style={{paddingVertical: normalize(4)}}>
-                      <CloseDark height={normalize(16)} />
-                    </View>
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-            </View>
-
-            <View
-              style={{
-                position: 'absolute',
-                top: '50%',
-                marginTop: normalize(-12),
-                left: 4,
-              }}>
-              <NavigationPinRed width={normalize(24)} height={normalize(24)} />
-            </View>
+            ) : null}
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              top: '50%',
+              marginTop: normalize(-12),
+              left: 4,
+            }}>
+            <NavigationPinRed width={normalize(24)} height={normalize(24)} />
           </View>
         </View>
-
-        {/* <TouchableOpacity onPress={toggleModal}>
-        <View style={styles.circleButton}>
-          <Filter />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View style={styles.circleButton}>
-          <JarHeart />
-        </View>
-      </TouchableOpacity> */}
+        <ScrollView
+          horizontal={true}
+          style={{}}
+          showsHorizontalScrollIndicator={false}
+        >
+          <View style={styles.locationOption}>
+            <NavigationArrow width={normalize(16)} height={normalize(16)} />
+            <AppText 
+              textStyle="eyebrow2"
+              customStyle={{
+                marginLeft: 5,
+                fontFamily: 'RoundedMplus1c-Medium'
+              }}
+            >
+              Nearest
+            </AppText>
+          </View>
+          <View style={styles.locationOption}>
+            <FilterServices width={16} height={16} />
+            <AppText 
+              textStyle="eyebrow2"
+              customStyle={{
+                marginLeft: 5,
+                fontFamily: 'RoundedMplus1c-Medium'
+              }}
+            >
+              Services
+            </AppText>
+          </View>
+          <View style={styles.locationOption}>
+            <NavigationArrow width={16} height={16} />
+            <AppText 
+              textStyle="eyebrow2"
+              customStyle={{
+                marginLeft: 5,
+                fontFamily: 'RoundedMplus1c-Medium'
+              }}
+            >
+              Sellers
+            </AppText>
+          </View>
+          {/* <View style={styles.locationOption}>
+            <NavigationArrow width={16} height={16} />
+            <AppText>Needs</AppText>
+          </View>
+          <View style={styles.locationOption}>
+            <NavigationArrow width={16} height={16} />
+            <AppText>Popular</AppText>
+          </View> */}
+        </ScrollView>
       </View>
 
       <Modal
@@ -458,51 +306,9 @@ const SearchBarWithFilter = () => {
           }
         />
       </Modal>
-    </>
+    </View>
   );
 };
-
-// const Location = () => {
-//   return (
-//     <Animated.View
-//       style={[
-//         GlobalStyle.rowCenter,
-//         {
-//           marginLeft: 16,
-//           marginVertical: margin,
-//           height: 34,
-//           overflow: 'hidden',
-//         },
-//         {height: fadeAnim},
-//       ]}>
-//       <View style={{flexDirection: 'row'}}>
-//         <NavigationPinRed width={24} height={24} />
-//         <View style={{marginLeft: 8}}>
-//           <AppText>Your location</AppText>
-//           <AppText>Pioneer Woodlands</AppText>
-//         </View>
-//       </View>
-
-//       <ScrollView
-//         horizontal={true}
-//         style={{marginLeft: 40}}
-//         showsHorizontalScrollIndicator={false}>
-//         <View style={styles.locationOption}>
-//           <NavigationArrow width={16} height={16} />
-//           <AppText>Nearest</AppText>
-//         </View>
-//         <View style={styles.locationOption}>
-//           <NavigationArrow width={16} height={16} />
-//           <AppText>Popular</AppText>
-//         </View>
-//         <View style={styles.locationOption}>
-//           <NavigationArrow width={16} height={16} />
-//           <AppText>NearNear</AppText>
-//         </View>
-//       </ScrollView>
-//     </Animated.View>
-//   );
-// };
 
 const styles = StyleSheet.create({
   safeAreaContainer: {
@@ -510,6 +316,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    // flexGrow: 1,
+    // height: '100%',
     backgroundColor: 'white',
     // backgroundColor: 'red',
   },
@@ -526,8 +334,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   locationOption: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 10,
     backgroundColor: Colors.primarySalomie,
     borderRadius: 8,
     alignItems: 'center',
