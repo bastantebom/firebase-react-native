@@ -12,7 +12,7 @@ import storage from '@react-native-firebase/storage';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
-import {PostService} from '@/services';
+import {PostService, ImageUpload} from '@/services';
 import {PostImageUpload} from '../PostImageUpload';
 import {AppText, AppInput, TransitionIndicator} from '@/components';
 import {normalize, Colors} from '@/globals';
@@ -139,36 +139,6 @@ const ServicePostForm = ({
     checkFormContent();
   }, [title, price, paymentMethod, description]);
 
-  const uploadImageHandler = async (image) => {
-    try {
-      if (image.includes('firebasestorage.googleapis.com')) return image;
-
-      console.log('IMAGE');
-      console.log(image);
-
-      const newFilename =
-        Platform.OS === 'ios'
-          ? image
-          : image.substring(image.lastIndexOf('/') + 1);
-
-      const uploadUri =
-        Platform.OS === 'ios' ? image.replace('file://', '') : image;
-
-      // console.log('new file name');
-      // console.log(newFilename);
-
-      const task = storage().ref();
-      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-      console.log('uploadUri ' + uploadUri);
-      await fileRef.putFile(uploadUri);
-      const downloadURL = await fileRef.getDownloadURL();
-      console.log('downloadURL ' + downloadURL);
-      return downloadURL;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const publish = async () => {
     setLoadingSubmit(true);
 
@@ -176,7 +146,9 @@ const ServicePostForm = ({
       uid: user.uid,
       post_type: 'Need',
       images: await Promise.all(
-        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+        coverPhoto.map(
+          async (image) => await ImageUpload.upload(image, user.uid),
+        ),
       ),
       title: title,
       price: price,

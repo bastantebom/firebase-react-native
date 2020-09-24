@@ -28,7 +28,7 @@ import {
   TransitionIndicator,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
-import {PostService} from '@/services';
+import {PostService, ImageUpload} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
@@ -130,8 +130,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
   /*MAP Essentials */
 
-  // console.log('SellPostForm', coverPhoto);
-
   const {
     title,
     setTitle,
@@ -158,14 +156,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setDeliveryState(!deliveryState);
   };
 
-  // const [title, setTitle] = useState('');
-  // const [price, setPrice] = useState('');
-  // const [description, setDescription] = useState('');
-  // const [pickupState, setPickupState] = useState(false);
-  // const [deliveryState, setDeliveryState] = useState(false);
-  // const [storeLocation, setStoreLocation] = useState('');
-  // const [paymentMethod, setPaymentMethod] = useState('');
-
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const clearForm = () => {
@@ -186,9 +176,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   };
 
   useEffect(() => {
-    // if (images !== undefined) {
-    //   setPostImage(images)
-    // }
     checkFormContent();
   }, [
     title,
@@ -200,47 +187,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     description,
   ]);
 
-  // const navigateToPost = () => {
-  //   togglePostModal();
-  //   navToPost({
-  //     title: title,
-  //     price: price,
-  //     description: description,
-  //     paymentMethod: paymentMethod,
-  //     storeLocation: storeLocation,
-  //     deliveryMethod: [pickupState, deliveryState]
-  //   });
-  // };
-
-  // const filteredImage = coverPhoto.filter(image => image.includes('firebasestorage.googleapis.com'));
-
-  const uploadImageHandler = async (image) => {
-    try {
-      if (image.includes('firebasestorage.googleapis.com')) return image;
-
-      const newFilename =
-        Platform.OS === 'ios'
-          ? image.split('/')[2]
-          : image.substring(image.lastIndexOf('/') + 1);
-      const uploadUri =
-        Platform.OS === 'ios' ? image.replace('file://', '') : image;
-
-      console.log('NEW FILE NAME');
-      console.log(newFilename);
-
-      const task = storage().ref();
-      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-      await fileRef.putFile(uploadUri);
-      const downloadURL = await fileRef.getDownloadURL();
-
-      // return Promise.resolve(downloadURL)
-      return downloadURL;
-    } catch (err) {
-      console.log(err);
-      // return Promise.reject("Failed to upload")
-    }
-  };
-
   const publish = async () => {
     setLoadingSubmit(true);
 
@@ -248,7 +194,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       uid: user.uid,
       post_type: 'sell',
       images: await Promise.all(
-        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+        coverPhoto.map(
+          async (image) => await ImageUpload.upload(image, user.uid),
+        ),
       ),
       title: title,
       price: price,
