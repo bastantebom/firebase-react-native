@@ -162,11 +162,11 @@ function TabStack() {
           // borderTopWidth: 0,
           // elevation: 25,
           position: 'relative',
-          paddingHorizontal: normalize(60),
+          // paddingHorizontal: normalize(60),
         },
         tabStyle: {
           flex: 1,
-          alignItems: 'center',
+          alignItems: 'center'
         },
         labelStyle: {
           fontSize: normalize(13),
@@ -192,7 +192,7 @@ function TabStack() {
           },
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Hive"
         component={HiveStackScreen}
         options={{
@@ -205,7 +205,7 @@ function TabStack() {
             return <>{icon}</>;
           },
         }}
-      /> */}
+      />
       <Tab.Screen
         name="Post"
         component={PostStackScreen}
@@ -213,7 +213,7 @@ function TabStack() {
           tabBarButton: () => <Post />,
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
         options={{
@@ -254,7 +254,7 @@ function TabStack() {
             );
           },
         }}
-      /> */}
+      />
       <Tab.Screen
         name="Profile"
         component={ProfileStackScreen}
