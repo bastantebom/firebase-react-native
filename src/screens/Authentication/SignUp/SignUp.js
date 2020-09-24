@@ -8,7 +8,14 @@ import {AppText, AppInput, AppButton, FloatingAppInput} from '@/components';
 
 import SignUpService from '@/services/SignUpService';
 import LoginService from '@/services/LoginService';
-import {Close, EyeDark, EyeLight} from '@/assets/images/icons/';
+import {
+  Close,
+  EyeDark,
+  EyeLight,
+  LoginApple,
+  LoginFB,
+  LoginGoogle,
+} from '@/assets/images/icons/';
 
 import {Context} from '@/context';
 import SwitchComponent from '@/components/Switch/Switch';
@@ -597,33 +604,36 @@ const SignUp = (props) => {
             <View style={styles.orCopyWrapper}>
               <AppText>or</AppText>
             </View>
-            <View style={styles.otherLoginWrapper}>
-              <AppButton
-                text="Sign up with Facebook"
-                type="primary"
-                height="md"
-                icon="Facebook"
-                iconPosition="left"
-                customStyle={styles.disableButton}
+            <View style={styles.socialMediaLogin}>
+              {Platform.OS === 'ios' ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    //alert();
+                    LoginService.appleLogin().then(() => {
+                      closeSlider();
+                    });
+                  }}
+                  style={{paddingHorizontal: normalize(8)}}>
+                  <LoginApple />
+                </TouchableOpacity>
+              ) : null}
+              <TouchableOpacity
                 onPress={() => {
                   LoginService.facebookSignIn().then(() => closeSlider());
                 }}
-              />
-              <AppButton
-                text="Sign up with Google"
-                type="primary"
-                height="md"
-                icon="Google"
-                iconPosition="left"
-                customStyle={styles.disableButton}
+                style={{paddingHorizontal: normalize(8)}}>
+                <LoginFB />
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => {
-                  closeSlider();
                   LoginService.googleLogin().then(() => {
                     console.log('Signed in with Google!');
                     closeSlider();
                   });
                 }}
-              />
+                style={{paddingHorizontal: normalize(8)}}>
+                <LoginGoogle />
+              </TouchableOpacity>
             </View>
 
             <View style={styles.loginLinkCopy}>
@@ -763,6 +773,14 @@ const styles = StyleSheet.create({
   promoSwitch: {
     width: '20%',
     alignItems: 'flex-end',
+  },
+  socialMediaLogin: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: normalize(8),
+    paddingBottom: normalize(16),
   },
 });
 
