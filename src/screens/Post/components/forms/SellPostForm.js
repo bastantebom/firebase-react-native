@@ -229,6 +229,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
+        <View style={{flexDirection: 'row', backgroundColor: 'red', justifyContent: 'space-between'}}>
+          <AppText>Who can see your post?</AppText>
+          <TouchableOpacity>
+            <AppText>Public</AppText>
+          </TouchableOpacity>
+        </View>
+
         <PostImageUpload />
 
         <AppInput
