@@ -68,6 +68,7 @@ const Post = ({data, type, isLoading}) => {
     display_name: display_name ? display_name : full_name,
     date_posted: date_posted,
     uid: uid,
+    post_type: post_type
   };
 
   const navigation = useNavigation();
@@ -97,7 +98,11 @@ const Post = ({data, type, isLoading}) => {
       <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
         <PaddingView paddingSize={2} style={styles.container}>
           <ProfileInfo userInfo={userInfo} type="dashboard" />
-
+          <View style={{ position: 'absolute', top: normalize(11), right: 11, padding: 5 }}>
+            <TouchableOpacity activeOpacity={.7}>
+              <JarHeart width={normalize(21)} height={normalize(21)} />
+            </TouchableOpacity>
+          </View>
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
@@ -127,12 +132,33 @@ const Post = ({data, type, isLoading}) => {
                   {title}
                 </AppText>
 
-                <AppText
-                  textStyle="price"
-                  customStyle={styles.priceText}
-                  color={Colors.secondaryMountainMeadow}>
-                  ₱{price}
-                </AppText>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <AppText
+                    textStyle="price"
+                    customStyle={styles.priceText}
+                    color={
+                      Colors.secondaryMountainMeadow
+                      // Colors.neutralsMischka
+                    }
+                  >
+                    ₱{price}
+                  </AppText>
+                  {/* <AppText
+                    textStyle="eyebrow2"
+                    customStyle={{ 
+                      // backgroundColor: Colors.neutralsMischka, 
+                      // minWidth: normalize(45), 
+                      fontSize: normalize(10),
+                      textAlign: 'center', 
+                      paddingHorizontal: 8, 
+                      paddingVertical: 3, 
+                      // borderRadius: 20, 
+                    }}
+                    color={Colors.neutralsMischka}
+                  >
+                    SOLD
+                  </AppText> */}
+                </View>
               </TouchableOpacity>
 
               <Divider style={styles.dividerStyle} />
@@ -274,8 +300,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   priceText: {
-    color: Colors.secondaryMountainMeadow,
-    marginBottom: 8,
+    // marginBottom: 8,
+    marginRight: 8
   },
 });
 
