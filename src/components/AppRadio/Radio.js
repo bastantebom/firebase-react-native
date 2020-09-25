@@ -20,9 +20,7 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
           paddingLeft: 16,
           paddingRight: 8,
           paddingVertical: 8,
-          backgroundColor: value
-            ? Colors.primaryCream
-            : Colors.neutralsWhitesmoke,
+
           ...style,
           justifyContent: 'space-between',
         }}>
@@ -51,6 +49,9 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
               borderColor: value
                 ? Colors.checkboxBorderActive
                 : Colors.checkboxBorderDefault,
+              backgroundColor: value
+                ? Colors.primaryCream
+                : Colors.neutralsWhitesmoke,
             }}>
             {value ? (
               <RadioDot width={normalize(6)} height={normalize(6)} />

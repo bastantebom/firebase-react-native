@@ -144,7 +144,8 @@ import ContactEmail from './contact-email.svg';
 
 import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
-import LoginApple from './login_Apple03.svg';
+import LoginApple from './apple.svg';
+import Public from './public.svg';
 
 //OWN MENU ICONS
 import HidePost from './hide-post.svg';
@@ -159,6 +160,7 @@ import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
 
 export {
+  Public,
   ContactTelephone,
   ContactEmail,
   CircleTickWhite,
