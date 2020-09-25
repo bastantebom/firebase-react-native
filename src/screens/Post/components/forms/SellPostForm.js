@@ -9,7 +9,7 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import storage from '@react-native-firebase/storage';
 /*Map Essentials*/
-import {ArrowRight} from '@/assets/images/icons';
+import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
@@ -26,6 +26,7 @@ import {
   AppButton,
   CacheableImage,
   TransitionIndicator,
+  AppRadio,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -59,6 +60,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   });
   const [showLocation, setShowLocation] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
+  const [listAsSingle, setListAsSingle] = useState(false);
 
   useEffect(() => {
     if (images) {
@@ -229,10 +231,39 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingBottom: 32,
         }}>
-        <View style={{flexDirection: 'row', backgroundColor: 'red', justifyContent: 'space-between'}}>
-          <AppText>Who can see your post?</AppText>
-          <TouchableOpacity>
-            <AppText>Public</AppText>
+        <View
+          style={{
+            flexDirection: 'row',
+            // backgroundColor: 'red',
+            alignItems: 'center',
+            marginBottom: 12,
+            justifyContent: 'space-between',
+          }}>
+          <AppText textStyle="caption" customStyle={{fontSize: 16}}>
+            Who can see your post?*
+          </AppText>
+          <TouchableOpacity activeOpacity={0.7}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderWidth: 1,
+                borderColor: Colors.checkboxBorderDefault,
+                borderRadius: 4,
+                paddingHorizontal: 12,
+                paddingVertical: 4,
+              }}>
+              <Public />
+              <AppText
+                customStyle={{paddingLeft: 4}}
+                color={Colors.checkboxBorderDefault}
+                textStyle="caption">
+                Public
+              </AppText>
+              <View style={{paddingLeft: 12}}>
+                <ArrowDown />
+              </View>
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -258,7 +289,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         label="Description"
         multiline="true"
         numberOfLines={5}
-      /> */}
+        /> */}
 
         <TextInput
           value={description}
@@ -295,7 +326,38 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderBottomRightRadius: 4,
           paddingVertical: 32,
           borderRadius: 4,
-          marginBottom: 16,
+          marginBottom: 8,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 16,
+            // backgroundColor: 'red',
+          }}>
+          {/* <AppText
+            textStyle="subtitle2"
+            customStyle={{marginBottom: 16, backgroundColor: 'green'}}>
+            List as Single Item
+          </AppText> */}
+          <AppRadio
+            label="Asdasd"
+            value={listAsSingle}
+            valueChangeHandler={() => setListAsSingle(!listAsSingle)}
+          />
+        </View>
+      </View>
+
+      <View
+        style={{
+          backgroundColor: 'white',
+          padding: 24,
+          borderBottomLeftRadius: 4,
+          borderBottomRightRadius: 4,
+          paddingVertical: 32,
+          borderRadius: 4,
+          marginBottom: 8,
         }}>
         <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
           Delivery/Pick up Method
