@@ -5,20 +5,27 @@ import {
   ActivityIndicator,
   Dimensions,
   TextInput,
+  Animated,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import storage from '@react-native-firebase/storage';
+// import {Switch} from 'react-native-switch';
+import Textarea from 'react-native-textarea';
+
 /*Map Essentials*/
-import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
 /*Map Essentials*/
 
-// import {Switch} from 'react-native-switch';
-import Textarea from 'react-native-textarea';
-
+import {
+  ArrowRight,
+  Public,
+  ArrowDown,
+  MenuInfo,
+  PostInfo,
+} from '@/assets/images/icons';
 import {
   AppText,
   AppInput,
@@ -27,6 +34,7 @@ import {
   CacheableImage,
   TransitionIndicator,
   AppRadio,
+  AppCheckbox,
 } from '@/components';
 import {normalize, Colors} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -61,6 +69,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [showLocation, setShowLocation] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
   const [listAsSingle, setListAsSingle] = useState(false);
+  const [listAsMultiple, setListAsMultiple] = useState(false);
+  const [freeCheckbox, setFreeCheckbox] = useState(false);
 
   useEffect(() => {
     if (images) {
@@ -220,6 +230,60 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setImageCurrent('');
   };
 
+  const RadioStateHandler = (val) => {
+    if (val === 'single') {
+      setListAsMultiple(false);
+      setListAsSingle(true);
+      showSingle();
+    }
+    if (val === 'multiple') {
+      setListAsMultiple(true);
+      setListAsSingle(false);
+      hideSingle();
+    }
+  };
+
+  /**FOR ANIMATION */
+  const [singleActiveHeight] = useState(new Animated.Value(0));
+  const [singleActiveOpacity] = useState(new Animated.Value(0));
+
+  let singleActiveStyle = {
+    height: singleActiveHeight,
+    opacity: singleActiveOpacity,
+  };
+
+  const showSingle = async () => {
+    Animated.sequence([
+      Animated.timing(singleActiveHeight, {
+        toValue: 134,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(singleActiveOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  const hideSingle = async () => {
+    Animated.sequence([
+      Animated.timing(singleActiveOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(singleActiveHeight, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  /**FOR ANIMATION */
+
   return (
     <>
       <View
@@ -276,12 +340,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           value={title}
           onChangeText={(text) => setTitle(text)}
         />
-        <AppInput
+        {/* <AppInput
           customStyle={{marginBottom: 16}}
           label="Price"
           value={price}
           onChangeText={(text) => setPrice(text)}
-        />
+        /> */}
 
         {/* <AppInput
         // wont work because of fixed height
@@ -328,25 +392,59 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           borderRadius: 4,
           marginBottom: 8,
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 16,
-            // backgroundColor: 'red',
-          }}>
-          {/* <AppText
-            textStyle="subtitle2"
-            customStyle={{marginBottom: 16, backgroundColor: 'green'}}>
-            List as Single Item
-          </AppText> */}
-          <AppRadio
-            label="Asdasd"
-            value={listAsSingle}
-            valueChangeHandler={() => setListAsSingle(!listAsSingle)}
+        <AppRadio
+          label="List as Single Item"
+          value={listAsSingle}
+          style={{paddingLeft: 0}}
+          valueChangeHandler={() => RadioStateHandler('single')}
+        />
+
+        <Animated.View
+          style={[
+            {
+              borderBottomWidth: 1,
+              borderBottomColor: Colors.neutralsGainsboro,
+              marginBottom: 24,
+            },
+            singleActiveStyle,
+          ]}>
+          <AppInput
+            customStyle={{marginBottom: 16}}
+            label="Price"
+            value={price}
+            onChangeText={(text) => setPrice(text)}
           />
-        </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => setFreeCheckbox(!freeCheckbox)}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <PostInfo />
+                <AppText customStyle={{paddingLeft: 4}} textStyle="caption">
+                  I'm offering this item for{' '}
+                  <AppText customStyle={{fontWeight: 'bold'}}>FREE.</AppText>
+                </AppText>
+              </View>
+            </TouchableOpacity>
+
+            <AppCheckbox
+              value={freeCheckbox}
+              valueChangeHandler={() => setFreeCheckbox(!freeCheckbox)}
+            />
+          </View>
+        </Animated.View>
+
+        <AppRadio
+          label="List as Multiple Items"
+          value={listAsMultiple}
+          style={{paddingLeft: 0}}
+          valueChangeHandler={() => RadioStateHandler('multiple')}
+        />
       </View>
 
       <View
