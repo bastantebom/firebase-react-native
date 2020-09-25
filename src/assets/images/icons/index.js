@@ -32,6 +32,7 @@ import MapMarker from '@/assets/images/icons/pinbee_marker.svg';
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg';
 import JarHeart from '@/assets/images/icons/jar-heart.svg';
+import JarHeartColored from '@/assets/images/icons/jar-heart-colored.svg';
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg';
@@ -210,6 +211,7 @@ export {
   FilterServices,
   Filter,
   JarHeart,
+  JarHeartColored,
   NotificationDot,
   PostBG,
   PostPlus,
