@@ -702,6 +702,7 @@ const RenderActiveForm = ({
         initialData={initialData}
       />
     );
+  return <></>;
 };
 
 const styles = StyleSheet.create({

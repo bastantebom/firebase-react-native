@@ -30,10 +30,16 @@ import {normalize} from '@/globals';
 // create a component
 const SignUp = (props) => {
   const [isPromo, setIsPromo] = useState(false);
+  const [isTerms, setIsTerms] = useState(false);
   const [modalContentNumber, setModalContentNumber] = useState(0);
   const toggleSwitch = () => {
     setIsPromo((previousState) => !previousState);
   };
+
+  const toggleTerms = () => {
+    setIsTerms((previousState) => !previousState);
+  };
+
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible((previousState) => !previousState);
@@ -61,7 +67,7 @@ const SignUp = (props) => {
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [passwordBorder, setPasswordBorder] = useState({});
   const [signUpForm, setSignUpForm] = useState({
-    terms_conditions: true,
+    terms_conditions: false,
     receive_updates: false,
   });
   const [buttonStyle, setButtonStyle] = useState({
@@ -100,7 +106,7 @@ const SignUp = (props) => {
     setPasswordBorder({});
 
     setSignUpForm({
-      terms_conditions: true,
+      terms_conditions: false,
       receive_updates: false,
     });
 
@@ -134,6 +140,13 @@ const SignUp = (props) => {
     const newKeyValue = {receive_updates: isPromo};
     setSignUpForm({...signUpForm, ...newKeyValue});
   }, [isPromo]);
+
+  useEffect(() => {
+    // exit early when we reach 0
+    const newKeyValue = {terms_conditions: isTerms};
+    setSignUpForm({...signUpForm, ...newKeyValue});
+    checkInputComplete();
+  }, [isTerms]);
 
   const validateEmail = (email) => {
     let mobileReg = /^(09|\+639)\d{9}$/;
@@ -233,7 +246,8 @@ const SignUp = (props) => {
         !isValidMobileNumber &&
         isValidEmail &&
         name.length > 1 &&
-        password.length > 1
+        password.length > 1 &&
+        isTerms
       ) {
         setButtonStyle({});
         setButtonDisabled(false);
@@ -250,34 +264,6 @@ const SignUp = (props) => {
         });
         setButtonDisabled(true);
       }
-    }
-  };
-
-  const onBlurEmail = () => {
-    setEmailBorder({});
-    setIsToggleVisible(false);
-    if (loginUse === 'email') {
-      if (!isValidEmail) {
-        setIsValidLogin(false);
-        setButtonStyle({
-          backgroundColor: AppColor.buttonDisable,
-          borderColor: AppColor.buttonDisable,
-        });
-        setButtonDisabled(true);
-      }
-    }
-    if (loginUse === 'mobile number') {
-      if (!isValidMobileNumber) {
-        setIsValidLogin(false);
-        setButtonStyle({
-          backgroundColor: AppColor.buttonDisable,
-          borderColor: AppColor.buttonDisable,
-        });
-        setButtonDisabled(true);
-      }
-    }
-    if (email.length === 0) {
-      setIsValidLogin(false);
     }
   };
 
@@ -355,9 +341,14 @@ const SignUp = (props) => {
             <AppCheckbox
               Icon=""
               label=""
-              value={!signUpForm.terms_conditions}
-              valueChangeHandler={toggleSwitch}
-              style={{marginBottom: 16}}
+              value={signUpForm.terms_conditions}
+              valueChangeHandler={toggleTerms}
+              style={{
+                marginLeft: 0,
+                paddingLeft: 0,
+                marginTop: 8,
+                backgroundColor: 'transparent',
+              }}
             />
           </View>
           <View style={styles.terms}>
@@ -522,7 +513,7 @@ const SignUp = (props) => {
             <Privacy isModalVisible={isModalVisible} onClose={toggleModal} />
             <Terms isModalVisibleT={isModalVisibleT} onClose={toggleModalT} />
 
-            <View>
+            <View style={{marginTop: 16}}>
               <AppButton
                 text="Sign up"
                 type="primary"
@@ -699,7 +690,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     //justifyContent: 'center',
     alignItems: 'flex-start',
-    marginBottom: 16,
   },
 
   promoCopy: {

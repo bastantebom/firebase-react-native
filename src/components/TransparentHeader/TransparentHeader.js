@@ -1,4 +1,4 @@
-import React, {createRef, useState} from 'react';
+import React, {createRef, useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -26,6 +26,7 @@ import {
   ProfileBlockRed,
 } from '@/assets/images/icons';
 import {normalize, GlobalStyle} from '@/globals';
+import {UserContext} from '@/context/UserContext';
 
 const TransparentHeader = ({
   toggleEllipsisState,
@@ -43,6 +44,7 @@ const TransparentHeader = ({
   deletePostFunction,
   userInfo,
   triggerNotify,
+  userID,
 }) => {
   const navigation = useNavigation();
   const shareHandler = async () => {
@@ -67,6 +69,8 @@ const TransparentHeader = ({
       // setResult('error: '.concat(getErrorString(error)));
     }
   };
+
+  const {user} = useContext(UserContext);
 
   if (type === 'post-other') {
     return (
@@ -285,8 +289,9 @@ const TransparentHeader = ({
             </View>
 
             {/* Right aligned icons */}
-            <View style={{flexDirection: 'row'}}>
-              {/* <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
+            {user ? (
+              <View style={{flexDirection: 'row'}}>
+                {/* <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
                 <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
                   {following ? (
                     <HeaderFollowing
@@ -314,17 +319,18 @@ const TransparentHeader = ({
                 </View>
               </TouchableOpacity> */}
 
-              {/* <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={toggleEllipsisState}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderEllipsis
-                    width={normalize(16)}
-                    height={normalize(16)}
-                  />
-                </View>
-              </TouchableOpacity> */}
-            </View>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={toggleEllipsisState}>
+                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                    <HeaderEllipsis
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
         </SafeAreaView>
 
@@ -352,6 +358,7 @@ const TransparentHeader = ({
           <EllipsisMenu
             toggleEllipsisState={toggleEllipsisState}
             userInfo={userInfo}
+            userID={userID}
           />
         </Modal>
       </>
