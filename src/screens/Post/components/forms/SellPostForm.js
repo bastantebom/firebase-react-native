@@ -14,6 +14,10 @@ import storage from '@react-native-firebase/storage';
 import Textarea from 'react-native-textarea';
 
 /*Map Essentials*/
+<<<<<<< HEAD
+=======
+import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
+>>>>>>> chore: service post form WIP
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
@@ -36,7 +40,10 @@ import {
   CacheableImage,
   TransitionIndicator,
   AppRadio,
+<<<<<<< HEAD
   AppCheckbox,
+=======
+>>>>>>> chore: service post form WIP
 } from '@/components';
 import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -72,10 +79,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [showLocation, setShowLocation] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
   const [listAsSingle, setListAsSingle] = useState(false);
+<<<<<<< HEAD
   const [listAsMultiple, setListAsMultiple] = useState(false);
   const [freeCheckbox, setFreeCheckbox] = useState(false);
   const [addItemModal, showAddItemModal] = useState(false);
   
+=======
+>>>>>>> chore: service post form WIP
 
   useEffect(() => {
     if (images) {
