@@ -162,6 +162,7 @@ import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
 
 export {
+  AngleDown,
   PostAdd,
   Public,
   ContactTelephone,
