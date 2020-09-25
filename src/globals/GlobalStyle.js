@@ -25,7 +25,7 @@ const GlobalStyle = StyleSheet.create({
     marginBottom: 16,
   },
   dividerStyle: {
-    backgroundColor: Colors.neutralsZircon,
+    backgroundColor: Colors.neutralsGainsboro,
     width: '100%',
   },
 });

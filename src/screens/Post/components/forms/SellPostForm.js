@@ -7,6 +7,7 @@ import {
   TextInput,
   Animated,
 } from 'react-native';
+import {Divider} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import storage from '@react-native-firebase/storage';
 // import {Switch} from 'react-native-switch';
@@ -25,6 +26,7 @@ import {
   ArrowDown,
   MenuInfo,
   PostInfo,
+  PostAdd,
 } from '@/assets/images/icons';
 import {
   AppText,
@@ -36,7 +38,7 @@ import {
   AppRadio,
   AppCheckbox,
 } from '@/components';
-import {normalize, Colors} from '@/globals';
+import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
@@ -235,17 +237,26 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       setListAsMultiple(false);
       setListAsSingle(true);
       showSingle();
+      hideMultiple();
     }
     if (val === 'multiple') {
       setListAsMultiple(true);
       setListAsSingle(false);
       hideSingle();
+      showMultiple();
     }
   };
 
   /**FOR ANIMATION */
   const [singleActiveHeight] = useState(new Animated.Value(0));
   const [singleActiveOpacity] = useState(new Animated.Value(0));
+  const [multipleActiveHeight] = useState(new Animated.Value(0));
+  const [multipleActiveOpacity] = useState(new Animated.Value(0));
+
+  let multipleActiveStyle = {
+    height: multipleActiveHeight,
+    opacity: multipleActiveOpacity,
+  };
 
   let singleActiveStyle = {
     height: singleActiveHeight,
@@ -255,7 +266,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const showSingle = async () => {
     Animated.sequence([
       Animated.timing(singleActiveHeight, {
-        toValue: 134,
+        toValue: 110,
         duration: 200,
         useNativeDriver: false,
       }),
@@ -275,6 +286,36 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         useNativeDriver: false,
       }),
       Animated.timing(singleActiveHeight, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  const showMultiple = async () => {
+    Animated.sequence([
+      Animated.timing(multipleActiveHeight, {
+        toValue: 54,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(multipleActiveOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  const hideMultiple = async () => {
+    Animated.sequence([
+      Animated.timing(multipleActiveOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(multipleActiveHeight, {
         toValue: 0,
         duration: 200,
         useNativeDriver: false,
@@ -399,15 +440,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           valueChangeHandler={() => RadioStateHandler('single')}
         />
 
-        <Animated.View
-          style={[
-            {
-              borderBottomWidth: 1,
-              borderBottomColor: Colors.neutralsGainsboro,
-              marginBottom: 24,
-            },
-            singleActiveStyle,
-          ]}>
+        <Animated.View style={[singleActiveStyle]}>
           <AppInput
             customStyle={{marginBottom: 16}}
             label="Price"
@@ -425,9 +458,16 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               onPress={() => setFreeCheckbox(!freeCheckbox)}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <PostInfo />
-                <AppText customStyle={{paddingLeft: 4}} textStyle="caption">
+                <AppText
+                  customStyle={{paddingLeft: 4}}
+                  textStyle="caption"
+                  color={Colors.contentPlaceholder}>
                   I'm offering this item for{' '}
-                  <AppText customStyle={{fontWeight: 'bold'}}>FREE.</AppText>
+                  <AppText
+                    customStyle={{fontWeight: 'bold'}}
+                    color={Colors.contentPlaceholder}>
+                    FREE.
+                  </AppText>
                 </AppText>
               </View>
             </TouchableOpacity>
@@ -439,12 +479,30 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           </View>
         </Animated.View>
 
+        <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
+
         <AppRadio
           label="List as Multiple Items"
           value={listAsMultiple}
           style={{paddingLeft: 0}}
           valueChangeHandler={() => RadioStateHandler('multiple')}
         />
+        <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+          You can add more products and categories.
+        </AppText>
+
+        {/* IF statement here where we show the added items */}
+
+        <Animated.View style={[multipleActiveStyle]}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
+            <PostAdd width={normalize(24)} height={normalize(24)} />
+            <AppText customStyle={{paddingLeft: 8}} textStyle="body2">
+              Add an Item
+            </AppText>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
       <View
