@@ -137,6 +137,8 @@ import PostInfo from './PostInfo.svg';
 import PostNavigation from './PostNavigation.svg';
 import PostPencil from './PostPencil.svg';
 import PostRemove from './PostRemove.svg';
+import PostAdd from './post-add.svg';
+
 import ProfileImageDefault from './profile-image-default.svg';
 
 import ContactTelephone from './contact-telephone.svg';
@@ -160,6 +162,7 @@ import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
 
 export {
+  PostAdd,
   Public,
   ContactTelephone,
   ContactEmail,
