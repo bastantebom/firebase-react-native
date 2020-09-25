@@ -14,10 +14,7 @@ import storage from '@react-native-firebase/storage';
 import Textarea from 'react-native-textarea';
 
 /*Map Essentials*/
-<<<<<<< HEAD
-=======
-import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
->>>>>>> chore: service post form WIP
+// import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
@@ -508,7 +505,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
+<<<<<<< HEAD
             onPress={() => showAddItemModal(true)}
+=======
+>>>>>>> chore: create animation for multiple and single item radio button
             activeOpacity={0.7}
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
