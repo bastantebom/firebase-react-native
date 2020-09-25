@@ -51,7 +51,7 @@ const Activity = () => {
               </AppText>
           </View>
           <TouchableOpacity
-            style={{ paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400' }}>
+            style={{ paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}>
             <AppText textStyle="button2">
               Explore Postings Near You
               </AppText>
