@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,16 +7,17 @@ import {
   Text,
 } from 'react-native';
 
-import {AppText} from '@/components';
-import {Colors, normalize} from '@/globals';
+import { AppText } from '@/components';
+import { Colors, normalize } from '@/globals';
 
-const TabNavigation = ({routesList, bottomTab}) => {
+const TabNavigation = ({ routesList, bottomTab }) => {
   if (!routesList)
     return <AppText color="red">routeList props is required</AppText>;
 
   const [routes] = useState(routesList);
   const [activeTab, setActiveTab] = useState(routes[0].key);
   const [activeContent, setActiveContent] = useState(0);
+  const [withBadge, setWithBadge] = useState(false);
 
   const tabChangeHandler = (tabName, index) => {
     setActiveTab(tabName);
@@ -29,13 +30,13 @@ const TabNavigation = ({routesList, bottomTab}) => {
         <TouchableOpacity
           key={route.key}
           activeOpacity={0.7}
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           onPress={() => tabChangeHandler(route.key, index)}>
           <View style={styles.navigationItem}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <AppText
                 textStyle="tabNavigation"
-                customStyle={{textAlign: 'center'}}
+                customStyle={{ textAlign: 'center' }}
                 color={
                   activeTab === route.key
                     ? Colors.contentEbony
@@ -43,16 +44,18 @@ const TabNavigation = ({routesList, bottomTab}) => {
                 }>
                 {route.title}
               </AppText>
-              {/* <View
-                style={{
-                  backgroundColor: Colors.neutralsGainsboro,
-                  height: normalize(19),
-                  paddingHorizontal: 4,
-                  borderRadius: 8,
-                  marginLeft: 8,
-                }}>
-                <AppText>{route.numberBadge}</AppText>
-              </View> */}
+              {route.numberBadge ? (
+                <View
+                  style={{
+                    backgroundColor: Colors.neutralsGainsboro,
+                    height: normalize(19),
+                    paddingHorizontal: 4,
+                    borderRadius: 8,
+                    marginLeft: 8,
+                  }}>
+                  <AppText>{route.numberBadge}</AppText>
+                </View>
+              ) : <></>}
             </View>
 
             <View
@@ -87,7 +90,7 @@ const TabNavigation = ({routesList, bottomTab}) => {
   // }, []);
 
   return (
-    <View style={[styles.container, {paddingBottom: bottomTab && 65}]}>
+    <View style={[styles.container, { paddingBottom: bottomTab && 65 }]}>
       <View
         style={[
           styles.navigationContainer,
@@ -95,7 +98,7 @@ const TabNavigation = ({routesList, bottomTab}) => {
         ]}>
         <RenderRoutes />
       </View>
-      <View style={{flex: 1}}>{routesList[activeContent].renderPage}</View>
+      <View style={{ flex: 1 }}>{routesList[activeContent].renderPage}</View>
     </View>
   );
 };
