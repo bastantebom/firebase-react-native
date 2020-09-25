@@ -56,7 +56,7 @@
 	<key>NSAppleMusicUsageDescription</key>
     <string>$(PRODUCT_NAME) would like to access your Media Library to add images to your post.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Your message to user when the camera is accessed for the first time</string>
+	<string>$(PRODUCT_NAME) would like to access your camera. This lets you take photos to upload and include in your post.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -64,11 +64,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your location.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Your message to user when the microphone is accessed for the first time</string>
+	<string>$(PRODUCT_NAME) would like to access your microphone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Your message to user when the photo library is accessed for the first time</string>
+	<string>$(PRODUCT_NAME) would like to access your photos. This lets you choose which photos to upload and include in your post.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Your message to user when the photo library is accessed for the first time</string>
+	<string>$(PRODUCT_NAME) would like to access your photos. This lets you choose which photos to upload and include in your post.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RoundedMplus1c-Light.ttf</string>
