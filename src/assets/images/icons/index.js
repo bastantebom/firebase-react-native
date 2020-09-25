@@ -144,7 +144,7 @@ import ContactEmail from './contact-email.svg';
 
 import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
-import LoginApple from './apple.svg';
+import LoginApple from './login_Apple03.svg';
 
 export {
   ContactTelephone,
