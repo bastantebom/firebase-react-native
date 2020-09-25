@@ -43,6 +43,7 @@ import {PostService, ImageUpload, MapService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
+import AddItemModal from './AddItemModal';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
@@ -73,6 +74,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [listAsSingle, setListAsSingle] = useState(false);
   const [listAsMultiple, setListAsMultiple] = useState(false);
   const [freeCheckbox, setFreeCheckbox] = useState(false);
+  const [addItemModal, showAddItemModal] = useState(false);
 
   useEffect(() => {
     if (images) {
@@ -495,6 +497,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
+            onPress={() => showAddItemModal(true)}
             activeOpacity={0.7}
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
@@ -621,6 +624,20 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
               prepareAddressUpdate(fullAddress, addStr)
             }
           />
+        </Modal>
+        <Modal
+          isVisible={addItemModal}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            justifyContent:  'flex-start',
+            height: Dimensions.get('window').height,
+          }}>
+          <AddItemModal closeModal={() => showAddItemModal(false)} />
         </Modal>
         <TransitionIndicator loading={loadingSubmit} />
       </View>
