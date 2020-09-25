@@ -17,6 +17,7 @@ import {UserContext} from '@/context/UserContext';
 import {
   Verified,
   JarHeart,
+  JarHeartColored,
   StarRating,
   NavigationPinRed,
   NavigationArrow,
@@ -30,6 +31,7 @@ import SinglePostOthersView from './SinglePostOthersView';
 const Post = ({data, type, isLoading}) => {
   const {user} = useContext(UserContext);
   const [showPost, setShowPost] = useState(false);
+  const [likePost, setLikePost] = useState(false);
 
   const {
     display_name,
@@ -60,6 +62,10 @@ const Post = ({data, type, isLoading}) => {
   let timeAgo = (time) => {
     return '• ' + timePassed(time) + ' ago';
   };
+
+  const toggleLike = () => {
+    setLikePost(!likePost);
+  }
 
   const userInfo = {
     username: username,
@@ -99,8 +105,13 @@ const Post = ({data, type, isLoading}) => {
         <PaddingView paddingSize={2} style={styles.container}>
           <ProfileInfo userInfo={userInfo} type="dashboard" />
           <View style={{ position: 'absolute', top: normalize(11), right: 11, padding: 5 }}>
-            <TouchableOpacity activeOpacity={.7}>
-              <JarHeart width={normalize(21)} height={normalize(21)} />
+            <TouchableOpacity 
+              onPress={toggleLike}
+              activeOpacity={.7}
+            >
+              { 
+                likePost  ? <JarHeartColored width={normalize(20)} height={normalize(20)}/> : <JarHeart width={normalize(20)} height={normalize(20)} />
+              }
             </TouchableOpacity>
           </View>
           <View style={styles.postContainer}>
