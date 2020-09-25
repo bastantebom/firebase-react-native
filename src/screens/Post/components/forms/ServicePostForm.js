@@ -12,7 +12,7 @@ import storage from '@react-native-firebase/storage';
 import Config from '@/services/Config';
 import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
-import {PostService} from '@/services';
+import {PostService, ImageUpload, MapService} from '@/services';
 import {PostImageUpload} from '../PostImageUpload';
 import {AppText, AppInput, TransitionIndicator} from '@/components';
 import {normalize, Colors} from '@/globals';
@@ -70,62 +70,42 @@ const ServicePostForm = ({
     if (initialData.post_id) {
       console.log('edit post');
       const {store_location} = initialData;
-      getStringAddress(store_location.latitude, store_location.longitude);
+      MapService.getStringAddress(
+        store_location.latitude,
+        store_location.longitude,
+        '',
+        setStringAddress,
+        setAddressComponents,
+        addressComponents,
+      );
     } else {
       if (userInfo.address) {
         const {address} = userInfo;
-        getStringAddress(address.latitude, address.longitude);
+        MapService.getStringAddress(
+          address.latitude,
+          address.longitude,
+          '',
+          setStringAddress,
+          setAddressComponents,
+          addressComponents,
+        );
       }
     }
   }, []);
 
+  const prepareAddressUpdate = (fullAddress, addStr) => {
+    MapService.getStringAddress(
+      fullAddress.latitude,
+      fullAddress.longitude,
+      addStr,
+      setStringAddress,
+      setAddressComponents,
+      addressComponents,
+    );
+  };
+
   const toggleMap = () => {
     setMap(!map);
-  };
-
-  const prepareAddressUpdate = (fullAddress, addStr) => {
-    getStringAddress(fullAddress.latitude, fullAddress.longitude, addStr);
-  };
-
-  const getStringAddress = (lat, lng, addStr) => {
-    Geocoder.init(Config.apiKey);
-    Geocoder.from(lat, lng)
-      .then((json) => {
-        setStringAddress(addStr ? addStr : json.results[1].formatted_address);
-        const arrayToExtract =
-          json.results.length == 14
-            ? 9
-            : json.results.length == 13
-            ? 8
-            : json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
-        const splitAddress = json.results[
-          arrayToExtract
-        ].formatted_address.split(',');
-
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            latitude: lat,
-            longitude: lng,
-            city: splitAddress[0],
-            province: splitAddress[1],
-            country: splitAddress[2],
-          },
-        });
-      })
-      .catch((error) => console.warn(error));
   };
 
   const checkFormContent = () => {
@@ -138,36 +118,6 @@ const ServicePostForm = ({
     checkFormContent();
   }, [title, price, paymentMethod, description]);
 
-  const uploadImageHandler = async (image) => {
-    try {
-      if (image.includes('firebasestorage.googleapis.com')) return image;
-
-      console.log('IMAGE');
-      console.log(image);
-
-      const newFilename =
-        Platform.OS === 'ios'
-          ? image
-          : image.substring(image.lastIndexOf('/') + 1);
-
-      const uploadUri =
-        Platform.OS === 'ios' ? image.replace('file://', '') : image;
-
-      // console.log('new file name');
-      // console.log(newFilename);
-
-      const task = storage().ref();
-      const fileRef = task.child(`${user.uid}/post-photo/${newFilename}`);
-      console.log('uploadUri ' + uploadUri);
-      await fileRef.putFile(uploadUri);
-      const downloadURL = await fileRef.getDownloadURL();
-      console.log('downloadURL ' + downloadURL);
-      return downloadURL;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const publish = async () => {
     setLoadingSubmit(true);
 
@@ -175,7 +125,9 @@ const ServicePostForm = ({
       uid: user.uid,
       post_type: 'service',
       images: await Promise.all(
-        coverPhoto.map(async (image) => await uploadImageHandler(image)),
+        coverPhoto.map(
+          async (image) => await ImageUpload.upload(image, user.uid),
+        ),
       ),
       title: title,
       price: price,
