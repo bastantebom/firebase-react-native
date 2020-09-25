@@ -80,6 +80,8 @@ const TransparentHeader = ({
   };
   const {user} = useContext(UserContext);
 
+  const {user} = useContext(UserContext);
+
   if (type === 'post-other') {
     //console.log(postTitle);
     return (

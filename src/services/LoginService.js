@@ -124,7 +124,7 @@ async function appleLogin() {
           appleAuthRequestResponse.fullName.givenName +
           ' ' +
           appleAuthRequestResponse.fullName.familyName,
-        social_provider: 'apple',
+        provider: 'apple',
       })
         .then((response) => {
           if (response.success) {
