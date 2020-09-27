@@ -42,6 +42,13 @@ import {VerificationScreen} from '@/screens/Dashboard/Verification';
 // import Geocoder from 'react-native-geocoding';
 // import Config from '@/services/Config';
 
+import algoliasearch from 'algoliasearch/lite';
+import { InstantSearch, connectSearchBox } from 'react-instantsearch-native';
+// import { InstantSearch } from 'react-instantsearch-native';
+import SearchBox from './components/Searchbox';
+import InfiniteHits from './components/InfiniteHits';
+import RefinementList from './components/RefinementList';
+
 // function Dashboard({ navigation }) {
 function Dashboard() {
   const [modalState, setModalState] = useState(false);
@@ -137,14 +144,21 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     });
   };
 
+  const searchClient = algoliasearch(
+    "B1G2GM9NG0",
+    "aadef574be1f9252bb48d4ea09b5cfe5"
+  );
 
   return (
     <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
       <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-        <AppInput
-          customStyle={{ flex: 1, marginRight: normalize(5) }}
-          placeholder="Start your search"
-        />
+        <View style={{ flex: 1 }}>
+          <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
+            <SearchBox />
+            {/* <RefinementList attribute="brand" limit={5} /> */}
+            {/* <InfiniteHits /> */}
+          </InstantSearch>
+        </View>
         <TouchableOpacity onPress={toggleFilter}>
           <View style={styles.circleButton}>
             <Filter />
