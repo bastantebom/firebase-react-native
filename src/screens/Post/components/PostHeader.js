@@ -653,6 +653,10 @@ const RenderActiveForm = ({
   const [paymentMethod, setPaymentMethod] = useState(
     initialData.payment_method,
   );
+  const [listAsSingle, setListAsSingle] = useState(false);
+  const [listAsMultiple, setListAsMultiple] = useState(false);
+  const [freeCheckbox, setFreeCheckbox] = useState(false);
+  const [postInStore, setPostInStore] = useState(false);
 
   const formState = {
     title: title,
@@ -671,6 +675,14 @@ const RenderActiveForm = ({
     setStoreLocation: setStoreLocation,
     paymentMethod: paymentMethod,
     setPaymentMethod: setPaymentMethod,
+    listAsSingle: listAsSingle,
+    setListAsSingle: setListAsSingle,
+    listAsMultiple: listAsMultiple,
+    setListAsMultiple: setListAsMultiple,
+    freeCheckbox: freeCheckbox,
+    setFreeCheckbox: setFreeCheckbox,
+    postInStore,
+    setPostInStore,
   };
 
   if (activeScreen === 'post')

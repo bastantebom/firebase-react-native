@@ -160,8 +160,11 @@ import InviteFriendsMenu from './invite-friends.svg';
 import Faq from './faq.svg';
 import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
+import AngleDown from './AngleDown.svg';
+import FormArrowRight from './FormArrowRight.svg';
 
 export {
+  FormArrowRight,
   AngleDown,
   PostAdd,
   Public,
