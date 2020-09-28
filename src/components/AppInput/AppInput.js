@@ -36,14 +36,17 @@ const AppInput = (props, {children}) => {
         underlineColorAndroid="transparent"
         {...props}
         style={[styles.appInput, {...props.style}]}
+        fontFamily={'RoundedMplus1c-Regular'}
         theme={{
           colors: {
             primary: AppColor.contentOcean,
           },
           fonts: {
-            medium: 'RoundedMplus1c-Medium',
+            regular: '',
+            // medium: 'RoundedMplus1c-Medium',
           },
-        }}>
+        }}
+      >
         {children}
       </TextInput>
     </View>

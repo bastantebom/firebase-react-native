@@ -48,8 +48,8 @@ import { InstantSearch, connectSearchBox } from 'react-instantsearch-native';
 import SearchBox from './components/Searchbox';
 import InfiniteHits from './components/InfiniteHits';
 import RefinementList from './components/RefinementList';
+import SearchResults from './components/SearchResults';
 
-// function Dashboard({ navigation }) {
 function Dashboard() {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -126,6 +126,90 @@ function Dashboard() {
 }
 
 const SearchBarWithFilter = ({ toggleFilter }) => {
+  const navigation = useNavigation();
+
+  const [opacity] = useState(new Animated.Value(0))
+  const [searchBarFocused, setSearchBarFocused] = useState(false)
+
+  const goTo = () => {
+    navigation.navigate('NBTScreen', {
+      screen: 'Sampley',
+    });
+  };
+
+  const onFocus = () => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true
+      })
+    ]).start();
+    setSearchBarFocused(true);
+  }
+
+  const onBackPress = () => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true
+      })
+    ]).start();
+    setSearchBarFocused(false);
+  }
+
+  const searchClient = algoliasearch(
+    "B1G2GM9NG0",
+    "aadef574be1f9252bb48d4ea09b5cfe5"
+  );
+  
+  return (
+    <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
+      <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
+        <View style={{ flex: 1 }}>
+          <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
+            <SearchBox onSearchFocus={onFocus} onBackPress={onBackPress} />
+            {/* <RefinementList attribute="brand" limit={5} /> */}
+            <Animated.View 
+              style={{ 
+                opacity: opacity, 
+                display: searchBarFocused ? 'flex' : 'none',
+                zIndex: searchBarFocused ? 99999 : 0,
+                // flex: 1,
+                // width: Dimensions.get('window').width - normalize(16),
+                // position: 'absolute',
+                // marginRight: normalize(16),
+                // flexDirection: 'column',
+                // marginTop: normalize(25),
+                // backgroundColor: 'red' 
+              }}
+            >
+              <SearchResults/>
+                {/* <InfiniteHits/> */}
+              {/* </SearchResults> */}
+            </Animated.View>
+          </InstantSearch>
+        </View>
+        <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1  }}>
+          <TouchableOpacity onPress={toggleFilter}>
+            <View style={styles.circleButton}>
+              <Filter />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.circleButton}>
+              <JarHeart />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <LocationSearch />
+    </View>
+  );
+};
+
+const LocationSearch = () => {
   const {setLocationFilter, locationFilter} = useContext(Context);
   const [showLocation, setShowLocation] = useState(false);
 
@@ -136,40 +220,8 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     setLocationFilter(fullAddress.city);
   };
 
-  const navigation = useNavigation();
-
-  const goTo = () => {
-    navigation.navigate('NBTScreen', {
-      screen: 'Sampley',
-    });
-  };
-
-  const searchClient = algoliasearch(
-    "B1G2GM9NG0",
-    "aadef574be1f9252bb48d4ea09b5cfe5"
-  );
-
   return (
-    <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
-      <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-        <View style={{ flex: 1 }}>
-          <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
-            <SearchBox />
-            {/* <RefinementList attribute="brand" limit={5} /> */}
-            {/* <InfiniteHits /> */}
-          </InstantSearch>
-        </View>
-        <TouchableOpacity onPress={toggleFilter}>
-          <View style={styles.circleButton}>
-            <Filter />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={styles.circleButton}>
-            <JarHeart />
-          </View>
-        </TouchableOpacity>
-      </View>
+    <>
       <View style={GlobalStyle.rowCenter}>
         <View 
           style={{ 
@@ -320,9 +372,9 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
           }
         />
       </Modal>
-    </View>
-  );
-};
+    </>
+  )
+}
 
 const styles = StyleSheet.create({
   safeAreaContainer: {
@@ -357,9 +409,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flexDirection: 'row',
   },
-  // notificationStyle: {
-  //   color: Colors.primaryMidnightBlue
-  // }
 });
 
 export default Dashboard;
