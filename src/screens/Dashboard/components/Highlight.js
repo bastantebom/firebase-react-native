@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectHighlight } from 'react-instantsearch-native';
+import { AppText } from '@/components';
 
 const Highlight = ({ attribute, hit, highlight }) => {
   const highlights = highlight({
@@ -12,14 +13,14 @@ const Highlight = ({ attribute, hit, highlight }) => {
   return (
     <Text>
       {highlights.map(({ value, isHighlighted }, index) => {
-        const style = {
-          backgroundColor: isHighlighted ? 'yellow' : 'transparent',
-        };
-
         return (
-          <Text key={index} style={style}>
+          <AppText 
+            key={index} 
+            textStyle={isHighlighted ? 'body3' : 'body2' } 
+            customStyle={{ backgroundColor: isHighlighted ? 'yellow' : 'transparent' }}
+          >
             {value}
-          </Text>
+          </AppText>
         );
       })}
     </Text>
