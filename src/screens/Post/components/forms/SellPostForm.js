@@ -29,6 +29,7 @@ import {
   MenuInfo,
   PostInfo,
   PostAdd,
+  FormArrowRight,
 } from '@/assets/images/icons';
 import {
   AppText,
@@ -37,17 +38,13 @@ import {
   CacheableImage,
   TransitionIndicator,
   AppRadio,
-<<<<<<< HEAD
-  AppCheckbox,
-=======
->>>>>>> chore: service post form WIP
 } from '@/components';
 import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
-import AddItemModal from './AddItemModal';
+import AddItemModal from './modals/AddItemModal';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
@@ -76,13 +73,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [showLocation, setShowLocation] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
   const [listAsSingle, setListAsSingle] = useState(false);
-<<<<<<< HEAD
-  const [listAsMultiple, setListAsMultiple] = useState(false);
-  const [freeCheckbox, setFreeCheckbox] = useState(false);
-  const [addItemModal, showAddItemModal] = useState(false);
-  
-=======
->>>>>>> chore: service post form WIP
 
   useEffect(() => {
     if (images) {
@@ -146,6 +136,14 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setStoreLocation,
     paymentMethod,
     setPaymentMethod,
+    listAsSingle,
+    setListAsSingle,
+    listAsMultiple,
+    setListAsMultiple,
+    freeCheckbox,
+    setFreeCheckbox,
+    setPostInStore,
+    postInStore,
   } = formState;
 
   const togglePickupState = () => {
@@ -505,10 +503,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
-<<<<<<< HEAD
-            onPress={() => showAddItemModal(true)}
-=======
->>>>>>> chore: create animation for multiple and single item radio button
             activeOpacity={0.7}
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
@@ -519,16 +513,51 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         </Animated.View>
       </View>
 
-      <View
-        style={{
-          backgroundColor: 'white',
-          padding: 24,
-          borderBottomLeftRadius: 4,
-          borderBottomRightRadius: 4,
-          paddingVertical: 32,
-          borderRadius: 4,
-          marginBottom: 8,
-        }}>
+      <Section>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            flex: 1,
+          }}>
+          <AppText textStyle="body2">Posting your store?</AppText>
+          <Switch
+            value={postInStore}
+            onValueChange={() => setPostInStore(!postInStore)}
+          />
+        </View>
+        <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+          Add your store schedule and address.
+        </AppText>
+      </Section>
+
+      <Section>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <AppText textStyle="body2">Payment Methods*</AppText>
+          <FormArrowRight />
+        </TouchableOpacity>
+      </Section>
+      <Section>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <AppText textStyle="body2">Shipping Methods*</AppText>
+          <FormArrowRight />
+        </TouchableOpacity>
+      </Section>
+
+      <Section>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <AppText textStyle="body2">Post Expiry</AppText>
+          <FormArrowRight />
+        </TouchableOpacity>
+      </Section>
+
+      {/* <Section>
         <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
           Delivery/Pick up Method
         </AppText>
@@ -570,27 +599,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           <AppText textStyle="body2">Offer Delivery</AppText>
           <Switch value={deliveryState} onValueChange={toggleDeliveryState} />
         </View>
-      </View>
+      </Section> */}
 
-      <View
-        style={{
-          backgroundColor: 'white',
-          padding: 24,
-          borderBottomLeftRadius: 4,
-          borderBottomRightRadius: 4,
-          paddingVertical: 32,
-          borderRadius: 4,
-          marginBottom: 16,
-          paddingBottom: 48,
-        }}>
-        <AppInput
-          label="Payment Method"
-          placeholder="Eg: Cash, Gcash"
-          customStyle={{marginBottom: 64}}
-          value={paymentMethod}
-          onChangeText={(text) => setPaymentMethod(text)}
-        />
-
+      <Section>
         <TouchableOpacity
           onPress={publish}
           activeOpacity={0.7}
@@ -612,47 +623,65 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
             </AppText>
           )}
         </TouchableOpacity>
-        <Modal
-          isVisible={map}
-          animationIn="slideInRight"
-          animationInTiming={750}
-          animationOut="slideOutRight"
-          animationOutTiming={750}
-          onBackButtonPress={() => setMap(false)}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <StoreLocation
-            address={
-              initialData.post_id
-                ? initialData.store_location
-                : userInfo.address
-            }
-            back={() => setMap(false)}
-            changeFromMapHandler={(fullAddress, addStr) =>
-              prepareAddressUpdate(fullAddress, addStr)
-            }
-          />
-        </Modal>
-        <Modal
-          isVisible={addItemModal}
-          animationIn="slideInRight"
-          animationInTiming={750}
-          animationOut="slideOutRight"
-          animationOutTiming={750}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            justifyContent:  'flex-start',
-            height: Dimensions.get('window').height,
-          }}>
-          <AddItemModal closeModal={() => showAddItemModal(false)} />
-        </Modal>
-        <TransitionIndicator loading={loadingSubmit} />
-      </View>
+      </Section>
+
+      <TransitionIndicator loading={loadingSubmit} />
+
+      <Modal
+        isVisible={map}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        onBackButtonPress={() => setMap(false)}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <StoreLocation
+          address={
+            initialData.post_id ? initialData.store_location : userInfo.address
+          }
+          back={() => setMap(false)}
+          changeFromMapHandler={(fullAddress, addStr) =>
+            prepareAddressUpdate(fullAddress, addStr)
+          }
+        />
+      </Modal>
+      <Modal
+        isVisible={addItemModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <AddItemModal closeModal={() => showAddItemModal(false)} />
+      </Modal>
     </>
+  );
+};
+
+const Section = ({children, style}) => {
+  return (
+    <View
+      style={{
+        backgroundColor: 'white',
+        padding: 24,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        paddingVertical: 32,
+        borderRadius: 4,
+        marginBottom: 8,
+        ...style,
+      }}>
+      {children}
+    </View>
   );
 };
 
