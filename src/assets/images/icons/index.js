@@ -146,6 +146,11 @@ import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
 import LoginApple from './login_Apple03.svg';
 
+//Activities
+import YellowBadge from './yellow-badge.svg';
+import RedBadge from './red-badge.svg';
+import Bee from './bee.svg';
+
 export {
   ContactTelephone,
   ContactEmail,
@@ -250,4 +255,7 @@ export {
   LoginFB,
   LoginGoogle,
   LoginApple,
+  YellowBadge,
+  RedBadge,
+  Bee
 };
