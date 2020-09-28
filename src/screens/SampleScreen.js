@@ -19,16 +19,23 @@ const SampleScreen = () => {
   const inputRef = createRef();
 
   const [errors, setErrors] = useState({
-    value1: false,
-    value2: false,
+    value1: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    value2: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
   });
 
   const checkErrorState = () => {
-    console.log(errors);
     let temp = true;
 
     for (const [key, value] of Object.entries(errors)) {
-      if (!value) {
+      if (!value.passed) {
         temp = false;
         break;
       }
@@ -55,14 +62,22 @@ const SampleScreen = () => {
         console.log('tama to');
         setErrors({
           ...errors,
-          value1: true,
+          value1: {
+            passed: true,
+            shown: false,
+            message: '',
+          },
         });
       })
       .catch((err) => {
         console.log(err);
         setErrors({
           ...errors,
-          value1: false,
+          value1: {
+            passed: false,
+            shown: true,
+            message: err,
+          },
         });
       });
   };
@@ -297,11 +312,14 @@ const YourComponent = () => {
       <AppText>SAMPLE SCREEN 1</AppText>
 
       {/* <View style={{}}> */}
-      <Validator errorState={errors.value1} value={value1}>
+      <Validator errorState={errors.value1}>
         <AppInput
           label="Email"
           style={{marginTop: 20}}
-          onChangeText={(value1) => value1Handler(value1)}
+          onChangeText={(value1) => {
+            console.log('typing');
+            value1Handler(value1);
+          }}
           minLength={1}
           value={value1}
           keyboardType={'email-address'}
@@ -309,7 +327,7 @@ const YourComponent = () => {
         />
       </Validator>
 
-      <Validator errorState={errors.value2} value={value1}>
+      <Validator errorState={errors.value2} value={value2} >
         <AppInput
           label="Email"
           style={{marginTop: 20}}
@@ -321,14 +339,22 @@ const YourComponent = () => {
                 console.log('tama to');
                 setErrors({
                   ...errors,
-                  value2: true,
+                  value2: {
+                    passed: true,
+                    shown: false,
+                    message: '',
+                  },
                 });
               })
               .catch((err) => {
                 console.log(err);
                 setErrors({
                   ...errors,
-                  value2: false,
+                  value2: {
+                    passed: false,
+                    shown: true,
+                    message: err,
+                  },
                 });
               });
           }}
