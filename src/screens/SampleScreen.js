@@ -1,25 +1,129 @@
-import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
-import {AppText} from '@/components';
+import React, {useCallback, useState, createRef, useEffect} from 'react';
+import {View, TouchableOpacity, SafeAreaView} from 'react-native';
+import {AppText, FloatingAppInput} from '@/components';
 import {useNavigation} from '@react-navigation/native';
+import {debounce} from 'lodash';
+
+import AppInput from '@/components/AppInput/AppInput2';
+import Validator from '@/components/AppInput/Validator';
+
+import DebounceInput from 'react-native-debounce-input';
+import VF from '@/components/AppInput/ValidationFunctions';
+import {check} from 'react-native-permissions';
 
 const SampleScreen = () => {
-  console.log('SAMPLE SCREEN');
+  const [value1, setValue1] = useState();
+  const [value2, setValue2] = useState();
 
-  const navigation = useNavigation();
+  const [enabled, setEnabled] = useState(false);
+  const inputRef = createRef();
 
-  console.log(navigation);
+  const [errors, setErrors] = useState({
+    value1: false,
+    value2: false,
+  });
 
-  const goTo = () => {
-      navigation.navigate("Profile")
-  }
+  const checkErrorState = () => {
+    console.log(errors);
+    let temp = true;
+
+    for (const [key, value] of Object.entries(errors)) {
+      if (!value) {
+        temp = false;
+        break;
+      }
+    }
+
+    if (temp) {
+      console.log('true: walang mali');
+      setEnabled(true);
+    } else {
+      console.log('false: may mali');
+      setEnabled(false);
+    }
+  };
+
+  useEffect(() => {
+    checkErrorState();
+  }, [errors]);
+
+  const value1Handler = async (value1) => {
+    console.log(value1);
+    setValue1(value1);
+    await VF.emailValidator(value1)
+      .then(() => {
+        console.log('tama to');
+        setErrors({
+          ...errors,
+          value1: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrors({
+          ...errors,
+          value1: false,
+        });
+      });
+  };
 
   return (
-    <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-      <TouchableOpacity onPress={goTo}>
-        <AppText>SAMPLE SCREEN 1</AppText>
+    <SafeAreaView style={{flex: 1}}>
+      <AppText>SAMPLE SCREEN 1</AppText>
+
+      {/* <View style={{}}> */}
+      <Validator errorState={errors.value1} value={value1}>
+        <AppInput
+          label="Email"
+          style={{marginTop: 20}}
+          onChangeText={(value1) => value1Handler(value1)}
+          minLength={1}
+          value={value1}
+          keyboardType={'email-address'}
+          delayTimeout={1000}
+        />
+      </Validator>
+
+      <Validator errorState={errors.value2} value={value1}>
+        <AppInput
+          label="Email"
+          style={{marginTop: 20}}
+          onChangeText={async (value2) => {
+            console.log(value2);
+            setValue2(value2);
+            await VF.emailValidator(value2)
+              .then(() => {
+                console.log('tama to');
+                setErrors({
+                  ...errors,
+                  value2: true,
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                setErrors({
+                  ...errors,
+                  value2: false,
+                });
+              });
+          }}
+          value={value2}
+        />
+      </Validator>
+      {/* </View> */}
+      <TouchableOpacity disabled={!enabled}>
+        <View
+          style={{
+            backgroundColor: enabled ? 'yellow' : 'gray',
+            padding: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 20,
+          }}>
+          <AppText>Submit</AppText>
+        </View>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 

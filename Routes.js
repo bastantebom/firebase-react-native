@@ -19,6 +19,8 @@ import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
 import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
+import SampleScreen from '@/screens/SampleScreen'
+
 import {ProfileInfoModal, SinglePostOthersView} from '@/components';
 
 import {
@@ -348,8 +350,9 @@ function Routes() {
         ) : (
           // <TabStack />
           <Stack.Navigator headerMode="none">
-            <Stack.Screen name="TabStack" component={TabStack} />
-            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
+            <Stack.Screen name="TabStack" component={SampleScreen} />
+            {/* <Stack.Screen name="TabStack" component={TabStack} />
+            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} /> */}
           </Stack.Navigator>
         )}
       </NavigationContainer>

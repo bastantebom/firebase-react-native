@@ -88,7 +88,7 @@ import MenuAddFriend from './MenuAddFriend.svg';
 import MenuArchive from './MenuArchive.svg';
 import MenuBell from './MenuBell.svg';
 import MenuChat from './MenuChat.svg';
-import MenuEdit from './edit-profile.svg';
+import MenuEdit from './MenuEdit.svg';
 import MenuInfo from './MenuInfo.svg';
 import MenuKey from './MenuKey.svg';
 import MenuLiked from './MenuLiked.svg';
@@ -137,33 +137,14 @@ import PostInfo from './PostInfo.svg';
 import PostNavigation from './PostNavigation.svg';
 import PostPencil from './PostPencil.svg';
 import PostRemove from './PostRemove.svg';
-import PostAdd from './post-add.svg';
-
 import ProfileImageDefault from './profile-image-default.svg';
 
 import ContactTelephone from './contact-telephone.svg';
 import ContactEmail from './contact-email.svg';
 
-import LoginFB from './new-facebook.svg';
-import LoginGoogle from './new-google.svg';
-import LoginApple from './login_Apple03.svg';
 import Public from './public.svg';
 
-//OWN MENU ICONS
-import HidePost from './hide-post.svg';
-import AboutRed from './info-menu.svg';
-import BlockedUsers from './blocked-user.svg';
-import ChangePasswordRed from './change-password-red.svg';
-import LikedPostMenu from './liked-post.svg';
-import ArchivePostMenu from './archive-post.svg';
-import InviteFriendsMenu from './invite-friends.svg';
-import Faq from './faq.svg';
-import ContactUs from './contact-us.svg';
-import Notifications from './notifications.svg';
-
 export {
-  AngleDown,
-  PostAdd,
   Public,
   ContactTelephone,
   ContactEmail,
@@ -265,17 +246,4 @@ export {
   ArrowDown,
   UploadIcon,
   EmptyAvatar,
-  LoginFB,
-  LoginGoogle,
-  LoginApple,
-  HidePost,
-  AboutRed,
-  BlockedUsers,
-  ChangePasswordRed,
-  LikedPostMenu,
-  ArchivePostMenu,
-  InviteFriendsMenu,
-  Faq,
-  ContactUs,
-  Notifications,
 };
