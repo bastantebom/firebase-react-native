@@ -165,7 +165,7 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     "B3KXWHT843",
     "93f6a8ef9601c3c4da65687477a81833"
   );
-
+  
   return (
     <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
       <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
