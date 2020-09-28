@@ -156,6 +156,7 @@ function ProfileInfoModal(props) {
         QR={QR}
         backFunction={() => navigation.goBack()}
         userInfo={userInfo}
+        userID={uid}
       />
       <View
         style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>

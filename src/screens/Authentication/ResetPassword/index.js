@@ -112,7 +112,9 @@ const ResetPassword = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Notification message={notificationMessage} type={notificationType} />
+      <SafeAreaView style={{zIndex: 2}}>
+        <Notification message={notificationMessage} type={notificationType} />
+      </SafeAreaView>
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
         <View style={styles.closeIconContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>

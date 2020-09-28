@@ -1,5 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {View, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import LoginService from '@/services/LoginService';
@@ -7,12 +13,23 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AppButton, AppInput, AppText, FloatingAppInput} from '@/components';
 import Colors from '@/globals/Colors';
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-import Close from '@/assets/images/icons/close.svg';
-import EyeDark from '@/assets/images/icons/eye-dark.svg';
-import EyeLight from '@/assets/images/icons/eye-light.svg';
+////import Close from '@/assets/images/icons/close.svg';
+////import EyeDark from '@/assets/images/icons/eye-dark.svg';
+////import EyeLight from '@/assets/images/icons/eye-light.svg';
+
+import {
+  Close,
+  EyeDark,
+  EyeLight,
+  LoginApple,
+  LoginFB,
+  LoginGoogle,
+} from '@/assets/images/icons';
+
 import {PaddingView} from '@/components';
 
 import {Context} from '@/context';
+import {normalize} from '@/globals';
 
 function Divider() {
   return (
@@ -162,33 +179,41 @@ function Login() {
                 loading={isLoading}
               />
             </AppViewContainer>
+
             <Divider />
-            <AppButton
-              text={'Log in with Facebook'}
-              type="primary"
-              height="md"
-              icon="Facebook"
-              iconPosition="left"
-              customStyle={styles.customButton}
-              onPress={() => {
-                LoginService.facebookSignIn().then(() => closeSlider());
-              }}
-            />
-            <AppButton
-              text={'Log in with Google'}
-              type="primary"
-              height="md"
-              icon="Google"
-              iconPosition="left"
-              customStyle={styles.customButton}
-              // onPress={console.log('PRESS')}
-              onPress={() => {
-                LoginService.googleLogin().then(() => {
-                  console.log('Signed in with Google!');
-                  closeSlider();
-                });
-              }}
-            />
+
+            <View style={styles.socialMediaLogin}>
+              {Platform.OS === 'ios' ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    //alert();
+                    LoginService.appleLogin().then(() => {
+                      closeSlider();
+                    });
+                  }}
+                  style={{paddingHorizontal: normalize(8)}}>
+                  <LoginApple />
+                </TouchableOpacity>
+              ) : null}
+              <TouchableOpacity
+                onPress={() => {
+                  LoginService.facebookSignIn().then(() => closeSlider());
+                }}
+                style={{paddingHorizontal: normalize(8)}}>
+                <LoginFB />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  LoginService.googleLogin().then(() => {
+                    console.log('Signed in with Google!');
+                    closeSlider();
+                  });
+                }}
+                style={{paddingHorizontal: normalize(8)}}>
+                <LoginGoogle />
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.cta}>
               <AppText textStyle="button2">Don't have an account? </AppText>
               <TouchableOpacity
@@ -256,6 +281,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 18,
+  },
+  socialMediaLogin: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: normalize(8),
+    paddingBottom: normalize(16),
   },
 });
 

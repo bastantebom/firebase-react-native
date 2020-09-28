@@ -6,8 +6,8 @@ const usernameValidator = async (username) => {
       reject('Username must be at least 2 characters');
     }
 
-    if (!(username.length <= 30)) {
-      reject('Username must be less than, or 30 characters');
+    if (!(username.length <= 16)) {
+      reject('Username must be less than, or 16 characters');
     }
 
     if (!userNameReg.test(username)) {
