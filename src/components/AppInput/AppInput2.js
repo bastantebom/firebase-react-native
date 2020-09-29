@@ -103,7 +103,8 @@ const FloatingAppInput = (props) => {
           </AppText>
         </Animated.Text>
         <DebounceInput
-          //   onChangeText={onValueChange}
+          minLength={1}
+          delayTimeout={500}
           {...props}
           style={styles.floatingInput}
           underlineColorAndroid="transparent"

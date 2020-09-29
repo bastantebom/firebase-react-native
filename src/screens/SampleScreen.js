@@ -19,23 +19,16 @@ const SampleScreen = () => {
   const inputRef = createRef();
 
   const [errors, setErrors] = useState({
-    value1: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-    value2: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
+    value1: false,
+    value2: false,
   });
 
   const checkErrorState = () => {
+    console.log(errors);
     let temp = true;
 
     for (const [key, value] of Object.entries(errors)) {
-      if (!value.passed) {
+      if (!value) {
         temp = false;
         break;
       }
@@ -62,22 +55,14 @@ const SampleScreen = () => {
         console.log('tama to');
         setErrors({
           ...errors,
-          value1: {
-            passed: true,
-            shown: false,
-            message: '',
-          },
+          value1: true,
         });
       })
       .catch((err) => {
         console.log(err);
         setErrors({
           ...errors,
-          value1: {
-            passed: false,
-            shown: true,
-            message: err,
-          },
+          value1: false,
         });
       });
   };
@@ -296,30 +281,15 @@ const YourComponent = () => {
   const inputRef = createRef();
  
   return (
-<<<<<<< HEAD
-    <SafeAreaView>
-      <DelayInput
-        value={value}
-        minLength={0}
-        inputRef={inputRef}
-        // onChangeText={setValue}
-        delayTimeout={500}
-        style={{ margin: 10, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-      <Text>value: {value}</Text>
-=======
     <SafeAreaView style={{flex: 1}}>
       <AppText>SAMPLE SCREEN 1</AppText>
 
       {/* <View style={{}}> */}
-      <Validator errorState={errors.value1}>
+      <Validator errorState={errors.value1} value={value1}>
         <AppInput
           label="Email"
           style={{marginTop: 20}}
-          onChangeText={(value1) => {
-            console.log('typing');
-            value1Handler(value1);
-          }}
+          onChangeText={(value1) => value1Handler(value1)}
           minLength={1}
           value={value1}
           keyboardType={'email-address'}
@@ -327,7 +297,7 @@ const YourComponent = () => {
         />
       </Validator>
 
-      <Validator errorState={errors.value2} value={value2} >
+      <Validator errorState={errors.value2} value={value1}>
         <AppInput
           label="Email"
           style={{marginTop: 20}}
@@ -339,22 +309,14 @@ const YourComponent = () => {
                 console.log('tama to');
                 setErrors({
                   ...errors,
-                  value2: {
-                    passed: true,
-                    shown: false,
-                    message: '',
-                  },
+                  value2: true,
                 });
               })
               .catch((err) => {
                 console.log(err);
                 setErrors({
                   ...errors,
-                  value2: {
-                    passed: false,
-                    shown: true,
-                    message: err,
-                  },
+                  value2: false,
                 });
               });
           }}
@@ -374,7 +336,6 @@ const YourComponent = () => {
           <AppText>Submit</AppText>
         </View>
       </TouchableOpacity>
->>>>>>> input refactor playground
     </SafeAreaView>
   );
 };
