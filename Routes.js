@@ -350,9 +350,9 @@ function Routes() {
         ) : (
           // <TabStack />
           <Stack.Navigator headerMode="none">
-            <Stack.Screen name="TabStack" component={SampleScreen} />
-            {/* <Stack.Screen name="TabStack" component={TabStack} />
-            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} /> */}
+            {/* <Stack.Screen name="TabStack" component={SampleScreen} /> */}
+            <Stack.Screen name="TabStack" component={TabStack} />
+            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
           </Stack.Navigator>
         )}
       </NavigationContainer>
