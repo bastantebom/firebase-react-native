@@ -16,11 +16,19 @@ import {
 } from '@/components';
 import {Colors, normalize} from '@/globals';
 import AdminFunctionService from '@/services/Admin/AdminFunctions';
+import PostService from '@/services/Post/PostService';
 import {Context} from '@/context';
 import {UserContext} from '@/context/UserContext';
 
 // create a component
-const Report = ({toggleReportUser, username, userID, postId, postTitle}) => {
+const Report = ({
+  toggleReportUser,
+  username,
+  userID,
+  postId,
+  postTitle,
+  type,
+}) => {
   const {user} = useContext(UserContext);
   const {openNotification, closeNotification} = useContext(Context);
   const [reportMessage, setReportMessage] = useState('');
@@ -35,7 +43,7 @@ const Report = ({toggleReportUser, username, userID, postId, postTitle}) => {
 
   const {uid, displayName} = user;
 
-  console.log(displayName);
+  //console.log(displayName);
 
   const reportMessageHandler = (text) => {
     //console.log(text);
@@ -60,31 +68,56 @@ const Report = ({toggleReportUser, username, userID, postId, postTitle}) => {
 
   const onSubmitReportHandler = () => {
     setIS_UPDATING(true);
-    AdminFunctionService.reportUser({
-      reported_uid: userID,
-      message: reportMessage,
-      uid: uid,
-    })
-      .then((response) => {
-        if (response.success) {
-          setIS_UPDATING(false);
-          triggerNotification(
-            username +
-              'has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
-            'success',
-          );
-          setReportMessage('');
-        } else {
-          setIS_UPDATING(false);
-
-          console.log(response);
-        }
+    if (type === 'user') {
+      AdminFunctionService.reportUser({
+        reported_uid: userID,
+        message: reportMessage,
+        uid: uid,
       })
-      .catch((error) => {
-        setIS_UPDATING(false);
+        .then((response) => {
+          if (response.success) {
+            setIS_UPDATING(false);
+            triggerNotification(
+              username +
+                'has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
+              'success',
+            );
+            setReportMessage('');
+          } else {
+            setIS_UPDATING(false);
 
-        console.log(error);
-      });
+            console.log(response);
+          }
+        })
+        .catch((error) => {
+          setIS_UPDATING(false);
+
+          console.log(error);
+        });
+    } else {
+      PostService.reportPost({
+        reported_pid: postId,
+        message: reportMessage,
+        uid: uid,
+      })
+        .then((response) => {
+          if (response.success) {
+            setIS_UPDATING(false);
+            triggerNotification(
+              'Post has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
+              'success',
+            );
+            setReportMessage('');
+          } else {
+            setIS_UPDATING(false);
+            console.log(response);
+          }
+        })
+        .catch((error) => {
+          setIS_UPDATING(false);
+          console.log(error);
+        });
+    }
   };
 
   const notificationErrorTextStyle = {

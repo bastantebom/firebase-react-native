@@ -51,6 +51,7 @@ const TransparentHeader = ({
   userInfo,
   triggerNotify,
   userID,
+  hidePost,
   postTitle,
   postId,
 }) => {
@@ -148,6 +149,7 @@ const TransparentHeader = ({
             toggleEllipsisState={toggleEllipsisState}
             postId={postId}
             postTitle={postTitle}
+            hidePost={hidePost}
           />
         </Modal>
       </>
