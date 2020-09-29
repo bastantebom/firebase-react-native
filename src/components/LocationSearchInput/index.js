@@ -47,17 +47,14 @@ const GooglePlacesInput = ({
         styles={{
           container: {
             paddingBottom: 50,
-            //zIndex: 9999, //To popover the component outwards
-            //elevation: 9999,
-            //backgroundColor: 'green',
+
             flex: 1,
-            //position: 'relative',
           },
           listView: {
             color: Colors.contentEbony, //To see where exactly the list is
             zIndex: 9999, //To popover the component outwards
             elevation: 9999,
-            //position: 'absolute',
+
             top: adjustListPosition ? normalize(58) : normalize(18),
             backgroundColor: Colors.neutralsWhite,
             marginLeft: normalize(10),
@@ -74,14 +71,17 @@ const GooglePlacesInput = ({
             borderWidth: 1,
             paddingLeft: 40,
             paddingRight: 39,
+            fontFamily: 'RoundedMplus1c-Regular',
             fontSize: 16,
             height: 54,
             color: Colors.contentEbony,
           },
           predefinedPlacesDescription: {
             color: Colors.contentEbony,
+            fontFamily: 'RoundedMplus1c-Regular',
           },
           poweredContainer: {display: 'none'},
+          description: {fontFamily: 'RoundedMplus1c-Regular'},
         }}
         ref={placesRef}
       />
