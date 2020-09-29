@@ -4,7 +4,15 @@ import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AppColor from '@/globals/Colors';
 
-import {AppText, AppCheckbox, AppButton, FloatingAppInput} from '@/components';
+import {
+  AppText,
+  AppCheckbox,
+  AppButton,
+  FloatingAppInput,
+  AppInput,
+} from '@/components';
+import Validator from '@/components/AppInput/Validator';
+import valueHandler from '@/components/AppInput/ValueHandler';
 
 import SignUpService from '@/services/SignUpService';
 import LoginService from '@/services/LoginService';
@@ -71,10 +79,60 @@ const SignUp = (props) => {
     receive_updates: false,
   });
   const [buttonStyle, setButtonStyle] = useState({
-    backgroundColor: AppColor.buttonDisable,
+    backgroundColor: buttonDisabled
+      ? AppColor.buttonDisable
+      : AppColor.primaryYellow,
     borderColor: AppColor.buttonDisable,
   });
   const [changingValidation, setChangingValidation] = useState(false);
+
+  const [errors, setErrors] = useState({
+    email: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    name: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    password: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+  });
+
+  const checkErrorState = () => {
+    let temp = true;
+
+    console.log(errors);
+
+    for (const [key, value] of Object.entries(errors)) {
+      if (!value.passed) {
+        console.log(key, ' is invalid');
+        temp = false;
+        break;
+      }
+    }
+
+    console.log(temp);
+
+    if (temp && isTerms) {
+      // ENABLE BUTTON
+      console.log('All fields are valid');
+      setButtonDisabled(false);
+    } else {
+      // DISABLE BUTTON
+      console.log('One or more field is invalid');
+      setButtonDisabled(true);
+    }
+  };
+
+  useEffect(() => {
+    checkErrorState();
+  }, [errors]);
 
   const toggleSignUpMethod = () => {
     setEmail('');
@@ -148,52 +206,52 @@ const SignUp = (props) => {
     checkInputComplete();
   }, [isTerms]);
 
-  const validateEmail = (email) => {
-    let mobileReg = /^(09|\+639)\d{9}$/;
-    if (
-      mobileReg.test(email) === true &&
-      ((email.substring(0, 1) === '0' && email.length === 11) ||
-        (email.length === 13 && email.substring(0, 1) === '+'))
-    ) {
-      setEmail(email);
-      setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
-      return true;
-    } else {
-      setIsValidMobileNumber(false);
-      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      if (reg.test(email) === false) {
-        setEmail(email);
-        return false;
-      } else {
-        setEmail(email);
-        return true;
-      }
-    }
-  };
+  // const validateEmail = (email) => {
+  //   let mobileReg = /^(09|\+639)\d{9}$/;
+  //   if (
+  //     mobileReg.test(email) === true &&
+  //     ((email.substring(0, 1) === '0' && email.length === 11) ||
+  //       (email.length === 13 && email.substring(0, 1) === '+'))
+  //   ) {
+  //     setEmail(email);
+  //     setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
+  //     return true;
+  //   } else {
+  //     setIsValidMobileNumber(false);
+  //     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  //     if (reg.test(email) === false) {
+  //       setEmail(email);
+  //       return false;
+  //     } else {
+  //       setEmail(email);
+  //       return true;
+  //     }
+  //   }
+  // };
 
-  const onEmailChange = (email) => {
-    if (validateEmail(email)) {
-      //setButtonText('Sign up');
-      setIsValidEmail(true);
-      const newKeyValue = {login: email};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
-        setLoginUse(() => {
-          setLoginUse('mobile number');
-        });
-      } else {
-        setLoginUse(() => {
-          setLoginUse('email');
-        });
-      }
+  // const onEmailChange = (email) => {
+  //   if (validateEmail(email)) {
+  //     //setButtonText('Sign up');
+  //     setIsValidEmail(true);
+  //     const newKeyValue = {login: email};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
+  //       setLoginUse(() => {
+  //         setLoginUse('mobile number');
+  //       });
+  //     } else {
+  //       setLoginUse(() => {
+  //         setLoginUse('email');
+  //       });
+  //     }
 
-      setIsValidEmail(false);
-      //setButtonText('Sign up');
-    }
-  };
+  //     setIsValidEmail(false);
+  //     //setButtonText('Sign up');
+  //   }
+  // };
 
   const onNameChange = (name) => {
     let nameReg = /^[a-z ,.'-]+$/i;
@@ -424,7 +482,7 @@ const SignUp = (props) => {
               Join Servbees today. It’s free!
             </AppText>
             <View style={styles.formWrapper}>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={email}
                 valueHandler={setEmail}
                 label={!signUpLabel ? 'Email' : 'Mobile Number'}
@@ -440,7 +498,28 @@ const SignUp = (props) => {
                 onChangeTextInput={(email) => onEmailChange(email)}
                 setChangingValidation={setChangingValidation}
                 changingValidation={changingValidation}
-              />
+              /> */}
+              <Validator
+                style={{marginBottom: normalize(16)}}
+                errorState={errors.email}>
+                <AppInput
+                  label="Email"
+                  onChangeText={(email) =>
+                    valueHandler(email, 'email', 'email', errors, setErrors)
+                  }
+                  value={email}
+                  keyboardType={'email-address'}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      email: {
+                        ...errors.email,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
 
               <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
                 <TouchableOpacity
@@ -463,7 +542,7 @@ const SignUp = (props) => {
                 </TouchableOpacity>
               </View>
 
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 label="Full Name"
                 value={name}
                 onBlur={onBlurName}
@@ -479,14 +558,31 @@ const SignUp = (props) => {
                   ...nameBorder,
                 }}
                 onChangeText={(name) => onNameChange(name)}
-              />
-              {!isValidName ? (
-                <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                  Don’t add special character(s)
-                </AppText>
-              ) : null}
+              /> */}
+              <Validator
+                style={{marginBottom: normalize(16)}}
+                errorState={errors.name}>
+                <AppInput
+                  label="Full Name"
+                  onChangeText={(name) =>
+                    valueHandler(name, 'name', 'name', errors, setErrors)
+                  }
+                  value={name}
+                  // keyboardType={'email-address'}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      name: {
+                        ...errors.name,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
+
               <View style={{position: 'relative'}}>
-                <FloatingAppInput
+                {/* <FloatingAppInput
                   label="Password"
                   onBlur={onBlurPassword}
                   onFocus={onFocusPassword}
@@ -500,7 +596,36 @@ const SignUp = (props) => {
                   validation={['password']}
                   setButtonState={setButtonState}
                   onChangeText={(val) => onPasswordChange(val)}
-                />
+                /> */}
+
+                <Validator
+                  style={{marginBottom: normalize(16)}}
+                  errorState={errors.password}>
+                  <AppInput
+                    label="Password"
+                    onChangeText={(password) =>
+                      valueHandler(
+                        password,
+                        'password',
+                        'password',
+                        errors,
+                        setErrors,
+                      )
+                    }
+                    secureTextEntry={!isVisible ? true : false}
+                    value={password}
+                    onKeyPress={() => {
+                      setErrors({
+                        ...errors,
+                        password: {
+                          ...errors.password,
+                          shown: false,
+                        },
+                      });
+                    }}
+                  />
+                </Validator>
+
                 <View style={styles.passwordToggle}>
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
                     {!isVisible ? <EyeDark /> : <EyeLight />}
@@ -519,7 +644,16 @@ const SignUp = (props) => {
                 type="primary"
                 height="xl"
                 disabled={buttonDisabled}
-                customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+                customStyle={{
+                  ...styles.customButtonStyle,
+                  backgroundColor: buttonDisabled
+                    ? AppColor.buttonDisable
+                    : AppColor.primaryYellow,
+
+                  borderColor: buttonDisabled
+                    ? AppColor.buttonDisable
+                    : AppColor.primaryYellow,
+                }}
                 onPress={() => {
                   signUpEmail(signUpForm);
                 }}
@@ -623,6 +757,7 @@ const styles = StyleSheet.create({
   customButtonStyle: {
     borderWidth: 1.5,
     marginBottom: 16,
+    borderRadius: 4,
   },
 
   disableButton: {

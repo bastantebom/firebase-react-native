@@ -3,18 +3,17 @@ import {View} from 'react-native';
 
 import {AppText} from '@/components';
 
-const Validator = (props) => {
-  const {children, errorState, setErrorState, value} = props;
-  console.log(value);
-
+const Validator = ({errorState, setErrorState, value, style, ...props}) => {
   let textStyle = {
     display: errorState.shown ? 'flex' : 'none',
   };
 
   return (
-    <View>
-      {children}
-      <AppText color={"red"} customStyle={textStyle}>{errorState.message}</AppText>
+    <View style={style}>
+      {props.children}
+      <AppText color={'red'} customStyle={textStyle}>
+        {errorState.message}
+      </AppText>
     </View>
   );
 };
