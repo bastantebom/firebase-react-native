@@ -1,29 +1,33 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectHighlight } from 'react-instantsearch-native';
 import { AppText } from '@/components';
 
+const { width } = Dimensions.get("window");
+
 const Highlight = ({ attribute, hit, highlight }) => {
+
   const highlights = highlight({
     highlightProperty: '_highlightResult',
     attribute,
     hit,
   });
+
   return (
-    <Text>
+    <View style={{ flexWrap: 'wrap', flex: 0, flexDirection: 'row' }}>
       {highlights.map(({ value, isHighlighted }, index) => {
         return (
           <AppText 
             key={index} 
             textStyle={isHighlighted ? 'body3' : 'body2' } 
-            customStyle={{ backgroundColor: isHighlighted ? 'yellow' : 'transparent' }}
+            // customStyle={{ backgroundColor: isHighlighted ? 'yellow' : 'transparent' }}
           >
             {value}
           </AppText>
         );
       })}
-    </Text>
+    </View>
   );
 };
 

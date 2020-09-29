@@ -152,6 +152,9 @@ import HidePost from './hide-post.svg';
 import AboutRed from './info-menu.svg';
 import BlockedUsers from './blocked-user.svg';
 import ChangePasswordRed from './change-password-red.svg';
+import ChevronRight from './chevron-right.svg';
+import UserCircle from './user-circle.svg'
+import CircleTickGray from './circle-tick-gray.svg'
 
 export {
   ContactTelephone,
@@ -263,4 +266,7 @@ export {
   AboutRed,
   BlockedUsers,
   ChangePasswordRed,
+  ChevronRight,
+  UserCircle,
+  CircleTickGray
 };
