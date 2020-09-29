@@ -71,6 +71,36 @@ const deletePost = (PID) => {
   });
 };
 
+const hidePost = (payload) => {
+  /**
+   * Accepts Post ID
+   * UID
+   */
+  return BaseAPI({
+    url: '/post/hide',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
+const reportPost = (payload) => {
+  /**
+   * Accepts Post ID
+   * UID
+   */
+  return BaseAPI({
+    url: '/post/report',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const PostService = {
   createPost,
   getPosts,
@@ -78,6 +108,8 @@ const PostService = {
   deletePost,
   getPostsLocation,
   getUserPosts,
+  hidePost,
+  reportPost,
 };
 
 export default PostService;

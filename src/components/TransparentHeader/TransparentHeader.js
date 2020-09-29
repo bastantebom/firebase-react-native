@@ -12,7 +12,13 @@ import Share from 'react-native-share';
 import {useNavigation} from '@react-navigation/native';
 
 import {AppText, BottomSheetHeader} from '@/components';
-import {EllipsisMenu, OwnMenu, QRScreen, PostEllipsis} from './components';
+import {
+  EllipsisMenu,
+  OwnMenu,
+  QRScreen,
+  PostEllipsis,
+  OtherPostEllipsis,
+} from './components';
 import {
   HeaderBack,
   HeaderShare,
@@ -45,6 +51,9 @@ const TransparentHeader = ({
   userInfo,
   triggerNotify,
   userID,
+  hidePost,
+  postTitle,
+  postId,
 }) => {
   const navigation = useNavigation();
   const shareHandler = async () => {
@@ -69,37 +78,81 @@ const TransparentHeader = ({
       // setResult('error: '.concat(getErrorString(error)));
     }
   };
-
   const {user} = useContext(UserContext);
 
   if (type === 'post-other') {
+    //console.log(postTitle);
     return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-          position: 'absolute',
-          zIndex: 1,
-          backgroundColor: 'transparent',
-        }}>
-        <View
+      <>
+        <SafeAreaView
           style={{
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            paddingHorizontal: 16,
-            width: Dimensions.get('window').width,
-            paddingTop: 4,
+            flex: 1,
+            position: 'absolute',
+            zIndex: 1,
+            backgroundColor: 'transparent',
           }}>
-          {/* Left aligned icons */}
-          <View>
-            <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-              <View style={styles.circle}>
-                <HeaderBack width={normalize(16)} height={normalize(16)} />
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              paddingHorizontal: 16,
+              width: Dimensions.get('window').width,
+              paddingTop: 4,
+            }}>
+            {/* Left aligned icons */}
+            <View>
+              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
+                <View style={styles.circle}>
+                  <HeaderBack width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* Right aligned icons */}
+            {user ? (
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={toggleEllipsisState}>
+                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                    <HeaderEllipsis
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            ) : null}
           </View>
-          {/* Right aligned icons */}
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+        <Modal
+          isVisible={ellipsisState}
+          animationIn="slideInUp"
+          animationInTiming={200}
+          animationOut="slideOutDown"
+          animationOutTiming={200}
+          onSwipeComplete={toggleEllipsisState}
+          swipeDirection="down"
+          style={{
+            justifyContent: 'flex-end',
+            margin: 0,
+          }}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              onPress={() => {
+                toggleEllipsisState();
+              }}>
+              <View style={{flex: 1, backgroundColor: 'black'}} />
+            </TouchableWithoutFeedback>
+          }>
+          {/* <FilterSlider modalToggler={toggleModal} /> */}
+          <OtherPostEllipsis
+            toggleEllipsisState={toggleEllipsisState}
+            postId={postId}
+            postTitle={postTitle}
+            hidePost={hidePost}
+          />
+        </Modal>
+      </>
     );
   }
 
@@ -235,7 +288,7 @@ const TransparentHeader = ({
           <OwnMenu
             signOut={() => {
               signOut().then(() => {
-                console.log('helluu');
+                //console.log('helluu');
                 navigation.navigate('Onboarding');
               });
             }}

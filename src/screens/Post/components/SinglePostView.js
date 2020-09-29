@@ -143,6 +143,20 @@ const SinglePostView = (props) => {
     });
   };
 
+  const hidePost = async () => {
+    //body: { uid, pid }
+    return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
+      () => {
+        toggleEllipsisState();
+        //console.log('deletePost ' + userInfo.post_count);
+        //setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
+        navigation.goBack();
+      },
+    );
+    //navigation.goBack();
+    //alert('hide Post View Post');
+  };
+
   let timeAgo = (time) => {
     if (time <= 60) {
       return 'Just now';
@@ -438,6 +452,9 @@ const SinglePostView = (props) => {
         backFunction={() => navigation.goBack()}
         editPostFunction={toggleEditPost}
         deletePostFunction={deletePost}
+        hidePost={hidePost}
+        postId={post_id}
+        postTitle={title}
       />
 
       <Modal
