@@ -148,6 +148,10 @@ import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
 import LoginApple from './login_Apple03.svg';
 
+import ChevronRight from './chevron-right.svg';
+import UserCircle from './user-circle.svg'
+import CircleTickGray from './circle-tick-gray.svg'
+
 export {
   ContactTelephone,
   ContactEmail,
@@ -254,4 +258,7 @@ export {
   LoginFB,
   LoginGoogle,
   LoginApple,
+  ChevronRight,
+  UserCircle,
+  CircleTickGray
 };
