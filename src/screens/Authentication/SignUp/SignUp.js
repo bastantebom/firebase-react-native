@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, createRef} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AppColor from '@/globals/Colors';
@@ -59,7 +59,7 @@ const SignUp = (props) => {
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
   const [error, setError] = useState([]);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
-  const [signUpLabel, setSignUpLabel] = useState(false);
+  const [signUpLabel, setSignUpLabel] = useState('email');
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
   const [loginUse, setLoginUse] = useState('');
@@ -85,6 +85,7 @@ const SignUp = (props) => {
     borderColor: AppColor.buttonDisable,
   });
   const [changingValidation, setChangingValidation] = useState(false);
+  const inputRef = createRef();
 
   const [errors, setErrors] = useState({
     email: {
@@ -116,11 +117,11 @@ const SignUp = (props) => {
 
     if (temp && isTerms) {
       // ENABLE BUTTON
-      console.log('All fields are valid');
+      // console.log('All fields are valid');
       setButtonDisabled(false);
     } else {
       // DISABLE BUTTON
-      console.log('One or more field is invalid');
+      // console.log('One or more field is invalid');
       setButtonDisabled(true);
     }
   };
@@ -502,11 +503,13 @@ const SignUp = (props) => {
                 style={{marginBottom: normalize(16)}}
                 errorState={errors.email}>
                 <AppInput
-                  label="Email"
+                  label={
+                    signUpLabel.charAt(0).toUpperCase() + signUpLabel.slice(1)
+                  }
                   onChangeText={(email) =>
                     valueHandler(
                       email,
-                      'email',
+                      signUpLabel,
                       'email',
                       errors,
                       setErrors,
@@ -514,6 +517,17 @@ const SignUp = (props) => {
                     )
                   }
                   value={email}
+                  inputRef={inputRef}
+                  onFocusInput={() => {
+                    setIsToggleVisible(true);
+                  }}
+                  onBlurInput={() => {
+                    console.log('BLURR');
+                    setIsToggleVisible(false);
+                  }}
+                  onSubmitEditing={() => {
+                    console.log('DONE');
+                  }}
                   keyboardType={'email-address'}
                   onKeyPress={() => {
                     setErrors({
@@ -530,18 +544,25 @@ const SignUp = (props) => {
               <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    !signUpLabel
-                      ? setValidationRule(['number'])
-                      : setValidationRule(['email']);
+                    console.log(signUpLabel);
+                    signUpLabel === 'number'
+                      ? setSignUpLabel('email')
+                      : setSignUpLabel('number');
 
-                    !signUpLabel ? setError(['number']) : setError(['email']);
-                    toggleSignUpMethod();
+                    valueHandler(
+                      email,
+                      signUpLabel === 'number' ? 'email' : 'number',
+                      'email',
+                      errors,
+                      setErrors,
+                      setEmail,
+                    );
                   }}>
                   <AppText
                     textStyle="button3"
                     color={AppColor.contentOcean}
                     customStyle={{marginBottom: 16}}>
-                    {!signUpLabel
+                    {signUpLabel === 'email'
                       ? 'Use mobile number instead'
                       : 'Use email instead'}
                   </AppText>

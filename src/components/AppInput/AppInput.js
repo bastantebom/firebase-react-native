@@ -19,13 +19,16 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
   const onFocusInput = () => {
     setIsActive(true);
     animateFocus();
+    props.onFocusInput ? props.onFocusInput() : () => {};
 
+    // console.log('POKUS');
     // onInputFocus ? onInputFocus() : null;
   };
 
   const onBlurInput = () => {
     setIsActive(false);
     animateBlur();
+    console.log('BLURRING');
   };
 
   useEffect(() => {
@@ -102,32 +105,22 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
           </AppText>
         </Animated.Text>
         <DebounceInput
-          minLength={1}
+          minLength={0}
           delayTimeout={500}
           {...props}
           style={styles.floatingInput}
           underlineColorAndroid="transparent"
           onFocus={onFocusInput}
-          onBlur={onBlurInput}
+          onBlur={() => {
+            onBlurInput();
+          }}
+          // onChange={(value) => {
+          //   console.log('changing', value.nativeEvent);
+          //   if (value.nativeEvent.text === '') onBlurInput();
+          // }}
           blurOnSubmit
         />
-        {/* <View style={styles.passwordToggle}>
-          {verified ? (
-            <VerifiedGreen width={normalize(16)} height={normalize(16)} />
-          ) : null}
-        </View> */}
       </View>
-      {/* {validation.length > 0 && (
-        <AppText
-          style={{
-            marginLeft: normalize(16),
-            display: showValidationError ? 'none' : 'flex',
-          }}
-          textStyle="metadata"
-          color={'red'}>
-          {validationError}
-        </AppText>
-      )} */}
     </View>
   );
 };

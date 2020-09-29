@@ -224,6 +224,8 @@ const FloatingAppInput = (props) => {
   const onBlurInput = () => {
     setIsActive(false);
     animateBlur();
+    
+    console.log('BLURRING');
   };
 
   useEffect(() => {
