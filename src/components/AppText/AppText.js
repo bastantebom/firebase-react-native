@@ -25,7 +25,7 @@ const AppText = ({children, textStyle, customStyle, color}) => {
 };
 
 // first value is 14
-const defaultFontSize = 16;
+const defaultFontSize = 17;
 
 const styles = StyleSheet.create({
   body1: {
