@@ -51,6 +51,8 @@ const TransparentHeader = ({
   userInfo,
   triggerNotify,
   userID,
+  postTitle,
+  postId,
 }) => {
   const navigation = useNavigation();
   const shareHandler = async () => {
@@ -75,10 +77,10 @@ const TransparentHeader = ({
       // setResult('error: '.concat(getErrorString(error)));
     }
   };
-
   const {user} = useContext(UserContext);
 
   if (type === 'post-other') {
+    //console.log(postTitle);
     return (
       <>
         <SafeAreaView
@@ -105,18 +107,20 @@ const TransparentHeader = ({
               </TouchableOpacity>
             </View>
             {/* Right aligned icons */}
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={toggleEllipsisState}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderEllipsis
-                    width={normalize(16)}
-                    height={normalize(16)}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
+            {user ? (
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={toggleEllipsisState}>
+                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                    <HeaderEllipsis
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
         </SafeAreaView>
         <Modal
@@ -140,7 +144,11 @@ const TransparentHeader = ({
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
-          <OtherPostEllipsis toggleEllipsisState={toggleEllipsisState} />
+          <OtherPostEllipsis
+            toggleEllipsisState={toggleEllipsisState}
+            postId={postId}
+            postTitle={postTitle}
+          />
         </Modal>
       </>
     );
@@ -278,7 +286,7 @@ const TransparentHeader = ({
           <OwnMenu
             signOut={() => {
               signOut().then(() => {
-                console.log('helluu');
+                //console.log('helluu');
                 navigation.navigate('Onboarding');
               });
             }}

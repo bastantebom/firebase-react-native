@@ -233,6 +233,8 @@ const SinglePostOthersView = (props) => {
           <TransparentHeader
             type={'post-other'}
             backFunction={() => navigation.goBack()}
+            postId={post_id}
+            postTitle={title}
           />
           <SinglePostContent></SinglePostContent>
 

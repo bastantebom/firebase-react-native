@@ -3,7 +3,7 @@ import {UserContext} from '@/context/UserContext';
 
 const reportUser = async (payload) => {
   return BaseAPI({
-    url: `/admin/report`,
+    url: `/user/report`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,21 +1,29 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from 'react-native';
 import {AppText, BottomSheetHeader, PaddingView} from '@/components';
 import {Colors, normalize} from '@/globals';
 import {ProfileReport, PostRemove} from '@/assets/images/icons';
 import Modal from 'react-native-modal';
+import Report from './Report';
 
 const OtherPostEllipsis = ({
   toggleEllipsisState,
-  editPostFunction,
-  deletePostFunction,
   togglePostModal,
+  postTitle,
+  postId,
 }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [reportUser, setReportUser] = useState(false);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
   };
+
   const closeHandler = (value) => {
     cancelModalToggle();
     setTimeout(() => {
@@ -23,6 +31,14 @@ const OtherPostEllipsis = ({
     }, 200);
 
     cancelModalToggle();
+  };
+
+  const toggleReportUser = () => {
+    setReportUser(!reportUser);
+    if (reportUser) {
+      toggleEllipsisState();
+      //togglePostModal();
+    }
   };
 
   return (
@@ -58,7 +74,7 @@ const OtherPostEllipsis = ({
             </AppText>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity activeOpacity={0.7} onPress={toggleReportUser}>
           <View
             style={{
               flexDirection: 'row',
@@ -87,69 +103,26 @@ const OtherPostEllipsis = ({
             <AppText textStyle="button2">Cancel</AppText>
           </View>
         </TouchableOpacity>
-        <Modal
-          isVisible={showCancelModal}
-          animationIn="bounceIn"
-          animationInTiming={450}
-          animationOut="bounceOut"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          customBackdrop={
-            <TouchableWithoutFeedback onPress={cancelModalToggle}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
-            </TouchableWithoutFeedback>
-          }>
-          <View
-            style={{
-              backgroundColor: 'white',
-              height: normalize(300),
-              width: normalize(300),
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 16,
-            }}>
-            <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
-              Remove Post?
-            </AppText>
-
-            <AppText
-              textStyle="caption"
-              customStyle={{textAlign: 'center'}}
-              customStyle={{marginBottom: 16}}>
-              Are you sure you want to remove this post?
-            </AppText>
-
-            <TouchableOpacity
-              onPress={deletePostFunction}
-              style={{
-                backgroundColor: Colors.yellow2,
-                paddingVertical: 14,
-                width: '100%',
-                alignItems: 'center',
-                marginBottom: 16,
-                borderRadius: 4,
-              }}>
-              <AppText textStyle="button2">Continue</AppText>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => closeHandler('cancel')}
-              style={{
-                paddingVertical: 14,
-                width: '100%',
-                alignItems: 'center',
-              }}>
-              <AppText textStyle="button2" color={Colors.contentOcean}>
-                Cancel
-              </AppText>
-            </TouchableOpacity>
-          </View>
-        </Modal>
       </PaddingView>
+      <Modal
+        isVisible={reportUser}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <Report
+          toggleReportUser={toggleReportUser}
+          postId={postId}
+          postTitle={postTitle}
+          type="post"
+        />
+      </Modal>
     </View>
   );
 };

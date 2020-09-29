@@ -10,7 +10,7 @@ import {
   ProfileReport,
   ProfileBlockRed,
 } from '@/assets/images/icons';
-import ReportUser from './ReportProfile';
+import Report from './Report';
 
 const EllipsisMenu = ({toggleEllipsisState, userInfo, userID}) => {
   const {username} = userInfo;
@@ -102,10 +102,11 @@ const EllipsisMenu = ({toggleEllipsisState, userInfo, userID}) => {
           height: Dimensions.get('window').height,
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <ReportUser
+        <Report
           toggleReportUser={toggleReportUser}
           username={username}
           userID={userID}
+          type="user"
         />
       </Modal>
     </>

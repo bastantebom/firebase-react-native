@@ -438,6 +438,8 @@ const SinglePostView = (props) => {
         backFunction={() => navigation.goBack()}
         editPostFunction={toggleEditPost}
         deletePostFunction={deletePost}
+        postId={post_id}
+        postTitle={title}
       />
 
       <Modal

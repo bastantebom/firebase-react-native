@@ -17,10 +17,11 @@ import {
 import {Colors, normalize} from '@/globals';
 import AdminFunctionService from '@/services/Admin/AdminFunctions';
 import {Context} from '@/context';
+import {UserContext} from '@/context/UserContext';
 
 // create a component
-const ReportUser = ({toggleReportUser, username, userID}) => {
-  //const {user} = useContext(UserContext);
+const Report = ({toggleReportUser, username, userID, postId, postTitle}) => {
+  const {user} = useContext(UserContext);
   const {openNotification, closeNotification} = useContext(Context);
   const [reportMessage, setReportMessage] = useState('');
   const [buttonStyle, setButtonStyle] = useState({
@@ -31,6 +32,10 @@ const ReportUser = ({toggleReportUser, username, userID}) => {
   const [IS_UPDATING, setIS_UPDATING] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationType, setNotificationType] = useState();
+
+  const {uid, displayName} = user;
+
+  console.log(displayName);
 
   const reportMessageHandler = (text) => {
     //console.log(text);
@@ -54,12 +59,11 @@ const ReportUser = ({toggleReportUser, username, userID}) => {
   };
 
   const onSubmitReportHandler = () => {
-    //console.log('napindot ito');
     setIS_UPDATING(true);
     AdminFunctionService.reportUser({
-      reportedUID: userID,
-      reportedUserName: username,
-      reportedMessage: reportMessage,
+      reported_uid: userID,
+      message: reportMessage,
+      uid: uid,
     })
       .then((response) => {
         if (response.success) {
@@ -133,7 +137,7 @@ const ReportUser = ({toggleReportUser, username, userID}) => {
           }}>
           <Notification message={notificationMessage} type={notificationType} />
           <ScreenHeaderTitle
-            title={'Report @' + username}
+            title={username ? 'Report @' + username : postTitle}
             close={toggleReportUser}
             icon="close"
           />
@@ -142,7 +146,11 @@ const ReportUser = ({toggleReportUser, username, userID}) => {
             <TextInput
               value={reportMessage}
               multiline={true}
-              placeholder={'Describe your Report to @' + username}
+              placeholder={
+                username
+                  ? 'Describe your Report to @' + username
+                  : 'Describe your Report to this Post'
+              }
               placeholderTextColor={Colors.neutralGray}
               numberOfLines={Platform.OS === 'ios' ? null : 6}
               minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
@@ -197,4 +205,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default ReportUser;
+export default Report;
