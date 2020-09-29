@@ -130,6 +130,54 @@ const SignUp = (props) => {
     checkErrorState();
   }, [errors, isTerms]);
 
+  const [errors, setErrors] = useState({
+    email: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    name: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    password: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+  });
+
+  const checkErrorState = () => {
+    let temp = true;
+
+    console.log(errors);
+
+    for (const [key, value] of Object.entries(errors)) {
+      if (!value.passed) {
+        console.log(key, ' is invalid');
+        temp = false;
+        break;
+      }
+    }
+
+    console.log(temp);
+
+    if (temp && isTerms) {
+      // ENABLE BUTTON
+      console.log('All fields are valid');
+      setButtonDisabled(false);
+    } else {
+      // DISABLE BUTTON
+      console.log('One or more field is invalid');
+      setButtonDisabled(true);
+    }
+  };
+
+  useEffect(() => {
+    checkErrorState();
+  }, [errors]);
+
   const toggleSignUpMethod = () => {
     setEmail('');
     // setError([]);
@@ -197,52 +245,52 @@ const SignUp = (props) => {
     checkInputComplete();
   }, [isTerms]);
 
-  const validateEmail = (email) => {
-    let mobileReg = /^(09|\+639)\d{9}$/;
-    if (
-      mobileReg.test(email) === true &&
-      ((email.substring(0, 1) === '0' && email.length === 11) ||
-        (email.length === 13 && email.substring(0, 1) === '+'))
-    ) {
-      setEmail(email);
-      setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
-      return true;
-    } else {
-      setIsValidMobileNumber(false);
-      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      if (reg.test(email) === false) {
-        setEmail(email);
-        return false;
-      } else {
-        setEmail(email);
-        return true;
-      }
-    }
-  };
+  // const validateEmail = (email) => {
+  //   let mobileReg = /^(09|\+639)\d{9}$/;
+  //   if (
+  //     mobileReg.test(email) === true &&
+  //     ((email.substring(0, 1) === '0' && email.length === 11) ||
+  //       (email.length === 13 && email.substring(0, 1) === '+'))
+  //   ) {
+  //     setEmail(email);
+  //     setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
+  //     return true;
+  //   } else {
+  //     setIsValidMobileNumber(false);
+  //     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  //     if (reg.test(email) === false) {
+  //       setEmail(email);
+  //       return false;
+  //     } else {
+  //       setEmail(email);
+  //       return true;
+  //     }
+  //   }
+  // };
 
-  const onEmailChange = (email) => {
-    if (validateEmail(email)) {
-      //setButtonText('Sign up');
-      setIsValidEmail(true);
-      const newKeyValue = {login: email};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
-        setLoginUse(() => {
-          setLoginUse('mobile number');
-        });
-      } else {
-        setLoginUse(() => {
-          setLoginUse('email');
-        });
-      }
+  // const onEmailChange = (email) => {
+  //   if (validateEmail(email)) {
+  //     //setButtonText('Sign up');
+  //     setIsValidEmail(true);
+  //     const newKeyValue = {login: email};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
+  //       setLoginUse(() => {
+  //         setLoginUse('mobile number');
+  //       });
+  //     } else {
+  //       setLoginUse(() => {
+  //         setLoginUse('email');
+  //       });
+  //     }
 
-      setIsValidEmail(false);
-      //setButtonText('Sign up');
-    }
-  };
+  //     setIsValidEmail(false);
+  //     //setButtonText('Sign up');
+  //   }
+  // };
 
   const onNameChange = (name) => {
     let nameReg = /^[a-z ,.'-]+$/i;
