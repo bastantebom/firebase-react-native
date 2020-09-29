@@ -160,11 +160,11 @@ const SignUp = (props) => {
 
     if (temp && isTerms) {
       // ENABLE BUTTON
-      console.log('All fields are valid');
+      // console.log('All fields are valid');
       setButtonDisabled(false);
     } else {
       // DISABLE BUTTON
-      console.log('One or more field is invalid');
+      // console.log('One or more field is invalid');
       setButtonDisabled(true);
     }
   };
