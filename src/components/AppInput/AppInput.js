@@ -1,6 +1,13 @@
 //import liraries
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, TextInput, StyleSheet, Animated} from 'react-native';
+import React, {useState, useEffect, useCallback, createRef} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Animated,
+  ScrollView,
+} from 'react-native';
 import {Colors, normalize} from '@/globals';
 import AppText from '../AppText/AppText';
 import ValidationList from './Validation';
@@ -19,7 +26,6 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
   const onFocusInput = () => {
     setIsActive(true);
     animateFocus();
-    props.onFocusInput ? props.onFocusInput() : () => {};
 
     // console.log('POKUS');
     // onInputFocus ? onInputFocus() : null;
@@ -27,8 +33,9 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
 
   const onBlurInput = () => {
     setIsActive(false);
-    animateBlur();
-    console.log('BLURRING');
+    if (value === '') {
+      animateBlur();
+    }
   };
 
   useEffect(() => {
@@ -46,13 +53,11 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
   };
 
   const animateBlur = () => {
-    if (placeholder === undefined && (value === undefined || value === '')) {
-      Animated.timing(labelPosition, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    }
+    Animated.timing(labelPosition, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
   };
 
   let labelStyle = {
@@ -68,12 +73,9 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
     ? Colors.contentOcean
     : Colors.contentPlaceholder;
 
-  const fontSize =
-    !isActive &&
-    (value === undefined || value === '') &&
-    placeholder === undefined
-      ? normalize(16)
-      : normalize(12);
+  const fontSize = {
+    fontSize: !isActive && value === '' ? normalize(16) : normalize(12),
+  };
 
   const paddingLeftCustom = {
     paddingLeft: normalize(
@@ -100,7 +102,7 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
           <AppText
             textStyle="body1"
             color={activeTextColor}
-            customStyle={{fontSize: fontSize}}>
+            customStyle={fontSize}>
             {label}
           </AppText>
         </Animated.Text>
@@ -114,10 +116,7 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
           onBlur={() => {
             onBlurInput();
           }}
-          // onChange={(value) => {
-          //   console.log('changing', value.nativeEvent);
-          //   if (value.nativeEvent.text === '') onBlurInput();
-          // }}
+          onEndEditing={onBlurInput}
           blurOnSubmit
         />
       </View>

@@ -97,6 +97,5 @@
     "assets": [
       "./assets/fonts/"
     ]
-  },
-  "postinstall": "npx patch-package" 
+  }
 }

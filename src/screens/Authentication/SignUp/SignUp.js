@@ -525,9 +525,10 @@ const SignUp = (props) => {
                     console.log('BLURR');
                     setIsToggleVisible(false);
                   }}
-                  onSubmitEditing={() => {
+                  onEndEditing={() => {
                     console.log('DONE');
                   }}
+                  // onSubmitEditing={}
                   keyboardType={'email-address'}
                   onKeyPress={() => {
                     setErrors({
