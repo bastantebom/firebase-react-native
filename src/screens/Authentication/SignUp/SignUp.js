@@ -107,17 +107,12 @@ const SignUp = (props) => {
   const checkErrorState = () => {
     let temp = true;
 
-    console.log(errors);
-
     for (const [key, value] of Object.entries(errors)) {
       if (!value.passed) {
-        console.log(key, ' is invalid');
         temp = false;
         break;
       }
     }
-
-    console.log(temp);
 
     if (temp && isTerms) {
       // ENABLE BUTTON
@@ -132,7 +127,7 @@ const SignUp = (props) => {
 
   useEffect(() => {
     checkErrorState();
-  }, [errors]);
+  }, [errors, isTerms]);
 
   const toggleSignUpMethod = () => {
     setEmail('');
@@ -179,19 +174,14 @@ const SignUp = (props) => {
     setIsValidMobileNumber(false);
   };
 
-  useEffect(() => {
-    // exit early when we reach 0
-    const newKeyValue = {
-      login: email.length === 11 ? '+63' + email.substr(1) : email,
-    };
-    setSignUpForm({...signUpForm, ...newKeyValue});
-    checkInputComplete();
-  }, [isValidMobileNumber]);
-
-  useEffect(() => {
-    // exit early when we reach 0
-    setIsValidName(() => isValidName);
-  }, [isValidName]);
+  // useEffect(() => {
+  //   // exit early when we reach 0
+  //   const newKeyValue = {
+  //     login: email.length === 11 ? '+63' + email.substr(1) : email,
+  //   };
+  //   setSignUpForm({...signUpForm, ...newKeyValue});
+  //   checkInputComplete();
+  // }, [isValidMobileNumber]);
 
   useEffect(() => {
     // exit early when we reach 0
@@ -203,7 +193,7 @@ const SignUp = (props) => {
     // exit early when we reach 0
     const newKeyValue = {terms_conditions: isTerms};
     setSignUpForm({...signUpForm, ...newKeyValue});
-    checkInputComplete();
+    // checkInputComplete();
   }, [isTerms]);
 
   // const validateEmail = (email) => {
@@ -253,77 +243,77 @@ const SignUp = (props) => {
   //   }
   // };
 
-  const onNameChange = (name) => {
-    let nameReg = /^[a-z ,.'-]+$/i;
-    if (nameReg.test(name)) {
-      setName(name);
-      setIsValidName(true);
+  // const onNameChange = (name) => {
+  //   let nameReg = /^[a-z ,.'-]+$/i;
+  //   if (nameReg.test(name)) {
+  //     setName(name);
+  //     setIsValidName(true);
 
-      const newKeyValue = {full_name: name};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log('Password Valid');
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      setName(name);
-      setIsValidName(false);
-    }
+  //     const newKeyValue = {full_name: name};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log('Password Valid');
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     setName(name);
+  //     setIsValidName(false);
+  //   }
 
-    if (name.length === 0) {
-      setIsValidName(true);
-    }
-  };
+  //   if (name.length === 0) {
+  //     setIsValidName(true);
+  //   }
+  // };
 
-  const onPasswordChange = (password) => {
-    if (password.length > 5) {
-      setIsValidPassword(true);
-      setPassword(password);
+  // const onPasswordChange = (password) => {
+  //   if (password.length > 5) {
+  //     setIsValidPassword(true);
+  //     setPassword(password);
 
-      const newKeyValue = {password: password};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log('Password Valid');
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      setPassword(password);
-      setIsValidPassword(false);
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-      setButtonDisabled(true);
-    }
-  };
+  //     const newKeyValue = {password: password};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log('Password Valid');
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     setPassword(password);
+  //     setIsValidPassword(false);
+  //     setButtonStyle({
+  //       backgroundColor: AppColor.buttonDisable,
+  //       borderColor: AppColor.buttonDisable,
+  //     });
+  //     setButtonDisabled(true);
+  //   }
+  // };
 
-  const checkInputComplete = () => {
-    if (isValidMobileNumber && name.length > 1) {
-      setButtonStyle({});
-      setButtonDisabled(false);
-    } else {
-      if (
-        !isValidMobileNumber &&
-        isValidEmail &&
-        name.length > 1 &&
-        password.length > 1 &&
-        isTerms
-      ) {
-        setButtonStyle({});
-        setButtonDisabled(false);
-      } else {
-        if (name.length === 0) {
-          setNameBorder({});
-        }
-        if (name.length === 0) {
-          setPasswordBorder({});
-        }
-        setButtonStyle({
-          backgroundColor: AppColor.buttonDisable,
-          borderColor: AppColor.buttonDisable,
-        });
-        setButtonDisabled(true);
-      }
-    }
-  };
+  // const checkInputComplete = () => {
+  //   if (isValidMobileNumber && name.length > 1) {
+  //     setButtonStyle({});
+  //     setButtonDisabled(false);
+  //   } else {
+  //     if (
+  //       !isValidMobileNumber &&
+  //       isValidEmail &&
+  //       name.length > 1 &&
+  //       password.length > 1 &&
+  //       isTerms
+  //     ) {
+  //       setButtonStyle({});
+  //       setButtonDisabled(false);
+  //     } else {
+  //       if (name.length === 0) {
+  //         setNameBorder({});
+  //       }
+  //       if (name.length === 0) {
+  //         setPasswordBorder({});
+  //       }
+  //       setButtonStyle({
+  //         backgroundColor: AppColor.buttonDisable,
+  //         borderColor: AppColor.buttonDisable,
+  //       });
+  //       setButtonDisabled(true);
+  //     }
+  //   }
+  // };
 
   const onFocusEmail = () => {
     setIsValidLogin(true);
