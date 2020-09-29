@@ -26,6 +26,7 @@ const FloatingAppInput = ({value, style, label, ...props}) => {
   const onFocusInput = () => {
     setIsActive(true);
     animateFocus();
+    props.onFocusInput ? props.onFocusInput() : () => {};
 
     props.onFocusInput ? props.onFocusInput() : null;
   };
