@@ -153,7 +153,7 @@ const SinglePostView = (props) => {
         navigation.goBack();
       },
     );
-    navigation.goBack();
+    //navigation.goBack();
     //alert('hide Post View Post');
   };
 

@@ -1,9 +1,15 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity, Dimensions} from 'react-native';
-
+import React, {useState, useContext} from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {AppText, BottomSheetHeader, PaddingView} from '@/components';
 import Modal from 'react-native-modal';
-import {Colors} from '@/globals';
+import {Colors, normalize} from '@/globals';
+import {UserContext} from '@/context/UserContext';
 
 import {
   ProfileMute,
@@ -11,16 +17,53 @@ import {
   ProfileBlockRed,
 } from '@/assets/images/icons';
 import Report from './Report';
+import AdminFunctionService from '@/services/Admin/AdminFunctions';
 
-const EllipsisMenu = ({toggleEllipsisState, userInfo, userID}) => {
+const EllipsisMenu = ({
+  toggleEllipsisState,
+  togglePostModal,
+  userInfo,
+  userID,
+  //blockUser,
+}) => {
   const {username} = userInfo;
   //console.log(userID);
+  const {user} = useContext(UserContext);
+  const navigation = useNavigation();
 
   const [reportUser, setReportUser] = useState(false);
 
   const toggleReportUser = () => {
     setReportUser(!reportUser);
     if (reportUser) toggleEllipsisState();
+  };
+
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const cancelModalToggle = () => {
+    setShowCancelModal(!showCancelModal);
+  };
+
+  const closeHandler = (value) => {
+    cancelModalToggle();
+    setTimeout(() => {
+      togglePostModal = {togglePostModal};
+    }, 200);
+    cancelModalToggle();
+  };
+
+  const blockUser = async () => {
+    //body: { uid, pid }
+    return await AdminFunctionService.blockUser({
+      uid: user?.uid,
+      reported_uid: userID,
+    }).then(() => {
+      toggleEllipsisState();
+      //console.log('deletePost ' + userInfo.post_count);
+      //setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
+      navigation.goBack();
+    });
+    //navigation.goBack();
+    //alert('hide Post View Post');
   };
 
   return (
@@ -60,7 +103,11 @@ const EllipsisMenu = ({toggleEllipsisState, userInfo, userID}) => {
               </AppText>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              closeHandler();
+            }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -90,6 +137,66 @@ const EllipsisMenu = ({toggleEllipsisState, userInfo, userID}) => {
           </TouchableOpacity>
         </PaddingView>
       </View>
+      <Modal
+        isVisible={showCancelModal}
+        animationIn="bounceIn"
+        animationInTiming={450}
+        animationOut="bounceOut"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={cancelModalToggle}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: normalize(300),
+            width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}>
+          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+            Block this User?
+          </AppText>
+
+          <AppText
+            textStyle="caption"
+            customStyle={{textAlign: 'center'}}
+            customStyle={{marginBottom: 16}}>
+            Are you sure you want to block this user?
+          </AppText>
+
+          <TouchableOpacity
+            onPress={() => {
+              blockUser();
+            }}
+            style={{
+              backgroundColor: Colors.yellow2,
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+              marginBottom: 16,
+              borderRadius: 4,
+            }}>
+            <AppText textStyle="button2">Continue</AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => closeHandler('cancel')}
+            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            <AppText textStyle="button2" color={Colors.contentOcean}>
+              Cancel
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      </Modal>
       <Modal
         isVisible={reportUser}
         animationIn="slideInRight"
