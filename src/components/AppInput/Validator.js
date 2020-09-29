@@ -14,7 +14,7 @@ const Validator = (props) => {
   return (
     <View>
       {children}
-      <AppText customStyle={textStyle}>{errorState.message}</AppText>
+      <AppText color={"red"} customStyle={textStyle}>{errorState.message}</AppText>
     </View>
   );
 };
