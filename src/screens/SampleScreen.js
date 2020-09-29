@@ -14,6 +14,7 @@ import {check} from 'react-native-permissions';
 const SampleScreen = () => {
   const [value1, setValue1] = useState();
   const [value2, setValue2] = useState();
+  const [validator, setValidator] = useState('email');
 
   const [enabled, setEnabled] = useState(false);
   const inputRef = createRef();
@@ -54,15 +55,74 @@ const SampleScreen = () => {
     checkErrorState();
   }, [errors]);
 
-  const value1Handler = async (value1) => {
+  // useEffect(() => {
+  //   console.log(inputRef);
+  // });
+
+  const value1Handler = async (value1, validation) => {
     console.log(value1);
     setValue1(value1);
-    await VF.emailValidator(value1)
+
+    if (validation === 'number')
+      await VF.MobileNumberValidator(value1)
+        .then(() => {
+          console.log('tama to');
+          setErrors({
+            ...errors,
+            value1: {
+              passed: true,
+              shown: false,
+              message: '',
+            },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrors({
+            ...errors,
+            value1: {
+              passed: false,
+              shown: true,
+              message: err,
+            },
+          });
+        });
+
+    if (validation === 'email')
+      await VF.emailValidator(value1)
+        .then(() => {
+          console.log('tama to');
+          setErrors({
+            ...errors,
+            value1: {
+              passed: true,
+              shown: false,
+              message: '',
+            },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrors({
+            ...errors,
+            value1: {
+              passed: false,
+              shown: true,
+              message: err,
+            },
+          });
+        });
+  };
+
+  const value2Handler = async (value2) => {
+    console.log(value2);
+    setValue2(value2);
+    await VF.emailValidator(value2)
       .then(() => {
         console.log('tama to');
         setErrors({
           ...errors,
-          value1: {
+          value2: {
             passed: true,
             shown: false,
             message: '',
@@ -73,7 +133,7 @@ const SampleScreen = () => {
         console.log(err);
         setErrors({
           ...errors,
-          value1: {
+          value2: {
             passed: false,
             shown: true,
             message: err,
@@ -91,49 +151,37 @@ const SampleScreen = () => {
         <AppInput
           label="Email"
           style={{marginTop: 20}}
-          onChangeText={(value1) => {
-            console.log('typing');
-            value1Handler(value1);
-          }}
-          minLength={1}
+          onChangeText={(value1) => value1Handler(value1, validator)}
+          inputRef={inputRef}
           value={value1}
           keyboardType={'email-address'}
-          delayTimeout={1000}
+          onKeyPress={() => {
+            setErrors({
+              ...errors,
+              value1: {
+                ...errors.value1,
+                shown: false,
+              },
+            });
+          }}
         />
       </Validator>
 
-      <Validator errorState={errors.value2} value={value2} >
+      <Validator errorState={errors.value2} value={value2}>
         <AppInput
           label="Email"
           style={{marginTop: 20}}
-          onChangeText={async (value2) => {
-            console.log(value2);
-            setValue2(value2);
-            await VF.emailValidator(value2)
-              .then(() => {
-                console.log('tama to');
-                setErrors({
-                  ...errors,
-                  value2: {
-                    passed: true,
-                    shown: false,
-                    message: '',
-                  },
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-                setErrors({
-                  ...errors,
-                  value2: {
-                    passed: false,
-                    shown: true,
-                    message: err,
-                  },
-                });
-              });
-          }}
+          onChangeText={(value2) => value2Handler(value2)}
           value={value2}
+          onKeyPress={() => {
+            setErrors({
+              ...errors,
+              value2: {
+                ...errors.value2,
+                shown: false,
+              },
+            });
+          }}
         />
       </Validator>
       {/* </View> */}
@@ -147,6 +195,24 @@ const SampleScreen = () => {
             marginTop: 20,
           }}>
           <AppText>Submit</AppText>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          validator === 'email'
+            ? setValidator('number')
+            : setValidator('email');
+          value1Handler(value1, validator);
+        }}>
+        <View
+          style={{
+            backgroundColor: 'yellow',
+            padding: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 20,
+          }}>
+          <AppText>change</AppText>
         </View>
       </TouchableOpacity>
     </SafeAreaView>
