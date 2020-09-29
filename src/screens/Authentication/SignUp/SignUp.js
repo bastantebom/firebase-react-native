@@ -356,10 +356,19 @@ const SignUp = (props) => {
   const signUpEmail = (formValues) => {
     console.log(formValues);
     console.log('Signup button clicked');
-    console.log(password);
+    console.log('password:', password);
+    console.log('name:', name);
+    console.log('email:', email);
+
+    let formSubmitted = {
+      ...formValues,
+      login: email,
+      full_name: name,
+      password: password,
+    };
 
     setIsLoading(true);
-    SignUpService.createUser(JSON.stringify(formValues))
+    SignUpService.createUser(JSON.stringify(formSubmitted))
       .then((response) => {
         cleanSignUpForm();
         console.log(response);
@@ -495,7 +504,14 @@ const SignUp = (props) => {
                 <AppInput
                   label="Email"
                   onChangeText={(email) =>
-                    valueHandler(email, 'email', 'email', errors, setErrors)
+                    valueHandler(
+                      email,
+                      'email',
+                      'email',
+                      errors,
+                      setErrors,
+                      setEmail,
+                    )
                   }
                   value={email}
                   keyboardType={'email-address'}
@@ -555,7 +571,14 @@ const SignUp = (props) => {
                 <AppInput
                   label="Full Name"
                   onChangeText={(name) =>
-                    valueHandler(name, 'name', 'name', errors, setErrors)
+                    valueHandler(
+                      name,
+                      'name',
+                      'name',
+                      errors,
+                      setErrors,
+                      setName,
+                    )
                   }
                   value={name}
                   // keyboardType={'email-address'}
@@ -600,6 +623,7 @@ const SignUp = (props) => {
                         'password',
                         errors,
                         setErrors,
+                        setPassword,
                       )
                     }
                     secureTextEntry={!isVisible ? true : false}
