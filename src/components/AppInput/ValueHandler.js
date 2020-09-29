@@ -6,10 +6,14 @@ export default valueHandler = async (
   valueName,
   errors,
   setErrors,
+  setValue,
 ) => {
-  if (!errors || !setErrors || !valueName) {
+
+  if (!errors || !setErrors || !valueName || typeof setValue !== 'function') {
     return console.log('MISSING PARAMETERS');
   }
+
+  setValue(value);
 
   if (validation === 'number')
     await VF.MobileNumberValidator(value)
