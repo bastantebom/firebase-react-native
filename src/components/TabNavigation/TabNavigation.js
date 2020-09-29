@@ -10,7 +10,7 @@ import {
 import { AppText } from '@/components';
 import { Colors, normalize } from '@/globals';
 
-const TabNavigation = ({ routesList, bottomTab }) => {
+const TabNavigation = ({ routesList, bottomTab, activityTab }) => {
   if (!routesList)
     return <AppText color="red">routeList props is required</AppText>;
 
@@ -90,11 +90,12 @@ const TabNavigation = ({ routesList, bottomTab }) => {
   // }, []);
 
   return (
-    <View style={[styles.container, { paddingBottom: bottomTab && 65 }]}>
+    <View style={[styles.container, { paddingBottom: bottomTab && 65,  borderTopWidth: activityTab && 0}]}>
       <View
         style={[
           styles.navigationContainer,
           bottomTab && bottomStyle.bottomTabStyle,
+          activityTab && activityStyle.activityTabStyle
         ]}>
         <RenderRoutes />
       </View>
@@ -108,6 +109,12 @@ const bottomStyle = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
+  },
+});
+
+const activityStyle = StyleSheet.create({
+  activityTabStyle: {
+    borderBottomWidth: 0,
   },
 });
 

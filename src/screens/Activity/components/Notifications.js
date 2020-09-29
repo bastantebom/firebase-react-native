@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {
   SafeAreaView,
+  ScrollView,
   View,
   TouchableOpacity,
   StyleSheet,
@@ -9,37 +10,97 @@ import {
 import { AppText } from '@/components';
 import { normalize } from '@/globals';
 import { Calendar } from '@/assets/images/icons';
-import NotificationCard from './NotificationCard';
+import InviteNotificationCard from './InviteNotificationCard';
+import FollowNotificationCard from './FollowNotificationCard';
+import ApprovedNotificationCard from './ApprovedNotificationCard';
+import ReminderNotificationCard from './ReminderNotificationCard';
 
 const Notifications = () => {
-  const notifications = [
+  const inviteNotifications = [
     {
       name: 'Grae Joquico',
       groupName: 'Tropang Woodlands',
       position: 'Member Bee'
-    },
+    }
+  ]
+
+  const followNotifications = [
     {
       name: 'Trisha Paredes'
     }
   ]
 
+  const approvedNotifications = [
+    {
+      groupName: 'Pixel',
+    }
+  ]
+
+  const reminderNotifications = [
+    {
+      name: 'Wayne',
+      reminder: "Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love."
+    }
+  ]
+
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Calendar height={normalize(20)} width={normalize(20)} style={{ marginRight: 10 }} />
-        <AppText textStyle="caption2">Today</AppText>
-      </View>
-      <View>
-        <AppText customStyle={{color: '#91919C'}}>NEW</AppText>
-      </View>
-      {notifications.map((info, i) => {
-        return (
-          <NotificationCard 
-            key={i} 
-            props={info}
-          />
-        )
-      })}
+      <ScrollView>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Calendar height={normalize(20)} width={normalize(20)} style={{ marginRight: 10 }} />
+          <AppText textStyle="caption2">Today</AppText>
+        </View>
+        <View style={{paddingTop: 10}}>
+          <View>
+            <AppText customStyle={{color: '#91919C'}}>NEW</AppText>
+          </View>
+          {inviteNotifications.map((info, i) => {
+            return (
+              <>
+                <InviteNotificationCard 
+                  key={i} 
+                  props={info}
+                />
+              </>
+            )
+          })}
+        </View>
+        <View style={{paddingTop: 10}}>
+          <View>
+            <AppText customStyle={{color: '#91919C'}}>EARLIER</AppText>
+          </View>
+          {followNotifications.map((info, j) => {
+            return (
+              <>
+                <FollowNotificationCard 
+                  key={j} 
+                  props={info}
+                />
+              </>
+            )
+          })}
+          {approvedNotifications.map((info, k) => {
+            return (
+              <>
+                <ApprovedNotificationCard 
+                  key={k} 
+                  props={info}
+                />
+              </>
+            )
+          })}
+          {reminderNotifications.map((info, l) => {
+            return (
+              <>
+                <ReminderNotificationCard 
+                  key={l} 
+                  props={info}
+                />
+              </>
+            )
+          })}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

@@ -59,11 +59,11 @@ const Activity = () => {
         </>
       ) : (
           <>
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', paddingBottom: normalize(20) }}>
               <AppText>My Activities</AppText>
               <TouchableOpacity style={{ position: 'absolute', right: 0 }}><AppText color={Colors.contentOcean}>Past</AppText></TouchableOpacity>
             </View>
-            <TabNavigation routesList={uploadTabs} />
+            <TabNavigation routesList={uploadTabs} activityTab />
           </>
         )
       }
