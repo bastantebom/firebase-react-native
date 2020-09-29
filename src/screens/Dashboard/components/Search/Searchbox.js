@@ -1,21 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   View, 
-  TextInput, 
-  Keyboard, 
   Animated, 
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity, Keyboard
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Searchbar } from 'react-native-paper';
 import { connectSearchBox } from 'react-instantsearch-native';
-import { AppInput } from '@/components';
-import { normalize } from '@/globals';
+import { Colors, normalize } from '@/globals';
 import AppColor from '@/globals/Colors';
-import { HeaderBackGray } from '@/assets/images/icons';
-import InfiniteHits from './InfiniteHits';
+import { Close, HeaderBackGray } from '@/assets/images/icons';
 
 const { width } = Dimensions.get("window");
 const PADDING = 16;
@@ -24,37 +20,31 @@ const SEARCH_SHRINK_WIDTH = width - PADDING - normalize(125); //search_width whe
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
-const SearchBox = ({ currentRefinement, refine, onSearchFocus, onBackPress }) => {    
+const SearchBox = ({ 
+  currentRefinement, 
+  refine, 
+  onSearchFocus, 
+  onBackPress, 
+  valueHandler,
+  customStyle,
+  props
+ }) => {    
   const searchbarRef = useRef(null)
 
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
   const [cancelPosition] = useState(new Animated.Value(0))
   const [barPosition] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
-  const [searchBarFocused] = useState(false)
+  const [searchBarFocused, setSearchBarFocused] = useState(false)
 
   // useEffect(() => {
-  //   Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
-  //   Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+  //    if(Keyboard.dismiss()) {
+  //     onBlur();
+  //   }
+  // })
 
-  //   return () => {
-  //     Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
-  //     Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
-  //   };
-  // }, []);
-
-  // const _keyboardDidShow = () => {
-  //   // alert("Keyboard Shown");
-  //   searchbarRef.current.isFocused(console.log('focused...'))
-  // };
-
-  // const _keyboardDidHide = () => {
-  //   // alert("Keyboard Hidden");
-  //   !searchbarRef.current.isFocused(console.log('blurred...'))
-  // };
-    
   const onFocus = () => {
-    searchbarRef.current.isFocused(console.log('focused...'))
+    // searchbarRef.current.isFocused(console.log('focused...'))
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_FULL_WIDTH,
@@ -68,6 +58,7 @@ const SearchBox = ({ currentRefinement, refine, onSearchFocus, onBackPress }) =>
       }),
       Animated.timing(barPosition, {
         toValue: 45,
+        // toValue: 0,
         duration: 400,
         useNativeDriver: false
       }),
@@ -77,23 +68,27 @@ const SearchBox = ({ currentRefinement, refine, onSearchFocus, onBackPress }) =>
         useNativeDriver: true
       })
     ]).start();
+    setSearchBarFocused(true);
     onSearchFocus();
   }
   
   const onBlur = () => {
-    !searchbarRef.current.isFocused(console.log('blurred...'))
+    // !searchbarRef.current.isFocused(console.log('blurred...'))
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_SHRINK_WIDTH,
         duration: 250,
+        useNativeDriver: false
       }),
       Animated.timing(cancelPosition, {
         toValue: 0,
         duration: 250,
+        useNativeDriver: false
       }),
       Animated.timing(barPosition, {
         toValue: 0,
         duration: 250,
+        useNativeDriver: false
       }),
       Animated.timing(opacity, {
         toValue: 0,
@@ -101,7 +96,20 @@ const SearchBox = ({ currentRefinement, refine, onSearchFocus, onBackPress }) =>
         useNativeDriver: true
       })
     ]).start();
+    setSearchBarFocused(false);
   }
+
+  const [value, setValue] = useState()
+
+  // useEffect(() => {
+  //   if(value === undefined || value === '') {
+  //     console.log(value)
+  //     console.log('undefined value')
+  //   } else {
+  //     console.log(value)
+  //     console.log('value')
+  //   }
+  // }, [value])
 
   return (
     <View style={styles.container}>
@@ -112,13 +120,14 @@ const SearchBox = ({ currentRefinement, refine, onSearchFocus, onBackPress }) =>
             position: "absolute",
             zIndex: 1,
             left: barPosition
-          },
+          }, customStyle
         ]}
       >
         <Searchbar
           placeholder="Start your search..."
-          onChangeText={value => refine(value)}
+          onChangeText={value => {refine(value), setValue(value), valueHandler(value)}}
           value={currentRefinement}
+          onIconPress={onFocus}
           fontFamily={'RoundedMplus1c-Regular'}
           theme={{
             colors: {
@@ -129,10 +138,11 @@ const SearchBox = ({ currentRefinement, refine, onSearchFocus, onBackPress }) =>
             },
           }}
           inputStyle={{ paddingLeft: 0, paddingRight: 0 }}
-          style={{ flex: 1, marginTop: normalize(0), paddingVertical: normalize(2) }}
+          style={{ marginTop: normalize(0), borderWidth: 1.5, borderColor: searchBarFocused ? Colors.contentOcean : Colors.neutralGray , elevation: 0 }}
           ref={searchbarRef}
           onFocus={onFocus}
-          onBlur={onBlur}
+          {...props}
+          // onBlur={onBlur}
         />
       </Animated.View>
       <AnimatedTouchable
@@ -159,6 +169,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+    zIndex: 5
   },
   cancelSearch: {
     position: "absolute",

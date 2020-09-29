@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   Animated,
   Dimensions,
+  Keyboard
 } from 'react-native';
 // import {TextInput} from 'react-native-paper';
 
@@ -45,32 +46,32 @@ import {VerificationScreen} from '@/screens/Dashboard/Verification';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch, connectSearchBox } from 'react-instantsearch-native';
 // import { InstantSearch } from 'react-instantsearch-native';
-import SearchBox from './components/Searchbox';
-import InfiniteHits from './components/InfiniteHits';
-import RefinementList from './components/RefinementList';
-import SearchResults from './components/SearchResults';
+import SearchBox from './components/Search/Searchbox';
+import InfiniteHits from './components/Search/InfiniteHits';
+import RefinementList from './components/Search/RefinementList';
+import SearchResults from './components/Search/SearchResults';
 
 function Dashboard() {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const {openNotification} = useContext(Context);
+
   const {posts} = useContext(Context);
-  const {user} = useContext(UserContext);
 
   const toggleModal = () => {
     setModalState(!modalState);
   };
-
-  const [scrollState, setScrollState] = useState(0);
-  const [margin, setMargin] = useState(16);
-
-  // const {address} = userInfo;
 
   const [menu, setMenu] = useState(false);
 
   const toggleMenu = () => {
     setMenu(!menu);
   };
+
+  useEffect(() => {
+    openNotification();
+  })
 
   return (
     <>
@@ -89,9 +90,9 @@ function Dashboard() {
             position="relative"
           /> */}
         {/* ---- Verification Notification ---- */}
+      
         <View style={styles.container}>
           <SearchBarWithFilter toggleFilter={toggleModal} />
-
           <Posts
             type="dashboard"
             data={posts}
@@ -131,17 +132,17 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
 
-  const goTo = () => {
-    navigation.navigate('NBTScreen', {
-      screen: 'Sampley',
-    });
-  };
+  const [searchValue, setSearchValue] = useState()
+
+  const onValueChange = (value) => {
+    setSearchValue(value)
+  }
 
   const onFocus = () => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 250,
+        duration: 100,
         useNativeDriver: true
       })
     ]).start();
@@ -152,57 +153,58 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0,
-        duration: 250,
+        duration: 100,
         useNativeDriver: true
       })
     ]).start();
     setSearchBarFocused(false);
+    Keyboard.dismiss();
   }
 
   const searchClient = algoliasearch(
     "B1G2GM9NG0",
     "aadef574be1f9252bb48d4ea09b5cfe5"
   );
-  
+
   return (
     <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
       <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
         <View style={{ flex: 1 }}>
           <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
-            <SearchBox onSearchFocus={onFocus} onBackPress={onBackPress} />
+            <SearchBox 
+              onSearchFocus={onFocus} 
+              onBackPress={onBackPress}
+              valueHandler={onValueChange}
+            />
             {/* <RefinementList attribute="brand" limit={5} /> */}
             <Animated.View 
               style={{ 
                 opacity: opacity, 
                 display: searchBarFocused ? 'flex' : 'none',
-                zIndex: searchBarFocused ? 99999 : 0,
-                // flex: 1,
-                // width: Dimensions.get('window').width - normalize(16),
-                // position: 'absolute',
-                // marginRight: normalize(16),
-                // flexDirection: 'column',
-                // marginTop: normalize(25),
-                // backgroundColor: 'red' 
+                zIndex: searchBarFocused ? 1 : 0,
+                flex: 1,
+                position: 'absolute',
               }}
             >
-              <SearchResults/>
-                {/* <InfiniteHits/> */}
-              {/* </SearchResults> */}
+              <SearchResults onValueChange={searchValue} />
             </Animated.View>
           </InstantSearch>
         </View>
-        <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1  }}>
-          <TouchableOpacity onPress={toggleFilter}>
-            <View style={styles.circleButton}>
-              <Filter />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.circleButton}>
-              <JarHeart />
-            </View>
-          </TouchableOpacity>
-        </View>
+        { searchBarFocused ? 
+          <View style={{ marginTop: normalize(47.5)}}/> 
+          : <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1 }}>
+            <TouchableOpacity onPress={toggleFilter}>
+              <View style={styles.circleButton}>
+                <Filter />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.circleButton}>
+                <JarHeart />
+              </View>
+            </TouchableOpacity>
+          </View>
+        }
       </View>
       <LocationSearch />
     </View>
@@ -381,7 +383,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
+    // flex: 1,
     // flexGrow: 1,
     // height: '100%',
     backgroundColor: 'white',
