@@ -23,6 +23,9 @@ const emailValidator = async (email) => {
   let emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   return await new Promise((resolve, reject) => {
+    if (email === '') {
+      reject('Email is required.');
+    }
     if (!emailReg.test(email)) {
       reject('Invalid email address.');
     }
@@ -53,11 +56,28 @@ const PasswordValidator = async (password) => {
   });
 };
 
+const NameValidator = async (name) => {
+  var nameReg = /^[a-zA-Z\s]*$/;
+
+  return await new Promise((resolve, reject) => {
+    if (name === '') {
+      reject('Full name is required.');
+    }
+
+    if (!nameReg.test(name)) {
+      reject('Invalid name. (Letters & spaces only.)');
+    }
+
+    return resolve(true);
+  });
+};
+
 const Validator = {
   usernameValidator,
   emailValidator,
   MobileNumberValidator,
-  PasswordValidator
+  PasswordValidator,
+  NameValidator,
 };
 
 export default Validator;

@@ -4,7 +4,7 @@ import {AppText, FloatingAppInput} from '@/components';
 import {useNavigation} from '@react-navigation/native';
 import {debounce} from 'lodash';
 
-import AppInput from '@/components/AppInput/AppInput2';
+import AppInput from '@/components/AppInput/AppInput';
 import Validator from '@/components/AppInput/Validator';
 
 import DebounceInput from 'react-native-debounce-input';
@@ -43,10 +43,10 @@ const SampleScreen = () => {
     }
 
     if (temp) {
-      console.log('true: walang mali');
+      // ENABLE BUTTON
       setEnabled(true);
     } else {
-      console.log('false: may mali');
+      // DISABLE BUTTON
       setEnabled(false);
     }
   };
