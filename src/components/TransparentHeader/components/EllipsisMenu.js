@@ -58,12 +58,8 @@ const EllipsisMenu = ({
       reported_uid: userID,
     }).then(() => {
       toggleEllipsisState();
-      //console.log('deletePost ' + userInfo.post_count);
-      //setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
       navigation.goBack();
     });
-    //navigation.goBack();
-    //alert('hide Post View Post');
   };
 
   return (
