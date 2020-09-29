@@ -55,30 +55,27 @@ const EllipsisMenu = ({toggleEllipsisState, userInfo, userID}) => {
                 marginBottom: 16,
               }}>
               <ProfileReport />
-              <AppText
-                color={Colors.red}
-                customStyle={{marginLeft: 8}}
-                textStyle="body2">
+              <AppText customStyle={{marginLeft: 8}} textStyle="body2">
                 Report @{username}
               </AppText>
             </View>
           </TouchableOpacity>
-          {/* <TouchableOpacity activeOpacity={0.7}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 16,
-            }}>
-            <ProfileBlockRed />
-            <AppText
-              color={Colors.red}
-              customStyle={{marginLeft: 8}}
-              textStyle="body2">
-              Block @{username}
-            </AppText>
-          </View>
-        </TouchableOpacity> */}
+          <TouchableOpacity activeOpacity={0.7}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 16,
+              }}>
+              <ProfileBlockRed />
+              <AppText
+                color={Colors.red}
+                customStyle={{marginLeft: 8}}
+                textStyle="body2">
+                Block @{username}
+              </AppText>
+            </View>
+          </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.7} onPress={toggleEllipsisState}>
             <View
