@@ -20,6 +20,7 @@ import {Activity} from '@/screens/Activity';
 import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 import {ProfileInfoModal, SinglePostOthersView} from '@/components';
+import {Past} from '@/screens/Activity';
 
 import {
   AlmostThere,
@@ -55,6 +56,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="AlmostThere" component={AlmostThere} />
       <AuthStack.Screen name="AlmostThereMap" component={AlmostThereMap} />
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+      <AuthStack.Screen name="Past" component={Past} />
       <AuthStack.Screen name="TabStack" component={TabStack} />
       <AuthStack.Screen name="NBTScreen" component={NoBottomTabScreens} />
     </AuthStack.Navigator>
@@ -136,6 +138,7 @@ function ActivityStackScreen() {
   return (
     <ActivityStack.Navigator headerMode="none">
       <ActivityStack.Screen name="Activity" component={Activity} />
+      <ActivityStack.Screen name="Past" component={Past} />
     </ActivityStack.Navigator>
   );
 }

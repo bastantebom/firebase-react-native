@@ -10,10 +10,11 @@ import {
 import { AppText } from '@/components';
 import {GlobalStyle, normalize} from '@/globals';
 
-import { RedBadge, ProfileImageDefault, PostClock } from '@/assets/images/icons';
+import { RedBadge, YellowBadge, ProfileImageDefault, PostClock } from '@/assets/images/icons';
 
 const ApprovedNotificationCard = ({ groupName, props }) => {
   const [newNotif, setNewNotif] = useState(false)
+  const [yellowBadge, setYellowBadge] = useState(true)
 
   return (
     <SafeAreaView>
@@ -22,7 +23,9 @@ const ApprovedNotificationCard = ({ groupName, props }) => {
           <View style={styles.avatarHolder}>
             <ProfileImageDefault width={normalize(30)} height={normalize(30)}/>
             <View style={styles.badgeHolder}>
-              <RedBadge width={normalize(18)} height={normalize(18)}/>
+            {yellowBadge ?
+              <YellowBadge width={normalize(18)} height={normalize(18)}/> : <RedBadge width={normalize(18)} height={normalize(18)}/>
+            }
             </View>
           </View>
           <View style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>

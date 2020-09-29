@@ -150,6 +150,7 @@ import LoginApple from './login_Apple03.svg';
 import YellowBadge from './yellow-badge.svg';
 import RedBadge from './red-badge.svg';
 import Bee from './bee.svg';
+import ArrowLeft from './arrow-left.svg';
 
 export {
   ContactTelephone,
@@ -257,5 +258,6 @@ export {
   LoginApple,
   YellowBadge,
   RedBadge,
-  Bee
+  Bee,
+  ArrowLeft
 };

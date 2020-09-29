@@ -3,9 +3,10 @@ import {
   SafeAreaView,
   View,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  Button
 } from 'react-native';
-
+import {useNavigation} from '@react-navigation/native';
 import { AppText, TabNavigation } from '@/components';
 import { Colors, normalize } from '@/globals';
 
@@ -34,6 +35,8 @@ const Activity = () => {
     },
   ];
 
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.contentWrapper}>
       {activity.onGoing.length == 0 && activity.notifications.length == 0 ? (
@@ -60,8 +63,15 @@ const Activity = () => {
       ) : (
           <>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', paddingBottom: normalize(20) }}>
-              <AppText>My Activities</AppText>
-              <TouchableOpacity style={{ position: 'absolute', right: 0 }}><AppText color={Colors.contentOcean}>Past</AppText></TouchableOpacity>
+              <AppText textStyle="body3">My Activities</AppText>
+              <TouchableOpacity 
+                style={{ position: 'absolute', right: 0 }}
+                onPress={() => navigation.navigate('Past')}
+              >
+                <AppText 
+                  color={Colors.contentOcean} 
+                  textStyle="body2">Past</AppText>
+              </TouchableOpacity>
             </View>
             <TabNavigation routesList={uploadTabs} activityTab />
           </>
