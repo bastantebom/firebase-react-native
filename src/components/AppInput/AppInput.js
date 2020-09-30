@@ -27,8 +27,7 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
     setIsActive(true);
     animateFocus();
 
-    // console.log('POKUS');
-    // onInputFocus ? onInputFocus() : null;
+    props.onFocusInput ? props.onFocusInput() : null;
   };
 
   const onBlurInput = () => {
