@@ -20,6 +20,7 @@ import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
 /*Map Essentials*/
 
+import {AppInput, Validator, valueHandler} from '@/components/AppInput';
 import {
   ArrowRight,
   Public,
@@ -30,7 +31,6 @@ import {
 } from '@/assets/images/icons';
 import {
   AppText,
-  AppInput,
   Switch,
   AppButton,
   CacheableImage,
@@ -75,6 +75,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [listAsMultiple, setListAsMultiple] = useState(false);
   const [freeCheckbox, setFreeCheckbox] = useState(false);
   const [addItemModal, showAddItemModal] = useState(false);
+  
 
   useEffect(() => {
     if (images) {

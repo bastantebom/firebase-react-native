@@ -52,7 +52,6 @@ function Login() {
 
   const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
-  const [error, setError] = useState([]);
 
   const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
