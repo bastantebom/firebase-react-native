@@ -18,6 +18,29 @@ export default valueHandler = async (
 
   setValue(value);
 
+  if (validation === 'display_name')
+    await VF.DisplayNameValidator(value)
+      .then(() => {
+        setErrors({
+          ...errors,
+          [valueName]: {
+            passed: true,
+            shown: false,
+            message: '',
+          },
+        });
+      })
+      .catch((err) => {
+        setErrors({
+          ...errors,
+          [valueName]: {
+            passed: false,
+            shown: true,
+            message: err,
+          },
+        });
+      });
+
   if (validation === 'number')
     await VF.MobileNumberValidator(value)
       .then(() => {
@@ -109,4 +132,29 @@ export default valueHandler = async (
           },
         });
       });
+
+  if (validation === 'username') {
+    setValue(value.toLowerCase());
+    await VF.usernameValidator(value)
+      .then(() => {
+        setErrors({
+          ...errors,
+          [valueName]: {
+            passed: true,
+            shown: false,
+            message: '',
+          },
+        });
+      })
+      .catch((err) => {
+        setErrors({
+          ...errors,
+          [valueName]: {
+            passed: false,
+            shown: true,
+            message: err,
+          },
+        });
+      });
+  }
 };

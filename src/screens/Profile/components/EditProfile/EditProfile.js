@@ -27,6 +27,7 @@ import {
   ProfileImageUpload,
   TransitionIndicator,
 } from '@/components';
+import {AppInput, Validator, valueHandler} from '@/components/AppInput';
 
 import storage from '@react-native-firebase/storage';
 
@@ -51,6 +52,7 @@ import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import {debounce} from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
+import DebounceInput from 'react-native-debounce-input';
 
 // create a component
 const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
@@ -101,31 +103,53 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [pPhoto, setPPhoto] = useState(profile_photo);
   const [profilePhotoClick, setProfilePhotoClick] = useState(false);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
-  const [name, setName] = useState(full_name);
+  const [name, setName] = useState('full_name');
   /*Username Validations */
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
-  // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
-  // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
+  const [enabled, setEnabled] = useState(false);
+  const [errors, setErrors] = useState({
+    dName: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    name: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    uName: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+  });
 
-  const onChangeUsername = (uName) => {
-    console.log('On change function');
+  const checkErrorState = () => {
+    let temp = true;
 
-    setVerified(false);
-    let userNameReg = /^[a-z0-9.-]*$/;
-    if (userNameReg.test(uName) && uName.length > 2) {
-      setInvalidUserFormat(false);
-      setUName(uName);
-      usernameHandler(uName);
-      // delayedUsernameValidation(uName);
+    for (const [key, value] of Object.entries(errors)) {
+      if (!value.passed) {
+        temp = false;
+        break;
+      }
+    }
+
+    if (temp) {
+      // ENABLE BUTTON
+      setEnabled(true);
     } else {
-      setUName(uName);
-      setInvalidUserFormat(true);
-      setButtonState(true);
+      // DISABLE BUTTON
+      setEnabled(false);
     }
   };
+
+  useEffect(() => {
+    checkErrorState();
+  }, [errors]);
 
   const sendValidation = async (un) => {
     await ProfileInfoService.validateUsername({uid: user.uid, username: un})
@@ -477,13 +501,39 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           </View>
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={dName}
                 label="Display Name"
                 onChangeText={(dName) => {
                   setDName(dName);
                 }}
-              />
+              /> */}
+              <Validator errorState={errors.dName}>
+                <AppInput
+                  label="Display Name"
+                  onChangeText={(dName) => {
+                    setDName();
+                    valueHandler(
+                      dName,
+                      'display_name',
+                      'dName',
+                      errors,
+                      setErrors,
+                      setDName,
+                    );
+                  }}
+                  value={dName}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      dName: {
+                        ...errors.dName,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
               <AppText
                 textStyle="caption"
                 color={Colors.profileLink}
@@ -501,16 +551,34 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 }}>
                 You can only change your Display Name twice every 14 days.
               </AppText>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={name}
                 label="Full Name"
                 customStyle={{marginBottom: 16}}
                 onChangeText={(name) => {
                   setName(name);
                 }}
-              />
+              /> */}
+              <Validator errorState={errors.name} style={{marginBottom: 16}}>
+                <AppInput
+                  label="Full Name"
+                  onChangeText={(name) =>
+                    valueHandler(name, '', 'name', errors, setErrors, setName)
+                  }
+                  value={name}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      name: {
+                        ...errors.name,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
               <View style={{position: 'relative'}}>
-                <FloatingAppInput
+                {/* <FloatingAppInput
                   value={uName}
                   valueHandler={setUName}
                   lowercase={true}
@@ -522,7 +590,33 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   error={error}
                   setButtonState={setButtonState}
                   // onChangeText={(uName) => onChangeUsername(uName)}
-                />
+                /> */}
+
+                <Validator errorState={errors.uName} style={{marginBottom: 16}}>
+                  <AppInput
+                    label="Username"
+                    onChangeText={(uName) =>
+                      valueHandler(
+                        uName,
+                        'username',
+                        'uName',
+                        errors,
+                        setErrors,
+                        setUName,
+                      )
+                    }
+                    value={uName}
+                    onKeyPress={() => {
+                      setErrors({
+                        ...errors,
+                        uName: {
+                          ...errors.uName,
+                          shown: false,
+                        },
+                      });
+                    }}
+                  />
+                </Validator>
                 {/* <View style={styles.passwordToggle}>
                   {verified ? (
                     <VerifiedGreen

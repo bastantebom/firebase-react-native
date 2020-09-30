@@ -1,5 +1,6 @@
 const usernameValidator = async (username) => {
   let userNameReg = /^[a-z0-9.-]*$/;
+  username = username.toLowerCase();
 
   return await new Promise((resolve, reject) => {
     if (!(username.length >= 2)) {
@@ -72,12 +73,23 @@ const NameValidator = async (name) => {
   });
 };
 
+const DisplayNameValidator = async (display_name) => {
+  return await new Promise((resolve, reject) => {
+    if (display_name.length > 28) {
+      reject('Display name must be less than 28 characters.');
+    }
+
+    return resolve(true);
+  });
+};
+
 const Validator = {
   usernameValidator,
   emailValidator,
   MobileNumberValidator,
   PasswordValidator,
   NameValidator,
+  DisplayNameValidator,
 };
 
 export default Validator;
