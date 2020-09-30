@@ -9,10 +9,10 @@ import Tags from './Tags';
 
 const InfiniteHits = ({ hits, hasMore, refine, value }) => {
 
-  // useEffect(() => {
-  //   console.log(hits)
-  //   console.log('hits')
-  // }, [hits])
+  useEffect(() => {
+    console.log(hits)
+    console.log('hits')
+  }, [hits])
 
   return (
     <View>

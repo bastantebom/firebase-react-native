@@ -36,6 +36,8 @@ export const ContextProvider = ({children}) => {
   const [cameraImage, setCameraImage] = useState([]);
   const [libImages, setLibImages] = useState([]);
 
+  const [searchType, setSearchType] = useState('posts');
+
   useEffect(() => {
     setImageCount(coverPhoto.length);
   }, [coverPhoto]);
@@ -146,6 +148,8 @@ export const ContextProvider = ({children}) => {
         setLibImages,
         setSingleCameraImage,
         singleCameraImage,
+        searchType,
+        setSearchType
       }}>
       {children}
     </Context.Provider>
