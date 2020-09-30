@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     alignItems: 'center',
-    padding: normalize(16),
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(16),
     textAlign: 'center',
     backgroundColor: 'white',
   },

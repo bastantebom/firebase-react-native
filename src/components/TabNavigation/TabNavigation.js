@@ -17,7 +17,6 @@ const TabNavigation = ({ routesList, bottomTab, activityTab }) => {
   const [routes] = useState(routesList);
   const [activeTab, setActiveTab] = useState(routes[0].key);
   const [activeContent, setActiveContent] = useState(0);
-  const [withBadge, setWithBadge] = useState(false);
 
   const tabChangeHandler = (tabName, index) => {
     setActiveTab(tabName);

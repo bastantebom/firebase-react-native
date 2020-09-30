@@ -50,7 +50,7 @@ const Notifications = () => {
           <Calendar height={normalize(20)} width={normalize(20)} style={{ marginRight: 10 }} />
           <AppText textStyle="caption2">Today</AppText>
         </View>
-        <View style={{paddingTop: 10}}>
+        <View style={{paddingTop: 15}}>
           <View>
             <AppText customStyle={{color: '#91919C'}}>NEW</AppText>
           </View>
@@ -65,7 +65,7 @@ const Notifications = () => {
             )
           })}
         </View>
-        <View style={{paddingTop: 10}}>
+        <View style={{paddingTop: 15}}>
           <View>
             <AppText customStyle={{color: '#91919C'}}>EARLIER</AppText>
           </View>
@@ -108,7 +108,7 @@ const Notifications = () => {
 const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
-    paddingVertical: normalize(16),
+    // paddingVertical: normalize(16),
     backgroundColor: 'white',
   }
 });
