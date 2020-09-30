@@ -31,25 +31,35 @@ import {
 import EditProfile from '@/screens/Profile/components/EditProfile/EditProfile';
 import About from '@/screens/Profile/components/About/About';
 import ChangePassword from '@/screens/Profile/components/ChangePassword/ChangePassword';
+import BlockList from '@/screens/Profile/components/Account/BlockList';
+import HiddenPost from '@/screens/Profile/components/Account/HiddenPost';
 
 const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
   const navigation = useNavigation();
   const [editProfile, setEditProfile] = useState(false);
+  const [about, setAbout] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [blockUser, setBlockUser] = useState(false);
+  const [hiddenPost, setHiddenPost] = useState(false);
 
   const toggleEditProfile = () => {
     setEditProfile(!editProfile);
   };
 
-  const [about, setAbout] = useState(false);
-
   const toggleAbout = () => {
     setAbout(!about);
   };
 
-  const [changePassword, setChangePassword] = useState(false);
-
   const toggleChangePassword = () => {
     setChangePassword(!changePassword);
+  };
+
+  const toggleBlockedUser = () => {
+    setBlockUser(!blockUser);
+  };
+
+  const toggleHiddenPost = () => {
+    setHiddenPost(!hiddenPost);
   };
 
   return (
@@ -98,6 +108,27 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
                   <MenuEdit width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Edit Profile
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleBlockedUser}>
+                <View style={{flexDirection: 'row', marginBottom: 16}}>
+                  <ProfileBlockRed
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
+                  <AppText customStyle={{marginLeft: 8}} textStyle="body1">
+                    Block Users List
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleHiddenPost}>
+                <View style={{flexDirection: 'row', marginBottom: 16}}>
+                  <MenuArchive width={normalize(24)} height={normalize(24)} />
+                  <AppText customStyle={{marginLeft: 8}} textStyle="body1">
+                    Hidden Posts List
                   </AppText>
                 </View>
               </TouchableOpacity>
@@ -226,6 +257,35 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
           toggleEditProfile={toggleEditProfile}
           triggerNotify={triggerNotify}
         />
+      </Modal>
+
+      <Modal
+        isVisible={blockUser}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <BlockList toggleBlockedUser={toggleBlockedUser} />
+      </Modal>
+      <Modal
+        isVisible={hiddenPost}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <HiddenPost toggleHiddenPost={toggleHiddenPost} />
       </Modal>
 
       <Modal
