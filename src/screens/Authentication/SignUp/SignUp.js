@@ -528,9 +528,10 @@ const SignUp = (props) => {
                   onEndEditing={() => {
                     console.log('DONE');
                   }}
-                  // onSubmitEditing={}
-                  keyboardType={'email-address'}
-                  onKeyPress={() => {
+                  keyboardType={
+                    signUpLabel === 'email' ? 'email-address' : 'phone-pad'
+                  }
+                  onKeyPress={(e) => {
                     setErrors({
                       ...errors,
                       email: {

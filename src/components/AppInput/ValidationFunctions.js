@@ -39,7 +39,7 @@ const MobileNumberValidator = async (number) => {
 
   return await new Promise((resolve, reject) => {
     if (!mobileReg.test(number)) {
-      reject('Invalid mobile number. ');
+      reject('Please put a valid 11 digit mobile number.');
     }
 
     return resolve(true);
