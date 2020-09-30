@@ -117,6 +117,8 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
           }}
           onEndEditing={onBlurInput}
           blurOnSubmit
+          selectTextOnFocus={false}
+          clearTextOnFocus={false}
         />
       </View>
     </View>

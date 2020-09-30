@@ -8,6 +8,9 @@ export default valueHandler = async (
   setErrors,
   setValue,
 ) => {
+  if (validation === '') {
+    return setValue(value);
+  }
 
   if (!errors || !setErrors || !valueName || typeof setValue !== 'function') {
     return console.log('MISSING PARAMETERS');
