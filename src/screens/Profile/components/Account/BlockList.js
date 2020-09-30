@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import {ScreenHeaderTitle, PaddingView, AppText} from '@/components';
@@ -13,40 +14,138 @@ import {CloseDark} from '@/assets/images/icons';
 import {normalize, Colors} from '@/globals';
 import Modal from 'react-native-modal';
 import {UserContext} from '@/context/UserContext';
+import AdminFunctionService from '@/services/Admin/AdminFunctions';
 
 // create a component
 const BlockList = ({toggleBlockedUser}) => {
-  const {userInfo} = useContext(UserContext);
+  const {userInfo, user} = useContext(UserContext);
+  const [selectedUser, setSelectedUser] = useState({});
+  const {blocked_users} = userInfo;
+  const [blockUsers, setBlockUsers] = useState(blocked_users);
 
-  const {blocked_posts} = userInfo;
+  //console.log(userInfo);
 
-  console.log(userInfo);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const cancelModalToggle = (user) => {
+    setShowCancelModal(!showCancelModal);
+    setSelectedUser(user);
+  };
+
+  const closeHandler = (value) => {
+    setShowCancelModal(!showCancelModal);
+  };
+
+  const unBlockUser = async () => {
+    //body: { uid, pid }
+    return await AdminFunctionService.unBlockUser({
+      uid: user?.uid,
+      reported_uid: selectedUser.uid,
+    }).then((res) => {
+      if (res.success) {
+        setBlockUsers(res.blocked_users);
+      }
+      closeHandler();
+    });
+  };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <PaddingView paddingSize={3}>
-        <ScreenHeaderTitle title="Block User List" close={toggleBlockedUser} />
-        <View style={{marginTop: normalize(20)}}>
-          {/* {blocked_posts.forEach((item, index) => {
-            return (
-              <View key={index}>
-                <TouchableOpacity
-                  style={[styles.list]}
-                  onPress={() => {
-                    alert('Unblock this user?');
-                  }}>
-                  <View>
-                    <AppText textStyle="caption">{item}</AppText>
+    <>
+      <SafeAreaView style={{flex: 1}}>
+        <PaddingView paddingSize={3}>
+          <ScreenHeaderTitle
+            title="Block User List"
+            close={toggleBlockedUser}
+          />
+          <View style={{marginTop: normalize(20)}}>
+            {blockUsers && blockUsers.length > 0 ? (
+              blockUsers.map((user, index) => {
+                return (
+                  <View key={index}>
+                    <TouchableOpacity
+                      style={index % 2 === 0 ? styles.list : styles.list2}
+                      onPress={() => {
+                        cancelModalToggle(user);
+                      }}>
+                      <View>
+                        <AppText textStyle="caption">
+                          {user.display_name}
+                        </AppText>
+                      </View>
+                      <CloseDark />
+                    </TouchableOpacity>
                   </View>
-                  <CloseDark />
-                </TouchableOpacity>
-              </View>
-            );
-          })} */}
+                );
+              })
+            ) : (
+              <AppText textStyle="caption">
+                You don't have any block user
+              </AppText>
+            )}
+          </View>
+        </PaddingView>
+        {/* About Servbees Modal */}
+      </SafeAreaView>
+      <Modal
+        isVisible={showCancelModal}
+        animationIn="bounceIn"
+        animationInTiming={450}
+        animationOut="bounceOut"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={cancelModalToggle}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: normalize(300),
+            width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}>
+          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+            Unblock {selectedUser.display_name}?
+          </AppText>
+
+          <AppText
+            textStyle="caption"
+            customStyle={{textAlign: 'center'}}
+            customStyle={{marginBottom: 16}}>
+            Are you sure you want to unblock {selectedUser.display_name}?
+          </AppText>
+
+          <TouchableOpacity
+            onPress={() => {
+              unBlockUser();
+            }}
+            style={{
+              backgroundColor: Colors.yellow2,
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+              marginBottom: 16,
+              borderRadius: 4,
+            }}>
+            <AppText textStyle="button2">Continue</AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => closeHandler('cancel')}
+            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            <AppText textStyle="button2" color={Colors.contentOcean}>
+              Cancel
+            </AppText>
+          </TouchableOpacity>
         </View>
-      </PaddingView>
-      {/* About Servbees Modal */}
-    </SafeAreaView>
+      </Modal>
+    </>
   );
 };
 
@@ -60,7 +159,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutralsZircon,
     paddingVertical: normalize(4),
     paddingHorizontal: normalize(8),
-    borderBottomColor: Colors.contentEbony,
+    borderBottomColor: Colors.neutralsWhite,
+    borderBottomWidth: 1,
+  },
+  list2: {
+    flexDirection: 'row',
+    // marginBottom: 28,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: Colors.neutralsWhite,
+    paddingVertical: normalize(4),
+    paddingHorizontal: normalize(8),
+    borderBottomColor: Colors.neutralsWhite,
     borderBottomWidth: 1,
   },
 });

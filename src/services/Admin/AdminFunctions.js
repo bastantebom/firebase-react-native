@@ -22,9 +22,21 @@ const blockUser = async (payload) => {
   });
 };
 
+const unBlockUser = async (payload) => {
+  return BaseAPI({
+    url: `/user/unblock`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const AdminFunctionService = {
   reportUser,
   blockUser,
+  unBlockUser,
 };
 
 export default AdminFunctionService;

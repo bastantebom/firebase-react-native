@@ -146,10 +146,11 @@ const SinglePostView = (props) => {
   const hidePost = async () => {
     //body: { uid, pid }
     return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
-      () => {
+      (res) => {
         toggleEllipsisState();
         //console.log('deletePost ' + userInfo.post_count);
-        //setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
+        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
+        console.log(userInfo.hidden_posts);
         navigation.goBack();
       },
     );

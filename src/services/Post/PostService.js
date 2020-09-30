@@ -101,6 +101,21 @@ const reportPost = (payload) => {
   });
 };
 
+const unHidePost = (payload) => {
+  /**
+   * Accepts Post ID
+   * UID
+   */
+  return BaseAPI({
+    url: '/post/unhide',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
+
 const PostService = {
   createPost,
   getPosts,
@@ -110,6 +125,7 @@ const PostService = {
   getUserPosts,
   hidePost,
   reportPost,
+  unHidePost,
 };
 
 export default PostService;
