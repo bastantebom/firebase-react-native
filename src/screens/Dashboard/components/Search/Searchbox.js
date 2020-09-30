@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -12,11 +12,14 @@ import { connectSearchBox } from 'react-instantsearch-native';
 import { Colors, normalize } from '@/globals';
 import AppColor from '@/globals/Colors';
 import { Close, HeaderBackGray } from '@/assets/images/icons';
+import { AppText } from '@/components';
+import { Context } from '@/context';
 
 const { width } = Dimensions.get("window");
 const PADDING = 16;
-const SEARCH_FULL_WIDTH = width - (PADDING + normalize(20)) * 2; //search_width when unfocused
-const SEARCH_SHRINK_WIDTH = width - PADDING - normalize(125); //search_width when focused
+const SEARCH_FULL_WIDTH = width - (PADDING + normalize(20)) * 2;
+const SEARCH_SHRINK_WIDTH = width - PADDING - normalize(125);
+const FULL_WIDTH = width - PADDING * 2;
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -29,19 +32,16 @@ const SearchBox = ({
   customStyle,
   props
  }) => {    
-  const searchbarRef = useRef(null)
 
+  const { searchType, setSearchType } = useContext(Context);
+
+  const searchbarRef = useRef(null)
+  const [value, setValue] = useState()
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
   const [cancelPosition] = useState(new Animated.Value(0))
   const [barPosition] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
-
-  // useEffect(() => {
-  //    if(Keyboard.dismiss()) {
-  //     onBlur();
-  //   }
-  // })
 
   const onFocus = () => {
     // searchbarRef.current.isFocused(console.log('focused...'))
@@ -97,29 +97,19 @@ const SearchBox = ({
       })
     ]).start();
     setSearchBarFocused(false);
+    setSearchType('posts')
   }
 
-  const [value, setValue] = useState()
-
-  // useEffect(() => {
-  //   if(value === undefined || value === '') {
-  //     console.log(value)
-  //     console.log('undefined value')
-  //   } else {
-  //     console.log(value)
-  //     console.log('value')
-  //   }
-  // }, [value])
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <Animated.View
         style={[
           {
-            width: inputLength,
+            width: searchType === 'posts' ? inputLength : FULL_WIDTH,
             position: "absolute",
             zIndex: 1,
-            left: barPosition
+            left: searchType === 'posts' ? barPosition : 0,
+            top: searchType === 'posts' ? 0 : normalize(20),
           }, customStyle
         ]}
       >
@@ -145,14 +135,28 @@ const SearchBox = ({
           // onBlur={onBlur}
         />
       </Animated.View>
-      <AnimatedTouchable
-        style={[styles.cancelSearch, { left: cancelPosition }]}
-        onPress={() => {onBlur(), onBackPress()}}
-      >
-        <Animated.View style={{ opacity: opacity }}>
-          <HeaderBackGray width={normalize(25)} height={normalize(25)} />
-        </Animated.View>
-      </AnimatedTouchable>
+      { searchType === 'posts' ? 
+        <AnimatedTouchable
+          style={[styles.cancelSearch, { left: cancelPosition }]}
+          onPress={() => {onBlur(), onBackPress()}}
+        >
+          <Animated.View style={{ opacity: opacity }}>
+            <HeaderBackGray width={normalize(25)} height={normalize(25)} />
+          </Animated.View>
+        </AnimatedTouchable> 
+          :
+        <View style={styles.modalHeader}>
+          <AnimatedTouchable
+            style={[styles.cancelSearch, { left: cancelPosition }]}
+            onPress={() => {setSearchType('posts')}}
+          >
+            <Animated.View style={{ opacity: opacity }}>
+              <HeaderBackGray width={normalize(25)} height={normalize(25)} />
+            </Animated.View>
+          </AnimatedTouchable>
+          <AppText textStyle="body3">Search User</AppText>
+        </View>
+      } 
     </View>
   )
 };
@@ -170,12 +174,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    zIndex: 5
+    zIndex: 5,
+    // backgroundColor: 'red'
   },
   cancelSearch: {
     position: "absolute",
     marginHorizontal: 16,
     justifyContent: "center",
     alignSelf: "center",
+  },
+  modalHeader: {
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: 16,
+    width: '100%'
   }
 });

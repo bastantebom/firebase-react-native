@@ -10,7 +10,6 @@ import {
   Dimensions,
   Keyboard
 } from 'react-native';
-// import {TextInput} from 'react-native-paper';
 
 import {
   Posts,
@@ -55,7 +54,7 @@ function Dashboard() {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const {openNotification} = useContext(Context);
+  // const {openNotification} = useContext(Context);
 
   const {posts} = useContext(Context);
 
@@ -69,9 +68,9 @@ function Dashboard() {
     setMenu(!menu);
   };
 
-  useEffect(() => {
-    openNotification();
-  })
+  // useEffect(() => {
+  //   openNotification();
+  // })
 
   return (
     <>
@@ -127,7 +126,6 @@ function Dashboard() {
 }
 
 const SearchBarWithFilter = ({ toggleFilter }) => {
-  const navigation = useNavigation();
 
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
@@ -142,7 +140,7 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 100,
+        duration: 10,
         useNativeDriver: true
       })
     ]).start();
@@ -153,30 +151,30 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0,
-        duration: 100,
+        duration: 10,
         useNativeDriver: true
       })
     ]).start();
     setSearchBarFocused(false);
+    // setSearchType('posts')
     Keyboard.dismiss();
   }
-
+  
   const searchClient = algoliasearch(
-    "B1G2GM9NG0",
-    "aadef574be1f9252bb48d4ea09b5cfe5"
+    "B3KXWHT843",
+    "93f6a8ef9601c3c4da65687477a81833"
   );
 
   return (
     <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
       <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
         <View style={{ flex: 1 }}>
-          <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
+          <InstantSearch searchClient={searchClient} indexName="posts">
             <SearchBox 
               onSearchFocus={onFocus} 
               onBackPress={onBackPress}
               valueHandler={onValueChange}
             />
-            {/* <RefinementList attribute="brand" limit={5} /> */}
             <Animated.View 
               style={{ 
                 opacity: opacity, 
@@ -186,7 +184,9 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
                 position: 'absolute',
               }}
             >
-              <SearchResults onValueChange={searchValue} />
+              <SearchResults 
+                onValueChange={searchValue}
+              />
             </Animated.View>
           </InstantSearch>
         </View>
