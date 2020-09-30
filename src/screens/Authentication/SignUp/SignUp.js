@@ -504,7 +504,8 @@ const SignUp = (props) => {
                 errorState={errors.email}>
                 <AppInput
                   label={
-                    signUpLabel.charAt(0).toUpperCase() + signUpLabel.slice(1)
+                    signUpLabel === 'number' ? 'Mobile Number' : 'Email'
+                    // signUpLabel.charAt(0).toUpperCase() + signUpLabel.slice(1)
                   }
                   onChangeText={(email) =>
                     valueHandler(
