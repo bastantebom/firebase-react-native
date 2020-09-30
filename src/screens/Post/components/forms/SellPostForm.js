@@ -74,6 +74,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [stringAddress, setStringAddress] = useState('');
   const [addItemModal, showAddItemModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
+  
 
   useEffect(() => {
     if (images) {
