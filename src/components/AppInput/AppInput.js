@@ -108,7 +108,9 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
         <DebounceInput
           minLength={0}
           delayTimeout={500}
+          autoCapitalize="none"
           {...props}
+          value={value}
           style={styles.floatingInput}
           underlineColorAndroid="transparent"
           onFocus={onFocusInput}
