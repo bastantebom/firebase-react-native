@@ -157,35 +157,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     checkErrorState();
   }, [errors]);
 
-  const sendValidation = async (un) => {
-    await ProfileInfoService.validateUsername({uid: user.uid, username: un})
-      .then((response) => {
-        //console.log(response);
-        console.log('THIS API IS CALLED');
-        setInvalidUser(response.valid);
-        setButtonState(!response.valid);
-        if (response.valid) {
-          setVerified(true);
-          hideIcon();
-        }
-      })
-      .catch((error) => {
-        setInvalidUser(true);
-        setButtonState(true);
-        //setVerified(false);
-        //hideIcon();
-      });
-  };
-
-  const hideIcon = () => {
-    return;
-    setTimeout(() => {
-      setVerified(false);
-    }, 5000);
-  };
 
   // const
-  const [error, setError] = useState([]);
+  // const [error, setError] = useState([]);
   const [verified, setVerified] = useState(false);
 
   /*Username Validations */
@@ -813,8 +787,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 keyboardType="phone-pad"
                 validation={['number']}
-                setError={setError}
-                error={error}
+                // setError={setError}
+                // error={error}
                 setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
