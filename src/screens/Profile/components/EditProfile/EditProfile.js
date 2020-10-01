@@ -103,7 +103,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [pPhoto, setPPhoto] = useState(profile_photo);
   const [profilePhotoClick, setProfilePhotoClick] = useState(false);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
-  const [name, setName] = useState('full_name');
+  const [name, setName] = useState(full_name);
   /*Username Validations */
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
