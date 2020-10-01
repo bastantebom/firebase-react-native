@@ -19,7 +19,7 @@ import {VerifiedGreen} from '@/assets/images/icons';
 import DebounceInput from 'react-native-debounce-input';
 
 // create a component
-const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
+const FloatingAppInput = ({value, style, label, ...props}) => {
   const [labelPosition] = useState(new Animated.Value(0));
   const [isActive, setIsActive] = useState(false);
 
@@ -38,10 +38,13 @@ const FloatingAppInput = ({value, style, placeholder, label, ...props}) => {
   };
 
   useEffect(() => {
-    if (value !== '' && (value !== undefined || placeholder !== undefined)) {
+    if (
+      value !== '' &&
+      (value !== undefined || props.placeholder !== undefined)
+    ) {
       animateFocus();
     }
-  }, [value, placeholder]);
+  }, [value, props.placeholder]);
 
   const animateFocus = () => {
     Animated.timing(labelPosition, {
