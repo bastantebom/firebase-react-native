@@ -1,8 +1,10 @@
-const usernameValidator = async (username) => {
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
+
+const usernameValidator = async (username, uid) => {
   let userNameReg = /^[a-z0-9.-]*$/;
   username = username.toLowerCase();
 
-  return await new Promise((resolve, reject) => {
+  return await new Promise(async (resolve, reject) => {
     if (!(username.length >= 2)) {
       reject('Username must be at least 2 characters');
     }
@@ -14,6 +16,21 @@ const usernameValidator = async (username) => {
     if (!userNameReg.test(username)) {
       reject('Username must only use letters, numbers, dash(-), and dot(.)');
     }
+
+    // console.log('UID FROM VALIDATION:', uid);
+    // console.log('usernamne FROM VALIDATION:', username);
+
+    await ProfileInfoService.validateUsername({uid: uid, username: username})
+      .then((response) => {
+        // console.log('THIS API IS CALLED');
+        // console.log(response);
+        if (!response.valid) {
+          reject('Username is already taken.');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     // passed
     return resolve(true);
