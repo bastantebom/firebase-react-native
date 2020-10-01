@@ -18,7 +18,7 @@ import AdminFunctionService from '@/services/Admin/AdminFunctions';
 
 // create a component
 const BlockList = ({toggleBlockedUser}) => {
-  const {userInfo, user} = useContext(UserContext);
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
   const [selectedUser, setSelectedUser] = useState({});
   const {blocked_users} = userInfo;
   const [blockUsers, setBlockUsers] = useState(blocked_users);
@@ -42,7 +42,9 @@ const BlockList = ({toggleBlockedUser}) => {
       reported_uid: selectedUser.uid,
     }).then((res) => {
       if (res.success) {
+        console.log(res);
         setBlockUsers(res.blocked_users);
+        setUserInfo({...userInfo, blocked_users: res.blocked_users});
       }
       closeHandler();
     });

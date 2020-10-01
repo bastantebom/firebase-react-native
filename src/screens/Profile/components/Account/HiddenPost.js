@@ -18,7 +18,7 @@ import PostService from '@/services/Post/PostService';
 
 // create a component
 const HiddenPost = ({toggleHiddenPost}) => {
-  const {userInfo, user} = useContext(UserContext);
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
   const {hidden_posts} = userInfo;
   //console.log('_ ' + hidden_posts);
   const [hiddenPosts, setHiddenPosts] = useState(hidden_posts);
@@ -44,6 +44,7 @@ const HiddenPost = ({toggleHiddenPost}) => {
     }).then((res) => {
       if (res.success) {
         setHiddenPosts(res.hidden_posts);
+        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
       }
       //console.log(res);
       closeHandler();
