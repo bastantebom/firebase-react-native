@@ -10,27 +10,27 @@ import {useNavigation} from '@react-navigation/native';
 import { AppText } from '@/components';
 import { normalize } from '@/globals';
 import { Calendar, ArrowLeft} from '@/assets/images/icons';
-import FollowNotificationCard from '../Activity/components/FollowNotificationCard';
-import ApprovedNotificationCard from '../Activity/components/ApprovedNotificationCard';
-import ReminderNotificationCard from '../Activity/components/ReminderNotificationCard';
+import NotificationsCard from '../Activity/components/NotificationsCard';
 
 const Past = () => {
-  const followNotifications = [
+  const oldNotificationsCards = [
     {
-      name: 'Trisha Paredes'
-    }
-  ]
-
-  const approvedNotifications = [
+      category: 'Follow',
+      badge: 'Red',
+      name: 'Trisha Paredes',
+      time: '3w'
+    },
     {
-      groupName: 'Pixel',
-    }
-  ]
-
-  const reminderNotifications = [
+      category: 'Approve',
+      badge: 'Yellow',
+      hiveName: 'Pixel',
+      time: '4m'
+    },
     {
+      category: 'Reminder',
       name: 'Wayne',
-      reminder: "Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love."
+      reminder: "Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love.",
+      time: '6m'
     }
   ]
 
@@ -56,34 +56,13 @@ const Past = () => {
           <View>
             <AppText customStyle={{color: '#91919C'}}>2020</AppText>
           </View>
-          {followNotifications.map((info, j) => {
+         {oldNotificationsCards.map((info, i) => {
             return (
-              <>
-                <FollowNotificationCard 
-                  key={j} 
-                  props={info}
-                />
-              </>
-            )
-          })}
-           {approvedNotifications.map((info, k) => {
-            return (
-              <>
-                <ApprovedNotificationCard 
-                  key={k} 
-                  props={info}
-                />
-              </>
-            )
-          })}
-          {reminderNotifications.map((info, l) => {
-            return (
-              <>
-                <ReminderNotificationCard 
-                  key={l} 
-                  props={info}
-                />
-              </>
+              <View key={i}>
+                 <NotificationsCard 
+                  info={info}
+                 />
+              </View>
             )
           })}
         </View>

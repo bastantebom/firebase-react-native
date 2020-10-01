@@ -3,8 +3,7 @@ import {
   SafeAreaView,
   View,
   TouchableOpacity,
-  StyleSheet,
-  Button
+  StyleSheet
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import { AppText, TabNavigation } from '@/components';
@@ -65,7 +64,7 @@ const Activity = () => {
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', paddingBottom: normalize(20) }}>
               <AppText textStyle="body3">My Activities</AppText>
               <TouchableOpacity 
-                style={{ position: 'absolute', right: 0 }}
+                style={{ position: 'absolute', right: 16 }}
                 onPress={() => navigation.navigate('Past')}
               >
                 <AppText 
@@ -85,7 +84,6 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
     textAlign: 'center',
     backgroundColor: 'white',

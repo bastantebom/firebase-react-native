@@ -18,32 +18,33 @@ import {
   NavigationPinRed,
   NavigationArrow,
   TransportationBox,
+  ProfileImageDefault
 } from '@/assets/images/icons';
 import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
 
-const ActivitiesCard = ({data, type}) => {
-  const [status, setStatus] = useState('Waiting for confirmation');
+const ActivitiesCard = ({info}) => {
+  // const [status, setStatus] = useState('Confirmed');
 
   const statusBackground = () => {
-    if (status === 'Waiting for confirmation') return Colors.neutralsMischka;
+    if (info.status === 'Waiting for confirmation') return Colors.neutralsMischka;
 
-    if (status === 'Confirmed') return Colors.secondaryLavenderBlue;
+    if (info.status === 'Confirmed') return Colors.secondaryLavenderBlue;
 
-    if (status === 'Ongoing') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Ongoing') return Colors.secondaryDarkTangerine;
 
-    if (status === 'Completed') return Colors.secondaryShamrock;
+    if (info.status === 'Completed') return Colors.secondaryShamrock;
 
-    if (status === 'Order Cancelled') return Colors.red;
+    if (info.status === 'Order Cancelled') return Colors.red;
 
-    if (status === 'Declined') return Colors.red;
+    if (info.status === 'Declined') return Colors.red;
 
-    if (status === 'Completed') return Colors.secondaryShamrock;
+    if (info.status === 'Completed') return Colors.secondaryShamrock;
 
-    if (status === 'Processing') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Processing') return Colors.secondaryDarkTangerine;
 
-    if (status === 'Ready for Pickup') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Ready for Pickup') return Colors.secondaryDarkTangerine;
 
-    if (status === 'Ready for Delivery') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Ready for Delivery') return Colors.secondaryDarkTangerine;
 
     return 'red';
   };
@@ -51,25 +52,25 @@ const ActivitiesCard = ({data, type}) => {
   // const {user} = useContext(UserContext);
 
   // const {
-  //   display_name,
-  //   date_posted,
-  //   available,
-  //   profile_photo,
-  //   payment_method,
-  //   store_location: {city, province, country},
-  //   title,
-  //   username,
-  //   delivery_method: {pickup, delivery},
-  //   description,
-  //   uid,
-  //   price,
-  //   post_id,
-  //   images,
-  //   account_verified,
-  //   email,
-  //   phone_number,
-  //   post_type,
-  //   full_name,
+    // display_name,
+    // date_posted,
+    // available,
+    // profile_photo,
+    // payment_method,
+    // store_location: {city, province, country},
+    // title,
+    // username,
+    // delivery_method: {pickup, delivery},
+    // description,
+    // uid,
+    // price,
+    // post_id,
+    // images,
+    // account_verified,
+    // email,
+    // phone_number,
+    // post_type,
+    // full_name,
   // } = data;
 
   // const VerifiedBadge = () => {
@@ -109,6 +110,21 @@ const ActivitiesCard = ({data, type}) => {
   //     });
   // };
 
+  const ProfilePhoto = ({size}) => {
+    // return profile_photo ? (
+    //   <CacheableImage
+    //     style={GlobalStyle.image}
+    //     source={{
+    //       uri: profile_photo,
+    //     }}
+    //   />
+    // ) : (
+      return (
+        <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+      )
+    // );
+  };
+
   return (
     <ScrollView>
         <TouchableOpacity activeOpacity={0.7} 
@@ -120,7 +136,7 @@ const ActivitiesCard = ({data, type}) => {
             // marginBottom: 0,
             padding: 12,
             borderRadius: 8,
-            backgroundColor: 'white',
+            backgroundColor: info.unread ? '#F2F7FF' : 'white',
             shadowColor: '#000',
             shadowOffset: {
               width: 0,
@@ -146,57 +162,103 @@ const ActivitiesCard = ({data, type}) => {
                 <DefaultSell width={normalize(64)} height={normalize(72)} />
               )}
             </View> */}
+            <View style={styles.postImageContainer}>
+              <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
+            </View>
+            
 
             <View style={{paddingLeft: 12, flex: 1}}>
               <View
                 style={{
                   flexDirection: 'row',
                 }}>
-                {/* <View style={styles.userInfoImageContainer}>
+                <View style={styles.userInfoImageContainer}>
                   <ProfilePhoto size={20} />
-                </View> */}
+                </View>
                 <View
                   style={{
                     flexDirection: 'row',
                     flex: 1,
                   }}>
                   <AppText
-                    textStyle="caption"
+                    textStyle="caption2"
                     customStyle={{
                       flex: 1,
                       paddingLeft: 8,
                       paddingRight: 4,
                     }}>
-                      Name
+                      {info.name}
                     {/* {display_name ? display_name : full_name} */}
                   </AppText>
                   {/* <VerifiedBadge /> */}
                   <AppText
                     textStyle="captionConstant"
                     color={Colors.contentPlaceholder}>
-                      Time
+                    {info.time}
                     {/* {timeAgo(date_posted)} */}
                   </AppText>
                 </View>
               </View>
-               <View
-                style={{
-                  backgroundColor: statusBackground(),
-                  borderRadius: 20,
-                  paddingHorizontal: 8,
-                  flexDirection: 'column',
-                }}>
-                <AppText
-                  textStyle="metadata"
-                  color={'white'}>
-                  {status}
-                </AppText>
+              <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center'}}>
+                <View
+                  style={{
+                    backgroundColor: statusBackground(),
+                    borderRadius: 20,
+                    paddingHorizontal: 8,
+                    alignSelf: 'flex-start',
+                    marginVertical: 8,
+                    marginRight: 3
+                  }}>
+                  <AppText
+                    textStyle="activity"
+                    color={'white'}>
+                    {info.status}
+                  </AppText>
+                </View>
+                {info.date && (
+                  <AppText
+                    textStyle="activity"
+                    customStyle={{marginHorizontal: 2}}
+                  >
+                    {info.date}
+                  </AppText>
+                )}
+                {info.price && (
+                  <AppText textStyle="activity">
+                    ₱{info.price}
+                  </AppText>
+                )}
+                {info.availed && (
+                  <AppText
+                    textStyle="activity"
+                    customStyle={{marginHorizontal: 2}}
+                  >
+                    {info.availed} availed
+                  </AppText>
+                )}
+                {info.pending && (
+                  <AppText
+                    textStyle="activity"
+                    customStyle={{marginHorizontal: 2}}
+                  >
+                    {info.pending} pending request
+                  </AppText>
+                )}
+                {info.offers && (
+                  <AppText
+                    textStyle="activity"
+                    customStyle={{marginHorizontal: 2}}
+                  >
+                    {info.offers} offers
+                  </AppText>
+                )}
               </View>
               <AppText customStyle={{marginTop: 4}} textStyle="caption2">
-                {/* {title} */}
-                Title
+                {info.title}
               </AppText>
-              {/* <AppText textStyle="metadata">{description}</AppText> */}
+              {info.reply && (
+                <AppText textStyle="activity">{info.reply}</AppText>
+              )}
             </View>
           </View>
         </MarginView>
@@ -204,5 +266,20 @@ const ActivitiesCard = ({data, type}) => {
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  postImageContainer: {
+    width: normalize(64),
+    height: normalize(72),
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  userInfoImageContainer: {
+    height: normalize(20),
+    width: normalize(20),
+    borderRadius: normalize(20 / 2),
+    overflow: 'hidden',
+  }
+});
 
 export default ActivitiesCard;

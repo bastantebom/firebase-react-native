@@ -1,51 +1,53 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   SafeAreaView,
   ScrollView,
   View,
-  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 
 import { AppText } from '@/components';
 import { normalize } from '@/globals';
 import { Calendar } from '@/assets/images/icons';
-import InviteNotificationCard from './InviteNotificationCard';
-import FollowNotificationCard from './FollowNotificationCard';
-import ApprovedNotificationCard from './ApprovedNotificationCard';
-import ReminderNotificationCard from './ReminderNotificationCard';
+import NotificationsCard from './NotificationsCard';
 
 const Notifications = () => {
-  const inviteNotifications = [
+  const newNotificationsCards = [
     {
+      new: true,
+      category: 'Invite',
+      badge: 'Yellow',
       name: 'Grae Joquico',
       groupName: 'Tropang Woodlands',
-      position: 'Member Bee'
-    }
+      position: 'Member Bee',
+      time: '3s'
+    },
   ]
 
-  const followNotifications = [
+  const oldNotificationsCards = [
     {
-      name: 'Trisha Paredes'
-    }
-  ]
-
-  const approvedNotifications = [
+      category: 'Follow',
+      badge: 'Red',
+      name: 'Trisha Paredes',
+      time: '2h'
+    },
     {
-      groupName: 'Pixel',
-    }
-  ]
-
-  const reminderNotifications = [
+      category: 'Approve',
+      badge: 'Yellow',
+      hiveName: 'Pixel',
+      time: '2h'
+    },
     {
+      category: 'Reminder',
       name: 'Wayne',
-      reminder: "Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love."
+      reminder: "Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love.",
+      time: '2h'
     }
   ]
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      <ScrollView>
+      <ScrollView style={{paddingHorizontal: 15}}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Calendar height={normalize(20)} width={normalize(20)} style={{ marginRight: 10 }} />
           <AppText textStyle="caption2">Today</AppText>
@@ -54,14 +56,13 @@ const Notifications = () => {
           <View>
             <AppText customStyle={{color: '#91919C'}}>NEW</AppText>
           </View>
-          {inviteNotifications.map((info, i) => {
+          {newNotificationsCards.map((info, i) => {
             return (
-              <>
-                <InviteNotificationCard 
-                  key={i} 
-                  props={info}
-                />
-              </>
+              <View key={i}>
+                 <NotificationsCard 
+                  info={info}
+                 />
+              </View>
             )
           })}
         </View>
@@ -69,34 +70,13 @@ const Notifications = () => {
           <View>
             <AppText customStyle={{color: '#91919C'}}>EARLIER</AppText>
           </View>
-          {followNotifications.map((info, j) => {
+          {oldNotificationsCards.map((info, i) => {
             return (
-              <>
-                <FollowNotificationCard 
-                  key={j} 
-                  props={info}
-                />
-              </>
-            )
-          })}
-          {approvedNotifications.map((info, k) => {
-            return (
-              <>
-                <ApprovedNotificationCard 
-                  key={k} 
-                  props={info}
-                />
-              </>
-            )
-          })}
-          {reminderNotifications.map((info, l) => {
-            return (
-              <>
-                <ReminderNotificationCard 
-                  key={l} 
-                  props={info}
-                />
-              </>
+              <View key={i}>
+                 <NotificationsCard 
+                  info={info}
+                 />
+              </View>
             )
           })}
         </View>
@@ -108,7 +88,6 @@ const Notifications = () => {
 const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
-    // paddingVertical: normalize(16),
     backgroundColor: 'white',
   }
 });
