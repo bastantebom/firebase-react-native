@@ -385,7 +385,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         <PostImageUpload />
 
         <AppInput
-          customStyle={{marginBottom: 16}}
+          style={{marginBottom: 16}}
           label="Title"
           placeholder="Eg. Iphone, Macbook"
           value={title}
