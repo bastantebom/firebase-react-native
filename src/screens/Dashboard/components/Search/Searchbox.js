@@ -101,15 +101,15 @@ const SearchBox = ({
   }
 
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       <Animated.View
         style={[
           {
             width: searchType === 'posts' ? inputLength : FULL_WIDTH,
-            position: "absolute",
+            position: 'absolute',
             zIndex: 1,
             left: searchType === 'posts' ? barPosition : 0,
-            top: searchType === 'posts' ? 0 : normalize(20),
+            top: searchType === 'posts' ? 0 : normalize(55),
           }, customStyle
         ]}
       >
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     zIndex: 5,
+    // height: normalize(50),
     // backgroundColor: 'red'
   },
   cancelSearch: {
@@ -184,11 +185,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   modalHeader: {
-    position: 'relative',
+    position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 16,
-    width: '100%'
+    marginVertical: 16,
+    width: '100%',
+    top: 0
   }
 });

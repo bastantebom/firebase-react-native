@@ -34,8 +34,8 @@ import {
 import {GlobalStyle, Colors, normalize} from '@/globals';
 
 import Modal from 'react-native-modal';
-import {Context} from '@/context';
-import {UserContext} from '@/context/UserContext';
+import { Context } from '@/context';
+import { UserContext } from '@/context/UserContext';
 import LocationMap from '@/screens/Dashboard/components/Location';
 import {VerificationScreen} from '@/screens/Dashboard/Verification';
 // import {PostService} from '@/services';
@@ -43,11 +43,8 @@ import {VerificationScreen} from '@/screens/Dashboard/Verification';
 // import Config from '@/services/Config';
 
 import algoliasearch from 'algoliasearch/lite';
-import { InstantSearch, connectSearchBox } from 'react-instantsearch-native';
-// import { InstantSearch } from 'react-instantsearch-native';
+import { InstantSearch } from 'react-instantsearch-native';
 import SearchBox from './components/Search/Searchbox';
-import InfiniteHits from './components/Search/InfiniteHits';
-import RefinementList from './components/Search/RefinementList';
 import SearchResults from './components/Search/SearchResults';
 
 function Dashboard() {
@@ -127,6 +124,8 @@ function Dashboard() {
 
 const SearchBarWithFilter = ({ toggleFilter }) => {
 
+  const { searchType } = useContext(Context)
+
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
 
@@ -156,20 +155,21 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
       })
     ]).start();
     setSearchBarFocused(false);
-    // setSearchType('posts')
     Keyboard.dismiss();
   }
   
   const searchClient = algoliasearch(
-    "B3KXWHT843",
-    "93f6a8ef9601c3c4da65687477a81833"
+    // "B3KXWHT843",
+    // "93f6a8ef9601c3c4da65687477a81833"
+    "B1G2GM9NG0",
+    "aadef574be1f9252bb48d4ea09b5cfe5"
   );
 
   return (
-    <View style={{ marginHorizontal: 16, marginVertical: 16 }}>
+    <View style={{ marginHorizontal: 16, marginVertical: 16, height: normalize(100) }}>
       <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-        <View style={{ flex: 1 }}>
-          <InstantSearch searchClient={searchClient} indexName="posts">
+        <View style={{ flex: 1, height: searchType !== 'posts' ? normalize(100) : 'auto' }}>
+          <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
             <SearchBox 
               onSearchFocus={onFocus} 
               onBackPress={onBackPress}
@@ -206,7 +206,9 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
           </View>
         }
       </View>
-      <LocationSearch />
+      <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
+        <LocationSearch />
+      </View>
     </View>
   );
 };

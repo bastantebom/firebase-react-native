@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import Highlight from './Highlight'
 import PropTypes from 'prop-types';
@@ -6,16 +6,18 @@ import { connectInfiniteHits } from 'react-instantsearch-native';
 import { Colors, normalize } from '@/globals';
 import { AppButton, AppText } from '@/components';
 import Tags from './Tags';
+import { Context } from '@/context';
 
 const InfiniteHits = ({ hits, hasMore, refine, value }) => {
 
-  useEffect(() => {
-    console.log(hits)
-    console.log('hits')
-  }, [hits])
+  const { searchType } = useContext(Context)
+  // useEffect(() => {
+  //   console.log(hits)
+  //   console.log('hits')
+  // }, [hits])
 
   return (
-    <View>
+    <View style={{ top: searchType !== 'posts' ? normalize(25) : 0 }}>
       { hits.length !== 0 ? (
         <FlatList
           data={hits}
@@ -30,7 +32,7 @@ const InfiniteHits = ({ hits, hasMore, refine, value }) => {
             </View>
           )}
         /> ) : (
-          <View>
+          <View style={{ paddingTop: 16 }}>
             <AppText textStyle="subtitle1">Your search “{value}” did not match any post. </AppText>
             <AppText textStyle="subtitle1">Try another search?</AppText>
             <View style={{ marginVertical: 15 }}>
