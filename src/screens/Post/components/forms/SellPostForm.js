@@ -21,7 +21,7 @@ import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
 /*Map Essentials*/
 
-import {AppInput, Validator, valueHandler} from '@/components/AppInput';
+import {AppInput, Validator, valueHandler, PriceInput} from '@/components/AppInput';
 import {
   ArrowRight,
   Public,
