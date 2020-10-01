@@ -3,6 +3,7 @@ import APIURL from '@/services/Config';
 
 const client = axios.create({
   baseURL: APIURL.local.api,
+  //headers: {Authorization: `bearer ${token}`},
 });
 
 const BaseAPI = function (options) {
@@ -24,6 +25,12 @@ const BaseAPI = function (options) {
 
     return Promise.reject(error.response || error.message);
   };
+
+  client.interceptors.request.use(function (config) {
+    //const token = localStorage.getItem('token');
+    //config.headers.Authorization =  token ? `Bearer ${token}` : '';
+    return config;
+  });
 
   return client(options).then(onSuccess).catch(onError);
 };

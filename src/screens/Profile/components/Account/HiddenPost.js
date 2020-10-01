@@ -9,9 +9,15 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import {ScreenHeaderTitle, PaddingView, AppText} from '@/components';
+import {
+  ScreenHeaderTitle,
+  PaddingView,
+  AppText,
+  CacheableImage,
+} from '@/components';
 import {CloseDark} from '@/assets/images/icons';
-import {normalize, Colors} from '@/globals';
+import {ProfileImageDefault, DefaultSell} from '@/assets/images';
+import {normalize, Colors, GlobalStyle} from '@/globals';
 import Modal from 'react-native-modal';
 import {UserContext} from '@/context/UserContext';
 import PostService from '@/services/Post/PostService';
@@ -52,40 +58,105 @@ const HiddenPost = ({toggleHiddenPost}) => {
   };
 
   //console.log(hiddenPosts.length);
+  const ProfilePhoto = ({postImage, size}) => {
+    return postImage ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{
+          uri: postImage,
+        }}
+      />
+    ) : (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    );
+  };
 
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <PaddingView paddingSize={3}>
+        <View style={{paddingHorizontal: normalize(16)}}>
           <ScreenHeaderTitle
-            title="Hidden Post List"
+            iconSize={16}
+            title="Hidden Posts"
             close={toggleHiddenPost}
           />
-          <View style={{marginTop: normalize(20)}}>
-            {hiddenPosts && hiddenPosts.length > 0 ? (
-              hiddenPosts.map((post, index) => {
-                return (
-                  <View key={index}>
+        </View>
+        <View
+          style={{
+            marginTop: normalize(10),
+            borderTopColor: Colors.neutralGray,
+            borderTopWidth: 1,
+          }}>
+          {hiddenPosts && hiddenPosts.length > 0 ? (
+            hiddenPosts.map((post, index) => {
+              return (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    borderBottomColor: Colors.neutralsZircon,
+                    borderBottomWidth: 1,
+                    paddingHorizontal: normalize(16),
+                    paddingVertical: normalize(16),
+                  }}>
+                  <View style={styles.userInfoImageContainer}>
+                    {post.image > 0 ? (
+                      <CacheableImage
+                        style={GlobalStyle.image}
+                        source={{uri: post.image}}
+                      />
+                    ) : (
+                      // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
+                      <DefaultSell
+                        width={normalize(42)}
+                        height={normalize(42)}
+                      />
+                    )}
+                  </View>
+                  <View style={{marginLeft: 8, justifyContent: 'center'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <AppText textStyle="body2" customStyle={{marginRight: 4}}>
+                        {post.title.length > 20
+                          ? `${post.title.substring(0, 20)}...`
+                          : post.title}{' '}
+                      </AppText>
+                    </View>
+                  </View>
+                  <View style={{flex: 1, alignItems: 'flex-end'}}>
                     <TouchableOpacity
-                      style={index % 2 === 0 ? styles.list : styles.list2}
                       onPress={() => {
                         cancelModalToggle(post);
+                      }}
+                      style={{
+                        paddingHorizontal: normalize(8),
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderColor: Colors.contentEbony,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        height: normalize(30),
+                        width: normalize(90),
+                        marginVertical: normalize(8),
+                        marginHorizontal: normalize(4),
                       }}>
-                      <View>
-                        <AppText textStyle="caption">{post.title}</AppText>
-                      </View>
-                      <CloseDark />
+                      <AppText textStyle="caption" color={Colors.contentEbony}>
+                        Unhide
+                      </AppText>
                     </TouchableOpacity>
                   </View>
-                );
-              })
-            ) : (
+                </View>
+              );
+            })
+          ) : (
+            <View style={{padding: 16}}>
               <AppText textStyle="caption">
                 You don't have any hidden post.
               </AppText>
-            )}
-          </View>
-        </PaddingView>
+            </View>
+          )}
+        </View>
+
         {/* About Servbees Modal */}
       </SafeAreaView>
       <Modal
@@ -154,27 +225,27 @@ const HiddenPost = ({toggleHiddenPost}) => {
 
 // define your styles
 const styles = StyleSheet.create({
-  list: {
-    flexDirection: 'row',
-    // marginBottom: 28,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: Colors.neutralsZircon,
-    paddingVertical: normalize(4),
-    paddingHorizontal: normalize(8),
-    borderBottomColor: Colors.neutralsWhite,
-    borderBottomWidth: 1,
+  userInfoImageContainer: {
+    height: normalize(42),
+    width: normalize(42),
+    overflow: 'hidden',
+    borderRadius: 8,
   },
-  list2: {
+  userInfoDetailsContainer: {
+    flex: 1,
+    // backgroundColor: "red",
+    paddingLeft: 8,
+  },
+  userInfoDetailsNameContainer: {
     flexDirection: 'row',
-    // marginBottom: 28,
-    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.neutralsWhite,
-    paddingVertical: normalize(4),
-    paddingHorizontal: normalize(8),
-    borderBottomColor: Colors.neutralsWhite,
-    borderBottomWidth: 1,
+  },
+  userInfoDetailsName: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    paddingRight: 4,
+  },
+  userInfoDetailsUsernameContainer: {
+    flexDirection: 'row',
   },
 });
 

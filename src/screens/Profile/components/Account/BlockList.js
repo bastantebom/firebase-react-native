@@ -69,7 +69,7 @@ const BlockList = ({toggleBlockedUser}) => {
           style={{
             marginTop: normalize(10),
             borderTopColor: Colors.neutralGray,
-            borderTopWidth: 2,
+            borderTopWidth: 1,
           }}>
           {blockUsers && blockUsers.length > 0 ? (
             blockUsers.map((user, index) => {
@@ -85,7 +85,11 @@ const BlockList = ({toggleBlockedUser}) => {
               );
             })
           ) : (
-            <AppText textStyle="caption">You don't have any block user</AppText>
+            <View style={{padding: 16}}>
+              <AppText textStyle="caption">
+                You don't have any block user
+              </AppText>
+            </View>
           )}
         </View>
 
