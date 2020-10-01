@@ -603,6 +603,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                         errors,
                         setErrors,
                         setUName,
+                        user.uid,
                       )
                     }
                     value={uName}
@@ -617,14 +618,14 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                     }}
                   />
                 </Validator>
-                {/* <View style={styles.passwordToggle}>
-                  {verified ? (
+                <View style={styles.passwordToggle}>
+                  {errors.uName.passed ? (
                     <VerifiedGreen
                       width={normalize(16)}
                       height={normalize(16)}
                     />
                   ) : null}
-                </View> */}
+                </View>
               </View>
               {!invalidUser ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>

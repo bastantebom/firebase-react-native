@@ -7,6 +7,7 @@ export default valueHandler = async (
   errors,
   setErrors,
   setValue,
+  uid
 ) => {
   if (validation === '') {
     return setValue(value);
@@ -135,7 +136,7 @@ export default valueHandler = async (
 
   if (validation === 'username') {
     setValue(value.toLowerCase());
-    await VF.usernameValidator(value)
+    await VF.usernameValidator(value, uid)
       .then(() => {
         setErrors({
           ...errors,
