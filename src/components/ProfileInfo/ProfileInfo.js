@@ -129,7 +129,7 @@ const ProfileInfo = ({userInfo, type}) => {
                 textStyle="eyebrow2"
                 color={Colors.contentPlaceholder}
                 customStyle={{paddingHorizontal: 4}}>
-                {timeAgo(date_posted)}
+                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
             </View>
           </View>

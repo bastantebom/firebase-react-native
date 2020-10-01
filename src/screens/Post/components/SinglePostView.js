@@ -334,7 +334,7 @@ const SinglePostView = (props) => {
             <View style={styles.iconText}>
               <PostClock width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {timeAgo(date_posted)}
+                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
             </View>
             <View style={styles.iconText}>

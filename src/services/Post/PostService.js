@@ -1,24 +1,28 @@
 import BaseAPI from '@/services/BaseAPI';
 
 const getPosts = (payload) => {
+  //?limit=5&page=0
+  //console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
   return BaseAPI({
-    url: `post`,
-    method: 'POST',
+    url: `posts?limit=${payload.limit}&page=${payload.page}`,
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    data: payload,
   });
 };
 
 const getUserPosts = (payload) => {
+  // users/:uid/posts
+  console.log(
+    `posts?uid=${payload.uid}&limit=${payload.limit}&page=${payload.page}`,
+  );
   return BaseAPI({
-    url: `post/user`,
-    method: 'POST',
+    url: `posts?uid=${payload.uid}&limit=${payload.limit}&page=${payload.page}`,
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    data: payload,
   });
 };
 
@@ -34,8 +38,9 @@ const getPostsLocation = (payload) => {
 };
 
 const createPost = (payload) => {
+  //console.log(payload);
   return BaseAPI({
-    url: 'post/create',
+    url: '/posts',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,7 +54,7 @@ const editPost = (PID, payload) => {
    * Accepts Post ID and payload
    */
   return BaseAPI({
-    url: `post/edit/${PID}`,
+    url: `posts/${PID}`,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +68,7 @@ const deletePost = (PID) => {
    * Accepts Post ID
    */
   return BaseAPI({
-    url: `post/delete/${PID}`,
+    url: `posts/${PID}`,
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -77,7 +82,7 @@ const hidePost = (payload) => {
    * UID
    */
   return BaseAPI({
-    url: '/post/hide',
+    url: `/posts/${payload.pid}/hide`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -92,7 +97,7 @@ const reportPost = (payload) => {
    * UID
    */
   return BaseAPI({
-    url: '/post/report',
+    url: `/posts/${payload.pid}/report`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -107,7 +112,7 @@ const unHidePost = (payload) => {
    * UID
    */
   return BaseAPI({
-    url: '/post/unhide',
+    url: `/posts/${payload.pid}/unhide`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

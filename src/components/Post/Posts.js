@@ -19,7 +19,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   );
 
   const [refresh, setRefresh] = useState(false);
-  const [lastPID, setLastPID] = useState(null);
+  const [lastPID, setLastPID] = useState(0);
   const [fetchMore, setFecthMore] = useState(true);
   const limit = 5;
   // const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
@@ -44,7 +44,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         const params = {
           city: locationFilter,
           limit: limit,
-          last_pid: null,
+          page: lastPID,
         };
 
         const res = await PostService.getPostsLocation(params);
@@ -64,18 +64,18 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           setPosts(res.data);
         }
 
-        setLastPID(res.last_pid);
+        setLastPID(lastPID + 1);
       } else {
         const params = {
           limit: limit,
-          last_pid: null,
+          page: lastPID,
         };
         const res = await PostService.getPosts(params);
         if (res.data && res.data.length > 0) {
           setPosts(res.data);
         }
 
-        setLastPID(res.last_pid);
+        setLastPID(lastPID + 1);
       }
 
       setRefresh(false);
@@ -94,15 +94,15 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         setOnEndReachedCalledDuringMomentum(false);
 
         if (locationFilter) {
-          if (lastPID !== undefined) {
+          if (lastPID !== 0) {
             const params = {
               city: locationFilter,
               limit: limit,
-              last_pid: lastPID,
+              page: lastPID,
             };
 
             const res = await PostService.getPostsLocation(params);
-            if (!res.success && res.message === 'No more post available') {
+            if (!res.length) {
               setFecthMore(false);
               setIsLoading(false);
 
@@ -113,7 +113,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
               setPosts((prev) => [...prev, ...res.data]);
             }
 
-            setLastPID(res.last_pid);
+            setLastPID(lastPID + 1);
           } else {
             setIsLoading(false);
             setFecthMore(false);
@@ -121,10 +121,12 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         } else {
           const params = {
             limit: limit,
-            last_pid: lastPID,
+            page: lastPID,
           };
           const res = await PostService.getPosts(params);
-          if (!res.success && res.message === 'No more post available') {
+          console.log('------------------');
+          console.log(res);
+          if (!res.length) {
             setFecthMore(false);
             setIsLoading(false);
 
@@ -135,7 +137,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
             setPosts((prev) => [...prev, ...res.data]);
           }
 
-          setLastPID(res.last_pid);
+          setLastPID(lastPID + 1);
         }
 
         setIsLoading(false);
