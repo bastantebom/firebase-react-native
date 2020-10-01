@@ -33,10 +33,17 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   //   : '';
 
   useEffect(() => {
+    setLastPID(0);
     refreshPosts();
   }, [locationFilter]);
 
+  // useEffect(() => {
+  //   setLastPID(0);
+  // }, [lastPID]);
+
   const refreshPosts = async () => {
+    console.log('REFRESH');
+    //console.log(lastPID);
     try {
       setRefresh(true);
 
@@ -44,7 +51,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         const params = {
           city: locationFilter,
           limit: limit,
-          page: lastPID,
+          page: 0,
         };
 
         const res = await PostService.getPostsLocation(params);
@@ -64,18 +71,19 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           setPosts(res.data);
         }
 
-        setLastPID(lastPID + 1);
+        setLastPID(1);
       } else {
         const params = {
           limit: limit,
-          page: lastPID,
+          page: 0,
         };
+
         const res = await PostService.getPosts(params);
         if (res.data && res.data.length > 0) {
           setPosts(res.data);
         }
 
-        setLastPID(lastPID + 1);
+        setLastPID(1);
       }
 
       setRefresh(false);
@@ -88,12 +96,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(true);
 
   const getMorePost = async () => {
+    console.log('GET MORE');
     try {
-      console.log(onEndReachedCalledDuringMomentum);
+      //console.log(onEndReachedCalledDuringMomentum);
       if (onEndReachedCalledDuringMomentum) {
         setOnEndReachedCalledDuringMomentum(false);
 
         if (locationFilter) {
+          console.log('with location filter');
           if (lastPID !== 0) {
             const params = {
               city: locationFilter,
@@ -105,7 +115,6 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
             if (!res.length) {
               setFecthMore(false);
               setIsLoading(false);
-
               return;
             }
 
@@ -119,13 +128,14 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
             setFecthMore(false);
           }
         } else {
+          console.log('wala location filter');
           const params = {
             limit: limit,
             page: lastPID,
           };
           const res = await PostService.getPosts(params);
           console.log('------------------');
-          console.log(res);
+          //console.log(res);
           if (!res.length) {
             setFecthMore(false);
             setIsLoading(false);

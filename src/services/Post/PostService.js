@@ -2,7 +2,7 @@ import BaseAPI from '@/services/BaseAPI';
 
 const getPosts = (payload) => {
   //?limit=5&page=0
-  //console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
+  console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
   return BaseAPI({
     url: `posts?limit=${payload.limit}&page=${payload.page}`,
     method: 'GET',
@@ -27,13 +27,16 @@ const getUserPosts = (payload) => {
 };
 
 const getPostsLocation = (payload) => {
+  console.log(
+    `posts?limit=${payload.limit}&page=${payload.page}&city=${payload.city}`,
+  );
   return BaseAPI({
-    url: `post/location`,
-    method: 'POST',
+    url: `posts?limit=${payload.limit}&page=${payload.page}&city=${payload.city}`,
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    data: payload,
+    //data: payload,
   });
 };
 

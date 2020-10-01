@@ -48,15 +48,16 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
     try {
       setOtherUserPosts([]);
       setRefresh(true);
+      setLastPID(0);
 
       const params = {
         uid: userID,
         limit: 5,
-        page: lastPID,
+        page: 0,
       };
 
       const res = await PostService.getUserPosts(params);
-      setLastPID(lastPID + 1);
+      setLastPID(1);
       setIsLoading(false);
 
       if (res.data.length > 0) {
