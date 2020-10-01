@@ -48,8 +48,6 @@ export const PostImageUpload = ({data}) => {
   } = useContext(Context);
 
   const [showPickerModal, setShowPickerModal] = useState(false);
-  // // const [count, setCount] = useState(0);
-  // const [cameraImage, setCameraImage] = useState([]);
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
