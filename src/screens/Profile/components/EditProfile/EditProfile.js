@@ -103,7 +103,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [pPhoto, setPPhoto] = useState(profile_photo);
   const [profilePhotoClick, setProfilePhotoClick] = useState(false);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
-  const [name, setName] = useState('full_name');
+  const [name, setName] = useState(full_name);
   /*Username Validations */
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
@@ -112,17 +112,17 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [enabled, setEnabled] = useState(false);
   const [errors, setErrors] = useState({
     dName: {
-      passed: false,
+      passed: true,
       shown: false,
       message: '',
     },
     name: {
-      passed: false,
+      passed: true,
       shown: false,
       message: '',
     },
     uName: {
-      passed: false,
+      passed: true,
       shown: false,
       message: '',
     },
@@ -130,6 +130,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
   const checkErrorState = () => {
     let temp = true;
+
+    console.log(errors);
 
     for (const [key, value] of Object.entries(errors)) {
       if (!value.passed) {
@@ -140,10 +142,14 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
     if (temp) {
       // ENABLE BUTTON
+      console.log('Button is Enabled');
       setEnabled(true);
+      setButtonStyle(false);
     } else {
       // DISABLE BUTTON
+      console.log('Button is Disabled');
       setEnabled(false);
+      setButtonStyle(true);
     }
   };
 
@@ -666,7 +672,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(8)}}>
                 Address
               </AppText>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={addName}
                 onChangeText={(addName) => {
                   setAddName(addName);
@@ -674,10 +680,14 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 placeholder="ex. Home"
-                // validation={['email', '']}
-                // setError={setError}
-                // error={error}
-                // setButtonState={setButtonState}
+              /> */}
+              <AppInput
+                label="Address Name"
+                style={{marginBottom: normalize(16)}}
+                onChangeText={(addName) => {
+                  setAddName(addName);
+                }}
+                value={addName}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -687,6 +697,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                     customStyle={{marginBottom: normalize(16)}}
                     onFocus={() => toggleMap()}
                   />
+                  {/* <AppInput
+                    label="Address"
+                    editable={false}
+                    style={{marginBottom: normalize(16)}}
+                    // onChangeText={() => {
+                    //   return;
+                    // }}
+                    value={stringAddress}
+                    onFocus={() => toggleMap()}
+                  /> */}
                   <View
                     style={{
                       position: 'absolute',
@@ -706,7 +726,15 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   setAddDet(addDet);
                 }}
               />
-              <FloatingAppInput
+              {/* <AppInput
+                label="Address Details"
+                style={{marginBottom: normalize(16)}}
+                onChangeText={(addDet) => {
+                  setAddDet(addDet);
+                }}
+                value={addDet}
+              /> */}
+              {/* <FloatingAppInput
                 value={addNote}
                 label="Notes"
                 placeholder="ex. Yellow Gate"
@@ -714,6 +742,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 onChangeText={(addNote) => {
                   setAddNote(addNote);
                 }}
+              /> */}
+
+              <AppInput
+                label="Notes"
+                style={{marginBottom: normalize(16)}}
+                onChangeText={(addNote) => {
+                  setAddNote(addNote);
+                }}
+                value={addNote}
+                placeholder="ex. Yellow Gate"
               />
             </PaddingView>
           </View>
@@ -847,9 +885,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               text="Save"
               type="primary"
               height="xl"
-              disabled={buttonDisable}
+              disabled={!enabled}
               // disabled
-              customStyle={{...buttonStyle}}
+              customStyle={{
+                backgroundColor: !enabled
+                  ? Colors.buttonDisable
+                  : Colors.primaryYellow,
+                borderColor: !enabled
+                  ? Colors.buttonDisable
+                  : Colors.primaryYellow,
+              }}
               onPress={() => updateProfile()}
             />
           </View>

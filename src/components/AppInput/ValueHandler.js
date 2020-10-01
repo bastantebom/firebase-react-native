@@ -7,17 +7,17 @@ export default valueHandler = async (
   errors,
   setErrors,
   setValue,
-  uid
+  uid,
 ) => {
   if (validation === '') {
     return setValue(value);
+  } else {
+    setValue(value);
   }
 
   if (!errors || !setErrors || !valueName || typeof setValue !== 'function') {
     return console.log('MISSING PARAMETERS');
   }
-
-  setValue(value);
 
   if (validation === 'display_name')
     await VF.DisplayNameValidator(value)
