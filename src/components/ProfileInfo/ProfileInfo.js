@@ -20,8 +20,10 @@ import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 import {UserContext} from '@/context/UserContext';
 import {Profile} from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
+import AppButton from '../AppButton/AppButton';
+import {PaddingView} from '../AppViewContainer';
 
-const ProfileInfo = ({userInfo, type}) => {
+const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
   const {user} = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
@@ -179,6 +181,60 @@ const ProfileInfo = ({userInfo, type}) => {
           </View>
         </View>
       </TouchableOpacity>
+    );
+
+  if (type === 'block-user')
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          borderBottomColor: Colors.neutralsZircon,
+          borderBottomWidth: 1,
+          paddingHorizontal: normalize(16),
+          paddingVertical: normalize(16),
+        }}>
+        <View style={styles.userInfoImageContainer}>
+          <ProfilePhoto size={42} />
+        </View>
+        <View style={{marginLeft: 8, justifyContent: 'center'}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <AppText textStyle="body2" customStyle={{marginRight: 4}}>
+              {display_name.length > 20
+                ? `${display_name.substring(0, 20)}...`
+                : display_name}
+            </AppText>
+            <VerifiedBadge />
+          </View>
+          <View>
+            <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+              @{username.toLowerCase()}
+            </AppText>
+          </View>
+        </View>
+        <View style={{flex: 1, alignItems: 'flex-end'}}>
+          <TouchableOpacity
+            onPress={() => {
+              cancelModalToggle();
+            }}
+            style={{
+              paddingHorizontal: normalize(8),
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderColor: Colors.contentEbony,
+              borderWidth: 1,
+              borderRadius: 6,
+              height: normalize(30),
+              width: normalize(90),
+              marginVertical: normalize(8),
+              marginHorizontal: normalize(4),
+            }}>
+            <AppText textStyle="caption" color={Colors.contentEbony}>
+              Unblock
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
 };
 

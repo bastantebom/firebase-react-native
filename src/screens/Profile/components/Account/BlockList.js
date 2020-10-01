@@ -9,7 +9,12 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import {ScreenHeaderTitle, PaddingView, AppText} from '@/components';
+import {
+  ScreenHeaderTitle,
+  PaddingView,
+  AppText,
+  ProfileInfo,
+} from '@/components';
 import {CloseDark} from '@/assets/images/icons';
 import {normalize, Colors} from '@/globals';
 import Modal from 'react-native-modal';
@@ -53,38 +58,37 @@ const BlockList = ({toggleBlockedUser}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <PaddingView paddingSize={3}>
+        <View style={{paddingHorizontal: normalize(16)}}>
           <ScreenHeaderTitle
-            title="Block User List"
+            iconSize={16}
+            title="Blocked Users"
             close={toggleBlockedUser}
           />
-          <View style={{marginTop: normalize(20)}}>
-            {blockUsers && blockUsers.length > 0 ? (
-              blockUsers.map((user, index) => {
-                return (
-                  <View key={index}>
-                    <TouchableOpacity
-                      style={index % 2 === 0 ? styles.list : styles.list2}
-                      onPress={() => {
-                        cancelModalToggle(user);
-                      }}>
-                      <View>
-                        <AppText textStyle="caption">
-                          {user.display_name}
-                        </AppText>
-                      </View>
-                      <CloseDark />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })
-            ) : (
-              <AppText textStyle="caption">
-                You don't have any block user
-              </AppText>
-            )}
-          </View>
-        </PaddingView>
+        </View>
+        <View
+          style={{
+            marginTop: normalize(10),
+            borderTopColor: Colors.neutralGray,
+            borderTopWidth: 2,
+          }}>
+          {blockUsers && blockUsers.length > 0 ? (
+            blockUsers.map((user, index) => {
+              return (
+                <ProfileInfo
+                  key={index}
+                  userInfo={user}
+                  type="block-user"
+                  cancelModalToggle={() => {
+                    cancelModalToggle(user);
+                  }}
+                />
+              );
+            })
+          ) : (
+            <AppText textStyle="caption">You don't have any block user</AppText>
+          )}
+        </View>
+
         {/* About Servbees Modal */}
       </SafeAreaView>
       <Modal
