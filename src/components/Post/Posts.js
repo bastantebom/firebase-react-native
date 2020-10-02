@@ -8,6 +8,7 @@ import {PostService} from '@/services';
 import {AppText} from '@/components';
 import PostOwnEmpty from '@/screens/Profile/Tabs/Post';
 import LoadingScreen from './loading';
+import { normalize } from '@/globals';
 
 const Posts = ({data, type, isLoading, setIsLoading}) => {
   const {user, userInfo} = useContext(UserContext);
@@ -211,7 +212,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
         ListFooterComponent={
-          <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+          <View style={{alignItems: 'center', marginTop: 8, marginBottom: normalize(150)}}>
             {fetchMore ? (
               <ActivityIndicator />
             ) : (

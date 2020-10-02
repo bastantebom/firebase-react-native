@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
 import Global from '@/services/Config';
 import {Colors, normalize} from '@/globals';
-import {NavigationPin} from '@/assets/images/icons';
+import {NavigationPinAlt} from '@/assets/images/icons';
 
 const GooglePlacesInput = ({
   onResultsClick,
@@ -23,7 +23,7 @@ const GooglePlacesInput = ({
   return (
     <View style={styles.textInputWrapper}>
       <View style={styles.navIcon}>
-        <NavigationPin width={normalize(24)} height={normalize(24)} />
+        <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
       </View>
       <GooglePlacesAutocomplete
         placeholder="Enter street address or city"

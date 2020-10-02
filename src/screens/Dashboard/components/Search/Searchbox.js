@@ -189,7 +189,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    marginVertical: 16,
+    marginBottom: 16,
+    marginTop: 13,
     width: '100%',
     top: 0
   }

@@ -28,6 +28,9 @@ import NavigationArrow from '@/assets/images/icons/navigation-arrow.svg';
 import NavigationPin from '@/assets/images/icons/navigation-pin.svg';
 import NavigationPinRed from '@/assets/images/icons/navigation-pin-red.svg';
 import MapMarker from '@/assets/images/icons/pinbee_marker.svg';
+import NavigationArrowAlt from '@/assets/images/icons/navigation-arrow-alt.svg';
+import NavigationPinAlt from '@/assets/images/icons/navigation-pin-alt.svg';
+import PushPin from '@/assets/images/icons/push-pin-alt.svg';
 
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg';
@@ -235,6 +238,9 @@ export {
   Google,
   NavigationArrow,
   NavigationPin,
+  NavigationArrowAlt,
+  NavigationPinAlt,
+  PushPin,
   NavigationPinRed,
   MapMarker,
   Warning,
