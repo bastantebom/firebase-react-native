@@ -162,7 +162,7 @@ const OwnPost = ({data, isLoading}) => {
                   <AppText
                     textStyle="captionConstant"
                     color={Colors.contentPlaceholder}>
-                    {timeAgo(date_posted)}
+                    {timeAgo(Date.now() / 1000 - date_posted._seconds)}
                   </AppText>
                 </View>
               </View>

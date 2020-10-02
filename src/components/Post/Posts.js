@@ -19,7 +19,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   );
 
   const [refresh, setRefresh] = useState(false);
-  const [lastPID, setLastPID] = useState(null);
+  const [lastPID, setLastPID] = useState(0);
   const [fetchMore, setFecthMore] = useState(true);
   const limit = 5;
   // const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
@@ -33,10 +33,17 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   //   : '';
 
   useEffect(() => {
+    setLastPID(0);
     refreshPosts();
   }, [locationFilter]);
 
+  // useEffect(() => {
+  //   setLastPID(0);
+  // }, [lastPID]);
+
   const refreshPosts = async () => {
+    console.log('REFRESH');
+    //console.log(lastPID);
     try {
       setRefresh(true);
 
@@ -44,7 +51,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         const params = {
           city: locationFilter,
           limit: limit,
-          last_pid: null,
+          page: 0,
         };
 
         const res = await PostService.getPostsLocation(params);
@@ -64,18 +71,19 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           setPosts(res.data);
         }
 
-        setLastPID(res.last_pid);
+        setLastPID(1);
       } else {
         const params = {
           limit: limit,
-          last_pid: null,
+          page: 0,
         };
+
         const res = await PostService.getPosts(params);
         if (res.data && res.data.length > 0) {
           setPosts(res.data);
         }
 
-        setLastPID(res.last_pid);
+        setLastPID(1);
       }
 
       setRefresh(false);
@@ -88,24 +96,25 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(true);
 
   const getMorePost = async () => {
+    console.log('GET MORE');
     try {
-      console.log(onEndReachedCalledDuringMomentum);
+      //console.log(onEndReachedCalledDuringMomentum);
       if (onEndReachedCalledDuringMomentum) {
         setOnEndReachedCalledDuringMomentum(false);
 
         if (locationFilter) {
-          if (lastPID !== undefined) {
+          console.log('with location filter');
+          if (lastPID !== 0) {
             const params = {
               city: locationFilter,
               limit: limit,
-              last_pid: lastPID,
+              page: lastPID,
             };
 
             const res = await PostService.getPostsLocation(params);
-            if (!res.success && res.message === 'No more post available') {
+            if (!res.length) {
               setFecthMore(false);
               setIsLoading(false);
-
               return;
             }
 
@@ -113,18 +122,21 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
               setPosts((prev) => [...prev, ...res.data]);
             }
 
-            setLastPID(res.last_pid);
+            setLastPID(lastPID + 1);
           } else {
             setIsLoading(false);
             setFecthMore(false);
           }
         } else {
+          console.log('wala location filter');
           const params = {
             limit: limit,
-            last_pid: lastPID,
+            page: lastPID,
           };
           const res = await PostService.getPosts(params);
-          if (!res.success && res.message === 'No more post available') {
+          console.log('------------------');
+          //console.log(res);
+          if (!res.length) {
             setFecthMore(false);
             setIsLoading(false);
 
@@ -135,7 +147,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
             setPosts((prev) => [...prev, ...res.data]);
           }
 
-          setLastPID(res.last_pid);
+          setLastPID(lastPID + 1);
         }
 
         setIsLoading(false);

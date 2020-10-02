@@ -38,8 +38,8 @@ import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
 function ProfileInfoModal(props) {
-  console.log('PROPS');
-  console.log(props.route.params);
+  //console.log('PROPS');
+  //console.log(props.route.params);
 
   const {profileViewType = 'other', uid} = props.route?.params;
 

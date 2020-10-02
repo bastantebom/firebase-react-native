@@ -88,7 +88,7 @@ import MenuAddFriend from './MenuAddFriend.svg';
 import MenuArchive from './MenuArchive.svg';
 import MenuBell from './MenuBell.svg';
 import MenuChat from './MenuChat.svg';
-import MenuEdit from './MenuEdit.svg';
+import MenuEdit from './edit-profile.svg';
 import MenuInfo from './MenuInfo.svg';
 import MenuKey from './MenuKey.svg';
 import MenuLiked from './MenuLiked.svg';
@@ -145,6 +145,11 @@ import ContactEmail from './contact-email.svg';
 import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
 import LoginApple from './login_Apple03.svg';
+
+import HidePost from './hide-post.svg';
+import AboutRed from './info-menu.svg';
+import BlockedUsers from './blocked-user.svg';
+import ChangePasswordRed from './change-password-red.svg';
 
 export {
   ContactTelephone,
@@ -250,4 +255,8 @@ export {
   LoginFB,
   LoginGoogle,
   LoginApple,
+  HidePost,
+  AboutRed,
+  BlockedUsers,
+  ChangePasswordRed,
 };

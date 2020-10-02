@@ -4,6 +4,12 @@ export default {
   latitudeDelta: 0.00082,
   longitudeDelta: 0.00082,
 
+  local: {
+    api: 'http://localhost:5000',
+    googleSignIn:
+      '960850345935-mrm0tnvd72ge68c84nee8nehh4p20l80.apps.googleusercontent.com',
+  },
+
   dev: {
     api: 'https://servbees-api-dev.onrender.com',
     googleSignIn:
