@@ -1,14 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {TouchableOpacity, View, StyleSheet, SafeAreaView} from 'react-native';
+import {
+  TouchableOpacity, 
+  View, 
+  StyleSheet, 
+  SafeAreaView, 
+  ActivityIndicator
+} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 //import {useNavigation} from '@react-navigation/native';
 
-import {HeaderBackGray} from '@/assets/images/icons';
+import {CloseLight, HeaderBackGray, NavigationArrowAlt, PushPin} from '@/assets/images/icons';
 import Config from '@/services/Config';
 import GooglePlacesInput from '@/components/LocationSearchInput';
 import {PaddingView, AppText, MapComponent, AppButton} from '@/components';
 import {Colors, normalize} from '@/globals';
 //import {UserContext} from '@/context/UserContext';
+import Slider from '@react-native-community/slider';
 
 const styles = StyleSheet.create({
   modalHeader: {
@@ -16,6 +23,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    // height: normalize(100)
     //marginBottom: 32,
   },
   buttonWrapper: {
@@ -29,15 +37,36 @@ const styles = StyleSheet.create({
   },
   textInputWrapper: {
     width: '100%',
-    flex: 0,
+    // flex: 1,
     position: 'absolute',
-    padding: 24,
-    alignItems: 'stretch',
-    zIndex: 100,
-    top: 70,
-    marginTop: 25,
+    // left: 0,
+    // right: 0,
+    // padding: 24,
+    paddingHorizontal: 8,
+    marginTop: -8,
+    // alignItems: 'stretch',
+    // zIndex: 100,
+    // backgroundColor: 'green',
+    top: normalize(45),
+    // marginTop: 25,
     // elevation: 100,
   },
+  navigationArrow: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingLeft: 16, 
+    paddingTop: 12,
+    top: normalize(45)
+  },
+  mapInstruction: {
+    backgroundColor: Colors.primaryMidnightBlue, 
+    opacity: .8, 
+    margin: 16, 
+    padding: 12, 
+    flexDirection: 'row', 
+    top: normalize(195),
+    zIndex: 100,
+  }
 });
 
 // create a component
@@ -62,6 +91,13 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   });
   //const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [addressRunCount, setAddressRunCount] = useState(0);
+  const [isLocationReady, setIsLocationReady] = useState(false);
+
+  const [instructionVisible, setInstructionVisible] = useState(true)
+  const [rangeValue, setRangeValue] = useState(0)
+
+  const [slideStartingValue, setSlideStartingValue] = useState(0)
+  const [slideStartingCount, setSlideStartingCount] = useState(0)
 
   //MAP DRAG
   const onRegionChange = (region) => {
@@ -136,6 +172,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
           },
           //setChangeMapAddress(addressComponent);
         });
+        setIsLocationReady(true);
       })
       .catch((error) => console.warn(error));
 
@@ -161,32 +198,100 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     back();
   };
 
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <PaddingView paddingSize={3}>
-        <View style={styles.modalHeader}>
-          <TouchableOpacity
-            onPress={back}
-            activeOpacity={0.7}
-            style={{position: 'absolute', left: 0}}>
-            <HeaderBackGray width={normalize(16)} height={normalize(16)} />
-          </TouchableOpacity>
-          <AppText textStyle="body3">Address</AppText>
-        </View>
-      </PaddingView>
-      {/* <View> */}
-      <View style={styles.textInputWrapper}>
-        <GooglePlacesInput
-          onResultsClick={(data) => {
-            //alert(data);
-            //console.log('nag search');
+  const homePlace = {
+    description: 'Home',
+    geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
+  };
+  const workPlace = {
+    description: 'Work',
+    geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
+  };
 
-            onSearchLocationHandler(data);
-            //alert(data);
-          }}
-          onClearInput={() => {}}
-          currentValue={changeMapAddress}
-        />
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ height: normalize(190) }}>
+        <PaddingView paddingSize={2}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              onPress={back}
+              activeOpacity={0.7}
+              style={{position: 'absolute', left: 0}}>
+              <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+            </TouchableOpacity>
+            <AppText textStyle="body3">Search Location</AppText>
+          </View>
+        </PaddingView>
+        <View style={styles.textInputWrapper}>
+          <GooglePlacesInput
+            onResultsClick={(data) => {
+              //alert(data);
+              //console.log('nag search');
+
+              onSearchLocationHandler(data);
+              //alert(data);
+            }}
+            onClearInput={() => {}}
+            currentValue={changeMapAddress}
+            currentLocation
+            predefinedPlacesAlwaysVisible
+            predefinedPlaces={['home', 'work']}
+          />
+        </View>
+        {/* {isLocationReady ? (
+          <TouchableOpacity 
+            onPress={() => null} 
+            style={styles.navigationArrow}
+          >
+            <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
+            <AppText
+              textStyle="caption"
+              color={Colors.contentOcean}
+              customStyle={{ marginLeft: 10 }}
+            >
+              Your current location
+            </AppText>
+        </TouchableOpacity>
+        ) : (
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={Colors.contentEbony}
+          />
+        )} */}
+        <PaddingView paddingSize={2}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
+            <AppText textStyle="promo">Browse Offers Within</AppText>
+            <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <AppText textStyle="caption" color="#999">0</AppText>
+            <Slider
+              style={{width: '90%'}}
+              minimumValue={0}
+              maximumValue={200}
+              step={5}
+              value={rangeValue}
+              onValueChange={rangeValue => setRangeValue(rangeValue)}
+              minimumTrackTintColor={Colors.primaryYellow}
+              maximumTrackTintColor={Colors.neutralGray}
+              thumbTintColor={Colors.primaryYellow}
+            />
+            <AppText textStyle="caption" color="#999">200</AppText>
+          </View>
+        </PaddingView>
+      </View>
+      <View style={[styles.mapInstruction, { display: instructionVisible ? 'flex' : 'none', position: instructionVisible ? 'absolute' : 'relative' }]}>
+        <PushPin width={normalize(22)} height={normalize(22)}/>
+        <AppText
+          textStyle="body2"
+          color={Colors.neutralsWhite}
+          customStyle={{ flex: 1, marginHorizontal: 14 }}
+        >
+          Drag the map to your preferred location to show the relevant postings.
+        </AppText>
+        <TouchableOpacity onPress={() => setInstructionVisible(false)}>
+          <CloseLight/>
+        </TouchableOpacity>
       </View>
       <MapComponent
         // latitude={latitude}
@@ -211,7 +316,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
           }}
         />
       </View>
-      {/* </View> */}
     </SafeAreaView>
   );
 };

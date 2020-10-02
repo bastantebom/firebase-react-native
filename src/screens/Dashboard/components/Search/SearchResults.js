@@ -57,9 +57,9 @@ const SearchResults = ({ onValueChange }) => {
     <View style={styles.parent}>
       <Animated.View  
         style={{ 
-          borderBottomWidth: 1, 
+          borderBottomWidth: StyleSheet.hairlineWidth, 
           borderColor: Colors.neutralGray, 
-          elevation: 3,
+          elevation: 1,
           display: searchType !== 'posts' ? 'none' : 'flex',
         }}
       />
@@ -128,12 +128,5 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.neutralGray,
     paddingTop: 12,
     paddingBottom: 15
-  },
-  modalHeader: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: 32,
   },
 })

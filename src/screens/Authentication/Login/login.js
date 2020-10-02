@@ -72,8 +72,11 @@ function Login() {
 
           return auth()
             .signInWithCustomToken(response.custom_token)
-            .then((res) => {
-              //console.log(res);
+            .then(() => {
+              auth().currentUser.getIdToken(true).then(function(idToken) {
+                console.log(idToken)
+                console.log('idToken')
+              })
               setIsLoading(false);
               navigation.push('TabStack');
             })

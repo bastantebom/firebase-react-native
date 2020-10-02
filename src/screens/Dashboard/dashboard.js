@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -53,7 +53,7 @@ function Dashboard() {
 
   // const {openNotification} = useContext(Context);
 
-  const {posts} = useContext(Context);
+  const { posts } = useContext(Context);
 
   const toggleModal = () => {
     setModalState(!modalState);
@@ -214,6 +214,7 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
 };
 
 const LocationSearch = () => {
+  const scrollRef = useRef();
   const {setLocationFilter, locationFilter} = useContext(Context);
   const [showLocation, setShowLocation] = useState(false);
 
@@ -298,9 +299,13 @@ const LocationSearch = () => {
           </View>
         </View>
         <ScrollView
+          // ref={scrollRef}
           horizontal={true}
           style={{}}
           showsHorizontalScrollIndicator={false}
+          // onScrollBeginDrag={() => console.log('ajskajskjaksj')}
+          // onContentSizeChange={(contentWidth, contentHeight) => console.log(contentHeight, contentWidth)}
+          // onLayout={(contentHeight) => console.log(contentHeight, 'contentHeight')}
         >
           <View style={styles.locationOption}>
             <NavigationArrow width={normalize(16)} height={normalize(16)} />
