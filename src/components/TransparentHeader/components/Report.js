@@ -19,6 +19,7 @@ import AdminFunctionService from '@/services/Admin/AdminFunctions';
 import PostService from '@/services/Post/PostService';
 import {Context} from '@/context';
 import {UserContext} from '@/context/UserContext';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // create a component
 const Report = ({
@@ -79,7 +80,7 @@ const Report = ({
             setIS_UPDATING(false);
             triggerNotification(
               username +
-                'has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
+                ' has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
               'success',
             );
             setReportMessage('');
@@ -95,8 +96,9 @@ const Report = ({
           console.log(error);
         });
     } else {
+      console.log('report post');
       PostService.reportPost({
-        reported_pid: postId,
+        pid: postId,
         message: reportMessage,
         uid: uid,
       })
@@ -170,12 +172,20 @@ const Report = ({
           }}>
           <Notification message={notificationMessage} type={notificationType} />
           <ScreenHeaderTitle
-            title={username ? 'Report @' + username : postTitle}
+            title={
+              username
+                ? 'Report @' + username
+                : postTitle.length > 20
+                ? `${postTitle.substring(0, 20)}...`
+                : postTitle
+            }
             close={toggleReportUser}
             icon="close"
           />
 
-          <ScrollView style={{paddingTop: normalize(16)}}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            style={{paddingTop: normalize(16)}}>
             <TextInput
               value={reportMessage}
               multiline={true}

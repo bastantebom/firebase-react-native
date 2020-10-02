@@ -99,6 +99,7 @@ const reportPost = (payload) => {
    * Accepts Post ID
    * UID
    */
+
   return BaseAPI({
     url: `/posts/${payload.pid}/report`,
     method: 'POST',
