@@ -5,14 +5,16 @@ import {
   TouchableOpacity,
   Platform,
   TextInput,
-  ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
+import Modal from 'react-native-modal';
 
 import {
   AppText,
   ScreenHeaderTitle,
   FloatingAppInput,
   AppCheckbox,
+  BottomSheetHeader,
 } from '@/components';
 import {AngleDown, PostInfo} from '@/assets/images/icons';
 import {Colors, normalize} from '@/globals';
@@ -21,12 +23,20 @@ import ItemImageUpload from '../../ItemImageUpload';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AppInput, PriceInput} from '@/components/AppInput';
 
+import AddCategoryModal from './AddCategoryModal';
+
 const AddItemModal = ({closeModal}) => {
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [itemImage, setItemImage] = useState();
   const [price, setPrice] = useState(0);
   const [free, setFree] = useState(false);
+  const [categoryName, setCategoryName] = useState('uncategorized');
+  const [choice, setChoice] = useState({
+    uncategorized: true,
+    newCategory: false,
+  });
+  const [categoryModal, setCategoryModal] = useState(false);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -60,6 +70,7 @@ const AddItemModal = ({closeModal}) => {
 
             <TouchableOpacity
               activeOpacity={0.7}
+              onPress={() => setCategoryModal(true)}
               style={{
                 borderWidth: 1,
                 borderColor: Colors.neutralGray,
@@ -72,7 +83,11 @@ const AddItemModal = ({closeModal}) => {
               }}>
               <View style={{flex: 1}}>
                 <AppText textStyle="body2">Select Category</AppText>
-                <AppText textStyle="body1">Uncategorized</AppText>
+                <AppText
+                  textStyle="body1"
+                  customStyle={{textTransform: 'capitalize'}}>
+                  {categoryName}
+                </AppText>
               </View>
               <AngleDown width={normalize(24)} height={normalize(24)} />
             </TouchableOpacity>
@@ -136,15 +151,20 @@ const AddItemModal = ({closeModal}) => {
               onChangeText={(text) => setTitle(text)}
             /> */}
 
-            <View style={{marginBottom: 16}}>
-              <FloatingAppInput
+            <View style={{marginBottom: 64}}>
+              {/* <FloatingAppInput
                 label="Price"
                 customStyle={{marginBottom: 8}}
                 value={title}
                 keyboardType="number-pad"
                 onChangeText={(text) => setTitle(text)}
+              /> */}
+              <PriceInput
+                value={price}
+                keyboardType="number-pad"
+                onChangeText={(text) => setPrice(text)}
+                placeholder="00"
               />
-              <PriceInput />
               <View
                 style={{
                   flexDirection: 'row',
@@ -191,6 +211,31 @@ const AddItemModal = ({closeModal}) => {
           </Section>
         </View>
       </KeyboardAwareScrollView>
+
+      <Modal
+        isVisible={categoryModal}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
+        style={{
+          margin: 0,
+          justifyContent: 'flex-end',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => setCategoryModal(!categoryModal)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <AddCategoryModal
+          categoryName={categoryName}
+          setCategoryName={setCategoryName}
+          choice={choice}
+          setChoice={setChoice}
+          close={() => setCategoryModal(false)}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
