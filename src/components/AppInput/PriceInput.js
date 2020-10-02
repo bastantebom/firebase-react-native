@@ -1,30 +1,29 @@
 import React, {createRef, useState} from 'react';
 import {TextInput, View, TouchableOpacity} from 'react-native';
 import {AppText} from '@/components';
-import {normalize} from '@/globals';
+import {Colors, normalize} from '@/globals';
 
 const PriceInput = ({styles, ...props}) => {
   const inputRef = createRef();
-  const [value, setValue] = useState();
 
   const handleClick = () => {
     console.log('focus');
-    // inputRef.focus();
     inputRef.current.focus();
   };
 
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={handleClick}
       style={[
         {
-          // height: normalize(54),
           flexDirection: 'row',
           justifyContent: 'space-between',
           borderWidth: 1,
           borderRadius: 4,
           paddingVertical: 4,
           paddingHorizontal: 16,
+          borderColor: Colors.neutralGray,
         },
         styles,
       ]}>
@@ -33,9 +32,9 @@ const PriceInput = ({styles, ...props}) => {
         <AppText textStyle="body2">PHP</AppText>
       </View>
       <TextInput
-        style={constantStyles.floatingInput}
-        value={value}
+        {...props}
         ref={inputRef}
+        style={constantStyles.floatingInput}
       />
     </TouchableOpacity>
   );

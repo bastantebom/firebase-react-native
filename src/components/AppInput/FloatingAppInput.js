@@ -224,7 +224,7 @@ const FloatingAppInput = (props) => {
   const onBlurInput = () => {
     setIsActive(false);
     animateBlur();
-    
+
     console.log('BLURRING');
   };
 
@@ -319,12 +319,8 @@ const FloatingAppInput = (props) => {
           onFocus={onFocusInput}
           onBlur={onBlurInput}
           blurOnSubmit
+          ref={props.inputRef}
         />
-        <View style={styles.passwordToggle}>
-          {verified ? (
-            <VerifiedGreen width={normalize(16)} height={normalize(16)} />
-          ) : null}
-        </View>
       </View>
       {validation.length > 0 && (
         <AppText

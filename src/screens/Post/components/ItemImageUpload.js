@@ -4,7 +4,7 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import {CoverPhoto} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import {AppText} from '@/components';
-import {Svg, Image} from 'react-native-svg';
+import {Svg, Rect, Image} from 'react-native-svg';
 
 const CoverPhotoUpload = ({size, imgSourceHandler, imgSrc}) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -24,10 +24,30 @@ const CoverPhotoUpload = ({size, imgSourceHandler, imgSrc}) => {
       })
       .catch((e) => {
         console.log('Cancel');
-        //setProfilePhotoClick(false);
         console.log(e);
       });
   };
+
+  const styles = StyleSheet.create({
+    coverPhoto: {
+      height: normalize(114),
+      borderWidth: imgSrc ? 0 : 1,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: Colors.neutralGray,
+      borderRadius: normalize(8),
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+
+    notEmpty: {
+      borderColor: Colors.contentEbony,
+      overflow: 'hidden',
+      borderWidth: 0,
+      borderRadius: normalize(8),
+    },
+  });
 
   return (
     <View>
@@ -44,6 +64,7 @@ const CoverPhotoUpload = ({size, imgSourceHandler, imgSrc}) => {
           </AppText>
         </View>
       </TouchableOpacity>
+
       <View style={{display: !isVisible || imgSrc ? 'flex' : 'none'}}>
         <View style={{...styles.coverPhoto, ...styles.notEmpty}}>
           <Svg height="100%" width="100%">
@@ -52,10 +73,6 @@ const CoverPhotoUpload = ({size, imgSourceHandler, imgSrc}) => {
               height={normalize(114)}
               opacity="1"
               href={imageSource || imgSrc}
-              style={{
-                backgroundColor: Colors.buttonDisable,
-                borderRadius: normalize(10),
-              }}
               onPress={() => handleSelect()}
             />
           </Svg>
@@ -64,22 +81,5 @@ const CoverPhotoUpload = ({size, imgSourceHandler, imgSrc}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  coverPhoto: {
-    height: normalize(114),
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: Colors.neutralGray,
-    borderRadius: normalize(4),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  notEmpty: {
-    borderColor: Colors.contentEbony,
-    overflow: 'hidden',
-  },
-});
 
 export default CoverPhotoUpload;
