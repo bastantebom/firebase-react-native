@@ -75,12 +75,6 @@ function Login() {
             .then((res) => {
               //console.log(res);
               setIsLoading(false);
-              auth()
-                .currentUser.getIdToken(true)
-                .then(function (idToken) {
-                  console.log('idToken');
-                  console.log(idToken);
-                });
               navigation.push('TabStack');
             })
             .catch((err) => {

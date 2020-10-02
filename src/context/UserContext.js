@@ -1,6 +1,7 @@
 import React, {createContext, useState, useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export const UserContext = createContext(null);
 
@@ -8,8 +9,9 @@ export const UserContextProvider = ({children}) => {
   const [user, setUser] = useState();
   const [userInfo, setUserInfo] = useState({});
   const [userDataAvailable, setUserDataAvailable] = useState(false);
+  const [tokenState, setTokenState] = useState({});
 
-  function onAuthStateChanged(user) {
+  async function onAuthStateChanged(user) {
     if (user) {
       const {uid, displayName, email} = user;
       setUser({
@@ -17,6 +19,21 @@ export const UserContextProvider = ({children}) => {
         displayName: displayName,
         email: email,
       });
+    }
+    //if (!token)
+    // Registration call: skip the first call with a flag.
+    // User signed in: user from parameter is != null.
+    // User signed out: user from parameter is == null.
+    // Current user changes: user from parameter is != null and last user id is != user id from parameter
+    // User token refresh: user from parameter is != null and last user id is == user id from parameter
+
+    if (user && AsyncStorage.getItem('uid') !== user.uid) {
+      const idToken = await auth().currentUser.getIdToken(true);
+      await AsyncStorage.setItem('token', idToken);
+      await AsyncStorage.setItem('uid', user.uid);
+    } else {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('uid');
     }
   }
 
@@ -53,6 +70,8 @@ export const UserContextProvider = ({children}) => {
   };
 
   const signOut = async () => {
+    //setTokenState({});
+
     await auth()
       .signOut()
       .then(() => {
