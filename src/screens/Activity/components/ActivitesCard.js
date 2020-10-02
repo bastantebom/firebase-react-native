@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {Divider} from 'react-native-paper';
-import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
-import {PaddingView, AppText, ProfileInfo, CacheableImage, MarginView} from '@/components';
-import {UserContext} from '@/context/UserContext';
+import { Divider } from 'react-native-paper';
+import { Colors, GlobalStyle, timePassed, normalize } from '@/globals';
+import { PaddingView, AppText, ProfileInfo, CacheableImage, MarginView } from '@/components';
+import { UserContext } from '@/context/UserContext';
 import {
   Verified,
   JarHeart,
@@ -20,9 +20,9 @@ import {
   TransportationBox,
   ProfileImageDefault
 } from '@/assets/images/icons';
-import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images';
 
-const ActivitiesCard = ({info}) => {
+const ActivitiesCard = ({ info }) => {
   // const [status, setStatus] = useState('Confirmed');
 
   const statusBackground = () => {
@@ -52,25 +52,25 @@ const ActivitiesCard = ({info}) => {
   // const {user} = useContext(UserContext);
 
   // const {
-    // display_name,
-    // date_posted,
-    // available,
-    // profile_photo,
-    // payment_method,
-    // store_location: {city, province, country},
-    // title,
-    // username,
-    // delivery_method: {pickup, delivery},
-    // description,
-    // uid,
-    // price,
-    // post_id,
-    // images,
-    // account_verified,
-    // email,
-    // phone_number,
-    // post_type,
-    // full_name,
+  // display_name,
+  // date_posted,
+  // available,
+  // profile_photo,
+  // payment_method,
+  // store_location: {city, province, country},
+  // title,
+  // username,
+  // delivery_method: {pickup, delivery},
+  // description,
+  // uid,
+  // price,
+  // post_id,
+  // images,
+  // account_verified,
+  // email,
+  // phone_number,
+  // post_type,
+  // full_name,
   // } = data;
 
   // const VerifiedBadge = () => {
@@ -110,7 +110,7 @@ const ActivitiesCard = ({info}) => {
   //     });
   // };
 
-  const ProfilePhoto = ({size}) => {
+  const ProfilePhoto = ({ size }) => {
     // return profile_photo ? (
     //   <CacheableImage
     //     style={GlobalStyle.image}
@@ -119,17 +119,17 @@ const ActivitiesCard = ({info}) => {
     //     }}
     //   />
     // ) : (
-      return (
-        <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-      )
+    return (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    )
     // );
   };
 
   return (
     <ScrollView>
-        <TouchableOpacity activeOpacity={0.7} 
-          // onPress={navToPost}
-        >
+      <TouchableOpacity activeOpacity={0.7}
+      // onPress={navToPost}
+      >
         <MarginView
           marginSize={2}
           style={{
@@ -146,7 +146,7 @@ const ActivitiesCard = ({info}) => {
             shadowRadius: 8,
             elevation: 4,
           }}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             {/* <View style={styles.postImageContainer}>
               {images.length > 0 ? (
                 <CacheableImage
@@ -163,11 +163,11 @@ const ActivitiesCard = ({info}) => {
               )}
             </View> */}
             <View style={styles.postImageContainer}>
-              <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
+              <Image style={GlobalStyle.image} source={require('@/assets/images/burger.jpg')} />
             </View>
-            
 
-            <View style={{paddingLeft: 12, flex: 1}}>
+
+            <View style={{ paddingLeft: 12, flex: 1 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -187,7 +187,7 @@ const ActivitiesCard = ({info}) => {
                       paddingLeft: 8,
                       paddingRight: 4,
                     }}>
-                      {info.name}
+                    {info.name}
                     {/* {display_name ? display_name : full_name} */}
                   </AppText>
                   {/* <VerifiedBadge /> */}
@@ -199,7 +199,7 @@ const ActivitiesCard = ({info}) => {
                   </AppText>
                 </View>
               </View>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
                 <View
                   style={{
                     backgroundColor: statusBackground(),
@@ -218,7 +218,7 @@ const ActivitiesCard = ({info}) => {
                 {info.date && (
                   <AppText
                     textStyle="activity"
-                    customStyle={{marginHorizontal: 2}}
+                    customStyle={{ marginHorizontal: 2 }}
                   >
                     {info.date}
                   </AppText>
@@ -231,7 +231,7 @@ const ActivitiesCard = ({info}) => {
                 {info.availed && (
                   <AppText
                     textStyle="activity"
-                    customStyle={{marginHorizontal: 2}}
+                    customStyle={{ marginHorizontal: 2 }}
                   >
                     {info.availed} availed
                   </AppText>
@@ -239,7 +239,7 @@ const ActivitiesCard = ({info}) => {
                 {info.pending && (
                   <AppText
                     textStyle="activity"
-                    customStyle={{marginHorizontal: 2}}
+                    customStyle={{ marginHorizontal: 2 }}
                   >
                     {info.pending} pending request
                   </AppText>
@@ -247,13 +247,13 @@ const ActivitiesCard = ({info}) => {
                 {info.offers && (
                   <AppText
                     textStyle="activity"
-                    customStyle={{marginHorizontal: 2}}
+                    customStyle={{ marginHorizontal: 2 }}
                   >
                     {info.offers} offers
                   </AppText>
                 )}
               </View>
-              <AppText customStyle={{marginTop: 4}} textStyle="caption2">
+              <AppText customStyle={{ marginTop: 4 }} textStyle="caption2">
                 {info.title}
               </AppText>
               {info.reply && (

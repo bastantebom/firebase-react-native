@@ -151,6 +151,7 @@ import YellowBadge from './yellow-badge.svg';
 import RedBadge from './red-badge.svg';
 import Bee from './bee.svg';
 import ArrowLeft from './arrow-left.svg';
+import Search from './search.svg';
 
 export {
   ContactTelephone,
@@ -259,5 +260,6 @@ export {
   YellowBadge,
   RedBadge,
   Bee,
-  ArrowLeft
+  ArrowLeft,
+  Search
 };
