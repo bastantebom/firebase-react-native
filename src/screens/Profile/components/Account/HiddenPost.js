@@ -100,7 +100,7 @@ const HiddenPost = ({toggleHiddenPost}) => {
                     paddingVertical: normalize(16),
                   }}>
                   <View style={styles.userInfoImageContainer}>
-                    {post.image > 0 ? (
+                    {post.image ? (
                       <CacheableImage
                         style={GlobalStyle.image}
                         source={{uri: post.image}}
