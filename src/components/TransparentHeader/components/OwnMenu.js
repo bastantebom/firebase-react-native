@@ -31,19 +31,23 @@ import {
   AboutRed,
   BlockedUsers,
   ChangePasswordRed,
-  LikedPost,
-  ArchivePost,
-  InviteFriends,
+  LikedPostMenu,
+  ArchivePostMenu,
+  InviteFriendsMenu,
   Faq,
   ContactUs,
   Notifications,
 } from '@/assets/images/icons';
 
-import EditProfile from '@/screens/Profile/components/EditProfile/EditProfile';
-import About from '@/screens/Profile/components/About/About';
-import ChangePassword from '@/screens/Profile/components/ChangePassword/ChangePassword';
-import BlockList from '@/screens/Profile/components/Account/BlockList';
-import HiddenPost from '@/screens/Profile/components/Account/HiddenPost';
+import {
+  EditProfile,
+  About,
+  ChangePassword,
+  BlockList,
+  HiddenPost,
+  LikedPost,
+  ArchivedPost,
+} from '@/screens/Profile/components';
 
 const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
   const navigation = useNavigation();
@@ -52,6 +56,8 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
   const [changePassword, setChangePassword] = useState(false);
   const [blockUser, setBlockUser] = useState(false);
   const [hiddenPost, setHiddenPost] = useState(false);
+  const [likePost, setLikePost] = useState(false);
+  const [archivedPost, setArchivedPost] = useState(false);
 
   const toggleEditProfile = () => {
     setEditProfile(!editProfile);
@@ -71,6 +77,14 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
 
   const toggleHiddenPost = () => {
     setHiddenPost(!hiddenPost);
+  };
+
+  const toggleLikePost = () => {
+    setLikePost(!likePost);
+  };
+
+  const toggleArchivedPost = () => {
+    setArchivedPost(!archivedPost);
   };
 
   return (
@@ -109,9 +123,9 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
               <TouchableOpacity
                 style={{marginTop: normalize(16)}}
                 activeOpacity={0.7}
-                onPress={() => {}}>
+                onPress={toggleLikePost}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
-                  <LikedPost width={normalize(24)} height={normalize(24)} />
+                  <LikedPostMenu width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Liked Post
                   </AppText>
@@ -127,9 +141,14 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={toggleArchivedPost}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
-                  <ArchivePost width={normalize(24)} height={normalize(24)} />
+                  <ArchivePostMenu
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Archived Post
                   </AppText>
@@ -147,7 +166,10 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
 
               <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
-                  <InviteFriends width={normalize(24)} height={normalize(24)} />
+                  <InviteFriendsMenu
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
                     Invite Friends
                   </AppText>
@@ -255,6 +277,7 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
           </PaddingView>
         </View>
       </ScrollView>
+
       <Modal
         isVisible={editProfile}
         animationIn="slideInRight"
@@ -288,6 +311,7 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
         {/* <FilterSlider modalToggler={toggleModal} /> */}
         <BlockList toggleBlockedUser={toggleBlockedUser} />
       </Modal>
+
       <Modal
         isVisible={hiddenPost}
         animationIn="slideInRight"
@@ -301,6 +325,36 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
         <HiddenPost toggleHiddenPost={toggleHiddenPost} />
+      </Modal>
+
+      <Modal
+        isVisible={likePost}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <LikedPost toggleLikePost={toggleLikePost} />
+      </Modal>
+
+      <Modal
+        isVisible={archivedPost}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <ArchivedPost toggleArchivedPost={toggleArchivedPost} />
       </Modal>
 
       <Modal

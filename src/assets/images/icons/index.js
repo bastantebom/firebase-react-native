@@ -151,9 +151,9 @@ import HidePost from './hide-post.svg';
 import AboutRed from './info-menu.svg';
 import BlockedUsers from './blocked-user.svg';
 import ChangePasswordRed from './change-password-red.svg';
-import LikedPost from './liked-post.svg';
-import ArchivePost from './archive-post.svg';
-import InviteFriends from './invite-friends.svg';
+import LikedPostMenu from './liked-post.svg';
+import ArchivePostMenu from './archive-post.svg';
+import InviteFriendsMenu from './invite-friends.svg';
 import Faq from './faq.svg';
 import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
@@ -266,9 +266,9 @@ export {
   AboutRed,
   BlockedUsers,
   ChangePasswordRed,
-  LikedPost,
-  ArchivePost,
-  InviteFriends,
+  LikedPostMenu,
+  ArchivePostMenu,
+  InviteFriendsMenu,
   Faq,
   ContactUs,
   Notifications,
