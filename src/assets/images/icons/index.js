@@ -146,10 +146,17 @@ import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
 import LoginApple from './login_Apple03.svg';
 
+//OWN MENU ICONS
 import HidePost from './hide-post.svg';
 import AboutRed from './info-menu.svg';
 import BlockedUsers from './blocked-user.svg';
 import ChangePasswordRed from './change-password-red.svg';
+import LikedPost from './liked-post.svg';
+import ArchivePost from './archive-post.svg';
+import InviteFriends from './invite-friends.svg';
+import Faq from './faq.svg';
+import ContactUs from './contact-us.svg';
+import Notifications from './notifications.svg';
 
 export {
   ContactTelephone,
@@ -259,4 +266,10 @@ export {
   AboutRed,
   BlockedUsers,
   ChangePasswordRed,
+  LikedPost,
+  ArchivePost,
+  InviteFriends,
+  Faq,
+  ContactUs,
+  Notifications,
 };
