@@ -6,7 +6,7 @@ import Keychain from 'react-native-keychain';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const client = axios.create({
-  baseURL: APIURL.prod.api,
+  baseURL: APIURL.dev.api,
   //headers: {Authorization: `bearer ${token}`},
 });
 

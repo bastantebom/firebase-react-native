@@ -37,6 +37,22 @@ export const ContextProvider = ({children}) => {
   const [libImages, setLibImages] = useState([]);
 
   const [searchType, setSearchType] = useState('posts');
+  const [results, setResults] = useState([])
+  const [page, setPage] = useState(0)
+
+  const handleSearch = async (value) => {
+    const result = await PostService.searchPosts({limit: 10, page: 0, search: value})
+    setResults(result.data)
+    setPage(0)
+    // console.log(results.length)
+  }
+
+  const handleOnEndReach = async (value) => {
+    const result = await PostService.searchPosts({limit: 10, page: page + 1, search: value})
+    setResults(prev => [...prev, ...result.data])
+    setPage(page + 1)
+    // console.log(page)
+  }
 
   useEffect(() => {
     setImageCount(coverPhoto.length);
@@ -149,7 +165,13 @@ export const ContextProvider = ({children}) => {
         setSingleCameraImage,
         singleCameraImage,
         searchType,
-        setSearchType
+        setSearchType,
+        results, 
+        setResults,
+        page,
+        setPage,
+        handleSearch,
+        handleOnEndReach
       }}>
       {children}
     </Context.Provider>

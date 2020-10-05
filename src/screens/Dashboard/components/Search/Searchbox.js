@@ -1,17 +1,15 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { 
   StyleSheet, 
   View, 
   Animated, 
   Dimensions,
-  TouchableOpacity, Keyboard
+  TouchableOpacity
 } from 'react-native';
-import PropTypes from 'prop-types';
 import { Searchbar } from 'react-native-paper';
-import { connectSearchBox } from 'react-instantsearch-native';
 import { Colors, normalize } from '@/globals';
 import AppColor from '@/globals/Colors';
-import { Close, HeaderBackGray } from '@/assets/images/icons';
+import { HeaderBackGray } from '@/assets/images/icons';
 import { AppText } from '@/components';
 import { Context } from '@/context';
 
@@ -24,8 +22,6 @@ const FULL_WIDTH = width - PADDING * 2;
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const SearchBox = ({ 
-  currentRefinement, 
-  refine, 
   onSearchFocus, 
   onBackPress, 
   valueHandler,
@@ -33,7 +29,7 @@ const SearchBox = ({
   props
  }) => {    
 
-  const { searchType, setSearchType } = useContext(Context);
+  const { searchType, setSearchType, results, setResults, page, setPage, handleSearch } = useContext(Context);
 
   const searchbarRef = useRef(null)
   const [value, setValue] = useState()
@@ -42,6 +38,7 @@ const SearchBox = ({
   const [barPosition] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
+
 
   const onFocus = () => {
     // searchbarRef.current.isFocused(console.log('focused...'))
@@ -115,8 +112,8 @@ const SearchBox = ({
       >
         <Searchbar
           placeholder="Start your search..."
-          onChangeText={value => {refine(value), setValue(value), valueHandler(value)}}
-          value={currentRefinement}
+          onChangeText={value => {setValue(value), valueHandler(value), handleSearch(value)}}
+          value={value}
           onIconPress={onFocus}
           fontFamily={'RoundedMplus1c-Regular'}
           theme={{
@@ -161,12 +158,7 @@ const SearchBox = ({
   )
 };
 
-SearchBox.propTypes = {
-  currentRefinement: PropTypes.string.isRequired,
-  refine: PropTypes.func.isRequired,
-};
-
-export default connectSearchBox(SearchBox);
+export default SearchBox;
 
 const styles = StyleSheet.create({
   container: {

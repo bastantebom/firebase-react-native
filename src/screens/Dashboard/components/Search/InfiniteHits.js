@@ -1,32 +1,37 @@
-import React, { useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import Highlight from './Highlight'
-import PropTypes from 'prop-types';
-import { connectInfiniteHits } from 'react-instantsearch-native';
 import { Colors, normalize } from '@/globals';
-import { AppButton, AppText } from '@/components';
+import { AppButton, AppText, SinglePostOthersView } from '@/components';
 import Tags from './Tags';
 import { Context } from '@/context';
+import Modal from 'react-native-modal'; 
 
-const InfiniteHits = ({ hits, hasMore, refine, value }) => {
+const InfiniteHits = ({ value }) => {
 
-  const { searchType } = useContext(Context)
-  // useEffect(() => {
-  //   console.log(hits)
-  //   console.log('hits')
-  // }, [hits])
+  const { searchType, results, handleOnEndReach } = useContext(Context)
+
+  const [showPost, setShowPost] = useState(false)
+  const [data, setData] = useState([]);
+
+  const goToPost = (item) => {
+    setShowPost(!showPost)
+    console.log('****************************')
+    console.log(item)
+    setData(item)
+  }
 
   return (
     <View style={{ top: searchType !== 'posts' ? normalize(25) : 0 }}>
-      { hits.length !== 0 ? (
+      { results.length !== 0 ? (
         <FlatList
-          data={hits}
+          data={results}
           keyExtractor={item => item.objectID}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
-          onEndReached={() => hasMore && refine()}
+          onEndReached={() => handleOnEndReach(value)}
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <TouchableOpacity onPress={() => null}>
+              <TouchableOpacity onPress={() => goToPost(item)}>
                 <Highlight attribute="name" hit={item} />
               </TouchableOpacity>
             </View>
@@ -53,17 +58,31 @@ const InfiniteHits = ({ hits, hasMore, refine, value }) => {
           </View>
         )
       }
+      <Modal
+        isVisible={showPost}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutLeft"
+        animationOutTiming={500}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+          justifyContent: 'flex-start',
+        }}>
+
+        <SinglePostOthersView
+          searchData={data}
+          backFunction={() => setShowPost(false)}
+        />
+        {/* <AppText>ahsjhajshj</AppText> */}
+        {/* <AppText>{JSON.stringify(data)}</AppText> */}
+      </Modal>
     </View> 
   )
 };
 
-InfiniteHits.propTypes = {
-  hits: PropTypes.arrayOf(PropTypes.object).isRequired,
-  hasMore: PropTypes.bool.isRequired,
-  refine: PropTypes.func.isRequired,
-};
-
-export default connectInfiniteHits(InfiniteHits);
+export default InfiniteHits;
 
 const styles = StyleSheet.create({
   separator: {

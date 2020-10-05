@@ -12,6 +12,20 @@ const getPosts = (payload) => {
   });
 };
 
+const searchPosts = (payload) => {
+  //?limit=5&page=0
+  // console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
+  return BaseAPI({
+    url: '/posts',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params: payload
+  });
+};
+
+
 const getUserPosts = (payload) => {
   // users/:uid/posts
   // console.log(
@@ -128,6 +142,7 @@ const unHidePost = (payload) => {
 const PostService = {
   createPost,
   getPosts,
+  searchPosts,
   editPost,
   deletePost,
   getPostsLocation,

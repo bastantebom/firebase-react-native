@@ -124,7 +124,7 @@ function Dashboard() {
 
 const SearchBarWithFilter = ({ toggleFilter }) => {
 
-  const { searchType } = useContext(Context)
+  const { searchType, setPage } = useContext(Context)
 
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
@@ -156,39 +156,31 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     ]).start();
     setSearchBarFocused(false);
     Keyboard.dismiss();
+    setPage(0)
   }
-  
-  const searchClient = algoliasearch(
-    // "B3KXWHT843",
-    // "93f6a8ef9601c3c4da65687477a81833"
-    "B1G2GM9NG0",
-    "aadef574be1f9252bb48d4ea09b5cfe5"
-  );
 
   return (
     <View style={{ marginHorizontal: 16, marginVertical: 16, height: normalize(100) }}>
       <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
         <View style={{ flex: 1, height: searchType !== 'posts' ? normalize(100) : 'auto' }}>
-          <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
-            <SearchBox 
-              onSearchFocus={onFocus} 
-              onBackPress={onBackPress}
-              valueHandler={onValueChange}
+          <SearchBox
+            onSearchFocus={onFocus} 
+            onBackPress={onBackPress}
+            valueHandler={onValueChange}
+          />
+          <Animated.View 
+            style={{ 
+              opacity: opacity, 
+              display: searchBarFocused ? 'flex' : 'none',
+              zIndex: searchBarFocused ? 1 : 0,
+              flex: 1,
+              position: 'absolute',
+            }}
+          >
+            <SearchResults 
+              onValueChange={searchValue}
             />
-            <Animated.View 
-              style={{ 
-                opacity: opacity, 
-                display: searchBarFocused ? 'flex' : 'none',
-                zIndex: searchBarFocused ? 1 : 0,
-                flex: 1,
-                position: 'absolute',
-              }}
-            >
-              <SearchResults 
-                onValueChange={searchValue}
-              />
-            </Animated.View>
-          </InstantSearch>
+          </Animated.View>
         </View>
         { searchBarFocused ? 
           <View style={{ marginTop: normalize(47.5)}}/> 
