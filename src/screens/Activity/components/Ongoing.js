@@ -4,9 +4,9 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   StyleSheet
 } from 'react-native';
-import { RadioButton } from 'react-native-paper';
 
 import { AppText } from '@/components';
 import { normalize, Colors } from '@/globals';
@@ -15,7 +15,7 @@ import { Search } from '@/assets/images/icons';
 import ActivitesCard from './ActivitesCard';
 
 const Ongoing = () => {
-  const [active, setActive] = useState(true)
+  const [activeButton, setActive] = useState('All')
   const ongoingCards = [
     {
       unread: true,
@@ -51,35 +51,36 @@ const Ongoing = () => {
     }
   ]
 
-  const activeButton = () => {
-    setActive(!active);
-  }
+  const filterBtns = [
+    {
+      value: 'All'
+    },
+    {
+      value: 'Services'
+    },
+    {
+      value: 'Sell'
+    },
+    {
+      value: 'Need'
+    }
+  ]
 
   return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.filterWrapper}>
           <View style={styles.filterBtns}>
-            <TouchableOpacity
-              style={[styles.btn, active && styles.btnActive]}
-              onPress={activeButton}>
-              <AppText textStyle="metadata">All</AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.btn, active && styles.btnActive]}
-              onPress={activeButton}>
-              <AppText textStyle="metadata">Services</AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.btn, active && styles.btnActive]}
-              onPress={activeButton}>
-              <AppText textStyle="metadata">Sell</AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.btn, active && styles.btnActive]}
-              onPress={activeButton}>
-              <AppText textStyle="metadata">Need</AppText>
-            </TouchableOpacity>
+            {filterBtns.map((btn, i) => {
+              return(
+                <TouchableOpacity
+                  key={i}
+                  style={[activeButton === btn.value ? styles.btnActive : styles.btn]}
+                  onPress={() => setActive(btn.value)}>
+                  <AppText textStyle="metadata">{btn.value}</AppText>
+                </TouchableOpacity>
+              )
+            })}
           </View>
           <View>
             <TouchableOpacity style={styles.searchBtn}>
@@ -118,11 +119,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginRight: 5,
     backgroundColor: Colors.neutralsZircon,
-    // backgroundColor: active == true ? Colors.primarySalomie : Colors.neutralsZircon,
     borderRadius: 20
   },
   btnActive: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    marginRight: 5,
     backgroundColor: Colors.primarySalomie,
+    borderRadius: 20
   },
   searchBtn: {
     padding: 16,
