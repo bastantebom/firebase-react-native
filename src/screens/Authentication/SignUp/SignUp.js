@@ -130,49 +130,6 @@ const SignUp = (props) => {
     checkErrorState();
   }, [errors, isTerms]);
 
-  const [errors, setErrors] = useState({
-    email: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-    name: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-    password: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-  });
-
-  const checkErrorState = () => {
-    let temp = true;
-
-    for (const [key, value] of Object.entries(errors)) {
-      if (!value.passed) {
-        temp = false;
-        break;
-      }
-    }
-
-    if (temp && isTerms) {
-      // ENABLE BUTTON
-      // console.log('All fields are valid');
-      setButtonDisabled(false);
-    } else {
-      // DISABLE BUTTON
-      // console.log('One or more field is invalid');
-      setButtonDisabled(true);
-    }
-  };
-
-  useEffect(() => {
-    checkErrorState();
-  }, [errors, isTerms]);
-
   const toggleSignUpMethod = () => {
     setEmail('');
     // setError([]);
