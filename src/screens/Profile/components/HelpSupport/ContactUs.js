@@ -16,15 +16,15 @@ import {
   ProfileInfo,
   AppButton,
 } from '@/components';
-import {CloseDark, InviteFriendsMenu} from '@/assets/images/icons';
-import {InviteFriend} from '@/assets/images';
+
+import {ContactUsImg} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import Modal from 'react-native-modal';
 import {UserContext} from '@/context/UserContext';
 import AdminFunctionService from '@/services/Admin/AdminFunctions';
 
 // create a component
-const InviteFriends = ({toggleInviteFriends}) => {
+const ContactUs = ({toggleContactUs}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -32,7 +32,7 @@ const InviteFriends = ({toggleInviteFriends}) => {
           <ScreenHeaderTitle
             iconSize={16}
             title="Invite Friends"
-            close={toggleInviteFriends}
+            close={toggleContactUs}
           />
         </View>
         <View
@@ -40,22 +40,11 @@ const InviteFriends = ({toggleInviteFriends}) => {
             padding: normalize(24),
           }}>
           <View style={styles.imageWrapper}>
-            <InviteFriend width={normalize(214)} height={normalize(214)} />
+            <ContactUsImg width={normalize(214)} height={normalize(214)} />
           </View>
-          <View style={styles.copyWrapper}>
-            <AppText textStyle="display6" customStyle={styles.centerCopy}>
-              Invite Friends
-            </AppText>
-            <AppText
-              textStyle="body3"
-              color={Colors.profileLink}
-              customStyle={styles.centerCopy}>
-              Share your link with people new to Servbees to say something that
-              will benefit their friends when they join.
-            </AppText>
-          </View>
+          <View style={styles.copyWrapper}></View>
           <AppButton
-            text="Share your link"
+            text="Submit"
             type="primary"
             size="l"
             height="xl"
@@ -86,4 +75,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default InviteFriends;
+export default ContactUs;
