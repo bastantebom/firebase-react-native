@@ -17,7 +17,7 @@ import {UserContext} from '@/context/UserContext';
 import LoadingScreen from './loading';
 import SinglePostOthersView from './SinglePostOthersView';
 
-const OwnPost = ({data, isLoading}) => {
+const ArchivePost = ({data, isLoading}) => {
   const {user} = useContext(UserContext);
   const [showPost, setShowPost] = useState(false);
 
@@ -43,6 +43,7 @@ const OwnPost = ({data, isLoading}) => {
     phone_number,
     post_type,
     full_name,
+    status,
   } = data;
 
   const VerifiedBadge = () => {
@@ -61,6 +62,8 @@ const OwnPost = ({data, isLoading}) => {
     if (status === 'ongoing') return Colors.secondaryDarkTangerine;
 
     if (status === 'completed') return Colors.secondaryShamrock;
+
+    if (status === 'archived') return Colors.neutralsMischka;
 
     return 'red';
   };
@@ -172,24 +175,24 @@ const OwnPost = ({data, isLoading}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                {/* <View
-                style={{
-                  backgroundColor: statusBackground(),
-                  borderRadius: 20,
-                  paddingHorizontal: 8,
-                }}>
+                <View
+                  style={{
+                    backgroundColor: statusBackground(),
+                    borderRadius: 20,
+                    paddingHorizontal: 8,
+                  }}>
+                  <AppText
+                    textStyle="metadata"
+                    color={'white'}
+                    customStyle={{textTransform: 'capitalize'}}>
+                    {status}
+                  </AppText>
+                </View>
                 <AppText
                   textStyle="metadata"
-                  color={'white'}
-                  customStyle={{textTransform: 'capitalize'}}>
-                  {status}
+                  customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
+                  2 Offers
                 </AppText>
-              </View> */}
-                {/* <AppText
-                textStyle="metadata"
-                customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
-                2 Offers
-              </AppText> */}
               </View>
               <AppText customStyle={{marginTop: 4}} textStyle="caption2">
                 {title}
@@ -235,4 +238,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OwnPost;
+export default ArchivePost;

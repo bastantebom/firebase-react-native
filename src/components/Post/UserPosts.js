@@ -24,7 +24,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   );
 
   const [refresh, setRefresh] = useState(false);
-  const [lastPID, setLastPID] = useState('');
+  const [lastPID, setLastPID] = useState(0);
   const [fetchMore, setFecthMore] = useState(false);
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
   const [
@@ -49,19 +49,21 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
   const refreshPosts = async () => {
     try {
       setUserPosts([]);
-      setLastPID('none');
+      setLastPID(0);
       setRefresh(true);
 
       const params = {
         uid: userID,
         limit: 5,
+        page: 0,
       };
 
       const res = await PostService.getUserPosts(params);
-      setLastPID(res.last_pid);
+      setLastPID(1);
       setIsLoading(false);
 
       if (res.data.length > 0) {
+        //console.log(res);
         setUserPosts(res.data);
       }
 
@@ -86,7 +88,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       let getPostsParams = {
         uid: userID,
         limit: 5,
-        last_pid: lastPID,
+        page: lastPID,
       };
       //console.log('GET MORE POST');
       //console.log(lastPID);
@@ -94,9 +96,10 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
       await PostService.getUserPosts(getPostsParams)
         .then((res) => {
-          console.log('API CALL');
+          //console.log('API CALL');
           if (res.success) {
-            setLastPID(res.last_pid);
+            //console.log(res);
+            setLastPID(lastPID + 1);
             setUserPosts(
               res.data ? [...userPosts, ...res.data] : [...userPosts],
             );

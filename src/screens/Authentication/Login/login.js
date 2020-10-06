@@ -64,13 +64,16 @@ function Login() {
       password: password,
     })
       .then((response) => {
-        console.log('Response');
-        console.log(response);
+        //console.log('Response');
+        //console.log(response);
         if (response.success && response.verified) {
-          console.log('SUCCESS---------------');
+          //console.log('SUCCESS---------------');
+          //console.log(response.custom_token);
+
           return auth()
             .signInWithCustomToken(response.custom_token)
-            .then(() => {
+            .then((res) => {
+              //console.log(res);
               setIsLoading(false);
               navigation.push('TabStack');
             })

@@ -17,14 +17,14 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
     setOtherUserPosts,
     otherUserPosts,
     needsRefresh,
-    setNeedsRefresh
+    setNeedsRefresh,
   } = useContext(Context);
   const renderItem = ({item}) => (
     <Post data={item} type={type} isLoading={isLoading} />
   );
 
   const [refresh, setRefresh] = useState(false);
-  const [lastPID, setLastPID] = useState(null);
+  const [lastPID, setLastPID] = useState(0);
   const [fetchMore, setFecthMore] = useState(false);
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
   const [
@@ -46,17 +46,18 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
   const refreshPosts = async () => {
     try {
-      setOtherUserPosts([])
+      setOtherUserPosts([]);
       setRefresh(true);
+      setLastPID(0);
 
       const params = {
         uid: userID,
         limit: 5,
-        last_pid: null
+        page: 0,
       };
 
       const res = await PostService.getUserPosts(params);
-      setLastPID(res.last_pid);
+      setLastPID(1);
       setIsLoading(false);
 
       if (res.data.length > 0) {
@@ -65,7 +66,7 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
 
       setRefresh(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -83,23 +84,23 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
       let getPostsParams = {
         uid: userID,
         limit: 5,
-        last_pid: lastPID,
+        page: lastPID,
       };
 
       await PostService.getUserPosts(getPostsParams)
-      .then((res) => {
-        if (res.success) {
-          setLastPID(res.last_pid);
-          setOtherUserPosts(prev => [...prev, ...res.data]);
+        .then((res) => {
+          if (res.success) {
+            setLastPID(lastPID + 1);
+            setOtherUserPosts((prev) => [...prev, ...res.data]);
+            setFecthMore(false);
+          } else {
+            setThereIsMoreFlag(false);
+            setFecthMore(false);
+          }
+        })
+        .catch((err) => {
           setFecthMore(false);
-        } else {
-          setThereIsMoreFlag(false);
-          setFecthMore(false);
-        }
-      })
-      .catch((err) => {
-        setFecthMore(false);
-      });
+        });
     }
     // if (!onEndReachedCalledDuringMomentum) {
     //   setOnEndReachedCalledDuringMomentum(true);

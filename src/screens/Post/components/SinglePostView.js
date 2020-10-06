@@ -143,6 +143,21 @@ const SinglePostView = (props) => {
     });
   };
 
+  const hidePost = async () => {
+    //body: { uid, pid }
+    return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
+      (res) => {
+        toggleEllipsisState();
+        //console.log('deletePost ' + userInfo.post_count);
+        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
+        console.log(userInfo.hidden_posts);
+        navigation.goBack();
+      },
+    );
+    //navigation.goBack();
+    //alert('hide Post View Post');
+  };
+
   let timeAgo = (time) => {
     if (time <= 60) {
       return 'Just now';
@@ -319,7 +334,7 @@ const SinglePostView = (props) => {
             <View style={styles.iconText}>
               <PostClock width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {timeAgo(date_posted)}
+                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
             </View>
             <View style={styles.iconText}>
@@ -438,6 +453,9 @@ const SinglePostView = (props) => {
         backFunction={() => navigation.goBack()}
         editPostFunction={toggleEditPost}
         deletePostFunction={deletePost}
+        hidePost={hidePost}
+        postId={post_id}
+        postTitle={title}
       />
 
       <Modal

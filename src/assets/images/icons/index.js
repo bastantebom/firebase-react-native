@@ -88,7 +88,7 @@ import MenuAddFriend from './MenuAddFriend.svg';
 import MenuArchive from './MenuArchive.svg';
 import MenuBell from './MenuBell.svg';
 import MenuChat from './MenuChat.svg';
-import MenuEdit from './MenuEdit.svg';
+import MenuEdit from './edit-profile.svg';
 import MenuInfo from './MenuInfo.svg';
 import MenuKey from './MenuKey.svg';
 import MenuLiked from './MenuLiked.svg';
@@ -152,6 +152,18 @@ import RedBadge from './red-badge.svg';
 import Bee from './bee.svg';
 import ArrowLeft from './arrow-left.svg';
 import Search from './search.svg';
+
+//OWN MENU ICONS
+import HidePost from './hide-post.svg';
+import AboutRed from './info-menu.svg';
+import BlockedUsers from './blocked-user.svg';
+import ChangePasswordRed from './change-password-red.svg';
+import LikedPostMenu from './liked-post.svg';
+import ArchivePostMenu from './archive-post.svg';
+import InviteFriendsMenu from './invite-friends.svg';
+import Faq from './faq.svg';
+import ContactUs from './contact-us.svg';
+import Notifications from './notifications.svg';
 
 export {
   ContactTelephone,
@@ -261,5 +273,15 @@ export {
   RedBadge,
   Bee,
   ArrowLeft,
-  Search
+  Search,
+  HidePost,
+  AboutRed,
+  BlockedUsers,
+  ChangePasswordRed,
+  LikedPostMenu,
+  ArchivePostMenu,
+  InviteFriendsMenu,
+  Faq,
+  ContactUs,
+  Notifications,
 };
