@@ -1,8 +1,10 @@
 import BaseAPI from '@/services/BaseAPI';
 
 const reportUser = async (payload) => {
+  //url: /users/:reported_uid/report
+  //reported_uid
   return BaseAPI({
-    url: `/user/report`,
+    url: `/users/${payload.reported_uid}/report`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -12,8 +14,9 @@ const reportUser = async (payload) => {
 };
 
 const blockUser = async (payload) => {
+  ///users/:reported_uid/block
   return BaseAPI({
-    url: `/user/block`,
+    url: `/users/${payload.reported_uid}/block`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -23,8 +26,9 @@ const blockUser = async (payload) => {
 };
 
 const unBlockUser = async (payload) => {
+  //url: /users/:reported_uid/unblock
   return BaseAPI({
-    url: `/user/unblock`,
+    url: `/users/${payload.reported_uid}/unblock`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
