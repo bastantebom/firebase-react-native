@@ -42,8 +42,6 @@ import {VerificationScreen} from '@/screens/Dashboard/Verification';
 // import Geocoder from 'react-native-geocoding';
 // import Config from '@/services/Config';
 
-import algoliasearch from 'algoliasearch/lite';
-import { InstantSearch } from 'react-instantsearch-native';
 import SearchBox from './components/Search/Searchbox';
 import SearchResults from './components/Search/SearchResults';
 

@@ -30,13 +30,17 @@ const SearchResults = ({ onValueChange }) => {
   const [opacity] = useState(new Animated.Value(1))
 
   const onSearchSelect = () => {
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true
-      }),
-    ]).start();
+    // setTimeout(() => {
+    // }, 5000);
+    
+    setSearchType('user')
+    // Animated.parallel([
+    //   Animated.timing(opacity, {
+    //     toValue: 0,
+    //     duration: 100,
+    //     useNativeDriver: true
+    //   }),
+    // ]).start();
   }
 
   // console.log(onValueChange)
@@ -74,7 +78,7 @@ const SearchResults = ({ onValueChange }) => {
           }}
         >
           <PaddingView paddingSize={2}>
-            <TouchableOpacity onPress={() => {setSearchType('user'), onSearchSelect()}} activeOpacity={.7}>
+            <TouchableOpacity onPress={() => onSearchSelect()} activeOpacity={.7}>
               <View style={styles.searchContainer} >  
                 <View style={{ flexDirection: 'row' }}>
                   <UserCircle width={normalize(25)} height={normalize(25)} />
@@ -85,7 +89,7 @@ const SearchResults = ({ onValueChange }) => {
                   <ChevronRight width={normalize(25)} height={normalize(25)} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => null} activeOpacity={.7}>
+            {/* <TouchableOpacity onPress={() => null} activeOpacity={.7}>
               <View style={styles.searchContainer}>  
                 <View style={{ flexDirection: 'row' }}>
                   <CircleTickGray width={normalize(25)} height={normalize(25)} />
@@ -95,7 +99,7 @@ const SearchResults = ({ onValueChange }) => {
                 </View>
                   <ChevronRight width={normalize(25)} height={normalize(25)} />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Tags/>
           </PaddingView> 
         </Animated.View>

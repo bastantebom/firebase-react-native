@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -36,7 +36,11 @@ const SearchBox = ({
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
   const [cancelPosition] = useState(new Animated.Value(0))
   const [barPosition] = useState(new Animated.Value(0))
+  const [barPositionFull] = useState(new Animated.Value(75))
+  const [barOpacity] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
+  const [titleOpacity] = useState(new Animated.Value(0))
+  const [titlePosition] = useState(new Animated.Value(45))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
 
 
@@ -55,7 +59,6 @@ const SearchBox = ({
       }),
       Animated.timing(barPosition, {
         toValue: 45,
-        // toValue: 0,
         duration: 400,
         useNativeDriver: false
       }),
@@ -101,11 +104,69 @@ const SearchBox = ({
     // clearTextInput();
   }
 
-  const clearTextInput = () => {
-    setValue();
-  }
+  // const clearTextInput = () => {
+  //   setValue();
+  // }
 
-  // console.log(value)
+  // console.log(titlePosition)
+  console.log('barPositionFull', barPositionFull)
+
+  const backToPostSearch = () => {
+    setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(titleOpacity, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: true
+        }),
+        Animated.timing(titlePosition, {
+          toValue: 45,
+          duration: 100,
+          useNativeDriver: false
+        }),
+        Animated.timing(barOpacity, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: true
+        }),
+        // Animated.timing(barPositionFull, {
+        //   toValue: 75,
+        //   duration: 100,
+        //   useNativeDriver: false
+        // })
+      ]).start();
+    }, 200)
+    setSearchType('posts')
+  }
+  
+  useEffect(() => {
+    if (searchType !== 'posts') {
+      setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(titleOpacity, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true
+          }),
+          Animated.timing(titlePosition, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: false
+          }),
+          Animated.timing(barOpacity, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true
+          }),
+          // Animated.timing(barPositionFull, {
+          //   toValue: 0,
+          //   duration: 100,
+          //   useNativeDriver: false
+          // })
+        ]).start();
+      }, 500);
+    }
+  }, [searchType])
 
   return (
     <View style={styles.container}>
@@ -115,8 +176,10 @@ const SearchBox = ({
             width: searchType === 'posts' ? inputLength : FULL_WIDTH,
             position: 'absolute',
             zIndex: 1,
+            // left: searchType === 'posts' ? barPosition : barPositionFull,
             left: searchType === 'posts' ? barPosition : 0,
             top: searchType === 'posts' ? 0 : normalize(55),
+            opacity: searchType !== 'posts' ? barOpacity : 1
           }, customStyle
         ]}
       >
@@ -159,13 +222,16 @@ const SearchBox = ({
         <View style={styles.modalHeader}>
           <AnimatedTouchable
             style={[styles.cancelSearch, { left: cancelPosition }]}
-            onPress={() => {setSearchType('posts')}}
-          >
+            onPress={() => backToPostSearch()}>
             <Animated.View style={{ opacity: opacity }}>
               <HeaderBackGray width={normalize(25)} height={normalize(25)} />
             </Animated.View>
           </AnimatedTouchable>
-          <AppText textStyle="body3">Search User</AppText>
+          <AnimatedTouchable style={{ left: titlePosition }}>
+            <Animated.View style={{ opacity: titleOpacity }}>
+              <AppText textStyle="body3">Search User</AppText>
+            </Animated.View>
+          </AnimatedTouchable>
         </View>
       } 
     </View>

@@ -23,7 +23,7 @@ import ProfileInfoModal from './ProfileInfoModal';
 import AppButton from '../AppButton/AppButton';
 import {PaddingView} from '../AppViewContainer';
 
-const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
+const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
   const {user} = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
@@ -69,10 +69,12 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
     console.log(uid);
 
     if (user && user.uid === uid) {
+      isModal && cancelModalToggle();
       navigation.navigate('Profile', {
         screen: 'Profile',
       });
     } else {
+      isModal && cancelModalToggle();
       console.log('Going to NBTS');
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
