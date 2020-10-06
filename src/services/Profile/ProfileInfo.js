@@ -1,9 +1,11 @@
 import BaseAPI from '@/services/BaseAPI';
-import {UserContext} from '@/context/UserContext';
+//import {UserContext} from '@/context/UserContext';
 
 const getUser = async (payload) => {
+  //url: /uses/:uid
+  //console.log(`users/${payload}`);
   return await BaseAPI({
-    url: 'user/' + payload,
+    url: `users/${payload}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -13,7 +15,7 @@ const getUser = async (payload) => {
 
 const updateUser = (payload, UID) => {
   return BaseAPI({
-    url: `user/update/${UID}`,
+    url: `users/${UID}`,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -23,8 +25,9 @@ const updateUser = (payload, UID) => {
 };
 
 const updatePassword = (payload, UID) => {
+  //url: /users/:uid/change-password
   return BaseAPI({
-    url: `user/change-password/${UID}`,
+    url: `users/${UID}/change-password`,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -34,8 +37,9 @@ const updatePassword = (payload, UID) => {
 };
 
 const validateUsername = (payload) => {
+  //url: /users/verify-username
   return BaseAPI({
-    url: `/username/validate`,
+    url: `users/verify-username`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +50,7 @@ const validateUsername = (payload) => {
 
 const validateCurrentPassword = (payload) => {
   return BaseAPI({
-    url: `/user/password/verify`,
+    url: `/users/verify-password`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
