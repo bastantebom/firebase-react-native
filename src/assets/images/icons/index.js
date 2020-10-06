@@ -151,6 +151,7 @@ import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
 import LoginApple from './login_Apple03.svg';
 
+//OWN MENU ICONS
 import HidePost from './hide-post.svg';
 import AboutRed from './info-menu.svg';
 import BlockedUsers from './blocked-user.svg';
@@ -158,6 +159,12 @@ import ChangePasswordRed from './change-password-red.svg';
 import ChevronRight from './chevron-right.svg';
 import UserCircle from './user-circle.svg'
 import CircleTickGray from './circle-tick-gray.svg'
+import LikedPostMenu from './liked-post.svg';
+import ArchivePostMenu from './archive-post.svg';
+import InviteFriendsMenu from './invite-friends.svg';
+import Faq from './faq.svg';
+import ContactUs from './contact-us.svg';
+import Notifications from './notifications.svg';
 
 export {
   ContactTelephone,
@@ -274,5 +281,11 @@ export {
   ChangePasswordRed,
   ChevronRight,
   UserCircle,
-  CircleTickGray
+  CircleTickGray,
+  LikedPostMenu,
+  ArchivePostMenu,
+  InviteFriendsMenu,
+  Faq,
+  ContactUs,
+  Notifications,
 };

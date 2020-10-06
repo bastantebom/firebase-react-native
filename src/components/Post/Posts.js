@@ -99,7 +99,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
   const getMorePost = async () => {
     console.log('GET MORE');
     try {
-      //console.log(onEndReachedCalledDuringMomentum);
+      console.log(onEndReachedCalledDuringMomentum);
       if (onEndReachedCalledDuringMomentum) {
         setOnEndReachedCalledDuringMomentum(false);
 
@@ -130,6 +130,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           }
         } else {
           console.log('wala location filter');
+
           const params = {
             limit: limit,
             page: lastPID,
@@ -137,7 +138,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           const res = await PostService.getPosts(params);
           console.log('------------------');
           //console.log(res);
-          if (!res.length) {
+          if (!res.length || type === 'liked' || type === 'archived') {
             setFecthMore(false);
             setIsLoading(false);
 
@@ -150,7 +151,6 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
           setLastPID(lastPID + 1);
         }
-
         setIsLoading(false);
       }
     } catch (err) {
