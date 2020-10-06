@@ -6,10 +6,11 @@ import {
 import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Animated} from 'react-native';
+import {View, Animated, Linking} from 'react-native';
 import SplashScreenComponent from './SplashScreen';
 
 import {Notification} from '@/components';
+import {useNavigation} from '@react-navigation/native';
 
 //screens
 import {Onboarding} from '@/screens/Onboarding';
@@ -19,7 +20,7 @@ import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
 import {Post, SinglePostView} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
-import SampleScreen from '@/screens/SampleScreen'
+import SampleScreen from '@/screens/SampleScreen';
 
 import {ProfileInfoModal, SinglePostOthersView} from '@/components';
 
@@ -156,6 +157,41 @@ function TabStack() {
   const [activityNotification, setActivityNotification] = useState(true);
   const [profileNotification, setProfileNotification] = useState(false);
   const {closePostButtons} = useContext(Context);
+
+  const navigation = useNavigation();
+
+  console.log('ROUTES PROPS');
+  console.log(navigation);
+
+  useEffect(() => {
+    console.log('dashboard');
+    if (Platform.OS === 'android') {
+      Linking.getInitialURL().then((url) => {
+        navigation.navigate(url);
+      });
+    } else {
+      Linking.addEventListener('url', handleOpenURL);
+    }
+  });
+
+  const handleOpenURL = (event) => {
+    navigate(event.url);
+  };
+
+  const navigate = (url) => {
+    const route = url.replace(/.*?:\/\//g, '');
+    const routeName = route.split('/')[0];
+
+    console.log(routeName);
+    if (routeName === 'profile') {
+      navigation.navigate('Profile', {
+        screen: 'Profile',
+      });
+    }
+    if (routeName === 'dashboard') {
+      navigation.navigate('Servbees');
+    }
+  };
 
   return (
     <Tab.Navigator
@@ -359,5 +395,13 @@ function Routes() {
     </Animated.View>
   );
 }
+
+// const MainScreens = () => {
+//   const navigation = useNavigation();
+
+//   console.log('ROUTES PROPS');
+//   console.log(navigation);
+//   return <Stack.Screen name="TabStack" component={TabStack} />;
+// };
 
 export default Routes;

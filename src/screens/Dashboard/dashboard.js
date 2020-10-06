@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   // ScrollView,
   // Animated,
+  Linking,
   Dimensions,
 } from 'react-native';
 // import {TextInput} from 'react-native-paper';
@@ -43,7 +44,7 @@ import LocationMap from '@/screens/Dashboard/components/Location';
 // import Config from '@/services/Config';
 
 // function Dashboard({ navigation }) {
-function Dashboard() {
+function Dashboard(props) {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,6 +53,33 @@ function Dashboard() {
   const toggleModal = () => {
     setModalState(!modalState);
   };
+
+  // useEffect(() => {
+  //   console.log('dashboard');
+  //   Linking.addEventListener('url', handleOpenURL);
+  // });
+
+  // const handleOpenURL = (event) => {
+  //   navigate(event.url);
+  // };
+
+  // const navigate = (url) => {
+  //   const {navigate} = props.navigation;
+  //   console.log('ASDASDAS');
+
+  //   const route = url.replace(/.*?:\/\//g, '');
+  //   const routeName = route.split('/')[0];
+
+  //   console.log(routeName);
+  //   if (routeName === 'profile') {
+  //     navigate('Profile', {
+  //       screen: 'Profile',
+  //     });
+  //   }
+  //   if (routeName === 'dashboard') {
+  //     navigate('TabStack');
+  //   }
+  // };
 
   // const {openNotification, closeNotification, posts} = useContext(Context);
   // const {user} = useContext(UserContext);

@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   link: {
     alignSelf: 'flex-end',
-    paddingVertical: Platform.OS === 'ios' ? 40 : 16,
+    paddingTop: Platform.OS === 'ios' ? 44 : 16,
     paddingHorizontal: 30,
   },
   textHolder: {
