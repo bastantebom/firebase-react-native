@@ -93,9 +93,19 @@ const SearchBox = ({
         useNativeDriver: true
       })
     ]).start();
+    // searchbarRef.current.clear();
+    // setValue();
     setSearchBarFocused(false);
     setSearchType('posts')
+    // searchbarRef.current.blur();
+    // clearTextInput();
   }
+
+  const clearTextInput = () => {
+    setValue();
+  }
+
+  // console.log(value)
 
   return (
     <View style={styles.container}>
@@ -112,7 +122,11 @@ const SearchBox = ({
       >
         <Searchbar
           placeholder="Start your search..."
-          onChangeText={value => {setValue(value), valueHandler(value), handleSearch(value)}}
+          onChangeText={value => {
+            setValue(value) 
+            valueHandler(value) 
+            handleSearch(value)
+          }}
           value={value}
           onIconPress={onFocus}
           fontFamily={'RoundedMplus1c-Regular'}

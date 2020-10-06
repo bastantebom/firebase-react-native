@@ -156,7 +156,7 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     ]).start();
     setSearchBarFocused(false);
     Keyboard.dismiss();
-    setPage(0)
+    setPage(0);
   }
 
   return (

@@ -15,11 +15,15 @@ const InfiniteHits = ({ value }) => {
   const [data, setData] = useState([]);
 
   const goToPost = (item) => {
-    setShowPost(!showPost)
-    console.log('****************************')
-    console.log(item)
+    // setShowPost(!showPost)
+    // console.log('****************************')
+    // console.log(item)
     setData(item)
+    setShowPost(!showPost)
   }
+
+  // console.log('****************************data****************************')
+  // console.log(data)
 
   return (
     <View style={{ top: searchType !== 'posts' ? normalize(25) : 0 }}>
@@ -60,10 +64,10 @@ const InfiniteHits = ({ value }) => {
       }
       <Modal
         isVisible={showPost}
-        animationIn="slideInUp"
-        animationInTiming={500}
-        animationOut="slideOutLeft"
-        animationOutTiming={500}
+        animationIn="slideInRight"
+        animationInTiming={200}
+        animationOut="slideOutRight"
+        animationOutTiming={200}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -72,8 +76,8 @@ const InfiniteHits = ({ value }) => {
         }}>
 
         <SinglePostOthersView
-          searchData={data}
-          backFunction={() => setShowPost(false)}
+          data={data}
+          closePostModal={() => setShowPost(false)}
         />
         {/* <AppText>ahsjhajshj</AppText> */}
         {/* <AppText>{JSON.stringify(data)}</AppText> */}

@@ -34,13 +34,16 @@ import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {ImageModal} from '@/screens/Post/components/ImageModal';
 
-const SinglePostOthersView = (props) => {
+const SinglePostOthersView = ({data, closePostModal}) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
 
-  const {navigation} = props;
+  // const {navigation} = props;
 
-  const {data} = props.route.params;
+  // const {data} = props.route.params;
+
+  // console.log('****************************data****************************')
+  // console.log(data)
 
   const {
     uid,
@@ -50,8 +53,8 @@ const SinglePostOthersView = (props) => {
     description,
     payment_method,
     price,
-    store_location: {longitude, city, province, latitude, country},
-    delivery_method: {pickup, delivery},
+    store_location: {longitude, latitude, city, province, country},
+    delivery_method: pickup, delivery,
     available,
     username,
     profile_photo,
@@ -156,8 +159,8 @@ const SinglePostOthersView = (props) => {
         <ScrollView style={styles.postInfoContainer}>
           <ProfileInfo
             userInfo={userInfo}
-            type="own-post"
-            closePostModal={() => navigation.goBack()}
+            type='own-post'
+            cancelModalToggle={closePostModal}
           />
 
           <AppText
@@ -232,7 +235,7 @@ const SinglePostOthersView = (props) => {
           }}>
           <TransparentHeader
             type={'post-other'}
-            backFunction={() => navigation.goBack()}
+            backFunction={closePostModal}
             postId={post_id}
             postTitle={title}
           />

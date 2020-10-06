@@ -4,9 +4,11 @@ import { AppText } from '@/components';
 
 export default Highlight = ({ hit }) => {
 
-  useEffect(() => {
-    console.log(hit._highlightResult)
-  }, [hit])
+  // useEffect(() => {
+  //   console.log('*********************************************')
+  //   console.log(hit._highlightResult)
+  //   console.log(hit._highlightResult.title.matchedWords)
+  // }, [hit])
 
   return (
     <View style={{ flexWrap: 'wrap', flex: 0, flexDirection: 'row' }}>

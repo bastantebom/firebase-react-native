@@ -39,6 +39,8 @@ const SearchResults = ({ onValueChange }) => {
     ]).start();
   }
 
+  // console.log(onValueChange)
+  // console.log('onValueChange')
 
   useEffect(() => {
     if (searchType === 'posts') {
@@ -50,7 +52,7 @@ const SearchResults = ({ onValueChange }) => {
         })
       ]).start();
     }
-    console.log(searchType)
+    // console.log(searchType)
   }, [searchType])
 
   return (
