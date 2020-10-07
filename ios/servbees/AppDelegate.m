@@ -36,14 +36,26 @@ static void InitializeFlipper(UIApplication *application) {
      sourceApplication:sourceApplication annotation:annotation];
 }
 
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
- restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+ restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
 {
-  return [RCTLinkingManager 
-            application:application
-            continueUserActivity:userActivity
-            restorationHandler:restorationHandler
-         ];
+  NSURL *url = [userActivity webpageURL];
+  BOOL result = [RCTLinkingManager application:application
+                          continueUserActivity:userActivity
+                            restorationHandler:restorationHandler];
+  if([userActivity webpageURL]){
+    #if DEBUG
+    float seconds = 3.5;
+    #else
+    float seconds = 1.5;
+    #endif
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      NSURL *newUrl = [NSURL URLWithString:[NSString stringWithFormat:@"MYAPPSCHEME:/%@", url.path]];
+      [[UIApplication sharedApplication] openURL:newUrl options:@{} completionHandler:nil];
+    });
+  }
+  
+  return result;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
