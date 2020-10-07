@@ -6,6 +6,7 @@ import {
   Dimensions,
   TextInput,
   Animated,
+  TouchableWithoutFeedback
 } from 'react-native';
 import {Divider} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -38,6 +39,8 @@ import {
   CacheableImage,
   TransitionIndicator,
   AppRadio,
+  AppCheckbox,
+  BottomSheetHeader
 } from '@/components';
 import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -45,6 +48,9 @@ import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 import AddItemModal from './modals/AddItemModal';
+import PrivacyModal from './modals/PrivacyModal';
+import PaymentMethodModal from './modals/PaymentMethodModal';
+import ShippingMethodModal from './modals/ShippingMethodModal';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
@@ -73,6 +79,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [showLocation, setShowLocation] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
   const [addItemModal, showAddItemModal] = useState(false);
+  const [privacyModal, showPrivacyModal] = useState(false);
+  const [paymentMethodModal, showPaymentMethodModal] = useState(false);
+  const [shippingMethodModal, showShippingMethodModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
   
 
@@ -145,7 +154,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     freeCheckbox,
     setFreeCheckbox,
     setPostInStore,
-    postInStore,
+    postInStore
   } = formState;
 
   const togglePickupState = () => {
@@ -255,6 +264,12 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       hideSingle();
       showMultiple();
     }
+    if (val === 'public') {
+      setPublicPost(true);
+    }
+    // if (val === 'postToHive') {
+    //   setHivePost(true);
+    // }
   };
 
   /**FOR ANIMATION */
@@ -357,7 +372,9 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           <AppText textStyle="caption" customStyle={{fontSize: 16}}>
             Who can see your post?*
           </AppText>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity 
+            activeOpacity={0.7}
+            onPress={() => showPrivacyModal(true)}>
             <View
               style={{
                 flexDirection: 'row',
@@ -506,7 +523,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
             activeOpacity={0.7}
-            style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}
+            onPress={() => showAddItemModal(true)}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
             <AppText customStyle={{paddingLeft: 8}} textStyle="body2">
               Add an Item
@@ -536,7 +554,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}
+          onPress={() => showPaymentMethodModal(true)}>
           <AppText textStyle="body2">Payment Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -544,7 +563,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}
+          onPress={() => showShippingMethodModal(true)}>
           <AppText textStyle="body2">Shipping Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -664,6 +684,49 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           height: Dimensions.get('window').height,
         }}>
         <AddItemModal closeModal={() => showAddItemModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={privacyModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{margin: 0, justifyContent: 'flex-end'}}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showPrivacyModal(false)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+           <PrivacyModal closeModal={() => showPrivacyModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={paymentMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={shippingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
       </Modal>
     </>
   );
