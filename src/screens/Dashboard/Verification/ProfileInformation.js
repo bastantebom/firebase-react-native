@@ -18,6 +18,7 @@ import {
 } from '@/assets/images/icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AddAnAddress from './Address';
+import { EditProfile } from '@/screens/Profile/components';
 
 export const ProfileInformation = ({ back, toggleAddress }) => {
 
@@ -55,6 +56,7 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
   // };
 
   return (
+    // <EditProfile/>
     <SafeAreaView style={{flex: 1}}>
       <ScrollView contentContainerStyle={{ backgroundColor: Colors.neutralsZircon }}>
         <View style={[styles.contentWrapper, { borderTopEndRadius: 0, borderTopStartRadius: 0 }]}>
@@ -73,7 +75,16 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
             <AppText textStyle="body1" customStyle={styles.customHeading}>Public Profile</AppText>
             <AppInput
               label="Display Name"
-              customStyle={{ marginBottom: 8, fontFamily: 'RoundedMplus1c-Regular', fontSize: 25, color: Colors.primaryAliceBlue }}
+              customStyle={{ marginBottom: 8 }}
+              fontFamily={'RoundedMplus1c-Regular'}
+              theme={{
+                colors: {
+                  primary: Colors.contentOcean,
+                },
+                fonts: {
+                  regular: ''
+                },
+              }}
             />
             <AppText 
               textStyle="caption" 

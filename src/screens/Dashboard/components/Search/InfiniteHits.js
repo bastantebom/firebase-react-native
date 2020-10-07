@@ -6,24 +6,41 @@ import { AppButton, AppText, SinglePostOthersView } from '@/components';
 import Tags from './Tags';
 import { Context } from '@/context';
 import Modal from 'react-native-modal'; 
+import { UserContext } from '@/context/UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 const InfiniteHits = ({ value }) => {
 
-  const { searchType, results, handleOnEndReach } = useContext(Context)
+  const { searchType, results, handleOnEndReach, handleOnUserEndReach } = useContext(Context)
+  const { user } = useContext(UserContext)
+
+  const navigation = useNavigation();
 
   const [showPost, setShowPost] = useState(false)
   const [data, setData] = useState([]);
 
   const goToPost = (item) => {
-    // setShowPost(!showPost)
-    // console.log('****************************')
-    // console.log(item)
     setData(item)
     setShowPost(!showPost)
   }
 
-  // console.log('****************************data****************************')
-  // console.log(data)
+  const openProfile = (item) => {
+    const uid = item.uid;
+    if (user && user.uid === uid) {
+      // console.log('*************my uid***************')
+      // console.log(user.uid)
+      navigation.navigate('Profile', {
+        screen: 'Profile',
+      });
+    } else {
+        // console.log('*************uid***************')
+        // console.log(uid)
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: uid},
+      });
+    }
+  };
 
   return (
     <View style={{ top: searchType !== 'posts' ? normalize(25) : 0 }}>
@@ -32,10 +49,19 @@ const InfiniteHits = ({ value }) => {
           data={results}
           keyExtractor={item => item.objectID}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
-          onEndReached={() => handleOnEndReach(value)}
+          onEndReached={() => 
+            searchType === 'posts' ?
+            handleOnEndReach(value) :
+            handleOnUserEndReach(value)
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <TouchableOpacity onPress={() => goToPost(item)}>
+              <TouchableOpacity onPress={() => 
+                searchType === 'posts' ? 
+                  goToPost(item) : 
+                  openProfile(item)
+                }
+              >
                 <Highlight attribute="name" hit={item} />
               </TouchableOpacity>
             </View>
@@ -79,8 +105,6 @@ const InfiniteHits = ({ value }) => {
           data={data}
           closePostModal={() => setShowPost(false)}
         />
-        {/* <AppText>ahsjhajshj</AppText> */}
-        {/* <AppText>{JSON.stringify(data)}</AppText> */}
       </Modal>
     </View> 
   )

@@ -25,6 +25,18 @@ const searchPosts = (payload) => {
   });
 };
 
+const searchUsers = (payload) => {
+  //?limit=5&page=0
+  // console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
+  return BaseAPI({
+    url: '/users',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params: payload
+  });
+};
 
 const getUserPosts = (payload) => {
   // users/:uid/posts
@@ -143,6 +155,7 @@ const PostService = {
   createPost,
   getPosts,
   searchPosts,
+  searchUsers,
   editPost,
   deletePost,
   getPostsLocation,

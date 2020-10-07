@@ -42,8 +42,7 @@ const AppInput = (props, {children}) => {
             primary: AppColor.contentOcean,
           },
           fonts: {
-            regular: '',
-            // medium: 'RoundedMplus1c-Medium',
+            regular: ''
           },
         }}
       >

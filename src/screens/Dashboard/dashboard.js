@@ -49,7 +49,7 @@ function Dashboard() {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // const {openNotification} = useContext(Context);
+  const {openNotification} = useContext(Context);
 
   const { posts } = useContext(Context);
 
@@ -65,7 +65,7 @@ function Dashboard() {
 
   // useEffect(() => {
   //   openNotification();
-  // })
+  // }, [])
 
   return (
     <>

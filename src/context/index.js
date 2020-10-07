@@ -44,16 +44,34 @@ export const ContextProvider = ({children}) => {
     const result = await PostService.searchPosts({limit: 10, page: 0, search: value})
     setResults(result.data)
     setPage(0)
-    // console.log(results.length)
+    // console.log('post search', result.length)
+  }
+
+  const handleSearchUser = async (value) => {
+    const result = await PostService.searchUsers({limit: 10, page: 0, search: value})
+    setResults(result.data)
+    setPage(0)
+    // console.log('user search', result.length)
+    // console.log(value, 'value')
   }
 
   const handleOnEndReach = async (value) => {
-    const result = await PostService.searchPosts({limit: 10, page: page + 1, search: value})
-    setResults(prev => [...prev, ...result.data])
+    const results = await PostService.searchPosts({limit: 10, page: page + 1, search: value})
+    setResults(prev => [...prev, ...results.data])
     setPage(page + 1)
-    // console.log(page)
   }
 
+  const handleOnUserEndReach = async (value) => {
+    const results = await PostService.searchUsers({limit: 10, page: page + 1, search: value})
+      setResults(prev => [...prev, ...results.data])
+      setPage(page + 1)
+  }
+
+  // console.log('results', results)
+  // console.log('results length', results.length)
+
+  // console.log(page, 'page')
+  
   useEffect(() => {
     setImageCount(coverPhoto.length);
   }, [coverPhoto]);
@@ -171,7 +189,9 @@ export const ContextProvider = ({children}) => {
         page,
         setPage,
         handleSearch,
-        handleOnEndReach
+        handleSearchUser,
+        handleOnEndReach,
+        handleOnUserEndReach
       }}>
       {children}
     </Context.Provider>

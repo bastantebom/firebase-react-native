@@ -62,6 +62,7 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
             toggleProfile={() => toggleProfile()}
             toggleMobileVerification={() => toggleMobileVerification()}
             toggleUploadId={() => toggleUploadId()}
+            toggleMenu={modalBack}
           />
         );
       case 'profile':
@@ -104,12 +105,12 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
       </View>
       <Modal
         isVisible={menu}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
+        animationIn="slideInRight"
+        animationInTiming={500}
+        animationOut="slideOutRight"
+        animationOutTiming={500}
         onSwipeComplete={toggleMenu}
-        swipeDirection="down"
+        // swipeDirection="down"
         onBackButtonPress={modalBack}
         style={{
           margin: 0,

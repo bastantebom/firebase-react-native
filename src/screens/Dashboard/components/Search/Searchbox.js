@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect } from 'react';
+import React, { useRef, useState, useContext, useEffect, useCallback } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -12,6 +12,7 @@ import AppColor from '@/globals/Colors';
 import { HeaderBackGray } from '@/assets/images/icons';
 import { AppText } from '@/components';
 import { Context } from '@/context';
+import { debounce } from "lodash";
 
 const { width } = Dimensions.get("window");
 const PADDING = 16;
@@ -29,7 +30,7 @@ const SearchBox = ({
   props
  }) => {    
 
-  const { searchType, setSearchType, results, setResults, page, setPage, handleSearch } = useContext(Context);
+  const { searchType, setSearchType, results, setResults, page, setPage, handleSearch, handleSearchUser } = useContext(Context);
 
   const searchbarRef = useRef(null)
   const [value, setValue] = useState()
@@ -109,7 +110,22 @@ const SearchBox = ({
   // }
 
   // console.log(titlePosition)
-  console.log('barPositionFull', barPositionFull)
+  // console.log('barPositionFull', barPositionFull)
+  // console.log('barPosition', barPosition)
+
+
+  // const debounceHandler = useCallback(
+  //   debounce((value) => {
+  //     handleValue(value);
+  //     console.log(value)
+  //     }, 500),
+  //   [],
+  // );
+
+  const handleValue = (value) => {
+    valueHandler(value) 
+    // debounceHandler(value)
+  }
 
   const backToPostSearch = () => {
     setTimeout(() => {
@@ -135,8 +151,10 @@ const SearchBox = ({
         //   useNativeDriver: false
         // })
       ]).start();
-    }, 200)
-    setSearchType('posts')
+      searchbarRef.current.clear();
+      searchbarRef.current.blur();
+      setSearchType('posts')
+    }, 1500)
   }
   
   useEffect(() => {
@@ -168,6 +186,10 @@ const SearchBox = ({
     }
   }, [searchType])
 
+  // console.log(value)
+  // console.log(searchType)
+  // console.log('searchType')
+
   return (
     <View style={styles.container}>
       <Animated.View
@@ -176,19 +198,21 @@ const SearchBox = ({
             width: searchType === 'posts' ? inputLength : FULL_WIDTH,
             position: 'absolute',
             zIndex: 1,
-            // left: searchType === 'posts' ? barPosition : barPositionFull,
-            left: searchType === 'posts' ? barPosition : 0,
+            left: searchType === 'posts' ? barPosition : 45,
+            // left: barPosition,
             top: searchType === 'posts' ? 0 : normalize(55),
             opacity: searchType !== 'posts' ? barOpacity : 1
-          }, customStyle
+          }
         ]}
       >
         <Searchbar
           placeholder="Start your search..."
           onChangeText={value => {
-            setValue(value) 
-            valueHandler(value) 
-            handleSearch(value)
+            setValue(value)
+            handleValue(value) 
+            searchType === 'posts' ?
+            handleSearch(value) :
+            handleSearchUser(value)
           }}
           value={value}
           onIconPress={onFocus}
@@ -227,7 +251,7 @@ const SearchBox = ({
               <HeaderBackGray width={normalize(25)} height={normalize(25)} />
             </Animated.View>
           </AnimatedTouchable>
-          <AnimatedTouchable style={{ left: titlePosition }}>
+          <AnimatedTouchable style={{ left: titlePosition }} disabled>
             <Animated.View style={{ opacity: titleOpacity }}>
               <AppText textStyle="body3">Search User</AppText>
             </Animated.View>

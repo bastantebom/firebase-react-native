@@ -56,8 +56,12 @@ const SearchResults = ({ onValueChange }) => {
         })
       ]).start();
     }
-    // console.log(searchType)
-  }, [searchType])
+    // setTimeout(() => {
+    //   onValueChange
+    //   console.log(onValueChange)
+    //   console.log('onValueChange')
+    // }, 2500)
+  }, [searchType, onValueChange])
 
   return (
     <View style={styles.parent}>

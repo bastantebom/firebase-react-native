@@ -68,12 +68,19 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
     },
   ];
 
+  const pending = verificationReqs.filter(item => item.completed === 'pending')
+  const pendingCount = pending.length;
+  const review = verificationReqs.filter(item => item.completed === 'review')
+  const reviewCount = review.length;
+  const completed = verificationReqs.filter(item => item.completed === 'completed')
+  const completedCount = completed.length;
+
   return (
     <ScrollView>
       <PaddingView paddingSize={3}>
         <View style={{ marginBottom: 45 }}>
           <TouchableOpacity onPress={toggleMenu}>
-            <HeaderBackGray width={normalize(16)} height={normalize(16)} on/>
+            <HeaderBackGray width={normalize(16)} height={normalize(16)}/>
           </TouchableOpacity>
         </View>
         <Verified width={normalize(28)} height={normalize(32)} />
@@ -90,8 +97,8 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
         >
           Complete your profile and verify youridentity for a better Servbees experience!
         </AppText>
-
-        <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Pending</AppText>
+        
+        { pendingCount !== 0 && <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Pending</AppText> }
         {verificationReqs.map((item) => {
           return ( 
             <View key={item.id}>
@@ -121,8 +128,8 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
             </View>
           )
         })}
-
-        <AppText textStyle="subtitle1" customStyle={styles.listHeader}>For Review</AppText>
+          
+        { reviewCount !== 0 && <AppText textStyle="subtitle1" customStyle={styles.listHeader}>For Review</AppText> }  
         {verificationReqs.map((item) => {
           return ( 
             <View key={item.id}>
@@ -140,7 +147,7 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
           )
         })}
 
-        <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Completed</AppText>
+        { completedCount !== 0 && <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Completed</AppText> }
         {verificationReqs.map((item) => {
           return ( 
             <View key={item.id}>
