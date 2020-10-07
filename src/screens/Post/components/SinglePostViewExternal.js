@@ -41,44 +41,57 @@ import {UserContext} from '@/context/UserContext';
 import EditPostScreen from './EditPostScreen';
 import {ImageModal} from './ImageModal';
 
-const SinglePostView = (props) => {
+const SinglePostViewExternal = (props) => {
   const {othersView = false} = props.route?.params;
 
-  const {
-    uid,
-    post_type,
-    images,
-    title,
-    description,
-    payment_method,
-    price,
-    store_location: {longitude, city, province, latitude, country},
-    delivery_method: {pickup, delivery},
-    available,
-    username,
-    profile_photo,
-    account_verified,
-    display_name,
-    date_posted,
-    post_id,
-    full_name,
-    email,
-    phone_number,
-  } = props.route?.params?.data;
+  const {pid} = props.route?.params;
+
+  const [postInfo, setPostInfo] = useState();
+  const [isDataLoading, setIsDataLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    PostService.getPost(postInfo?.post_id)
+      .then((res) => {
+        if (mounted) setPostInfo(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        if (mounted) {
+          console.log('FINALLY');
+          setIsDataLoading(false);
+        }
+      });
+  }, []);
+
+  //   const {
+  //     uid,
+  //     post_type,
+  //     images,
+  //     title,
+  //     description,
+  //     payment_method,
+  //     price,
+  //     store_location: {longitude, city, province, latitude, country},
+  //     delivery_method: {pickup, delivery},
+  //     available,
+  //     username,
+  //     profile_photo,
+  //     account_verified,
+  //     display_name,
+  //     date_posted,
+  //     post_id,
+  //     full_name,
+  //     email,
+  //     phone_number,
+  //   } = props.route?.params?.data;
 
   // console.log("Images in single post view")
 
   // console.log(images);
-
-  useEffect(() => {
-    PostService.getPost(post_id)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
 
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState(false);
@@ -129,11 +142,13 @@ const SinglePostView = (props) => {
   };
 
   const profileInfo = {
-    username: username,
-    profile_photo: profile_photo,
-    account_verified: account_verified,
-    display_name: display_name ? display_name : full_name,
-    uid: uid,
+    username: postInfo?.username,
+    profile_photo: postInfo?.profile_photo,
+    account_verified: postInfo?.account_verified,
+    display_name: postInfo?.display_name
+      ? postInfo?.display_name
+      : postInfo?.full_name,
+    uid: postInfo?.uid,
   };
 
   const defaultImage = [
@@ -143,27 +158,31 @@ const SinglePostView = (props) => {
     },
   ];
   const deletePost = async () => {
-    console.log('delete this post with id: ');
-    console.log(post_id);
-    return await PostService.deletePost(post_id).then(() => {
+    // console.log('delete this post with id: ');
+    // console.log(postInfo?.post_id);
+    return await PostService.deletePost(postInfo?.post_id).then(() => {
       toggleEllipsisState();
-      console.log('deletePost ' + userInfo.post_count);
-      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
+      console.log('deletePost ' + postInfo?.userInfo.post_count);
+      setUserInfo({
+        ...postInfo?.userInfo,
+        post_count: postInfo?.userInfo.post_count - 1,
+      });
       navigation.goBack();
     });
   };
 
   const hidePost = async () => {
     //body: { uid, pid }
-    return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
-      (res) => {
-        toggleEllipsisState();
-        //console.log('deletePost ' + userInfo.post_count);
-        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
-        console.log(userInfo.hidden_posts);
-        navigation.goBack();
-      },
-    );
+    return await PostService.hidePost({
+      uid: user?.uid,
+      pid: postInfo?.post_id,
+    }).then((res) => {
+      toggleEllipsisState();
+      //console.log('deletePost ' + userInfo.post_count);
+      setUserInfo({...postInfo?.userInfo, hidden_posts: res.hidden_posts});
+      console.log(postInfo?.userInfo.hidden_posts);
+      navigation.goBack();
+    });
     //navigation.goBack();
     //alert('hide Post View Post');
   };
@@ -179,9 +198,9 @@ const SinglePostView = (props) => {
   let makeCall = () => {
     let phoneNumber = '';
     if (Platform.OS === 'android') {
-      phoneNumber = `tel:${phone_number}`;
+      phoneNumber = `tel:${postInfo?.phone_number}`;
     } else {
-      phoneNumber = `telprompt:${phone_number}`;
+      phoneNumber = `telprompt:${postInfo?.phone_number}`;
     }
     Linking.openURL(phoneNumber);
   };
@@ -265,13 +284,15 @@ const SinglePostView = (props) => {
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
           /> */}
-            {images === undefined || images.length == 0 ? (
-              post_type === 'Need' || post_type === 'need' ? (
+            {postInfo?.images === undefined || postInfo?.images.length == 0 ? (
+              postInfo?.post_type === 'Need' ||
+              postInfo?.post_type === 'need' ? (
                 <Image
                   style={GlobalStyle.image}
                   source={require('@/assets/images/cover-need.png')}
                 />
-              ) : post_type === 'Sell' || post_type === 'sell' ? (
+              ) : postInfo?.post_type === 'Sell' ||
+                postInfo?.post_type === 'sell' ? (
                 <Image
                   style={GlobalStyle.image}
                   source={require('@/assets/images/cover-sell.png')}
@@ -296,7 +317,7 @@ const SinglePostView = (props) => {
                   width: normalize(6),
                   height: normalize(6),
                 }}>
-                {images.map((item, index) => {
+                {postInfo?.images.map((item, index) => {
                   // console.log(item);
                   return (
                     <TouchableWithoutFeedback
@@ -330,21 +351,21 @@ const SinglePostView = (props) => {
             <AppText
               textStyle="subtitle1"
               customStyle={{marginTop: 24, marginBottom: 16}}>
-              {title}
-              {/* {post_type} */}
+              {postInfo?.title}
+              {/* {postInfo.post_type} */}
             </AppText>
 
             <AppText
               textStyle="subtitle1"
               color={Colors.secondaryMountainMeadow}
               customStyle={{marginBottom: 12}}>
-              ₱ {price}
+              ₱ {postInfo?.price}
             </AppText>
 
             <View style={styles.iconText}>
               <PostClock width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
+                {timeAgo(Date.now() / 1000 - postInfo?.date_posted?._seconds)}
               </AppText>
             </View>
             <View style={styles.iconText}>
@@ -352,7 +373,8 @@ const SinglePostView = (props) => {
               <AppText
                 textStyle="body2"
                 customStyle={{marginLeft: 8, marginRight: 20}}>
-                {city}, {province}
+                {postInfo?.store_location?.city},{' '}
+                {postInfo?.store_location?.province}
               </AppText>
             </View>
             <View style={styles.iconText}>
@@ -360,27 +382,29 @@ const SinglePostView = (props) => {
               <AppText
                 textStyle="body2"
                 customStyle={{marginLeft: 8, marginRight: 20}}>
-                {description}
+                {postInfo?.description}
               </AppText>
             </View>
             <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
             <View style={styles.iconText}>
               <PostCash width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                {payment_method}
+                {postInfo?.payment_method}
               </AppText>
             </View>
-            {!pickup && !delivery ? (
+            {!postInfo?.delivery_method?.pickup &&
+            !postInfo?.delivery_method?.delivery ? (
               <></>
             ) : (
               <View style={styles.iconText}>
                 <PostBox width={normalize(24)} height={normalize(24)} />
                 <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
-                  {pickup && delivery
+                  {postInfo?.delivery_method?.pickup &&
+                  postInfo?.delivery_method?.delivery
                     ? 'Pickup & Delivery'
-                    : delivery
+                    : postInfo?.delivery_method?.delivery
                     ? 'Delivery'
-                    : pickup
+                    : postInfo?.delivery_method?.pickup
                     ? 'Pickup'
                     : ''}
                 </AppText>
@@ -405,9 +429,9 @@ const SinglePostView = (props) => {
                 paddingHorizontal: 20,
                 paddingVertical: 20,
               }}>
-              {phone_number ? (
+              {postInfo?.phone_number ? (
                 <TouchableOpacity
-                  style={{flex: 1, marginRight: email ? 8 : 0}}
+                  style={{flex: 1, marginRight: postInfo?.email ? 8 : 0}}
                   activeOpacity={0.7}
                   // onPress={() => Linking.openURL(`tel:${phone_number}`)}
                   onPress={makeCall}>
@@ -424,13 +448,13 @@ const SinglePostView = (props) => {
               ) : (
                 <></>
               )}
-              {email ? (
+              {postInfo?.email ? (
                 <TouchableOpacity
-                  style={{flex: 1, marginLeft: phone_number ? 8 : 0}}
+                  style={{flex: 1, marginLeft: postInfo?.phone_number ? 8 : 0}}
                   activeOpacity={0.7}
                   onPress={() => {
                     Linking.openURL(
-                      `mailto:${email}?subject=Servbees: Is this still available?`,
+                      `mailto:${postInfo?.email}?subject=Servbees: Is this still available?`,
                     );
                   }}>
                   <View style={styles.contactButtonContainer}>
@@ -457,15 +481,15 @@ const SinglePostView = (props) => {
     <>
       <SinglePostContent />
       <TransparentHeader
-        type={uid === user?.uid ? 'post-own' : 'post-other'}
+        type={postInfo?.uid === user?.uid ? 'post-own' : 'post-other'}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         backFunction={() => navigation.goBack()}
         editPostFunction={toggleEditPost}
         deletePostFunction={deletePost}
         hidePost={hidePost}
-        postId={post_id}
-        postTitle={title}
+        postId={postInfo?.post_id}
+        postTitle={postInfo?.title}
       />
 
       <Modal
@@ -486,7 +510,7 @@ const SinglePostView = (props) => {
         }>
         <EditPostScreen
           data={props.route.params.data}
-          card={cardMap(post_type)}
+          card={cardMap(postInfo?.post_type)}
           togglePostModal={() => showEditPost(false)}
         />
       </Modal>
@@ -502,7 +526,9 @@ const SinglePostView = (props) => {
         <ImageModal
           close={togglePostImageModal}
           data={
-            images === undefined || images.length == 0 ? defaultImage : images
+            postInfo?.images === undefined || postInfo?.images.length == 0
+              ? defaultImage
+              : postInfo?.images
           }
         />
       </Modal>
@@ -560,4 +586,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SinglePostView;
+export default SinglePostViewExternal;

@@ -149,6 +149,7 @@ const PostService = {
   hidePost,
   reportPost,
   unHidePost,
+  getPost
 };
 
 export default PostService;

@@ -18,7 +18,7 @@ import {Dashboard} from '@/screens/Dashboard';
 import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
-import {Post, SinglePostView} from '@/screens/Post';
+import {Post, SinglePostView, SinglePostViewExternal} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 import SampleScreen from '@/screens/SampleScreen';
 
@@ -135,6 +135,10 @@ function NoBottomTabScreens() {
         name="OthersPost"
         component={SinglePostView}
       />
+      <NoBottomTabScreenStack.Screen
+        name="ExternalPostLink"
+        component={SinglePostViewExternal}
+      />
     </NoBottomTabScreenStack.Navigator>
   );
 }
@@ -216,18 +220,21 @@ function TabStack() {
 
   const navigate = (url) => {
     const route = url.replace(/.*?:\/\//g, '');
-    const uid = route.split('/')[1];
+    const id = route.split('/')[1];
     const routeName = route.split('/')[0];
 
     console.log(routeName);
     if (routeName === 'profile') {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: {uid: uid},
+        params: {uid: id},
       });
     }
-    if (routeName === 'dashboard') {
-      navigation.navigate('Servbees');
+    if (routeName === 'post') {
+      navigation.navigate('NBTScreen', {
+        screen: 'ExternalPostLink',
+        params: {pid: id},
+      });
     }
   };
 
