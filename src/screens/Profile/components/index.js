@@ -17,6 +17,7 @@ import AddAddress from './EditProfile/AddAddress.js';
 import Gender from './EditProfile/Gender.js';
 
 import ContactServbees from './HelpSupport/ContactUs.js';
+import FaqScreen from './HelpSupport/Faq';
 
 export {
   About,
@@ -34,4 +35,5 @@ export {
   ArchivedPost,
   InviteFriends,
   ContactServbees,
+  FaqScreen,
 };

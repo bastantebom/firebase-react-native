@@ -157,6 +157,9 @@ import InviteFriendsMenu from './invite-friends.svg';
 import Faq from './faq.svg';
 import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
+import EmailContactUs from './email-contactus.svg';
+import CallContactUs from './call-contactus.svg';
+import LocationContactUs from './location-contactus.svg';
 
 export {
   ContactTelephone,
@@ -272,4 +275,7 @@ export {
   Faq,
   ContactUs,
   Notifications,
+  EmailContactUs,
+  CallContactUs,
+  LocationContactUs,
 };
