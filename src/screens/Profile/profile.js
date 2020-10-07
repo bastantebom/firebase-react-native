@@ -36,7 +36,14 @@ import {MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
 import {GuestProfile} from './components/GuestProfile';
 
-function Profile({profileViewType = 'own', backFunction, uid}) {
+function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
+  // console.log('Profile screen');
+  // console.log(props.route.params.id);
+
+  // if(props.route?.params?.id){
+    
+  // }
+
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
   const {openNotification, closeNotification, posts, userPosts} = useContext(
     Context,

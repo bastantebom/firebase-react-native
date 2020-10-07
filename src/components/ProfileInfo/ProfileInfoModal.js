@@ -41,6 +41,13 @@ function ProfileInfoModal(props) {
   //console.log('PROPS');
   //console.log(props.route.params);
 
+  console.log('Profile screen');
+  console.log(props.route.params.uid);
+
+  // if(props.route?.params?.id){
+    
+  // }
+
   const {profileViewType = 'other', uid} = props.route?.params;
 
   const navigation = useNavigation();

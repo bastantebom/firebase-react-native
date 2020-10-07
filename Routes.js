@@ -51,6 +51,42 @@ import {SafeAreaView} from 'react-navigation';
 const AuthStack = createStackNavigator();
 
 function AuthStackScreen() {
+  const navigation = useNavigation();
+
+  // console.log('ROUTES PROPS');
+  // console.log(navigation);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      Linking.getInitialURL().then((url) => {
+        navigation.navigate(url);
+      });
+    } else {
+      Linking.addEventListener('url', handleOpenURL);
+    }
+  });
+
+  const handleOpenURL = (event) => {
+    navigate(event.url);
+  };
+
+  const navigate = (url) => {
+    const route = url.replace(/.*?:\/\//g, '');
+    const uid = route.split('/')[1];
+    const routeName = route.split('/')[0];
+
+    console.log(routeName);
+    if (routeName === 'profile') {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: uid},
+      });
+    }
+    if (routeName === 'dashboard') {
+      navigation.navigate('Servbees');
+    }
+  };
+
   return (
     <AuthStack.Navigator headerMode="none">
       <AuthStack.Screen name="Onboarding" component={Onboarding} />
@@ -160,8 +196,8 @@ function TabStack() {
 
   const navigation = useNavigation();
 
-  console.log('ROUTES PROPS');
-  console.log(navigation);
+  // console.log('ROUTES PROPS');
+  // console.log(navigation);
 
   useEffect(() => {
     console.log('dashboard');
@@ -180,12 +216,14 @@ function TabStack() {
 
   const navigate = (url) => {
     const route = url.replace(/.*?:\/\//g, '');
+    const uid = route.split('/')[1];
     const routeName = route.split('/')[0];
 
     console.log(routeName);
     if (routeName === 'profile') {
-      navigation.navigate('Profile', {
-        screen: 'Profile',
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: uid},
       });
     }
     if (routeName === 'dashboard') {
@@ -382,7 +420,9 @@ function Routes() {
     <Animated.View style={fadingContainerStyle}>
       <NavigationContainer>
         {!user ? (
-          <AuthStackScreen />
+          <Stack.Navigator headerMode="none">
+            <Stack.Screen name="AuthStack" component={AuthStackScreen} />
+          </Stack.Navigator>
         ) : (
           // <TabStack />
           <Stack.Navigator headerMode="none">
