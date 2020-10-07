@@ -55,9 +55,16 @@ const emailValidator = async (email) => {
 const MobileNumberValidator = async (number) => {
   let mobileReg = /^(09|\+639)\d{9}$/;
 
+  // if (number.charAt(0) === '0') {
+  //   console.log('zero');
+
+  // } else {
+  //   console.log('not zero');
+  // }
+
   return await new Promise((resolve, reject) => {
     if (!mobileReg.test(number)) {
-      reject('Please put a valid 11 digit mobile number.');
+      reject('Please put a valid mobile number.');
     }
 
     return resolve(true);
