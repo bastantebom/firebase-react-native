@@ -125,6 +125,20 @@ const unHidePost = (payload) => {
   });
 };
 
+const getPost = (PID) => {
+  /**
+   * Accepts Post ID
+   * UID
+   */
+  return BaseAPI({
+    url: `/posts/${PID}`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
 const PostService = {
   createPost,
   getPosts,
