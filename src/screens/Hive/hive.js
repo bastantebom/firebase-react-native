@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { AppText } from '@/components';
 import { normalize } from '@/globals';
@@ -11,6 +12,9 @@ import { normalize } from '@/globals';
 import IllustHive from '@/assets/images/hive-img1.svg';
 
 const Hive = () => {
+
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.contentWrapper}>
       <IllustHive />
@@ -20,7 +24,8 @@ const Hive = () => {
         Under Construction
         </AppText>
       <TouchableOpacity
-        style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}>
+        style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+        onPress={() => navigation.navigate('Servbees')}>
         <AppText textStyle="button2">
           Go to Dashboard
         </AppText>
@@ -33,7 +38,7 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: normalize(50),
+    justifyContent: 'center',
     paddingHorizontal: normalize(16),
     textAlign: 'center',
     backgroundColor: 'white',
