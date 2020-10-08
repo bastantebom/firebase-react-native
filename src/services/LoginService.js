@@ -14,7 +14,7 @@ GoogleSignin.configure({
 
 const loginMobile = (payload) => {
   return BaseAPI({
-    url: 'user/login',
+    url: 'users/login',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

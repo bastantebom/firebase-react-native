@@ -2,7 +2,7 @@ import BaseAPI from '@/services/BaseAPI';
 
 const verifyCode = (payload) => {
   return BaseAPI({
-    url: 'user/verify',
+    url: 'users/verify-code',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ const verifyCode = (payload) => {
 
 const resendCode = (payload) => {
   return BaseAPI({
-    url: 'send/email',
+    url: 'users/resend-code',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

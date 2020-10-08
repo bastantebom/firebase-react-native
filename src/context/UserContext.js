@@ -44,10 +44,11 @@ export const UserContextProvider = ({children}) => {
 
   useEffect(() => {
     if (user) {
-      //console.log('pumasok pa din sa useEffect');
+      console.log('pumasok pa din sa useEffect');
       ProfileInfoService.getUser(user.uid)
         .then((response) => {
-          setUserInfo({...userInfo, ...response});
+          //console.log(response.data);
+          setUserInfo({...userInfo, ...response.data});
           setUserDataAvailable(true);
         })
         .catch((error) => {
@@ -61,7 +62,8 @@ export const UserContextProvider = ({children}) => {
     if (user)
       ProfileInfoService.getUser(user.uid)
         .then((response) => {
-          setUserInfo({...userInfo, ...response});
+          //console.log(response);
+          setUserInfo({...userInfo, ...response.data});
           setUserDataAvailable(true);
         })
         .catch((error) => {

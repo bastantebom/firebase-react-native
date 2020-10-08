@@ -26,7 +26,7 @@ const ProfileInfo = ({profileData}) => {
     ratings_count,
     ratings_average,
     date_joined,
-    address,
+    addresses,
   } = profileData;
 
   const {fetch} = useContext(UserContext);
@@ -116,7 +116,7 @@ const ProfileInfo = ({profileData}) => {
         <AppText
           textStyle="body2"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {address ? address.city : 'Manila City'}
+          {addresses.find((address) => address.default).city}
         </AppText>
       </View>
     </View>
