@@ -57,6 +57,7 @@ function AuthStackScreen() {
   // console.log(navigation);
 
   useEffect(() => {
+    console.log("Hello android")
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         navigation.navigate(url);
@@ -69,6 +70,7 @@ function AuthStackScreen() {
   const handleOpenURL = (event) => {
     navigate(event.url);
   };
+
 
   const navigate = (url) => {
     const route = url.replace(/.*?:\/\//g, '');
@@ -204,7 +206,6 @@ function TabStack() {
   // console.log(navigation);
 
   useEffect(() => {
-    console.log('dashboard');
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         navigation.navigate(url);
@@ -212,7 +213,7 @@ function TabStack() {
     } else {
       Linking.addEventListener('url', handleOpenURL);
     }
-  });
+  }, []);
 
   const handleOpenURL = (event) => {
     navigate(event.url);
