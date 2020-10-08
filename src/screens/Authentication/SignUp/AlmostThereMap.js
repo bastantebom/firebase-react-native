@@ -41,6 +41,7 @@ const AlmostThereMap = (route) => {
     country: '',
     longitude: 0,
     latitude: 0,
+    full_address: '',
   });
 
   const onRegionChange = (region) => {
@@ -91,6 +92,7 @@ const AlmostThereMap = (route) => {
             city: splitAddress[0],
             province: splitAddress[1],
             country: splitAddress[2],
+            full_address: addressComponent,
           },
         });
         setChangeMapAddress(addressComponent);

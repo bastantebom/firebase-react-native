@@ -35,6 +35,7 @@ const AlmostThere = (route) => {
     city: '',
     province: '',
     country: '',
+    full_address: '',
   });
 
   //Address Components
@@ -74,6 +75,7 @@ const AlmostThere = (route) => {
             city: splitAddress[0],
             province: splitAddress[1],
             country: splitAddress[2],
+            full_address: addressComponent,
           },
         });
 
@@ -142,7 +144,7 @@ const AlmostThere = (route) => {
   }
 
   const saveLocationHandler = (fullAddress) => {
-    console.log(fullAddress);
+    //console.log(fullAddress);
     setIsScreenLoading(true);
     if (route?.route?.params?.uid) {
       SignUpService.saveLocation({

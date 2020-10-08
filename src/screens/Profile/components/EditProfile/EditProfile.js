@@ -38,7 +38,6 @@ import {
 } from '@/assets/images/icons';
 
 import {Colors, normalize} from '@/globals';
-import EditAddress from './EditAddress';
 import GenderList from './Gender';
 import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -51,10 +50,11 @@ import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import {debounce} from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
+import AddAddress from './AddAddress';
 
 // create a component
 const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
-  const [map, setMap] = useState(false);
+  const [addAddress, setAddAddress] = useState(false);
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -160,18 +160,15 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
   /*Username Validations */
   const [desc, setDesc] = useState(description);
-  const [addName, setAddName] = useState(address.name);
-  const [stringAddress, setStringAddress] = useState();
-  const [addDet, setAddDet] = useState(address.details);
-  const [addNote, setAddNote] = useState(address.note);
+
   const [em, setEm] = useState(email);
   const [sEm, setSEm] = useState(secondary_email);
   const [mobile, setMobile] = useState(phone_number);
   const [bDate, setBDate] = useState(birth_date);
   const [g, setG] = useState(gender);
 
-  const toggleMap = () => {
-    setMap(!map);
+  const toggleAddAddress = () => {
+    setAddAddress(!addAddress);
   };
 
   const toggleGender = () => {
@@ -390,19 +387,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     });
   };
 
-  useEffect(() => {
-    //let isMounted = true;
-    //if (isMounted) {
-    let isSubscribed = true;
-    if (userInfo) {
-      if (isSubscribed) {
-        getStringAddress(address.latitude, address.longitude);
-        setDateFromString();
-      }
-    }
-    return () => (isSubscribed = false);
-  }, []);
-
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -571,55 +555,18 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(8)}}>
                 Address
               </AppText>
-              <FloatingAppInput
-                value={addName}
-                onChangeText={(addName) => {
-                  setAddName(addName);
-                }}
-                label="Name"
-                customStyle={{marginBottom: normalize(16)}}
-                placeholder="ex. Home"
-                // validation={['email', '']}
-                // setError={setError}
-                // error={error}
-                // setButtonState={setButtonState}
-              />
-              <View style={{position: 'relative'}}>
-                <TouchableOpacity onPress={() => toggleMap()}>
-                  <FloatingAppInput
-                    value={stringAddress}
-                    label="Address"
-                    customStyle={{marginBottom: normalize(16)}}
-                    onFocus={() => toggleMap()}
-                  />
-                  <View
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: 12,
-                      right: 12,
-                    }}>
-                    <ArrowRight height={normalize(24)} width={normalize(24)} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <FloatingAppInput
-                value={addDet}
-                label="Address Details"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(addDet) => {
-                  setAddDet(addDet);
-                }}
-              />
-              <FloatingAppInput
-                value={addNote}
-                label="Notes"
-                placeholder="ex. Yellow Gate"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(addNote) => {
-                  setAddNote(addNote);
-                }}
-              />
+
+              <AppText
+                textStyle="body2"
+                customStyle={{marginBottom: normalize(8)}}>
+                You can save multiple addresses.
+              </AppText>
+
+              <TouchableOpacity onPress={toggleAddAddress}>
+                <AppText textStyle="body2" color={Colors.contentOcean}>
+                  Add an Address
+                </AppText>
+              </TouchableOpacity>
             </PaddingView>
           </View>
           <View
@@ -761,24 +708,18 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
         </KeyboardAwareScrollView>
 
         <Modal
-          isVisible={map}
+          isVisible={addAddress}
           animationIn="slideInRight"
           animationInTiming={750}
           animationOut="slideOutRight"
           animationOutTiming={750}
-          onBackButtonPress={() => setMap(false)}
+          onBackButtonPress={() => setAddAddress(false)}
           style={{
             margin: 0,
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          <EditAddress
-            address={userInfo.address}
-            back={() => setMap(false)}
-            changeFromMapHandler={(fullAddress, addStr) =>
-              prepareAddressUpdate(fullAddress, addStr)
-            }
-          />
+          <AddAddress toggleAddAddress={toggleAddAddress} address={address} />
         </Modal>
 
         <Modal
