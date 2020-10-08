@@ -37,7 +37,7 @@ export const CameraId = ({ back, backToIndex, id }) => {
     }
   }
 
-  const takePicture = async() => {
+  const takePicture = async () => {
     if (cameraRef) {
       const options = { 
         quality: 1, 
@@ -76,13 +76,14 @@ export const CameraId = ({ back, backToIndex, id }) => {
             <HeaderBack width={normalize(16)} height={normalize(16)} />
             <AppText textStyle="body3">&nbsp;</AppText>
           </TouchableOpacity>
-          {/* <AppCamera
+          <AppCamera
             message={'Take a photo of your ' + id}
             instruction={'Make sure that your ID fits within the yellow border'}
             withMask
+            customHeight={height / 1.75}
             captureImage={() => takePicture()}
-          /> */}
-          <RNCamera
+          />
+          {/* <RNCamera
             ref={cameraRef}
             style={styles.preview}
             type={'back'}
@@ -118,12 +119,22 @@ export const CameraId = ({ back, backToIndex, id }) => {
                 }}
               />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </>
       ) : screen === 'idConfirm' ? (
         <View style={{ flex: 1 }}>
-          <View style={{ height: height * .6, backgroundColor: Colors.buttonDisable, alignItems: 'center', justifyContent: 'center' }}>
-            <Image source={{ uri: imageUrl }} style={{ maxHeight: height / 2, height: height, width: width }} />
+          <View 
+           style={{ 
+             height: height / 1.75, 
+             backgroundColor: Colors.buttonDisable, 
+             alignItems: 'center', 
+             justifyContent: 'center' 
+            }}
+          >
+            <Image 
+              source={{ uri: imageUrl }} 
+              style={{ maxHeight: height / 2, height: height, width: width }} 
+            />
           </View>
           <PaddingView paddingSize={3} style={{ flex: 1, justifyContent: 'space-between' }}>
             <View>

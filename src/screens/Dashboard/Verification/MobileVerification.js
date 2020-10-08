@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   Dimensions
 } from 'react-native'
-import { AppInput, PaddingView, AppText, AppButton } from '@/components';
+import { AppInput, PaddingView, AppText, AppButton, FloatingAppInput } from '@/components';
 import { Colors, normalize } from '@/globals';
 import {
   HeaderBackGray,
@@ -14,8 +14,33 @@ import {
 } from '@/assets/images/icons';
 import { VerifyMap } from './components/Map';
 import Modal from 'react-native-modal';
+import { UserContext } from '@/context/UserContext';
 
 export const MobileVerification = ({back, toggleMobileCode}) => {
+
+  const { userInfo } = useContext(UserContext)
+
+  const { phone_number } = userInfo
+
+  const [error, setError] = useState([]);
+  const [mobile, setMobile] = useState(phone_number);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable,
+  });
+  
+  const setButtonState = (j) => {
+    if (j) {
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    setButtonDisabled(j);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}  >
@@ -37,14 +62,29 @@ export const MobileVerification = ({back, toggleMobileCode}) => {
               customStyle={{ marginBottom: 8 }}
             >Add and verify mobile number</AppText>
             <AppText textStyle="body2" color={Colors.contentPlaceholder}>We'll use this number for notifications, transaction updates, and login help</AppText>
-            <AppInput
-              label="Mobile"
-              customStyle={styles.customInput}
+            <FloatingAppInput
+              value={mobile}
+              selectTextOnFocus={false}
+              valueHandler={setMobile}
+              setError={setError}
+              error={error}
+              setButtonState={setButtonState}
+              label="Mobile Number"
+              customStyle={{ marginTop: normalize(35) }}
+              keyboardType="phone-pad"
+              validation={['number']}
             />
           </View>
           <AppButton
             text="Verify"
             type="primary"
+            height="xl"
+            disabled={buttonDisabled}
+            customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+            // onPress={() => {
+            //   signUpEmail(signUpForm);
+            // }}
+            // loading={isLoading}
             onPress={toggleMobileCode}
           />
         </View>

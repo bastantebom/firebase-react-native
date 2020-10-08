@@ -63,15 +63,15 @@ function Dashboard() {
     setMenu(!menu);
   };
 
-  // useEffect(() => {
-  //   openNotification();
-  // }, [])
+  useEffect(() => {
+    openNotification();
+  }, [])
 
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
         {/* ---- Verification Notification ---- */}
-          {/* <Notification
+          <Notification
             message={
               <VerificationScreen
                 onPress={() => toggleMenu()}
@@ -82,7 +82,7 @@ function Dashboard() {
             }
             type={'verified'}
             position="relative"
-          /> */}
+          />
         {/* ---- Verification Notification ---- */}
       
         <View style={styles.container}>

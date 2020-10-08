@@ -32,7 +32,13 @@ import { VerifyMap } from './components/Map';
 import { VerifiedAccount } from './VerifiedAccount';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVerification, toggleUploadId, toggleEmailVerification }) => {
+export const InitialVerification = ({ 
+  toggleMenu, 
+  toggleProfile, 
+  toggleMobileVerification, 
+  toggleUploadId, 
+  toggleEmailVerification 
+}) => {
   
   const navigation = useNavigation();
   const [screen, setScreen] = useState('initial');
@@ -64,7 +70,7 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
       title: 'Add and verify email address',
       titleDone: 'Email address verified',
       icon: <Id/>,
-      completed: 'completed'
+      completed: 'pending'
     },
   ];
 
@@ -86,9 +92,9 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
         <Verified width={normalize(28)} height={normalize(32)} />
         <View style={styles.headingWrapper}>
           <AppText textStyle="display6">Get the verified badge</AppText>
-          <View style={styles.badgeContainer}>
-            <AppText textStyle="price" color={Colors.neutralsWhitesmoke}>1 of 4</AppText>
-          </View>
+          {/* <View style={styles.badgeContainer}> */}
+            <AppText textStyle="price" color={Colors.neutralsWhitesmoke} customStyle={styles.badgeContainer}>{completedCount} of {verificationReqs.length}</AppText>
+          {/* </View> */}
         </View>
         <AppText 
           textStyle="body2" 
@@ -176,15 +182,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-    marginTop: 15
+    marginTop: 15,
+    alignItems: 'center'
   },
   badgeContainer: {
     backgroundColor: Colors.checkboxBorderDefault,
     borderRadius: 8,
-    paddingVertical: 4,
+    paddingTop: 7,
+    paddingBottom: 6,
     paddingHorizontal: 8,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   listHeader: {
     marginBottom: 15

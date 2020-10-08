@@ -9,7 +9,7 @@ import {
   ScrollView 
 } from 'react-native';
 import { normalize, Colors } from '@/globals';
-import { AppText, AppButton, PaddingView } from '@/components';
+import { AppText, AppButton, PaddingView, ScreenHeaderTitle } from '@/components';
 import {
   HeaderBackGray,
   Lock,
@@ -18,6 +18,7 @@ import {
 } from '@/assets/images/icons';
 import { IdSelfie } from '@/assets/images';
 import { RNCamera } from 'react-native-camera';
+import { AppCamera } from '@/components/Camera/AppCamera';
 
   const { height, width } = Dimensions.get('window');
   const maskRowHeight = Math.round((height - 300) / 20);
@@ -89,63 +90,65 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
   return (
     <View style={styles.container}>
       {screen === 'initial' ? (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <>
           <PaddingView paddingSize={3}>
-            <View style={{ justifyContent: 'space-between' }}
-            >
-              <View>
-                <View style={styles.modalHeader}>
-                  <TouchableOpacity
-                    onPress={back}
-                    activeOpacity={0.7}
-                    style={{position: 'absolute', left: 0 }}
-                  >
-                    <HeaderBackGray width={normalize(16)} height={normalize(16)} />
-                  </TouchableOpacity>
-                  <AppText textStyle="body3">&nbsp;</AppText>
-                </View>
-                <IdSelfie/>
-                <AppText 
-                  textStyle="body1"
-                  customStyle={{ marginBottom: 8 }}
-                >
-                  Next, take a selfie with your ID
-                </AppText>
-                <AppText 
-                  textStyle="body2" 
-                  color={Colors.contentPlaceholder}
-                  customStyle={{ marginBottom: 35 }}
-                >
-                  We’ll match your face with the photo in your ID. Read below for some quick guidelines.
-                </AppText>
-                <AppText textStyle="body2" customStyle={{ marginBottom: 10 }}>Hold your ID in front of you, showing your personal details  with your face image.</AppText>
-                <AppText textStyle="body2" customStyle={{ marginBottom: 10 }}>Every word on the ID must be legible. Make sure your fingers are not covering any text.</AppText>
-                <AppText textStyle="body2">The selfie must be clear.</AppText>
-                <View style={{ flexDirection: 'row', marginTop: 30, marginBottom: 30 }}>
-                  <Lock width={normalize(25)} height={normalize(25)} />
-                  <AppText textStyle="caption" customStyle={{ marginLeft: 12 }}>This information won't be shared with other people who use Servbees</AppText>
-                </View>
+            <ScreenHeaderTitle
+              iconSize={16}
+              close={back}
+            />
+          </PaddingView>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <IdSelfie/>
+            <PaddingView paddingSize={3}>
+              <AppText 
+                textStyle="body1"
+                customStyle={{ marginBottom: 8 }}
+              >
+                Next, take a selfie with your ID
+              </AppText>
+              <AppText 
+                textStyle="body2" 
+                color={Colors.contentPlaceholder}
+                customStyle={{ marginBottom: 35 }}
+              >
+                We’ll match your face with the photo in your ID. Read below for some quick guidelines.
+              </AppText>
+              <AppText textStyle="body2" customStyle={{ marginBottom: 10 }}>- Hold your ID in front of you, showing your personal details  with your face image.</AppText>
+              <AppText textStyle="body2" customStyle={{ marginBottom: 10 }}>- Every word on the ID must be legible. Make sure your fingers are not covering any text.</AppText>
+              <AppText textStyle="body2">- The selfie must be clear and show your face with none of your features blocked off.</AppText>
+
+              <View style={{ flexDirection: 'row', marginTop: 30 }}>
+                <Lock width={normalize(25)} height={normalize(25)} />
+                <AppText textStyle="caption" customStyle={{ marginLeft: 12, maxWidth: '90%' }}>This information won't be shared with other people who use Servbees</AppText>
               </View>
-              <AppButton
-                text="Take a selfie with ID"
-                type="primary"
-                onPress={() => setScreen('selfiePhoto')}
-              />
-            </View>
-          </PaddingView> 
-        </ScrollView>
+            </PaddingView> 
+          </ScrollView>
+          <PaddingView paddingSize={3}>
+            <AppButton
+              text="Take a selfie with ID"
+              type="primary"
+              onPress={() => setScreen('selfiePhoto')}
+            />
+          </PaddingView>
+        </>
       ) : screen === 'selfiePhoto' ? (
         <>
-          <RNCamera
+          <AppCamera
+            message={'Take a selfie with ID'}
+            instruction={'Hold your ID in front of you, showing your personal details  with your face image.'}
+            // withMask
+            withFlip
+            withFlash
+            customHeight={height / 1.85}
+            captureImage={() => takePicture()}
+          />
+          {/* <RNCamera
             ref={cameraRef}
             style={styles.preview}
             flashMode={flash}
             captureAudio={false}
             type={cameraType}
           >
-              {/* <SelfieMask width={normalize(width)} /> */}
-            {/* <View style={styles.maskOutter}>
-            </View> */}
             <View style={{ justifyContent: 'space-between', width: '100%', flexDirection: 'row',  position: 'absolute', bottom: 25, paddingHorizontal: 25}}>
               <TouchableOpacity
                 onPress={() => toggleCameraType()}
@@ -177,7 +180,7 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
                 }}
               />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </>
       ) : (
         <View style={{ flex: 1 }}>
@@ -201,6 +204,7 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
                 size="sm"
                 // onPress={toggleSelfieScreen}
                 onPress={confirmPhotoId}
+                // onPress={}
               />
             </View>
           </PaddingView>

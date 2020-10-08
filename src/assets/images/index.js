@@ -19,6 +19,7 @@ import NoReview from './NoReview.svg';
 import NoInfo from './NoInfo.svg';
 
 import IdSelfie from './IdSelfie.svg';
+import IdVerify from './IdVerify.svg';
 
 import SelfieMask from './mask.svg';
 import Faded from './faded.svg';
@@ -48,6 +49,7 @@ export {
   NoReview,
   NoInfo,
   IdSelfie,
+  IdVerify,
   SelfieMask,
   Faded,
   CoverPhoto,

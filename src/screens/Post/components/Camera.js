@@ -35,7 +35,11 @@ export const PostCamera = ({ cancel, next }) => {
         </TouchableOpacity>
       </View>
       {/* <AppCamera captureImage={captureImage} retakeImage={retakeImage} /> */}
-      <AppCamera setCameraCapture={setCameraCapture} />
+      <AppCamera
+        withFlash
+        withFlip 
+        setCameraCapture={setCameraCapture} 
+      />
     </SafeAreaView>
   );
 };
