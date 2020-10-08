@@ -84,7 +84,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     full_name,
     username,
     description,
-    address,
+    addresses,
     email,
     secondary_email,
     phone_number,
@@ -562,6 +562,31 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 You can save multiple addresses.
               </AppText>
 
+              {addresses.map((address, index) => {
+                return (
+                  <TouchableOpacity key={index} style={{paddingVertical: 16}}>
+                    <View style={{flexDirection: 'row'}}>
+                      <View>
+                        <AppText textStyle="body1medium">
+                          {address.name ? address.name : 'Default'}
+                        </AppText>
+                        <AppText textStyle="caption">
+                          {address.full_address}
+                        </AppText>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'flex-end',
+                        }}>
+                        <ArrowRight width={24} height={24} />
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+
               <TouchableOpacity onPress={toggleAddAddress}>
                 <AppText textStyle="body2" color={Colors.contentOcean}>
                   Add an Address
@@ -719,7 +744,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          <AddAddress toggleAddAddress={toggleAddAddress} address={address} />
+          <AddAddress
+            toggleAddAddress={toggleAddAddress}
+            address={addresses[0]}
+          />
         </Modal>
 
         <Modal
