@@ -151,10 +151,11 @@ const SearchBox = ({
         //   useNativeDriver: false
         // })
       ]).start();
+      valueHandler()
       searchbarRef.current.clear();
       searchbarRef.current.blur();
       setSearchType('posts')
-    }, 1500)
+    }, 500)
   }
   
   useEffect(() => {
@@ -198,7 +199,7 @@ const SearchBox = ({
             width: searchType === 'posts' ? inputLength : FULL_WIDTH,
             position: 'absolute',
             zIndex: 1,
-            left: searchType === 'posts' ? barPosition : 45,
+            left: searchType === 'posts' ? barPosition : 0,
             // left: barPosition,
             top: searchType === 'posts' ? 0 : normalize(55),
             opacity: searchType !== 'posts' ? barOpacity : 1
