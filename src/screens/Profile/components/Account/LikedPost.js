@@ -8,7 +8,7 @@ import {NoPost} from '@/assets/images';
 
 // create a component
 const LikedPost = ({toggleLikePost}) => {
-  const [hasLikePost, setHasLikePost] = useState(false);
+  const [hasLikePost, setHasLikePost] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   let dummyData = [

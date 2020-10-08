@@ -8,12 +8,16 @@ import BlockList from './Account/BlockList.js';
 import HiddenPost from './Account/HiddenPost.js';
 import LikedPost from './Account/LikedPost.js';
 import ArchivedPost from './Account/ArchivedPost.js';
+import InviteFriends from './Account/InviteFriends.js';
 
 import ChangePassword from './ChangePassword/ChangePassword.js';
 
 import EditProfile from './EditProfile/EditProfile.js';
 import AddAddress from './EditProfile/AddAddress.js';
 import Gender from './EditProfile/Gender.js';
+
+import ContactServbees from './HelpSupport/ContactUs.js';
+import FaqScreen from './HelpSupport/Faq';
 
 export {
   About,
@@ -29,4 +33,7 @@ export {
   AddAddress,
   Gender,
   ArchivedPost,
+  InviteFriends,
+  ContactServbees,
+  FaqScreen,
 };

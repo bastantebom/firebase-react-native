@@ -47,6 +47,9 @@ import {
   HiddenPost,
   LikedPost,
   ArchivedPost,
+  InviteFriends,
+  ContactServbees,
+  FaqScreen,
 } from '@/screens/Profile/components';
 
 const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
@@ -58,6 +61,9 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
   const [hiddenPost, setHiddenPost] = useState(false);
   const [likePost, setLikePost] = useState(false);
   const [archivedPost, setArchivedPost] = useState(false);
+  const [inviteFriends, setInviteFriends] = useState(false);
+  const [contactServbees, setContactServbees] = useState(false);
+  const [questions, setQuestions] = useState(false);
 
   const toggleEditProfile = () => {
     setEditProfile(!editProfile);
@@ -85,6 +91,18 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
 
   const toggleArchivedPost = () => {
     setArchivedPost(!archivedPost);
+  };
+
+  const toggleInviteFriends = () => {
+    setInviteFriends(!inviteFriends);
+  };
+
+  const toggleContactUs = () => {
+    setContactServbees(!contactServbees);
+  };
+
+  const toggleFaq = () => {
+    setQuestions(!questions);
   };
 
   return (
@@ -164,7 +182,9 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={toggleInviteFriends}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <InviteFriendsMenu
                     width={normalize(24)}
@@ -189,7 +209,7 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
                 Help and Support
               </AppText>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleFaq}>
                 <View style={{flexDirection: 'row', marginBottom: 16}}>
                   <Faq width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
@@ -198,7 +218,7 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
                 <View style={{flexDirection: 'row'}}>
                   <ContactUs width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{marginLeft: 8}} textStyle="body1">
@@ -358,6 +378,21 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
       </Modal>
 
       <Modal
+        isVisible={inviteFriends}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <InviteFriends toggleInviteFriends={toggleInviteFriends} />
+      </Modal>
+
+      <Modal
         isVisible={about}
         animationIn="slideInRight"
         animationInTiming={450}
@@ -385,6 +420,36 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
         <ChangePassword toggleChangePassword={toggleChangePassword} />
+      </Modal>
+
+      <Modal
+        isVisible={contactServbees}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <ContactServbees toggleContactUs={toggleContactUs} />
+      </Modal>
+
+      <Modal
+        isVisible={questions}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        {/* <FilterSlider modalToggler={toggleModal} /> */}
+        <FaqScreen toggleFaq={toggleFaq} />
       </Modal>
     </SafeAreaView>
   );
