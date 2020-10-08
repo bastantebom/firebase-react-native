@@ -11,6 +11,7 @@ import SplashScreenComponent from './SplashScreen';
 
 import {Notification} from '@/components';
 import {useNavigation} from '@react-navigation/native';
+import {PostService} from '@/services';
 
 //screens
 import {Onboarding} from '@/screens/Onboarding';
@@ -57,7 +58,7 @@ function AuthStackScreen() {
   // console.log(navigation);
 
   useEffect(() => {
-    console.log("Hello android")
+    console.log('Hello android');
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         navigation.navigate(url);
@@ -70,7 +71,6 @@ function AuthStackScreen() {
   const handleOpenURL = (event) => {
     navigate(event.url);
   };
-
 
   const navigate = (url) => {
     const route = url.replace(/.*?:\/\//g, '');
@@ -232,10 +232,18 @@ function TabStack() {
       });
     }
     if (routeName === 'post') {
-      navigation.navigate('NBTScreen', {
-        screen: 'ExternalPostLink',
-        params: {pid: id},
-      });
+      // navigation.navigate('Servbees', {pid: id});
+
+      PostService.getPost(id)
+        .then((res) => {
+          navigation.navigate('NBTScreen', {
+            screen: 'OthersPost',
+            params: {...res, othersView: true},
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 

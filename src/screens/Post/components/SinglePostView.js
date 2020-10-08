@@ -44,6 +44,8 @@ import {ImageModal} from './ImageModal';
 const SinglePostView = (props) => {
   const {othersView = false} = props.route?.params;
 
+  console.log(props.route.params);
+
   const {
     uid,
     post_type,
@@ -52,7 +54,7 @@ const SinglePostView = (props) => {
     description,
     payment_method,
     price,
-    store_location: {longitude, city, province, latitude, country},
+    store_location: {city, province, country},
     delivery_method: {pickup, delivery},
     available,
     username,
@@ -70,15 +72,15 @@ const SinglePostView = (props) => {
 
   // console.log(images);
 
-  useEffect(() => {
-    PostService.getPost(post_id)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
+  // useEffect(() => {
+  //   PostService.getPost(post_id)
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // });
 
   const navigation = useNavigation();
   const [showNotification, setShowNotification] = useState(false);
