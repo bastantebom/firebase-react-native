@@ -21,7 +21,12 @@ import Modal from 'react-native-modal';
 import StoreLocation from '../StoreLocation';
 /*Map Essentials*/
 
-import {AppInput, Validator, valueHandler, PriceInput} from '@/components/AppInput';
+import {
+  AppInput,
+  Validator,
+  valueHandler,
+  PriceInput,
+} from '@/components/AppInput';
 import {
   ArrowRight,
   Public,
@@ -38,6 +43,7 @@ import {
   CacheableImage,
   TransitionIndicator,
   AppRadio,
+  AppCheckbox,
 } from '@/components';
 import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -74,7 +80,6 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [stringAddress, setStringAddress] = useState('');
   const [addItemModal, showAddItemModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
-  
 
   useEffect(() => {
     if (images) {
@@ -505,6 +510,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
+            onPress={() => showAddItemModal(true)}
             activeOpacity={0.7}
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
