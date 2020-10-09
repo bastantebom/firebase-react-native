@@ -39,8 +39,10 @@ import WhiteOpacity from './WhiteOpacity/WhiteOpacity';
 import OfflineNotice from '@/components/OfflineNotice';
 
 import CacheableImage from './ImageCache/CacheableImage';
+import Item from './Item/Item';
 
 export {
+  Item,
   ProfileInfoModal,
   CacheableImage,
   OtherUserPosts,
@@ -74,5 +76,5 @@ export {
   Reviews,
   FloatingAppInput,
   OfflineNotice,
-  SinglePostOthersView
+  SinglePostOthersView,
 };
