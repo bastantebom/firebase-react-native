@@ -44,6 +44,7 @@ import {
   TransitionIndicator,
   AppRadio,
   AppCheckbox,
+  ItemCategory
 } from '@/components';
 import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -80,6 +81,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [stringAddress, setStringAddress] = useState('');
   const [addItemModal, showAddItemModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     if (images) {
@@ -340,6 +342,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   /**FOR ANIMATION */
 
+  useEffect(() => {
+    console.log('POST FORM ITEMS');
+    console.log(data);
+  });
+
   return (
     <>
       <View
@@ -508,6 +515,16 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         {/* IF statement here where we show the added items */}
 
+        {data.length > 0
+        // && listAsMultiple
+        ? (
+          <View>
+            <ItemCategory items={data} />
+          </View>
+        ) : (
+          <></>
+        )}
+
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
             onPress={() => showAddItemModal(true)}
@@ -669,7 +686,11 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           justifyContent: 'flex-start',
           height: Dimensions.get('window').height,
         }}>
-        <AddItemModal closeModal={() => showAddItemModal(false)} />
+        <AddItemModal
+          setData={setData}
+          data={data}
+          closeModal={() => showAddItemModal(false)}
+        />
       </Modal>
     </>
   );

@@ -40,8 +40,10 @@ import OfflineNotice from '@/components/OfflineNotice';
 
 import CacheableImage from './ImageCache/CacheableImage';
 import Item from './Item/Item';
+import ItemCategory from './ItemCategory/ItemCategory';
 
 export {
+  ItemCategory,
   Item,
   ProfileInfoModal,
   CacheableImage,

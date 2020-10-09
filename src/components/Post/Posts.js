@@ -213,25 +213,26 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
 
   if (data.length > 0) {
     return (
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.post_id}
-        onRefresh={refreshPosts}
-        refreshing={refresh}
-        onEndReached={() => getMorePost()}
-        onEndReachedThreshold={0.1}
-        onMomentumScrollBegin={onMomentumScrollBegin}
-        ListFooterComponent={
-          <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
-            {fetchMore ? (
-              <ActivityIndicator />
-            ) : (
-              <AppText>{'Oops, you’ve run out of posts.'}</AppText>
-            )}
-          </View>
-        }
-      />
+      // <FlatList
+      //   data={data}
+      //   renderItem={renderItem}
+      //   keyExtractor={(item) => item.post_id}
+      //   onRefresh={refreshPosts}
+      //   refreshing={refresh}
+      //   onEndReached={() => getMorePost()}
+      //   onEndReachedThreshold={0.1}
+      //   onMomentumScrollBegin={onMomentumScrollBegin}
+      //   ListFooterComponent={
+      //     <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+      //       {fetchMore ? (
+      //         <ActivityIndicator />
+      //       ) : (
+      //         <AppText>{'Oops, you’ve run out of posts.'}</AppText>
+      //       )}
+      //     </View>
+      //   }
+      // />
+      <></>
     );
   }
 

@@ -1,19 +1,21 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 
 import {AppText} from '@/components';
 import {Colors, normalize} from '@/globals';
 
 const Item = ({item, children, style}) => {
-  console.log('ITEM RECEIVED');
-  console.log(item);
+  // console.log('ITEM RECEIVED');
+  // console.log(item);
 
   const {title, description, itemImage, price} = item;
 
   return (
     <View style={{paddingVertical: 8}}>
       <View style={styles.itemContainer}>
-        <View style={styles.image} />
+        <View style={styles.image}>
+          <Image source={itemImage} style={styles.image} />
+        </View>
 
         <View style={styles.itemDetailsContainer}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>

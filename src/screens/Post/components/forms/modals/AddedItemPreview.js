@@ -1,10 +1,17 @@
 import React from 'react';
 import {View, SafeAreaView, TouchableOpacity} from 'react-native';
 
-import {AppText, Item} from '@/components';
-import {Colors} from '@/globals';
+import {AppText, Item, ScreenHeaderTitle} from '@/components';
+import {Colors, normalize} from '@/globals';
+import {CircleAdd} from '@/assets/images/icons';
 
-const AddedItemPreview = ({closeAddItemModal, closeModal, data, clearData}) => {
+const AddedItemPreview = ({
+  closeAddItemModal,
+  closeModal,
+  data,
+  clearData,
+  setInitialData,
+}) => {
   console.log(data);
 
   const AddAnotherItemHandler = () => {
@@ -16,11 +23,25 @@ const AddedItemPreview = ({closeAddItemModal, closeModal, data, clearData}) => {
     closeAddItemModal();
   };
 
+  const editItemHandler = (item, index) => {
+    console.log('Edit this:');
+    console.log(item);
+
+    setInitialData.setTitle(item.title);
+    setInitialData.setDescription(item.description);
+    setInitialData.setItemImage(item.itemImage);
+    setInitialData.setPrice(item.price);
+    setInitialData.setCategoryName(item.categoryName);
+    setInitialData.setIndex(index);
+    setInitialData.setIsEditing(true);
+    closeModal();
+  };
+
   const ItemList = () => {
-    return data.map((item) => {
+    return data.map((item, index) => {
       return (
-        <Item item={item}>
-          <TouchableOpacity>
+        <Item item={item} key={index}>
+          <TouchableOpacity onPress={() => editItemHandler(item, index)}>
             <AppText textStyle="caption" color={Colors.contentOcean}>
               Edit Item
             </AppText>
@@ -39,15 +60,22 @@ const AddedItemPreview = ({closeAddItemModal, closeModal, data, clearData}) => {
           padding: 16,
         }}>
         <View>
-          <TouchableOpacity onPress={closeModal}>
-            <AppText>X</AppText>
-          </TouchableOpacity>
-          <ItemList />
+          <ScreenHeaderTitle
+            close={closeModal}
+            title={'Items'}
+            paddingSize={0}
+          />
+          <View style={{paddingTop: 24}}>
+            <ItemList />
+          </View>
 
           <TouchableOpacity
+            activeOpacity={0.7}
             onPress={AddAnotherItemHandler}
             style={{marginTop: 24}}>
-            <AppText textStyle="caption">Add an Item</AppText>
+            <AppText textStyle="caption" customStyle={{alignItems: 'center'}}>
+              <CircleAdd /> Add an Item
+            </AppText>
           </TouchableOpacity>
         </View>
 
