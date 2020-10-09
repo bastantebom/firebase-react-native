@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -24,9 +24,14 @@ import {
 
 import {ArrowRight} from '@/assets/images/icons';
 import MapAddress from './MapAddress';
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
 // create a component
-const AddAddress = ({toggleAddAddress, address}) => {
+const AddAddress = ({toggleAddAddress, address, additional}) => {
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
+  const [currentAddress, setCurrentAddress] = useState(address);
+  const {addresses} = userInfo;
+
   // useEffect(() => {
   //   let isSubscribed = true;
   //   if (userInfo) {
@@ -38,15 +43,80 @@ const AddAddress = ({toggleAddAddress, address}) => {
   //   return () => (isSubscribed = false);
   // }, []);
 
+  //const {name, full_address, detail, note} = address;
+
   const [IS_LOADING, setIS_LOADING] = useState(false);
-  const [addName, setAddName] = useState('');
-  const [stringAddress, setStringAddress] = useState('');
-  const [addDet, setAddDet] = useState('');
-  const [addNote, setAddNote] = useState('');
+  const [addName, setAddName] = useState(
+    additional === true ? '' : currentAddress.name ? currentAddress.name : '',
+  );
+  const [stringAddress, setStringAddress] = useState(
+    currentAddress.full_address,
+  );
+  const [addDet, setAddDet] = useState(
+    additional === true
+      ? ''
+      : currentAddress.details
+      ? currentAddress.details
+      : '',
+  );
+  const [addNote, setAddNote] = useState(
+    additional === true ? '' : currentAddress.note ? currentAddress.note : '',
+  );
   const [map, setMap] = useState(false);
 
   const toggleMap = () => {
     setMap(!map);
+  };
+
+  const changeFromMapHandler = (newAddress) => {
+    setStringAddress(newAddress.full_address);
+    setCurrentAddress(newAddress);
+    //console.log(newAddress);
+  };
+
+  const onSaveHandler = () => {
+    //setIS_LOADING(true);
+    console.log(additional);
+
+    const nAdd = [...addresses];
+    const addressToUpdate = {
+      ...currentAddress,
+      details: addDet,
+      note: addNote,
+      name: addName,
+    };
+    if (additional === true) {
+      nAdd[addresses.length] = {...addressToUpdate, ...{default: false}};
+    } else {
+      nAdd[additional] = {
+        ...addressToUpdate,
+        ...{default: address.default},
+      };
+    }
+
+    const fAdd = {
+      addresses: [...nAdd],
+    };
+
+    // ProfileInfoService.updateUser({...fAdd, ...userInfo}, user.uid)
+    //   .then((response) => {
+    //     if (response.success) {
+    //       setIS_LOADING(false);
+    //       setUserInfo({...userInfo, ...response.data});
+    //       console.log(response);
+    //     } else {
+    //       setIS_LOADING(false);
+    //       console.log(response);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setIS_LOADING(false);
+    //     console.log(error);
+    //   });
+
+    setUserInfo({...userInfo.addresses, ...fAdd});
+    //console.log(fAdd);
+    toggleAddAddress();
   };
 
   return (
@@ -76,12 +146,16 @@ const AddAddress = ({toggleAddAddress, address}) => {
               marginBottom: normalize(16),
               marginTop: normalize(16),
             }}
-            placeholder="ex. Home"
+            placeholder="ex. Work, School, Other"
           />
           <View style={{position: 'relative'}}>
             <TouchableOpacity onPress={() => toggleMap()}>
               <FloatingAppInput
-                value={stringAddress}
+                value={
+                  stringAddress.length > 32
+                    ? `${stringAddress.substring(0, 32)}...`
+                    : stringAddress
+                }
                 label="Address"
                 customStyle={{marginBottom: normalize(16)}}
                 onFocus={() => toggleMap()}
@@ -144,7 +218,13 @@ const AddAddress = ({toggleAddAddress, address}) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        <MapAddress toggleMap={toggleMap} address={address} />
+        <MapAddress
+          toggleMap={toggleMap}
+          address={currentAddress}
+          changeFromMapHandler={(newAddress) =>
+            changeFromMapHandler(newAddress)
+          }
+        />
       </Modal>
     </>
   );

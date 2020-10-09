@@ -106,6 +106,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState({});
+  const [additional, setAdditional] = useState(null);
   // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
   // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
@@ -168,6 +170,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [g, setG] = useState(gender);
 
   const toggleAddAddress = () => {
+    //setSelectedAddress(null);
+    setAdditional(true);
+    setSelectedAddress(addresses.find((address) => address.default));
     setAddAddress(!addAddress);
   };
 
@@ -312,18 +317,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   };
 
   const updateProfile = async () => {
-    const addressToUpdate = {
-      details: addDet,
-      note: addNote,
-      name: addName,
-      ...addressComponents,
-    };
-
-    Object.keys(addressToUpdate).forEach(
-      (key) =>
-        addressToUpdate[key] === undefined && delete addressToUpdate[key],
-    );
-
     const dataToUpdate = {
       //cover_photo: cPhoto,
       //profile_photo: pPhoto,
@@ -331,7 +324,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       description: desc,
       full_name: name,
       username: uName,
-      address: {...userInfo.address, ...addressToUpdate},
       birth_date: bDate,
       email: em,
       secondary_email: sEm,
@@ -564,11 +556,18 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
               {addresses.map((address, index) => {
                 return (
-                  <TouchableOpacity key={index} style={{paddingVertical: 16}}>
+                  <TouchableOpacity
+                    key={index}
+                    style={{paddingVertical: 16}}
+                    onPress={() => {
+                      setAdditional(index);
+                      setSelectedAddress(address);
+                      setAddAddress(true);
+                    }}>
                     <View style={{flexDirection: 'row'}}>
                       <View>
                         <AppText textStyle="body1medium">
-                          {address.name ? address.name : 'Default'}
+                          {address.name ? address.name : 'Home'}
                         </AppText>
                         <AppText textStyle="caption">
                           {address.full_address}
@@ -746,7 +745,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           }}>
           <AddAddress
             toggleAddAddress={toggleAddAddress}
-            address={addresses[0]}
+            address={selectedAddress}
+            additional={additional}
           />
         </Modal>
 

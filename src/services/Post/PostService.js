@@ -18,7 +18,7 @@ const getUserPosts = (payload) => {
   //   `posts?uid=${payload.uid}&limit=${payload.limit}&page=${payload.page}`,
   // );
   return BaseAPI({
-    url: `posts?uid=${payload.uid}&limit=${payload.limit}&page=${payload.page}`,
+    url: `posts/${payload.uid}/users/limit=${payload.limit}&page=${payload.page}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

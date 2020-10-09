@@ -232,7 +232,10 @@ const FloatingAppInput = (props) => {
     // //console.log('Value useeffect');
     // //console.log(value);
 
-    if (value !== '' && (value !== undefined || placeholder !== undefined)) {
+    if (
+      (value !== '' || placeholder !== '') &&
+      (value !== undefined || placeholder !== undefined)
+    ) {
       animateFocus();
     }
   }, [value, placeholder, validation]);
@@ -274,7 +277,7 @@ const FloatingAppInput = (props) => {
   const fontSize =
     !isActive &&
     (value === undefined || value === '') &&
-    placeholder === undefined
+    (placeholder === undefined || placeholder === '')
       ? normalize(16)
       : normalize(12);
 
