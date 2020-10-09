@@ -5,6 +5,7 @@ import {Colors} from '@/globals';
 import {AppCamera} from '@/components/Camera/AppCamera';
 
 export const PostCamera = ({ cancel, next }) => {
+
   const [cameraCapture, setCameraCapture] = useState(false)
 
   return (
@@ -38,7 +39,8 @@ export const PostCamera = ({ cancel, next }) => {
       <AppCamera
         withFlash
         withFlip 
-        setCameraCapture={setCameraCapture} 
+        setCameraCapture={setCameraCapture}
+        coverPhotoCamera
       />
     </SafeAreaView>
   );

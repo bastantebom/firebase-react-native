@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -32,8 +32,17 @@ import {normalize} from '@/globals';
  * }
  */
 
-const Notification = ({message, type, position = 'absolute', top}) => {
+const Notification = ({
+  message, 
+  type, 
+  position = 'absolute', 
+  top, 
+  verification = true
+}) => {
+
   const {notificationState, closeNotification} = useContext(Context);
+
+  const [isDashboardVisible, setIsDashboardVisible] = useState(verification)
 
   const width = Dimensions.get('window').width;
 
@@ -54,7 +63,16 @@ const Notification = ({message, type, position = 'absolute', top}) => {
     },
   });
 
-  if (notificationState === 'open') {
+  
+  // useEffect(() => {
+  //   isDashboardVisible
+  //   console.log(isDashboardVisible, 'verification')
+  // })
+
+  if (
+    // verification ? isDashboardVisible === true : 
+    notificationState === 'open'
+    ) {
     return (
       // <SafeAreaView style={{zIndex: 1}}>
         <PaddingView paddingSize={2} style={styles.container}>
@@ -67,7 +85,7 @@ const Notification = ({message, type, position = 'absolute', top}) => {
           )}
           <View style={{flex: 1}}>{message}</View>
           <TouchableOpacity
-            onPress={() => closeNotification()}
+            onPress={() => {verification ? setIsDashboardVisible(!isDashboardVisible) : closeNotification()}}
             style={{height: normalize(24)}}>
             {type === 'success' ? (
               <CloseDark width={normalize(24)} height={normalize(24)} />

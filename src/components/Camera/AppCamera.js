@@ -32,7 +32,12 @@ export const AppCamera = ({
   withFlash,
   withFlip,
   setCameraCapture,
-  customHeight
+  customHeight,
+  coverPhotoCamera, // prop for post camera
+  idVerificationCamera, // prop for gov't id verification
+  idImageUrl,
+  selfieWithIdCamera, // prop for selfie with id verification
+  selfieImageUrl
 }) => {
   const {
     setCameraImage,
@@ -43,6 +48,7 @@ export const AppCamera = ({
     setImageCount,
     setSingleCameraImage,
   } = useContext(Context);
+
   const [flash, setFlash] = useState('off');
   const [cameraType, setCameraType] = useState('back');
   const cameraRef = useRef(null);
@@ -72,15 +78,32 @@ export const AppCamera = ({
         quality: 1,
         pauseAfterCapture: true,
       });
-      cameraRef.current.pausePreview();
+
       const cameraUrl = data.uri;
-      setCameraImage((prev) => [...prev, cameraUrl]);
-      setSingleCameraImage(cameraUrl);
-      setCameraCapture(true);
-      setRetakeState(true);
+      
+      if(idVerificationCamera) {
+        idImageUrl(cameraUrl)
+        // console.log(cameraUrl)
+        // console.log('cameraUrl')
+      }
+
+      if(selfieWithIdCamera) {
+        selfieImageUrl(cameraUrl)
+        // console.log(cameraUrl)
+        // console.log('cameraUrl selfie')
+      }
+
+      if(coverPhotoCamera) {
+        cameraRef.current.pausePreview();
+        setCameraImage((prev) => [...prev, cameraUrl]);
+        setSingleCameraImage(cameraUrl);
+        setCameraCapture(true);
+        setRetakeState(true);
+      }
     }
   };
 
+  // for add image from camera on post
   const retake = () => {
     cameraRef.current.resumePreview();
 
@@ -116,7 +139,8 @@ export const AppCamera = ({
         type={'front'}
         captureAudio={false}
         flashMode={flash}
-        type={cameraType}>
+        type={cameraType}
+      >
         {withMask && <OverlayMask />}
         <View
           style={{
@@ -160,7 +184,7 @@ export const AppCamera = ({
           flex: 1, 
           alignItems: 'center'
         }}>
-        {retakeState ? (
+        {coverPhotoCamera && retakeState ? (
           <TouchableOpacity onPress={retake}>
             <AppText textStyle="body1" customStyle={{marginTop: 20}}>
               Retake
@@ -173,6 +197,7 @@ export const AppCamera = ({
             <View style={styles.captureButton} />
           </TouchableOpacity>
         )}
+
       </View>
     </View>
   );

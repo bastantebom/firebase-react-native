@@ -49,7 +49,9 @@ function Dashboard() {
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const {openNotification} = useContext(Context);
+  // const {openNotification} = useContext(Context);
+
+  // const [notificationState, setNotificationState] = useState('');
 
   const { posts } = useContext(Context);
 
@@ -63,9 +65,19 @@ function Dashboard() {
     setMenu(!menu);
   };
 
-  useEffect(() => {
-    openNotification();
-  }, [])
+  // useEffect(() => {
+  //   openNotification();
+  //   console.log(notificationState)
+  //   // console.log(notificationState)
+  // }, [])
+
+  // const openNotification = () => {
+  //   setNotificationState('open');
+  // };
+
+  // const closeNotification = () => {
+  //   setNotificationState('close');
+  // };
 
   return (
     <>
@@ -82,6 +94,7 @@ function Dashboard() {
             }
             type={'verified'}
             position="relative"
+            verification
           />
         {/* ---- Verification Notification ---- */}
       
