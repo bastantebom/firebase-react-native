@@ -9,13 +9,14 @@ import {
   TextInput
 } from 'react-native';
 
-// import Slider from '@react-native-community/slider';
+import Slider from '@react-native-community/slider';
 
 import {
   AppText,
   AppCheckbox,
   Switch,
   ScreenHeaderTitle,
+  PaddingView
 } from '@/components';
 
 import { ArrowRight } from '@/assets/images/icons';
@@ -27,6 +28,7 @@ const ShippingMethodModal = ({ closeModal }) => {
   const [delivery, setDelivery] = useState(false)
   const [nationwide, setNationwide] = useState(false)
   const [within, setWithin] = useState(false)
+  const [rangeValue, setRangeValue] = useState(0)
 
   const CheckboxStateHandler = (val) => {
     if (val === 'nationwide') {
@@ -149,56 +151,57 @@ const ShippingMethodModal = ({ closeModal }) => {
                 <AppText>Within your specified area</AppText>
               </View>
               {within && (
-                <TextInput
-                  // value={description}
-                  multiline={true}
-                  placeholder="Are there additional delivery fees and options? (Optional)"
-                  placeholderTextColor={Colors.neutralGray}
-                  numberOfLines={Platform.OS === 'ios' ? null : 6}
-                  minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
-                  style={{
-                    color: Colors.contentEbony,
-                    fontFamily: 'RoundedMplus1c-Regular',
-                    fontSize: normalize(16),
-                    letterSpacing: 0.5,
-                    borderColor: Colors.neutralGray,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    marginBottom: 16,
-                    textAlign: 'left',
-                  }}
-                  // onChangeText={(text) => setDescription(text)}
-                  underlineColorAndroid={'transparent'}
-                  textAlignVertical="top"
-                  scrollEnabled={false}
-                />
+                <>
+                  <TextInput
+                    // value={description}
+                    multiline={true}
+                    placeholder="Are there additional delivery fees and options? (Optional)"
+                    placeholderTextColor={Colors.neutralGray}
+                    numberOfLines={Platform.OS === 'ios' ? null : 6}
+                    minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
+                    style={{
+                      color: Colors.contentEbony,
+                      fontFamily: 'RoundedMplus1c-Regular',
+                      fontSize: normalize(16),
+                      letterSpacing: 0.5,
+                      borderColor: Colors.neutralGray,
+                      borderWidth: 1,
+                      borderRadius: 4,
+                      paddingHorizontal: 16,
+                      paddingVertical: 8,
+                      marginBottom: 16,
+                      textAlign: 'left',
+                    }}
+                    // onChangeText={(text) => setDescription(text)}
+                    underlineColorAndroid={'transparent'}
+                    textAlignVertical="top"
+                    scrollEnabled={false}
+                  />
+                  <PaddingView paddingSize={2}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between',  marginBottom: 20 }}>
+                      <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <AppText textStyle="caption" color="#999">0</AppText>
+                      <Slider
+                        style={{width: '90%'}}
+                        minimumValue={0}
+                        maximumValue={200}
+                        step={5}
+                        value={rangeValue}
+                        onValueChange={rangeValue => setRangeValue(rangeValue)}
+                        minimumTrackTintColor={Colors.primaryYellow}
+                        maximumTrackTintColor={Colors.neutralGray}
+                        thumbTintColor={Colors.primaryYellow}
+                      />
+                      <AppText textStyle="caption" color="#999">200</AppText>
+                    </View>
+                  </PaddingView>
+                </>
               )}
             </>
           )}
           
-          {/* <PaddingView paddingSize={2}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
-              <AppText textStyle="promo">Browse Offers Within</AppText>
-              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <AppText textStyle="caption" color="#999">0</AppText>
-              <Slider
-                style={{width: '90%'}}
-                minimumValue={0}
-                maximumValue={200}
-                step={5}
-                value={rangeValue}
-                onValueChange={rangeValue => setRangeValue(rangeValue)}
-                minimumTrackTintColor={Colors.primaryYellow}
-                maximumTrackTintColor={Colors.neutralGray}
-                thumbTintColor={Colors.primaryYellow}
-              />
-              <AppText textStyle="caption" color="#999">200</AppText>
-            </View>
-          </PaddingView> */}
         </View>
       </ScrollView>
     </SafeAreaView>
