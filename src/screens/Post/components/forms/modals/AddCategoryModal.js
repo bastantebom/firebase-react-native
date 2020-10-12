@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, Animated} from 'react-native';
+import {View, TouchableOpacity, Animated, Dimensions} from 'react-native';
 import {Divider} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
+import Modal from 'react-native-modal';
+import CategoryFormModal from './CategoryFormModal';
 
 import {GlobalStyle, Colors, normalize} from '@/globals';
 import {
@@ -11,14 +14,17 @@ import {
   FloatingAppInput,
 } from '@/components';
 
+import {CategoryService} from '@/services';
+
 const AddCategoryModal = ({
   categoryName,
   setCategoryName,
-  choice,
-  setChoice,
+  choices,
+  setChoices,
   close,
 }) => {
   const [newCategoryName, setNewCategoryName] = useState(categoryName);
+  const [newCategoryModal, setNewCategoryModal] = useState(false);
 
   const onFocusHandler = () => {
     setPaddingBottom(320);
@@ -31,7 +37,7 @@ const AddCategoryModal = ({
   const [paddingBottom, setPaddingBottom] = useState(40);
 
   const submitHandler = () => {
-    setCategoryName(newCategoryName);
+    // setCategoryName(newCategoryName);
     close();
   };
 
@@ -44,9 +50,21 @@ const AddCategoryModal = ({
     marginBottom: 16,
   };
 
+  const [categoryList, setCategoryList] = useState(
+    CategoryService.getCategories(),
+  );
+
   useEffect(() => {
-    if (choice.newCategory) showNewCategory();
+    console.log('CAtegory modal');
+    // setCategoryList(CategoryService.getCategories());
+    // setCategoryList(CategoryService.getCategories());
+    console.log(categoryList);
+    console.log(choices);
   }, []);
+
+  // useEffect(() => {
+  //   if (choices.newCategory) showNewCategory();
+  // }, []);
 
   const showNewCategory = async () => {
     Animated.sequence([
@@ -78,6 +96,19 @@ const AddCategoryModal = ({
     ]).start();
   };
 
+  const radioGroupHandler = (selected) => {
+    setChoices((choice) => {
+      return choice.map((choice) => {
+        return {
+          ...choice,
+          selected: selected.id === choice.id ? true : false,
+        };
+      });
+    });
+
+    setCategoryName(selected.name);
+  };
+
   return (
     <View
       style={{
@@ -90,24 +121,36 @@ const AddCategoryModal = ({
       <BottomSheetHeader />
       <AppRadio
         label="Uncategorized"
-        value={choice.uncategorized}
+        value={choices[0]?.selected}
         style={{paddingLeft: 0, marginTop: 24}}
         valueChangeHandler={() => {
-          setChoice({
-            uncategorized: true,
-            newCategory: false,
-          });
-          setNewCategoryName('uncategorized');
-          hideNewCategory();
+          radioGroupHandler({id: 0, name: 'items', selected: true});
         }}
       />
       <AppText textStyle="caption" color={Colors.contentPlaceholder}>
         If you don't have categories, items will be displayed under "items".
       </AppText>
       <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
-      <AppRadio
+
+      {choices.map((choice, index) => {
+        if (index !== 0)
+          return (
+            <AppRadio
+              label={choice.name}
+              value={choice.selected}
+              style={{paddingLeft: 0, marginBottom: 8}}
+              valueChangeHandler={() => {
+                radioGroupHandler(choice);
+              }}
+            />
+          );
+      })}
+
+      <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
+
+      {/* <AppRadio
         label="Create a New Category"
-        value={choice.newCategory}
+        value={choices.newCategory}
         style={{paddingLeft: 0, marginBottom: 8}}
         valueChangeHandler={() => {
           setChoice({
@@ -116,7 +159,11 @@ const AddCategoryModal = ({
           });
           showNewCategory();
         }}
-      />
+      /> */}
+
+      <TouchableOpacity onPress={() => setNewCategoryModal(true)}>
+        <AppText>or Create a New Category</AppText>
+      </TouchableOpacity>
 
       <Animated.View style={newActiveStyle}>
         <FloatingAppInput
@@ -139,8 +186,27 @@ const AddCategoryModal = ({
           height: 48,
           justifyContent: 'center',
         }}>
-        <AppText textStyle="button2">Add New Category</AppText>
+        <AppText textStyle="button2">Select Category</AppText>
       </TouchableOpacity>
+
+      <Modal
+        isVisible={newCategoryModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <CategoryFormModal
+          close={() => {
+            setNewCategoryModal(false);
+          }}
+        />
+      </Modal>
     </View>
   );
 };

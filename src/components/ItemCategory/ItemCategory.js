@@ -27,10 +27,15 @@ const ItemCategory = ({items}) => {
   console.log('RESULT:');
   console.log(result);
 
+  const categoryHandler = (category) => {
+    console.log(`open ${category} items`);
+  };
+
   const CategoryList = () => {
     return result.map((category) => {
       return (
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => categoryHandler(category.categoryName)}>
           <View
             style={{
               borderWidth: 1,

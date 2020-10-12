@@ -26,7 +26,7 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
         }}>
         <View style={{flexDirection: 'row'}}>
           {Icon ? <Icon /> : <></>}
-          <AppText textStyle="body3">
+          <AppText textStyle="body3" customStyle={{textTransform:"capitalize"}} >
             {label}
           </AppText>
         </View>

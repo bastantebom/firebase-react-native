@@ -26,6 +26,7 @@ import {AppInput, PriceInput} from '@/components/AppInput';
 
 import AddCategoryModal from './AddCategoryModal';
 import AddedItemPreview from './AddedItemPreview';
+import {CategoryService} from '@/services';
 
 const AddItemModal = ({closeModal, setData, data}) => {
   const [title, setTitle] = useState();
@@ -34,10 +35,16 @@ const AddItemModal = ({closeModal, setData, data}) => {
   const [price, setPrice] = useState(0);
   const [free, setFree] = useState(false);
   const [categoryName, setCategoryName] = useState('uncategorized');
-  const [choice, setChoice] = useState({
-    uncategorized: true,
-    newCategory: false,
-  });
+  const [choices, setChoices] = useState([
+    {
+      name: 'items',
+      id: 0,
+      selected: true,
+    },
+    ...CategoryService.getCategories().map((category) => {
+      return {...category, selected: false};
+    }),
+  ]);
 
   const [categoryModal, setCategoryModal] = useState(false);
   const [previewItemModal, setPreviewItemModal] = useState(false);
@@ -312,8 +319,8 @@ const AddItemModal = ({closeModal, setData, data}) => {
         <AddCategoryModal
           categoryName={categoryName}
           setCategoryName={setCategoryName}
-          choice={choice}
-          setChoice={setChoice}
+          choices={choices}
+          setChoices={setChoices}
           close={() => setCategoryModal(false)}
         />
       </Modal>
