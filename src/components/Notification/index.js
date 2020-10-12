@@ -37,12 +37,12 @@ const Notification = ({
   type, 
   position = 'absolute', 
   top, 
-  verification = true
+  verification
 }) => {
 
   const {notificationState, closeNotification} = useContext(Context);
 
-  const [isDashboardVisible, setIsDashboardVisible] = useState(verification)
+  const [isDashboardVisible, setIsDashboardVisible] = useState('open')
 
   const width = Dimensions.get('window').width;
 
@@ -63,16 +63,11 @@ const Notification = ({
     },
   });
 
-  
-  // useEffect(() => {
-  //   isDashboardVisible
-  //   console.log(isDashboardVisible, 'verification')
-  // })
+  const closeDashboardVerification = () => {
+    setIsDashboardVisible('close')
+  }
 
-  if (
-    // verification ? isDashboardVisible === true : 
-    notificationState === 'open'
-    ) {
+  if (verification ? isDashboardVisible === 'open' : notificationState === 'open') {
     return (
       // <SafeAreaView style={{zIndex: 1}}>
         <PaddingView paddingSize={2} style={styles.container}>
@@ -85,7 +80,7 @@ const Notification = ({
           )}
           <View style={{flex: 1}}>{message}</View>
           <TouchableOpacity
-            onPress={() => {verification ? setIsDashboardVisible(!isDashboardVisible) : closeNotification()}}
+            onPress={() => {verification ? closeDashboardVerification() : closeNotification()}}
             style={{height: normalize(24)}}>
             {type === 'success' ? (
               <CloseDark width={normalize(24)} height={normalize(24)} />

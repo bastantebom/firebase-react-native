@@ -26,12 +26,15 @@ import { MobileVerification } from './MobileVerification';
 import { UploadGovernmentId } from './UploadId';
 import { AddAnAddress } from './Address';
 import { MobileCode } from './components/MobileCode';
+import { EmailVerification } from './EmailVerification';
+import { EmailCode } from './components/EmailCode';
 
 import { useNavigation } from '@react-navigation/native';
 import { VerifyMap } from './components/Map';
 import { VerifiedAccount } from './VerifiedAccount';
 import { ScrollView } from 'react-native-gesture-handler';
 import { InitialVerification } from './Initial';
+import { PendingVerification } from './PendingVerification';
 
 export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => {
   
@@ -54,6 +57,10 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
     setScreen('governmentId')
   };
 
+  const toggleEmailVerification = () => {
+    setScreen('email')
+  };
+
   const switchVerificationScreens = ( screen ) => {
     switch (screen) {
       case 'initial':
@@ -62,6 +69,7 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
             toggleProfile={() => toggleProfile()}
             toggleMobileVerification={() => toggleMobileVerification()}
             toggleUploadId={() => toggleUploadId()}
+            toggleEmailVerification={() => toggleEmailVerification()}
             toggleMenu={modalBack}
           />
         );
@@ -89,7 +97,16 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
             back={() => setScreen('initial')} 
             backToIndex={() => setScreen('initial')}
           />
-        )
+        );
+        case 'email':
+        return (
+          <EmailVerification 
+            back={() => setScreen('initial')} 
+            toggleEmailCode={() => setScreen('emailCode')}
+          />
+        );
+      case 'emailCode':
+        return <EmailCode/>;
       default:
         return null;
     }
@@ -120,6 +137,8 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
       >
         <SafeAreaView style={{ flex: 1 }}>
           {switchVerificationScreens(screen)}
+          {/* <VerifiedAccount/> */}
+          {/* <PendingVerification/> */}
         </SafeAreaView> 
       </Modal>
     </View>
