@@ -17,9 +17,11 @@ import {normalize} from '@/globals';
 import { ArrowRight } from '@/assets/images/icons';
 
 import SetTimeModal from './SetTimeModal';
+import SetDateModal from './SetTimeModal';
 
 const PostExpiryModal = ({closeModal}) => { 
   const [timeModal, showTimeModal] = useState(false);
+  const [dateModal, showDateModal] = useState(false);
 
   return (
     <View>
@@ -32,7 +34,7 @@ const PostExpiryModal = ({closeModal}) => {
         <AppText textStyle="body2">Something, something</AppText>
         <AppText textStyle="captionDashboard">Something, something</AppText>
           <TouchableOpacity 
-          style={styles.btn}
+           style={styles.btn}
            onPress={() => showTimeModal(true)}>
           <View style={{ flex: .75 }}>
             <View style={{ flexDirection: 'row' }}>
@@ -58,6 +60,21 @@ const PostExpiryModal = ({closeModal}) => {
             </TouchableWithoutFeedback>
           }>
             <SetTimeModal closeModal={() => showTimeModal(false)} />
+        </Modal>
+        <Modal
+          isVisible={dateModal}
+          animationIn="slideInUp"
+          animationInTiming={450}
+          animationOut="slideOutDown"
+          animationOutTiming={450}
+          style={{margin: 0, justifyContent: 'flex-end'}}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              onPress={() => showDateModal(false)}>
+              <View style={{flex: 1, backgroundColor: 'black'}} />
+            </TouchableWithoutFeedback>
+          }>
+          <SetDateModal closeModal={() => showDateModal(false)} />
         </Modal>
       </View>
     </View>
