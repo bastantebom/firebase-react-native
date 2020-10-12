@@ -57,6 +57,7 @@ import AddItemModal from './modals/AddItemModal';
 import PrivacyModal from './modals/PrivacyModal';
 import PaymentMethodModal from './modals/PaymentMethodModal';
 import ShippingMethodModal from './modals/ShippingMethodModal';
+import PostExpiryModal from './modals/PostExpiryModal';
 
 import {useNavigation} from '@react-navigation/native';
 
@@ -100,6 +101,7 @@ const SellPostForm = ({
   const [privacyModal, showPrivacyModal] = useState(false);
   const [paymentMethodModal, showPaymentMethodModal] = useState(false);
   const [shippingMethodModal, showShippingMethodModal] = useState(false);
+  const [postExpiryModal, showPostExpiryModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
   const [data, setData] = useState([]);
 
@@ -609,7 +611,8 @@ const SellPostForm = ({
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}
+          onPress={() => showPostExpiryModal(true)}>
           <AppText textStyle="body2">Post Expiry</AppText>
           <FormArrowRight />
         </TouchableOpacity>

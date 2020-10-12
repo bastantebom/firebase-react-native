@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import {
   View,
   SafeAreaView,
-  PaddingView,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   Text,
   TextInput
 } from 'react-native';
 
-import Slider from '@react-native-community/slider';
+// import Slider from '@react-native-community/slider';
 
 import {
   AppText,
@@ -29,16 +29,17 @@ const ShippingMethodModal = ({ closeModal }) => {
   const [within, setWithin] = useState(false)
   const [activeSwitch, setActiveSwitch] = useState(null)
 
-  const toggleSwitch = (switchNumber) => {
-    setActiveSwitch({
-      activeSwitch: switchNumber === activeSwitch ? null : switchNumber
-    })
+  const CheckboxStateHandler = (val) => {
+    if (val === 'nationwide') {
+      setNationwide(true);
+      setWithin(false);
+    }
+    if (val === 'within') {
+      setWithin(true);
+      setNationwide(false);
+    }
   };
 
-  const switchOne = (value) => { setActiveSwitch(1) };
-  const switchTwo = (value) => { setActiveSwitch(2) };
-
-  console.log(activeSwitch)
   return (
     <SafeAreaView style={{ flex: 1 }} >
       <ScreenHeaderTitle
@@ -46,7 +47,9 @@ const ShippingMethodModal = ({ closeModal }) => {
         title="Shipping Methods"
         paddingSize={2}
       />
-      <View style={{ paddingHorizontal: 16 }}>
+      <ScrollView style={{ paddingHorizontal: 16 }}>
+        <AppText textStyle="body2">Something, something</AppText>
+        <AppText textStyle="captionDashboard">Something, something</AppText>
         <View style={styles.withBorder}>
           <View
             style={{
@@ -55,23 +58,21 @@ const ShippingMethodModal = ({ closeModal }) => {
             }}>
             <AppText textStyle="body3">Pick up</AppText>
             <Switch
-              // value={pickUp}
-              // onValueChange={() => setPickUp(!pickUp)}
-              onValueChange={() => setActiveSwitch(1)}
-              value={activeSwitch === 1}
+              value={pickUp}
+              onValueChange={() => setPickUp(!pickUp)}
             />
           </View>
           <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
             Orders can be picked up at your specified address.
           </AppText>
-          {activeSwitch === 1 && (
+          {pickUp && (
             <TouchableOpacity style={styles.btn}>
               <View style={{ flex: .75 }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <AppText textStyle="body2">Reynan Barbero</AppText>
+                  <AppText textStyle="body2">My Restaurant</AppText>
                   <AppText textStyle="body3" customStyle={{ marginLeft: normalize(5) }}>(Default)</AppText>
                 </View>
-                <Text style={{ fontFamily: 'RoundedMplus1c-Regular', fontSize: 15 }} numberOfLines={1} ellipsizeMode='tail'>Reynan Barbero Capitol Branch, Hon. B. Soli</Text>
+                <Text style={{ fontFamily: 'RoundedMplus1c-Regular', fontSize: 15 }} numberOfLines={1} ellipsizeMode='tail'>Wayne’s Burger and Smoothies, Hon. B. Soliven</Text>
               </View>
               <View style={{ flex: .25, justifyContent: 'center', alignItems: 'flex-end' }}>
                 <ArrowRight />
@@ -87,17 +88,14 @@ const ShippingMethodModal = ({ closeModal }) => {
             }}>
             <AppText textStyle="body3">Delivery</AppText>
             <Switch
-              // value={delivery}
-              // onValueChange={() => setDelivery(!delivery)}
-              // onValueChange={switchTwo}
-              onValueChange={() => setActiveSwitch(2)}
-              value={activeSwitch === 2}
+              value={delivery}
+              onValueChange={() => setDelivery(!delivery)}
             />
           </View>
           <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
             Orders can be shipped nationwide or within your specifid area.
           </AppText>
-          {activeSwitch === 2 && (
+          {delivery && (
             <>
               <View
                 style={{
@@ -108,7 +106,7 @@ const ShippingMethodModal = ({ closeModal }) => {
                 <AppCheckbox
                   style={{ paddingLeft: 0 }}
                   value={nationwide}
-                  valueChangeHandler={() => setNationwide(!nationwide)}
+                  valueChangeHandler={() => CheckboxStateHandler('nationwide')}
                 />
                 <AppText>Nationwide</AppText>
               </View>
@@ -147,7 +145,7 @@ const ShippingMethodModal = ({ closeModal }) => {
                 <AppCheckbox
                   style={{ paddingLeft: 0 }}
                   value={within}
-                  valueChangeHandler={() => setWithin(!within)}
+                  valueChangeHandler={() => CheckboxStateHandler('within')}
                 />
                 <AppText>Within your specified area</AppText>
               </View>
@@ -201,8 +199,30 @@ const ShippingMethodModal = ({ closeModal }) => {
               </PaddingView>
             </>
           )}
+          
+          {/* <PaddingView paddingSize={2}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
+              <AppText textStyle="promo">Browse Offers Within</AppText>
+              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <AppText textStyle="caption" color="#999">0</AppText>
+              <Slider
+                style={{width: '90%'}}
+                minimumValue={0}
+                maximumValue={200}
+                step={5}
+                value={rangeValue}
+                onValueChange={rangeValue => setRangeValue(rangeValue)}
+                minimumTrackTintColor={Colors.primaryYellow}
+                maximumTrackTintColor={Colors.neutralGray}
+                thumbTintColor={Colors.primaryYellow}
+              />
+              <AppText textStyle="caption" color="#999">200</AppText>
+            </View>
+          </PaddingView> */}
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
