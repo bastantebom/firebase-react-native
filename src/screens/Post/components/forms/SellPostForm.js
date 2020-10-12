@@ -57,6 +57,7 @@ import AddItemModal from './modals/AddItemModal';
 import PrivacyModal from './modals/PrivacyModal';
 import PaymentMethodModal from './modals/PaymentMethodModal';
 import ShippingMethodModal from './modals/ShippingMethodModal';
+import PostExpiryModal from './modals/PostExpiryModal';
 
 const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const {
@@ -88,6 +89,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
   const [privacyModal, showPrivacyModal] = useState(false);
   const [paymentMethodModal, showPaymentMethodModal] = useState(false);
   const [shippingMethodModal, showShippingMethodModal] = useState(false);
+  const [postExpiryModal, showPostExpiryModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
   const [data, setData] = useState([]);
 
@@ -595,7 +597,8 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{flexDirection: 'row', justifyContent: 'space-between'}}
+          onPress={() => showPostExpiryModal(true)}>
           <AppText textStyle="body2">Post Expiry</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -753,6 +756,20 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
           height: Dimensions.get('window').height,
         }}>
         <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+      </Modal>
+       <Modal
+         isVisible={postExpiryModal}
+         animationIn="slideInRight"
+         animationInTiming={750}
+         animationOut="slideOutRight"
+         animationOutTiming={750}
+         style={{
+           margin: 0,
+           backgroundColor: 'white',
+           justifyContent: 'flex-start',
+           height: Dimensions.get('window').height,
+         }}>
+        <PostExpiryModal closeModal={() => showPostExpiryModal(false)} />
       </Modal>
     </>
   );
