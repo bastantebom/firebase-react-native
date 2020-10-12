@@ -329,7 +329,7 @@ const EditProfile = ({ toggleEditProfile, toggleMenu, triggerNotify }) => {
       dataToUpdate.profile_photo =
         response[1] === 'empty' ? pPhoto : response[1];
       //console.log('-----------------');
-      console.log(dataToUpdate);
+      //console.log(dataToUpdate);
 
       ProfileInfoService.updateUser(dataToUpdate, uid)
         .then((response) => {
