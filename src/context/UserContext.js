@@ -48,6 +48,9 @@ export const UserContextProvider = ({children}) => {
       ProfileInfoService.getUser(user.uid)
         .then((response) => {
           //console.log(response.data);
+          // console.log("------------");
+          // console.log(response);
+          // console.log("------------");
           setUserInfo({...userInfo, ...response.data});
           setUserDataAvailable(true);
         })
@@ -62,7 +65,9 @@ export const UserContextProvider = ({children}) => {
     if (user)
       ProfileInfoService.getUser(user.uid)
         .then((response) => {
-          //console.log(response);
+          // console.log("------------x");
+          // console.log(response);
+          // console.log("------------x");
           setUserInfo({...userInfo, ...response.data});
           setUserDataAvailable(true);
         })
@@ -79,6 +84,7 @@ export const UserContextProvider = ({children}) => {
       .then(() => {
         setUser(null);
         setUserInfo({});
+        //clear all Post context state
         console.log('User signed out');
       })
       .catch(function (error) {

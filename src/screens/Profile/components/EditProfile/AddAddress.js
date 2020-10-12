@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
 import {Context} from '@/context';
@@ -31,20 +32,6 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
   const {userInfo, user, setUserInfo} = useContext(UserContext);
   const [currentAddress, setCurrentAddress] = useState(address);
   const {addresses} = userInfo;
-
-  // useEffect(() => {
-  //   let isSubscribed = true;
-  //   if (userInfo) {
-  //     if (isSubscribed) {
-  //       getStringAddress(address.latitude, address.longitude);
-  //       setDateFromString();
-  //     }
-  //   }
-  //   return () => (isSubscribed = false);
-  // }, []);
-
-  //const {name, full_address, detail, note} = address;
-
   const [IS_LOADING, setIS_LOADING] = useState(false);
   const [addName, setAddName] = useState(
     additional === true ? '' : currentAddress.name ? currentAddress.name : '',
@@ -63,6 +50,16 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
     additional === true ? '' : currentAddress.note ? currentAddress.note : '',
   );
   const [map, setMap] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const cancelModalToggle = () => {
+    //console.log(title);
+    //setSelectedPost(post);
+    setShowCancelModal(!showCancelModal);
+  };
+
+  const closeHandler = (value) => {
+    setShowCancelModal(!showCancelModal);
+  };
 
   const toggleMap = () => {
     setMap(!map);
@@ -71,13 +68,9 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
   const changeFromMapHandler = (newAddress) => {
     setStringAddress(newAddress.full_address);
     setCurrentAddress(newAddress);
-    //console.log(newAddress);
   };
 
   const onSaveHandler = () => {
-    //setIS_LOADING(true);
-    console.log(additional);
-
     const nAdd = [...addresses];
     const addressToUpdate = {
       ...currentAddress,
@@ -119,6 +112,16 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
     toggleAddAddress();
   };
 
+  const deleteAddress = async () => {
+    //body: { uid, pid }
+    console.log('Find the default');
+    console.log('set new default');
+    //console.log('update the address');
+    closeHandler();
+    toggleAddAddress();
+  };
+
+
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -132,7 +135,7 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
           }}>
           <ScreenHeaderTitle
             iconSize={16}
-            title="Add an Address"
+            title={additional===true?"Add an Address":'Edit an Address'}
             close={toggleAddAddress}
           />
 
@@ -188,7 +191,11 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
               setAddNote(addNote);
             }}
           />
-
+          { additional===true?null:
+          (<TouchableOpacity onPress={cancelModalToggle}>
+            <AppText textStyle="body2" color={Colors.errColor}>Remove</AppText>
+          </TouchableOpacity>)
+          }
           <View
             style={{
               flex: 1,
@@ -225,6 +232,67 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
             changeFromMapHandler(newAddress)
           }
         />
+      </Modal>
+
+      <Modal
+        isVisible={showCancelModal}
+        animationIn="bounceIn"
+        animationInTiming={450}
+        animationOut="bounceOut"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={cancelModalToggle}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: normalize(300),
+            width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}>
+          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+            Remove this Address?
+          </AppText>
+
+          <AppText
+            textStyle="caption"
+            customStyle={{textAlign: 'center'}}
+            customStyle={{marginBottom: 16}}>
+            Are you sure you want to remove this address?
+          </AppText>
+
+          <TouchableOpacity
+            onPress={() => {
+              deleteAddress();
+            }}
+            style={{
+              backgroundColor: Colors.yellow2,
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+              marginBottom: 16,
+              borderRadius: 4,
+            }}>
+            <AppText textStyle="button2">Continue</AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => closeHandler('cancel')}
+            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            <AppText textStyle="button2" color={Colors.contentOcean}>
+              Cancel
+            </AppText>
+          </TouchableOpacity>
+        </View>
       </Modal>
     </>
   );

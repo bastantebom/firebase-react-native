@@ -13,12 +13,12 @@ const getPosts = (payload) => {
 };
 
 const getUserPosts = (payload) => {
-  // users/:uid/posts
-  // console.log(
-  //   `posts?uid=${payload.uid}&limit=${payload.limit}&page=${payload.page}`,
-  // );
+  //users/:uid/posts
+   console.log(
+    `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`
+   );
   return BaseAPI({
-    url: `posts/${payload.uid}/users/limit=${payload.limit}&page=${payload.page}`,
+    url: `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

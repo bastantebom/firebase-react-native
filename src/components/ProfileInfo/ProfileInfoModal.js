@@ -103,7 +103,7 @@ function ProfileInfoModal(props) {
     setIsDataLoading(true);
     ProfileInfoService.getUser(uid)
       .then((response) => {
-        if (mounted) setUserInfo(response);
+        if (mounted) setUserInfo(response.data);
       })
       .catch((err) => {
         console.log('Err: ' + err);
