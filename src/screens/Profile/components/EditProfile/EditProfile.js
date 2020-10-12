@@ -26,6 +26,7 @@ import {
   AppText,
   ProfileImageUpload,
   TransitionIndicator,
+  AppRadio,
 } from '@/components';
 
 import storage from '@react-native-firebase/storage';
@@ -37,30 +38,30 @@ import {
   VerifiedGreen,
 } from '@/assets/images/icons';
 
-import {Colors, normalize} from '@/globals';
+import { Colors, normalize } from '@/globals';
 import GenderList from './Gender';
 import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context';
 import Geocoder from 'react-native-geocoding';
 import Config from '@/services/Config';
 import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
 import AddAddress from './AddAddress';
 
 // create a component
-const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
+const EditProfile = ({ toggleEditProfile, toggleMenu, triggerNotify }) => {
   const [addAddress, setAddAddress] = useState(false);
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [genderVisible, setGenderVisible] = useState(false);
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
-  const {setNeedsRefresh} = useContext(Context);
+  const { userInfo, user, setUserInfo } = useContext(UserContext);
+  const { setNeedsRefresh } = useContext(Context);
   const [buttonStyle, setButtonStyle] = useState({});
   const [buttonDisable, setButtonDisable] = useState(false);
   const [addressComponents, setAddressComponents] = useState({
@@ -92,7 +93,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     gender,
   } = userInfo;
 
-  const {uid} = user;
+  const { uid } = user;
 
   const isEmailRequired = email ? true : false;
   const isMobileRequired = phone_number ? true : false;
@@ -113,7 +114,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
 
   const onChangeUsername = (uName) => {
-    console.log('On change function');
+    //console.log('On change function');
 
     setVerified(false);
     let userNameReg = /^[a-z0-9.-]*$/;
@@ -130,7 +131,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   };
 
   const sendValidation = async (un) => {
-    await ProfileInfoService.validateUsername({uid: user.uid, username: un})
+    await ProfileInfoService.validateUsername({ uid: user.uid, username: un })
       .then((response) => {
         //console.log(response);
         console.log('THIS API IS CALLED');
@@ -195,7 +196,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     let isSubscribed = true;
     if (userInfo) {
       if (isSubscribed) {
@@ -217,8 +218,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       data === 'notsay'
         ? 'Rather not say'
         : data === 'female'
-        ? 'Female'
-        : 'Male';
+          ? 'Female'
+          : 'Male';
     setG(tempG);
   };
 
@@ -262,11 +263,11 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     setButtonDisable(j);
   };
 
-  
+
 
   const uploadImageHandler = async (image) => {
     if (image) {
-      const {uri} = image;
+      const { uri } = image;
       //console.log('Sa If');
       let filename = uri;
       if (!Platform.OS === 'ios')
@@ -297,7 +298,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       secondary_email: sEm,
       phone_number: mobile,
       gender: g,
+      addresses: userInfo.addresses,
     };
+
+    //console.log(dataToUpdate);
 
     Object.keys(dataToUpdate).forEach(
       (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
@@ -331,7 +335,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
         .then((response) => {
           if (response.success) {
             setIS_UPDATING(false);
-            setUserInfo({...userInfo, ...response.data});
+            setUserInfo({ ...userInfo, ...response.data });
             setNeedsRefresh(true);
             toggleEditProfile();
             toggleMenu();
@@ -347,9 +351,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     });
   };
 
+  const changeDefaultAddress = (selected) => {
+    const nAdd = [...addresses];
+    nAdd.forEach((address, index) => {
+      selected === index ? address.default = true : address.default = false;
+    });
+    setUserInfo({ ...userInfo, addresses: [...nAdd] });
+  };
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <TransitionIndicator loading={IS_UPDATING} />
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
@@ -412,7 +423,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   <AppText
                     textStyle="caption"
                     color={Colors.contentOcean}
-                    customStyle={{marginLeft: normalize(8)}}>
+                    customStyle={{ marginLeft: normalize(8) }}>
                     Tap Image to change Profile Picture
                   </AppText>
                 </TouchableOpacity>
@@ -431,7 +442,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               <AppText
                 textStyle="caption"
                 color={Colors.profileLink}
-                customStyle={{marginTop: normalize(5)}}>
+                customStyle={{ marginTop: normalize(5) }}>
                 Help people discover your account by using a name that describes
                 you or your service. This could be the name of your business, or
                 your nickname.
@@ -448,24 +459,24 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               <FloatingAppInput
                 value={name}
                 label="Full Name"
-                customStyle={{marginBottom: 16}}
+                customStyle={{ marginBottom: 16 }}
                 onChangeText={(name) => {
                   setName(name);
                 }}
               />
-              <View style={{position: 'relative'}}>
+              <View style={{ position: 'relative' }}>
                 <FloatingAppInput
                   value={uName}
                   valueHandler={setUName}
                   lowercase={true}
                   label="Username"
-                  customStyle={{marginBottom: normalize(16)}}
+                  customStyle={{ marginBottom: normalize(16) }}
                   // invalidField={!invalidUser || invalidUserFormat}
                   validation={['username']}
                   setError={setError}
                   error={error}
                   setButtonState={setButtonState}
-                  // onChangeText={(uName) => onChangeUsername(uName)}
+                // onChangeText={(uName) => onChangeUsername(uName)}
                 />
                 {/* <View style={styles.passwordToggle}>
                   {verified ? (
@@ -481,7 +492,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   Username has already been used
                 </AppText>
               ) : null}
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <AppText textStyle="caption">servbees.com/</AppText>
                 <AppText textStyle="caption2">{uName}</AppText>
               </View>
@@ -512,45 +523,63 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
             <PaddingView paddingSize={3}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Address
               </AppText>
 
               <AppText
                 textStyle="body2"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 You can save multiple addresses.
               </AppText>
 
               {addresses.map((address, index) => {
                 return (
-                  <TouchableOpacity
-                    key={index}
-                    style={{paddingVertical: 16}}
-                    onPress={() => {
-                      setAdditional(index);
-                      setSelectedAddress(address);
-                      setAddAddress(true);
+                  <View key={index} style={{ flexDirection: 'row', paddingVertical: 8 }}>
+
+                    <View style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
                     }}>
-                    <View style={{flexDirection: 'row'}}>
-                      <View>
-                        <AppText textStyle="body1medium">
-                          {address.name ? address.name : 'Home'}
-                        </AppText>
-                        <AppText textStyle="caption">
-                          {address.full_address}
-                        </AppText>
-                      </View>
+                      <AppRadio
+                        value={address.default}
+                        valueChangeHandler={() => { changeDefaultAddress(index) }}
+                        style={{ backgroundColor: Colors.neutralsWhite, paddingLeft: 0, margin: 0, }}
+                      />
+                    </View>
+
+                    <View style={{
+                      flex: 8,
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                    }}>
+                      <AppText textStyle="body1medium">
+                        {address.name ? address.name : 'Home'}
+                      </AppText>
+                      <AppText textStyle="caption">
+                        {address.full_address}
+                      </AppText>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setAdditional(index);
+                        setSelectedAddress(address);
+                        setAddAddress(true);
+                      }}
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'flex-end',
+                      }}
+                    >
                       <View
-                        style={{
-                          flex: 1,
-                          justifyContent: 'center',
-                          alignItems: 'flex-end',
-                        }}>
+                      >
                         <ArrowRight width={24} height={24} />
                       </View>
-                    </View>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                  </View>
+
                 );
               })}
 
@@ -573,7 +602,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
             <PaddingView paddingSize={3}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Personal Information
               </AppText>
               <FloatingAppInput
@@ -582,7 +611,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 value={em}
                 label="Email"
                 keyboardType="email-address"
-                customStyle={{marginBottom: normalize(16)}}
+                customStyle={{ marginBottom: normalize(16) }}
                 onChangeText={(em) => {
                   emailChangeHandler(em);
                 }}
@@ -594,7 +623,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 value={sEm}
                 label="Secondary Email"
                 keyboardType="email-address"
-                customStyle={{marginBottom: normalize(16)}}
+                customStyle={{ marginBottom: normalize(16) }}
                 onChangeText={(sEm) => {
                   setSEm(sEm);
                 }}
@@ -616,18 +645,18 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 selectTextOnFocus={false}
                 valueHandler={setMobile}
                 label="Mobile Number"
-                customStyle={{marginBottom: normalize(16)}}
+                customStyle={{ marginBottom: normalize(16) }}
                 keyboardType="phone-pad"
                 validation={['number']}
                 setError={setError}
                 error={error}
                 setButtonState={setButtonState}
               />
-              <View style={{position: 'relative'}}>
+              <View style={{ position: 'relative' }}>
                 <FloatingAppInput
                   value={bDate}
                   label="Birthday"
-                  customStyle={{marginBottom: normalize(16)}}
+                  customStyle={{ marginBottom: normalize(16) }}
                   onFocus={showDatepicker}
                   editable={false}
                 />
@@ -652,12 +681,12 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   />
                 )}
               </View>
-              <View style={{position: 'relative'}}>
+              <View style={{ position: 'relative' }}>
                 <FloatingAppInput
                   value={g}
                   label="Gender"
                   onFocus={toggleGender}
-                  customStyle={{marginBottom: normalize(16)}}
+                  customStyle={{ marginBottom: normalize(16) }}
                   editable={false}
                 />
                 <TouchableOpacity
@@ -693,7 +722,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               height="xl"
               disabled={buttonDisable}
               // disabled
-              customStyle={{...buttonStyle}}
+              customStyle={{ ...buttonStyle }}
               onPress={() => updateProfile()}
             />
           </View>
@@ -732,7 +761,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           }}
           customBackdrop={
             <TouchableWithoutFeedback onPress={toggleGender}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           <View>

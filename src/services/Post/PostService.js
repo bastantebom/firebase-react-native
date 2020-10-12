@@ -14,9 +14,9 @@ const getPosts = (payload) => {
 
 const getUserPosts = (payload) => {
   //users/:uid/posts
-   console.log(
-    `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`
-   );
+  //  console.log(
+  //   `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`
+  //  );
   return BaseAPI({
     url: `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`,
     method: 'GET',
