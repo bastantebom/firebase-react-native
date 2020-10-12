@@ -11,6 +11,7 @@ import SplashScreenComponent from './SplashScreen';
 
 import {Notification} from '@/components';
 import {useNavigation} from '@react-navigation/native';
+import {PostService} from '@/services';
 
 //screens
 import {Onboarding} from '@/screens/Onboarding';
@@ -18,7 +19,7 @@ import {Dashboard} from '@/screens/Dashboard';
 import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
-import {Post, SinglePostView} from '@/screens/Post';
+import {Post, SinglePostView, SinglePostViewExternal} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 import SampleScreen from '@/screens/SampleScreen';
 
@@ -57,6 +58,7 @@ function AuthStackScreen() {
   // console.log(navigation);
 
   useEffect(() => {
+    console.log('Hello android');
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         navigation.navigate(url);
@@ -135,6 +137,10 @@ function NoBottomTabScreens() {
         name="OthersPost"
         component={SinglePostView}
       />
+      <NoBottomTabScreenStack.Screen
+        name="ExternalPostLink"
+        component={SinglePostViewExternal}
+      />
     </NoBottomTabScreenStack.Navigator>
   );
 }
@@ -200,7 +206,6 @@ function TabStack() {
   // console.log(navigation);
 
   useEffect(() => {
-    console.log('dashboard');
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         navigation.navigate(url);
@@ -208,7 +213,7 @@ function TabStack() {
     } else {
       Linking.addEventListener('url', handleOpenURL);
     }
-  });
+  }, []);
 
   const handleOpenURL = (event) => {
     navigate(event.url);
@@ -216,18 +221,29 @@ function TabStack() {
 
   const navigate = (url) => {
     const route = url.replace(/.*?:\/\//g, '');
-    const uid = route.split('/')[1];
+    const id = route.split('/')[1];
     const routeName = route.split('/')[0];
 
     console.log(routeName);
     if (routeName === 'profile') {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: {uid: uid},
+        params: {uid: id},
       });
     }
-    if (routeName === 'dashboard') {
-      navigation.navigate('Servbees');
+    if (routeName === 'post') {
+      // navigation.navigate('Servbees', {pid: id});
+
+      PostService.getPost(id)
+        .then((res) => {
+          navigation.navigate('NBTScreen', {
+            screen: 'OthersPost',
+            params: {...res, othersView: true},
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 

@@ -28,6 +28,9 @@ const ShippingMethodModal = ({ closeModal }) => {
   const [nationwide, setNationwide] = useState(false)
   const [within, setWithin] = useState(false)
   const [activeSwitch, setActiveSwitch] = useState(null)
+  const [rangeValue, setRangeValue] = useState(0)
+  const [slideStartingValue, setSlideStartingValue] = useState(0)
+  const [slideStartingCount, setSlideStartingCount] = useState(0)
 
   const toggleSwitch = (switchNumber) => {
     setActiveSwitch({
@@ -178,7 +181,7 @@ const ShippingMethodModal = ({ closeModal }) => {
                   scrollEnabled={false}
                 />
               )}
-              <PaddingView paddingSize={2}>
+              {/* <PaddingView paddingSize={2}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
                   <AppText textStyle="promo">Browse Offers Within</AppText>
                   <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
@@ -198,7 +201,7 @@ const ShippingMethodModal = ({ closeModal }) => {
                   />
                   <AppText textStyle="caption" color="#999">200</AppText>
                 </View>
-              </PaddingView>
+              </PaddingView> */}
             </>
           )}
         </View>

@@ -1,4 +1,5 @@
 {
   "name": "servbees",
-  "displayName": "servbees"
+  "displayName": "servbees",
+  "scheme": "servbees"
 }

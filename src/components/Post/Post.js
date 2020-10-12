@@ -145,7 +145,7 @@ const Post = ({data, type, isLoading}) => {
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}
                     customStyle={{marginLeft: 4}}>
-                    {city}, {province}
+                    {/* {city}, {province} */}
                   </AppText>
                 </View>
                 {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>

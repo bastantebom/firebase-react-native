@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 // import {TextInput} from 'react-native-paper';
 
+import {PostService} from '@/services';
+
 import {
   Posts,
   // AppInput,
@@ -53,6 +55,38 @@ function Dashboard(props) {
   const toggleModal = () => {
     setModalState(!modalState);
   };
+
+  const navigation = useNavigation();
+
+  // const {pid} = props?.route?.params;
+
+  // console.log(props?.route?.params)
+
+  // useEffect(() => {
+  //   let mounted = true;
+  //   console.log("HELLO DASHBOARD USEEFFECT")
+  //   console.log(props?.route?.params)
+
+  //   if (props?.route?.params?.pid) {
+  //     PostService.getPost(props?.route?.params?.pid)
+  //       .then((res) => {
+  //         if (mounted) {
+  //           navigation.navigate('NBTScreen', {
+  //             screen: 'OthersPost',
+  //             params: {...res, othersView: true},
+  //           });
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       })
+  //       .finally(() => {
+  //         // if (mounted) {
+  //         //   setIsDataLoading(false);
+  //         // }
+  //       });
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   console.log('dashboard');

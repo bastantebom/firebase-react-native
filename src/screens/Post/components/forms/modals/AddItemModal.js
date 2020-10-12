@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   SafeAreaView,
@@ -6,6 +6,7 @@ import {
   Platform,
   TextInput,
   TouchableWithoutFeedback,
+  Dimensions,
 } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -24,8 +25,9 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AppInput, PriceInput} from '@/components/AppInput';
 
 import AddCategoryModal from './AddCategoryModal';
+import AddedItemPreview from './AddedItemPreview';
 
-const AddItemModal = ({closeModal}) => {
+const AddItemModal = ({closeModal, setData, data}) => {
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [itemImage, setItemImage] = useState();
@@ -36,10 +38,86 @@ const AddItemModal = ({closeModal}) => {
     uncategorized: true,
     newCategory: false,
   });
+
   const [categoryModal, setCategoryModal] = useState(false);
+  const [previewItemModal, setPreviewItemModal] = useState(false);
 
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  // If editing
+  const [index, setIndex] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // const [data, setData] = useState([]);
+
+  const addItemHandler = () => {
+    // console.log('Data submitted: ');
+    // console.log(data);
+    let newData = {
+      title: title,
+      description: description,
+      itemImage: itemImage,
+      price: price,
+      categoryName: categoryName,
+    };
+
+    let itemArray = [...data];
+
+    if (isEditing) {
+      itemArray[index] = newData;
+    } else {
+      itemArray.push(newData);
+    }
+
+    setData(itemArray);
+    clearData();
+
+    setPreviewItemModal(true);
+  };
+
+  const clearData = () => {
+    setTitle('');
+    setDescription('');
+    setItemImage();
+    setPrice();
+    setCategoryName('');
+    setFree(false);
+  };
+
+  const setInitialData = {
+    setTitle,
+    setDescription,
+    setItemImage,
+    setPrice,
+    setCategoryName,
+    setFree,
+    setIndex,
+    setIsEditing,
+  };
+
+  const freeItemHandler = () => {
+    setFree(!free);
+  };
+
+  useEffect(() => {
+    if (free) {
+      setPrice('Free');
+    } else {
+      if (price === 'Free') {
+        setPrice('');
+      }
+    }
+  }, [free, price]);
+
+  // check if all required fields are not empty
+  useEffect(() => {
+    if (title && price) {
+      setButtonEnabled(true);
+    } else {
+      setButtonEnabled(false);
+    }
+  }, [title, price]);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -164,6 +242,7 @@ const AddItemModal = ({closeModal}) => {
                 keyboardType="number-pad"
                 onChangeText={(text) => setPrice(text)}
                 placeholder="00"
+                editable={!free}
               />
               <View
                 style={{
@@ -172,7 +251,7 @@ const AddItemModal = ({closeModal}) => {
                   justifyContent: 'space-between',
                 }}>
                 <TouchableOpacity
-                  onPress={() => setFree(!free)}
+                  onPress={freeItemHandler}
                   activeOpacity={0.7}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                   <PostInfo />
@@ -190,11 +269,11 @@ const AddItemModal = ({closeModal}) => {
             </View>
 
             <TouchableOpacity
-              // onPress={publish}
+              onPress={addItemHandler}
               activeOpacity={0.7}
-              disabled={buttonEnabled || loadingSubmit}
+              disabled={!buttonEnabled}
               style={{
-                backgroundColor: buttonEnabled
+                backgroundColor: !buttonEnabled
                   ? Colors.neutralsGainsboro
                   : Colors.primaryYellow,
                 paddingVertical: 12,
@@ -205,7 +284,9 @@ const AddItemModal = ({closeModal}) => {
               {loadingSubmit ? (
                 <ActivityIndicator />
               ) : (
-                <AppText textStyle="button2">Add Item</AppText>
+                <AppText textStyle="button2">
+                  {isEditing ? 'Update' : 'Add Item'}
+                </AppText>
               )}
             </TouchableOpacity>
           </Section>
@@ -234,6 +315,27 @@ const AddItemModal = ({closeModal}) => {
           choice={choice}
           setChoice={setChoice}
           close={() => setCategoryModal(false)}
+        />
+      </Modal>
+
+      {/* Preview Item Modal */}
+      <Modal
+        isVisible={previewItemModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <AddedItemPreview
+          closeModal={() => setPreviewItemModal(false)}
+          closeAddItemModal={closeModal}
+          data={data}
+          setInitialData={setInitialData}
         />
       </Modal>
     </SafeAreaView>
