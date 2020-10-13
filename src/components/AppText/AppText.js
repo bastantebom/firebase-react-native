@@ -1,14 +1,14 @@
 import React from 'react';
-import {Text, Dimensions, PixelRatio, StyleSheet} from 'react-native';
+import { Text, Dimensions, PixelRatio, StyleSheet } from 'react-native';
 // import styles from './AppText.scss';
-import {Colors, scaleFont, normalize} from '@/globals';
+import { Colors, scaleFont, normalize } from '@/globals';
 
 /**
  *
  * @param {listed on Apptext.scss} textStyle
  */
 
-const AppText = ({children, textStyle, customStyle, color}) => {
+const AppText = ({ children, textStyle, customStyle, color }) => {
   let computedTextStyle = styles[textStyle];
 
   if (customStyle || color) {
@@ -25,7 +25,7 @@ const AppText = ({children, textStyle, customStyle, color}) => {
 };
 
 // first value is 14
-const defaultFontSize = 16;
+const defaultFontSize = 14;
 
 const styles = StyleSheet.create({
   body1: {
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
   caption: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize-2),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.4,
   },
 
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   captionDashboard: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize-4),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.4,
   },
 
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   eyebrow2: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize - 4),
+    fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.8,
   },
   price: {

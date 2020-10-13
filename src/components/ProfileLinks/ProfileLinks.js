@@ -1,11 +1,13 @@
 //import liraries
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { normalize, Colors } from '@/globals';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Following from './components/connections';
 import Hives from './components/hives';
 import Modal from 'react-native-modal';
+
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
 import { AppText } from '@/components';
 // create a component
@@ -16,7 +18,30 @@ const ProfileLinks = ({
   toggleConnections,
   userInfo,
 }) => {
+
+  const { uid } = userInfo;
+  const [followers, setFollowers] = useState(0);
+
+  //console.log(uid);
+  useEffect(() => {
+    let mounted = true;
+    if (uid && mounted)
+      ProfileInfoService.getFollowers(uid)
+        .then((response) => {
+          setFollowers(response.data.length);
+          //if (mounted) setOtherUserInfo(response.data);
+        })
+        .catch((err) => {
+          console.log('Err: ' + err);
+        });
+    return () => {
+      mounted = false;
+    };
+  }, [uid]);
+
   const { post_count } = userInfo;
+  //const [followers, setFollowers] = useState(0);
+  //console.log(userInfo);
   return (
     <>
       <View style={styles.profileLinksWrapper}>
@@ -25,7 +50,7 @@ const ProfileLinks = ({
             {post_count > 0 ? post_count : 0}
           </AppText>
           <AppText
-            textStyle="caption"
+            textStyle="captionDashboard"
             color={Colors.profileLink}
             customStyle={{ paddingLeft: normalize(8) }}>
             {post_count == 1 ? 'Post' : 'Posts'}
@@ -33,9 +58,9 @@ const ProfileLinks = ({
         </View>
         <TouchableOpacity onPress={toggleConnections}>
           <View style={styles.individualLink}>
-            <AppText textStyle="subtitle1">29</AppText>
-            <AppText textStyle="caption" color={Colors.profileLink}>
-              Followers
+            <AppText textStyle="subtitle1">{followers > 0 ? followers : 0}</AppText>
+            <AppText textStyle="captionDashboard" color={Colors.profileLink}>
+              {followers > 1 ? 'Follower' : 'Followers'}
             </AppText>
           </View>
         </TouchableOpacity>

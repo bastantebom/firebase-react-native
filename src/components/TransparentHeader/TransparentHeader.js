@@ -54,7 +54,13 @@ const TransparentHeader = ({
   hidePost,
   postTitle,
   postId,
+  isFollowing,
 }) => {
+
+  // console.log('Transparent Header');
+  // console.log(isFollowing);
+  // console.log('Transparent Header');
+
   const navigation = useNavigation();
   const shareHandler = async () => {
     const shareOptions = {
@@ -346,7 +352,7 @@ const TransparentHeader = ({
               <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
                   <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
-                    {following ? (
+                    {isFollowing ? (
                       <HeaderFollowing
                         width={normalize(16)}
                         height={normalize(16)}
@@ -361,7 +367,7 @@ const TransparentHeader = ({
                       textStyle="button3"
                       color="white"
                       customStyle={{ marginLeft: 4 }}>
-                      {following ? 'Unfollow' : 'Follow'}
+                      {isFollowing ? 'Following' : 'Follow'}
                     </AppText>
                   </View>
                 </TouchableOpacity>

@@ -44,10 +44,10 @@ function ProfileInfoModal(props) {
   const { profileViewType = 'other', uid } = props.route?.params;
 
   const navigation = useNavigation();
-  const { user, signOut } = useContext(UserContext);
+  const { user, signOut, userInfo } = useContext(UserContext);
   const { userPosts, otherUserPosts } = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
-  const [userInfo, setUserInfo] = useState({});
+  const [otherUserInfo, setOtherUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
@@ -60,6 +60,7 @@ function ProfileInfoModal(props) {
   const [isDataLoading, setIsDataLoading] = useState(true);
 
   const [headerState, setHeaderState] = useState(profileViewType);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const changeHeaderHandler = () => {
     headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
@@ -93,9 +94,12 @@ function ProfileInfoModal(props) {
   const connectUser = (uid, following) => {
     ProfileInfoService.follow(uid, following)
       .then((response) => {
-        console.log(response);
+        setIsFollowing(response.data.includes(uid));
+        console.log('follow service');
+        console.log(response.data.includes(uid));
       })
       .catch((err) => {
+        setIsFollowing(response.data.includes(uid));
         console.log('Err: ' + err);
       })
   };
@@ -114,7 +118,7 @@ function ProfileInfoModal(props) {
     setIsDataLoading(true);
     ProfileInfoService.getUser(uid)
       .then((response) => {
-        if (mounted) setUserInfo(response.data);
+        if (mounted) setOtherUserInfo(response.data);
       })
       .catch((err) => {
         console.log('Err: ' + err);
@@ -126,10 +130,13 @@ function ProfileInfoModal(props) {
         }
       });
 
+    setIsFollowing(userInfo.following.includes(uid));
+
     return () => {
       mounted = false;
     };
   }, []);
+
 
   const profileTabs = [
     {
@@ -148,7 +155,7 @@ function ProfileInfoModal(props) {
     {
       key: 'moreinfo',
       title: 'More Info',
-      renderPage: <MoreInfo profileInfo={userInfo} />,
+      renderPage: <MoreInfo profileInfo={otherUserInfo} />,
     },
   ];
 
@@ -160,20 +167,21 @@ function ProfileInfoModal(props) {
         toggleEllipsisState={toggleEllipsisState}
         toggleFollowing={toggleFollowing}
         following={following}
+        isFollowing={isFollowing}
         toggleMenu={toggleMenu}
         menu={menu}
         signOut={signOut}
         toggleQR={toggleQR}
         QR={QR}
         backFunction={() => navigation.goBack()}
-        userInfo={userInfo}
+        userInfo={otherUserInfo}
         userID={uid}
       />
       <View
         style={{ backgroundColor: Colors.buttonDisable, height: normalize(158) }}>
-        {userInfo.cover_photo ? (
+        {otherUserInfo.cover_photo ? (
           <CacheableImage
-            source={{ uri: userInfo.cover_photo }}
+            source={{ uri: otherUserInfo.cover_photo }}
             style={{ width: normalize(375), height: normalize(158) }}
           />
         ) : (
@@ -186,7 +194,7 @@ function ProfileInfoModal(props) {
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}
-          <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
+          <HexagonBorder size={140} imgSrc={otherUserInfo.profile_photo} />
         </View>
 
         <ProfileLinks
@@ -194,12 +202,12 @@ function ProfileInfoModal(props) {
           toggleConnections={toggleConnections}
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
-          userInfo={userInfo}
+          userInfo={otherUserInfo}
         />
       </View>
       <View style={{ backgroundColor: Colors.primaryYellow }}>
         <LoadingUserInfo isLoading={isDataLoading}>
-          <ProfileInfo profileData={userInfo} />
+          <ProfileInfo profileData={otherUserInfo} />
         </LoadingUserInfo>
       </View>
 
