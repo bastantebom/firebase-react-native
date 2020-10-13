@@ -85,7 +85,7 @@ export const EmailVerification = ({back, toggleEmailCode}) => {
             //   signUpEmail(signUpForm);
             // }}
             // loading={isLoading}
-            onPress={toggleEmailCode}
+            onPress={() => toggleEmailCode(emailAddress)}
           />
         </View>
       </PaddingView>

@@ -40,6 +40,8 @@ import OfflineNotice from '@/components/OfflineNotice';
 
 import CacheableImage from './ImageCache/CacheableImage';
 
+import RangeSlider from './Slider/RangeSlider';
+
 export {
   ProfileInfoModal,
   CacheableImage,
@@ -74,5 +76,6 @@ export {
   Reviews,
   FloatingAppInput,
   OfflineNotice,
-  SinglePostOthersView
+  SinglePostOthersView,
+  RangeSlider
 };

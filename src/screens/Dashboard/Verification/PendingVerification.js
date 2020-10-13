@@ -10,7 +10,7 @@ import { AppInput, PaddingView, AppText, AppButton } from '@/components';
 import { OnboardingIllustration1, Verification } from '@/assets/images';
 import { UserContext } from '@/context/UserContext';
 
-export const PendingVerification = () => {
+export const PendingVerification = ({ goToDashboard, reviewVerification }) => {
   
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -24,10 +24,12 @@ export const PendingVerification = () => {
           <AppButton
             text="Go to Dashboard"
             type="primary"
+            onPress={goToDashboard}
           />
           <AppButton
             text="Review Verification"
             type="secondary"
+            onPress={reviewVerification}
           />
         </View>
       </PaddingView>

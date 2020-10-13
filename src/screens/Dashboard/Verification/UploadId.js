@@ -19,7 +19,7 @@ import {
 import { IdVerify, OnboardingIllustration1 } from '@/assets/images';
 import { CameraId } from './components/CameraId';
 
-export const UploadGovernmentId = ({ back, backToIndex }) => {
+export const UploadGovernmentId = ({ back, backToIndex, confirmPhotoId }) => {
   
   const [screen, setScreen] = useState('idAdd');
   const [idType, setIdType] = useState('');
@@ -180,7 +180,8 @@ export const UploadGovernmentId = ({ back, backToIndex }) => {
         ) : screen === 'uploadId' ? (
           <CameraId 
             back={() => setScreen('idType')} 
-            backToIndex={backToIndex}
+            // backToIndex={backToIndex}
+            confirmPhotoId={confirmPhotoId}
             id={idType}
           />
         ) : (

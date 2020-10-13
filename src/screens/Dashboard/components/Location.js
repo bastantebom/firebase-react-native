@@ -16,6 +16,7 @@ import {PaddingView, AppText, MapComponent, AppButton} from '@/components';
 import {Colors, normalize} from '@/globals';
 //import {UserContext} from '@/context/UserContext';
 import Slider from '@react-native-community/slider';
+import { RangeSlider } from '@/components/Slider/RangeSlider';
 
 const styles = StyleSheet.create({
   modalHeader: {
@@ -36,6 +37,14 @@ const styles = StyleSheet.create({
     elevation: 100,
   },
   textInputWrapper: {
+    // width: '100%',
+    // flex: 0,
+    // position: 'relative',
+    // padding: 24,
+    // alignItems: 'stretch',
+    // zIndex: 100,
+    // top: 70,
+    // marginTop: 25,
     width: '100%',
     // flex: 1,
     position: 'absolute',
@@ -43,11 +52,12 @@ const styles = StyleSheet.create({
     // right: 0,
     // padding: 24,
     paddingHorizontal: 8,
-    marginTop: -8,
+    marginTop: -5,
     // alignItems: 'stretch',
     // zIndex: 100,
     // backgroundColor: 'green',
     top: normalize(45),
+    zIndex: 999
     // marginTop: 25,
     // elevation: 100,
   },
@@ -56,7 +66,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     paddingLeft: 16, 
     paddingTop: 12,
-    top: normalize(45)
+    top: normalize(45),
+    zIndex: 9999
   },
   mapInstruction: {
     backgroundColor: Colors.primaryMidnightBlue, 
@@ -95,9 +106,19 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
 
   const [instructionVisible, setInstructionVisible] = useState(true)
   const [rangeValue, setRangeValue] = useState(0)
+  const [isFocused, setIsFocused] = useState(false)
 
-  const [slideStartingValue, setSlideStartingValue] = useState(0)
-  const [slideStartingCount, setSlideStartingCount] = useState(0)
+  const getSliderValue = (rangeValue) => {
+    setRangeValue(rangeValue)
+  }
+
+  const onInputFocus = () => {
+    setIsFocused(!isFocused)
+  }
+
+  const onInputBlur = () => {
+    setIsFocused(false)
+  }
 
   //MAP DRAG
   const onRegionChange = (region) => {
@@ -209,7 +230,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ height: normalize(190) }}>
+      <View style={{ height: isFocused ? normalize(150) : normalize(190) }}>
         <PaddingView paddingSize={2}>
           <View style={styles.modalHeader}>
             <TouchableOpacity
@@ -224,22 +245,31 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         <View style={styles.textInputWrapper}>
           <GooglePlacesInput
             onResultsClick={(data) => {
-              //alert(data);
-              //console.log('nag search');
+              // alert(data);
+              // console.log('nag search');
 
               onSearchLocationHandler(data);
               //alert(data);
             }}
             onClearInput={() => {}}
             currentValue={changeMapAddress}
-            currentLocation
-            predefinedPlacesAlwaysVisible
-            predefinedPlaces={['home', 'work']}
+            onInputFocus={onInputFocus}
+            // onInputBlur={onInputBlur}
           />
         </View>
-        {/* {isLocationReady ? (
+        {/* <TouchableOpacity>
+          <AppText
+            textStyle="caption"
+            color={Colors.contentOcean}
+            customStyle={{ marginLeft: 10 }}
+          >
+            Your current location
+          </AppText>
+        </TouchableOpacity> */}
+        {isFocused ? (
           <TouchableOpacity 
-            onPress={() => null} 
+            activeOpacity={.7}
+            // onPress={() => console.log('hi')} 
             style={styles.navigationArrow}
           >
             <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
@@ -250,35 +280,34 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             >
               Your current location
             </AppText>
-        </TouchableOpacity>
+          </TouchableOpacity>
         ) : (
-          <ActivityIndicator
-            animating={true}
-            size="small"
-            color={Colors.contentEbony}
-          />
-        )} */}
-        <PaddingView paddingSize={2}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
-            <AppText textStyle="promo">Browse Offers Within</AppText>
-            <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <AppText textStyle="caption" color="#999">0</AppText>
-            <Slider
-              style={{width: '90%'}}
-              minimumValue={0}
-              maximumValue={200}
+          // <ActivityIndicator
+          //   animating={true}
+          //   size="small"
+          //   color={Colors.contentEbony}
+          // />
+          <PaddingView paddingSize={2}>
+            <View 
+              style={{ 
+                flexDirection: 'row', 
+                justifyContent: 'space-between', 
+                marginTop: normalize(45), 
+                marginBottom: 10 
+              }}
+            >
+              <AppText textStyle="promo">Browse Offers Within</AppText>
+              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+            </View>
+            <RangeSlider
+              minValue={0}
+              maxValue={250}
               step={5}
-              value={rangeValue}
-              onValueChange={rangeValue => setRangeValue(rangeValue)}
-              minimumTrackTintColor={Colors.primaryYellow}
-              maximumTrackTintColor={Colors.neutralGray}
-              thumbTintColor={Colors.primaryYellow}
+              value={getSliderValue}
             />
-            <AppText textStyle="caption" color="#999">200</AppText>
-          </View>
-        </PaddingView>
+          </PaddingView>
+        )}
+      
       </View>
       <View style={[styles.mapInstruction, { display: instructionVisible ? 'flex' : 'none', position: instructionVisible ? 'absolute' : 'relative' }]}>
         <PushPin width={normalize(22)} height={normalize(22)}/>

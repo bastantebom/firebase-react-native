@@ -10,7 +10,7 @@ import PostOwnEmpty from '@/screens/Profile/Tabs/Post';
 import LoadingScreen from './loading';
 import { normalize } from '@/globals';
 
-const Posts = ({data, type, isLoading, setIsLoading}) => {
+const Posts = ({data, type, isLoading, setIsLoading, headerComponent}) => {
   const {user, userInfo} = useContext(UserContext);
   const {setPosts, posts, locationFilter, setLocationFilter} = useContext(
     Context,
@@ -223,8 +223,9 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
         onEndReached={() => getMorePost()}
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
+        ListHeaderComponent={headerComponent}
         ListFooterComponent={
-          <View style={{alignItems: 'center', marginTop: 8, marginBottom: normalize(150)}}>
+          <View style={{alignItems: 'center', marginTop: 8, marginBottom: normalize(100)}}>
             {fetchMore ? (
               <ActivityIndicator />
             ) : (

@@ -11,6 +11,8 @@ const GooglePlacesInput = ({
   currentValue,
   adjustListPosition,
   cityOnly,
+  onInputFocus,
+  onInputBlur
 }) => {
   const placesRef = useRef(null);
 
@@ -43,6 +45,8 @@ const GooglePlacesInput = ({
         onFail={(error) => console.error(error)}
         textInputProps={{
           onChangeText: (value) => onClearInput(value),
+          onFocus: onInputFocus,
+          onBlur: onInputBlur
         }}
         styles={{
           container: {

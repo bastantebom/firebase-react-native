@@ -85,7 +85,7 @@ export const MobileVerification = ({back, toggleMobileCode}) => {
             //   signUpEmail(signUpForm);
             // }}
             // loading={isLoading}
-            onPress={toggleMobileCode}
+            onPress={() => toggleMobileCode(mobile)}
           />
         </View>
       </PaddingView>

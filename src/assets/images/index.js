@@ -4,6 +4,7 @@
 import Location from './location.svg';
 import ResetPassword from './reset-password.svg';
 import Verify from './verify.svg';
+import VerifySms from './verify-sms.svg';
 
 // illustrations
 import OnboardingIllustration1 from './onboarding-img1.svg';
@@ -56,4 +57,5 @@ export {
   Faded,
   CoverPhoto,
   AboutServbeesImage,
+  VerifySms
 };

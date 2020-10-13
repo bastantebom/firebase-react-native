@@ -25,7 +25,6 @@ import {
 import { MobileVerification } from './MobileVerification';
 import { UploadGovernmentId } from './UploadId';
 import { AddAnAddress } from './Address';
-import { MobileCode } from './components/MobileCode';
 
 import { useNavigation } from '@react-navigation/native';
 import { VerifyMap } from './components/Map';

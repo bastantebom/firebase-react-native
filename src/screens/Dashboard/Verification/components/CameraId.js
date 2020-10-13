@@ -18,7 +18,7 @@ const { height, width } = Dimensions.get('window');
 // const maskRowHeight = Math.round((height - 300) / 20);
 // const maskColWidth = (width - 300) / 2;
 
-export const CameraId = ({ back, backToIndex, id }) => {
+export const CameraId = ({ back, backToIndex, confirmPhotoId, id }) => {
 
   // const cameraRef = useRef(null)
   const [screen, setScreen] = useState('idPhoto')
@@ -126,7 +126,8 @@ export const CameraId = ({ back, backToIndex, id }) => {
       ) : screen === 'selfieInitial' ? (
         <SelfieId
           back={() => setScreen('idConfirm')}
-          confirmPhotoId={backToIndex}
+          // confirmPhotoId={backToIndex}
+          confirmPhotoId={confirmPhotoId}
         />
       ) : (
         null

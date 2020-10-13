@@ -29,7 +29,9 @@ import {
   NavigationPin,
   NavigationPinRed,
   CloseDark, 
-  FilterServices
+  FilterServices,
+  JarHeartColored,
+  NavigationPinAlt
 } from '@/assets/images/icons';
 import {GlobalStyle, Colors, normalize} from '@/globals';
 
@@ -87,6 +89,7 @@ function Dashboard() {
             data={posts}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
+            headerComponent={<LocationSearch/>}
           />
         </View>
         <WhiteOpacity />
@@ -119,13 +122,18 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
 
   const { searchType, setPage } = useContext(Context)
 
-  const [opacity] = useState(new Animated.Value(0))
-  const [searchBarFocused, setSearchBarFocused] = useState(false)
+  const [opacity] = useState(new Animated.Value(0));
+  const [searchBarFocused, setSearchBarFocused] = useState(false);
+  const [likedPosts, setLikedPosts] = useState(false);
 
   const [searchValue, setSearchValue] = useState()
 
   const onValueChange = (value) => {
     setSearchValue(value)
+  }
+
+  const toggleLike = () => {
+    setLikedPosts(!likedPosts)
   }
 
   const onFocus = () => {
@@ -153,48 +161,59 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
   }
 
   return (
-    <View style={{ marginHorizontal: 16, marginVertical: 16, height: normalize(100) }}>
-      <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-        <View style={{ flex: 1, height: searchType !== 'posts' ? normalize(100) : 'auto' }}>
-          <SearchBox
-            onSearchFocus={onFocus} 
-            onBackPress={onBackPress}
-            valueHandler={onValueChange}
-          />
-          <Animated.View 
-            style={{ 
-              opacity: opacity, 
-              display: searchBarFocused ? 'flex' : 'none',
-              zIndex: searchBarFocused ? 1 : 0,
-              flex: 1,
-              position: 'absolute',
-            }}
-          >
-            <SearchResults 
-              onValueChange={searchValue}
+    <>
+      <View style={{ margin: 16, height: normalize(47.5) }}>
+        <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
+          <View style={{ flex: 1, height: searchType !== 'posts' ? normalize(100) : 'auto' }}>
+            <SearchBox
+              onSearchFocus={onFocus} 
+              onBackPress={onBackPress}
+              valueHandler={onValueChange}
             />
-          </Animated.View>
-        </View>
-        { searchBarFocused ? 
-          <View style={{ marginTop: normalize(47.5)}}/> 
-          : <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1 }}>
-            <TouchableOpacity onPress={toggleFilter}>
-              <View style={styles.circleButton}>
-                <Filter />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={styles.circleButton}>
-                <JarHeart />
-              </View>
-            </TouchableOpacity>
+            <Animated.View 
+              style={{ 
+                opacity: opacity, 
+                display: searchBarFocused ? 'flex' : 'none',
+                zIndex: searchBarFocused ? 1 : 0,
+                flex: 1,
+                position: 'absolute',
+              }}
+            >
+              <SearchResults 
+                onValueChange={searchValue}
+              />
+            </Animated.View>
           </View>
-        }
+          { searchBarFocused ? 
+            <View style={{ marginTop: normalize(47.5)}}/> 
+            : <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1 }}>
+              <TouchableOpacity onPress={toggleFilter}>
+                <View style={styles.circleButton}>
+                  <Filter />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={toggleLike}>
+                <View style={styles.circleButton}>
+                  { likedPosts ? <JarHeartColored/> : <JarHeart /> }
+                  {/* <JarHeart />  */}
+                </View>
+              </TouchableOpacity>
+            </View>
+          }
+        </View>
+        {/* <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
+          <LocationSearch />
+        </View> */}
       </View>
-      <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
-        <LocationSearch />
-      </View>
-    </View>
+      <View
+        style={{
+          // borderBottomColor: 'red',
+          // borderBottomWidth: 1,
+          height: StyleSheet.hairlineWidth,
+          elevation: 2
+        }}
+      />
+    </>
   );
 };
 
@@ -212,160 +231,170 @@ const LocationSearch = () => {
 
   return (
     <>
-      <View style={GlobalStyle.rowCenter}>
-        <View 
-          style={{ 
-            paddingLeft: normalize(40), 
-            paddingRight: normalize(15), 
-            // marginRight: normalize(10), 
-            maxWidth: '60%',
-            minWidth: '60%' 
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              setShowLocation(true);
-            }}>
-            <View>
-              <AppText textStyle="caption">Your location</AppText>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: Colors.primaryMidnightBlue,
-              flexDirection: 'row',
-              // flex: 1,
-              justifyContent: 'space-between',
-              width: '100%'
-            }}>
+      <View style={{ marginLeft: 16, marginBottom: 16 }}>
+        <View style={GlobalStyle.rowCenter}>
+          <View 
+            style={{ 
+              paddingLeft: normalize(40), 
+              paddingRight: normalize(15), 
+              // marginRight: normalize(10), 
+              maxWidth: '60%',
+              minWidth: '60%' 
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 setShowLocation(true);
-              }}
-              style={{ marginRight: normalize(25) }}
-            >
-              <View style={{paddingVertical: normalize(1)}}>
-                <AppText
-                  textStyle="body3"
-                  color={Colors.primaryMidnightBlue}
-                  // customStyle={{ marginRight: normalize(22) }}
-                  numberOfLines={1}
-                >
-                  {locationFilter}
-                </AppText>
+              }}>
+              <View>
+                <AppText textStyle="caption" color={Colors.contentPlaceholder}>Your location</AppText>
               </View>
             </TouchableOpacity>
-            {locationFilter ? (
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: Colors.primaryAliceBlue,
+                flexDirection: 'row',
+                // flex: 1,
+                justifyContent: 'space-between',
+                width: '100%'
+              }}>
               <TouchableOpacity
                 onPress={() => {
-                  setLocationFilter(null);
+                  setShowLocation(true);
                 }}
-                // style={{width: '10%'}}
-                style={{ 
-                  paddingVertical: normalize(4), 
-                  right: normalize(0), 
-                  position: 'absolute', 
-                  zIndex: 999
+                style={{ marginRight: normalize(25) }}
+              >
+                <View style={{paddingVertical: normalize(1)}}>
+                  <AppText
+                    textStyle="body3"
+                    color={Colors.primaryMidnightBlue}
+                    // customStyle={{ marginRight: normalize(22) }}
+                    numberOfLines={1}
+                  >
+                    {locationFilter}
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+              {locationFilter ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setLocationFilter(null);
+                  }}
+                  // style={{width: '10%'}}
+                  style={{ 
+                    paddingVertical: normalize(4), 
+                    right: normalize(0), 
+                    position: 'absolute', 
+                    zIndex: 999
+                  }}
+                >
+                  <CloseDark height={normalize(16)} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+            <View
+              style={{
+                position: 'absolute',
+                top: '50%',
+                marginTop: normalize(-12),
+                left: 4,
+              }}>
+              <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
+            </View>
+          </View>
+          <ScrollView
+            // ref={scrollRef}
+            horizontal={true}
+            style={{}}
+            showsHorizontalScrollIndicator={false}
+            // onScrollBeginDrag={() => console.log('ajskajskjaksj')}
+            // onContentSizeChange={(contentWidth, contentHeight) => console.log(contentHeight, contentWidth)}
+            // onLayout={(contentHeight) => console.log(contentHeight, 'contentHeight')}
+          >
+            <View style={styles.locationOption}>
+              <NavigationArrow width={normalize(16)} height={normalize(16)} />
+              <AppText 
+                textStyle="eyebrow2"
+                customStyle={{
+                  marginLeft: 5,
+                  fontFamily: 'RoundedMplus1c-Medium'
                 }}
               >
-                <CloseDark height={normalize(16)} />
-              </TouchableOpacity>
-            ) : null}
-          </View>
-          <View
-            style={{
-              position: 'absolute',
-              top: '50%',
-              marginTop: normalize(-12),
-              left: 4,
-            }}>
-            <NavigationPinRed width={normalize(24)} height={normalize(24)} />
-          </View>
+                Nearest
+              </AppText>
+            </View>
+            <View style={styles.locationOption}>
+              <FilterServices width={16} height={16} />
+              <AppText 
+                textStyle="eyebrow2"
+                customStyle={{
+                  marginLeft: 5,
+                  fontFamily: 'RoundedMplus1c-Medium'
+                }}
+              >
+                Services
+              </AppText>
+            </View>
+            <View style={styles.locationOption}>
+              <NavigationArrow width={16} height={16} />
+              <AppText 
+                textStyle="eyebrow2"
+                customStyle={{
+                  marginLeft: 5,
+                  fontFamily: 'RoundedMplus1c-Medium'
+                }}
+              >
+                Sellers
+              </AppText>
+            </View>
+            {/* <View style={styles.locationOption}>
+              <NavigationArrow width={16} height={16} />
+              <AppText>Needs</AppText>
+            </View>
+            <View style={styles.locationOption}>
+              <NavigationArrow width={16} height={16} />
+              <AppText>Popular</AppText>
+            </View> */}
+          </ScrollView>
         </View>
-        <ScrollView
-          // ref={scrollRef}
-          horizontal={true}
-          style={{}}
-          showsHorizontalScrollIndicator={false}
-          // onScrollBeginDrag={() => console.log('ajskajskjaksj')}
-          // onContentSizeChange={(contentWidth, contentHeight) => console.log(contentHeight, contentWidth)}
-          // onLayout={(contentHeight) => console.log(contentHeight, 'contentHeight')}
-        >
-          <View style={styles.locationOption}>
-            <NavigationArrow width={normalize(16)} height={normalize(16)} />
-            <AppText 
-              textStyle="eyebrow2"
-              customStyle={{
-                marginLeft: 5,
-                fontFamily: 'RoundedMplus1c-Medium'
-              }}
-            >
-              Nearest
-            </AppText>
-          </View>
-          <View style={styles.locationOption}>
-            <FilterServices width={16} height={16} />
-            <AppText 
-              textStyle="eyebrow2"
-              customStyle={{
-                marginLeft: 5,
-                fontFamily: 'RoundedMplus1c-Medium'
-              }}
-            >
-              Services
-            </AppText>
-          </View>
-          <View style={styles.locationOption}>
-            <NavigationArrow width={16} height={16} />
-            <AppText 
-              textStyle="eyebrow2"
-              customStyle={{
-                marginLeft: 5,
-                fontFamily: 'RoundedMplus1c-Medium'
-              }}
-            >
-              Sellers
-            </AppText>
-          </View>
-          {/* <View style={styles.locationOption}>
-            <NavigationArrow width={16} height={16} />
-            <AppText>Needs</AppText>
-          </View>
-          <View style={styles.locationOption}>
-            <NavigationArrow width={16} height={16} />
-            <AppText>Popular</AppText>
-          </View> */}
-        </ScrollView>
-      </View>
 
-      <Modal
-        isVisible={showLocation}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        onBackButtonPress={() => setShowLocation(false)}
+        <Modal
+          isVisible={showLocation}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          onBackButtonPress={() => setShowLocation(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <LocationMap
+            address={
+              userInfo.address
+                ? {
+                    latitude: userInfo.address.latitude,
+                    longitude: userInfo.address.longitude,
+                  }
+                : {latitude: 14.5831, longitude: 120.9794}
+            }
+            back={() => setShowLocation(false)}
+            changeFromMapHandler={(fullAddress) =>
+              changeFromMapHandler(fullAddress)
+            }
+          />
+        </Modal>
+      </View>
+      {/* <View
         style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <LocationMap
-          address={
-            userInfo.address
-              ? {
-                  latitude: userInfo.address.latitude,
-                  longitude: userInfo.address.longitude,
-                }
-              : {latitude: 14.5831, longitude: 120.9794}
-          }
-          back={() => setShowLocation(false)}
-          changeFromMapHandler={(fullAddress) =>
-            changeFromMapHandler(fullAddress)
-          }
-        />
-      </Modal>
+          // borderBottomColor: '#E5E5E5',
+          // borderBottomWidth: StyleSheet.hairlineWidth,
+          height: StyleSheet.hairlineWidth,
+          elevation: 2
+        }}
+      /> */}
     </>
   )
 }

@@ -25,9 +25,8 @@ import {
 import { MobileVerification } from './MobileVerification';
 import { UploadGovernmentId } from './UploadId';
 import { AddAnAddress } from './Address';
-import { MobileCode } from './components/MobileCode';
+import { VerifyCode } from './components/VerifyCode';
 import { EmailVerification } from './EmailVerification';
-import { EmailCode } from './components/EmailCode';
 
 import { useNavigation } from '@react-navigation/native';
 import { VerifyMap } from './components/Map';
@@ -44,6 +43,9 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
   const [profile, setProfile] = useState(false);
   const [mobileVerification, setMobileVerification] = useState(false);
   const [uploadId, setUploadId] = useState(false);
+  const [mobile, setMobile] = useState(false);
+  const [provider, setProvider] = useState('')
+  const [providerText, setProviderText] = useState('')
 
   const toggleProfile = () => {
     setScreen('profile')
@@ -60,6 +62,18 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
   const toggleEmailVerification = () => {
     setScreen('email')
   };
+
+  const toggleMobile = (mobile) => {
+    setScreen('verifyCode')
+    setProvider(mobile)
+    setProviderText('mobile')
+  }
+
+  const toggleEmail = (emailAddress) => {
+    setScreen('verifyCode')
+    setProvider(emailAddress)
+    setProviderText('email')
+  }
 
   const switchVerificationScreens = ( screen ) => {
     switch (screen) {
@@ -86,27 +100,33 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
         return (
           <MobileVerification 
             back={() => setScreen('initial')} 
-            toggleMobileCode={() => setScreen('mobileCode')}
+            toggleMobileCode={toggleMobile}
           />
         );
-      case 'mobileCode':
-        return <MobileCode/>;
+      case 'email':
+        return (
+          <EmailVerification 
+            back={() => setScreen('initial')} 
+            toggleEmailCode={toggleEmail}
+          />
+        );
+      case 'verifyCode':
+        return <VerifyCode provider={provider} providerText={providerText} />;
       case 'governmentId':
         return (
           <UploadGovernmentId 
             back={() => setScreen('initial')} 
-            backToIndex={() => setScreen('initial')}
+            // backToIndex={() => setScreen('initial')}
+            confirmPhotoId={() => setScreen('pendingVerification')}
           />
         );
-        case 'email':
+      case 'pendingVerification':
         return (
-          <EmailVerification 
-            back={() => setScreen('initial')} 
-            toggleEmailCode={() => setScreen('emailCode')}
+          <PendingVerification 
+            goToDashboard={toggleMenu}
+            reviewVerification={() => setScreen('initial')}
           />
         );
-      case 'emailCode':
-        return <EmailCode/>;
       default:
         return null;
     }

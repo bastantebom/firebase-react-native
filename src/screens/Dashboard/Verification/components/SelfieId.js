@@ -89,6 +89,10 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
     setScreen('selfiePhoto');
   }
 
+  // const confirmVerification = () => {
+  //   console.log()
+  // }
+
   return (
     <View style={{ flex: 1 }}>
       {screen === 'initial' ? (
@@ -167,7 +171,7 @@ export const SelfieId = ({ back, confirmPhotoId }) => {
                 size="sm"
                 // onPress={toggleSelfieScreen}
                 onPress={confirmPhotoId}
-                // onPress={}
+                // onPress={() => confirmVerification}
               />
             </View>
           </PaddingView>
