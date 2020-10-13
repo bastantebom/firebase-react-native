@@ -1,4 +1,4 @@
-import React, {createRef, useState, useContext} from 'react';
+import React, { createRef, useState, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Share from 'react-native-share';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {AppText, BottomSheetHeader} from '@/components';
+import { AppText, BottomSheetHeader } from '@/components';
 import {
   EllipsisMenu,
   OwnMenu,
@@ -31,8 +31,8 @@ import {
   ProfileReport,
   ProfileBlockRed,
 } from '@/assets/images/icons';
-import {normalize, GlobalStyle} from '@/globals';
-import {UserContext} from '@/context/UserContext';
+import { normalize, GlobalStyle } from '@/globals';
+import { UserContext } from '@/context/UserContext';
 
 const TransparentHeader = ({
   toggleEllipsisState,
@@ -78,7 +78,7 @@ const TransparentHeader = ({
       // setResult('error: '.concat(getErrorString(error)));
     }
   };
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   if (type === 'post-other') {
     //console.log(postTitle);
@@ -109,7 +109,7 @@ const TransparentHeader = ({
             </View>
             {/* Right aligned icons */}
             {user ? (
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={toggleEllipsisState}>
@@ -141,7 +141,7 @@ const TransparentHeader = ({
               onPress={() => {
                 toggleEllipsisState();
               }}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
@@ -184,7 +184,7 @@ const TransparentHeader = ({
             </View>
 
             {/* Right aligned icons */}
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={toggleEllipsisState}>
@@ -216,7 +216,7 @@ const TransparentHeader = ({
               onPress={() => {
                 toggleEllipsisState();
               }}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}
@@ -251,7 +251,7 @@ const TransparentHeader = ({
             <View></View>
 
             {/* Right aligned icons */}
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               {/* <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderShare width={normalize(16)} height={normalize(16)} />
@@ -343,34 +343,34 @@ const TransparentHeader = ({
 
             {/* Right aligned icons */}
             {user ? (
-              <View style={{flexDirection: 'row'}}>
-                {/* <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
-                <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
-                  {following ? (
-                    <HeaderFollowing
-                      width={normalize(16)}
-                      height={normalize(16)}
-                    />
-                  ) : (
-                    <HeaderFollow
-                      width={normalize(16)}
-                      height={normalize(16)}
-                    />
-                  )}
-                  <AppText
-                    textStyle="button3"
-                    color="white"
-                    customStyle={{marginLeft: 4}}>
-                    {following ? 'Unfollow' : 'Follow'}
-                  </AppText>
-                </View>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
+                  <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
+                    {following ? (
+                      <HeaderFollowing
+                        width={normalize(16)}
+                        height={normalize(16)}
+                      />
+                    ) : (
+                        <HeaderFollow
+                          width={normalize(16)}
+                          height={normalize(16)}
+                        />
+                      )}
+                    <AppText
+                      textStyle="button3"
+                      color="white"
+                      customStyle={{ marginLeft: 4 }}>
+                      {following ? 'Unfollow' : 'Follow'}
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(16)} height={normalize(16)} />
-                </View>
-              </TouchableOpacity> */}
+                {/* <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
+                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                    <HeaderShare width={normalize(16)} height={normalize(16)} />
+                  </View>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -404,7 +404,7 @@ const TransparentHeader = ({
               onPress={() => {
                 toggleEllipsisState();
               }}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           {/* <FilterSlider modalToggler={toggleModal} /> */}

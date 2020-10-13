@@ -1,13 +1,13 @@
 //import liraries
 import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {normalize, Colors} from '@/globals';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { normalize, Colors } from '@/globals';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Following from './components/connections';
 import Hives from './components/hives';
 import Modal from 'react-native-modal';
 
-import {AppText} from '@/components';
+import { AppText } from '@/components';
 // create a component
 const ProfileLinks = ({
   visibleHives,
@@ -16,7 +16,7 @@ const ProfileLinks = ({
   toggleConnections,
   userInfo,
 }) => {
-  const {post_count} = userInfo;
+  const { post_count } = userInfo;
   return (
     <>
       <View style={styles.profileLinksWrapper}>
@@ -27,18 +27,18 @@ const ProfileLinks = ({
           <AppText
             textStyle="caption"
             color={Colors.profileLink}
-            customStyle={{paddingLeft: normalize(8)}}>
+            customStyle={{ paddingLeft: normalize(8) }}>
             {post_count == 1 ? 'Post' : 'Posts'}
           </AppText>
         </View>
-        {/* <TouchableOpacity onPress={toggleConnections}>
+        <TouchableOpacity onPress={toggleConnections}>
           <View style={styles.individualLink}>
             <AppText textStyle="subtitle1">29</AppText>
             <AppText textStyle="caption" color={Colors.profileLink}>
               Followers
             </AppText>
           </View>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         {/* <TouchableOpacity onPress={toggleHives}>
           <View style={styles.individualLink}>
             <AppText textStyle="subtitle1">4</AppText>
@@ -99,13 +99,6 @@ const styles = StyleSheet.create({
 
   firstLink: {
     alignItems: 'center',
-    flexDirection: 'row', //added for phase 1
-    backgroundColor: Colors.secondarySolitude,
-    paddingTop: normalize(10.5),
-    paddingBottom: normalize(10.5),
-    paddingLeft: normalize(62),
-    paddingRight: normalize(62),
-    borderRadius: normalize(16),
   },
 
   individualLink: {

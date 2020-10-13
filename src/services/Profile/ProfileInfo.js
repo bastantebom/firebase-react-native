@@ -50,7 +50,7 @@ const validateUsername = (payload) => {
 
 const validateCurrentPassword = (payload) => {
   return BaseAPI({
-    url: `/users/verify-password`,
+    url: `users/verify-password`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,12 +59,29 @@ const validateCurrentPassword = (payload) => {
   });
 };
 
+const follow = (uid, follow) => {
+  /// users/:uid/follow
+  const connect = follow ? 'follow' : 'unfollow';
+  console.log(`users/${uid}/${connect}`);
+  return BaseAPI({
+    url: `users/${uid}/${connect}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+
+  });
+};
+
+
+
 const ProfileInfoService = {
   getUser,
   updateUser,
   updatePassword,
   validateUsername,
   validateCurrentPassword,
+  follow,
 };
 
 export default ProfileInfoService;

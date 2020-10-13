@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,7 +10,7 @@ import {
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   AppText,
@@ -26,14 +26,14 @@ import {
   CacheableImage,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context/index';
+import { ProfileHeaderDefault } from '@/assets/images';
+import { normalize, Colors } from '@/globals';
+import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context/index';
 
-import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
+import { MoreInfo, Reviews } from '@/screens/Profile/Tabs';
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
@@ -41,11 +41,11 @@ function ProfileInfoModal(props) {
   //console.log('PROPS');
   //console.log(props.route.params);
 
-  const {profileViewType = 'other', uid} = props.route?.params;
+  const { profileViewType = 'other', uid } = props.route?.params;
 
   const navigation = useNavigation();
-  const {user, signOut} = useContext(UserContext);
-  const {userPosts, otherUserPosts} = useContext(Context);
+  const { user, signOut } = useContext(UserContext);
+  const { userPosts, otherUserPosts } = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
   const [userInfo, setUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
@@ -75,6 +75,7 @@ function ProfileInfoModal(props) {
 
   const toggleFollowing = () => {
     setFollowing(!following);
+    connectUser(uid, following);
   };
 
   const toggleMenu = () => {
@@ -87,6 +88,16 @@ function ProfileInfoModal(props) {
   const toggleConnections = () => {
     //alert('text');
     setVisibleFollowing(!visibleFollowing);
+  };
+
+  const connectUser = (uid, following) => {
+    ProfileInfoService.follow(uid, following)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log('Err: ' + err);
+      })
   };
 
   const [profileImageUrl, setProfileImageUrl] = useState('');
@@ -159,18 +170,18 @@ function ProfileInfoModal(props) {
         userID={uid}
       />
       <View
-        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        style={{ backgroundColor: Colors.buttonDisable, height: normalize(158) }}>
         {userInfo.cover_photo ? (
           <CacheableImage
-            source={{uri: userInfo.cover_photo}}
-            style={{width: normalize(375), height: normalize(158)}}
+            source={{ uri: userInfo.cover_photo }}
+            style={{ width: normalize(375), height: normalize(158) }}
           />
         ) : (
-          <ProfileHeaderDefault
-            width={normalize(375 * 1.2)}
-            height={normalize(158 * 1.2)}
-          />
-        )}
+            <ProfileHeaderDefault
+              width={normalize(375 * 1.2)}
+              height={normalize(158 * 1.2)}
+            />
+          )}
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
@@ -186,13 +197,13 @@ function ProfileInfoModal(props) {
           userInfo={userInfo}
         />
       </View>
-      <View style={{backgroundColor: Colors.primaryYellow}}>
+      <View style={{ backgroundColor: Colors.primaryYellow }}>
         <LoadingUserInfo isLoading={isDataLoading}>
           <ProfileInfo profileData={userInfo} />
         </LoadingUserInfo>
       </View>
 
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
@@ -201,10 +212,10 @@ function ProfileInfoModal(props) {
   );
 }
 
-const LoadingUserInfo = ({children, isLoading}) => {
+const LoadingUserInfo = ({ children, isLoading }) => {
   return (
     <SkeletonContent
-      containerStyle={{flexDirection: 'column', backgroundColor: 'white'}}
+      containerStyle={{ flexDirection: 'column', backgroundColor: 'white' }}
       isLoading={isLoading}
       layout={[
         {
