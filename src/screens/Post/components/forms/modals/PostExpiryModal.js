@@ -11,13 +11,11 @@ import Modal from 'react-native-modal';
 
 import {
   AppText,
-  ScreenHeaderTitle
+  ScreenHeaderTitle,
+  BottomSheetHeader
 } from '@/components';
 import {normalize} from '@/globals';
 import { ArrowRight } from '@/assets/images/icons';
-
-import SetTimeModal from './SetTimeModal';
-import SetDateModal from './SetTimeModal';
 
 const PostExpiryModal = ({closeModal}) => { 
   const [timeModal, showTimeModal] = useState(false);
@@ -27,7 +25,7 @@ const PostExpiryModal = ({closeModal}) => {
     <View>
       <ScreenHeaderTitle
         close={closeModal}
-        title="Shipping Methods"
+        title="Post Expiry"
         paddingSize={2}
       />
       <View style={{padding: normalize(16)}}>
@@ -59,22 +57,77 @@ const PostExpiryModal = ({closeModal}) => {
               <View style={{flex: 1, backgroundColor: 'black'}} />
             </TouchableWithoutFeedback>
           }>
-            <SetTimeModal closeModal={() => showTimeModal(false)} />
-        </Modal>
-        <Modal
-          isVisible={dateModal}
-          animationIn="slideInUp"
-          animationInTiming={450}
-          animationOut="slideOutDown"
-          animationOutTiming={450}
-          style={{margin: 0, justifyContent: 'flex-end'}}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              onPress={() => showDateModal(false)}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
-            </TouchableWithoutFeedback>
-          }>
-          <SetDateModal closeModal={() => showDateModal(false)} />
+            <View 
+              style={{
+              backgroundColor: 'white',
+              height: '28%',
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              paddingHorizontal: 20
+            }}>
+              
+            <BottomSheetHeader />
+            <View style={{paddingTop: 30}}>
+              <AppText textStyle="body3">Set Time</AppText>
+              <TouchableOpacity
+                style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+                onPress={() => showDateModal(true)}>
+                <AppText textStyle="button2">
+                  Next: Set Date
+                </AppText>
+              </TouchableOpacity>
+            </View>
+            <Modal
+              isVisible={dateModal}
+              animationIn="slideInUp"
+              animationInTiming={450}
+              animationOut="slideOutDown"
+              animationOutTiming={450}
+              style={{margin: 0, justifyContent: 'flex-end'}}
+              customBackdrop={
+                <TouchableWithoutFeedback
+                  onPress={() => showDateModal(false)}>
+                  <View style={{flex: 1, backgroundColor: 'transparent'}} />
+                </TouchableWithoutFeedback>
+              }>
+              <View 
+                style={{
+                backgroundColor: 'white',
+                height: '28%',
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                paddingHorizontal: 20
+              }}>
+                
+              <BottomSheetHeader />
+              <View style={{paddingTop: 30}}>
+                <AppText textStyle="body3">Set Date</AppText>
+                <TouchableOpacity
+                  style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+                  onPress={() => [showDateModal(false), showTimeModal(false)]}>
+                  <AppText textStyle="button2">
+                    Save
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+
+              <Modal
+                isVisible={dateModal}
+                animationIn="slideInUp"
+                animationInTiming={450}
+                animationOut="slideOutDown"
+                animationOutTiming={450}
+                style={{margin: 0, justifyContent: 'flex-end'}}
+                customBackdrop={
+                  <TouchableWithoutFeedback
+                    onPress={() => [showDateModal(false), showTimeModal(false)]}>
+                    <View style={{flex: 1, backgroundColor: 'transparent'}} />
+                  </TouchableWithoutFeedback>
+                }>
+              </Modal>
+            </View>
+            </Modal>
+          </View>
         </Modal>
       </View>
     </View>
