@@ -1,14 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, TouchableOpacity} from 'react-native';
 
 import {AppText, FloatingAppInput} from '@/components';
-import {Colors} from '@/globals';
+import {Colors, normalize} from '@/globals';
+import {CategoryService} from '@/services';
 
 const CategoryFormModal = ({close}) => {
+  const [newCategoryName, setNewCategoryName] = useState('');
+
   const submitHandler = () => {
     console.log('save new category');
     // call create category api
     console.log('call API');
+    CategoryService.createCategory({
+      name: newCategoryName,
+      id: 3,
+    });
 
     // update choices state
     close();
@@ -20,7 +27,14 @@ const CategoryFormModal = ({close}) => {
         <AppText>Hello</AppText>
       </TouchableOpacity>
 
-      <FloatingAppInput label="Category Name" />
+      {/* <FloatingAppInput label="Category Name" /> */}
+
+      <FloatingAppInput
+        label="Category Name"
+        value={newCategoryName}
+        onChangeText={(value) => setNewCategoryName(value)}
+        customStyle={{marginBottom: normalize(16)}}
+      />
 
       <TouchableOpacity
         onPress={submitHandler}

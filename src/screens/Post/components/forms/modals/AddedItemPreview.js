@@ -1,9 +1,11 @@
-import React from 'react';
-import {View, SafeAreaView, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {View, SafeAreaView, TouchableOpacity, Dimensions} from 'react-native';
 
 import {AppText, Item, ScreenHeaderTitle} from '@/components';
 import {Colors, normalize} from '@/globals';
 import {CircleAdd} from '@/assets/images/icons';
+import Modal from 'react-native-modal';
+import EditItemModal from './EditItemModal';
 
 const AddedItemPreview = ({
   closeAddItemModal,
@@ -11,8 +13,14 @@ const AddedItemPreview = ({
   data,
   clearData,
   setInitialData,
+  categoryName,
+  setData,
 }) => {
   console.log(data);
+
+  const [editItemModal, showEditItemModal] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState(false);
+  const [indexOfItemToEdit, setIndexOfItemToEdit] = useState(0);
 
   const AddAnotherItemHandler = () => {
     closeModal();
@@ -26,15 +34,11 @@ const AddedItemPreview = ({
   const editItemHandler = (item, index) => {
     console.log('Edit this:');
     console.log(item);
+    setItemToEdit(item);
+    setIndexOfItemToEdit(index)
 
-    setInitialData.setTitle(item.title);
-    setInitialData.setDescription(item.description);
-    setInitialData.setItemImage(item.itemImage);
-    setInitialData.setPrice(item.price);
-    setInitialData.setCategoryName(item.categoryName);
-    setInitialData.setIndex(index);
-    setInitialData.setIsEditing(true);
-    closeModal();
+    showEditItemModal(true);
+    // closeModal();
   };
 
   const ItemList = () => {
@@ -62,7 +66,7 @@ const AddedItemPreview = ({
         <View>
           <ScreenHeaderTitle
             close={closeModal}
-            title={'Items'}
+            title={categoryName}
             paddingSize={0}
           />
           <View style={{paddingTop: 24}}>
@@ -92,6 +96,28 @@ const AddedItemPreview = ({
           <AppText textStyle="button2">Add Items</AppText>
         </TouchableOpacity>
       </View>
+      <Modal
+        isVisible={editItemModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <EditItemModal
+          closeModal={() => {
+            showEditItemModal(false);
+          }}
+          itemToEdit={itemToEdit}
+          setData={setData}
+          data={data}
+          indexOfItemToEdit={indexOfItemToEdit}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };

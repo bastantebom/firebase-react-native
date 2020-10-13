@@ -28,13 +28,13 @@ import AddCategoryModal from './AddCategoryModal';
 import AddedItemPreview from './AddedItemPreview';
 import {CategoryService} from '@/services';
 
-const AddItemModal = ({closeModal, setData, data}) => {
-  const [title, setTitle] = useState();
-  const [description, setDescription] = useState();
-  const [itemImage, setItemImage] = useState();
-  const [price, setPrice] = useState(0);
-  const [free, setFree] = useState(false);
-  const [categoryName, setCategoryName] = useState('uncategorized');
+const EditItemModal = ({closeModal, setData, data, itemToEdit, indexOfItemToEdit}) => {
+  const [title, setTitle] = useState(itemToEdit.title);
+  const [description, setDescription] = useState(itemToEdit.description);
+  const [itemImage, setItemImage] = useState(itemToEdit.itemImage);
+  const [price, setPrice] = useState(itemToEdit.price);
+  const [free, setFree] = useState(itemToEdit.price === 'Free' ? true : false);
+  const [categoryName, setCategoryName] = useState(itemToEdit.categoryName);
   const [choices, setChoices] = useState([
     {
       name: 'items',
@@ -59,8 +59,10 @@ const AddItemModal = ({closeModal, setData, data}) => {
   // const [data, setData] = useState([]);
 
   const addItemHandler = () => {
-    // console.log('Data submitted: ');
-    // console.log(data);
+    console.log('Data submitted: ');
+    console.log(setData);
+    
+
     let newData = {
       title: title,
       description: description,
@@ -71,14 +73,13 @@ const AddItemModal = ({closeModal, setData, data}) => {
 
     let itemArray = [...data];
 
-    if (isEditing) {
-      itemArray[index] = newData;
-    } else {
-      itemArray.push(newData);
-    }
+    itemArray[indexOfItemToEdit] = newData;
+
+    console.log("SADASDSA")
+    console.log(data)
 
     setData(itemArray);
-    clearData();
+    // clearData();
 
     setPreviewItemModal(true);
   };
@@ -90,17 +91,6 @@ const AddItemModal = ({closeModal, setData, data}) => {
     setPrice();
     setCategoryName('');
     setFree(false);
-  };
-
-  const setInitialData = {
-    setTitle,
-    setDescription,
-    setItemImage,
-    setPrice,
-    setCategoryName,
-    setFree,
-    setIndex,
-    setIsEditing,
   };
 
   const freeItemHandler = () => {
@@ -345,7 +335,6 @@ const AddItemModal = ({closeModal, setData, data}) => {
         <AddedItemPreview
           closeModal={() => setPreviewItemModal(false)}
           closeAddItemModal={closeModal}
-          setInitialData={setInitialData}
           data={data}
           setData={setData}
         />
@@ -354,4 +343,4 @@ const AddItemModal = ({closeModal, setData, data}) => {
   );
 };
 
-export default AddItemModal;
+export default EditItemModal;

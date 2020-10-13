@@ -65,7 +65,7 @@ const ScreenHeaderTitle = ({close, paddingSize, icon, iconSize = 24, title}) => 
           style={{position: 'absolute', left: 0}}>
           <RenderIcon />
         </TouchableOpacity>
-        <AppText textStyle="body3">{title}</AppText>
+        <AppText customStyle={{textTransform: 'capitalize'}} textStyle="body3">{title}</AppText>
       </View>
     </PaddingView>
   );

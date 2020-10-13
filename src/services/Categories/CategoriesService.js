@@ -10,7 +10,7 @@ let categories = [
 ];
 
 const createCategory = (payload) => {
-  return [...categories, payload];
+  return categories = [...categories, payload];
 };
 
 const getCategories = (payload) => {

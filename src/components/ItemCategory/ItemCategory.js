@@ -1,12 +1,15 @@
-import React, {useEffect} from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Dimensions} from 'react-native';
 
 import {AppText} from '@/components';
 import {Colors} from '@/globals';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
+import AddedItemPreview from '@/screens/Post/components/forms/modals/AddedItemPreview';
 
-const ItemCategory = ({items}) => {
-  console.log(items);
+const ItemCategory = ({items, setData, data}) => {
+  // console.log(items);
+  const [previewItemModal, setPreviewItemModal] = useState(false);
 
   const result = [
     ...items
@@ -24,11 +27,12 @@ const ItemCategory = ({items}) => {
       .values(),
   ];
 
-  console.log('RESULT:');
-  console.log(result);
+  // console.log('RESULT:');
+  // console.log(result);
 
   const categoryHandler = (category) => {
     console.log(`open ${category} items`);
+    setPreviewItemModal(true);
   };
 
   const CategoryList = () => {
@@ -45,12 +49,38 @@ const ItemCategory = ({items}) => {
               marginTop: 24,
               borderColor: Colors.neutralGray,
             }}>
-            <AppText textStyle="body2">{category.categoryName} </AppText>
+            <AppText
+              textStyle="body2"
+              customStyle={{textTransform: 'capitalize'}}>
+              {category.categoryName}{' '}
+            </AppText>
             <AppText textStyle="caption">
               {category.items?.length}{' '}
               {category.items?.length > 1 ? 'Items' : 'Item'}
             </AppText>
           </View>
+          <Modal
+            isVisible={previewItemModal}
+            animationIn="slideInRight"
+            animationInTiming={750}
+            animationOut="slideOutRight"
+            animationOutTiming={750}
+            style={{
+              margin: 0,
+              backgroundColor: 'white',
+              justifyContent: 'flex-start',
+              height: Dimensions.get('window').height,
+            }}>
+            <AddedItemPreview
+              closeModal={() => setPreviewItemModal(false)}
+              // closeAddItemModal={closeModal}
+              categoryName={category.categoryName}
+              data={category.items}
+              data={data}
+              setData={setData}
+              // setInitialData={setInitialData}
+            />
+          </Modal>
         </TouchableOpacity>
       );
     });

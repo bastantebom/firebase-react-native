@@ -519,7 +519,7 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
         // && listAsMultiple
         ? (
           <View>
-            <ItemCategory items={data} />
+            <ItemCategory items={data} setData={setData} data={data} />
           </View>
         ) : (
           <></>
