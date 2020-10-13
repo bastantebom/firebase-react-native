@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 
 import Modal from 'react-native-modal';
+import CalendarPicker from 'react-native-calendar-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
   AppText,
@@ -15,12 +17,31 @@ import {
   BottomSheetHeader
 } from '@/components';
 import {normalize} from '@/globals';
-import { ArrowRight } from '@/assets/images/icons';
+import { CalendarArrowLeft, CalendarArrowRight, ArrowRight } from '@/assets/images/icons';
 
 const PostExpiryModal = ({closeModal}) => { 
   const [timeModal, showTimeModal] = useState(false);
   const [dateModal, showDateModal] = useState(false);
+  const [selectedStartDate, setSelectedStartDate] = useState('null');
+  const [selectedEndDate, setSelectedEndDate] = useState('');
+  const minDate = new Date(); // Today
+  const maxDate = new Date(3000, 12, 31);
+  // const [time, setTime] = useState(null);
 
+  const onDateChange = (date, type) => {
+    if (type === 'END_DATE') {
+      setSelectedEndDate({
+        selectedEndDate: date,
+      });
+    } else {
+      setSelectedStartDate({
+        selectedStartDate: date,
+        selectedEndDate: null,
+      });
+    }
+  }
+
+  console.log(selectedStartDate)
   return (
     <View>
       <ScreenHeaderTitle
@@ -69,13 +90,24 @@ const PostExpiryModal = ({closeModal}) => {
             <BottomSheetHeader />
             <View style={{paddingTop: 30}}>
               <AppText textStyle="body3">Set Time</AppText>
-              <TouchableOpacity
-                style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
-                onPress={() => showDateModal(true)}>
-                <AppText textStyle="button2">
-                  Next: Set Date
-                </AppText>
-              </TouchableOpacity>
+              <View>
+                {/* <DateTimePicker
+                  testID="dateTimePicker"
+                  value={time}
+                  mode="time"
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                /> */}
+                {/* <RNDateTimePicker mode="time" /> */}
+                <TouchableOpacity
+                  style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+                  onPress={() => showDateModal(true)}>
+                  <AppText textStyle="button2">
+                    Next: Set Date
+                  </AppText>
+                </TouchableOpacity>
+              </View>
             </View>
             <Modal
               isVisible={dateModal}
@@ -86,29 +118,44 @@ const PostExpiryModal = ({closeModal}) => {
               style={{margin: 0, justifyContent: 'flex-end'}}
               customBackdrop={
                 <TouchableWithoutFeedback
-                  onPress={() => showDateModal(false)}>
+                  onPress={() => [showDateModal(false), showTimeModal(false)]}>
                   <View style={{flex: 1, backgroundColor: 'transparent'}} />
                 </TouchableWithoutFeedback>
               }>
               <View 
                 style={{
                 backgroundColor: 'white',
-                height: '28%',
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
-                paddingHorizontal: 20
+                paddingHorizontal: 20,
+                paddingBottom: 30
               }}>
                 
               <BottomSheetHeader />
               <View style={{paddingTop: 30}}>
                 <AppText textStyle="body3">Set Date</AppText>
-                <TouchableOpacity
-                  style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
-                  onPress={() => [showDateModal(false), showTimeModal(false)]}>
-                  <AppText textStyle="button2">
-                    Save
-                  </AppText>
-                </TouchableOpacity>
+                <View style={{zIndex: 999999, paddingTop: 20}}>
+                  <CalendarPicker
+                    startFromMonday={true}
+                    allowRangeSelection={true}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    todayBackgroundColor="#1F1A54"
+                    selectedDayColor="#1F1A54"
+                    selectedDayTextColor="#FFFFFF"
+                    onDateChange={onDateChange}
+                    previousTitle={<><CalendarArrowLeft /></>}
+                    nextTitle={<><CalendarArrowRight /></>}
+                    dayShape="square"
+                  />
+                  <TouchableOpacity
+                    style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+                    onPress={() => [showDateModal(false), showTimeModal(false)]}>
+                    <AppText textStyle="button2">
+                      Save
+                    </AppText>
+                  </TouchableOpacity>
+                </View>
               </View>
 
               <Modal
