@@ -1,20 +1,20 @@
 //import liraries
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {Colors, normalize} from '@/globals';
+import { Colors, normalize } from '@/globals';
 
-import {AppText, AppButton, TransitionIndicator} from '@/components';
+import { AppText, AppButton, TransitionIndicator } from '@/components';
 
-import {NavigationArrow, NavigationPin} from '@/assets/images/icons';
+import { NavigationArrow, NavigationPin } from '@/assets/images/icons';
 import LocationImage from '@/assets/images/location.svg';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 //import GooglePlacesInput from '@/components/LocationSearchInput';
 
@@ -36,6 +36,7 @@ const AlmostThere = (route) => {
     province: '',
     country: '',
     full_address: '',
+    default: true,
   });
 
   //Address Components
@@ -50,20 +51,20 @@ const AlmostThere = (route) => {
           json.results.length == 14
             ? 9
             : json.results.length == 13
-            ? 8
-            : json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
+              ? 8
+              : json.results.length == 12
+                ? 7
+                : json.results.length == 11
+                  ? 6
+                  : json.results.length == 10
+                    ? 5
+                    : json.results.length == 9
+                      ? 4
+                      : json.results.length == 8
+                        ? 3
+                        : json.results.length < 8
+                          ? 2
+                          : 2;
         const splitAddress = json.results[
           arrayToExtract
         ].formatted_address.split(',');
@@ -139,7 +140,7 @@ const AlmostThere = (route) => {
         setIsAllowed(false);
         getStringAddress(initialPosition);
       },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
     );
   }
 
@@ -260,12 +261,12 @@ const AlmostThere = (route) => {
             </View>
           </>
         ) : (
-          <ActivityIndicator
-            animating={true}
-            size="small"
-            color={Colors.contentEbony}
-          />
-        )}
+            <ActivityIndicator
+              animating={true}
+              size="small"
+              color={Colors.contentEbony}
+            />
+          )}
         <View style={styles.buttonWrapper}>
           <AppButton
             text="Next"
@@ -275,7 +276,7 @@ const AlmostThere = (route) => {
             onPress={() => {
               getLongLatFromString();
             }}
-            //loading={isLoading}
+          //loading={isLoading}
           />
         </View>
       </View>
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
   skipContainer: {
     alignItems: 'flex-end',
   },
-  almostThereImageContainer: {marginBottom: 32},
+  almostThereImageContainer: { marginBottom: 32 },
   almostThereText: {
     marginBottom: 8,
   },
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
 
-  buttonWrapper: {flex: 1, justifyContent: 'flex-end', marginBottom: 0},
+  buttonWrapper: { flex: 1, justifyContent: 'flex-end', marginBottom: 0 },
 });
 
 //make this component available to the app

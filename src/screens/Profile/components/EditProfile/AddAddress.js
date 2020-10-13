@@ -88,8 +88,11 @@ const AddAddress = ({ toggleAddAddress, address, additional }) => {
       };
     }
 
+    //console.log([...nAdd]);
+
     ProfileInfoService.updateUser({ addresses: [...nAdd] }, user.uid)
       .then((response) => {
+        //console.log(response.data.addresses);
         if (response.success) {
           setIS_LOADING(false);
           setUserInfo({ ...userInfo, ...response.data });
