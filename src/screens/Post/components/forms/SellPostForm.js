@@ -44,7 +44,7 @@ import {
   TransitionIndicator,
   AppRadio,
   AppCheckbox,
-  ItemCategory
+  ItemCategory,
 } from '@/components';
 import {normalize, Colors, GlobalStyle} from '@/globals';
 import {PostService, ImageUpload, MapService} from '@/services';
@@ -53,7 +53,15 @@ import {Context} from '@/context';
 import {PostImageUpload} from '../PostImageUpload';
 import AddItemModal from './modals/AddItemModal';
 
-const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
+import {useNavigation} from '@react-navigation/native';
+
+const SellPostForm = ({
+  navToPost,
+  togglePostModal,
+  formState,
+  initialData,
+  ...props
+}) => {
   const {
     coverPhoto,
     setNeedsRefresh,
@@ -63,9 +71,13 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
     setSingleCameraImage,
     setSelected,
     setImageCurrent,
+    items,
   } = useContext(Context);
   const {user, userInfo, setUserInfo} = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
+
+  // Converting to route
+  const navigation = useNavigation();
 
   /*MAP Essentials */
   const [map, setMap] = useState(false);
@@ -342,10 +354,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
   /**FOR ANIMATION */
 
-  useEffect(() => {
-    console.log('POST FORM ITEMS');
-    console.log(data);
-  });
+  // useEffect(() => {
+  //   console.log('POST FORM ITEMS');
+  //   console.log(data);
+  // });
 
   return (
     <>
@@ -515,11 +527,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         {/* IF statement here where we show the added items */}
 
-        {data.length > 0
-        // && listAsMultiple
-        ? (
+        {items.length > 0 ? (
+          // && listAsMultiple
           <View>
-            <ItemCategory items={data} setData={setData} data={data} />
+            <ItemCategory items={items} />
           </View>
         ) : (
           <></>
@@ -527,7 +538,10 @@ const SellPostForm = ({navToPost, togglePostModal, formState, initialData}) => {
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
-            onPress={() => showAddItemModal(true)}
+            onPress={() => {
+              // showAddItemModal(true)
+              navigation.navigate('AddItemScreen');
+            }}
             activeOpacity={0.7}
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
             <PostAdd width={normalize(24)} height={normalize(24)} />

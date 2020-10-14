@@ -28,7 +28,17 @@ import AddCategoryModal from './AddCategoryModal';
 import AddedItemPreview from './AddedItemPreview';
 import {CategoryService} from '@/services';
 
-const EditItemModal = ({closeModal, setData, data, itemToEdit, indexOfItemToEdit}) => {
+const EditItemModal = ({
+  closeModal,
+  setData,
+  data,
+  itemToEdit,
+  indexOfItemToEdit,
+  ...props
+}) => {
+  console.log('EDIT ITEM SCREEN');
+  console.log(props.route);
+
   const [title, setTitle] = useState(itemToEdit.title);
   const [description, setDescription] = useState(itemToEdit.description);
   const [itemImage, setItemImage] = useState(itemToEdit.itemImage);
@@ -61,7 +71,6 @@ const EditItemModal = ({closeModal, setData, data, itemToEdit, indexOfItemToEdit
   const addItemHandler = () => {
     console.log('Data submitted: ');
     console.log(setData);
-    
 
     let newData = {
       title: title,
@@ -75,8 +84,8 @@ const EditItemModal = ({closeModal, setData, data, itemToEdit, indexOfItemToEdit
 
     itemArray[indexOfItemToEdit] = newData;
 
-    console.log("SADASDSA")
-    console.log(data)
+    console.log('SADASDSA');
+    console.log(data);
 
     setData(itemArray);
     // clearData();

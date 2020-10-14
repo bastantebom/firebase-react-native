@@ -3,13 +3,16 @@ import {View, Dimensions} from 'react-native';
 
 import {AppText} from '@/components';
 import {Colors} from '@/globals';
+import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import AddedItemPreview from '@/screens/Post/components/forms/modals/AddedItemPreview';
 
-const ItemCategory = ({items, setData, data}) => {
+const ItemCategory = ({items}) => {
   // console.log(items);
   const [previewItemModal, setPreviewItemModal] = useState(false);
+
+  const navigation = useNavigation();
 
   const result = [
     ...items
@@ -33,13 +36,18 @@ const ItemCategory = ({items, setData, data}) => {
   const categoryHandler = (category) => {
     console.log(`open ${category} items`);
     setPreviewItemModal(true);
+    navigation.navigate('AddedItemPreviewScreen', {
+      categoryName: category,
+    });
   };
 
   const CategoryList = () => {
     return result.map((category) => {
       return (
         <TouchableOpacity
-          onPress={() => categoryHandler(category.categoryName)}>
+          onPress={() =>
+            categoryHandler(category.categoryName, category.items)
+          }>
           <View
             style={{
               borderWidth: 1,
@@ -59,7 +67,7 @@ const ItemCategory = ({items, setData, data}) => {
               {category.items?.length > 1 ? 'Items' : 'Item'}
             </AppText>
           </View>
-          <Modal
+          {/* <Modal
             isVisible={previewItemModal}
             animationIn="slideInRight"
             animationInTiming={750}
@@ -76,11 +84,9 @@ const ItemCategory = ({items, setData, data}) => {
               // closeAddItemModal={closeModal}
               categoryName={category.categoryName}
               data={category.items}
-              data={data}
-              setData={setData}
               // setInitialData={setInitialData}
             />
-          </Modal>
+          </Modal> */}
         </TouchableOpacity>
       );
     });

@@ -19,7 +19,14 @@ import {Dashboard} from '@/screens/Dashboard';
 import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
-import {Post, SinglePostView, SinglePostViewExternal} from '@/screens/Post';
+import {
+  Post,
+  SinglePostView,
+  SinglePostViewExternal,
+  AddItemScreen,
+  AddedItemPreviewScreen,
+  EditItemScreen
+} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 import SampleScreen from '@/screens/SampleScreen';
 
@@ -108,6 +115,7 @@ const PostStack = createStackNavigator();
 const ActivityStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const CreatePostStack = createStackNavigator();
 
 const Stack = createStackNavigator();
 const NoBottomTabScreenStack = createStackNavigator();
@@ -141,6 +149,10 @@ function NoBottomTabScreens() {
         name="ExternalPostLink"
         component={SinglePostViewExternal}
       />
+      <NoBottomTabScreenStack.Screen
+        name="CreatePost"
+        component={CreatePostStackScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
   );
 }
@@ -151,6 +163,17 @@ function DashboardStackScreen() {
     <DashboardStack.Navigator headerMode="none">
       <DashboardStack.Screen name="Servbees" component={Dashboard} />
     </DashboardStack.Navigator>
+  );
+}
+
+function CreatePostStackScreen() {
+  return (
+    <CreatePostStack.Navigator headerMode="none">
+      <CreatePostStack.Screen name="CreatePostScreen" component={PostScreen} />
+      <CreatePostStack.Screen name="AddItemScreen" component={AddItemScreen} />
+      <CreatePostStack.Screen name="EditItemScreen" component={EditItemScreen} />
+      <CreatePostStack.Screen name="AddedItemPreviewScreen" component={AddedItemPreviewScreen} />
+    </CreatePostStack.Navigator>
   );
 }
 

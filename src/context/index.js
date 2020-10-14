@@ -36,6 +36,52 @@ export const ContextProvider = ({children}) => {
   const [cameraImage, setCameraImage] = useState([]);
   const [libImages, setLibImages] = useState([]);
 
+  // Added Items (multiple)
+  const [items, setItems] = useState([]);
+
+  const getItemsByCategory = (cat) => {
+    const result = [
+      ...items
+        .reduce((r, {categoryName, description, itemImage, price, title}) => {
+          r.has(categoryName) ||
+            r.set(categoryName, {
+              categoryName,
+              items: [],
+            });
+
+          r.get(categoryName).items.push({
+            description,
+            itemImage,
+            price,
+            title,
+          });
+
+          return r;
+        }, new Map())
+        .values(),
+    ];
+
+    let filteredItems = result.filter((category) => {
+      if (category.categoryName === cat) {
+        return category;
+      }
+    });
+
+    return filteredItems[0]?.items;
+
+  };
+
+  const addItem = (item) => {
+    console.log('Add Item context triggered');
+    console.log(item);
+
+    let itemArray = [...items];
+
+    itemArray.push(item);
+
+    setItems(itemArray);
+  };
+
   useEffect(() => {
     setImageCount(coverPhoto.length);
   }, [coverPhoto]);
@@ -102,6 +148,9 @@ export const ContextProvider = ({children}) => {
   return (
     <Context.Provider
       value={{
+        items,
+        addItem,
+        getItemsByCategory,
         authenticationSheet,
         showAuthenticationSheet,
         sliderState,

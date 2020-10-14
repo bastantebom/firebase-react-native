@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   View,
   SafeAreaView,
@@ -28,7 +28,17 @@ import AddCategoryModal from './AddCategoryModal';
 import AddedItemPreview from './AddedItemPreview';
 import {CategoryService} from '@/services';
 
-const AddItemModal = ({closeModal, setData, data}) => {
+import {Context} from '@/context';
+
+const AddItemModal = ({closeModal, ...props}) => {
+  // console.log('Add Item Screen');
+  // console.log(props);
+
+  const {addItem} = useContext(Context);
+
+  const {navigation} = props;
+  // const {newItem} = props?.route?.params;
+
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [itemImage, setItemImage] = useState();
@@ -69,18 +79,22 @@ const AddItemModal = ({closeModal, setData, data}) => {
       categoryName: categoryName,
     };
 
-    let itemArray = [...data];
+    // let itemArray = [...data];
 
-    if (isEditing) {
-      itemArray[index] = newData;
-    } else {
-      itemArray.push(newData);
-    }
+    // if (isEditing) {
+    //   itemArray[index] = newData;
+    // } else {
+    //   itemArray.push(newData);
+    // }
 
-    setData(itemArray);
+    // setData(itemArray);
     clearData();
 
-    setPreviewItemModal(true);
+    addItem(newData);
+
+    navigation.navigate('AddedItemPreviewScreen', {
+      categoryName: categoryName,
+    });
   };
 
   const clearData = () => {
@@ -88,7 +102,6 @@ const AddItemModal = ({closeModal, setData, data}) => {
     setDescription('');
     setItemImage();
     setPrice();
-    setCategoryName('');
     setFree(false);
   };
 
@@ -129,7 +142,10 @@ const AddItemModal = ({closeModal, setData, data}) => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScreenHeaderTitle
-        close={closeModal}
+        // close={closeModal}
+        close={() => {
+          navigation.goBack();
+        }}
         title="Add an Item"
         paddingSize={2}
       />
@@ -330,7 +346,7 @@ const AddItemModal = ({closeModal, setData, data}) => {
       </Modal>
 
       {/* Preview Item Modal */}
-      <Modal
+      {/* <Modal
         isVisible={previewItemModal}
         animationIn="slideInRight"
         animationInTiming={750}
@@ -349,7 +365,7 @@ const AddItemModal = ({closeModal, setData, data}) => {
           data={data}
           setData={setData}
         />
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   );
 };

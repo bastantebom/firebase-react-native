@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, SafeAreaView, TouchableOpacity, Dimensions} from 'react-native';
 
 import {AppText, Item, ScreenHeaderTitle} from '@/components';
@@ -7,23 +7,41 @@ import {CircleAdd} from '@/assets/images/icons';
 import Modal from 'react-native-modal';
 import EditItemModal from './EditItemModal';
 
+import {Context} from '@/context';
+
 const AddedItemPreview = ({
   closeAddItemModal,
   closeModal,
   data,
   clearData,
   setInitialData,
-  categoryName,
   setData,
+  ...props
 }) => {
-  console.log(data);
+  // console.log(data);
+  const {getItemsByCategory} = useContext(Context);
+
+  const {navigation} = props;
+
+  const {categoryName} = props?.route?.params;
+
+  // console.log('ITEM PREVIEW');
+  // console.log(getItemsByCategory(categoryName));
+
+  const [items, setItems] = useState(getItemsByCategory(categoryName));
+
+  // console.log("ITEMS")
+  // console.log(items[0])
+
+  // var items = getItemsByCategory(categoryName);
 
   const [editItemModal, showEditItemModal] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(false);
   const [indexOfItemToEdit, setIndexOfItemToEdit] = useState(0);
 
   const AddAnotherItemHandler = () => {
-    closeModal();
+    // console.log(navigation)
+    navigation.navigate('AddItemScreen');
   };
 
   const submitAddedItems = () => {
@@ -35,14 +53,16 @@ const AddedItemPreview = ({
     console.log('Edit this:');
     console.log(item);
     setItemToEdit(item);
-    setIndexOfItemToEdit(index)
+    setIndexOfItemToEdit(index);
+
+    navigation.navigate('EditItemScreen', {item: item, index: index});
 
     showEditItemModal(true);
     // closeModal();
   };
 
   const ItemList = () => {
-    return data.map((item, index) => {
+    return items.map((item, index) => {
       return (
         <Item item={item} key={index}>
           <TouchableOpacity onPress={() => editItemHandler(item, index)}>
@@ -65,7 +85,9 @@ const AddedItemPreview = ({
         }}>
         <View>
           <ScreenHeaderTitle
-            close={closeModal}
+            close={() => {
+              navigation.goBack();
+            }}
             title={categoryName}
             paddingSize={0}
           />
@@ -96,7 +118,7 @@ const AddedItemPreview = ({
           <AppText textStyle="button2">Add Items</AppText>
         </TouchableOpacity>
       </View>
-      <Modal
+      {/* <Modal
         isVisible={editItemModal}
         animationIn="slideInRight"
         animationInTiming={750}
@@ -117,7 +139,7 @@ const AddedItemPreview = ({
           data={data}
           indexOfItemToEdit={indexOfItemToEdit}
         />
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   );
 };
