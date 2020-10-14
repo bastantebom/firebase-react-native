@@ -12,7 +12,11 @@ const GooglePlacesInput = ({
   adjustListPosition,
   cityOnly,
   onInputFocus,
-  onInputBlur
+  onInputBlur,
+  customListViewStyle,
+  customContainerStyle,
+  placeholder = "Enter street address or city",
+  debounce = 0
 }) => {
   const placesRef = useRef(null);
 
@@ -28,7 +32,7 @@ const GooglePlacesInput = ({
         <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
       </View>
       <GooglePlacesAutocomplete
-        placeholder="Enter street address or city"
+        placeholder={placeholder}
         query={{
           key: Global.apiKey,
           language: 'en', // language of the results
@@ -53,6 +57,7 @@ const GooglePlacesInput = ({
             paddingBottom: 50,
 
             flex: 1,
+            ...customContainerStyle
           },
           listView: {
             color: Colors.contentEbony, //To see where exactly the list is
@@ -63,6 +68,7 @@ const GooglePlacesInput = ({
             backgroundColor: Colors.neutralsWhite,
             marginLeft: normalize(10),
             marginRight: normalize(10),
+            ...customListViewStyle
           },
           textInputContainer: {
             backgroundColor: 'rgba(0,0,0,0)',
@@ -88,6 +94,7 @@ const GooglePlacesInput = ({
           description: {fontFamily: 'RoundedMplus1c-Regular'},
         }}
         ref={placesRef}
+        debounce={debounce}
       />
     </View>
   );

@@ -89,7 +89,7 @@ function Dashboard() {
             data={posts}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
-            headerComponent={<LocationSearch/>}
+            // headerComponent={<LocationSearch/>}
           />
         </View>
         <WhiteOpacity />
@@ -162,7 +162,11 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
 
   return (
     <>
-      <View style={{ margin: 16, height: normalize(47.5) }}>
+      <View style={{ margin: 16, 
+        height: normalize(47.5)
+        // height: normalize(120) 
+      }}
+        >
         <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
           <View style={{ flex: 1, height: searchType !== 'posts' ? normalize(100) : 'auto' }}>
             <SearchBox
@@ -201,9 +205,9 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
             </View>
           }
         </View>
-        {/* <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
-          <LocationSearch />
-        </View> */}
+      </View>
+      <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
+        <LocationSearch />
       </View>
       <View
         style={{

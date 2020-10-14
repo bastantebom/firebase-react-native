@@ -4,7 +4,8 @@ import {
   View, 
   StyleSheet, 
   SafeAreaView, 
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 //import {useNavigation} from '@react-navigation/native';
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     // top: 70,
     // marginTop: 25,
     width: '100%',
+    // height: normalize(75),
     // flex: 1,
     position: 'absolute',
     // left: 0,
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     // zIndex: 100,
     // backgroundColor: 'green',
     top: normalize(45),
-    zIndex: 999
+    zIndex: 9999
     // marginTop: 25,
     // elevation: 100,
   },
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
     paddingLeft: 16, 
     paddingTop: 12,
     top: normalize(45),
-    zIndex: 9999
+    zIndex: 999
   },
   mapInstruction: {
     backgroundColor: Colors.primaryMidnightBlue, 
@@ -119,7 +121,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   const onInputBlur = () => {
     setIsFocused(false)
   }
-
+    
   //MAP DRAG
   const onRegionChange = (region) => {
     console.log('addressRunCount ' + addressRunCount);
@@ -219,15 +221,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     back();
   };
 
-  const homePlace = {
-    description: 'Home',
-    geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
-  };
-  const workPlace = {
-    description: 'Work',
-    geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ height: isFocused ? normalize(150) : normalize(190) }}>
@@ -255,6 +248,25 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             currentValue={changeMapAddress}
             onInputFocus={onInputFocus}
             // onInputBlur={onInputBlur}
+            customListViewStyle={{ 
+              // position: ''
+              // top: normalize(108),
+              top: normalize(68),
+              marginLeft: normalize(0),
+              marginRight: normalize(0),
+              height: Dimensions.get('window').height -  normalize(170),
+              width: Dimensions.get('window').width,
+              left: -8,
+              // position: 'absolute',
+              // zIndex: 999999,
+              // backgroundColor: 'red'
+            }}
+            customContainerStyle={{
+              // height: Dimensions.get('window').height -  normalize(130),
+              // left: -16
+            }}
+            placeholder="Search Your Location"
+            debounce={1500}
           />
         </View>
         {/* <TouchableOpacity>
@@ -270,7 +282,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
           <TouchableOpacity 
             activeOpacity={.7}
             // onPress={() => console.log('hi')} 
-            style={styles.navigationArrow}
+            style={[styles.navigationArrow]}
           >
             <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
             <AppText
@@ -307,7 +319,25 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             />
           </PaddingView>
         )}
-      
+       {/* <PaddingView paddingSize={2}>
+            <View 
+              style={{ 
+                flexDirection: 'row', 
+                justifyContent: 'space-between', 
+                marginTop: normalize(45), 
+                marginBottom: 10 
+              }}
+            >
+              <AppText textStyle="promo">Browse Offers Within</AppText>
+              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+            </View>
+            <RangeSlider
+              minValue={0}
+              maxValue={250}
+              step={5}
+              value={getSliderValue}
+            />
+          </PaddingView> */}
       </View>
       <View style={[styles.mapInstruction, { display: instructionVisible ? 'flex' : 'none', position: instructionVisible ? 'absolute' : 'relative' }]}>
         <PushPin width={normalize(22)} height={normalize(22)}/>

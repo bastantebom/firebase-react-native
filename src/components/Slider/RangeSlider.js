@@ -57,7 +57,7 @@ export const RangeSlider = ({
           {/* <TouchableWithoutFeedback onPressIn={tapSliderHandler}> */}
             <View 
               ref={sliderRef} 
-              style={{ width: '80%' }} 
+              style={{ width: '85%' }} 
               onLayout={({ nativeEvent }) => {
                 setMeasurements(nativeEvent.layout)
               }}

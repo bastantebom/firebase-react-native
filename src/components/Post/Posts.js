@@ -223,9 +223,12 @@ const Posts = ({data, type, isLoading, setIsLoading, headerComponent}) => {
         onEndReached={() => getMorePost()}
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
-        ListHeaderComponent={headerComponent}
+        // ListHeaderComponent={headerComponent}
         ListFooterComponent={
-          <View style={{alignItems: 'center', marginTop: 8, marginBottom: normalize(100)}}>
+          <View style={{alignItems: 'center', marginTop: 8, 
+          // marginBottom: normalize(100)
+          marginBottom: normalize(160)
+          }}>
             {fetchMore ? (
               <ActivityIndicator />
             ) : (
