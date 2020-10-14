@@ -37,7 +37,6 @@ import { UserContext } from '@/context/UserContext';
 const TransparentHeader = ({
   toggleEllipsisState,
   ellipsisState,
-  following,
   toggleFollowing,
   type,
   toggleMenu,
@@ -418,6 +417,7 @@ const TransparentHeader = ({
             toggleEllipsisState={toggleEllipsisState}
             userInfo={userInfo}
             userID={userID}
+            isFollowing={isFollowing}
           />
         </Modal>
       </>

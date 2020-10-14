@@ -44,7 +44,7 @@ function ProfileInfoModal(props) {
   const { profileViewType = 'other', uid } = props.route?.params;
 
   const navigation = useNavigation();
-  const { user, signOut, userInfo } = useContext(UserContext);
+  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext);
   const { userPosts, otherUserPosts } = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
   const [otherUserInfo, setOtherUserInfo] = useState({});
@@ -61,6 +61,7 @@ function ProfileInfoModal(props) {
 
   const [headerState, setHeaderState] = useState(profileViewType);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [addFollowers, setAddFollowers] = useState(null);
 
   const changeHeaderHandler = () => {
     headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
@@ -94,9 +95,14 @@ function ProfileInfoModal(props) {
   const connectUser = () => {
     ProfileInfoService.follow(uid, isFollowing)
       .then((response) => {
+        const updatedFollowingList = {
+          following: [...response.data],
+        }
+        setUserInfo({ ...userInfo, ...updatedFollowingList });
         setIsFollowing(response.data.includes(uid));
-        // console.log('follow service');
-        // console.log(response.data.includes(uid));
+        setAddFollowers(response.data.includes(uid));
+        console.log('following list ');
+        console.log(response.data);
       })
       .catch((err) => {
         //setIsFollowing(response.data.includes(uid));
@@ -119,7 +125,6 @@ function ProfileInfoModal(props) {
     ProfileInfoService.getUser(uid)
       .then((response) => {
         if (mounted) setOtherUserInfo(response.data);
-        setIsFollowing(userInfo.following.includes(uid));
       })
       .catch((err) => {
         console.log('Err: ' + err);
@@ -130,6 +135,8 @@ function ProfileInfoModal(props) {
           setIsDataLoading(false);
         }
       });
+    setIsFollowing(userInfo.following.includes(uid));
+    console.log("userInfo following " + userInfo.following);
     return () => {
       mounted = false;
     };
@@ -164,7 +171,6 @@ function ProfileInfoModal(props) {
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         toggleFollowing={toggleFollowing}
-        following={following}
         isFollowing={isFollowing}
         toggleMenu={toggleMenu}
         menu={menu}
@@ -201,6 +207,7 @@ function ProfileInfoModal(props) {
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
           userInfo={otherUserInfo}
+          addFollowers={addFollowers}
         />
       </View>
       <View style={{ backgroundColor: Colors.primaryYellow }}>

@@ -17,6 +17,7 @@ const ProfileLinks = ({
   toggleHives,
   toggleConnections,
   userInfo,
+  addFollowers,
 }) => {
 
   const { uid } = userInfo;
@@ -38,6 +39,21 @@ const ProfileLinks = ({
       mounted = false;
     };
   }, [uid]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (addFollowers !== null) {
+      if (addFollowers) {
+        setFollowers(followers + 1);
+      } else {
+        setFollowers(followers - 1);
+      }
+      console.log('nag follow');
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [addFollowers]);
 
   const { post_count } = userInfo;
   //const [followers, setFollowers] = useState(0);

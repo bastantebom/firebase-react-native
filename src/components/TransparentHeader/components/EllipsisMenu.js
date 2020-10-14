@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,10 +6,10 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import {AppText, BottomSheetHeader, PaddingView} from '@/components';
+import { AppText, BottomSheetHeader, PaddingView } from '@/components';
 import Modal from 'react-native-modal';
-import {Colors, normalize} from '@/globals';
-import {UserContext} from '@/context/UserContext';
+import { Colors, normalize } from '@/globals';
+import { UserContext } from '@/context/UserContext';
 import ConfirmationOtherProfile from './ConfirmationOtherProfile.js';
 
 import {
@@ -24,9 +24,10 @@ const EllipsisMenu = ({
   togglePostModal,
   userInfo,
   userID,
+  isFollowing,
   //blockUser,
 }) => {
-  const {username} = userInfo;
+  const { username } = userInfo;
   //console.log(userID);
   const [reportUser, setReportUser] = useState(false);
 
@@ -43,7 +44,7 @@ const EllipsisMenu = ({
   const closeHandler = (value) => {
     cancelModalToggle();
     setTimeout(() => {
-      togglePostModal = {togglePostModal};
+      togglePostModal = { togglePostModal };
     }, 200);
     cancelModalToggle();
   };
@@ -80,7 +81,7 @@ const EllipsisMenu = ({
                 marginBottom: 16,
               }}>
               <ProfileReport />
-              <AppText customStyle={{marginLeft: 8}} textStyle="body2">
+              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
                 Report @{username}
               </AppText>
             </View>
@@ -99,7 +100,7 @@ const EllipsisMenu = ({
               <ProfileBlockRed />
               <AppText
                 color={Colors.red}
-                customStyle={{marginLeft: 8}}
+                customStyle={{ marginLeft: 8 }}
                 textStyle="body2">
                 Block @{username}
               </AppText>
@@ -132,7 +133,7 @@ const EllipsisMenu = ({
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <ConfirmationOtherProfile

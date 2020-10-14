@@ -63,14 +63,14 @@ const follow = (uid, follow) => {
   /// users/:uid/follow
   const connect = follow ? 'unfollow' : 'follow';
   console.log(`users/${uid}/${connect}`);
-  // return BaseAPI({
-  //   url: `users/${uid}/${connect}`,
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
+  return BaseAPI({
+    url: `users/${uid}/${connect}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
 
-  // });
+  });
 };
 
 const getFollowers = async (uid) => {
