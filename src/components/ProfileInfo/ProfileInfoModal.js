@@ -56,7 +56,7 @@ function ProfileInfoModal(props) {
   const [QR, setQR] = useState(false);
 
   const [visibleHives, setVisibleHives] = useState(false);
-  const [profileList, setProfileList] = useState(false);
+  const [visibleFollowing, setVisibleFollowing] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
 
   const [headerState, setHeaderState] = useState(profileViewType);
@@ -82,9 +82,9 @@ function ProfileInfoModal(props) {
   const toggleHives = () => {
     setVisibleHives(!visibleHives);
   };
-  const toggleProfileList = () => {
+  const toggleConnections = () => {
     //alert('text');
-    setProfileList(!profileList);
+    setVisibleFollowing(!visibleFollowing);
   };
 
   const toggleFollowing = () => {
@@ -135,10 +135,8 @@ function ProfileInfoModal(props) {
           setIsDataLoading(false);
         }
       });
-    if (userInfo.following) {
-      setIsFollowing(userInfo.following.includes(uid));
-      console.log("userInfo following " + userInfo.following);
-    }
+    setIsFollowing(userInfo.following.includes(uid));
+    console.log("userInfo following " + userInfo.following);
     return () => {
       mounted = false;
     };
@@ -205,9 +203,9 @@ function ProfileInfoModal(props) {
 
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
-          toggleProfileList={toggleProfileList}
+          toggleConnections={toggleConnections}
           visibleHives={visibleHives}
-          profileList={profileList}
+          visibleFollowing={visibleFollowing}
           userInfo={otherUserInfo}
           addFollowers={addFollowers}
         />

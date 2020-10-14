@@ -1,3 +1,3 @@
 import ProfileLinks from '@/components/ProfileLinks/ProfileLinks';
 
-export { ProfileLinks };
+export {ProfileLinks};

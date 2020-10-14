@@ -16,8 +16,6 @@ import {
   ProfileMute,
   ProfileReport,
   ProfileBlockRed,
-  HeaderFollowingBlack,
-  HeaderFollowBlack,
 } from '@/assets/images/icons';
 import Report from './Report';
 
@@ -27,7 +25,6 @@ const EllipsisMenu = ({
   userInfo,
   userID,
   isFollowing,
-  toggleFollowing,
   //blockUser,
 }) => {
   const { username } = userInfo;
@@ -50,11 +47,6 @@ const EllipsisMenu = ({
       togglePostModal = { togglePostModal };
     }, 200);
     cancelModalToggle();
-  };
-
-  const followingHandler = () => {
-    toggleEllipsisState();
-    toggleFollowing();
   };
 
   return (
@@ -81,29 +73,6 @@ const EllipsisMenu = ({
             </AppText>
           </View>
         </TouchableOpacity> */}
-          <TouchableOpacity activeOpacity={0.7} onPress={() => { followingHandler() }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 16,
-              }}>
-              {isFollowing ? (
-                <HeaderFollowingBlack
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
-              ) : (
-                  <HeaderFollowBlack
-                    width={normalize(20)}
-                    height={normalize(20)}
-                  />
-                )}
-              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
-                {isFollowing ? 'Following' : 'Follow'}
-              </AppText>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.7} onPress={toggleReportUser}>
             <View
               style={{
