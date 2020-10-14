@@ -417,6 +417,7 @@ const TransparentHeader = ({
             toggleEllipsisState={toggleEllipsisState}
             userInfo={userInfo}
             userID={userID}
+            toggleFollowing={toggleFollowing}
             isFollowing={isFollowing}
           />
         </Modal>

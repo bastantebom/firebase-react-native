@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { normalize, Colors } from '@/globals';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Following from './components/connections';
+import Connections from './components/connections';
+import { ProfileList } from '@/components';
 import Hives from './components/hives';
 import Modal from 'react-native-modal';
 
@@ -13,9 +14,9 @@ import { AppText } from '@/components';
 // create a component
 const ProfileLinks = ({
   visibleHives,
-  visibleFollowing,
+  profileList,
   toggleHives,
-  toggleConnections,
+  toggleProfileList,
   userInfo,
   addFollowers,
 }) => {
@@ -30,6 +31,7 @@ const ProfileLinks = ({
       ProfileInfoService.getFollowers(uid)
         .then((response) => {
           setFollowers(response.data.length);
+          //console.log(response.data);
           //if (mounted) setOtherUserInfo(response.data);
         })
         .catch((err) => {
@@ -72,7 +74,7 @@ const ProfileLinks = ({
             {post_count == 1 ? 'Post' : 'Posts'}
           </AppText>
         </View>
-        <TouchableOpacity onPress={toggleConnections}>
+        <TouchableOpacity onPress={toggleProfileList}>
           <View style={styles.individualLink}>
             <AppText textStyle="subtitle1">{followers > 0 ? followers : 0}</AppText>
             <AppText textStyle="captionDashboard" color={Colors.profileLink}>
@@ -91,12 +93,12 @@ const ProfileLinks = ({
       </View>
 
       <Modal
-        isVisible={visibleFollowing}
+        isVisible={profileList}
         animationIn="slideInUp"
         animationInTiming={750}
         animationOut="slideOutDown"
         animationOutTiming={750}
-        onSwipeComplete={toggleConnections}
+        onSwipeComplete={toggleProfileList}
         swipeDirection="down"
         style={{
           margin: 0,
@@ -104,7 +106,7 @@ const ProfileLinks = ({
           height: Dimensions.get('window').height,
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <Following toggleConnections={toggleConnections} />
+        <ProfileList toggleProfileList={toggleProfileList} viewUserInfo={userInfo} />
       </Modal>
 
       <Modal
