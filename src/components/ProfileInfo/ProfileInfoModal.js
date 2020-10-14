@@ -74,11 +74,6 @@ function ProfileInfoModal(props) {
     setEllipsisState(!ellipsisState);
   };
 
-  const toggleFollowing = () => {
-    setFollowing(!following);
-    connectUser(uid, following);
-  };
-
   const toggleMenu = () => {
     setMenu(!menu);
   };
@@ -91,15 +86,20 @@ function ProfileInfoModal(props) {
     setVisibleFollowing(!visibleFollowing);
   };
 
-  const connectUser = (uid, following) => {
-    ProfileInfoService.follow(uid, following)
+  const toggleFollowing = () => {
+    //setFollowing(!following);
+    connectUser();
+  };
+
+  const connectUser = () => {
+    ProfileInfoService.follow(uid, isFollowing)
       .then((response) => {
         setIsFollowing(response.data.includes(uid));
-        console.log('follow service');
-        console.log(response.data.includes(uid));
+        // console.log('follow service');
+        // console.log(response.data.includes(uid));
       })
       .catch((err) => {
-        setIsFollowing(response.data.includes(uid));
+        //setIsFollowing(response.data.includes(uid));
         console.log('Err: ' + err);
       })
   };
@@ -119,6 +119,7 @@ function ProfileInfoModal(props) {
     ProfileInfoService.getUser(uid)
       .then((response) => {
         if (mounted) setOtherUserInfo(response.data);
+        setIsFollowing(userInfo.following.includes(uid));
       })
       .catch((err) => {
         console.log('Err: ' + err);
@@ -129,9 +130,6 @@ function ProfileInfoModal(props) {
           setIsDataLoading(false);
         }
       });
-
-    setIsFollowing(userInfo.following.includes(uid));
-
     return () => {
       mounted = false;
     };
