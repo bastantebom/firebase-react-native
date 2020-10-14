@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { normalize, Colors } from '@/globals';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Connections from './components/connections';
+
 import { ProfileList } from '@/components';
 import Hives from './components/hives';
 import Modal from 'react-native-modal';
