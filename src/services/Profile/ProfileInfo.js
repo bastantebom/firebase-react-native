@@ -75,9 +75,21 @@ const follow = (uid, follow) => {
 
 const getFollowers = async (uid) => {
   //GET /users/:uid/followers
-  console.log(`/users/${uid}/followers`);
+  //console.log(`/users/${uid}/followers`);
   return await BaseAPI({
     url: `/users/${uid}/followers`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+const getFollowing = async (uid) => {
+  //GET /users/:uid/followers
+  //console.log(`/users/${uid}/followers`);
+  return await BaseAPI({
+    url: `/users/${uid}/following`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -95,6 +107,7 @@ const ProfileInfoService = {
   validateCurrentPassword,
   follow,
   getFollowers,
+  getFollowing,
 };
 
 export default ProfileInfoService;
