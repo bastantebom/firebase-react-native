@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -25,20 +25,20 @@ import {
   CacheableImage,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context/index';
+import { ProfileHeaderDefault } from '@/assets/images';
+import { normalize, Colors } from '@/globals';
+import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context/index';
 
-import {MoreInfo, Reviews} from './Tabs';
+import { MoreInfo, Reviews } from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
-import {GuestProfile} from './components/GuestProfile';
+import { GuestProfile } from './components/GuestProfile';
 
-function Profile({profileViewType = 'own', backFunction, uid}) {
-  const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
-  const {openNotification, closeNotification, posts, userPosts} = useContext(
+function Profile({ profileViewType = 'own', backFunction, uid }) {
+  const { user, signOut, userInfo, userDataAvailable } = useContext(UserContext);
+  const { openNotification, closeNotification, posts, userPosts } = useContext(
     Context,
   );
   const [notificationMessage, setNotificationMessage] = useState();
@@ -56,6 +56,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   const [visibleHives, setVisibleHives] = useState(false);
   const [visibleFollowing, setVisibleFollowing] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [profileList, setProfileList] = useState(false);
 
   const [headerState, setHeaderState] = useState(profileViewType);
 
@@ -85,6 +86,11 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   const toggleConnections = () => {
     //alert('text');
     setVisibleFollowing(!visibleFollowing);
+  };
+
+  const toggleProfileList = () => {
+    //alert('text');
+    setProfileList(!profileList);
   };
 
   const triggerNotification = (message, type) => {
@@ -141,8 +147,8 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           userID={user.uid}
-          //hideLocationComponent={hideLocationComponent}
-          //showLocationComponent={showLocationComponent}
+        //hideLocationComponent={hideLocationComponent}
+        //showLocationComponent={showLocationComponent}
         />
       ),
 
@@ -177,7 +183,7 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Notification
         message={notificationMessage}
         type={notificationType}
@@ -200,18 +206,18 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
       />
 
       <View
-        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        style={{ backgroundColor: Colors.buttonDisable, height: normalize(158) }}>
         {userInfo.cover_photo ? (
           <CacheableImage
-            source={{uri: userInfo.cover_photo}}
-            style={{width: normalize(375), height: normalize(158)}}
+            source={{ uri: userInfo.cover_photo }}
+            style={{ width: normalize(375), height: normalize(158) }}
           />
         ) : (
-          <ProfileHeaderDefault
-            width={normalize(375 * 1.2)}
-            height={normalize(158 * 1.2)}
-          />
-        )}
+            <ProfileHeaderDefault
+              width={normalize(375 * 1.2)}
+              height={normalize(158 * 1.2)}
+            />
+          )}
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
@@ -221,16 +227,17 @@ function Profile({profileViewType = 'own', backFunction, uid}) {
 
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
-          toggleConnections={toggleConnections}
+          toggleProfileList={toggleProfileList}
+          profileList={profileList}
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
           userInfo={userInfo}
         />
       </View>
-      <View style={{backgroundColor: Colors.primaryYellow}}>
+      <View style={{ backgroundColor: Colors.primaryYellow }}>
         <ProfileInfo profileData={userInfo} />
       </View>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>

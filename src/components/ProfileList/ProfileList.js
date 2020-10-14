@@ -26,31 +26,31 @@ import ProfileInfoService from '@/services/Profile/ProfileInfo';
 //   },
 // ];
 
-// const FollowerDummyData = [
-//   {
-//     user_image:
-//       'https://upload.wikimedia.org/wikipedia/commons/7/79/Johnny_Depp_Deauville_2019.jpg',
-//     user_name: 'Johnny Depp',
-//     user_username: 'johnnybravo',
-//     follower: true,
-//     following: false,
-//   },
-//   {
-//     user_image:
-//       'https://images.thestar.com/KU19aIcaDXtPaGkzfIEM1EthbVk=/1086x724/smart/filters:cb(1586277340221)/https://www.thestar.com/content/dam/thestar/entertainment/2020/04/07/celebrities-face-backlash-as-they-reveal-new-sides-during-coronavirus-pandemic/gal_gadot.jpg',
-//     user_name: 'Gal Gadot',
-//     user_username: 'galilicious',
-//     follower: true,
-//     following: true,
-//   },
-// ];
+const FollowerDummyData = [
+  {
+    user_image:
+      'https://upload.wikimedia.org/wikipedia/commons/7/79/Johnny_Depp_Deauville_2019.jpg',
+    user_name: 'Johnny Depp',
+    user_username: 'johnnybravo',
+    follower: true,
+    following: false,
+  },
+  {
+    user_image:
+      'https://images.thestar.com/KU19aIcaDXtPaGkzfIEM1EthbVk=/1086x724/smart/filters:cb(1586277340221)/https://www.thestar.com/content/dam/thestar/entertainment/2020/04/07/celebrities-face-backlash-as-they-reveal-new-sides-during-coronavirus-pandemic/gal_gadot.jpg',
+    user_name: 'Gal Gadot',
+    user_username: 'galilicious',
+    follower: true,
+    following: true,
+  },
+];
 
 const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
   const { uid } = viewUserInfo;
   const [followersList, setFollowersList] = useState([]);
-  const [followersCount, setFollowersCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState();
   const [followingsList, setFollowingsList] = useState([]);
-  const [followingsCount, setFollowingsCount] = useState(0);
+  const [followingsCount, setFollowingsCount] = useState();
 
   useEffect(() => {
     let mounted = true;
@@ -69,7 +69,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
         .then((response) => {
           setFollowingsList(response.data);
           setFollowingsCount(response.data.length);
-          //console.log(response.data);
+          //console.log(response.data.length);
           //if (mounted) setOtherUserInfo(response.data);
         })
         .catch((err) => {
@@ -81,7 +81,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
     };
   }, [uid]);
 
-  let routes = [
+  const routes = [
     {
       key: 'followers',
       title: `Followers`,
@@ -89,7 +89,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
         <View style={{ flex: 1, padding: 16 }}>
           <Profiles data={followersList} type="followers" />
         </View>),
-      numberBadge: `${followersList.length}`,
+      numberBadge: followersCount,
     },
     {
       key: 'following',
@@ -97,7 +97,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
       renderPage: (<View style={{ flex: 1, padding: 16 }}>
         <Profiles data={followingsList} type="following" />
       </View>),
-      numberBadge: `${followersList.length}`,
+      numberBadge: followingsCount,
     },
   ];
 

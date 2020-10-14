@@ -52,6 +52,8 @@ const Profile = ({ data, type }) => {
         return userInfo.following ? userInfo.following.includes(uid) : false;
     };
 
+    const name = display_name ? display_name : full_name;
+
     const ProfilePhoto = ({ size }) => {
         return profile_photo ? (
             <CacheableImage
@@ -72,7 +74,9 @@ const Profile = ({ data, type }) => {
             </View>
 
             <View style={{ flex: 1, marginLeft: 8 }}>
-                <AppText textStyle="body1">{display_name ? display_name : full_name}</AppText>
+                <AppText textStyle="body1">{name.length > 19
+                    ? `${name.substring(0, 19)}...`
+                    : name}</AppText>
                 <AppText textStyle="metadata">@{username}</AppText>
             </View>
 
