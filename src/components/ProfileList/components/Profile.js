@@ -76,21 +76,29 @@ const Profile = ({ data, type }) => {
                 <AppText textStyle="metadata">@{username}</AppText>
             </View>
 
-
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {isFollowing() ? <View
+            { userInfo.uid !== uid ?
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {isFollowing() ? <View
+                        style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 4,
+                            borderRadius: 4,
+                            backgroundColor: Colors.buttonDisable,
+                        }}>
+                        <AppText textStyle="caption2">Following</AppText>
+                    </View> : null}
+                    <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
+                        <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
+                    </TouchableOpacity>
+                </View> : <View
                     style={{
                         paddingHorizontal: 8,
                         paddingVertical: 4,
                         borderRadius: 4,
                         backgroundColor: Colors.buttonDisable,
                     }}>
-                    <AppText textStyle="caption2">Following</AppText>
-                </View> : null}
-                <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
-                    <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
-                </TouchableOpacity>
-            </View>
+                    <AppText textStyle="caption2">You</AppText>
+                </View>}
 
 
             <Modal
