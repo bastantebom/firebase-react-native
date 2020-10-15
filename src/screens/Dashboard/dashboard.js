@@ -48,6 +48,9 @@ import SearchBox from './components/Search/Searchbox';
 import SearchResults from './components/Search/SearchResults';
 
 function Dashboard() {
+
+  const { user } = useContext(UserContext);
+
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,6 +70,7 @@ function Dashboard() {
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
         {/* ---- Verification Notification ---- */}
+        { user && 
           <Notification
             message={
               <VerificationScreen
@@ -80,6 +84,7 @@ function Dashboard() {
             position="relative"
             verification
           />
+        }
         {/* ---- Verification Notification ---- */}
       
         <View style={styles.container}>
@@ -226,7 +231,7 @@ const LocationSearch = () => {
   const {setLocationFilter, locationFilter} = useContext(Context);
   const [showLocation, setShowLocation] = useState(false);
 
-  const {userInfo} = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   // const {address} = userInfo;
 
   changeFromMapHandler = async (fullAddress) => {

@@ -16,7 +16,8 @@ const GooglePlacesInput = ({
   customListViewStyle,
   customContainerStyle,
   placeholder = "Enter street address or city",
-  debounce = 0
+  debounce = 0,
+  currentLocation
 }) => {
   const placesRef = useRef(null);
 
@@ -95,6 +96,7 @@ const GooglePlacesInput = ({
         }}
         ref={placesRef}
         debounce={debounce}
+        currentLocation={currentLocation}
       />
     </View>
   );

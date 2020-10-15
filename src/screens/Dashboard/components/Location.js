@@ -8,6 +8,8 @@ import {
   Dimensions
 } from 'react-native';
 import Geocoder from 'react-native-geocoding';
+import Geolocation from '@react-native-community/geolocation';
+
 //import {useNavigation} from '@react-navigation/native';
 
 import {CloseLight, HeaderBackGray, NavigationArrowAlt, PushPin} from '@/assets/images/icons';
@@ -19,68 +21,7 @@ import {Colors, normalize} from '@/globals';
 import Slider from '@react-native-community/slider';
 import { RangeSlider } from '@/components/Slider/RangeSlider';
 
-const styles = StyleSheet.create({
-  modalHeader: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    // height: normalize(100)
-    //marginBottom: 32,
-  },
-  buttonWrapper: {
-    width: '100%',
-    position: 'absolute',
-    bottom: 24,
-    padding: 24,
-    alignItems: 'stretch',
-    zIndex: 100,
-    elevation: 100,
-  },
-  textInputWrapper: {
-    // width: '100%',
-    // flex: 0,
-    // position: 'relative',
-    // padding: 24,
-    // alignItems: 'stretch',
-    // zIndex: 100,
-    // top: 70,
-    // marginTop: 25,
-    width: '100%',
-    // height: normalize(75),
-    // flex: 1,
-    position: 'absolute',
-    // left: 0,
-    // right: 0,
-    // padding: 24,
-    paddingHorizontal: 8,
-    marginTop: -5,
-    // alignItems: 'stretch',
-    // zIndex: 100,
-    // backgroundColor: 'green',
-    top: normalize(45),
-    zIndex: 9999
-    // marginTop: 25,
-    // elevation: 100,
-  },
-  navigationArrow: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    paddingLeft: 16, 
-    paddingTop: 12,
-    top: normalize(45),
-    zIndex: 999
-  },
-  mapInstruction: {
-    backgroundColor: Colors.primaryMidnightBlue, 
-    opacity: .8, 
-    margin: 16, 
-    padding: 12, 
-    flexDirection: 'row', 
-    top: normalize(195),
-    zIndex: 100,
-  }
-});
+navigator.geolocation = require('@react-native-community/geolocation');
 
 // create a component
 const Location = ({back, address, changeFromMapHandler}, route) => {
@@ -105,6 +46,9 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   //const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [addressRunCount, setAddressRunCount] = useState(0);
   const [isLocationReady, setIsLocationReady] = useState(false);
+  const [initialLocation, setInitialLocation] = useState({});
+  const [stringAddress, setStringAddress] = useState('');
+  const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const [instructionVisible, setInstructionVisible] = useState(true)
   const [rangeValue, setRangeValue] = useState(0)
@@ -221,6 +165,64 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     back();
   };
 
+  function findCoordinates() {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        const initialPosition = JSON.stringify(position.coords);
+        setInitialLocation(initialPosition);
+        // setIsAllowed(true);
+        getStringAddress(initialPosition);
+        // console.log('Almost There Page');
+        console.log(initialPosition?.latitude, 'lat');
+        console.log(initialPosition?.longitude, 'long');
+      },
+      (error) => {
+        console.log('Error', JSON.stringify(error));
+
+        const initialPosition = JSON.stringify({
+          altitude: 0,
+          altitudeAccuracy: -1,
+          latitude: 14.5831,
+          accuracy: 5,
+          longitude: 120.9794,
+          heading: -1,
+          speed: -1,
+        });
+        setInitialLocation(initialPosition);
+        // setIsAllowed(false);
+        getStringAddress(initialPosition);
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    );
+  }
+
+  // useEffect(() => {
+  //   findCoordinates();
+  // }, []);
+
+  const onCurrentLocationClick = () => {
+    findCoordinates();
+    // // findCoordinates();
+    // // if (isAllowed && isLocationReady) {
+    //   //"altitude":0,"altitudeAccuracy":-1,"latitude":13.749014,"accuracy":5,"longitude":121.072939,"heading":-1,"speed":-1
+    //   const toPassString = {
+    //     // uid: route?.route?.params?.uid,
+    //     // custom_token: route?.route?.params?.custom_token,
+    //     // address: stringAddress,
+    //     latitude:
+    //       parseFloat(JSON.parse(initialLocation).latitude) +
+    //       parseFloat(0.00059),
+    //     longitude: JSON.parse(initialLocation).longitude,
+    //   };
+    //   console.log(toPassString, 'toPassString');
+    //   // navigation.navigate('AlmostThereMap', {
+    //   //   ...toPassString,
+    //   //   ...addressComponents,
+    //   // });
+    // // }
+    // // findCoordinates();
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ height: isFocused ? normalize(150) : normalize(190) }}>
@@ -249,39 +251,23 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             onInputFocus={onInputFocus}
             // onInputBlur={onInputBlur}
             customListViewStyle={{ 
-              // position: ''
-              // top: normalize(108),
               top: normalize(68),
               marginLeft: normalize(0),
               marginRight: normalize(0),
               height: Dimensions.get('window').height -  normalize(170),
               width: Dimensions.get('window').width,
               left: -8,
-              // position: 'absolute',
-              // zIndex: 999999,
-              // backgroundColor: 'red'
-            }}
-            customContainerStyle={{
-              // height: Dimensions.get('window').height -  normalize(130),
-              // left: -16
+              backgroundColor: Colors.neutralsZirconLight
             }}
             placeholder="Search Your Location"
             debounce={1500}
+            currentLocation
           />
         </View>
-        {/* <TouchableOpacity>
-          <AppText
-            textStyle="caption"
-            color={Colors.contentOcean}
-            customStyle={{ marginLeft: 10 }}
-          >
-            Your current location
-          </AppText>
-        </TouchableOpacity> */}
         {isFocused ? (
           <TouchableOpacity 
             activeOpacity={.7}
-            // onPress={() => console.log('hi')} 
+            onPress={() => onCurrentLocationClick()} 
             style={[styles.navigationArrow]}
           >
             <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
@@ -290,7 +276,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
               color={Colors.contentOcean}
               customStyle={{ marginLeft: 10 }}
             >
-              Your current location
+              Use current location
             </AppText>
           </TouchableOpacity>
         ) : (
@@ -319,25 +305,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             />
           </PaddingView>
         )}
-       {/* <PaddingView paddingSize={2}>
-            <View 
-              style={{ 
-                flexDirection: 'row', 
-                justifyContent: 'space-between', 
-                marginTop: normalize(45), 
-                marginBottom: 10 
-              }}
-            >
-              <AppText textStyle="promo">Browse Offers Within</AppText>
-              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
-            </View>
-            <RangeSlider
-              minValue={0}
-              maxValue={250}
-              step={5}
-              value={getSliderValue}
-            />
-          </PaddingView> */}
       </View>
       <View style={[styles.mapInstruction, { display: instructionVisible ? 'flex' : 'none', position: instructionVisible ? 'absolute' : 'relative' }]}>
         <PushPin width={normalize(22)} height={normalize(22)}/>
@@ -353,8 +320,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
         </TouchableOpacity>
       </View>
       <MapComponent
-        // latitude={latitude}
-        // longitude={longitude}
         latitude={address.latitude}
         longitude={address.longitude}
         reCenter={newCoords}
@@ -381,3 +346,49 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
 
 //make this component available to the app
 export default Location;
+
+const styles = StyleSheet.create({
+  modalHeader: {
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    // height: normalize(100)
+    //marginBottom: 32,
+  },
+  buttonWrapper: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 24,
+    padding: 24,
+    alignItems: 'stretch',
+    zIndex: 100,
+    elevation: 100,
+  },
+  textInputWrapper: {
+    width: '100%',
+    position: 'absolute',
+    paddingHorizontal: 8,
+    marginTop: -5,
+    top: normalize(45),
+    zIndex: 9999
+  },
+  navigationArrow: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    // paddingLeft: 0,
+    left: normalize(35), 
+    paddingTop: 12,
+    top: normalize(45),
+    zIndex: 9999
+  },
+  mapInstruction: {
+    backgroundColor: Colors.primaryMidnightBlue, 
+    opacity: .8, 
+    margin: 16, 
+    padding: 12, 
+    flexDirection: 'row', 
+    top: normalize(195),
+    zIndex: 100,
+  }
+});

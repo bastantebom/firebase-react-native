@@ -12,7 +12,8 @@ import AppColor from '@/globals/Colors';
 import { HeaderBackGray } from '@/assets/images/icons';
 import { AppText } from '@/components';
 import { Context } from '@/context';
-import { debounce } from "lodash";
+import {debounce} from 'lodash';
+import _ from 'lodash';
 
 const { width } = Dimensions.get("window");
 const PADDING = 16;
@@ -114,17 +115,16 @@ const SearchBox = ({
   // console.log('barPosition', barPosition)
 
 
-  // const debounceHandler = useCallback(
-  //   debounce((value) => {
-  //     handleValue(value);
-  //     console.log(value)
-  //     }, 500),
-  //   [],
-  // );
+  const debounceHandler = useCallback(
+    debounce((value) => {
+      valueHandler(value) 
+      // console.log(value)
+      }, 1500),
+    [],
+  );
 
   const handleValue = (value) => {
-    valueHandler(value) 
-    // debounceHandler(value)
+    debounceHandler(value)
   }
 
   const backToPostSearch = () => {
