@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   View,
   SafeAreaView,
@@ -27,6 +27,7 @@ import {AppInput, PriceInput} from '@/components/AppInput';
 import AddCategoryModal from './AddCategoryModal';
 import AddedItemPreview from './AddedItemPreview';
 import {CategoryService} from '@/services';
+import {Context} from '@/context';
 
 const EditItemModal = ({
   closeModal,
@@ -39,7 +40,11 @@ const EditItemModal = ({
   console.log('EDIT ITEM SCREEN');
   console.log(props.route);
 
+  const {navigation} = props;
+
   const {itemToEdit} = props?.route?.params;
+
+  const {editItem} = useContext(Context);
 
   const [title, setTitle] = useState(itemToEdit.title);
   const [description, setDescription] = useState(itemToEdit.description);
@@ -70,11 +75,12 @@ const EditItemModal = ({
 
   // const [data, setData] = useState([]);
 
-  const addItemHandler = () => {
+  const editItemHandler = () => {
     console.log('Data submitted: ');
     console.log(setData);
 
     let newData = {
+      ...itemToEdit,
       title: title,
       description: description,
       itemImage: itemImage,
@@ -82,17 +88,18 @@ const EditItemModal = ({
       categoryName: categoryName,
     };
 
-    let itemArray = [...data];
+    // let itemArray = [...data];
 
-    itemArray[indexOfItemToEdit] = newData;
+    // itemArray[indexOfItemToEdit] = newData;
 
-    console.log('SADASDSA');
-    console.log(data);
+    editItem(newData);
+    clearData();
 
-    setData(itemArray);
-    // clearData();
+    navigation.push('AddedItemPreviewScreen', {
+      categoryName: categoryName,
+    });
 
-    setPreviewItemModal(true);
+    // setPreviewItemModal(true);
   };
 
   const clearData = () => {
@@ -130,7 +137,7 @@ const EditItemModal = ({
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScreenHeaderTitle
-        close={closeModal}
+        close={() => navigation.goBack()}
         title="Add an Item"
         paddingSize={2}
       />
@@ -281,7 +288,7 @@ const EditItemModal = ({
             </View>
 
             <TouchableOpacity
-              onPress={addItemHandler}
+              onPress={editItemHandler}
               activeOpacity={0.7}
               disabled={!buttonEnabled}
               style={{
@@ -296,9 +303,7 @@ const EditItemModal = ({
               {loadingSubmit ? (
                 <ActivityIndicator />
               ) : (
-                <AppText textStyle="button2">
-                  {isEditing ? 'Update' : 'Add Item'}
-                </AppText>
+                <AppText textStyle="button2">Update</AppText>
               )}
             </TouchableOpacity>
           </Section>

@@ -92,7 +92,7 @@ const AddItemModal = ({closeModal, ...props}) => {
 
     addItem(newData);
 
-    navigation.navigate('AddedItemPreviewScreen', {
+    navigation.push('AddedItemPreviewScreen', {
       categoryName: categoryName,
     });
   };

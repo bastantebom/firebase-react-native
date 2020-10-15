@@ -77,18 +77,10 @@ export const ContextProvider = ({children}) => {
   };
 
   const editItem = (item) => {
-    // console.log('EDIT ITEM CONTEXT LOG');
-    // console.log(item);
-
-    // console.log(items);
-
-    console.log('ITEM INDEX!!!!');
-
     let itemArray = items.slice();
 
     let index = itemArray.findIndex((i) => {
       if (i.itemId === item.itemId) {
-        console.log(i);
         return i;
       }
     });

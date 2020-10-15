@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {View, SafeAreaView, TouchableOpacity, Dimensions} from 'react-native';
 
 import {AppText, Item, ScreenHeaderTitle} from '@/components';
@@ -57,7 +57,7 @@ const AddedItemPreview = ({
 
     console.log(editItem(item));
 
-    // navigation.navigate('EditItemScreen', {itemToEdit: item});
+    navigation.navigate('EditItemScreen', {itemToEdit: item});
 
     // showEditItemModal(true);
     // closeModal();
@@ -88,7 +88,7 @@ const AddedItemPreview = ({
         <View>
           <ScreenHeaderTitle
             close={() => {
-              navigation.goBack();
+              navigation.navigate('CreatePostScreen');
             }}
             title={categoryName}
             paddingSize={0}
