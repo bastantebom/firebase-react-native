@@ -11,8 +11,10 @@ import {
   AppInput,
   ScreenHeaderTitle,
 } from '@/components';
+import {useNavigation} from '@react-navigation/native';
 
 const PaymentMethodModal = ({closeModal}) => { 
+  const navigation = useNavigation();
   const [cash, setCash] = useState(false);
   const [gcash, setGcash] = useState(false);
   const [paymaya, setPaymaya] = useState(false);
@@ -23,7 +25,7 @@ const PaymentMethodModal = ({closeModal}) => {
   return (
     <SafeAreaView style={{flex: 1}} >
       <ScreenHeaderTitle
-        close={closeModal}
+        close={() => navigation.goBack()}
         title="Payment Methods"
         paddingSize={2}
       />
