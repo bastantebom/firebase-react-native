@@ -15,6 +15,7 @@ import { FollowingEllipsis } from '@/assets/images/icons';
 import RemoveFollowerContent from './RemoveFollowerContent';
 import UnfollowContent from './UnfollowContent';
 import MuteContent from './MuteContent';
+import FollowEllipsis from './FollowEllipsis';
 import { UserContext } from '@/context/UserContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -28,6 +29,11 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
     const [removeFollower, setRemoveFollower] = useState(false);
     const [unfollow, setUnfollow] = useState(false);
     const [showMute, setShowMute] = useState(false);
+    const [showEllipsis, setShowEllipsis] = useState(false);
+
+    const showEllipsisToggle = () => {
+        setShowEllipsis(!showEllipsis);
+    };
 
     const showMuteToggle = () => {
         setShowMute(!showMute);
@@ -80,6 +86,7 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
             });
         } else {
             console.log('Going to NBTS');
+            navigation.goBack();
             navigation.navigate('NBTScreen', {
                 screen: 'OthersProfile',
                 params: { uid: uid },
@@ -105,7 +112,8 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
                     <AppText textStyle="metadata">@{username}</AppText>
                 </View>
             </TouchableOpacity>
-            {/* FOLLOWERS TAB  */}
+
+            { /* OWN PROFILE AND FOLLOWERS TAB  */}
             {
                 viewType === 'own-links' && type === 'followers' ?
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -118,16 +126,27 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
                             }}>
                             <AppText textStyle="caption2">Following</AppText>
                         </View> : null}
-                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
+                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showEllipsisToggle}>
                             <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
                         </TouchableOpacity>
                     </View> : null
             }
 
+            {/* OWN PROFILE AND FOLLOWING TAB  */}
+            {
+                viewType === 'own-links' && type === 'following' ?
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showEllipsisToggle}>
+                            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
+                        </TouchableOpacity>
+                    </View> : null
+            }
+
+            {/* OTHER PROFILE BOTH TAB  */}
             {
                 viewType === 'other-user-links' ?
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {isFollowing() ? <View
+                        {isFollowing() ? <TouchableOpacity activeOpacity={0.7} onPress={() => { }}><View
                             style={{
                                 paddingHorizontal: 8,
                                 paddingVertical: 4,
@@ -135,8 +154,8 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
                                 backgroundColor: Colors.buttonDisable,
                             }}>
                             <AppText textStyle="caption2">Following</AppText>
-                        </View> : userInfo.uid !== uid ?
-                                <View
+                        </View></TouchableOpacity> : userInfo.uid !== uid ?
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => { }}><View
                                     style={{
                                         paddingHorizontal: 8,
                                         paddingVertical: 4,
@@ -144,22 +163,9 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
                                         backgroundColor: Colors.buttonDisable,
                                     }}>
                                     <AppText textStyle="caption2">Follow</AppText>
-                                </View> : null}
+                                </View></TouchableOpacity> : null}
                     </View> : null
             }
-
-            {/* FOLLOWING TAB  */}
-            {
-                viewType === 'own-links' && type === 'following' ?
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
-                            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
-                        </TouchableOpacity>
-                    </View> : null
-            }
-
-
-
             <Modal
                 isVisible={removeFollower}
                 animationIn="slideInUp"
@@ -212,7 +218,7 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
             </Modal>
 
             <Modal
-                isVisible={showMute}
+                isVisible={showEllipsis}
                 animationIn="slideInUp"
                 animationInTiming={500}
                 animationOut="slideOutDown"
@@ -224,12 +230,12 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
                     margin: 0,
                 }}
                 customBackdrop={
-                    <TouchableWithoutFeedback onPress={showMuteToggle}>
+                    <TouchableWithoutFeedback onPress={showEllipsisToggle}>
                         <View style={{ flex: 1, backgroundColor: 'black' }} />
                     </TouchableWithoutFeedback>
                 }>
                 <View>
-                    <MuteContent data={data} showMuteToggle={showMuteToggle} />
+                    <FollowEllipsis userInfo={data} showEllipsisToggle={showEllipsisToggle} />
                 </View>
             </Modal>
         </View >

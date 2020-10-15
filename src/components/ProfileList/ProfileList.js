@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
 import { AppText, PaddingView, AppInput, TabNavigation } from '@/components';
@@ -6,7 +6,7 @@ import { HeaderBackGray } from '@/assets/images/icons';
 import { normalize } from '@/globals';
 import Profiles from './components/Profiles';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
-
+import { UserContext } from '@/context/UserContext';
 // const FollowingDummyData = [
 //   {
 //     user_image:
@@ -26,26 +26,27 @@ import ProfileInfoService from '@/services/Profile/ProfileInfo';
 //   },
 // ];
 
-const FollowerDummyData = [
-  {
-    user_image:
-      'https://upload.wikimedia.org/wikipedia/commons/7/79/Johnny_Depp_Deauville_2019.jpg',
-    user_name: 'Johnny Depp',
-    user_username: 'johnnybravo',
-    follower: true,
-    following: false,
-  },
-  {
-    user_image:
-      'https://images.thestar.com/KU19aIcaDXtPaGkzfIEM1EthbVk=/1086x724/smart/filters:cb(1586277340221)/https://www.thestar.com/content/dam/thestar/entertainment/2020/04/07/celebrities-face-backlash-as-they-reveal-new-sides-during-coronavirus-pandemic/gal_gadot.jpg',
-    user_name: 'Gal Gadot',
-    user_username: 'galilicious',
-    follower: true,
-    following: true,
-  },
-];
+// const FollowerDummyData = [
+//   {
+//     user_image:
+//       'https://upload.wikimedia.org/wikipedia/commons/7/79/Johnny_Depp_Deauville_2019.jpg',
+//     user_name: 'Johnny Depp',
+//     user_username: 'johnnybravo',
+//     follower: true,
+//     following: false,
+//   },
+//   {
+//     user_image:
+//       'https://images.thestar.com/KU19aIcaDXtPaGkzfIEM1EthbVk=/1086x724/smart/filters:cb(1586277340221)/https://www.thestar.com/content/dam/thestar/entertainment/2020/04/07/celebrities-face-backlash-as-they-reveal-new-sides-during-coronavirus-pandemic/gal_gadot.jpg',
+//     user_name: 'Gal Gadot',
+//     user_username: 'galilicious',
+//     follower: true,
+//     following: true,
+//   },
+// ];
 
 const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
+  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext);
   const { uid } = viewUserInfo;
   const [followersList, setFollowersList] = useState([]);
   const [followersCount, setFollowersCount] = useState();
@@ -57,7 +58,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
     if (uid && mounted) {
       ProfileInfoService.getFollowers(uid)
         .then((response) => {
-          setFollowersList(response.data);
+          setFollowersList(response.data.sort((a, b) => a.uid === user.uid ? -1 : 1));
           setFollowersCount(response.data.length);
           //if (mounted) setOtherUserInfo(response.data);
         })
@@ -67,7 +68,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
 
       ProfileInfoService.getFollowing(uid)
         .then((response) => {
-          setFollowingsList(response.data);
+          setFollowingsList(response.data.sort((a, b) => a.uid === user.uid ? -1 : 1));
           setFollowingsCount(response.data.length);
           //console.log(response.data.length);
           //if (mounted) setOtherUserInfo(response.data);

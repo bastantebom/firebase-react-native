@@ -130,9 +130,9 @@ const AlmostThere = (route) => {
         const initialPosition = JSON.stringify({
           altitude: 0,
           altitudeAccuracy: -1,
-          latitude: 14.5831,
+          latitude: 14.582919,
           accuracy: 5,
-          longitude: 120.9794,
+          longitude: 120.979683,
           heading: -1,
           speed: -1,
         });
