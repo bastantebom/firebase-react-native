@@ -52,16 +52,6 @@ const EditItemModal = ({
   const [price, setPrice] = useState(itemToEdit.price);
   const [free, setFree] = useState(itemToEdit.price === 'Free' ? true : false);
   const [categoryName, setCategoryName] = useState(itemToEdit.categoryName);
-  const [choices, setChoices] = useState([
-    {
-      name: 'items',
-      id: 0,
-      selected: true,
-    },
-    ...CategoryService.getCategories().map((category) => {
-      return {...category, selected: false};
-    }),
-  ]);
 
   const [categoryModal, setCategoryModal] = useState(false);
   const [previewItemModal, setPreviewItemModal] = useState(false);
@@ -114,6 +104,15 @@ const EditItemModal = ({
   const freeItemHandler = () => {
     setFree(!free);
   };
+
+  const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(() => {
+    // CategoryService.deleteCategory('Cdn4bLyPq7RXKgMrXkJI');
+    CategoryService.getCategories().then((res) => {
+      setCategoryList(res);
+    });
+  }, []);
 
   useEffect(() => {
     if (free) {
@@ -329,8 +328,6 @@ const EditItemModal = ({
         <AddCategoryModal
           categoryName={categoryName}
           setCategoryName={setCategoryName}
-          choices={choices}
-          setChoices={setChoices}
           close={() => setCategoryModal(false)}
         />
       </Modal>
