@@ -593,7 +593,7 @@ const SellPostForm = ({
         <TouchableOpacity
           activeOpacity={0.7}
           style={{flexDirection: 'row', justifyContent: 'space-between'}}
-          onPress={() => showPaymentMethodModal(true)}>
+          onPress={() => navigation.navigate('PaymentMethodScreen')}>
           <AppText textStyle="body2">Payment Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -602,7 +602,7 @@ const SellPostForm = ({
         <TouchableOpacity
           activeOpacity={0.7}
           style={{flexDirection: 'row', justifyContent: 'space-between'}}
-          onPress={() => showShippingMethodModal(true)}>
+          onPress={() => navigation.navigate('ShippingMethodScreen')}>
           <AppText textStyle="body2">Shipping Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -612,7 +612,7 @@ const SellPostForm = ({
         <TouchableOpacity
           activeOpacity={0.7}
           style={{flexDirection: 'row', justifyContent: 'space-between'}}
-          onPress={() => showPostExpiryModal(true)}>
+          onPress={() => navigation.navigate('PostExpiryScreen')}>
           <AppText textStyle="body2">Post Expiry</AppText>
           <FormArrowRight />
         </TouchableOpacity>

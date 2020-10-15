@@ -22,8 +22,10 @@ import {
 import { ArrowRight } from '@/assets/images/icons';
 
 import { Colors, normalize } from '@/globals';
+import {useNavigation} from '@react-navigation/native';
 
 const ShippingMethodModal = ({ closeModal }) => {
+  const navigation = useNavigation();
   const [pickUp, setPickUp] = useState(false)
   const [delivery, setDelivery] = useState(false)
   const [nationwide, setNationwide] = useState(false)
@@ -45,7 +47,7 @@ const ShippingMethodModal = ({ closeModal }) => {
   return (
     <SafeAreaView style={{ flex: 1 }} >
       <ScreenHeaderTitle
-        close={closeModal}
+        close={() => navigation.goBack()}
         title="Shipping Methods"
         paddingSize={2}
       />
@@ -202,7 +204,7 @@ const ShippingMethodModal = ({ closeModal }) => {
               )}
               <PaddingView paddingSize={2}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
-                  <AppText textStyle="promo">Browse Offers Within</AppText>
+                  <AppText textStyle="promo">Ship Within</AppText>
                   <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
