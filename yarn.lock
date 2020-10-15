@@ -7035,6 +7035,13 @@ react-native-share@^3.7.0:
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.7.0.tgz#5b5bcc87530ddaaabcb8b70a9366dce88a6f9495"
   integrity sha512-MCTGiPcBfelrnX/7n82N5eQAl31F6xljqFK2CWbPDTSt7bbJUZH3Znvy8KYePLYqAr7HVrk621eanQN6vSFMzA==
 
+react-native-simple-time-picker@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-simple-time-picker/-/react-native-simple-time-picker-0.2.0.tgz#b1a12a7880ac2f5a1200b0bc3d3c0065196097dc"
+  integrity sha1-saEqeICsL1oSALC8PTwAZRlgl9w=
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-skeleton-content-nonexpo@^1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/react-native-skeleton-content-nonexpo/-/react-native-skeleton-content-nonexpo-1.0.10.tgz#1362981f6c9608e427e7e0d8a2dfa6b75c08efc6"
