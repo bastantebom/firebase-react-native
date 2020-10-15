@@ -101,8 +101,8 @@ function ProfileInfoModal(props) {
         setUserInfo({ ...userInfo, ...updatedFollowingList });
         setIsFollowing(response.data.includes(uid));
         setAddFollowers(response.data.includes(uid));
-        console.log('following list ');
-        console.log(response.data);
+        //console.log('following list ');
+        //console.log(response.data);
       })
       .catch((err) => {
         //setIsFollowing(response.data.includes(uid));
@@ -210,6 +210,7 @@ function ProfileInfoModal(props) {
           profileList={profileList}
           userInfo={otherUserInfo}
           addFollowers={addFollowers}
+          viewType="other-user-links"
         />
       </View>
       <View style={{ backgroundColor: Colors.primaryYellow }}>

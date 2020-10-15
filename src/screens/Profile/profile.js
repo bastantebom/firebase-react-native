@@ -232,6 +232,7 @@ function Profile({ profileViewType = 'own', backFunction, uid }) {
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
           userInfo={userInfo}
+          viewType="own-links"
         />
       </View>
       <View style={{ backgroundColor: Colors.primaryYellow }}>

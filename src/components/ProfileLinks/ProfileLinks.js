@@ -19,6 +19,7 @@ const ProfileLinks = ({
   toggleProfileList,
   userInfo,
   addFollowers,
+  viewType,
 }) => {
 
   const { uid } = userInfo;
@@ -106,7 +107,7 @@ const ProfileLinks = ({
           height: Dimensions.get('window').height,
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <ProfileList toggleProfileList={toggleProfileList} viewUserInfo={userInfo} />
+        <ProfileList viewType={viewType} toggleProfileList={toggleProfileList} viewUserInfo={userInfo} />
       </Modal>
 
       <Modal

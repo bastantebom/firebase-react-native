@@ -45,7 +45,7 @@ const FollowerDummyData = [
   },
 ];
 
-const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
+const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
   const { uid } = viewUserInfo;
   const [followersList, setFollowersList] = useState([]);
   const [followersCount, setFollowersCount] = useState();
@@ -87,7 +87,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
       title: `Followers`,
       renderPage: (
         <View style={{ flex: 1, padding: 16 }}>
-          <Profiles data={followersList} type="followers" />
+          <Profiles data={followersList} toggleProfileList={toggleProfileList} type="followers" viewType={viewType} />
         </View>),
       numberBadge: followersCount,
     },
@@ -95,7 +95,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo }) => {
       key: 'following',
       title: `Following`,
       renderPage: (<View style={{ flex: 1, padding: 16 }}>
-        <Profiles data={followingsList} type="following" />
+        <Profiles data={followingsList} toggleProfileList={toggleProfileList} type="following" viewType={viewType} />
       </View>),
       numberBadge: followingsCount,
     },

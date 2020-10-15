@@ -16,9 +16,11 @@ import RemoveFollowerContent from './RemoveFollowerContent';
 import UnfollowContent from './UnfollowContent';
 import MuteContent from './MuteContent';
 import { UserContext } from '@/context/UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 
-const Profile = ({ data, type }) => {
+const Profile = ({ data, type, viewType, toggleProfileList }) => {
+    const navigation = useNavigation();
     const { user, userInfo } = useContext(UserContext);
     const { profile_photo, username, display_name, full_name, follower, uid } = data;
 
@@ -67,42 +69,95 @@ const Profile = ({ data, type }) => {
             );
     };
 
+    const openProfileHandler = () => {
+        // console.log(user.uid);
+        // console.log('I HAVE THIS UID');
+        // console.log(uid);
+        toggleProfileList();
+        if (user && user.uid === uid) {
+            navigation.navigate('Profile', {
+                screen: 'Profile',
+            });
+        } else {
+            console.log('Going to NBTS');
+            navigation.navigate('NBTScreen', {
+                screen: 'OthersProfile',
+                params: { uid: uid },
+            });
+            // navigation.navigate('Post', {
+            //   screen: 'SinglePostView',
+            //   params: computedData,
+            // });
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <View style={styles.userInfoImageContainer}>
-                <ProfilePhoto size={42} />
-            </View>
+            <TouchableOpacity style={{ flexDirection: 'row', flex: 1, }} activeOpacity={0.7} onPress={openProfileHandler}>
+                <View style={styles.userInfoImageContainer}>
+                    <ProfilePhoto size={42} />
+                </View>
 
-            <View style={{ flex: 1, marginLeft: 8 }}>
-                <AppText textStyle="body1">{name.length > 19
-                    ? `${name.substring(0, 19)}...`
-                    : name}</AppText>
-                <AppText textStyle="metadata">@{username}</AppText>
-            </View>
+                <View style={{ flex: 1, marginLeft: 8 }}>
+                    <AppText textStyle="body1">{name.length > 19
+                        ? `${name.substring(0, 19)}...`
+                        : name}</AppText>
+                    <AppText textStyle="metadata">@{username}</AppText>
+                </View>
+            </TouchableOpacity>
+            {/* FOLLOWERS TAB  */}
+            {
+                viewType === 'own-links' && type === 'followers' ?
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {isFollowing() ? <View
+                            style={{
+                                paddingHorizontal: 8,
+                                paddingVertical: 4,
+                                borderRadius: 4,
+                                backgroundColor: Colors.buttonDisable,
+                            }}>
+                            <AppText textStyle="caption2">Following</AppText>
+                        </View> : null}
+                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
+                            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
+                        </TouchableOpacity>
+                    </View> : null
+            }
 
-            { userInfo.uid !== uid ?
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {isFollowing() ? <View
-                        style={{
-                            paddingHorizontal: 8,
-                            paddingVertical: 4,
-                            borderRadius: 4,
-                            backgroundColor: Colors.buttonDisable,
-                        }}>
-                        <AppText textStyle="caption2">Following</AppText>
-                    </View> : null}
-                    <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
-                        <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
-                    </TouchableOpacity>
-                </View> : <View
-                    style={{
-                        paddingHorizontal: 8,
-                        paddingVertical: 4,
-                        borderRadius: 4,
-                        backgroundColor: Colors.buttonDisable,
-                    }}>
-                    <AppText textStyle="caption2">You</AppText>
-                </View>}
+            {
+                viewType === 'other-user-links' ?
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {isFollowing() ? <View
+                            style={{
+                                paddingHorizontal: 8,
+                                paddingVertical: 4,
+                                borderRadius: 4,
+                                backgroundColor: Colors.buttonDisable,
+                            }}>
+                            <AppText textStyle="caption2">Following</AppText>
+                        </View> : userInfo.uid !== uid ?
+                                <View
+                                    style={{
+                                        paddingHorizontal: 8,
+                                        paddingVertical: 4,
+                                        borderRadius: 4,
+                                        backgroundColor: Colors.buttonDisable,
+                                    }}>
+                                    <AppText textStyle="caption2">Follow</AppText>
+                                </View> : null}
+                    </View> : null
+            }
+
+            {/* FOLLOWING TAB  */}
+            {
+                viewType === 'own-links' && type === 'following' ?
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showMuteToggle}>
+                            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
+                        </TouchableOpacity>
+                    </View> : null
+            }
+
 
 
             <Modal
@@ -177,7 +232,7 @@ const Profile = ({ data, type }) => {
                     <MuteContent data={data} showMuteToggle={showMuteToggle} />
                 </View>
             </Modal>
-        </View>
+        </View >
     );
 };
 
