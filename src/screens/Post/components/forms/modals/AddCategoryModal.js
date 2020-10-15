@@ -19,8 +19,8 @@ import {CategoryService} from '@/services';
 const AddCategoryModal = ({
   categoryName,
   setCategoryName,
-  choices,
-  setChoices,
+  // choices,
+  // setChoices,
   close,
 }) => {
   const [newCategoryName, setNewCategoryName] = useState(categoryName);
@@ -50,16 +50,13 @@ const AddCategoryModal = ({
     marginBottom: 16,
   };
 
-  const [categoryList, setCategoryList] = useState(
-    CategoryService.getCategories(),
-  );
+  const [categoryList, setCategoryList] = useState([]);
 
   useEffect(() => {
-    console.log('CAtegory modal');
-    // setCategoryList(CategoryService.getCategories());
-    // setCategoryList(CategoryService.getCategories());
-    console.log(categoryList);
-    console.log(choices);
+    // CategoryService.deleteCategory('Cdn4bLyPq7RXKgMrXkJI');
+    CategoryService.getCategories().then((res) => {
+      setCategoryList(res);
+    });
   }, []);
 
   // useEffect(() => {
@@ -97,16 +94,16 @@ const AddCategoryModal = ({
   };
 
   const radioGroupHandler = (selected) => {
-    setChoices((choice) => {
-      return choice.map((choice) => {
-        return {
-          ...choice,
-          selected: selected.id === choice.id ? true : false,
-        };
-      });
-    });
+    // setChoices((choice) => {
+    //   return choice.map((choice) => {
+    //     return {
+    //       ...choice,
+    //       selected: selected.id === choice.id ? true : false,
+    //     };
+    //   });
+    // });
 
-    setCategoryName(selected.name);
+    setCategoryName(selected.category);
   };
 
   return (
@@ -119,31 +116,33 @@ const AddCategoryModal = ({
         paddingHorizontal: 24,
       }}>
       <BottomSheetHeader />
-      <AppRadio
+      {/* <AppRadio
         label="Uncategorized"
         value={choices[0]?.selected}
         style={{paddingLeft: 0, marginTop: 24}}
         valueChangeHandler={() => {
           radioGroupHandler({id: 0, name: 'items', selected: true});
         }}
-      />
+      /> */}
       <AppText textStyle="caption" color={Colors.contentPlaceholder}>
         If you don't have categories, items will be displayed under "items".
       </AppText>
       <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
 
-      {choices.map((choice, index) => {
-        if (index !== 0)
-          return (
-            <AppRadio
-              label={choice.name}
-              value={choice.selected}
-              style={{paddingLeft: 0, marginBottom: 8}}
-              valueChangeHandler={() => {
-                radioGroupHandler(choice);
-              }}
-            />
-          );
+      {categoryList.map((choice, index) => {
+        console.log(choice);
+
+        return (
+          <AppRadio
+            label={choice.category}
+            // value={choice.selected}
+            style={{paddingLeft: 0, marginBottom: 8}}
+            valueChangeHandler={() => {
+              radioGroupHandler(choice);
+            }}
+          />
+          // <AppText>asdas</AppText>
+        );
       })}
 
       <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />

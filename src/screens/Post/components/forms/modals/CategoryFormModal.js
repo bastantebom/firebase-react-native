@@ -12,10 +12,7 @@ const CategoryFormModal = ({close}) => {
     console.log('save new category');
     // call create category api
     console.log('call API');
-    CategoryService.createCategory({
-      name: newCategoryName,
-      id: 3,
-    });
+    CategoryService.createCategory(newCategoryName);
 
     // update choices state
     close();

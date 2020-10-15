@@ -45,8 +45,9 @@ const AddedItemPreview = ({
   };
 
   const submitAddedItems = () => {
-    closeModal();
-    closeAddItemModal();
+    // closeModal();
+    // closeAddItemModal();
+    navigation.navigate('CreatePostScreen');
   };
 
   const editItemHandler = (item, index) => {

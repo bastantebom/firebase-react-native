@@ -45,16 +45,34 @@ const AddItemModal = ({closeModal, ...props}) => {
   const [price, setPrice] = useState(0);
   const [free, setFree] = useState(false);
   const [categoryName, setCategoryName] = useState('uncategorized');
-  const [choices, setChoices] = useState([
-    {
-      name: 'items',
-      id: 0,
-      selected: true,
-    },
-    ...CategoryService.getCategories().map((category) => {
-      return {...category, selected: false};
-    }),
-  ]);
+  const [categoryList, setCategoryList] = useState([]);
+
+  // const [choices, setChoices] = useState([
+  //   // {
+  //   //   name: 'items',
+  //   //   id: 0,
+  //   //   selected: true,
+  //   // },
+  //   // ...CategoryService.getCategories().map((category) => {
+  //   //   return {...category, selected: false};
+  //   // }),
+  // ]);
+
+  console.log('ADD ITEM MODAL');
+
+  useEffect(() => {
+    CategoryService.getCategories().then((res) => {
+      console.log('GET CATEGORY RESPONSE');
+      let tempChoice = res.data.map((ch) => {
+        return {
+          ...ch,
+          selected: false,
+        };
+      });
+      console.log(tempChoice);
+      setCategoryList(tempChoice);
+    });
+  }, []);
 
   const [categoryModal, setCategoryModal] = useState(false);
   const [previewItemModal, setPreviewItemModal] = useState(false);
@@ -339,33 +357,11 @@ const AddItemModal = ({closeModal, ...props}) => {
         <AddCategoryModal
           categoryName={categoryName}
           setCategoryName={setCategoryName}
-          choices={choices}
-          setChoices={setChoices}
+          // choices={choices}
+          // setChoices={setChoices}
           close={() => setCategoryModal(false)}
         />
       </Modal>
-
-      {/* Preview Item Modal */}
-      {/* <Modal
-        isVisible={previewItemModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <AddedItemPreview
-          closeModal={() => setPreviewItemModal(false)}
-          closeAddItemModal={closeModal}
-          setInitialData={setInitialData}
-          data={data}
-          setData={setData}
-        />
-      </Modal> */}
     </SafeAreaView>
   );
 };
