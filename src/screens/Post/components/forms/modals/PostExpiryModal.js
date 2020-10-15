@@ -10,6 +10,7 @@ import {
 import Modal from 'react-native-modal';
 import CalendarPicker from 'react-native-calendar-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import TimePicker from 'react-native-simple-time-picker';
 
 import {
   AppText,
@@ -22,11 +23,14 @@ import { CalendarArrowLeft, CalendarArrowRight, ArrowRight } from '@/assets/imag
 const PostExpiryModal = ({closeModal}) => { 
   const [timeModal, showTimeModal] = useState(false);
   const [dateModal, showDateModal] = useState(false);
-  const [selectedStartDate, setSelectedStartDate] = useState('null');
-  const [selectedEndDate, setSelectedEndDate] = useState('');
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
   const minDate = new Date(); // Today
   const maxDate = new Date(3000, 12, 31);
-  // const [time, setTime] = useState(null);
+  const [mode, setMode] = useState('time');
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [selectedHours, setSelectedHours] = useState(0);
+  const [selectedMinutes, setSelectedMinutes] = useState(0);
 
   const onDateChange = (date, type) => {
     if (type === 'END_DATE') {
@@ -41,7 +45,6 @@ const PostExpiryModal = ({closeModal}) => {
     }
   }
 
-  console.log(selectedStartDate)
   return (
     <View>
       <ScreenHeaderTitle
@@ -81,25 +84,38 @@ const PostExpiryModal = ({closeModal}) => {
             <View 
               style={{
               backgroundColor: 'white',
-              height: '28%',
+              // height: '28%',
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              paddingHorizontal: 20
+              paddingHorizontal: 20,
+              paddingBottom: 30
             }}>
               
             <BottomSheetHeader />
             <View style={{paddingTop: 30}}>
               <AppText textStyle="body3">Set Time</AppText>
-              <View>
-                {/* <DateTimePicker
+              <View style={{position: 'relative'}}>
+                <DateTimePicker
                   testID="dateTimePicker"
-                  value={time}
-                  mode="time"
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
-                /> */}
-                {/* <RNDateTimePicker mode="time" /> */}
+                  value={date}
+                  mode={mode}
+                  is24Hour={false}
+                  display="spinner"
+                  // onChange={onChange}
+                />
+                 <Text>
+                  Selected Time: {selectedHours}:{selectedMinutes}
+                </Text>
+                <TimePicker
+                  selectedHours={selectedHours}
+                  //initial Hourse value
+                  selectedMinutes={selectedMinutes}
+                  //initial Minutes value
+                  onChange={(hours, minutes) => {
+                    setSelectedHours(hours);
+                    setSelectedMinutes(minutes);
+                  }}
+                />
                 <TouchableOpacity
                   style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
                   onPress={() => showDateModal(true)}>
