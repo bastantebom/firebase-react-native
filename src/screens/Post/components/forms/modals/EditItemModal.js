@@ -32,12 +32,14 @@ const EditItemModal = ({
   closeModal,
   setData,
   data,
-  itemToEdit,
+  // itemToEdit,
   indexOfItemToEdit,
   ...props
 }) => {
   console.log('EDIT ITEM SCREEN');
   console.log(props.route);
+
+  const {itemToEdit} = props?.route?.params;
 
   const [title, setTitle] = useState(itemToEdit.title);
   const [description, setDescription] = useState(itemToEdit.description);

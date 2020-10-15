@@ -19,7 +19,7 @@ const AddedItemPreview = ({
   ...props
 }) => {
   // console.log(data);
-  const {getItemsByCategory} = useContext(Context);
+  const {getItemsByCategory, editItem} = useContext(Context);
 
   const {navigation} = props;
 
@@ -55,9 +55,11 @@ const AddedItemPreview = ({
     setItemToEdit(item);
     setIndexOfItemToEdit(index);
 
-    navigation.navigate('EditItemScreen', {item: item, index: index});
+    console.log(editItem(item));
 
-    showEditItemModal(true);
+    // navigation.navigate('EditItemScreen', {itemToEdit: item});
+
+    // showEditItemModal(true);
     // closeModal();
   };
 
@@ -65,9 +67,9 @@ const AddedItemPreview = ({
     return items.map((item, index) => {
       return (
         <Item item={item} key={index}>
-          <TouchableOpacity onPress={() => editItemHandler(item, index)}>
+          <TouchableOpacity onPress={() => editItemHandler(item)}>
             <AppText textStyle="caption" color={Colors.contentOcean}>
-              Edit Item
+              Edit Item {item.itemId}
             </AppText>
           </TouchableOpacity>
         </Item>

@@ -38,26 +38,32 @@ export const ContextProvider = ({children}) => {
 
   // Added Items (multiple)
   const [items, setItems] = useState([]);
+  const [itemId, setItemId] = useState(1);
 
   const getItemsByCategory = (cat) => {
     const result = [
       ...items
-        .reduce((r, {categoryName, description, itemImage, price, title}) => {
-          r.has(categoryName) ||
-            r.set(categoryName, {
+        .reduce(
+          (r, {categoryName, description, itemImage, price, title, itemId}) => {
+            r.has(categoryName) ||
+              r.set(categoryName, {
+                categoryName,
+                items: [],
+              });
+
+            r.get(categoryName).items.push({
+              description,
+              itemImage,
+              price,
+              title,
+              itemId,
               categoryName,
-              items: [],
             });
 
-          r.get(categoryName).items.push({
-            description,
-            itemImage,
-            price,
-            title,
-          });
-
-          return r;
-        }, new Map())
+            return r;
+          },
+          new Map(),
+        )
         .values(),
     ];
 
@@ -68,18 +74,45 @@ export const ContextProvider = ({children}) => {
     });
 
     return filteredItems[0]?.items;
+  };
 
+  const editItem = (item) => {
+    // console.log('EDIT ITEM CONTEXT LOG');
+    // console.log(item);
+
+    // console.log(items);
+
+    console.log('ITEM INDEX!!!!');
+
+    let itemArray = items.slice();
+
+    let index = itemArray.findIndex((i) => {
+      if (i.itemId === item.itemId) {
+        console.log(i);
+        return i;
+      }
+    });
+
+    itemArray[index] = item;
+
+    setItems(itemArray)
   };
 
   const addItem = (item) => {
     console.log('Add Item context triggered');
     console.log(item);
 
+    let itemWithID = {
+      ...item,
+      itemId: itemId,
+    };
+
     let itemArray = [...items];
 
-    itemArray.push(item);
+    itemArray.push(itemWithID);
 
     setItems(itemArray);
+    setItemId(itemId + 1);
   };
 
   useEffect(() => {
@@ -150,6 +183,7 @@ export const ContextProvider = ({children}) => {
       value={{
         items,
         addItem,
+        editItem,
         getItemsByCategory,
         authenticationSheet,
         showAuthenticationSheet,
