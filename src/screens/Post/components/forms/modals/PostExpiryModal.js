@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
   Text,
-  Keyboard
+  Keyboard,
+  DatePickerIOS
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -13,7 +14,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TimePicker from 'react-native-simple-time-picker';
 import moment from 'moment';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   AppText,
@@ -21,11 +22,11 @@ import {
   BottomSheetHeader,
   FloatingAppInput
 } from '@/components';
-import {normalize} from '@/globals';
+import { normalize } from '@/globals';
 import { CalendarArrowLeft, CalendarArrowRight, ArrowRight, Calendar } from '@/assets/images/icons';
 
 
-const PostExpiryModal = ({closeModal}) => { 
+const PostExpiryModal = ({ closeModal }) => {
   const navigation = useNavigation();
   const [timeModal, showTimeModal] = useState(false);
   const [dateModal, showDateModal] = useState(false);
@@ -39,37 +40,41 @@ const PostExpiryModal = ({closeModal}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('')
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
   };
- 
+
   const showMode = (currentMode) => {
     setShow(true);
     setShowTime(true);
     setMode(currentMode);
   };
- 
+
   const showDatepicker = () => {
     showMode('date');
   };
- 
+
   const showTimepicker = () => {
     showMode('time');
   };
 
-  const setDateFromString = () => {
-    if (date) {
+  const displayChosen = () => {
+    setDate(selectedDate);
+    setSelectedDate(moment.utc(selectedDate).format('MM/DD/YYYY'));
+  }
+
+  useEffect(() => {
+    if (selectedDate) {
+      displayChosen();
       setDate(moment(new Date(date)).toDate());
     }
-  };
+  })
 
-  // useEffect(() => {
-  //   setDateFromString();
-  // })
-
+  console.log(selectedDate)
   return (
     <View>
       <ScreenHeaderTitle
@@ -77,15 +82,16 @@ const PostExpiryModal = ({closeModal}) => {
         paddingSize={2}
         close={() => navigation.goBack()}
       />
-      <View style={{padding: normalize(16), height: '100%'}}>
-        <View style={{flex: .8}}>
+      <View style={{ padding: normalize(16), height: '100%' }}>
+        <View style={{ flex: .8 }}>
           <AppText textStyle="body2">Something, something</AppText>
           <AppText textStyle="captionDashboard">Something, something</AppText>
+          <Text>{selectedDate}</Text>
           <TouchableOpacity
             style={styles.btnTransparent}
             onPress={showDatepicker}>
             <AppText textStyle="button2">
-              Set Date 
+              Set Date
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -109,8 +115,8 @@ const PostExpiryModal = ({closeModal}) => {
         </View>
         <TouchableOpacity
           style={styles.btnYellow}
-          // onPress={() => [showDateModal(false), showTimeModal(false)]}
-          >
+        // onPress={() => [showDateModal(false), showTimeModal(false)]}
+        >
           <AppText textStyle="button2">
             Set Post Expiry
           </AppText>
@@ -265,21 +271,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   btnTransparent: {
-    paddingVertical: 12, 
-    width: '100%', 
+    paddingVertical: 12,
+    width: '100%',
     alignItems: 'center',
-    backgroundColor: 'transparent', 
-    borderWidth: 1, 
-    borderColor: '#000', 
-    borderRadius: 3 ,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 3,
     marginTop: normalize(20)
   },
   btnYellow: {
-    paddingVertical: 12, 
-    width: '100%', 
-    alignItems: 'center', 
-    backgroundColor: '#FFD400', 
-    borderRadius: 3 
+    paddingVertical: 12,
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#FFD400',
+    borderRadius: 3
   }
 })
 
