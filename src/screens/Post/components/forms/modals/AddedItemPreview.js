@@ -1,11 +1,17 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {View, SafeAreaView, TouchableOpacity, Dimensions} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import {AppText, Item, ScreenHeaderTitle} from '@/components';
 import {Colors, normalize} from '@/globals';
 import {CircleAdd} from '@/assets/images/icons';
 import Modal from 'react-native-modal';
-import EditItemModal from './EditItemModal';
+import CategoryOptions from './CategoryOptions';
 
 import {Context} from '@/context';
 
@@ -25,19 +31,11 @@ const AddedItemPreview = ({
 
   const {categoryName} = props?.route?.params;
 
-  // console.log('ITEM PREVIEW');
-  // console.log(getItemsByCategory(categoryName));
-
   const [items, setItems] = useState(getItemsByCategory(categoryName));
-
-  // console.log("ITEMS")
-  // console.log(items[0])
-
-  // var items = getItemsByCategory(categoryName);
-
   const [editItemModal, showEditItemModal] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(false);
   const [indexOfItemToEdit, setIndexOfItemToEdit] = useState(0);
+  const [options, showOptions] = useState(false);
 
   const AddAnotherItemHandler = () => {
     // console.log(navigation)
@@ -59,9 +57,6 @@ const AddedItemPreview = ({
     console.log(editItem(item));
 
     navigation.navigate('EditItemScreen', {itemToEdit: item});
-
-    // showEditItemModal(true);
-    // closeModal();
   };
 
   const ItemList = () => {
@@ -93,6 +88,10 @@ const AddedItemPreview = ({
             }}
             title={categoryName}
             paddingSize={0}
+            withOptions={true}
+            openOptions={() => {
+              showOptions(true);
+            }}
           />
           <View style={{paddingTop: 24}}>
             <ItemList />
@@ -121,28 +120,23 @@ const AddedItemPreview = ({
           <AppText textStyle="button2">Add Items</AppText>
         </TouchableOpacity>
       </View>
-      {/* <Modal
-        isVisible={editItemModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
+      <Modal
+        isVisible={options}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
         style={{
           margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <EditItemModal
-          closeModal={() => {
-            showEditItemModal(false);
-          }}
-          itemToEdit={itemToEdit}
-          setData={setData}
-          data={data}
-          indexOfItemToEdit={indexOfItemToEdit}
-        />
-      </Modal> */}
+          justifyContent: 'flex-end',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showOptions(false)}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <CategoryOptions />
+      </Modal>
     </SafeAreaView>
   );
 };

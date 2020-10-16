@@ -165,11 +165,13 @@ import FormArrowRight from './FormArrowRight.svg';
 import LoginApple from './login_Apple03.svg';
 
 import CircleAdd from './CircleAdd.svg';
+import VerticalEllipsis from './VerticalEllipsis.svg'
 
 // import LoginApple from './apple.svg';
 // import Public from './public.svg';
 
 export {
+  VerticalEllipsis,
   CircleAdd,
   FormArrowRight,
   AngleDown,

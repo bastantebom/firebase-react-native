@@ -23,6 +23,7 @@ const FloatingAppInput = (props) => {
     error,
     setButtonState,
     onInputFocus,
+    onInputBlur,
     onChangeTextInput,
     setChangingValidation,
     changingValidation,
@@ -225,7 +226,8 @@ const FloatingAppInput = (props) => {
     setIsActive(false);
     animateBlur();
 
-    console.log('BLURRING');
+    // console.log('BLURRING');
+    onInputBlur ? onInputBlur() : null;
   };
 
   useEffect(() => {

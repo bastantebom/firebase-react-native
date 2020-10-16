@@ -58,21 +58,19 @@ const AddItemModal = ({closeModal, ...props}) => {
   //   // }),
   // ]);
 
-  console.log('ADD ITEM MODAL');
-
-  useEffect(() => {
-    CategoryService.getCategories().then((res) => {
-      console.log('GET CATEGORY RESPONSE');
-      let tempChoice = res.data.map((ch) => {
-        return {
-          ...ch,
-          selected: false,
-        };
-      });
-      console.log(tempChoice);
-      setCategoryList(tempChoice);
-    });
-  }, []);
+  // useEffect(() => {
+  //   CategoryService.getCategories().then((res) => {
+  //     console.log('GET CATEGORY RESPONSE');
+  //     let tempChoice = res.data.map((ch) => {
+  //       return {
+  //         ...ch,
+  //         selected: false,
+  //       };
+  //     });
+  //     console.log(tempChoice);
+  //     setCategoryList(tempChoice);
+  //   });
+  // }, []);
 
   const [categoryModal, setCategoryModal] = useState(false);
   const [previewItemModal, setPreviewItemModal] = useState(false);
@@ -357,8 +355,6 @@ const AddItemModal = ({closeModal, ...props}) => {
         <AddCategoryModal
           categoryName={categoryName}
           setCategoryName={setCategoryName}
-          // choices={choices}
-          // setChoices={setChoices}
           close={() => setCategoryModal(false)}
         />
       </Modal>
