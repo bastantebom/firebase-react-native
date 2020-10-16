@@ -1,265 +1,265 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {
-    View,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { Verified, ProfileImageDefault } from '@/assets/images/icons';
-import { AppText, CacheableImage } from '@/components';
-import { normalize, GlobalStyle, Colors } from '@/globals';
-import { FollowingEllipsis } from '@/assets/images/icons';
+import {Verified, ProfileImageDefault} from '@/assets/images/icons';
+import {AppText, CacheableImage} from '@/components';
+import {normalize, GlobalStyle, Colors} from '@/globals';
+import {FollowingEllipsis} from '@/assets/images/icons';
 
-import RemoveFollowerContent from './RemoveFollowerContent';
-import UnfollowContent from './UnfollowContent';
 import MuteContent from './MuteContent';
 import FollowEllipsis from './FollowEllipsis';
-import { UserContext } from '@/context/UserContext';
-import { useNavigation } from '@react-navigation/native';
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
+import {useNavigation} from '@react-navigation/native';
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
+const Profile = ({data, type, viewType, toggleProfileList}) => {
+  const navigation = useNavigation();
+  const {user, userInfo, setUserInfo} = useContext(UserContext);
+  const {refreshFollowerList, setRefreshFollowerList} = useContext(Context);
+  const {
+    profile_photo,
+    username,
+    display_name,
+    full_name,
+    follower,
+    uid,
+  } = data;
 
-const Profile = ({ data, type, viewType, toggleProfileList }) => {
-    const navigation = useNavigation();
-    const { user, userInfo } = useContext(UserContext);
-    const { profile_photo, username, display_name, full_name, follower, uid } = data;
+  //const [followingState, setFollowingState] = useState(following);
+  const [removeFollower, setRemoveFollower] = useState(false);
 
-    //const [followingState, setFollowingState] = useState(following);
-    const [removeFollower, setRemoveFollower] = useState(false);
-    const [unfollow, setUnfollow] = useState(false);
-    const [showMute, setShowMute] = useState(false);
-    const [showEllipsis, setShowEllipsis] = useState(false);
+  const [showMute, setShowMute] = useState(false);
+  const [showEllipsis, setShowEllipsis] = useState(false);
+  //const [isFollowing, setIsFollowing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const showEllipsisToggle = () => {
-        setShowEllipsis(!showEllipsis);
-    };
+  const showEllipsisToggle = () => {
+    setShowEllipsis(!showEllipsis);
+  };
 
-    const showMuteToggle = () => {
-        setShowMute(!showMute);
-    };
+  const showMuteToggle = () => {
+    setShowMute(!showMute);
+  };
 
-    const removeFollowerToggle = () => {
-        setRemoveFollower(!removeFollower);
-    };
+  const isFollowing = () => {
+    return userInfo.following ? userInfo.following.includes(uid) : false;
+  };
 
-    const unfollowToggle = () => {
-        setUnfollow(!unfollow);
-    };
+  const followUser = (selectedUser) => {
+    connectUser(selectedUser.uid, false);
+  };
 
-    const follow = () => {
-        setFollowingState(true);
-    };
+  const unFollowUser = (selectedUser) => {
+    connectUser(selectedUser.uid, true);
+  };
 
-    const unfollowHandler = () => {
-        setFollowingState(false);
-        setUnfollow(false);
-    };
-
-    const isFollowing = () => {
-        return userInfo.following ? userInfo.following.includes(uid) : false;
-    };
-
-    const name = display_name ? display_name : full_name;
-
-    const ProfilePhoto = ({ size }) => {
-        return profile_photo ? (
-            <CacheableImage
-                style={GlobalStyle.image}
-                source={{
-                    uri: profile_photo,
-                }}
-            />
-        ) : (
-                <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-            );
-    };
-
-    const openProfileHandler = () => {
-        // console.log(user.uid);
-        // console.log('I HAVE THIS UID');
-        // console.log(uid);
-        toggleProfileList();
-        if (user && user.uid === uid) {
-            navigation.navigate('Profile', {
-                screen: 'Profile',
-            });
-        } else {
-            console.log('Going to NBTS');
-            navigation.goBack();
-            navigation.navigate('NBTScreen', {
-                screen: 'OthersProfile',
-                params: { uid: uid },
-            });
-            // navigation.navigate('Post', {
-            //   screen: 'SinglePostView',
-            //   params: computedData,
-            // });
+  const connectUser = (selectUid, connectionType) => {
+    setIsLoading(true);
+    ProfileInfoService.follow(selectUid, connectionType)
+      .then((response) => {
+        if (viewType === 'own-links') {
+          console.log('magupdate from follower or following');
+          setRefreshFollowerList(true);
         }
-    };
+        const updatedFollowingList = {
+          following: [...response.data],
+        };
+        setUserInfo({...userInfo, ...updatedFollowingList});
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
 
-    return (
-        <View style={styles.container}>
-            <TouchableOpacity style={{ flexDirection: 'row', flex: 1, }} activeOpacity={0.7} onPress={openProfileHandler}>
-                <View style={styles.userInfoImageContainer}>
-                    <ProfilePhoto size={42} />
-                </View>
+  const name = display_name ? display_name : full_name;
 
-                <View style={{ flex: 1, marginLeft: 8 }}>
-                    <AppText textStyle="body1">{name.length > 19
-                        ? `${name.substring(0, 19)}...`
-                        : name}</AppText>
-                    <AppText textStyle="metadata">@{username}</AppText>
-                </View>
-            </TouchableOpacity>
-
-            { /* OWN PROFILE AND FOLLOWERS TAB  */}
-            {
-                viewType === 'own-links' && type === 'followers' ?
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {isFollowing() ? <View
-                            style={{
-                                paddingHorizontal: 8,
-                                paddingVertical: 4,
-                                borderRadius: 4,
-                                backgroundColor: Colors.buttonDisable,
-                            }}>
-                            <AppText textStyle="caption2">Following</AppText>
-                        </View> : null}
-                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showEllipsisToggle}>
-                            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
-                        </TouchableOpacity>
-                    </View> : null
-            }
-
-            {/* OWN PROFILE AND FOLLOWING TAB  */}
-            {
-                viewType === 'own-links' && type === 'following' ?
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity style={{ marginLeft: 8 }} onPress={showEllipsisToggle}>
-                            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
-                        </TouchableOpacity>
-                    </View> : null
-            }
-
-            {/* OTHER PROFILE BOTH TAB  */}
-            {
-                viewType === 'other-user-links' ?
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {isFollowing() ? <TouchableOpacity activeOpacity={0.7} onPress={() => { }}><View
-                            style={{
-                                paddingHorizontal: 8,
-                                paddingVertical: 4,
-                                borderRadius: 4,
-                                backgroundColor: Colors.buttonDisable,
-                            }}>
-                            <AppText textStyle="caption2">Following</AppText>
-                        </View></TouchableOpacity> : userInfo.uid !== uid ?
-                                <TouchableOpacity activeOpacity={0.7} onPress={() => { }}><View
-                                    style={{
-                                        paddingHorizontal: 8,
-                                        paddingVertical: 4,
-                                        borderRadius: 4,
-                                        backgroundColor: Colors.buttonDisable,
-                                    }}>
-                                    <AppText textStyle="caption2">Follow</AppText>
-                                </View></TouchableOpacity> : null}
-                    </View> : null
-            }
-            <Modal
-                isVisible={removeFollower}
-                animationIn="slideInUp"
-                animationInTiming={500}
-                animationOut="slideOutDown"
-                animationOutTiming={500}
-                onSwipeComplete={removeFollowerToggle}
-                swipeDirection="down"
-                style={{
-                    justifyContent: 'flex-end',
-                    margin: 0,
-                }}
-                customBackdrop={
-                    <TouchableWithoutFeedback onPress={removeFollowerToggle}>
-                        <View style={{ flex: 1, backgroundColor: 'black' }} />
-                    </TouchableWithoutFeedback>
-                }>
-                <View>
-                    <RemoveFollowerContent
-                        data={data}
-                        removeFollowerToggle={removeFollowerToggle}
-                    />
-                </View>
-            </Modal>
-
-            <Modal
-                isVisible={unfollow}
-                animationIn="slideInUp"
-                animationInTiming={500}
-                animationOut="slideOutDown"
-                animationOutTiming={500}
-                onSwipeComplete={unfollowToggle}
-                swipeDirection="down"
-                style={{
-                    justifyContent: 'flex-end',
-                    margin: 0,
-                }}
-                customBackdrop={
-                    <TouchableWithoutFeedback onPress={unfollowToggle}>
-                        <View style={{ flex: 1, backgroundColor: 'black' }} />
-                    </TouchableWithoutFeedback>
-                }>
-                <View>
-                    <UnfollowContent
-                        data={data}
-                        unfollowToggle={unfollowToggle}
-                        unfollowHandler={unfollowHandler}
-                    />
-                </View>
-            </Modal>
-
-            <Modal
-                isVisible={showEllipsis}
-                animationIn="slideInUp"
-                animationInTiming={500}
-                animationOut="slideOutDown"
-                animationOutTiming={500}
-                onSwipeComplete={showMuteToggle}
-                swipeDirection="down"
-                style={{
-                    justifyContent: 'flex-end',
-                    margin: 0,
-                }}
-                customBackdrop={
-                    <TouchableWithoutFeedback onPress={showEllipsisToggle}>
-                        <View style={{ flex: 1, backgroundColor: 'black' }} />
-                    </TouchableWithoutFeedback>
-                }>
-                <View>
-                    <FollowEllipsis userInfo={data} showEllipsisToggle={showEllipsisToggle} />
-                </View>
-            </Modal>
-        </View >
+  const ProfilePhoto = ({size}) => {
+    return profile_photo ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{
+          uri: profile_photo,
+        }}
+      />
+    ) : (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
     );
+  };
+
+  const openProfileHandler = () => {
+    toggleProfileList();
+    if (user && user.uid === uid) {
+      navigation.navigate('Profile', {
+        screen: 'Profile',
+      });
+    } else {
+      console.log('Going to NBTS');
+      navigation.goBack();
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: uid},
+      });
+    }
+  };
+
+  const FollowUnfollowButton = ({userId, uName}) => {
+    const connected = userInfo.following
+      ? userInfo.following.includes(uid)
+      : false;
+    if (connected) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => unFollowUser(data)}>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <View
+              style={{
+                paddingHorizontal: 8,
+                paddingVertical: 8,
+                borderRadius: 4,
+                backgroundColor: Colors.primaryYellow,
+              }}>
+              <AppText textStyle="caption2">Following</AppText>
+            </View>
+          )}
+        </TouchableOpacity>
+      );
+    }
+
+    if (!connected && userInfo.uid !== userId) {
+      return (
+        <TouchableOpacity activeOpacity={0.7} onPress={() => followUser(data)}>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <View
+              style={{
+                paddingHorizontal: 8,
+                paddingVertical: 8,
+                borderRadius: 4,
+                backgroundColor: Colors.neutralsWhite,
+                borderWidth: 1,
+                borderColor: Colors.contentEbony,
+              }}>
+              <AppText textStyle="caption2">Follow</AppText>
+            </View>
+          )}
+        </TouchableOpacity>
+      );
+    }
+
+    if (!connected && userInfo.uid === userId) {
+      return null;
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={{flexDirection: 'row', flex: 1}}
+        activeOpacity={0.7}
+        onPress={openProfileHandler}>
+        <View style={styles.userInfoImageContainer}>
+          <ProfilePhoto size={42} />
+        </View>
+
+        <View style={{flex: 1, marginLeft: 8}}>
+          <AppText textStyle="body1">
+            {name.length > 19 ? `${name.substring(0, 19)}...` : name}
+          </AppText>
+          <AppText textStyle="metadata">@{username}</AppText>
+        </View>
+      </TouchableOpacity>
+
+      {/* OWN PROFILE AND FOLLOWERS TAB  */}
+      {viewType === 'own-links' && type === 'followers' ? (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <FollowUnfollowButton userId={uid} uName={username} />
+          <TouchableOpacity
+            style={{marginLeft: 8}}
+            onPress={showEllipsisToggle}>
+            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
+          </TouchableOpacity>
+        </View>
+      ) : null}
+
+      {/* OWN PROFILE AND FOLLOWING TAB  */}
+      {viewType === 'own-links' && type === 'following' ? (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{marginLeft: 8}}
+            onPress={showEllipsisToggle}>
+            <FollowingEllipsis width={normalize(24)} height={normalize(24)} />
+          </TouchableOpacity>
+        </View>
+      ) : null}
+
+      {/* OTHER PROFILE BOTH TAB  */}
+      {viewType === 'other-user-links' ? (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <FollowUnfollowButton userId={uid} uName={username} />
+        </View>
+      ) : null}
+      <Modal
+        isVisible={showEllipsis}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
+        onSwipeComplete={showMuteToggle}
+        swipeDirection="down"
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={showEllipsisToggle}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View>
+          <FollowEllipsis
+            userInfo={data}
+            showEllipsisToggle={showEllipsisToggle}
+            isFollowing={isFollowing()}
+            connectUser={(UID, cT) => connectUser(UID, cT)}
+          />
+        </View>
+      </Modal>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 8,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    userInfoImageContainer: {
-        height: normalize(42),
-        width: normalize(42),
-        borderRadius: normalize(42 / 2),
-        overflow: 'hidden',
-    },
-    dividerStyle: {
-        backgroundColor: Colors.neutralsZircon,
-        width: '100%',
-        marginTop: 8,
-        marginBottom: 32,
-    },
+  container: {
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userInfoImageContainer: {
+    height: normalize(42),
+    width: normalize(42),
+    borderRadius: normalize(42 / 2),
+    overflow: 'hidden',
+  },
+  dividerStyle: {
+    backgroundColor: Colors.neutralsZircon,
+    width: '100%',
+    marginTop: 8,
+    marginBottom: 32,
+  },
 });
 
 export default Profile;

@@ -1,53 +1,18 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {View, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 
-import { AppText, PaddingView, AppInput, TabNavigation } from '@/components';
-import { HeaderBackGray } from '@/assets/images/icons';
-import { normalize } from '@/globals';
+import {AppText, PaddingView, AppInput, TabNavigation} from '@/components';
+import {HeaderBackGray} from '@/assets/images/icons';
+import {normalize} from '@/globals';
 import Profiles from './components/Profiles';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import { UserContext } from '@/context/UserContext';
-// const FollowingDummyData = [
-//   {
-//     user_image:
-//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/selena-gomez-1573068628.jpg?crop=0.489xw:0.978xh;0.510xw,0&resize=640:*',
-//     user_name: 'Selena Gomez',
-//     user_username: 'selenagomez1',
-//     follower: false,
-//     following: true,
-//   },
-//   {
-//     user_image:
-//       'https://images.thestar.com/KU19aIcaDXtPaGkzfIEM1EthbVk=/1086x724/smart/filters:cb(1586277340221)/https://www.thestar.com/content/dam/thestar/entertainment/2020/04/07/celebrities-face-backlash-as-they-reveal-new-sides-during-coronavirus-pandemic/gal_gadot.jpg',
-//     user_name: 'Gal Gadot',
-//     user_username: 'galilicious',
-//     follower: true,
-//     following: true,
-//   },
-// ];
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context';
 
-// const FollowerDummyData = [
-//   {
-//     user_image:
-//       'https://upload.wikimedia.org/wikipedia/commons/7/79/Johnny_Depp_Deauville_2019.jpg',
-//     user_name: 'Johnny Depp',
-//     user_username: 'johnnybravo',
-//     follower: true,
-//     following: false,
-//   },
-//   {
-//     user_image:
-//       'https://images.thestar.com/KU19aIcaDXtPaGkzfIEM1EthbVk=/1086x724/smart/filters:cb(1586277340221)/https://www.thestar.com/content/dam/thestar/entertainment/2020/04/07/celebrities-face-backlash-as-they-reveal-new-sides-during-coronavirus-pandemic/gal_gadot.jpg',
-//     user_name: 'Gal Gadot',
-//     user_username: 'galilicious',
-//     follower: true,
-//     following: true,
-//   },
-// ];
-
-const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
-  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext);
-  const { uid } = viewUserInfo;
+const ProfileList = ({toggleProfileList, viewUserInfo, viewType}) => {
+  const {user, signOut, userInfo, setUserInfo} = useContext(UserContext);
+  const {refreshFollowerList, setRefreshFollowerList} = useContext(Context);
+  const {uid} = viewUserInfo;
   const [followersList, setFollowersList] = useState([]);
   const [followersCount, setFollowersCount] = useState();
   const [followingsList, setFollowingsList] = useState([]);
@@ -58,9 +23,10 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
     if (uid && mounted) {
       ProfileInfoService.getFollowers(uid)
         .then((response) => {
-          setFollowersList(response.data.sort((a, b) => a.uid === user.uid ? -1 : 1));
+          setFollowersList(
+            response.data.sort((a, b) => (a.uid === user.uid ? -1 : 1)),
+          );
           setFollowersCount(response.data.length);
-          //if (mounted) setOtherUserInfo(response.data);
         })
         .catch((err) => {
           console.log('Err: ' + err);
@@ -68,10 +34,32 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
 
       ProfileInfoService.getFollowing(uid)
         .then((response) => {
-          setFollowingsList(response.data.sort((a, b) => a.uid === user.uid ? -1 : 1));
+          setFollowingsList(
+            response.data.sort((a, b) => (a.uid === user.uid ? -1 : 1)),
+          );
           setFollowingsCount(response.data.length);
-          //console.log(response.data.length);
-          //if (mounted) setOtherUserInfo(response.data);
+        })
+        .catch((err) => {
+          console.log('Err: ' + err);
+        });
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [uid]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (refreshFollowerList && mounted) {
+      console.log('Mag refresh ng following');
+      ProfileInfoService.getFollowing(uid)
+        .then((response) => {
+          setFollowingsList(
+            response.data.sort((a, b) => (a.uid === user.uid ? -1 : 1)),
+          );
+          setFollowingsCount(response.data.length);
+          setRefreshFollowerList(false);
         })
         .catch((err) => {
           console.log('Err: ' + err);
@@ -80,31 +68,44 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
     return () => {
       mounted = false;
     };
-  }, [uid]);
+  }, [refreshFollowerList]);
 
   const routes = [
     {
       key: 'followers',
       title: `Followers`,
       renderPage: (
-        <View style={{ flex: 1, padding: 16 }}>
-          <Profiles data={followersList} toggleProfileList={toggleProfileList} type="followers" viewType={viewType} />
-        </View>),
+        <View style={{flex: 1, padding: 16}}>
+          <Profiles
+            data={followersList}
+            toggleProfileList={toggleProfileList}
+            type="followers"
+            viewType={viewType}
+          />
+        </View>
+      ),
       numberBadge: followersCount,
     },
     {
       key: 'following',
       title: `Following`,
-      renderPage: (<View style={{ flex: 1, padding: 16 }}>
-        <Profiles data={followingsList} toggleProfileList={toggleProfileList} type="following" viewType={viewType} />
-      </View>),
+      renderPage: (
+        <View style={{flex: 1, padding: 16}}>
+          <Profiles
+            data={followingsList}
+            toggleProfileList={toggleProfileList}
+            type="following"
+            viewType={viewType}
+          />
+        </View>
+      ),
       numberBadge: followingsCount,
     },
   ];
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <PaddingView paddingSize={3}>
           <View
             style={{
@@ -116,15 +117,18 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
             <TouchableOpacity
               onPress={toggleProfileList}
               activeOpacity={0.7}
-              style={{ position: 'absolute', left: 0 }}>
+              style={{position: 'absolute', left: 0}}>
               <HeaderBackGray width={normalize(16)} height={normalize(16)} />
             </TouchableOpacity>
-            <AppText textStyle="body3">{viewUserInfo.display_name ? viewUserInfo.display_name : viewUserInfo.full_name}</AppText>
+            <AppText textStyle="body3">
+              {viewUserInfo.display_name
+                ? viewUserInfo.display_name
+                : viewUserInfo.full_name}
+            </AppText>
           </View>
         </PaddingView>
         <TabNavigation routesList={routes} />
       </View>
-
     </SafeAreaView>
   );
 };
