@@ -26,55 +26,81 @@ import { normalize } from '@/globals';
 import { CalendarArrowLeft, CalendarArrowRight, ArrowRight, Calendar } from '@/assets/images/icons';
 
 
-const PostExpiryModal = ({ closeModal }) => {
+const PostExpiryModal = () => {
   const navigation = useNavigation();
-  const [timeModal, showTimeModal] = useState(false);
-  const [dateModal, showDateModal] = useState(false);
-  const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
-  const minDate = new Date(); // Today
-  const maxDate = new Date(3000, 12, 31);
-  const [selectedHours, setSelectedHours] = useState(0);
-  const [selectedMinutes, setSelectedMinutes] = useState(0);
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(0);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
   const [selectedDate, setSelectedDate] = useState('')
+  const [selectedTime, setSelectedTime] = useState('')
 
-  const onChange = (event, selectedDate) => {
+  // const onChange = (selectedDate, selectedTime) => {
+  //   const currentDate = selectedDate || date;
+  //   setShow(Platform.OS === 'ios');
+  //   setDate(currentDate);
+  //   setTime(selectedTime);
+  //   const currentDate = selectedDate || date;
+  //   setShow(Platform.OS === 'ios');
+  //   setDate(date);
+  //   const dateSelected = moment(currentDate).format('LL');
+  //   setSelectedDate(moment.utc(date).format('MMMM D, YYYY'));
+  // };
+
+  const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
+    // const currentTime = selectedTime || time;
     setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+    setDate(currentDate)
+    // setTime(currentTime)
+    const dateSelected = moment(currentDate).format('LL');
+    setSelectedDate(dateSelected);
+    // const timeSelected = moment(currentDate).format('h:mm A');
+    // setSelectedTime(timeSelected);
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setShowTime(true);
-    setMode(currentMode);
+  const onChangeTime = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    // const currentTime = selectedTime || time;
+    setShow(Platform.OS === 'ios');
+    // setDate(currentDate)
+    // setTime(currentTime)
+    // const dateSelected = moment(currentDate).format('LL');
+    // setSelectedDate(dateSelected);
+    const timeSelected = moment(currentDate).format('h:mm A');
+    setSelectedTime(timeSelected);
   };
+
+  // const showModeDate = (currentMode) => {
+  //   setShow(true);
+  // setShowTime(true);
+  //   setMode(currentMode);
+  // };
+
+  // const showModeTime = (currentMode) => {
+  // setShow(true);
+  //   setShowTime(true);
+  //   setMode(currentMode);
+  // };
 
   const showDatepicker = () => {
-    showMode('date');
+    // showMode('date');
+    setShow(true);
   };
 
   const showTimepicker = () => {
-    showMode('time');
+    // showMode('time');
+    setShowTime(true);
   };
 
-  const displayChosen = () => {
-    setDate(selectedDate);
-    setSelectedDate(moment.utc(selectedDate).format('MM/DD/YYYY'));
-  }
+  // useEffect(() => {
+  //   if (date) {
+  //     setSelectedDate(moment.utc(date).format('MMMM D, YYYY'));
+  //     setSelectedTime(moment(date).format('h:mm A'));
+  //   }
+  // })
 
-  useEffect(() => {
-    if (selectedDate) {
-      displayChosen();
-      setDate(moment(new Date(date)).toDate());
-    }
-  })
-
-  console.log(selectedDate)
   return (
     <View>
       <ScreenHeaderTitle
@@ -86,29 +112,49 @@ const PostExpiryModal = ({ closeModal }) => {
         <View style={{ flex: .8 }}>
           <AppText textStyle="body2">Something, something</AppText>
           <AppText textStyle="captionDashboard">Something, something</AppText>
-          <Text>{selectedDate}</Text>
           <TouchableOpacity
             style={styles.btnTransparent}
             onPress={showDatepicker}>
-            <AppText textStyle="button2">
-              Set Date
-            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText textStyle="button2">
+                Set Date
+              </AppText>
+              <Text>
+                {selectedDate ?
+                  <AppText textStyle="button2">: {selectedDate}</AppText> : ' '
+                }
+              </Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnTransparent}
             onPress={showTimepicker}>
-            <AppText textStyle="button2">
-              Set Time
-            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText textStyle="button2">
+                Set Time
+                </AppText>
+              <Text>
+                {selectedTime ?
+                  <AppText textStyle="button2">: {selectedTime}</AppText> : ' '
+                }
+              </Text>
+            </View>
           </TouchableOpacity>
           <View>
             {show && (
               <DateTimePicker
-                testID="dateTimePicker"
                 value={date}
-                mode={mode}
-                display={mode == 'time' ? 'spinner' : ''}
-                onChange={onChange}
+                mode='date'
+                // display={mode == 'time' ? 'spinner' : ''}
+                onChange={onChangeDate}
+              />
+            )}
+            {showTime && (
+              <DateTimePicker
+                value={date}
+                mode='time'
+                display='spinner'
+                onChange={onChangeTime}
               />
             )}
           </View>
