@@ -76,6 +76,22 @@ export const ContextProvider = ({children}) => {
     return filteredItems[0]?.items;
   };
 
+  const editCategory = (oldCategoryName, newCategoryName) => {
+    let itemArray = items.slice();
+
+    itemArray.map((item) => {
+      return {
+        ...item,
+        categoryName:
+          item.categoryName === oldCategoryName
+            ? newCategoryName
+            : oldCategoryName,
+      };
+    });
+
+    setItems(itemArray);
+  };
+
   const editItem = (item) => {
     let itemArray = items.slice();
 
@@ -87,7 +103,7 @@ export const ContextProvider = ({children}) => {
 
     itemArray[index] = item;
 
-    setItems(itemArray)
+    setItems(itemArray);
   };
 
   const addItem = (item) => {
@@ -173,6 +189,7 @@ export const ContextProvider = ({children}) => {
   return (
     <Context.Provider
       value={{
+        editCategory,
         items,
         addItem,
         editItem,
