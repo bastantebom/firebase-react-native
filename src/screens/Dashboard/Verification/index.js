@@ -136,8 +136,8 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
     <View style={{ zIndex: 999, position: 'relative' }}>
       <View style={{ width: '100%', justifyContent: 'space-evenly', marginLeft: 15 }}>
         <TouchableOpacity onPress={onPress}>
-          <AppText textStyle="body2">Get the verified badge</AppText>
-          <AppText textStyle="caption">Short blurb here explaining why</AppText>
+          <AppText textStyle="subtitle1" color={Colors.neutralsWhite}>Get the verified badge</AppText>
+          <AppText textStyle="caption" color={Colors.neutralsWhite}>Short blurb here explaining why</AppText>
         </TouchableOpacity>
       </View>
       <Modal

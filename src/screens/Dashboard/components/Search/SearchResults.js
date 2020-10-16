@@ -68,9 +68,9 @@ const SearchResults = ({ onValueChange }) => {
       style={[styles.parent, { paddingBottom: searchType !== 'posts' ? normalize(15) : 0 }]}>
       <Animated.View  
         style={{ 
-          borderBottomWidth: StyleSheet.hairlineWidth, 
-          borderColor: Colors.neutralGray, 
-          elevation: 1,
+          // borderBottomWidth: StyleSheet.hairlineWidth, 
+          // borderColor: Colors.neutralGray, 
+          // elevation: 1,
           display: searchType !== 'posts' ? 'none' : 'flex',
         }}
       />
@@ -79,7 +79,7 @@ const SearchResults = ({ onValueChange }) => {
           style={{
             // opacity: 1,
             opacity: opacity,
-            display: searchType !== 'posts' ? 'none' : 'flex'
+            display: searchType !== 'posts' ? 'none' : 'flex',
           }}
         >
           <PaddingView paddingSize={2}>
@@ -126,10 +126,10 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
     maxHeight: height - normalize(130),
-    top: normalize(50),
+    top: normalize(65),
     left: -16,
     backgroundColor: 'white',
-    paddingTop: normalize(15),
+    // paddingTop: normalize(15),
     // paddingBottom: normalize(15),
     // backgroundColor: 'green'
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: Colors.neutralGray,
-    paddingTop: 12,
+    paddingTop: 8,
     paddingBottom: 15
   },
 })

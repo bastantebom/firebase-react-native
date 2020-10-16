@@ -21,10 +21,13 @@ import {
 } from '@/components';
 import FilterSlider from './components/FilterSlider';
 import {useNavigation} from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 
 import {
   Filter,
   JarHeart,
+  FilterDark,
+  JarHeartDark,
   NavigationArrow,
   NavigationPin,
   NavigationPinRed,
@@ -166,63 +169,73 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
   }
 
   return (
-    <>
-      <View style={{ margin: 16, 
-        height: normalize(47.5)
-        // height: normalize(120) 
-      }}
-        >
-        <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-          <View style={{ flex: 1, height: searchType !== 'posts' ? normalize(100) : 'auto' }}>
-            <SearchBox
-              onSearchFocus={onFocus} 
-              onBackPress={onBackPress}
-              valueHandler={onValueChange}
-            />
-            <Animated.View 
+    <View 
+      // style={{ backgroundColor: '#ECEFF8' }}
+    >
+      <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
+        <View style={{ margin: 16, height: normalize(47.5),
+          // height: normalize(120)
+        }}
+          >
+          <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
+            <View 
               style={{ 
-                opacity: opacity, 
-                display: searchBarFocused ? 'flex' : 'none',
-                zIndex: searchBarFocused ? 1 : 0,
-                flex: 1,
-                position: 'absolute',
+                flex: 1, 
+                // height: searchType !== 'posts' ? normalize(100) : 'auto', 
+                // paddingBottom: 16
               }}
             >
-              <SearchResults 
-                onValueChange={searchValue}
+              <SearchBox
+                onSearchFocus={onFocus} 
+                onBackPress={onBackPress}
+                valueHandler={onValueChange}
               />
-            </Animated.View>
-          </View>
-          { searchBarFocused ? 
-            <View style={{ marginTop: normalize(47.5)}}/> 
-            : <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1 }}>
-              <TouchableOpacity onPress={toggleFilter}>
-                <View style={styles.circleButton}>
-                  <Filter />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggleLike}>
-                <View style={styles.circleButton}>
-                  { likedPosts ? <JarHeartColored/> : <JarHeart /> }
-                  {/* <JarHeart />  */}
-                </View>
-              </TouchableOpacity>
+              <Animated.View 
+                style={{ 
+                  opacity: opacity, 
+                  display: searchBarFocused ? 'flex' : 'none',
+                  zIndex: searchBarFocused ? 1 : 0,
+                  flex: 1,
+                  position: 'absolute',
+                }}
+              >
+                <SearchResults 
+                  onValueChange={searchValue}
+                />
+              </Animated.View>
             </View>
-          }
+            { searchBarFocused ? 
+              <View style={{ marginTop: normalize(47.5)}}/> 
+              : <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1 }}>
+                <TouchableOpacity activeOpacity={.7} onPress={toggleFilter}>
+                  <View style={styles.circleButton}>
+                    <FilterDark />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={.7} onPress={toggleLike}>
+                  <View style={styles.circleButton}>
+                    { likedPosts ? <JarHeartColored/> : <JarHeartDark /> }
+                    {/* <JarHeart />  */}
+                  </View>
+                </TouchableOpacity>
+              </View>
+            }
+          </View>
         </View>
-      </View>
-      <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
-        <LocationSearch />
-      </View>
+        <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
+          <LocationSearch />
+        </View>
+      </LinearGradient>
       <View
         style={{
-          // borderBottomColor: 'red',
-          // borderBottomWidth: 1,
-          height: StyleSheet.hairlineWidth,
-          elevation: 2
+          borderBottomColor: 'rgba(0,0,0,.5)',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          opacity: .1,
+          // height: 1,
+          elevation: 3,
         }}
       />
-    </>
+    </View>
   );
 };
 
@@ -424,8 +437,9 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 52 / 2,
     // backgroundColor: "green",
-    borderWidth: 1,
-    borderColor: Colors.neutralGray,
+    // borderWidth: 1,
+    // borderColor: Colors.neutralGray,
+    backgroundColor: Colors.neutralsWhite,
     flexBasis: 52,
     marginLeft: 8,
     justifyContent: 'center',

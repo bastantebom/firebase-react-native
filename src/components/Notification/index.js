@@ -17,7 +17,7 @@ import {
   CloseLight,
   CircleTick,
   Warning,
-  Verified,
+  VerifiedWhite,
 } from '@/assets/images/icons';
 import Colors from '@/globals/Colors';
 
@@ -58,7 +58,7 @@ const Notification = ({
         type === 'success'
           ? Colors.yellow2
           : type === 'verified'
-          ? Colors.secondarySolitude
+          ? Colors.contentOcean
           : Colors.secondaryBrinkPink,
     },
   });
@@ -74,7 +74,7 @@ const Notification = ({
           {type === 'success' ? (
             <CircleTick width={normalize(24)} height={normalize(24)} />
           ) : type === 'verified' ? (
-            <Verified width={normalize(24)} height={normalize(24)} />
+            <VerifiedWhite width={normalize(24)} height={normalize(24)} />
           ) : (
             <Warning width={normalize(24)} height={normalize(24)} />
           )}
@@ -85,7 +85,7 @@ const Notification = ({
             {type === 'success' ? (
               <CloseDark width={normalize(24)} height={normalize(24)} />
             ) : type === 'verified' ? (
-              <CloseDark width={normalize(24)} height={normalize(24)} />
+              <CloseLight width={normalize(24)} height={normalize(24)} />
             ) : (
               <CloseLight width={normalize(24)} height={normalize(24)} />
             )}

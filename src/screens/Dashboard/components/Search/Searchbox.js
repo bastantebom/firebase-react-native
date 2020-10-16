@@ -9,7 +9,7 @@ import {
 import { Searchbar } from 'react-native-paper';
 import { Colors, normalize } from '@/globals';
 import AppColor from '@/globals/Colors';
-import { HeaderBackGray } from '@/assets/images/icons';
+import { HeaderBackGray, Search } from '@/assets/images/icons';
 import { AppText } from '@/components';
 import { Context } from '@/context';
 import {debounce} from 'lodash';
@@ -119,7 +119,7 @@ const SearchBox = ({
     debounce((value) => {
       valueHandler(value) 
       // console.log(value)
-      }, 1500),
+      }, 2000),
     [],
   );
 
@@ -201,13 +201,13 @@ const SearchBox = ({
             zIndex: 1,
             left: searchType === 'posts' ? barPosition : 0,
             // left: barPosition,
-            top: searchType === 'posts' ? 0 : normalize(55),
+            top: searchType === 'posts' ? 0 : normalize(50),
             opacity: searchType !== 'posts' ? barOpacity : 1
           }
         ]}
       >
         <Searchbar
-          placeholder="Start your search..."
+          placeholder="Start your search"
           onChangeText={value => {
             setValue(value)
             handleValue(value) 
@@ -227,7 +227,14 @@ const SearchBox = ({
             },
           }}
           inputStyle={{ paddingLeft: 0, paddingRight: 0 }}
-          style={{ marginTop: normalize(0), borderWidth: 1.5, borderColor: searchBarFocused ? Colors.contentOcean : Colors.neutralGray , elevation: 0 }}
+          style={{ 
+            marginTop: normalize(0), 
+            // borderWidth: 1, 
+            borderColor: searchBarFocused ? Colors.contentOcean : Colors.neutralGray,
+            elevation: 0,
+            borderRadius: 40,
+            height: normalize(50)
+          }}
           ref={searchbarRef}
           onFocus={onFocus}
           {...props}

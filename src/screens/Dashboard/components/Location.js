@@ -76,6 +76,21 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       setAddressRunCount(addressRunCount - 1);
     }
 
+    // console.log(region.latitude, 'onRegionChange')
+
+    // Geolocation.getCurrentPosition(
+    // (position) => {
+    //   const currentLocation = position.coords;
+    //   const location = ({
+    //     latitude: currentLocation?.latitude,
+    //     longitude: currentLocation?.longitude
+    //   })
+
+    //   if(location.latitude !== region.latitude && location.longitude !== region.longitude) {
+    //     getStringAddress(currentLocation, null);
+    //   }
+    // })
+
     setButtonDisabled(false);
     setButtonStyle({});
   };
@@ -124,6 +139,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             ? 2
             : 2;
         setChangeMapAddress(strAddress ? strAddress : stringMapDrag);
+        // console.log(changeMapAddress, 'changeMapAddress')
         const splitAddress = json.results[
           arrayToExtract
         ].formatted_address.split(',');
@@ -137,20 +153,21 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
               json.results[arrayToExtract].address_components[1].long_name,
             country: 'Philippines',
           },
-          //setChangeMapAddress(addressComponent);
+          // setChangeMapAddress(addressComponents);
         });
         setIsLocationReady(true);
+        // console.log('getStringAddress fnc')
       })
       .catch((error) => console.warn(error));
-
-    //console.log(addressComponents);
+    // console.log(addressComponents, 'addressComponents');
+    // getPositionFromString(changeMapAddress)
     //setButtonDisabled(false);
     //setButtonStyle({});
   };
 
   //SEARCH ADDRESS
   const onSearchLocationHandler = (data) => {
-    //console.log('onSearchLocationHandler ' + data);
+    console.log('onSearchLocationHandler ' + data);
     //setChangeMapAddress(data);
     //getStringAddress(data);
     getPositionFromString(data);
@@ -168,13 +185,27 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
   function findCoordinates() {
     Geolocation.getCurrentPosition(
       (position) => {
-        const initialPosition = JSON.stringify(position.coords);
+        // const initialPosition = JSON.stringify(position.coords);
+        const initialPosition = position.coords;
         setInitialLocation(initialPosition);
-        // setIsAllowed(true);
-        getStringAddress(initialPosition);
-        // console.log('Almost There Page');
-        console.log(initialPosition?.latitude, 'lat');
-        console.log(initialPosition?.longitude, 'long');
+        const location = ({
+          latitude: initialPosition?.latitude,
+          longitude: initialPosition?.longitude
+        })
+        getStringAddress(location);
+
+        Geocoder.from(location)
+          .then((json) => {
+            const location = json.results[0].geometry.location;
+            //console.log(location);
+            // const convertedLocation = {
+            //   latitude: location.lat,
+            //   longitude: location.lng,
+            // };
+            setAddressRunCount(addressRunCount + 1);
+            setNewCoords(location);
+          })
+        .catch((error) => console.log(error));
       },
       (error) => {
         console.log('Error', JSON.stringify(error));
@@ -195,33 +226,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }
-
-  // useEffect(() => {
-  //   findCoordinates();
-  // }, []);
-
-  const onCurrentLocationClick = () => {
-    findCoordinates();
-    // // findCoordinates();
-    // // if (isAllowed && isLocationReady) {
-    //   //"altitude":0,"altitudeAccuracy":-1,"latitude":13.749014,"accuracy":5,"longitude":121.072939,"heading":-1,"speed":-1
-    //   const toPassString = {
-    //     // uid: route?.route?.params?.uid,
-    //     // custom_token: route?.route?.params?.custom_token,
-    //     // address: stringAddress,
-    //     latitude:
-    //       parseFloat(JSON.parse(initialLocation).latitude) +
-    //       parseFloat(0.00059),
-    //     longitude: JSON.parse(initialLocation).longitude,
-    //   };
-    //   console.log(toPassString, 'toPassString');
-    //   // navigation.navigate('AlmostThereMap', {
-    //   //   ...toPassString,
-    //   //   ...addressComponents,
-    //   // });
-    // // }
-    // // findCoordinates();
-  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -261,13 +265,12 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             }}
             placeholder="Search Your Location"
             debounce={1500}
-            currentLocation
           />
         </View>
         {isFocused ? (
           <TouchableOpacity 
             activeOpacity={.7}
-            onPress={() => onCurrentLocationClick()} 
+            onPress={() => findCoordinates()}
             style={[styles.navigationArrow]}
           >
             <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
@@ -321,7 +324,9 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       </View>
       <MapComponent
         latitude={address.latitude}
+        // latitude={15.080909570251048}
         longitude={address.longitude}
+        // longitude={120.64275087788701}
         reCenter={newCoords}
         onRegionChange={(region) => {
           onRegionChange(region);

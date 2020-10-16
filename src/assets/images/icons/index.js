@@ -36,6 +36,9 @@ import PushPin from '@/assets/images/icons/push-pin-alt.svg';
 import Filter from '@/assets/images/icons/filter.svg';
 import JarHeart from '@/assets/images/icons/jar-heart.svg';
 import JarHeartColored from '@/assets/images/icons/jar-heart-colored.svg';
+import FilterDark from '@/assets/images/icons/filter-dark.svg';
+import JarHeartDark from '@/assets/images/icons/jar-heart-dark.svg';
+
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg';
@@ -121,6 +124,7 @@ import Mobile from '@/assets/images/icons/verify-mobile.svg';
 import Id from '@/assets/images/icons/verify-id.svg';
 import ArrowRight from '@/assets/images/icons/arrow-right.svg';
 import VerifyTick from '@/assets/images/icons/verify-tick.svg';
+import VerifiedWhite from '@/assets/images/icons/verified-white.svg';
 
 import Lock from '@/assets/images/icons/lock.svg';
 import FolderAdd from '@/assets/images/icons/folder-add.svg';
@@ -165,6 +169,8 @@ import InviteFriendsMenu from './invite-friends.svg';
 import Faq from './faq.svg';
 import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
+
+import Search from './search.svg';
 
 export {
   ContactTelephone,
@@ -225,6 +231,8 @@ export {
   Filter,
   JarHeart,
   JarHeartColored,
+  FilterDark,
+  JarHeartDark,
   NotificationDot,
   PostBG,
   PostPlus,
@@ -264,6 +272,7 @@ export {
   Id,
   ArrowRight,
   VerifyTick,
+  VerifiedWhite,
   Lock,
   FolderAdd,
   Flash,
@@ -288,4 +297,5 @@ export {
   Faq,
   ContactUs,
   Notifications,
+  Search
 };

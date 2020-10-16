@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { AppText, CacheableImage } from '@/components';
 import { Context } from '@/context';
 import { normalize } from '@/globals';
+import { Search } from '@/assets/images/icons';
 
 export default Highlight = ({ hit }) => {
 
@@ -16,13 +17,16 @@ export default Highlight = ({ hit }) => {
 
   return (
     <View style={styles.highlightWrapper}>
-      <AppText 
-        textStyle={'body2'} 
-        numberOfLines={1}
-        customStyle={{ maxWidth: '80%' }}
-      >
-        { searchType === 'posts' ? hit.title : hit.display_name || '@' + hit.username }
-      </AppText>
+      <View style={{ flexDirection: 'row',  maxWidth: '83%' }}>
+        <Search width={normalize(20)} height={normalize(20)} />
+        <AppText 
+          textStyle={'body2'} 
+          numberOfLines={1}
+          customStyle={{ marginLeft: 10 }}
+        >
+          { searchType === 'posts' ? hit.title : hit.display_name || '@' + hit.username }
+        </AppText>
+      </View>
       { searchType === 'posts' && hit.images && hit.images[0] ?
         <CacheableImage
           source={{ uri: hit.images[0] }}
@@ -34,10 +38,6 @@ export default Highlight = ({ hit }) => {
           style={styles.icon}
         />
       }
-      {/* <CacheableImage
-        source={{ uri: hit.profile_photo }}
-        style={styles.icon}
-      /> */}
     </View>
   );
 };
