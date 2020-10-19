@@ -74,7 +74,7 @@ const HiddenPost = ({toggleHiddenPost}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <View style={{paddingHorizontal: normalize(16)}}>
+        <View style={{padding: normalize(16)}}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Hidden Posts"

@@ -169,6 +169,9 @@ import InviteFriendsMenu from './invite-friends.svg';
 import Faq from './faq.svg';
 import ContactUs from './contact-us.svg';
 import Notifications from './notifications.svg';
+import EmailContactUs from './email-contactus.svg';
+import CallContactUs from './call-contactus.svg';
+import LocationContactUs from './location-contactus.svg';
 
 import Search from './search.svg';
 
@@ -298,4 +301,7 @@ export {
   ContactUs,
   Notifications,
   Search
+  EmailContactUs,
+  CallContactUs,
+  LocationContactUs,
 };

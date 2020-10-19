@@ -33,6 +33,8 @@ import AboutServbeesImage from './Glyph-High-Five.svg';
 import DefaultNeed from './default-need.svg';
 import DefaultSell from './default-sell.svg';
 import DefaultService from './default-service.svg';
+import InviteFriend from './InviteFriends.svg';
+import ContactUsImg from './ContactUsImg.svg';
 
 export {
   DefaultNeed,
@@ -57,5 +59,7 @@ export {
   Faded,
   CoverPhoto,
   AboutServbeesImage,
-  VerifySms
+  VerifySms,
+  InviteFriend,
+  ContactUsImg,
 };

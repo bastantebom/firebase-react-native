@@ -58,7 +58,7 @@ const BlockList = ({toggleBlockedUser}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <View style={{paddingHorizontal: normalize(16)}}>
+        <View style={{padding: normalize(16)}}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Blocked Users"
@@ -160,30 +160,6 @@ const BlockList = ({toggleBlockedUser}) => {
 };
 
 // define your styles
-const styles = StyleSheet.create({
-  list: {
-    flexDirection: 'row',
-    // marginBottom: 28,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: Colors.neutralsZircon,
-    paddingVertical: normalize(4),
-    paddingHorizontal: normalize(8),
-    borderBottomColor: Colors.neutralsWhite,
-    borderBottomWidth: 1,
-  },
-  list2: {
-    flexDirection: 'row',
-    // marginBottom: 28,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: Colors.neutralsWhite,
-    paddingVertical: normalize(4),
-    paddingHorizontal: normalize(8),
-    borderBottomColor: Colors.neutralsWhite,
-    borderBottomWidth: 1,
-  },
-});
 
 //make this component available to the app
 export default BlockList;
