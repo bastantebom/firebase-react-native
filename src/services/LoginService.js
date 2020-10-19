@@ -46,6 +46,8 @@ async function facebookSignIn() {
       SignUpService.saveSocials({
         uid: result.user.uid,
         full_name: result.user.displayName,
+        email: result.additionalUserInfo.profile.email,
+        provider: 'facebook',
       })
         .then((response) => {
           if (response.success) {
@@ -72,6 +74,8 @@ async function googleLogin() {
       SignUpService.saveSocials({
         uid: result.user.uid,
         full_name: result.user.displayName,
+        email: result.additionalUserInfo.profile.email,
+        provider: 'google',
       })
         .then((response) => {
           if (response.success) {
@@ -124,6 +128,7 @@ async function appleLogin() {
           appleAuthRequestResponse.fullName.givenName +
           ' ' +
           appleAuthRequestResponse.fullName.familyName,
+        email: result.additionalUserInfo.profile.email,
         provider: 'apple',
       })
         .then((response) => {

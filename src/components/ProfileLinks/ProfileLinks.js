@@ -1,16 +1,16 @@
 //import liraries
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { normalize, Colors } from '@/globals';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, Dimensions} from 'react-native';
+import {normalize, Colors} from '@/globals';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-import { ProfileList } from '@/components';
+import {ProfileList} from '@/components';
 import Hives from './components/hives';
 import Modal from 'react-native-modal';
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
-import { AppText } from '@/components';
+import {AppText} from '@/components';
 // create a component
 const ProfileLinks = ({
   visibleHives,
@@ -21,8 +21,7 @@ const ProfileLinks = ({
   addFollowers,
   viewType,
 }) => {
-
-  const { uid } = userInfo;
+  const {uid} = userInfo;
   const [followers, setFollowers] = useState(0);
 
   //console.log(uid);
@@ -51,14 +50,14 @@ const ProfileLinks = ({
       } else {
         setFollowers(followers - 1);
       }
-      console.log('nag follow');
+      //console.log('nag follow');
     }
     return () => {
       mounted = false;
     };
   }, [addFollowers]);
 
-  const { post_count } = userInfo;
+  const {post_count} = userInfo;
   //const [followers, setFollowers] = useState(0);
   //console.log(userInfo);
   return (
@@ -71,15 +70,17 @@ const ProfileLinks = ({
           <AppText
             textStyle="captionDashboard"
             color={Colors.profileLink}
-            customStyle={{ paddingLeft: normalize(8) }}>
+            customStyle={{paddingLeft: normalize(8)}}>
             {post_count == 1 ? 'Post' : 'Posts'}
           </AppText>
         </View>
         <TouchableOpacity onPress={toggleProfileList}>
           <View style={styles.individualLink}>
-            <AppText textStyle="subtitle1">{followers > 0 ? followers : 0}</AppText>
+            <AppText textStyle="subtitle1">
+              {followers > 0 ? followers : 0}
+            </AppText>
             <AppText textStyle="captionDashboard" color={Colors.profileLink}>
-              {followers > 1 ? 'Follower' : 'Followers'}
+              {followers > 1 ? 'Followers' : 'Follower'}
             </AppText>
           </View>
         </TouchableOpacity>
@@ -107,7 +108,11 @@ const ProfileLinks = ({
           height: Dimensions.get('window').height,
         }}>
         {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <ProfileList viewType={viewType} toggleProfileList={toggleProfileList} viewUserInfo={userInfo} />
+        <ProfileList
+          viewType={viewType}
+          toggleProfileList={toggleProfileList}
+          viewUserInfo={userInfo}
+        />
       </Modal>
 
       <Modal

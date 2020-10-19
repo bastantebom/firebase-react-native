@@ -24,7 +24,7 @@ const saveSocials = (payload) => {
 
 const saveLocation = (payload) => {
   return BaseAPI({
-    url: `users/${payload.uid}/save-location`,
+    url: `users/${payload.uid}/location`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -34,6 +34,8 @@ const ProfileList = ({toggleProfileList, viewUserInfo, viewType}) => {
 
       ProfileInfoService.getFollowing(uid)
         .then((response) => {
+          console.log('---get following---');
+          //console.log(response.data);
           setFollowingsList(
             response.data.sort((a, b) => (a.uid === user.uid ? -1 : 1)),
           );
@@ -55,9 +57,7 @@ const ProfileList = ({toggleProfileList, viewUserInfo, viewType}) => {
       console.log('Mag refresh ng following');
       ProfileInfoService.getFollowing(uid)
         .then((response) => {
-          setFollowingsList(
-            response.data.sort((a, b) => (a.uid === user.uid ? -1 : 1)),
-          );
+          setFollowingsList(response.data);
           setFollowingsCount(response.data.length);
           setRefreshFollowerList(false);
         })

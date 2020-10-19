@@ -66,7 +66,7 @@ const Profile = ({data, type, viewType, toggleProfileList}) => {
     ProfileInfoService.follow(selectUid, connectionType)
       .then((response) => {
         if (viewType === 'own-links') {
-          console.log('magupdate from follower or following');
+          //console.log('magupdate from follower or following');
           setRefreshFollowerList(true);
         }
         const updatedFollowingList = {

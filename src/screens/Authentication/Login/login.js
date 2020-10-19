@@ -56,54 +56,59 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    let mounted = true;
     setIsLoading(true);
     console.log('Handle login');
 
-    await LoginService.loginMobile({
-      login: emailAddress,
-      password: password,
-    })
-      .then((response) => {
-        //console.log('Response');
-        //console.log(response);
-        if (response.success && response.verified) {
-          //console.log('SUCCESS---------------');
-          //console.log(response.custom_token);
-
-          return auth()
-            .signInWithCustomToken(response.custom_token)
-            .then((res) => {
-              //console.log(res);
-              setIsLoading(false);
-              navigation.push('TabStack');
-            })
-            .catch((err) => {
-              setIsLoading(false);
-              console.log(err);
-            });
-        }
-        if (response.success && !response.verified) {
-          closeSlider();
-          navigation.navigate('VerifyAccount', {
-            uid: response.uid,
-            login: emailAddress,
-          });
-        }
-
-        if (!response.success) {
-          setIsLoading(false);
-          alert('Invalid login credentials');
-          setPassword('');
+    if (mounted)
+      await LoginService.loginMobile({
+        login: emailAddress,
+        password: password,
+      })
+        .then((response) => {
+          //console.log('Response');
           //console.log(response);
-        }
-      })
-      .catch((error) => {
-        console.log('FAILED---------------');
-        console.log('With Error in the API Login ' + error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+          if (response.success && response.verified) {
+            //console.log('SUCCESS---------------');
+            //console.log(response.custom_token);
+
+            return auth()
+              .signInWithCustomToken(response.custom_token)
+              .then((res) => {
+                //console.log(res);
+                setIsLoading(false);
+                navigation.push('TabStack');
+              })
+              .catch((err) => {
+                setIsLoading(false);
+                console.log(err);
+              });
+          }
+          if (response.success && !response.verified) {
+            closeSlider();
+            navigation.navigate('VerifyAccount', {
+              uid: response.uid,
+              login: emailAddress,
+            });
+          }
+
+          if (!response.success) {
+            setIsLoading(false);
+            alert('Invalid login credentials');
+            setPassword('');
+            //console.log(response);
+          }
+        })
+        .catch((error) => {
+          console.log('FAILED---------------');
+          console.log('With Error in the API Login ' + error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    return () => {
+      mounted = false;
+    };
   };
 
   return (
