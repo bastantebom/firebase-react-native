@@ -98,10 +98,14 @@ const SearchBox = ({
         useNativeDriver: true
       })
     ]).start();
+    valueHandler()
+    searchbarRef.current.clear();
+    searchbarRef.current.blur();
+    setSearchType('posts')
     // searchbarRef.current.clear();
     // setValue();
     setSearchBarFocused(false);
-    setSearchType('posts')
+    // setSearchType('posts')
     // searchbarRef.current.blur();
     // clearTextInput();
   }
@@ -118,7 +122,6 @@ const SearchBox = ({
   const debounceHandler = useCallback(
     debounce((value) => {
       valueHandler(value) 
-      // console.log(value)
       }, 2000),
     [],
   );
@@ -194,17 +197,15 @@ const SearchBox = ({
   return (
     <View style={styles.container}>
       <Animated.View
-        style={[
-          {
-            width: searchType === 'posts' ? inputLength : FULL_WIDTH,
-            position: 'absolute',
-            zIndex: 1,
-            left: searchType === 'posts' ? barPosition : 0,
-            // left: barPosition,
-            top: searchType === 'posts' ? 0 : normalize(50),
-            opacity: searchType !== 'posts' ? barOpacity : 1
-          }
-        ]}
+        style={{
+          width: searchType === 'posts' ? inputLength : FULL_WIDTH,
+          position: 'absolute',
+          zIndex: 1,
+          left: searchType === 'posts' ? barPosition : 0,
+          // left: barPosition,
+          top: searchType === 'posts' ? 0 : normalize(50),
+          opacity: searchType !== 'posts' ? barOpacity : 1
+        }}
       >
         <Searchbar
           placeholder="Start your search"
@@ -244,7 +245,10 @@ const SearchBox = ({
       { searchType === 'posts' ? 
         <AnimatedTouchable
           style={[styles.cancelSearch, { left: cancelPosition }]}
-          onPress={() => {onBlur(), onBackPress()}}
+          onPress={() => { 
+            onBlur(), 
+            onBackPress() 
+          }}
         >
           <Animated.View style={{ opacity: opacity }}>
             <HeaderBackGray width={normalize(25)} height={normalize(25)} />

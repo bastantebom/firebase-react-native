@@ -43,12 +43,11 @@ import { Context } from '@/context';
 import { UserContext } from '@/context/UserContext';
 import LocationMap from '@/screens/Dashboard/components/Location';
 import {VerificationScreen} from '@/screens/Dashboard/Verification';
-// import {PostService} from '@/services';
-// import Geocoder from 'react-native-geocoding';
-// import Config from '@/services/Config';
 
 import SearchBox from './components/Search/Searchbox';
 import SearchResults from './components/Search/SearchResults';
+
+const { height, width } = Dimensions.get('window');
 
 function Dashboard() {
 
@@ -56,6 +55,7 @@ function Dashboard() {
 
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [animateLocationBar, setAnimateLocationBar] = useState(false);
 
   const { posts } = useContext(Context);
 
@@ -68,6 +68,14 @@ function Dashboard() {
   const toggleMenu = () => {
     setMenu(!menu);
   };
+
+  const handleScroll = (event) => {
+    // console.log(event.nativeEvent.contentOffset.y);
+    // console.log('event.nativeEvent.contentOffset.y');
+    if( event.nativeEvent.contentOffset.y <= 150 ) {
+      setAnimateLocationBar(!animateLocationBar)
+    }
+  }
 
   return (
     <>
@@ -91,14 +99,22 @@ function Dashboard() {
         {/* ---- Verification Notification ---- */}
       
         <View style={styles.container}>
-          <SearchBarWithFilter toggleFilter={toggleModal} />
-          <Posts
-            type="dashboard"
-            data={posts}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            // headerComponent={<LocationSearch/>}
+          <SearchBarWithFilter 
+            toggleFilter={toggleModal} 
+            animateLocationBar={animateLocationBar} 
           />
+          <Animated.ScrollView
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+          >
+            <Posts
+              type="dashboard"
+              data={posts}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              // headerComponent={<LocationSearch/>}
+            />
+          </Animated.ScrollView>
         </View>
         <WhiteOpacity />
       </SafeAreaView>
@@ -126,11 +142,16 @@ function Dashboard() {
   );
 }
 
-const SearchBarWithFilter = ({ toggleFilter }) => {
+
+const SearchBarWithFilter = ({ toggleFilter, animateLocationBar }) => {
+  
+  const SHOW_HEIGHT = normalize(20);
+  const HIDE_HEIGHT = 0;
 
   const { searchType, setPage } = useContext(Context)
 
   const [opacity] = useState(new Animated.Value(0));
+  const [locationBarHeight] = useState(new Animated.Value(SHOW_HEIGHT));
   const [searchBarFocused, setSearchBarFocused] = useState(false);
   const [likedPosts, setLikedPosts] = useState(false);
 
@@ -168,20 +189,75 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     setPage(0);
   }
 
+  // const scaling = animateLocationBar ? 0 : 1;
+
+  // useEffect(() => {
+  //   if(animateLocationBar) {
+  //     Animated.parallel([
+  //       Animated.timing(locationBarHeight, {
+  //         toValue: HIDE_HEIGHT,
+  //         duration: 10,
+  //         useNativeDriver: true
+  //       })
+  //     ]).start();
+  //   } else {
+  //     Animated.parallel([
+  //       Animated.timing(locationBarHeight, {
+  //         toValue: SHOW_HEIGHT,
+  //         duration: 10,
+  //         useNativeDriver: true
+  //       })
+  //     ]).start();
+  //   }
+  // })
+
+  // console.log(animateLocationBar)
+  // console.log('animateLocationBar')
+
+const [animatedValue] = useState(new Animated.Value(0));
+const [initialScale] = useState(1);
+
+const width = 100;
+const height = 20;
+const scale = {
+  transform: [
+    {
+      scale: animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1]
+      })
+    }
+  ]
+};
+
+const position= {
+  transform: [
+    // {
+    //   translateX: animatedValue.interpolate({
+    //     inputRange: [0, 1],
+    //     outputRange: [1, 0]
+    //   })
+    // },
+    {
+      translateY: animatedValue.interpolate({
+        inputRange: [0, 20, 40],
+        outputRange: [40, 20, 0]
+      })
+    }
+  ]
+};
+
   return (
-    <View 
-      // style={{ backgroundColor: '#ECEFF8' }}
-    >
+    <View>
       <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
-        <View style={{ margin: 16, height: normalize(47.5),
-          // height: normalize(120)
-        }}
+        <View style={{ margin: 16, height: searchType === 'posts' ? normalize(47.5) : normalize(107) }}
           >
           <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
             <View 
               style={{ 
                 flex: 1, 
-                // height: searchType !== 'posts' ? normalize(100) : 'auto', 
+                height: searchType !== 'posts' ? normalize(100) : '100%', 
+                // backgroundColor: 'red'
                 // paddingBottom: 16
               }}
             >
@@ -222,9 +298,16 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
             }
           </View>
         </View>
-        <View style={{ display: searchBarFocused ? 'none' : 'flex' }}>
-          <LocationSearch />
-        </View>
+        <Animated.View style={scale}>
+          <Animated.View 
+            // style={{ 
+            //   display: searchBarFocused ? 'none' : 'flex',
+            // }, [position]}
+            style={position}
+          >
+            <LocationSearch />
+          </Animated.View>
+        </Animated.View>
       </LinearGradient>
       <View
         style={{

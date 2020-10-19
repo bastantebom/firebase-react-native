@@ -15,6 +15,8 @@ const GooglePlacesInput = ({
   onInputBlur,
   customListViewStyle,
   customContainerStyle,
+  customTextInputStyle,
+  customIconStyle,
   placeholder = "Enter street address or city",
   debounce = 0,
 }) => {
@@ -28,7 +30,7 @@ const GooglePlacesInput = ({
 
   return (
     <View style={styles.textInputWrapper}>
-      <View style={styles.navIcon}>
+      <View style={[styles.navIcon, {...customIconStyle}]}>
         <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
       </View>
       <GooglePlacesAutocomplete
@@ -85,6 +87,7 @@ const GooglePlacesInput = ({
             fontSize: 16,
             height: 54,
             color: Colors.contentEbony,
+            ...customTextInputStyle
           },
           predefinedPlacesDescription: {
             color: Colors.contentEbony,

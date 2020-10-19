@@ -65,7 +65,13 @@ const SearchResults = ({ onValueChange }) => {
 
   return (
     <View 
-      style={[styles.parent, { paddingBottom: searchType !== 'posts' ? normalize(15) : 0 }]}>
+      style={[styles.parent, 
+        { 
+          paddingBottom: searchType === 'posts' ? normalize(15) : normalize(70),
+          top: searchType === 'posts' ? normalize(60) : normalize(120),
+        }
+      ]}
+    >
       <Animated.View  
         style={{ 
           // borderBottomWidth: StyleSheet.hairlineWidth, 
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
     maxHeight: height - normalize(130),
-    top: normalize(65),
+    // top: normalize(60),
     left: -16,
     backgroundColor: 'white',
     // paddingTop: normalize(15),

@@ -20,6 +20,8 @@ import {Colors, normalize} from '@/globals';
 //import {UserContext} from '@/context/UserContext';
 import Slider from '@react-native-community/slider';
 import { RangeSlider } from '@/components/Slider/RangeSlider';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 navigator.geolocation = require('@react-native-community/geolocation');
 
@@ -229,94 +231,119 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ height: isFocused ? normalize(150) : normalize(190) }}>
-        <PaddingView paddingSize={2}>
-          <View style={styles.modalHeader}>
+      <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
+        <View style={{ height: isFocused ? normalize(135) : normalize(180) }}>
+          <View style={styles.textInputWrapper}>
             <TouchableOpacity
               onPress={back}
               activeOpacity={0.7}
-              style={{position: 'absolute', left: 0}}>
-              <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+              style={{ top: normalize(30), position: 'absolute', left: 16 }}
+            >
+              <HeaderBackGray width={normalize(25)} height={normalize(25)} />
             </TouchableOpacity>
-            <AppText textStyle="body3">Search Location</AppText>
-          </View>
-        </PaddingView>
-        <View style={styles.textInputWrapper}>
-          <GooglePlacesInput
-            onResultsClick={(data) => {
-              // alert(data);
-              // console.log('nag search');
+            {/* <AppText 
+              textStyle="caption" color={Colors.contentOcean}
+              customStyle={styles.inputLabel}
+            >
+              Your location
+            </AppText> */}
+            <GooglePlacesInput
+              onResultsClick={(data) => {
+                // alert(data);
+                // console.log('nag search');
 
-              onSearchLocationHandler(data);
-              //alert(data);
-            }}
-            onClearInput={() => {}}
-            currentValue={changeMapAddress}
-            onInputFocus={onInputFocus}
-            // onInputBlur={onInputBlur}
-            customListViewStyle={{ 
-              top: normalize(68),
-              marginLeft: normalize(0),
-              marginRight: normalize(0),
-              height: Dimensions.get('window').height -  normalize(170),
-              width: Dimensions.get('window').width,
-              left: -8,
-              backgroundColor: Colors.neutralsZirconLight
-            }}
-            placeholder="Search Your Location"
-            debounce={1500}
-          />
-        </View>
-        {isFocused ? (
-          <TouchableOpacity 
-            activeOpacity={.7}
-            onPress={() => findCoordinates()}
-            style={[styles.navigationArrow]}
-          >
-            <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
-            <AppText
-              textStyle="caption"
-              color={Colors.contentOcean}
-              customStyle={{ marginLeft: 10 }}
-            >
-              Use current location
-            </AppText>
-          </TouchableOpacity>
-        ) : (
-          // <ActivityIndicator
-          //   animating={true}
-          //   size="small"
-          //   color={Colors.contentEbony}
-          // />
-          <PaddingView paddingSize={2}>
-            <View 
-              style={{ 
-                flexDirection: 'row', 
-                justifyContent: 'space-between', 
-                marginTop: normalize(45), 
-                marginBottom: 10 
+                onSearchLocationHandler(data);
+                //alert(data);
               }}
-            >
-              <AppText textStyle="promo">Browse Offers Within</AppText>
-              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
-            </View>
-            <RangeSlider
-              minValue={0}
-              maxValue={250}
-              step={5}
-              value={getSliderValue}
+              onClearInput={() => {}}
+              currentValue={changeMapAddress}
+              onInputFocus={onInputFocus}
+              // onInputBlur={onInputBlur}
+              customListViewStyle={{
+                top: normalize(87),
+                marginLeft: normalize(0),
+                marginRight: normalize(0),
+                paddingLeft: 16,
+                paddingRight: 32,
+                height: Dimensions.get('window').height -  normalize(155),
+                width: Dimensions.get('window').width,
+                left: normalize(-42),
+                backgroundColor: Colors.neutralsZirconLight
+              }}
+              customTextInputStyle={{
+                borderWidth: 0,
+                borderRadius: 40,
+                height: normalize(55),
+                paddingLeft: normalize(50),
+                // paddingTop: normalize(15),
+              }}
+              customIconStyle={{
+                left: normalize(25),
+                top: normalize(23)
+              }}
+              placeholder="Search Your Location"
+              debounce={1500}
             />
-          </PaddingView>
-        )}
-      </View>
-      <View style={[styles.mapInstruction, { display: instructionVisible ? 'flex' : 'none', position: instructionVisible ? 'absolute' : 'relative' }]}>
+          </View>
+          {isFocused ? (
+            <TouchableOpacity 
+              activeOpacity={.7}
+              onPress={() => findCoordinates()}
+              style={styles.navigationArrow}
+            >
+              <NavigationArrowAlt width={normalize(20)} height={normalize(20)} />
+              <AppText
+                textStyle="caption"
+                color={Colors.contentOcean}
+                customStyle={{ marginLeft: 10 }}
+              >
+                Use current location
+              </AppText>
+            </TouchableOpacity>
+          ) : (
+            // <ActivityIndicator
+            //   animating={true}
+            //   size="small"
+            //   color={Colors.contentEbony}
+            // />
+            <PaddingView paddingSize={2} style={{ top: normalize(75) }}>
+              <View 
+                style={{ 
+                  flexDirection: 'row', 
+                  justifyContent: 'space-between', 
+                  // marginTop: normalize(45), 
+                  marginBottom: 10
+                }}
+              >
+                <AppText textStyle="promo">Browse Offers Within</AppText>
+                <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+              </View>
+              <RangeSlider
+                minValue={0}
+                maxValue={250}
+                step={5}
+                value={getSliderValue}
+              />
+            </PaddingView>
+          )}
+        </View>
+      </LinearGradient>
+      <View style={[
+        styles.mapInstruction, 
+          { 
+            display: instructionVisible ? 'flex' : 'none', 
+            position: instructionVisible ? 'absolute' : 'relative',
+            top: isFocused ? normalize(140) : normalize(180)
+          }
+        ]}
+      >
         <PushPin width={normalize(22)} height={normalize(22)}/>
         <AppText
           textStyle="body2"
           color={Colors.neutralsWhite}
           customStyle={{ flex: 1, marginHorizontal: 14 }}
         >
-          Drag the map to your preferred location to show the relevant postings.
+          Set your location and drag the Buzzy Pin to the exact area you want to explore. 
         </AppText>
         <TouchableOpacity onPress={() => setInstructionVisible(false)}>
           <CloseLight/>
@@ -324,9 +351,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       </View>
       <MapComponent
         latitude={address.latitude}
-        // latitude={15.080909570251048}
         longitude={address.longitude}
-        // longitude={120.64275087788701}
         reCenter={newCoords}
         onRegionChange={(region) => {
           onRegionChange(region);
@@ -353,14 +378,6 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
 export default Location;
 
 const styles = StyleSheet.create({
-  modalHeader: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    // height: normalize(100)
-    //marginBottom: 32,
-  },
   buttonWrapper: {
     width: '100%',
     position: 'absolute',
@@ -373,18 +390,24 @@ const styles = StyleSheet.create({
   textInputWrapper: {
     width: '100%',
     position: 'absolute',
-    paddingHorizontal: 8,
-    marginTop: -5,
-    top: normalize(45),
-    zIndex: 9999
+    paddingLeft: normalize(42),
+    paddingRight: 8,
+    // paddingHorizontal: 8,
+    paddingTop: 8,
+    // top: normalize(45),
+    zIndex: 9999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'red'
   },
   navigationArrow: {
     flexDirection: 'row', 
     alignItems: 'center', 
     // paddingLeft: 0,
-    left: normalize(35), 
+    left: normalize(45), 
     paddingTop: 12,
-    top: normalize(45),
+    top: normalize(75),
     zIndex: 9999
   },
   mapInstruction: {
@@ -393,7 +416,13 @@ const styles = StyleSheet.create({
     margin: 16, 
     padding: 12, 
     flexDirection: 'row', 
-    top: normalize(195),
+    // top: normalize(195),
     zIndex: 100,
+  },
+  inputLabel: {
+    position: 'absolute',
+    zIndex: 99999999,
+    backgroundColor: 'red',
+    top: 20
   }
 });

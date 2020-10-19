@@ -300,7 +300,7 @@ export {
   Faq,
   ContactUs,
   Notifications,
-  Search
+  Search,
   EmailContactUs,
   CallContactUs,
   LocationContactUs,
