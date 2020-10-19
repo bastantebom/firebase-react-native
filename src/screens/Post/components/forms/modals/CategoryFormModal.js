@@ -1,24 +1,62 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {SafeAreaView, TouchableOpacity, View, Keyboard} from 'react-native';
 
 import {AppText, FloatingAppInput, ScreenHeaderTitle} from '@/components';
 import {Colors, normalize} from '@/globals';
 import {CategoryService} from '@/services';
+import {Context} from '@/context';
+import {useNavigation} from '@react-navigation/native';
 
-const CategoryFormModal = ({close}) => {
-  const [newCategoryName, setNewCategoryName] = useState('');
+const CategoryFormModal = ({close, editing, categoryName}) => {
+  const [newCategoryName, setNewCategoryName] = useState(
+    editing ? categoryName : '',
+  );
   const [buttonPadding, setButtonPadding] = useState(0);
   const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  const {items, editCategory} = useContext(Context);
+
+  const navigation = useNavigation();
 
   const submitHandler = () => {
     console.log('save new category');
     // call createCategory api
     CategoryService.createCategory(newCategoryName);
-
-    CategoryService.deleteCategory("pWKgtLwX6dobG9NdQi4B")
-    CategoryService.deleteCategory("WqwFr3nQJ7jdjpoQzE1l")
-
     // update choices state
+    close();
+  };
+
+  const editHandler = async (oldCategoryName) => {
+    console.log('Handle editing');
+    console.log(items);
+    console.log(oldCategoryName);
+
+    editCategory(newCategoryName, oldCategoryName);
+
+    let cats = await CategoryService.getCategories().then((res) => {
+      return res;
+    });
+
+    console.log(cats);
+
+    cats.map((category) => {
+      if (category.category === oldCategoryName) {
+        CategoryService.editCategory(category.id, newCategoryName).then(
+          (res) => {
+            console.log('EDIT CATEGORY ARRAY BACKEND RESPONSE');
+            console.log(res);
+          },
+        );
+      }
+      return;
+    });
+
+    // CategoryService.editCategory(id, newCategoryName)
+
+    navigation.push('AddedItemPreviewScreen', {
+      categoryName: newCategoryName,
+    });
+
     close();
   };
 
@@ -33,7 +71,7 @@ const CategoryFormModal = ({close}) => {
       <ScreenHeaderTitle
         // close={closeModal}
         close={close}
-        title="Create a New Category"
+        title={editing ? 'Edit Category Name' : 'Create a New Category'}
         paddingSize={2}
       />
 
@@ -60,7 +98,9 @@ const CategoryFormModal = ({close}) => {
         />
 
         <TouchableOpacity
-          onPress={submitHandler}
+          onPress={() =>
+            editing ? editHandler(categoryName) : submitHandler()
+          }
           disabled={buttonDisabled}
           style={{
             backgroundColor: buttonDisabled
@@ -70,7 +110,9 @@ const CategoryFormModal = ({close}) => {
             alignItems: 'center',
             marginBottom: buttonPadding,
           }}>
-          <AppText textStyle="body2">Add Category</AppText>
+          <AppText textStyle="body2">
+            {editing ? 'Update Category' : 'Add Category'}
+          </AppText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

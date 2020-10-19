@@ -223,7 +223,7 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
 
         <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
 
-        {catChoices.length > 1 &&
+        {catChoices.length >= 1 &&
           catChoices.map((choice) => {
             console.log(choice);
 

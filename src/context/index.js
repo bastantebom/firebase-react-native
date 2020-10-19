@@ -76,18 +76,32 @@ export const ContextProvider = ({children}) => {
     return filteredItems[0]?.items;
   };
 
-  const editCategory = (oldCategoryName, newCategoryName) => {
+  const editCategory = (newCategoryName, oldCategoryName) => {
     let itemArray = items.slice();
 
-    itemArray.map((item) => {
-      return {
-        ...item,
-        categoryName:
-          item.categoryName === oldCategoryName
-            ? newCategoryName
-            : oldCategoryName,
-      };
+    // itemArray.map((item) => {
+    //   return {
+    //     ...item,
+    //     categoryName:
+    //       item.categoryName === oldCategoryName
+    //         ? newCategoryName
+    //         : oldCategoryName,
+    //   };
+    // });
+
+    itemArray = itemArray.map((item) => {
+      if (oldCategoryName === item.categoryName) {
+        return {
+          ...item,
+          categoryName: newCategoryName,
+        };
+      } else {
+        return item;
+      }
     });
+
+    console.log('new array value');
+    console.log(itemArray);
 
     setItems(itemArray);
   };

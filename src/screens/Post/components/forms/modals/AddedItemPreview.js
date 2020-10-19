@@ -135,7 +135,10 @@ const AddedItemPreview = ({
             <View style={{flex: 1, backgroundColor: 'black'}} />
           </TouchableWithoutFeedback>
         }>
-        <CategoryOptions />
+        <CategoryOptions
+          categoryName={categoryName}
+          close={() => showOptions(false)}
+        />
       </Modal>
     </SafeAreaView>
   );

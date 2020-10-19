@@ -40,7 +40,14 @@ const getCategories = async () => {
 };
 
 const editCategory = (id, newName) => {
-  return console.log(`edit id ${id} to ${newName}`);
+  return BaseAPI({
+    url: `/categories/${id}`,
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {category: newName},
+  });
 };
 
 const deleteCategory = (id) => {
