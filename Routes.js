@@ -64,16 +64,16 @@ function AuthStackScreen() {
   // console.log('ROUTES PROPS');
   // console.log(navigation);
 
-  useEffect(() => {
-    console.log('Hello android');
-    if (Platform.OS === 'android') {
-      Linking.getInitialURL().then((url) => {
-        navigation.navigate(url);
-      });
-    } else {
-      Linking.addEventListener('url', handleOpenURL);
-    }
-  });
+  // useEffect(() => {
+  //   console.log('Hello android');
+  //   if (Platform.OS === 'android') {
+  //     Linking.getInitialURL().then((url) => {
+  //       navigation.navigate(url);
+  //     });
+  //   } else {
+  //     Linking.addEventListener('url', handleOpenURL);
+  //   }
+  // });
 
   const handleOpenURL = (event) => {
     navigate(event.url);
@@ -228,15 +228,15 @@ function TabStack() {
   // console.log('ROUTES PROPS');
   // console.log(navigation);
 
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      Linking.getInitialURL().then((url) => {
-        navigation.navigate(url);
-      });
-    } else {
-      Linking.addEventListener('url', handleOpenURL);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     Linking.getInitialURL().then((url) => {
+  //       navigation.navigate(url);
+  //     });
+  //   } else {
+  //     Linking.addEventListener('url', handleOpenURL);
+  //   }
+  // }, []);
 
   const handleOpenURL = (event) => {
     navigate(event.url);
