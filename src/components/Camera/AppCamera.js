@@ -5,6 +5,7 @@ import {normalize, Colors} from '@/globals';
 import {AppText} from '@/components';
 import {Flash, Flip} from '@/assets/images/icons';
 import {Context} from '@/context';
+import { PaddingView } from '../AppViewContainer';
 
 const {height, width} = Dimensions.get('window');
 const maskRowHeight = Math.round((height - 300) / 20);
@@ -14,7 +15,7 @@ function OverlayMask() {
   return (
     <View style={styles.maskOutter}>
       <View style={[{flex: maskRowHeight}, styles.maskRow, styles.maskFrame]} />
-      <View style={[{flex: height / 10}, styles.maskCenter]}>
+      <View style={[{flex: height / 8}, styles.maskCenter]}>
         <View style={[{width: maskColWidth}, styles.maskFrame]} />
         <View style={styles.maskInner} />
         <View style={[{width: maskColWidth}, styles.maskFrame]} />
@@ -28,7 +29,15 @@ export const AppCamera = ({
   message,
   instruction,
   withMask,
+  withFlash,
+  withFlip,
   setCameraCapture,
+  customHeight,
+  coverPhotoCamera, // prop for post camera
+  idVerificationCamera, // prop for gov't id verification
+  idImageUrl,
+  selfieWithIdCamera, // prop for selfie with id verification
+  selfieImageUrl
 }) => {
   const {
     setCameraImage,
@@ -39,6 +48,7 @@ export const AppCamera = ({
     setImageCount,
     setSingleCameraImage,
   } = useContext(Context);
+
   const [flash, setFlash] = useState('off');
   const [cameraType, setCameraType] = useState('back');
   const cameraRef = useRef(null);
@@ -68,15 +78,32 @@ export const AppCamera = ({
         quality: 1,
         pauseAfterCapture: true,
       });
-      cameraRef.current.pausePreview();
+
       const cameraUrl = data.uri;
-      setCameraImage((prev) => [...prev, cameraUrl]);
-      setSingleCameraImage(cameraUrl);
-      setCameraCapture(true);
-      setRetakeState(true);
+      
+      if(idVerificationCamera) {
+        idImageUrl(cameraUrl)
+        // console.log(cameraUrl)
+        // console.log('cameraUrl')
+      }
+
+      if(selfieWithIdCamera) {
+        selfieImageUrl(cameraUrl)
+        // console.log(cameraUrl)
+        // console.log('cameraUrl selfie')
+      }
+
+      if(coverPhotoCamera) {
+        cameraRef.current.pausePreview();
+        setCameraImage((prev) => [...prev, cameraUrl]);
+        setSingleCameraImage(cameraUrl);
+        setCameraCapture(true);
+        setRetakeState(true);
+      }
     }
   };
 
+  // for add image from camera on post
   const retake = () => {
     cameraRef.current.resumePreview();
 
@@ -105,13 +132,15 @@ export const AppCamera = ({
         style={{
           flexDirection: 'column',
           alignItems: 'center',
-          height: height / 2,
+          height: customHeight ? customHeight : height / 2,
+          // height: height / 1.75,
           overflow: 'hidden',
         }}
         type={'front'}
         captureAudio={false}
         flashMode={flash}
-        type={cameraType}>
+        type={cameraType}
+      >
         {withMask && <OverlayMask />}
         <View
           style={{
@@ -122,32 +151,40 @@ export const AppCamera = ({
             bottom: 25,
             paddingHorizontal: 25,
           }}>
-          <TouchableOpacity onPress={() => toggleCameraType()}>
-            <Flip width={normalize(25)} height={normalize(25)} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => toggleFlash()}>
-            <Flash width={normalize(25)} height={normalize(25)} />
-          </TouchableOpacity>
+          { withFlip && 
+            <TouchableOpacity onPress={() => toggleCameraType()}>
+              <Flip width={normalize(25)} height={normalize(25)} />
+            </TouchableOpacity>
+          }
+          { withFlash && 
+            <TouchableOpacity onPress={() => toggleFlash()}>
+              <Flash width={normalize(25)} height={normalize(25)} />
+            </TouchableOpacity>
+          }
         </View>
       </RNCamera>
+      <View style={{ width: width, paddingHorizontal: 25, paddingTop: 25 }}>
+        <AppText 
+          textStyle="body1" 
+          customStyle={{display: message ? 'flex' : 'none', marginBottom: 8}}
+        >
+          {message}
+        </AppText>
+        <AppText
+          textStyle="body2"
+          color={Colors.contentPlaceholder}
+          customStyle={{display: instruction ? 'flex' : 'none'}}
+        >
+          {instruction}
+        </AppText>
+      </View>
       <View
         style={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingVertical: 25,
+          justifyContent: 'center',
+          flex: 1, 
+          alignItems: 'center'
         }}>
-        <View style={{width: width}}>
-          <AppText textStyle="body1" customStyle={{display: message && 'none'}}>
-            {message}
-          </AppText>
-          <AppText
-            textStyle="body2"
-            color={Colors.contentPlaceholder}
-            customStyle={{display: instruction && 'none'}}>
-            {instruction}
-          </AppText>
-        </View>
-        {retakeState ? (
+        {coverPhotoCamera && retakeState ? (
           <TouchableOpacity onPress={retake}>
             <AppText textStyle="body1" customStyle={{marginTop: 20}}>
               Retake
@@ -160,6 +197,7 @@ export const AppCamera = ({
             <View style={styles.captureButton} />
           </TouchableOpacity>
         )}
+
       </View>
     </View>
   );
@@ -180,7 +218,7 @@ const styles = StyleSheet.create({
 
     padding: 15,
     paddingHorizontal: 20,
-    alignSelf: 'center',
+    // alignSelf: 'center',
     marginBottom: 15,
   },
   captureButton: {
@@ -200,6 +238,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
+    // backgroundColor: 'red'
   },
   maskInner: {
     width: width - 20,
@@ -210,9 +249,12 @@ const styles = StyleSheet.create({
   },
   maskFrame: {
     backgroundColor: 'rgba(0,0,0,.5)',
+    // borderRadius: 15
   },
   maskRow: {
     width: '100%',
   },
-  maskCenter: {flexDirection: 'row'},
+  maskCenter: { 
+    flexDirection: 'row',
+  }
 });

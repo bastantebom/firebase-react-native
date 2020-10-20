@@ -42,6 +42,8 @@ import CacheableImage from './ImageCache/CacheableImage';
 import Item from './Item/Item';
 import ItemCategory from './ItemCategory/ItemCategory';
 
+import RangeSlider from './Slider/RangeSlider';
+
 export {
   ItemCategory,
   Item,
@@ -79,4 +81,5 @@ export {
   FloatingAppInput,
   OfflineNotice,
   SinglePostOthersView,
+  RangeSlider
 };

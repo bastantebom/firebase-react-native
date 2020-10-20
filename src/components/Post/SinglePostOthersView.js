@@ -33,14 +33,29 @@ import {
 import {PostService} from '@/services';
 import {UserContext} from '@/context/UserContext';
 import {ImageModal} from '@/screens/Post/components/ImageModal';
+import { useNavigation } from '@react-navigation/native';
+import EditPostScreen from '@/screens/Post/components/EditPostScreen';
 
-const SinglePostOthersView = (props) => {
+const SinglePostOthersView = ({data, closePostModal}) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
 
-  const {navigation} = props;
+  // const {navigation} = props;
 
-  const {data} = props.route.params;
+  // const {data} = props.route.params;
+
+  // console.log('****************************data****************************')
+  // console.log(data)
+
+  const navigation = useNavigation();
+  const [showNotification, setShowNotification] = useState(false);
+  const [ellipsisState, setEllipsisState] = useState(false);
+  const [otherPostModal, setOtherPostModal] = useState(false);
+  const [postImageModal, setPostImageModal] = useState(false);
+
+  const [editPost, showEditPost] = useState(false);
+
+  const {user, setUserInfo, userInfo} = useContext(UserContext);
 
   const {
     uid,
@@ -50,8 +65,8 @@ const SinglePostOthersView = (props) => {
     description,
     payment_method,
     price,
-    store_location: {longitude, city, province, latitude, country},
-    delivery_method: {pickup, delivery},
+    store_location: {longitude, latitude, city, province, country},
+    delivery_method: pickup, delivery,
     available,
     username,
     profile_photo,
@@ -64,8 +79,6 @@ const SinglePostOthersView = (props) => {
     full_name,
   } = data;
 
-  const {user} = useContext(UserContext);
-
   const defaultImage = [
     {
       key: 0,
@@ -73,7 +86,7 @@ const SinglePostOthersView = (props) => {
     },
   ];
 
-  const userInfo = {
+  const userPostInfo = {
     username: username,
     profile_photo: profile_photo,
     account_verified: account_verified,
@@ -95,10 +108,52 @@ const SinglePostOthersView = (props) => {
     Linking.openURL(phoneNumber);
   };
 
-  const [postImageModal, setPostImageModal] = useState(false);
-
   const togglePostImageModal = () => {
     setPostImageModal(!postImageModal);
+  };
+
+  const toggleEditPost = () => {
+    toggleEllipsisState();
+    setTimeout(() => {
+      
+      showEditPost(!editPost);
+    }, 500);
+  };
+
+  const toggleEllipsisState = () => {
+    setEllipsisState(!ellipsisState);
+  };
+
+  const closeNotification = () => {
+    setShowNotification(false);
+  };
+
+  const deletePost = async () => {
+    console.log('delete this post with id: ');
+    console.log(post_id);
+    return await PostService.deletePost(post_id).then(() => {
+      toggleEllipsisState();
+      console.log('deletePost ' + userInfo.post_count);
+      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
+      // navigation.goBack();
+      closePostModal();
+    });
+  };
+
+  const hidePost = async () => {
+    //body: { uid, pid }
+    return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
+      (res) => {
+        toggleEllipsisState();
+        //console.log('deletePost ' + userInfo.post_count);
+        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
+        console.log(userInfo.hidden_posts);
+        // navigation.goBack();
+        closePostModal();
+      },
+    );
+    //navigation.goBack();
+    //alert('hide Post View Post');
   };
 
   const SinglePostContent = ({children}) => {
@@ -155,9 +210,10 @@ const SinglePostOthersView = (props) => {
         </View>
         <ScrollView style={styles.postInfoContainer}>
           <ProfileInfo
-            userInfo={userInfo}
-            type="own-post"
-            closePostModal={() => navigation.goBack()}
+            userInfo={userPostInfo}
+            type='own-post'
+            cancelModalToggle={closePostModal}
+            isModal
           />
 
           <AppText
@@ -230,14 +286,47 @@ const SinglePostOthersView = (props) => {
             position: 'relative',
             backgroundColor: Colors.primaryYellow,
           }}>
-          <TransparentHeader
+          {/* <TransparentHeader
             type={'post-other'}
-            backFunction={() => navigation.goBack()}
+            backFunction={closePostModal}
+            postId={post_id}
+            postTitle={title}
+          /> */}
+          <TransparentHeader
+            type={uid === user?.uid ? 'post-own' : 'post-other'}
+            ellipsisState={ellipsisState}
+            toggleEllipsisState={toggleEllipsisState}
+            backFunction={closePostModal}
+            editPostFunction={toggleEditPost}
+            deletePostFunction={deletePost}
+            hidePost={hidePost}
             postId={post_id}
             postTitle={title}
           />
           <SinglePostContent></SinglePostContent>
 
+          <Modal
+            isVisible={editPost}
+            animationIn="slideInUp"
+            animationInTiming={450}
+            animationOut="slideOutDown"
+            animationOutTiming={450}
+            style={{
+              margin: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            customBackdrop={
+              <TouchableWithoutFeedback onPress={() => showEditPost(false)}>
+                <View style={{flex: 1, backgroundColor: 'black'}} />
+              </TouchableWithoutFeedback>
+            }>
+            <EditPostScreen
+              data={data}
+              card={cardMap(post_type)}
+              togglePostModal={() => showEditPost(false)}
+            />
+          </Modal>
           <Modal
             isVisible={postImageModal}
             animationIn="zoomIn"
@@ -309,6 +398,14 @@ const SinglePostOthersView = (props) => {
       </SafeAreaView>
     </>
   );
+};
+
+const cardMap = (card) => {
+  return card === 'service'
+    ? 'need'
+    : card === 'Need' || card === 'need'
+    ? 'post'
+    : 'sell';
 };
 
 const styles = StyleSheet.create({

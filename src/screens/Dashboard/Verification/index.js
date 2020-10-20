@@ -25,13 +25,15 @@ import {
 import { MobileVerification } from './MobileVerification';
 import { UploadGovernmentId } from './UploadId';
 import { AddAnAddress } from './Address';
-import { MobileCode } from './components/MobileCode';
+import { VerifyCode } from './components/VerifyCode';
+import { EmailVerification } from './EmailVerification';
 
 import { useNavigation } from '@react-navigation/native';
 import { VerifyMap } from './components/Map';
 import { VerifiedAccount } from './VerifiedAccount';
 import { ScrollView } from 'react-native-gesture-handler';
 import { InitialVerification } from './Initial';
+import { PendingVerification } from './PendingVerification';
 
 export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => {
   
@@ -41,6 +43,9 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
   const [profile, setProfile] = useState(false);
   const [mobileVerification, setMobileVerification] = useState(false);
   const [uploadId, setUploadId] = useState(false);
+  const [mobile, setMobile] = useState(false);
+  const [provider, setProvider] = useState('')
+  const [providerText, setProviderText] = useState('')
 
   const toggleProfile = () => {
     setScreen('profile')
@@ -54,6 +59,22 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
     setScreen('governmentId')
   };
 
+  const toggleEmailVerification = () => {
+    setScreen('email')
+  };
+
+  const toggleMobile = (mobile) => {
+    setScreen('verifyCode')
+    setProvider(mobile)
+    setProviderText('mobile')
+  }
+
+  const toggleEmail = (emailAddress) => {
+    setScreen('verifyCode')
+    setProvider(emailAddress)
+    setProviderText('email')
+  }
+
   const switchVerificationScreens = ( screen ) => {
     switch (screen) {
       case 'initial':
@@ -62,6 +83,8 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
             toggleProfile={() => toggleProfile()}
             toggleMobileVerification={() => toggleMobileVerification()}
             toggleUploadId={() => toggleUploadId()}
+            toggleEmailVerification={() => toggleEmailVerification()}
+            toggleMenu={modalBack}
           />
         );
       case 'profile':
@@ -77,18 +100,33 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
         return (
           <MobileVerification 
             back={() => setScreen('initial')} 
-            toggleMobileCode={() => setScreen('mobileCode')}
+            toggleMobileCode={toggleMobile}
           />
         );
-      case 'mobileCode':
-        return <MobileCode/>;
+      case 'email':
+        return (
+          <EmailVerification 
+            back={() => setScreen('initial')} 
+            toggleEmailCode={toggleEmail}
+          />
+        );
+      case 'verifyCode':
+        return <VerifyCode provider={provider} providerText={providerText} />;
       case 'governmentId':
         return (
           <UploadGovernmentId 
             back={() => setScreen('initial')} 
-            backToIndex={() => setScreen('initial')}
+            // backToIndex={() => setScreen('initial')}
+            confirmPhotoId={() => setScreen('pendingVerification')}
           />
-        )
+        );
+      case 'pendingVerification':
+        return (
+          <PendingVerification 
+            goToDashboard={toggleMenu}
+            reviewVerification={() => setScreen('initial')}
+          />
+        );
       default:
         return null;
     }
@@ -98,18 +136,18 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
     <View style={{ zIndex: 999, position: 'relative' }}>
       <View style={{ width: '100%', justifyContent: 'space-evenly', marginLeft: 15 }}>
         <TouchableOpacity onPress={onPress}>
-          <AppText textStyle="body2">Get the verified badge</AppText>
-          <AppText textStyle="caption">Short blurb here explaining why</AppText>
+          <AppText textStyle="subtitle1" color={Colors.neutralsWhite}>Get the verified badge</AppText>
+          <AppText textStyle="caption" color={Colors.neutralsWhite}>Short blurb here explaining why</AppText>
         </TouchableOpacity>
       </View>
       <Modal
         isVisible={menu}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutDown"
-        animationOutTiming={750}
+        animationIn="slideInRight"
+        animationInTiming={500}
+        animationOut="slideOutRight"
+        animationOutTiming={500}
         onSwipeComplete={toggleMenu}
-        swipeDirection="down"
+        // swipeDirection="down"
         onBackButtonPress={modalBack}
         style={{
           margin: 0,
@@ -119,6 +157,8 @@ export const VerificationScreen = ({ onPress, menu, toggleMenu, modalBack }) => 
       >
         <SafeAreaView style={{ flex: 1 }}>
           {switchVerificationScreens(screen)}
+          {/* <VerifiedAccount/> */}
+          {/* <PendingVerification/> */}
         </SafeAreaView> 
       </Modal>
     </View>

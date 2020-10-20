@@ -25,14 +25,19 @@ import {
 import { MobileVerification } from './MobileVerification';
 import { UploadGovernmentId } from './UploadId';
 import { AddAnAddress } from './Address';
-import { MobileCode } from './components/MobileCode';
 
 import { useNavigation } from '@react-navigation/native';
 import { VerifyMap } from './components/Map';
 import { VerifiedAccount } from './VerifiedAccount';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVerification, toggleUploadId, toggleEmailVerification }) => {
+export const InitialVerification = ({ 
+  toggleMenu, 
+  toggleProfile, 
+  toggleMobileVerification, 
+  toggleUploadId, 
+  toggleEmailVerification 
+}) => {
   
   const navigation = useNavigation();
   const [screen, setScreen] = useState('initial');
@@ -64,24 +69,31 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
       title: 'Add and verify email address',
       titleDone: 'Email address verified',
       icon: <Id/>,
-      completed: 'completed'
+      completed: 'pending'
     },
   ];
+
+  const pending = verificationReqs.filter(item => item.completed === 'pending')
+  const pendingCount = pending.length;
+  const review = verificationReqs.filter(item => item.completed === 'review')
+  const reviewCount = review.length;
+  const completed = verificationReqs.filter(item => item.completed === 'completed')
+  const completedCount = completed.length;
 
   return (
     <ScrollView>
       <PaddingView paddingSize={3}>
         <View style={{ marginBottom: 45 }}>
           <TouchableOpacity onPress={toggleMenu}>
-            <HeaderBackGray width={normalize(16)} height={normalize(16)} on/>
+            <HeaderBackGray width={normalize(16)} height={normalize(16)}/>
           </TouchableOpacity>
         </View>
         <Verified width={normalize(28)} height={normalize(32)} />
         <View style={styles.headingWrapper}>
           <AppText textStyle="display6">Get the verified badge</AppText>
-          <View style={styles.badgeContainer}>
-            <AppText textStyle="price" color={Colors.neutralsWhitesmoke}>1 of 4</AppText>
-          </View>
+          {/* <View style={styles.badgeContainer}> */}
+            <AppText textStyle="price" color={Colors.neutralsWhitesmoke} customStyle={styles.badgeContainer}>{completedCount} of {verificationReqs.length}</AppText>
+          {/* </View> */}
         </View>
         <AppText 
           textStyle="body2" 
@@ -90,8 +102,8 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
         >
           Complete your profile and verify youridentity for a better Servbees experience!
         </AppText>
-
-        <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Pending</AppText>
+        
+        { pendingCount !== 0 && <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Pending</AppText> }
         {verificationReqs.map((item) => {
           return ( 
             <View key={item.id}>
@@ -121,8 +133,8 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
             </View>
           )
         })}
-
-        <AppText textStyle="subtitle1" customStyle={styles.listHeader}>For Review</AppText>
+          
+        { reviewCount !== 0 && <AppText textStyle="subtitle1" customStyle={styles.listHeader}>For Review</AppText> }  
         {verificationReqs.map((item) => {
           return ( 
             <View key={item.id}>
@@ -140,7 +152,7 @@ export const InitialVerification = ({ toggleMenu, toggleProfile, toggleMobileVer
           )
         })}
 
-        <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Completed</AppText>
+        { completedCount !== 0 && <AppText textStyle="subtitle1" customStyle={styles.listHeader}>Completed</AppText> }
         {verificationReqs.map((item) => {
           return ( 
             <View key={item.id}>
@@ -169,15 +181,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-    marginTop: 15
+    marginTop: 15,
+    alignItems: 'center'
   },
   badgeContainer: {
     backgroundColor: Colors.checkboxBorderDefault,
     borderRadius: 8,
-    paddingVertical: 4,
+    paddingTop: 7,
+    paddingBottom: 6,
     paddingHorizontal: 8,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   listHeader: {
     marginBottom: 15

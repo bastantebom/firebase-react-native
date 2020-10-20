@@ -16,14 +16,14 @@ import {useNavigation} from '@react-navigation/native';
 
 import {AppText, CacheableImage} from '@/components';
 import {GlobalStyle, Colors, normalize, timePassed} from '@/globals';
-import {Verified, ProfileImageDefault} from '@/assets/images/icons';
+import {Verified, ProfileImageDefault, StarRating} from '@/assets/images/icons';
 import {UserContext} from '@/context/UserContext';
 import {Profile} from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
 import AppButton from '../AppButton/AppButton';
 import {PaddingView} from '../AppViewContainer';
 
-const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
+const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
   const {user} = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
@@ -35,7 +35,10 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
     display_name = 'Busy Bee',
     date_posted,
     uid,
+    post_type
   } = userInfo;
+
+  const rating = 3.5
 
   const VerifiedBadge = ({width = 10, height = 11.25}) => {
     return account_verified ? (
@@ -66,10 +69,12 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
     console.log(uid);
 
     if (user && user.uid === uid) {
+      isModal && cancelModalToggle();
       navigation.navigate('Profile', {
         screen: 'Profile',
       });
     } else {
+      isModal && cancelModalToggle();
       console.log('Going to NBTS');
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
@@ -114,24 +119,49 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle}) => {
               <VerifiedBadge />
             </View>
             <View style={styles.userInfoDetailsUsernameContainer}>
-              <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
+              {/* <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
                 @{username.toLowerCase()}
-              </AppText>
+              </AppText> */}
 
-              {/* <View style={styles.starRatingContainer}>
-                  <StarRating width={12} height={12} />
-                  <AppText
-                    textStyle="eyebrow2"
-                    color={Colors.contentPlaceholder}>
-                    {rating}
-                  </AppText>
-                </View> */}
+              <View style={styles.starRatingContainer}>
+                <View style={{ top: -1, marginRight: 4 }}>
+                  <StarRating width={normalize(13)} height={normalize(13)} />
+                </View>
+                <AppText
+                  textStyle="eyebrow2"
+                  color={Colors.contentPlaceholder}
+                >
+                  {rating}
+                </AppText>
+              </View>
 
               <AppText
                 textStyle="eyebrow2"
                 color={Colors.contentPlaceholder}
                 customStyle={{paddingHorizontal: 4}}>
                 {timeAgo(Date.now() / 1000 - date_posted._seconds)}
+              </AppText>
+              <AppText
+                textStyle="eyebrow2"
+                color={Colors.contentPlaceholder}
+                customStyle={{paddingHorizontal: 4}}
+              >
+                • in
+              </AppText>
+              <AppText
+                textStyle="eyebrow2"
+                color={
+                  post_type === 'service' ? Colors.secondaryBrinkPink : 
+                  post_type === 'sell' ? Colors.contentOcean : 
+                  Colors.secondaryMountainMeadow
+                }
+                customStyle={{paddingHorizontal: 4}}
+              >
+                { 
+                  post_type === 'sell' ? 'Sell' : 
+                  post_type === 'service' ? 'Services' :
+                  'Needs'
+                }
               </AppText>
             </View>
           </View>
@@ -264,6 +294,7 @@ const styles = StyleSheet.create({
   starRatingContainer: {
     flexDirection: 'row',
     paddingHorizontal: 4,
+    alignItems: 'center',
   },
 });
 

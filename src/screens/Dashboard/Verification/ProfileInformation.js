@@ -8,72 +8,155 @@ import {
   FlatList,
   Text,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native'
 import Modal from 'react-native-modal';
-import { AppText, PaddingView, AppInput, Switch, AppButton } from '@/components';
+import { AppText, PaddingView, AppInput, Switch, AppButton, ScreenHeaderTitle, FloatingAppInput } from '@/components';
 import { Colors, normalize } from '@/globals';
 import {
   HeaderBackGray,
+  Calendar,
+  ArrowDown
 } from '@/assets/images/icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AddAnAddress from './Address';
+import { EditProfile } from '@/screens/Profile/components';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import GenderList from '../../Profile/components/EditProfile/Gender';
+import { UserContext } from '@/context/UserContext';
+import moment from 'moment';
 
 export const ProfileInformation = ({ back, toggleAddress }) => {
 
-  const [username, setUsername] = useState('');
+  const { userInfo, setUserInfo, user } = useContext(UserContext)
+
+  const [error, setError] = useState([]);
+
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable,
+  });
+  
+  const setButtonState = (j) => {
+    if (j) {
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    setButtonDisabled(j);
+  };
+
+  const {
+    cover_photo,
+    profile_photo,
+    display_name,
+    full_name,
+    username,
+    description,
+    address,
+    email,
+    secondary_email,
+    phone_number,
+    birth_date,
+    gender,
+  } = userInfo;
+
+  const {uid} = user;
+
+  const [dName, setDName] = useState(display_name ? display_name : full_name);
+  const [name, setName] = useState(full_name);
+  const [uName, setUName] = useState(username);
+  const [em, setEm] = useState(email);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+  const [bDate, setBDate] = useState(birth_date);
+  const [g, setG] = useState(gender);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(selectedDate);
-    console.log(date);
-  };
+  const [genderVisible, setGenderVisible] = useState(false);
+  const [isDefault, setIsDefault] = useState(true);
 
   const showMode = currentMode => {
     setShow(true);
     setMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const [isDefault, setIsDefault] = useState(true);
-
   const toggleSwitch = () => {
     setIsDefault((previousState) => !previousState);
   };
 
-  // const [address, setAddress] = useState(false);
+  const showDatepicker = () => {
+    if (show) {
+      setShow(false);
+    } else {
+      Keyboard.dismiss();
+      showMode('date');
+    }
+  };
 
-  // const toggleAddress = () => {
-  //   setAddress(!address);
-  // };
+  const setBirthday = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    setBDate(moment.utc(currentDate).add(1, 'day').format('MM/DD/YYYY'));
+  };
+
+  const toggleGender = () => {
+    setGenderVisible(!genderVisible);
+    if (show) setShow(!show);
+  };
+
+  const setGenderFromModal = (data) => {
+    const tempG =
+      data === 'notsay'
+        ? 'Rather not say'
+        : data === 'female'
+        ? 'Female'
+        : 'Male';
+    setG(tempG);
+  };
 
   return (
+    // <EditProfile/>
     <SafeAreaView style={{flex: 1}}>
-      <ScrollView contentContainerStyle={{ backgroundColor: Colors.neutralsZircon }}>
-        <View style={[styles.contentWrapper, { borderTopEndRadius: 0, borderTopStartRadius: 0 }]}>
+      <PaddingView paddingSize={3}>
+        <ScreenHeaderTitle
+          iconSize={16}
+          title="Profile Information"
+          close={back}
+        />
+      </PaddingView>
+      
+      <KeyboardAwareScrollView 
+        style={{ backgroundColor: Colors.neutralsZircon }}
+        extraScrollHeight={40}
+        keyboardOpeningTime={50}
+        // enableOnAndroid={true}
+      >
+        <View 
+          style={[
+            styles.contentWrapper, 
+            { 
+              borderTopEndRadius: 0, 
+              borderTopStartRadius: 0 
+            }
+          ]}
+        >
           <PaddingView paddingSize={3}>
-            <View
-              style={styles.modalHeader}>
-              <TouchableOpacity
-                onPress={back}
-                activeOpacity={0.7}
-                style={{position: 'absolute', left: 0}}
-              >
-                <HeaderBackGray width={normalize(16)} height={normalize(16)} />
-              </TouchableOpacity>
-              <AppText textStyle="body3">Profile Information</AppText>
-            </View>
             <AppText textStyle="body1" customStyle={styles.customHeading}>Public Profile</AppText>
-            <AppInput
+            <FloatingAppInput
               label="Display Name"
-              customStyle={{ marginBottom: 8, fontFamily: 'RoundedMplus1c-Regular', fontSize: 25, color: Colors.primaryAliceBlue }}
+              value={dName}
+              onChangeText={(dName) => {
+                setDName(dName);
+              }}
+              customStyle={{ marginBottom: normalize(5) }}
             />
             <AppText 
               textStyle="caption" 
@@ -89,18 +172,30 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
             >
               You can only change your Display Name twice every 14 days.
             </AppText>
-            <AppInput
+            <FloatingAppInput
               label="Full name"
+              value={name}
+              onChangeText={(name) => {
+                setName(name);
+              }}
               customStyle={styles.customInput}
             />
-            <AppInput
+            <FloatingAppInput
+              value={uName}
+              valueHandler={setUName}
+              lowercase={true}
               label="Username"
-              customStyle={{ marginBottom: 5 }}
-              onChangeText={username => setUsername(username)}
+              customStyle={{marginBottom: normalize(16)}}
+              // invalidField={!invalidUser || invalidUserFormat}
+              validation={['username']}
+              setError={setError}
+              error={error}
+              setButtonState={setButtonState}
+              // onChangeText={(uName) => onChangeUsername(uName)}
             />
             <View style={{ flexDirection: 'row' }}>
               <AppText textStyle="caption" color={Colors.contentPlaceholder}>servbees.com/</AppText>
-              <AppText textStyle="caption" color={Colors.contentPlaceholder} customStyle={{ fontWeight: 'bold' }}>{username ? username : 'username'}</AppText>
+              <AppText textStyle="caption2" color={Colors.contentPlaceholder}>{username ? username : 'username'}</AppText>
             </View>
             <AppText textStyle="caption" color={Colors.contentPlaceholder}>Only use characters, numbers, and a dot (.)</AppText>
           </PaddingView>
@@ -133,41 +228,113 @@ export const ProfileInformation = ({ back, toggleAddress }) => {
             >
               This won't be part of your public profile
             </AppText>
-            <AppInput
-              label="Email"
-              customStyle={styles.customInput}
-            />
-            <AppInput
-              label="Secondary Email"
-              customStyle={styles.customInput}
-            />
-            <AppInput
-              label="Birthday"
-              customStyle={styles.customInput}
-            />
-            <AppInput
-              label="Select Gender"
-              customStyle={styles.customInput}
-            />
-            {/* <AppText>{date}</AppText> */}
-            {/* <Button onPress={showDatepicker} title="Show date picker!" />
-            {show && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode={mode}
-                is24Hour={false}
-                display="default"
-                onChange={onChange}
+            <View pointerEvents="none">
+              <FloatingAppInput
+                // editable={false}
+                selectTextOnFocus={false}
+                value={em}
+                label="Email"
+                keyboardType="email-address"
+                customStyle={{marginBottom: normalize(16)}}
+                onChangeText={(em) => {
+                  setEm(em);
+                }}
+                validation={['email']}
               />
-            )} */}
+            </View>
+            <View style={{position: 'relative'}}>
+              <View pointerEvents="none">
+                <FloatingAppInput
+                  value={bDate}
+                  label="Birthday"
+                  customStyle={{marginBottom: normalize(16)}}
+                  onFocus={showDatepicker}
+                  // editable={false}
+                />
+              </View>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 12,
+                  right: 12,
+                }}
+                onPress={showDatepicker}>
+                <View>
+                  <Calendar height={normalize(24)} width={normalize(24)} />
+                </View>
+              </TouchableOpacity>
+              {show && (
+                <DateTimePicker
+                  value={date}
+                  mode={mode}
+                  display="default"
+                  onChange={setBirthday}
+                />
+              )}
+            </View>
+            <View style={{position: 'relative'}}>
+              <View pointerEvents="none">
+                <FloatingAppInput
+                  value={g}
+                  label="Gender"
+                  onFocus={toggleGender}
+                  customStyle={{marginBottom: normalize(16)}}
+                  // editable={false}
+                />
+              </View>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 12,
+                  right: 12,
+                }}
+                onPress={toggleGender}>
+                <View>
+                  <ArrowDown height={normalize(24)} width={normalize(24)} />
+                </View>
+              </TouchableOpacity>
+            </View>
             <AppButton
-              text="Save"
-              type="primary"
-            />
+              text="Verify"
+              type="Save"
+              height="xl"
+              disabled={buttonDisabled}
+              customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+              // onPress={() => {
+              //   signUpEmail(signUpForm);
+              // }}
+              // loading={isLoading}
+              onPress={() => null}
+          />
           </PaddingView>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
+      <Modal
+        isVisible={genderVisible}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
+        onSwipeComplete={toggleGender}
+        swipeDirection="down"
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={toggleGender}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View>
+          <GenderList
+            toggleGender={toggleGender}
+            setGenderValue={(pGender) => setGenderFromModal(pGender)}
+          />
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -181,11 +348,11 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   customInput: {
-    marginBottom: 16,
+    marginBottom: normalize(16),
 
   },
   customHeading: {
-    marginBottom: 19
+    marginBottom: normalize(18)
   },
   contentWrapper: {
     backgroundColor: Colors.neutralsWhite,

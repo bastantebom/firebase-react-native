@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
 import Global from '@/services/Config';
 import {Colors, normalize} from '@/globals';
-import {NavigationPin} from '@/assets/images/icons';
+import {NavigationPinAlt} from '@/assets/images/icons';
 
 const GooglePlacesInput = ({
   onResultsClick,
@@ -11,6 +11,14 @@ const GooglePlacesInput = ({
   currentValue,
   adjustListPosition,
   cityOnly,
+  onInputFocus,
+  onInputBlur,
+  customListViewStyle,
+  customContainerStyle,
+  customTextInputStyle,
+  customIconStyle,
+  placeholder = "Enter street address or city",
+  debounce = 0,
 }) => {
   const placesRef = useRef(null);
 
@@ -22,11 +30,11 @@ const GooglePlacesInput = ({
 
   return (
     <View style={styles.textInputWrapper}>
-      <View style={styles.navIcon}>
-        <NavigationPin width={normalize(24)} height={normalize(24)} />
+      <View style={[styles.navIcon, {...customIconStyle}]}>
+        <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
       </View>
       <GooglePlacesAutocomplete
-        placeholder="Enter street address or city"
+        placeholder={placeholder}
         query={{
           key: Global.apiKey,
           language: 'en', // language of the results
@@ -43,12 +51,15 @@ const GooglePlacesInput = ({
         onFail={(error) => console.error(error)}
         textInputProps={{
           onChangeText: (value) => onClearInput(value),
+          onFocus: onInputFocus,
+          onBlur: onInputBlur
         }}
         styles={{
           container: {
             paddingBottom: 50,
 
             flex: 1,
+            ...customContainerStyle
           },
           listView: {
             color: Colors.contentEbony, //To see where exactly the list is
@@ -59,6 +70,7 @@ const GooglePlacesInput = ({
             backgroundColor: Colors.neutralsWhite,
             marginLeft: normalize(10),
             marginRight: normalize(10),
+            ...customListViewStyle
           },
           textInputContainer: {
             backgroundColor: 'rgba(0,0,0,0)',
@@ -75,6 +87,7 @@ const GooglePlacesInput = ({
             fontSize: 16,
             height: 54,
             color: Colors.contentEbony,
+            ...customTextInputStyle
           },
           predefinedPlacesDescription: {
             color: Colors.contentEbony,
@@ -84,6 +97,7 @@ const GooglePlacesInput = ({
           description: {fontFamily: 'RoundedMplus1c-Regular'},
         }}
         ref={placesRef}
+        debounce={debounce}
       />
     </View>
   );

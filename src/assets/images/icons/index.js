@@ -28,10 +28,17 @@ import NavigationArrow from '@/assets/images/icons/navigation-arrow.svg';
 import NavigationPin from '@/assets/images/icons/navigation-pin.svg';
 import NavigationPinRed from '@/assets/images/icons/navigation-pin-red.svg';
 import MapMarker from '@/assets/images/icons/pinbee_marker.svg';
+import NavigationArrowAlt from '@/assets/images/icons/navigation-arrow-alt.svg';
+import NavigationPinAlt from '@/assets/images/icons/navigation-pin-alt.svg';
+import PushPin from '@/assets/images/icons/push-pin-alt.svg';
 
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg';
 import JarHeart from '@/assets/images/icons/jar-heart.svg';
+import JarHeartColored from '@/assets/images/icons/jar-heart-colored.svg';
+import FilterDark from '@/assets/images/icons/filter-dark.svg';
+import JarHeartDark from '@/assets/images/icons/jar-heart-dark.svg';
+
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg';
@@ -66,6 +73,7 @@ import SortLowHigh from './sort-low-high.svg';
 import SortPopular from './sort-popular.svg';
 import SortRecent from './sort-recent.svg';
 import SortNearest from './sort-nearest.svg';
+import SortCondition from './star-condition.svg'
 
 import CheckboxCheck from './checkbox-check.svg';
 import RadioDot from './radiobutton-dot.svg';
@@ -116,6 +124,7 @@ import Mobile from '@/assets/images/icons/verify-mobile.svg';
 import Id from '@/assets/images/icons/verify-id.svg';
 import ArrowRight from '@/assets/images/icons/arrow-right.svg';
 import VerifyTick from '@/assets/images/icons/verify-tick.svg';
+import VerifiedWhite from '@/assets/images/icons/verified-white.svg';
 
 import Lock from '@/assets/images/icons/lock.svg';
 import FolderAdd from '@/assets/images/icons/folder-add.svg';
@@ -161,6 +170,9 @@ import HidePost from './hide-post.svg';
 import AboutRed from './info-menu.svg';
 import BlockedUsers from './blocked-user.svg';
 import ChangePasswordRed from './change-password-red.svg';
+import ChevronRight from './chevron-right.svg';
+import UserCircle from './user-circle.svg'
+import CircleTickGray from './circle-tick-gray.svg'
 import LikedPostMenu from './liked-post.svg';
 import ArchivePostMenu from './archive-post.svg';
 import InviteFriendsMenu from './invite-friends.svg';
@@ -182,6 +194,8 @@ import CalendarArrowLeft from '@/assets/images/icons/calendar-arrow-left.svg';
 import CalendarArrowRight from '@/assets/images/icons/calendar-arrow-right.svg';
 // import LoginApple from './apple.svg';
 // import Public from './public.svg';
+
+import Search from './search.svg';
 
 export {
   VerticalEllipsis,
@@ -241,11 +255,15 @@ export {
   SortPopular,
   SortRecent,
   SortNearest,
+  SortCondition,
   FilterNeeds,
   FilterSeller,
   FilterServices,
   Filter,
   JarHeart,
+  JarHeartColored,
+  FilterDark,
+  JarHeartDark,
   NotificationDot,
   PostBG,
   PostPlus,
@@ -270,6 +288,9 @@ export {
   Google,
   NavigationArrow,
   NavigationPin,
+  NavigationArrowAlt,
+  NavigationPinAlt,
+  PushPin,
   NavigationPinRed,
   MapMarker,
   Warning,
@@ -282,6 +303,7 @@ export {
   Id,
   ArrowRight,
   VerifyTick,
+  VerifiedWhite,
   Lock,
   FolderAdd,
   Flash,
@@ -302,12 +324,16 @@ export {
   AboutRed,
   BlockedUsers,
   ChangePasswordRed,
+  ChevronRight,
+  UserCircle,
+  CircleTickGray,
   LikedPostMenu,
   ArchivePostMenu,
   InviteFriendsMenu,
   Faq,
   ContactUs,
   Notifications,
+  Search,
   EmailContactUs,
   CallContactUs,
   LocationContactUs,

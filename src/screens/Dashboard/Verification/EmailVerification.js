@@ -16,14 +16,14 @@ import { VerifyMap } from './components/Map';
 import Modal from 'react-native-modal';
 import { UserContext } from '@/context/UserContext';
 
-export const MobileVerification = ({back, toggleMobileCode}) => {
+export const EmailVerification = ({back, toggleEmailCode}) => {
 
   const { userInfo } = useContext(UserContext)
 
-  const { phone_number } = userInfo
+  const { email } = userInfo
 
   const [error, setError] = useState([]);
-  const [mobile, setMobile] = useState(phone_number);
+  const [emailAddress, setEmailAddress] = useState(email);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
@@ -60,19 +60,19 @@ export const MobileVerification = ({back, toggleMobileCode}) => {
             <AppText 
               textStyle="body1"
               customStyle={{ marginBottom: 8 }}
-            >Add and verify mobile number</AppText>
-            <AppText textStyle="body2" color={Colors.contentPlaceholder}>We'll use this number for notifications, transaction updates, and login help</AppText>
+            >Add and verify email address</AppText>
+            <AppText textStyle="body2" color={Colors.contentPlaceholder}>We'll use this email address for notifications, transaction updates, and login help</AppText>
             <FloatingAppInput
-              value={mobile}
+              value={emailAddress}
               selectTextOnFocus={false}
-              valueHandler={setMobile}
+              valueHandler={setEmailAddress}
               setError={setError}
               error={error}
               setButtonState={setButtonState}
-              label="Mobile Number"
+              label="Email address"
               customStyle={{ marginTop: normalize(35) }}
-              keyboardType="phone-pad"
-              validation={['number']}
+              keyboardType="email"
+              validation={['email']}
             />
           </View>
           <AppButton
@@ -85,7 +85,7 @@ export const MobileVerification = ({back, toggleMobileCode}) => {
             //   signUpEmail(signUpForm);
             // }}
             // loading={isLoading}
-            onPress={() => toggleMobileCode(mobile)}
+            onPress={() => toggleEmailCode(emailAddress)}
           />
         </View>
       </PaddingView>

@@ -5,20 +5,21 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
-  FlatList
+  FlatList,
+  ScrollView
 } from 'react-native'
-import { PaddingView, AppText, AppButton } from '@/components';
+import { PaddingView, AppText, AppButton, ScreenHeaderTitle } from '@/components';
 import { Colors, normalize } from '@/globals';
 import {
   HeaderBackGray,
   ArrowRight,
   Lock,
-  FolderAdd
+  FolderAdd, ChevronRight
 } from '@/assets/images/icons';
-import { OnboardingIllustration1 } from '@/assets/images';
+import { IdVerify, OnboardingIllustration1 } from '@/assets/images';
 import { CameraId } from './components/CameraId';
 
-export const UploadGovernmentId = ({ back, backToIndex }) => {
+export const UploadGovernmentId = ({ back, backToIndex, confirmPhotoId }) => {
   
   const [screen, setScreen] = useState('idAdd');
   const [idType, setIdType] = useState('');
@@ -100,48 +101,45 @@ export const UploadGovernmentId = ({ back, backToIndex }) => {
         </View>
         <AppText textStyle="body1">{item.title}</AppText>
       </View>
-      <ArrowRight/>
+      <ChevronRight/>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
       { screen === 'idAdd' ? (
-        <PaddingView paddingSize={3}>
-          <View 
-          style={{ justifyContent: 'space-between', height: '100%' }}
-          >
-            <View>
-              <View style={styles.modalHeader}>
-                <TouchableOpacity
-                  onPress={screen === 'idAdd' ? back : () => setScreen('idAdd')}
-                  activeOpacity={0.7}
-                  style={{position: 'absolute', left: 0 }}
-                >
-                  <HeaderBackGray width={normalize(16)} height={normalize(16)} />
-                </TouchableOpacity>
-                <AppText textStyle="body3">&nbsp;</AppText>
-              </View>
-              <OnboardingIllustration1/>
+        <>
+          <PaddingView paddingSize={3}>
+            <ScreenHeaderTitle
+              iconSize={16}
+              close={screen === 'idAdd' ? back : () => setScreen('idAdd')}
+            />
+          </PaddingView>
+          <ScrollView>
+            <IdVerify/>
+            <PaddingView paddingSize={3}>
               <AppText 
                 textStyle="body1"
-                customStyle={{ marginBottom: 8 }}
+                customStyle={{ marginBottom: normalize(8), marginTop: normalize(16) }}
               >
-                Let's add your ID
+                Verify Your Identity 
               </AppText>
-              <AppText textStyle="body2" color={Colors.contentPlaceholder}>We need to know that it's really you, to avoid fake accounts. Please choose an ID type you want to use for verification</AppText>
+              <AppText textStyle="body2" color={Colors.contentPlaceholder}>Help us keep Servbees safe for you and all other buzzybees! You can choose a valid ID type to upload for verification purposes. </AppText>
+
               <View style={{ flexDirection: 'row', marginTop: 30 }}>
                 <Lock width={normalize(25)} height={normalize(25)} />
-                <AppText textStyle="caption" customStyle={{ marginLeft: 12 }}>This information won't be shared with other people who use Servbees</AppText>
+                <AppText textStyle="caption" customStyle={{ marginLeft: 12, maxWidth: '90%' }}>This information won't be shared with other people who use Servbees</AppText>
               </View>
-            </View>
+            </PaddingView>
+          </ScrollView>
+          <PaddingView paddingSize={3}>
             <AppButton
               text="Next"
               type="primary"
               onPress={() => setScreen('idType')}
             />
-          </View>
-        </PaddingView> 
+          </PaddingView>
+        </>
         ) : screen === 'idType' ? (
           <PaddingView paddingSize={3}>
             <View 
@@ -169,7 +167,7 @@ export const UploadGovernmentId = ({ back, backToIndex }) => {
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 30 }}>
                   <Lock width={normalize(25)} height={normalize(25)} />
-                  <AppText textStyle="caption" customStyle={{ marginLeft: 12 }}>This information won't be shared with other people who use Servbees</AppText>
+                  <AppText textStyle="caption" customStyle={{ marginLeft: 12, maxWidth: '90%' }}>This information won't be shared with other people who use Servbees</AppText>
                 </View>
               </View>
               {/* <AppButton
@@ -182,7 +180,8 @@ export const UploadGovernmentId = ({ back, backToIndex }) => {
         ) : screen === 'uploadId' ? (
           <CameraId 
             back={() => setScreen('idType')} 
-            backToIndex={backToIndex}
+            // backToIndex={backToIndex}
+            confirmPhotoId={confirmPhotoId}
             id={idType}
           />
         ) : (

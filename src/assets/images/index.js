@@ -4,6 +4,7 @@
 import Location from './location.svg';
 import ResetPassword from './reset-password.svg';
 import Verify from './verify.svg';
+import VerifySms from './verify-sms.svg';
 
 // illustrations
 import OnboardingIllustration1 from './onboarding-img1.svg';
@@ -19,6 +20,8 @@ import NoReview from './NoReview.svg';
 import NoInfo from './NoInfo.svg';
 
 import IdSelfie from './IdSelfie.svg';
+import IdVerify from './IdVerify.svg';
+import Verification from './Verification.svg';
 
 import SelfieMask from './mask.svg';
 import Faded from './faded.svg';
@@ -50,10 +53,13 @@ export {
   NoReview,
   NoInfo,
   IdSelfie,
+  IdVerify,
+  Verification,
   SelfieMask,
   Faded,
   CoverPhoto,
   AboutServbeesImage,
+  VerifySms,
   InviteFriend,
   ContactUsImg,
 };

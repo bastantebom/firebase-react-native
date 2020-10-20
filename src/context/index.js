@@ -39,6 +39,9 @@ export const ContextProvider = ({children}) => {
   // Added Items (multiple)
   const [items, setItems] = useState([]);
   const [itemId, setItemId] = useState(1);
+  const [searchType, setSearchType] = useState('posts');
+  const [results, setResults] = useState([])
+  const [page, setPage] = useState(0)
 
   const getItemsByCategory = (cat) => {
     const result = [
@@ -137,6 +140,39 @@ export const ContextProvider = ({children}) => {
     setItemId(itemId + 1);
   };
 
+
+  const handleSearch = async (value) => {
+    const result = await PostService.searchPosts({limit: 10, page: 0, search: value})
+    setResults(result.data)
+    setPage(0)
+    // console.log('post search', result.length)
+  }
+
+  const handleSearchUser = async (value) => {
+    const result = await PostService.searchUsers({limit: 10, page: 0, search: value})
+    setResults(result.data)
+    setPage(0)
+    // console.log('user search', result.length)
+    // console.log(value, 'value')
+  }
+
+  const handleOnEndReach = async (value) => {
+    const results = await PostService.searchPosts({limit: 10, page: page + 1, search: value})
+    setResults(prev => [...prev, ...results.data])
+    setPage(page + 1)
+  }
+
+  const handleOnUserEndReach = async (value) => {
+    const results = await PostService.searchUsers({limit: 10, page: page + 1, search: value})
+      setResults(prev => [...prev, ...results.data])
+      setPage(page + 1)
+  }
+
+  // console.log('results', results)
+  // console.log('results length', results.length)
+
+  // console.log(page, 'page')
+  
   useEffect(() => {
     setImageCount(coverPhoto.length);
   }, [coverPhoto]);
@@ -252,6 +288,16 @@ export const ContextProvider = ({children}) => {
         setLibImages,
         setSingleCameraImage,
         singleCameraImage,
+        searchType,
+        setSearchType,
+        results, 
+        setResults,
+        page,
+        setPage,
+        handleSearch,
+        handleSearchUser,
+        handleOnEndReach,
+        handleOnUserEndReach
       }}>
       {children}
     </Context.Provider>
