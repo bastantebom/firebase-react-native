@@ -46,7 +46,7 @@ const ShippingMethodModal = ({ closeModal }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} >
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
       <ScreenHeaderTitle
         close={() => navigation.goBack()}
         title="Shipping Methods"
