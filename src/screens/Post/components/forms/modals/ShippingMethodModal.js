@@ -157,7 +157,7 @@ const ShippingMethodModal = ({ closeModal }) => {
               {within && (
                 <>
                   <PaddingView paddingSize={2}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(20), marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(20), marginBottom: normalize(20) }}>
                       <AppText textStyle="promo">Ship Within</AppText>
                       <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
                     </View>

@@ -180,6 +180,7 @@ const PostExpiryModal = () => {
           </View>
         </View>
         <TouchableOpacity
+          disabled={selectedTime && selectedDate ? false : true}
           style={selectedTime && selectedDate ? styles.btnYellow : styles.btnDisabled}
         >
           <AppText textStyle="button2">
