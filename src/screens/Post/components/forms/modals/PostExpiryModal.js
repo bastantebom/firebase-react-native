@@ -23,7 +23,7 @@ import {
   FloatingAppInput
 } from '@/components';
 import { normalize } from '@/globals';
-import { CalendarArrowLeft, CalendarArrowRight, ArrowRight, Calendar } from '@/assets/images/icons';
+import { CalendarArrowLeft, CalendarArrowRight, ArrowRight, PostClock, Calendar } from '@/assets/images/icons';
 
 
 const PostExpiryModal = () => {
@@ -63,7 +63,7 @@ const PostExpiryModal = () => {
   const onChangeTime = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     // const currentTime = selectedTime || time;
-    setShow(Platform.OS === 'ios');
+    setShowTime(Platform.OS === 'ios');
     // setDate(currentDate)
     // setTime(currentTime)
     // const dateSelected = moment(currentDate).format('LL');
@@ -102,7 +102,7 @@ const PostExpiryModal = () => {
   // })
 
   return (
-    <View>
+    <View style={{ backgroundColor: 'white' }}>
       <ScreenHeaderTitle
         title="Post Expiry"
         paddingSize={2}
@@ -110,34 +110,43 @@ const PostExpiryModal = () => {
       />
       <View style={{ padding: normalize(16), height: '100%' }}>
         <View style={{ flex: .8 }}>
-          <AppText textStyle="body2">Something, something</AppText>
+          <AppText textStyle="body2">Set post cut off date</AppText>
           <AppText textStyle="captionDashboard">Something, something</AppText>
           <TouchableOpacity
-            style={styles.btnTransparent}
-            onPress={showDatepicker}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <AppText textStyle="button2">
-                Set Date
-              </AppText>
-              <Text>
-                {selectedDate ?
-                  <AppText textStyle="button2">: {selectedDate}</AppText> : ' '
-                }
-              </Text>
+            style={styles.btn}
+            onPress={showTimepicker}>
+            <View style={{ flex: .75 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <AppText textStyle="body3">Set Time</AppText>
+              </View>
+              {selectedTime ?
+                <View style={{ flexDirection: 'row' }}>
+                  <PostClock width={normalize(22)} height={normalize(22)} />
+                  <AppText textStyle="caption" customStyle={{ marginLeft: 10 }}>{selectedTime}</AppText>
+                </View> : <></>
+              }
+            </View>
+            <View style={{ flex: .25, justifyContent: 'center', alignItems: 'flex-end' }}>
+              <ArrowRight />
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.btnTransparent}
-            onPress={showTimepicker}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <AppText textStyle="button2">
-                Set Time
-                </AppText>
-              <Text>
-                {selectedTime ?
-                  <AppText textStyle="button2">: {selectedTime}</AppText> : ' '
-                }
-              </Text>
+            style={[styles.btn, { borderTopColor: '#DADCE0', borderTopWidth: 1 }]}
+            onPress={showDatepicker}>
+            <View style={{ flex: .75 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <AppText textStyle="body3">Set Date</AppText>
+              </View>
+              {selectedDate ?
+                <View style={{ flexDirection: 'row' }}>
+                  <Calendar width={normalize(25)} height={normalize(25)} />
+                  <AppText textStyle="caption" customStyle={{ marginLeft: 10 }}>{selectedDate}</AppText>
+                </View> : <></>
+              }
+            </View>
+            <View
+              style={{ flex: .25, justifyContent: 'center', alignItems: 'flex-end' }}>
+              <ArrowRight />
             </View>
           </TouchableOpacity>
           <View>
@@ -145,7 +154,6 @@ const PostExpiryModal = () => {
               <DateTimePicker
                 value={date}
                 mode='date'
-                // display={mode == 'time' ? 'spinner' : ''}
                 onChange={onChangeDate}
               />
             )}
@@ -161,7 +169,6 @@ const PostExpiryModal = () => {
         </View>
         <TouchableOpacity
           style={styles.btnYellow}
-        // onPress={() => [showDateModal(false), showTimeModal(false)]}
         >
           <AppText textStyle="button2">
             Set Post Expiry
@@ -315,16 +322,6 @@ const styles = StyleSheet.create({
     marginTop: normalize(20),
     justifyContent: 'space-between',
     flexDirection: 'row'
-  },
-  btnTransparent: {
-    paddingVertical: 12,
-    width: '100%',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 3,
-    marginTop: normalize(20)
   },
   btnYellow: {
     paddingVertical: 12,
