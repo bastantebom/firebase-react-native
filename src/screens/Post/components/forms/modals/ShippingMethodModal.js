@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Slider from '@react-native-community/slider';
+import moment from 'moment';
 
 import {
   AppText,

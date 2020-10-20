@@ -5,7 +5,8 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Text,
-  Keyboard
+  Keyboard,
+  DatePickerIOS
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -39,6 +40,7 @@ const PostExpiryModal = ({ closeModal }) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('')
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -60,16 +62,19 @@ const PostExpiryModal = ({ closeModal }) => {
     showMode('time');
   };
 
-  const setDateFromString = () => {
-    if (date) {
+  const displayChosen = () => {
+    setDate(selectedDate);
+    setSelectedDate(moment.utc(selectedDate).format('MM/DD/YYYY'));
+  }
+
+  useEffect(() => {
+    if (selectedDate) {
+      displayChosen();
       setDate(moment(new Date(date)).toDate());
     }
-  };
+  })
 
-  // useEffect(() => {
-  //   setDateFromString();
-  // })
-
+  console.log(selectedDate)
   return (
     <View>
       <ScreenHeaderTitle
@@ -81,6 +86,7 @@ const PostExpiryModal = ({ closeModal }) => {
         <View style={{ flex: .8 }}>
           <AppText textStyle="body2">Something, something</AppText>
           <AppText textStyle="captionDashboard">Something, something</AppText>
+          <Text>{selectedDate}</Text>
           <TouchableOpacity
             style={styles.btnTransparent}
             onPress={showDatepicker}>
