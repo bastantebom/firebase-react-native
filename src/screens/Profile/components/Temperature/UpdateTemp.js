@@ -8,7 +8,14 @@ import {
   Dimensions,
 } from 'react-native';
 
-import {ScreenHeaderTitle, PaddingView, AppText, AppButton} from '@/components';
+import {
+  ScreenHeaderTitle,
+  PaddingView,
+  AppText,
+  AppButton,
+  AppInput,
+  FloatingAppInput,
+} from '@/components';
 import {TempHistory, TempAboutScreen} from '@/screens/Profile/components';
 
 import {ContactUsImg} from '@/assets/images';
@@ -32,6 +39,8 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
   const toggleTempAbout = () => {
     setTempAbout(!tempAbout);
   };
+
+  const [temp, setTemp] = useState('');
 
   return (
     <>
@@ -57,22 +66,31 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
             </AppText>
             <TouchableOpacity
               onPress={toggleTempAbout}
-              customStyle={{paddingBottom: 8}}>
+              customStyle={{paddingBottom: 8, marginBottom: 12}}>
               <AppText textStyle="captionConstant" color={Colors.contentOcean}>
                 Why we’re asking this?
               </AppText>
             </TouchableOpacity>
+            <FloatingAppInput
+              value={temp}
+              label="Body Temperature"
+              keyboardType="number-pad"
+              customStyle={{marginTop: 16}}
+              onChangeText={(temp) => {
+                setTemp(temp);
+              }}
+            />
           </View>
-        </PaddingView>
 
-        <AppButton
-          text="Submit"
-          type="primary"
-          size="l"
-          height="xl"
-          onPress={() => {}}
-          customStyle={{marginTop: normalize(20)}}
-        />
+          <AppButton
+            text="Save"
+            type="primary"
+            size="l"
+            height="xl"
+            onPress={() => {}}
+            customStyle={{marginTop: normalize(20)}}
+          />
+        </PaddingView>
       </SafeAreaView>
 
       <Modal

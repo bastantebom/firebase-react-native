@@ -10,26 +10,49 @@ import {
   Dimensions,
 } from '@/components';
 
-import {ContactUsImg} from '@/assets/images';
-import {
-  EmailContactUs,
-  CallContactUs,
-  LocationContactUs,
-} from '@/assets/images/icons';
+import {BodyTemp} from '@/assets/images';
 import {normalize, Colors} from '@/globals';
 import Modal from 'react-native-modal';
 
 // create a component
-const TempAbout = ({toggleHistory}) => {
+const TempAbout = ({toggleTempAbout}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <PaddingView paddingSize={3}>
-          <ScreenHeaderTitle
-            iconSize={16}
-            title="Body Temperature History"
-            close={toggleHistory}
-          />
+        <PaddingView paddingSize={3} style={{flex: 1}}>
+          <BodyTemp />
+          <View>
+            <AppText textStyle="body1" customStyle={{marginBottom: 4}}>
+              Monitor your body temperature
+            </AppText>
+            <AppText
+              textStyle="captionConstant"
+              customStyle={{marginBottom: 24}}>
+              This is the text explaining why we are asking for their body
+              temperature. How this will be used in contact tracing if needed.
+              How this will protect them or their customers to be safe. And how
+              this will benefit the whole Servbees community and the Philippines
+              char.
+            </AppText>
+            <AppText
+              textStyle="captionConstant"
+              customStyle={{marginBottom: 24}}>
+              More text explaining why we are asking for their body temperature.
+              How this will be used in contact tracing if needed. How this will
+              protect them or their customers to be safe. And how this will
+              benefit the whole Servbees community and the Philippines char.
+            </AppText>
+          </View>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <AppButton
+              text="Okay, got it"
+              type="primary"
+              size="l"
+              height="xl"
+              onPress={toggleTempAbout}
+              customStyle={{marginTop: normalize(20)}}
+            />
+          </View>
         </PaddingView>
       </SafeAreaView>
     </>
