@@ -16,15 +16,12 @@ const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
           paddingLeft: 16,
           paddingRight: 8,
           paddingVertical: 8,
-          backgroundColor: value
-            ? Colors.primaryCream
-            : Colors.neutralsWhitesmoke,
           ...style,
           justifyContent: 'space-between',
         }}>
         <View style={{flexDirection: 'row'}}>
           {Icon ? <Icon /> : null}
-          <AppText textStyle="body3" customStyle={{marginLeft: 8}}>
+          <AppText textStyle="body3" customStyle={{marginLeft: Icon ? 8 : 0}}>
             {label}
           </AppText>
         </View>
@@ -41,6 +38,10 @@ const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
             borderColor: value
               ? Colors.checkboxBorderActive
               : Colors.checkboxBorderDefault,
+
+            backgroundColor: value
+              ? Colors.primaryCream
+              : Colors.neutralsWhitesmoke,
           }}>
           {value ? (
             <CheckboxCheck width={normalize(7.83)} height={normalize(7.26)} />

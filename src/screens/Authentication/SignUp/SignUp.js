@@ -1,10 +1,18 @@
 //import liraries
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, createRef} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AppColor from '@/globals/Colors';
 
-import {AppText, AppCheckbox, AppButton, FloatingAppInput} from '@/components';
+import {
+  AppText,
+  AppCheckbox,
+  AppButton,
+  FloatingAppInput,
+  AppInput,
+} from '@/components';
+import Validator from '@/components/AppInput/Validator';
+import valueHandler from '@/components/AppInput/ValueHandler';
 
 import SignUpService from '@/services/SignUpService';
 import LoginService from '@/services/LoginService';
@@ -51,7 +59,7 @@ const SignUp = (props) => {
   const modalContent = (contentNum) => setModalContentNumber(contentNum);
   const [error, setError] = useState([]);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
-  const [signUpLabel, setSignUpLabel] = useState(false);
+  const [signUpLabel, setSignUpLabel] = useState('email');
   const [isVisible, setIsVisible] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
   const [loginUse, setLoginUse] = useState('');
@@ -71,10 +79,56 @@ const SignUp = (props) => {
     receive_updates: false,
   });
   const [buttonStyle, setButtonStyle] = useState({
-    backgroundColor: AppColor.buttonDisable,
+    backgroundColor: buttonDisabled
+      ? AppColor.buttonDisable
+      : AppColor.primaryYellow,
     borderColor: AppColor.buttonDisable,
   });
   const [changingValidation, setChangingValidation] = useState(false);
+  const inputRef = createRef();
+
+  const [errors, setErrors] = useState({
+    email: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    name: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+    password: {
+      passed: false,
+      shown: false,
+      message: '',
+    },
+  });
+
+  const checkErrorState = () => {
+    let temp = true;
+
+    for (const [key, value] of Object.entries(errors)) {
+      if (!value.passed) {
+        temp = false;
+        break;
+      }
+    }
+
+    if (temp && isTerms) {
+      // ENABLE BUTTON
+      // console.log('All fields are valid');
+      setButtonDisabled(false);
+    } else {
+      // DISABLE BUTTON
+      // console.log('One or more field is invalid');
+      setButtonDisabled(true);
+    }
+  };
+
+  useEffect(() => {
+    checkErrorState();
+  }, [errors, isTerms]);
 
   const toggleSignUpMethod = () => {
     setEmail('');
@@ -121,19 +175,14 @@ const SignUp = (props) => {
     setIsValidMobileNumber(false);
   };
 
-  useEffect(() => {
-    // exit early when we reach 0
-    const newKeyValue = {
-      login: email.length === 11 ? '+63' + email.substr(1) : email,
-    };
-    setSignUpForm({...signUpForm, ...newKeyValue});
-    checkInputComplete();
-  }, [isValidMobileNumber]);
-
-  useEffect(() => {
-    // exit early when we reach 0
-    setIsValidName(() => isValidName);
-  }, [isValidName]);
+  // useEffect(() => {
+  //   // exit early when we reach 0
+  //   const newKeyValue = {
+  //     login: email.length === 11 ? '+63' + email.substr(1) : email,
+  //   };
+  //   setSignUpForm({...signUpForm, ...newKeyValue});
+  //   checkInputComplete();
+  // }, [isValidMobileNumber]);
 
   useEffect(() => {
     // exit early when we reach 0
@@ -145,127 +194,127 @@ const SignUp = (props) => {
     // exit early when we reach 0
     const newKeyValue = {terms_conditions: isTerms};
     setSignUpForm({...signUpForm, ...newKeyValue});
-    checkInputComplete();
+    // checkInputComplete();
   }, [isTerms]);
 
-  const validateEmail = (email) => {
-    let mobileReg = /^(09|\+639)\d{9}$/;
-    if (
-      mobileReg.test(email) === true &&
-      ((email.substring(0, 1) === '0' && email.length === 11) ||
-        (email.length === 13 && email.substring(0, 1) === '+'))
-    ) {
-      setEmail(email);
-      setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
-      return true;
-    } else {
-      setIsValidMobileNumber(false);
-      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      if (reg.test(email) === false) {
-        setEmail(email);
-        return false;
-      } else {
-        setEmail(email);
-        return true;
-      }
-    }
-  };
+  // const validateEmail = (email) => {
+  //   let mobileReg = /^(09|\+639)\d{9}$/;
+  //   if (
+  //     mobileReg.test(email) === true &&
+  //     ((email.substring(0, 1) === '0' && email.length === 11) ||
+  //       (email.length === 13 && email.substring(0, 1) === '+'))
+  //   ) {
+  //     setEmail(email);
+  //     setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
+  //     return true;
+  //   } else {
+  //     setIsValidMobileNumber(false);
+  //     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  //     if (reg.test(email) === false) {
+  //       setEmail(email);
+  //       return false;
+  //     } else {
+  //       setEmail(email);
+  //       return true;
+  //     }
+  //   }
+  // };
 
-  const onEmailChange = (email) => {
-    if (validateEmail(email)) {
-      //setButtonText('Sign up');
-      setIsValidEmail(true);
-      const newKeyValue = {login: email};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
-        setLoginUse(() => {
-          setLoginUse('mobile number');
-        });
-      } else {
-        setLoginUse(() => {
-          setLoginUse('email');
-        });
-      }
+  // const onEmailChange = (email) => {
+  //   if (validateEmail(email)) {
+  //     //setButtonText('Sign up');
+  //     setIsValidEmail(true);
+  //     const newKeyValue = {login: email};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
+  //       setLoginUse(() => {
+  //         setLoginUse('mobile number');
+  //       });
+  //     } else {
+  //       setLoginUse(() => {
+  //         setLoginUse('email');
+  //       });
+  //     }
 
-      setIsValidEmail(false);
-      //setButtonText('Sign up');
-    }
-  };
+  //     setIsValidEmail(false);
+  //     //setButtonText('Sign up');
+  //   }
+  // };
 
-  const onNameChange = (name) => {
-    let nameReg = /^[a-z ,.'-]+$/i;
-    if (nameReg.test(name)) {
-      setName(name);
-      setIsValidName(true);
+  // const onNameChange = (name) => {
+  //   let nameReg = /^[a-z ,.'-]+$/i;
+  //   if (nameReg.test(name)) {
+  //     setName(name);
+  //     setIsValidName(true);
 
-      const newKeyValue = {full_name: name};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log('Password Valid');
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      setName(name);
-      setIsValidName(false);
-    }
+  //     const newKeyValue = {full_name: name};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log('Password Valid');
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     setName(name);
+  //     setIsValidName(false);
+  //   }
 
-    if (name.length === 0) {
-      setIsValidName(true);
-    }
-  };
+  //   if (name.length === 0) {
+  //     setIsValidName(true);
+  //   }
+  // };
 
-  const onPasswordChange = (password) => {
-    if (password.length > 5) {
-      setIsValidPassword(true);
-      setPassword(password);
+  // const onPasswordChange = (password) => {
+  //   if (password.length > 5) {
+  //     setIsValidPassword(true);
+  //     setPassword(password);
 
-      const newKeyValue = {password: password};
-      setSignUpForm({...signUpForm, ...newKeyValue});
-      //console.log('Password Valid');
-      //console.log(signUpForm);
-      checkInputComplete();
-    } else {
-      setPassword(password);
-      setIsValidPassword(false);
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-      setButtonDisabled(true);
-    }
-  };
+  //     const newKeyValue = {password: password};
+  //     setSignUpForm({...signUpForm, ...newKeyValue});
+  //     //console.log('Password Valid');
+  //     //console.log(signUpForm);
+  //     checkInputComplete();
+  //   } else {
+  //     setPassword(password);
+  //     setIsValidPassword(false);
+  //     setButtonStyle({
+  //       backgroundColor: AppColor.buttonDisable,
+  //       borderColor: AppColor.buttonDisable,
+  //     });
+  //     setButtonDisabled(true);
+  //   }
+  // };
 
-  const checkInputComplete = () => {
-    if (isValidMobileNumber && name.length > 1) {
-      setButtonStyle({});
-      setButtonDisabled(false);
-    } else {
-      if (
-        !isValidMobileNumber &&
-        isValidEmail &&
-        name.length > 1 &&
-        password.length > 1 &&
-        isTerms
-      ) {
-        setButtonStyle({});
-        setButtonDisabled(false);
-      } else {
-        if (name.length === 0) {
-          setNameBorder({});
-        }
-        if (name.length === 0) {
-          setPasswordBorder({});
-        }
-        setButtonStyle({
-          backgroundColor: AppColor.buttonDisable,
-          borderColor: AppColor.buttonDisable,
-        });
-        setButtonDisabled(true);
-      }
-    }
-  };
+  // const checkInputComplete = () => {
+  //   if (isValidMobileNumber && name.length > 1) {
+  //     setButtonStyle({});
+  //     setButtonDisabled(false);
+  //   } else {
+  //     if (
+  //       !isValidMobileNumber &&
+  //       isValidEmail &&
+  //       name.length > 1 &&
+  //       password.length > 1 &&
+  //       isTerms
+  //     ) {
+  //       setButtonStyle({});
+  //       setButtonDisabled(false);
+  //     } else {
+  //       if (name.length === 0) {
+  //         setNameBorder({});
+  //       }
+  //       if (name.length === 0) {
+  //         setPasswordBorder({});
+  //       }
+  //       setButtonStyle({
+  //         backgroundColor: AppColor.buttonDisable,
+  //         borderColor: AppColor.buttonDisable,
+  //       });
+  //       setButtonDisabled(true);
+  //     }
+  //   }
+  // };
 
   const onFocusEmail = () => {
     setIsValidLogin(true);
@@ -308,10 +357,19 @@ const SignUp = (props) => {
   const signUpEmail = (formValues) => {
     console.log(formValues);
     console.log('Signup button clicked');
-    console.log(password);
+    console.log('password:', password);
+    console.log('name:', name);
+    console.log('email:', email);
+
+    let formSubmitted = {
+      ...formValues,
+      login: email,
+      full_name: name,
+      password: password,
+    };
 
     setIsLoading(true);
-    SignUpService.createUser(JSON.stringify(formValues))
+    SignUpService.createUser(JSON.stringify(formSubmitted))
       .then((response) => {
         cleanSignUpForm();
         console.log(response);
@@ -424,7 +482,7 @@ const SignUp = (props) => {
               Join Servbees today. It’s free!
             </AppText>
             <View style={styles.formWrapper}>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={email}
                 valueHandler={setEmail}
                 label={!signUpLabel ? 'Email' : 'Mobile Number'}
@@ -440,30 +498,81 @@ const SignUp = (props) => {
                 onChangeTextInput={(email) => onEmailChange(email)}
                 setChangingValidation={setChangingValidation}
                 changingValidation={changingValidation}
-              />
+              /> */}
+              <Validator
+                style={{marginBottom: normalize(16)}}
+                errorState={errors.email}>
+                <AppInput
+                  label={
+                    signUpLabel === 'number' ? 'Mobile Number' : 'Email'
+                    // signUpLabel.charAt(0).toUpperCase() + signUpLabel.slice(1)
+                  }
+                  onChangeText={(email) =>
+                    valueHandler(
+                      email,
+                      signUpLabel,
+                      'email',
+                      errors,
+                      setErrors,
+                      setEmail,
+                    )
+                  }
+                  value={email}
+                  inputRef={inputRef}
+                  onFocusInput={() => {
+                    setIsToggleVisible(true);
+                  }}
+                  onBlurInput={() => {
+                    console.log('BLURR');
+                    setIsToggleVisible(false);
+                  }}
+                  onEndEditing={() => {
+                    console.log('DONE');
+                  }}
+                  keyboardType={
+                    signUpLabel === 'email' ? 'email-address' : 'phone-pad'
+                  }
+                  onKeyPress={(e) => {
+                    setErrors({
+                      ...errors,
+                      email: {
+                        ...errors.email,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
 
               <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    !signUpLabel
-                      ? setValidationRule(['number'])
-                      : setValidationRule(['email']);
+                    console.log(signUpLabel);
+                    signUpLabel === 'number'
+                      ? setSignUpLabel('email')
+                      : setSignUpLabel('number');
 
-                    !signUpLabel ? setError(['number']) : setError(['email']);
-                    toggleSignUpMethod();
+                    valueHandler(
+                      email,
+                      signUpLabel === 'number' ? 'email' : 'number',
+                      'email',
+                      errors,
+                      setErrors,
+                      setEmail,
+                    );
                   }}>
                   <AppText
                     textStyle="button3"
                     color={AppColor.contentOcean}
                     customStyle={{marginBottom: 16}}>
-                    {!signUpLabel
+                    {signUpLabel === 'email'
                       ? 'Use mobile number instead'
                       : 'Use email instead'}
                   </AppText>
                 </TouchableOpacity>
               </View>
 
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 label="Full Name"
                 value={name}
                 onBlur={onBlurName}
@@ -479,14 +588,38 @@ const SignUp = (props) => {
                   ...nameBorder,
                 }}
                 onChangeText={(name) => onNameChange(name)}
-              />
-              {!isValidName ? (
-                <AppText textStyle="caption" customStyle={styles.errorCopy}>
-                  Don’t add special character(s)
-                </AppText>
-              ) : null}
+              /> */}
+              <Validator
+                style={{marginBottom: normalize(16)}}
+                errorState={errors.name}>
+                <AppInput
+                  label="Full Name"
+                  onChangeText={(name) =>
+                    valueHandler(
+                      name,
+                      'name',
+                      'name',
+                      errors,
+                      setErrors,
+                      setName,
+                    )
+                  }
+                  value={name}
+                  // keyboardType={'email-address'}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      name: {
+                        ...errors.name,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
+
               <View style={{position: 'relative'}}>
-                <FloatingAppInput
+                {/* <FloatingAppInput
                   label="Password"
                   onBlur={onBlurPassword}
                   onFocus={onFocusPassword}
@@ -500,7 +633,37 @@ const SignUp = (props) => {
                   validation={['password']}
                   setButtonState={setButtonState}
                   onChangeText={(val) => onPasswordChange(val)}
-                />
+                /> */}
+
+                <Validator
+                  style={{marginBottom: normalize(16)}}
+                  errorState={errors.password}>
+                  <AppInput
+                    label="Password"
+                    onChangeText={(password) =>
+                      valueHandler(
+                        password,
+                        'password',
+                        'password',
+                        errors,
+                        setErrors,
+                        setPassword,
+                      )
+                    }
+                    secureTextEntry={!isVisible ? true : false}
+                    value={password}
+                    onKeyPress={() => {
+                      setErrors({
+                        ...errors,
+                        password: {
+                          ...errors.password,
+                          shown: false,
+                        },
+                      });
+                    }}
+                  />
+                </Validator>
+
                 <View style={styles.passwordToggle}>
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
                     {!isVisible ? <EyeDark /> : <EyeLight />}
@@ -519,7 +682,16 @@ const SignUp = (props) => {
                 type="primary"
                 height="xl"
                 disabled={buttonDisabled}
-                customStyle={{...styles.customButtonStyle, ...buttonStyle}}
+                customStyle={{
+                  ...styles.customButtonStyle,
+                  backgroundColor: buttonDisabled
+                    ? AppColor.buttonDisable
+                    : AppColor.primaryYellow,
+
+                  borderColor: buttonDisabled
+                    ? AppColor.buttonDisable
+                    : AppColor.primaryYellow,
+                }}
                 onPress={() => {
                   signUpEmail(signUpForm);
                 }}
@@ -623,6 +795,7 @@ const styles = StyleSheet.create({
   customButtonStyle: {
     borderWidth: 1.5,
     marginBottom: 16,
+    borderRadius: 4,
   },
 
   disableButton: {

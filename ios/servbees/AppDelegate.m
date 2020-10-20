@@ -6,6 +6,7 @@
 #import <RNSplashScreen.h>
 #import <Firebase.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import <React/RCTLinkingManager.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -27,6 +28,35 @@ static void InitializeFlipper(UIApplication *application) {
 #endif
 
 @implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+  return [RCTLinkingManager application:application openURL:url
+     sourceApplication:sourceApplication annotation:annotation];
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+ restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+  NSURL *url = [userActivity webpageURL];
+  BOOL result = [RCTLinkingManager application:application
+                          continueUserActivity:userActivity
+                            restorationHandler:restorationHandler];
+  if([userActivity webpageURL]){
+    #if DEBUG
+    float seconds = 3.5;
+    #else
+    float seconds = 1.5;
+    #endif
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      NSURL *newUrl = [NSURL URLWithString:[NSString stringWithFormat:@"MYAPPSCHEME:/%@", url.path]];
+      [[UIApplication sharedApplication] openURL:newUrl options:@{} completionHandler:nil];
+    });
+  }
+  
+  return result;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

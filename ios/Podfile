@@ -84,6 +84,8 @@ target 'servbees' do
   pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
 
    # React Native Maps dependencies
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
   target 'servbeesTests' do
     inherit! :complete
     # Pods for testing

@@ -36,6 +36,107 @@ export const ContextProvider = ({children}) => {
   const [cameraImage, setCameraImage] = useState([]);
   const [libImages, setLibImages] = useState([]);
 
+  // Added Items (multiple)
+  const [items, setItems] = useState([]);
+  const [itemId, setItemId] = useState(1);
+
+  const getItemsByCategory = (cat) => {
+    const result = [
+      ...items
+        .reduce(
+          (r, {categoryName, description, itemImage, price, title, itemId}) => {
+            r.has(categoryName) ||
+              r.set(categoryName, {
+                categoryName,
+                items: [],
+              });
+
+            r.get(categoryName).items.push({
+              description,
+              itemImage,
+              price,
+              title,
+              itemId,
+              categoryName,
+            });
+
+            return r;
+          },
+          new Map(),
+        )
+        .values(),
+    ];
+
+    let filteredItems = result.filter((category) => {
+      if (category.categoryName === cat) {
+        return category;
+      }
+    });
+
+    return filteredItems[0]?.items;
+  };
+
+  const editCategory = (newCategoryName, oldCategoryName) => {
+    let itemArray = items.slice();
+
+    // itemArray.map((item) => {
+    //   return {
+    //     ...item,
+    //     categoryName:
+    //       item.categoryName === oldCategoryName
+    //         ? newCategoryName
+    //         : oldCategoryName,
+    //   };
+    // });
+
+    itemArray = itemArray.map((item) => {
+      if (oldCategoryName === item.categoryName) {
+        return {
+          ...item,
+          categoryName: newCategoryName,
+        };
+      } else {
+        return item;
+      }
+    });
+
+    console.log('new array value');
+    console.log(itemArray);
+
+    setItems(itemArray);
+  };
+
+  const editItem = (item) => {
+    let itemArray = items.slice();
+
+    let index = itemArray.findIndex((i) => {
+      if (i.itemId === item.itemId) {
+        return i;
+      }
+    });
+
+    itemArray[index] = item;
+
+    setItems(itemArray);
+  };
+
+  const addItem = (item) => {
+    console.log('Add Item context triggered');
+    console.log(item);
+
+    let itemWithID = {
+      ...item,
+      itemId: itemId,
+    };
+
+    let itemArray = [...items];
+
+    itemArray.push(itemWithID);
+
+    setItems(itemArray);
+    setItemId(itemId + 1);
+  };
+
   useEffect(() => {
     setImageCount(coverPhoto.length);
   }, [coverPhoto]);
@@ -102,6 +203,11 @@ export const ContextProvider = ({children}) => {
   return (
     <Context.Provider
       value={{
+        editCategory,
+        items,
+        addItem,
+        editItem,
+        getItemsByCategory,
         authenticationSheet,
         showAuthenticationSheet,
         sliderState,

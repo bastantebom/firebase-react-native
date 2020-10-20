@@ -258,11 +258,11 @@ const TransparentHeader = ({
                 </View>
               </TouchableOpacity> */}
 
-              {/* <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                   <HeaderQR width={normalize(16)} height={normalize(16)} />
                 </View>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>

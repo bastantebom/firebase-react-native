@@ -232,6 +232,7 @@ const Posts = ({data, type, isLoading, setIsLoading}) => {
           </View>
         }
       />
+      // <></>
     );
   }
 

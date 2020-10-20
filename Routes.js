@@ -6,10 +6,12 @@ import {
 import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Animated} from 'react-native';
+import {View, Animated, Linking} from 'react-native';
 import SplashScreenComponent from './SplashScreen';
 
 import {Notification} from '@/components';
+import {useNavigation} from '@react-navigation/native';
+import {PostService} from '@/services';
 
 //screens
 import {Onboarding} from '@/screens/Onboarding';
@@ -17,8 +19,20 @@ import {Dashboard} from '@/screens/Dashboard';
 import {Profile} from '@/screens/Profile';
 import {Hives} from '@/screens/Hive';
 import {Activity} from '@/screens/Activity';
-import {Post, SinglePostView} from '@/screens/Post';
+import {
+  Post,
+  SinglePostView,
+  SinglePostViewExternal,
+  AddItemScreen,
+  AddedItemPreviewScreen,
+  EditItemScreen,
+  PostExpiryScreen,
+  ShippingMethodScreen,
+  PaymentMethodScreen
+} from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
+import SampleScreen from '@/screens/SampleScreen';
+
 import {ProfileInfoModal, SinglePostOthersView} from '@/components';
 
 import {
@@ -48,6 +62,43 @@ import {SafeAreaView} from 'react-navigation';
 const AuthStack = createStackNavigator();
 
 function AuthStackScreen() {
+  const navigation = useNavigation();
+
+  // console.log('ROUTES PROPS');
+  // console.log(navigation);
+
+  // useEffect(() => {
+  //   console.log('Hello android');
+  //   if (Platform.OS === 'android') {
+  //     Linking.getInitialURL().then((url) => {
+  //       navigation.navigate(url);
+  //     });
+  //   } else {
+  //     Linking.addEventListener('url', handleOpenURL);
+  //   }
+  // });
+
+  const handleOpenURL = (event) => {
+    navigate(event.url);
+  };
+
+  const navigate = (url) => {
+    const route = url.replace(/.*?:\/\//g, '');
+    const uid = route.split('/')[1];
+    const routeName = route.split('/')[0];
+
+    console.log(routeName);
+    if (routeName === 'profile') {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: uid},
+      });
+    }
+    if (routeName === 'dashboard') {
+      navigation.navigate('Servbees');
+    }
+  };
+
   return (
     <AuthStack.Navigator headerMode="none">
       <AuthStack.Screen name="Onboarding" component={Onboarding} />
@@ -67,6 +118,7 @@ const PostStack = createStackNavigator();
 const ActivityStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const CreatePostStack = createStackNavigator();
 
 const Stack = createStackNavigator();
 const NoBottomTabScreenStack = createStackNavigator();
@@ -96,6 +148,14 @@ function NoBottomTabScreens() {
         name="OthersPost"
         component={SinglePostView}
       />
+      <NoBottomTabScreenStack.Screen
+        name="ExternalPostLink"
+        component={SinglePostViewExternal}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="CreatePost"
+        component={CreatePostStackScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
   );
 }
@@ -106,6 +166,20 @@ function DashboardStackScreen() {
     <DashboardStack.Navigator headerMode="none">
       <DashboardStack.Screen name="Servbees" component={Dashboard} />
     </DashboardStack.Navigator>
+  );
+}
+
+function CreatePostStackScreen() {
+  return (
+    <CreatePostStack.Navigator headerMode="none">
+      <CreatePostStack.Screen name="CreatePostScreen" component={PostScreen} />
+      <CreatePostStack.Screen name="AddItemScreen" component={AddItemScreen} />
+      <CreatePostStack.Screen name="EditItemScreen" component={EditItemScreen} />
+      <CreatePostStack.Screen name="AddedItemPreviewScreen" component={AddedItemPreviewScreen} />
+      <CreatePostStack.Screen name="PostExpiryScreen" component={PostExpiryScreen} />
+      <CreatePostStack.Screen name="ShippingMethodScreen" component={ShippingMethodScreen} />
+      <CreatePostStack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
+    </CreatePostStack.Navigator>
   );
 }
 
@@ -154,6 +228,53 @@ function TabStack() {
   const [activityNotification, setActivityNotification] = useState(true);
   const [profileNotification, setProfileNotification] = useState(false);
   const {closePostButtons} = useContext(Context);
+
+  const navigation = useNavigation();
+
+  // console.log('ROUTES PROPS');
+  // console.log(navigation);
+
+  // useEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     Linking.getInitialURL().then((url) => {
+  //       navigation.navigate(url);
+  //     });
+  //   } else {
+  //     Linking.addEventListener('url', handleOpenURL);
+  //   }
+  // }, []);
+
+  const handleOpenURL = (event) => {
+    navigate(event.url);
+  };
+
+  const navigate = (url) => {
+    const route = url.replace(/.*?:\/\//g, '');
+    const id = route.split('/')[1];
+    const routeName = route.split('/')[0];
+
+    console.log(routeName);
+    if (routeName === 'profile') {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: {uid: id},
+      });
+    }
+    if (routeName === 'post') {
+      // navigation.navigate('Servbees', {pid: id});
+
+      PostService.getPost(id)
+        .then((res) => {
+          navigation.navigate('NBTScreen', {
+            screen: 'OthersPost',
+            params: {...res, othersView: true},
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   return (
     <Tab.Navigator
@@ -344,10 +465,13 @@ function Routes() {
     <Animated.View style={fadingContainerStyle}>
       <NavigationContainer>
         {!user ? (
-          <AuthStackScreen />
+          <Stack.Navigator headerMode="none">
+            <Stack.Screen name="AuthStack" component={AuthStackScreen} />
+          </Stack.Navigator>
         ) : (
           // <TabStack />
           <Stack.Navigator headerMode="none">
+            {/* <Stack.Screen name="TabStack" component={SampleScreen} /> */}
             <Stack.Screen name="TabStack" component={TabStack} />
             <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
           </Stack.Navigator>
@@ -356,5 +480,13 @@ function Routes() {
     </Animated.View>
   );
 }
+
+// const MainScreens = () => {
+//   const navigation = useNavigation();
+
+//   console.log('ROUTES PROPS');
+//   console.log(navigation);
+//   return <Stack.Screen name="TabStack" component={TabStack} />;
+// };
 
 export default Routes;

@@ -10,6 +10,7 @@ import {
   QRDownload,
   QRShare,
   Close,
+  VerticalEllipsis
 } from '@/assets/images/icons';
 import {Colors, normalize} from '@/globals';
 
@@ -24,7 +25,15 @@ import {Colors, normalize} from '@/globals';
  * } param0
  */
 
-const ScreenHeaderTitle = ({close, paddingSize, icon, iconSize = 24, title}) => {
+const ScreenHeaderTitle = ({
+  close,
+  paddingSize,
+  icon,
+  iconSize = 24,
+  title,
+  openOptions,
+  withOptions = false,
+}) => {
   const RenderIcon = () => {
     if (icon === 'close')
       return (
@@ -65,7 +74,17 @@ const ScreenHeaderTitle = ({close, paddingSize, icon, iconSize = 24, title}) => 
           style={{position: 'absolute', left: 0}}>
           <RenderIcon />
         </TouchableOpacity>
-        <AppText textStyle="body3">{title}</AppText>
+        <AppText customStyle={{textTransform: 'capitalize'}} textStyle="body3">
+          {title}
+        </AppText>
+        {withOptions && (
+          <TouchableOpacity
+            onPress={openOptions}
+            activeOpacity={0.7}
+            style={{position: 'absolute', right: 0}}>
+            <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
+          </TouchableOpacity>
+        )}
       </View>
     </PaddingView>
   );

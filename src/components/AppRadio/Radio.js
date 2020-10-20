@@ -9,7 +9,7 @@ import {RadioDot} from '@/assets/images/icons';
 const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
+      activeOpacity={0.8}
       onPress={() => {
         valueChangeHandler(name);
       }}>
@@ -20,15 +20,13 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
           paddingLeft: 16,
           paddingRight: 8,
           paddingVertical: 8,
-          backgroundColor: value
-            ? Colors.primaryCream
-            : Colors.neutralsWhitesmoke,
+
           ...style,
           justifyContent: 'space-between',
         }}>
         <View style={{flexDirection: 'row'}}>
           {Icon ? <Icon /> : <></>}
-          <AppText textStyle="body3" customStyle={{marginLeft: 8}}>
+          <AppText textStyle="body3" customStyle={{textTransform:"capitalize"}} >
             {label}
           </AppText>
         </View>
@@ -51,6 +49,9 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
               borderColor: value
                 ? Colors.checkboxBorderActive
                 : Colors.checkboxBorderDefault,
+              backgroundColor: value
+                ? Colors.primaryCream
+                : Colors.neutralsWhitesmoke,
             }}>
             {value ? (
               <RadioDot width={normalize(6)} height={normalize(6)} />

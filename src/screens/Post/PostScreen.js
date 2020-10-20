@@ -17,10 +17,22 @@ import {GuestPost} from './components/GuestPost';
 import {Context} from '@/context';
 import {UserContext} from '@/context/UserContext';
 
-const PostScreen = ({togglePostModal, card}) => {
+const PostScreen = ({togglePostModal, ...props}) => {
+  console.log('Post Screen Props');
+  console.log(props.route.params);
+
+  const {card} = props?.route?.params;
+
   const [showCancelModal, setShowCancelModal] = useState(false);
   const {user} = useContext(UserContext);
-  const {setCoverPhoto, setPostCameraImage, setSelected, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+  const {
+    setCoverPhoto,
+    setPostCameraImage,
+    setSelected,
+    setPostImage,
+    setImageCount,
+    setImageCurrent,
+  } = useContext(Context);
 
   const cancelModalToggle = () => {
     setShowCancelModal(!showCancelModal);
@@ -34,9 +46,10 @@ const PostScreen = ({togglePostModal, card}) => {
       setSelected([]);
       setImageCount(0);
       setImageCurrent('');
-      setTimeout(() => {
-        togglePostModal();
-      }, 200);
+      // setTimeout(() => {
+      //   togglePostModal();
+      // }, 200);
+      props.navigation.goBack();
     }
 
     cancelModalToggle();

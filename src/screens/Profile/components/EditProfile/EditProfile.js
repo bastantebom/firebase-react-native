@@ -27,6 +27,7 @@ import {
   ProfileImageUpload,
   TransitionIndicator,
 } from '@/components';
+import {AppInput, Validator, valueHandler} from '@/components/AppInput';
 
 import storage from '@react-native-firebase/storage';
 
@@ -51,6 +52,7 @@ import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import {debounce} from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
+import DebounceInput from 'react-native-debounce-input';
 
 // create a component
 const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
@@ -106,56 +108,58 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
-  // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
-  // const usernameHandler = useCallback(debounce((username) => sendValidation(username), 2000), []);
+  const [enabled, setEnabled] = useState(false);
+  const [errors, setErrors] = useState({
+    dName: {
+      passed: true,
+      shown: false,
+      message: '',
+    },
+    name: {
+      passed: true,
+      shown: false,
+      message: '',
+    },
+    uName: {
+      passed: true,
+      shown: false,
+      message: '',
+    },
+  });
 
-  const onChangeUsername = (uName) => {
-    console.log('On change function');
+  const checkErrorState = () => {
+    let temp = true;
 
-    setVerified(false);
-    let userNameReg = /^[a-z0-9.-]*$/;
-    if (userNameReg.test(uName) && uName.length > 2) {
-      setInvalidUserFormat(false);
-      setUName(uName);
-      usernameHandler(uName);
-      // delayedUsernameValidation(uName);
+    console.log(errors);
+
+    for (const [key, value] of Object.entries(errors)) {
+      if (!value.passed) {
+        temp = false;
+        break;
+      }
+    }
+
+    if (temp) {
+      // ENABLE BUTTON
+      console.log('Button is Enabled');
+      setEnabled(true);
+      setButtonStyle(false);
     } else {
-      setUName(uName);
-      setInvalidUserFormat(true);
-      setButtonState(true);
+      // DISABLE BUTTON
+      console.log('Button is Disabled');
+      setEnabled(false);
+      setButtonStyle(true);
     }
   };
 
-  const sendValidation = async (un) => {
-    await ProfileInfoService.validateUsername({uid: user.uid, username: un})
-      .then((response) => {
-        //console.log(response);
-        console.log('THIS API IS CALLED');
-        setInvalidUser(response.valid);
-        setButtonState(!response.valid);
-        if (response.valid) {
-          setVerified(true);
-          hideIcon();
-        }
-      })
-      .catch((error) => {
-        setInvalidUser(true);
-        setButtonState(true);
-        //setVerified(false);
-        //hideIcon();
-      });
-  };
+  useEffect(() => {
+    checkErrorState();
+  }, [errors]);
 
-  const hideIcon = () => {
-    return;
-    setTimeout(() => {
-      setVerified(false);
-    }, 5000);
-  };
 
   // const
-  const [error, setError] = useState([]);
+  // const [error, setError] = useState([]);
   const [verified, setVerified] = useState(false);
 
   /*Username Validations */
@@ -477,13 +481,39 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
           </View>
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={dName}
                 label="Display Name"
                 onChangeText={(dName) => {
                   setDName(dName);
                 }}
-              />
+              /> */}
+              <Validator errorState={errors.dName}>
+                <AppInput
+                  label="Display Name"
+                  onChangeText={(dName) => {
+                    setDName();
+                    valueHandler(
+                      dName,
+                      'display_name',
+                      'dName',
+                      errors,
+                      setErrors,
+                      setDName,
+                    );
+                  }}
+                  value={dName}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      dName: {
+                        ...errors.dName,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
               <AppText
                 textStyle="caption"
                 color={Colors.profileLink}
@@ -501,16 +531,34 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 }}>
                 You can only change your Display Name twice every 14 days.
               </AppText>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={name}
                 label="Full Name"
                 customStyle={{marginBottom: 16}}
                 onChangeText={(name) => {
                   setName(name);
                 }}
-              />
+              /> */}
+              <Validator errorState={errors.name} style={{marginBottom: 16}}>
+                <AppInput
+                  label="Full Name"
+                  onChangeText={(name) =>
+                    valueHandler(name, '', 'name', errors, setErrors, setName)
+                  }
+                  value={name}
+                  onKeyPress={() => {
+                    setErrors({
+                      ...errors,
+                      name: {
+                        ...errors.name,
+                        shown: false,
+                      },
+                    });
+                  }}
+                />
+              </Validator>
               <View style={{position: 'relative'}}>
-                <FloatingAppInput
+                {/* <FloatingAppInput
                   value={uName}
                   valueHandler={setUName}
                   lowercase={true}
@@ -522,15 +570,42 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   error={error}
                   setButtonState={setButtonState}
                   // onChangeText={(uName) => onChangeUsername(uName)}
-                />
-                {/* <View style={styles.passwordToggle}>
-                  {verified ? (
+                /> */}
+
+                <Validator errorState={errors.uName} style={{marginBottom: 16}}>
+                  <AppInput
+                    label="Username"
+                    onChangeText={(uName) =>
+                      valueHandler(
+                        uName,
+                        'username',
+                        'uName',
+                        errors,
+                        setErrors,
+                        setUName,
+                        user.uid,
+                      )
+                    }
+                    value={uName}
+                    onKeyPress={() => {
+                      setErrors({
+                        ...errors,
+                        uName: {
+                          ...errors.uName,
+                          shown: false,
+                        },
+                      });
+                    }}
+                  />
+                </Validator>
+                <View style={styles.passwordToggle}>
+                  {errors.uName.passed ? (
                     <VerifiedGreen
                       width={normalize(16)}
                       height={normalize(16)}
                     />
                   ) : null}
-                </View> */}
+                </View>
               </View>
               {!invalidUser ? (
                 <AppText textStyle="caption" customStyle={styles.errorCopy}>
@@ -571,7 +646,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(8)}}>
                 Address
               </AppText>
-              <FloatingAppInput
+              {/* <FloatingAppInput
                 value={addName}
                 onChangeText={(addName) => {
                   setAddName(addName);
@@ -579,10 +654,14 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 label="Name"
                 customStyle={{marginBottom: normalize(16)}}
                 placeholder="ex. Home"
-                // validation={['email', '']}
-                // setError={setError}
-                // error={error}
-                // setButtonState={setButtonState}
+              /> */}
+              <AppInput
+                label="Address Name"
+                style={{marginBottom: normalize(16)}}
+                onChangeText={(addName) => {
+                  setAddName(addName);
+                }}
+                value={addName}
               />
               <View style={{position: 'relative'}}>
                 <TouchableOpacity onPress={() => toggleMap()}>
@@ -592,6 +671,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                     customStyle={{marginBottom: normalize(16)}}
                     onFocus={() => toggleMap()}
                   />
+                  {/* <AppInput
+                    label="Address"
+                    editable={false}
+                    style={{marginBottom: normalize(16)}}
+                    // onChangeText={() => {
+                    //   return;
+                    // }}
+                    value={stringAddress}
+                    onFocus={() => toggleMap()}
+                  /> */}
                   <View
                     style={{
                       position: 'absolute',
@@ -611,7 +700,15 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                   setAddDet(addDet);
                 }}
               />
-              <FloatingAppInput
+              {/* <AppInput
+                label="Address Details"
+                style={{marginBottom: normalize(16)}}
+                onChangeText={(addDet) => {
+                  setAddDet(addDet);
+                }}
+                value={addDet}
+              /> */}
+              {/* <FloatingAppInput
                 value={addNote}
                 label="Notes"
                 placeholder="ex. Yellow Gate"
@@ -619,6 +716,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 onChangeText={(addNote) => {
                   setAddNote(addNote);
                 }}
+              /> */}
+
+              <AppInput
+                label="Notes"
+                style={{marginBottom: normalize(16)}}
+                onChangeText={(addNote) => {
+                  setAddNote(addNote);
+                }}
+                value={addNote}
+                placeholder="ex. Yellow Gate"
               />
             </PaddingView>
           </View>
@@ -680,8 +787,8 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(16)}}
                 keyboardType="phone-pad"
                 validation={['number']}
-                setError={setError}
-                error={error}
+                // setError={setError}
+                // error={error}
                 setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
@@ -752,9 +859,16 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
               text="Save"
               type="primary"
               height="xl"
-              disabled={buttonDisable}
+              disabled={!enabled}
               // disabled
-              customStyle={{...buttonStyle}}
+              customStyle={{
+                backgroundColor: !enabled
+                  ? Colors.buttonDisable
+                  : Colors.primaryYellow,
+                borderColor: !enabled
+                  ? Colors.buttonDisable
+                  : Colors.primaryYellow,
+              }}
               onPress={() => updateProfile()}
             />
           </View>

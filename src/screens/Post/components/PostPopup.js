@@ -169,6 +169,8 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
   const [sellButton] = useState(new Animated.Value(65 + 70));
   const [needButton] = useState(new Animated.Value(70));
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     setTimeout(() => {
       Animated.parallel([
@@ -284,7 +286,17 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
                 activeOpacity={0.7}
                 style={[styles.button, styles.pink]}
                 onPress={() => {
-                  selectCard('need');
+                  // selectCard('need');
+                  closeModal()
+                  navigation.navigate('NBTScreen', {
+                    screen: 'CreatePost',
+                    params: {
+                      screen: 'CreatePostScreen',
+                      params: {
+                        card: 'need'
+                      }
+                    },
+                  });
                 }}>
                 <View style={styles.iconHolder}>
                   <PostService width={normalize(25)} height={normalize(25)} />
@@ -308,7 +320,17 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
                 activeOpacity={0.7}
                 style={[styles.button, styles.blue]}
                 onPress={() => {
-                  selectCard('sell');
+                  // selectCard('sell');
+                  closeModal()
+                  navigation.navigate('NBTScreen', {
+                    screen: 'CreatePost',
+                    params: {
+                      screen: 'CreatePostScreen',
+                      params: {
+                        card: 'sell'
+                      }
+                    },
+                  });
                 }}>
                 <View style={styles.iconHolder}>
                   <PostSell width={normalize(25)} height={normalize(25)} />
@@ -340,7 +362,17 @@ const PopupButtons = ({selectCard, closePostButtons, spinValue}) => {
                 activeOpacity={0.7}
                 style={[styles.button, styles.green]}
                 onPress={() => {
-                  selectCard('post');
+                  // selectCard('post');
+                  closeModal()
+                  navigation.navigate('NBTScreen', {
+                    screen: 'CreatePost',
+                    params: {
+                      screen: 'CreatePostScreen',
+                      params: {
+                        card: 'post'
+                      }
+                    },
+                  });
                 }}>
                 <View style={styles.iconHolder}>
                   <PostNeed width={normalize(25)} height={normalize(25)} />
@@ -385,7 +417,6 @@ const styles = StyleSheet.create({
     elevation: 8,
     overflow: 'hidden',
     height: normalize(50),
-
   },
   iconHolder: {
     marginRight: 12,

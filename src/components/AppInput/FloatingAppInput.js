@@ -23,11 +23,12 @@ const FloatingAppInput = (props) => {
     error,
     setButtonState,
     onInputFocus,
+    onInputBlur,
     onChangeTextInput,
     setChangingValidation,
     changingValidation,
     setValidationRule,
-    lowercase,
+    lowercase = false,
   } = props;
 
   const [internalValue, setInternalValue] = useState(value);
@@ -85,7 +86,7 @@ const FloatingAppInput = (props) => {
     // console.log("Compare values")
     let currentError = error;
 
-    console.log('VALIDATION:', validation);
+    // console.log('VALIDATION:', validation);
 
     setValidationError();
 
@@ -206,7 +207,7 @@ const FloatingAppInput = (props) => {
   };
 
   useEffect(() => {
-    console.log('Validation Current:', validation);
+    // console.log('Validation Current:', validation);
     // setValidationError('');
     if (setValidationRule)
       changingValidation
@@ -224,6 +225,9 @@ const FloatingAppInput = (props) => {
   const onBlurInput = () => {
     setIsActive(false);
     animateBlur();
+
+    // console.log('BLURRING');
+    onInputBlur ? onInputBlur() : null;
   };
 
   useEffect(() => {
@@ -317,12 +321,8 @@ const FloatingAppInput = (props) => {
           onFocus={onFocusInput}
           onBlur={onBlurInput}
           blurOnSubmit
+          ref={props.inputRef}
         />
-        <View style={styles.passwordToggle}>
-          {verified ? (
-            <VerifiedGreen width={normalize(16)} height={normalize(16)} />
-          ) : null}
-        </View>
       </View>
       {validation.length > 0 && (
         <AppText

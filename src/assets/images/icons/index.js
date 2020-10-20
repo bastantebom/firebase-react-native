@@ -137,6 +137,8 @@ import PostInfo from './PostInfo.svg';
 import PostNavigation from './PostNavigation.svg';
 import PostPencil from './PostPencil.svg';
 import PostRemove from './PostRemove.svg';
+import PostAdd from './post-add.svg';
+
 import ProfileImageDefault from './profile-image-default.svg';
 
 import ContactTelephone from './contact-telephone.svg';
@@ -144,7 +146,8 @@ import ContactEmail from './contact-email.svg';
 
 import LoginFB from './new-facebook.svg';
 import LoginGoogle from './new-google.svg';
-import LoginApple from './login_Apple03.svg';
+// import LoginApple from './apple.svg';
+import Public from './public.svg';
 
 //OWN MENU ICONS
 import HidePost from './hide-post.svg';
@@ -160,8 +163,26 @@ import Notifications from './notifications.svg';
 import EmailContactUs from './email-contactus.svg';
 import CallContactUs from './call-contactus.svg';
 import LocationContactUs from './location-contactus.svg';
+import AngleDown from './AngleDown.svg';
+import FormArrowRight from './FormArrowRight.svg';
+import LoginApple from './login_Apple03.svg';
+
+import CircleAdd from './CircleAdd.svg';
+import VerticalEllipsis from './VerticalEllipsis.svg'
+
+//Calendar
+import CalendarArrowLeft from '@/assets/images/icons/calendar-arrow-left.svg';
+import CalendarArrowRight from '@/assets/images/icons/calendar-arrow-right.svg';
+// import LoginApple from './apple.svg';
+// import Public from './public.svg';
 
 export {
+  VerticalEllipsis,
+  CircleAdd,
+  FormArrowRight,
+  AngleDown,
+  PostAdd,
+  Public,
   ContactTelephone,
   ContactEmail,
   CircleTickWhite,
@@ -278,4 +299,6 @@ export {
   EmailContactUs,
   CallContactUs,
   LocationContactUs,
+  CalendarArrowLeft,
+  CalendarArrowRight
 };
