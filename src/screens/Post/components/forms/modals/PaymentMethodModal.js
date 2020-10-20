@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   SafeAreaView,
@@ -11,9 +11,9 @@ import {
   AppInput,
   ScreenHeaderTitle,
 } from '@/components';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-const PaymentMethodModal = ({closeModal}) => { 
+const PaymentMethodModal = ({ closeModal }) => {
   const navigation = useNavigation();
   const [cash, setCash] = useState(false);
   const [gcash, setGcash] = useState(false);
@@ -23,16 +23,16 @@ const PaymentMethodModal = ({closeModal}) => {
   const [bank, setBank] = useState('');
 
   return (
-    <SafeAreaView style={{flex: 1}} >
+    <SafeAreaView style={{ flex: 1 }} >
       <ScreenHeaderTitle
         close={() => navigation.goBack()}
         title="Payment Methods"
         paddingSize={2}
       />
-      <View style={{padding: 16}}>
+      <View style={{ padding: 16 }}>
         <AppText textStyle="body2">Something, something</AppText>
         <AppText textStyle="captionDashboard">Something, something</AppText>
-        <View 
+        <View
           style={styles.withBorder}>
           <View
             style={{
@@ -48,7 +48,7 @@ const PaymentMethodModal = ({closeModal}) => {
             />
           </View>
         </View>
-        <View 
+        <View
           style={styles.withBorder}>
           <View
             style={{
@@ -64,7 +64,7 @@ const PaymentMethodModal = ({closeModal}) => {
             />
           </View>
         </View>
-        <View 
+        <View
           style={styles.withBorder}>
           <View
             style={{
@@ -96,7 +96,7 @@ const PaymentMethodModal = ({closeModal}) => {
           </View>
           {onlineBanking && (
             <AppInput
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
               label="Banks Preferred"
               placeholder="BDO, BPI"
               // value={bank}
@@ -119,7 +119,7 @@ const PaymentMethodModal = ({closeModal}) => {
           </View>
           {others && (
             <AppInput
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
               label="Other methods"
               placeholder="PayPal"
               // value={bank}
@@ -133,7 +133,7 @@ const PaymentMethodModal = ({closeModal}) => {
 
 const styles = StyleSheet.create({
   withBorder: {
-    borderBottomWidth: 1, 
+    borderBottomWidth: 1,
     borderBottomColor: '#e8e8e8',
   }
 })
