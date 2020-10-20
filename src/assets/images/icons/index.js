@@ -195,7 +195,7 @@ import CalendarArrowRight from '@/assets/images/icons/calendar-arrow-right.svg';
 // import LoginApple from './apple.svg';
 // import Public from './public.svg';
 
-import Search from './search.svg';
+// import Search from './search.svg';
 
 export {
   VerticalEllipsis,
@@ -319,7 +319,6 @@ export {
   RedBadge,
   Bee,
   ArrowLeft,
-  Search,
   HidePost,
   AboutRed,
   BlockedUsers,
