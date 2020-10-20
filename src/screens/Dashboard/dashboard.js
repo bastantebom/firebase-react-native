@@ -46,6 +46,7 @@ import {VerificationScreen} from '@/screens/Dashboard/Verification';
 
 import SearchBox from './components/Search/Searchbox';
 import SearchResults from './components/Search/SearchResults';
+import { ease } from 'react-native/Libraries/Animated/src/Easing';
 
 const { height, width } = Dimensions.get('window');
 
@@ -55,7 +56,7 @@ function Dashboard() {
 
   const [modalState, setModalState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [animateLocationBar, setAnimateLocationBar] = useState(false);
+  const [animateLocationBar, setAnimateLocationBar] = useState(0);
 
   const { posts } = useContext(Context);
 
@@ -70,12 +71,10 @@ function Dashboard() {
   };
 
   const handleScroll = (event) => {
-    // console.log(event.nativeEvent.contentOffset.y);
-    // console.log('event.nativeEvent.contentOffset.y');
-    if( event.nativeEvent.contentOffset.y <= 150 ) {
-      setAnimateLocationBar(!animateLocationBar)
-    }
+    setAnimateLocationBar(event.nativeEvent.contentOffset.y)
   }
+
+  const [scrollY] = useState(new Animated.Value(0))
 
   return (
     <>
@@ -101,10 +100,24 @@ function Dashboard() {
         <View style={styles.container}>
           <SearchBarWithFilter 
             toggleFilter={toggleModal} 
-            animateLocationBar={animateLocationBar} 
+            animateLocationBar={animateLocationBar}
+            scrollY={scrollY}
           />
           <Animated.ScrollView
-            onScroll={handleScroll}
+            // onScroll={handleScroll}
+            // contentContainerStyle={{
+            //   paddingTop: normalize(100),
+            // }}
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: { contentOffset: { y: scrollY } }
+                }
+              ],
+              {
+                useNativeDriver: true  // <- Native Driver used for animated events
+              }
+            )}
             scrollEventThrottle={16}
           >
             <Posts
@@ -143,7 +156,7 @@ function Dashboard() {
 }
 
 
-const SearchBarWithFilter = ({ toggleFilter, animateLocationBar }) => {
+const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
   
   const SHOW_HEIGHT = normalize(20);
   const HIDE_HEIGHT = 0;
@@ -189,69 +202,29 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar }) => {
     setPage(0);
   }
 
-  // const scaling = animateLocationBar ? 0 : 1;
+  var headMov = scrollY.interpolate({
+    inputRange: [0, 180, 181],
+    outputRange: [0, -180, -180]
+  });
 
-  // useEffect(() => {
-  //   if(animateLocationBar) {
-  //     Animated.parallel([
-  //       Animated.timing(locationBarHeight, {
-  //         toValue: HIDE_HEIGHT,
-  //         duration: 10,
-  //         useNativeDriver: true
-  //       })
-  //     ]).start();
-  //   } else {
-  //     Animated.parallel([
-  //       Animated.timing(locationBarHeight, {
-  //         toValue: SHOW_HEIGHT,
-  //         duration: 10,
-  //         useNativeDriver: true
-  //       })
-  //     ]).start();
-  //   }
-  // })
+  var barOpacity = scrollY.interpolate({
+    inputRange: [0, 30, 50],
+    outputRange: [1, 0, 0]
+  });
 
-  // console.log(animateLocationBar)
-  // console.log('animateLocationBar')
-
-const [animatedValue] = useState(new Animated.Value(0));
-const [initialScale] = useState(1);
-
-const width = 100;
-const height = 20;
-const scale = {
-  transform: [
-    {
-      scale: animatedValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1]
-      })
-    }
-  ]
-};
-
-const position= {
-  transform: [
-    // {
-    //   translateX: animatedValue.interpolate({
-    //     inputRange: [0, 1],
-    //     outputRange: [1, 0]
-    //   })
-    // },
-    {
-      translateY: animatedValue.interpolate({
-        inputRange: [0, 20, 40],
-        outputRange: [40, 20, 0]
-      })
-    }
-  ]
-};
+  var barHeight = scrollY.interpolate({
+    inputRange: [0, 180, 181],
+    outputRange: [0, -180, -180],
+  });
 
   return (
     <View>
-      <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
-        <View style={{ margin: 16, height: searchType === 'posts' ? normalize(47.5) : normalize(107) }}
-          >
+      <LinearGradient colors={['#ECEFF8', '#F8F9FC']} style={{ position: 'relative' }}>
+        <Animated.View style={{ 
+          margin: 16, 
+          height: searchType === 'posts' ? normalize(47.5) : normalize(107),
+          // transform: [{ translateY: barHeight }]
+        }}>
           <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
             <View 
               style={{ 
@@ -297,16 +270,24 @@ const position= {
               </View>
             }
           </View>
-        </View>
-        <Animated.View style={scale}>
-          <Animated.View 
-            // style={{ 
-            //   display: searchBarFocused ? 'none' : 'flex',
-            // }, [position]}
-            style={position}
-          >
-            <LocationSearch />
-          </Animated.View>
+        </Animated.View>
+        <Animated.View 
+          style={{ 
+            display: searchBarFocused ? 'none' : 'flex',
+            // position: "absolute",
+            // height: {
+            //   transform: [{
+            //     translateY: barHeight
+            //   }]
+            // },
+            width: width,
+            // top: normalize(90),
+            // backgroundColor: headColor,
+            transform: [{ translateY: headMov }],
+            opacity: barOpacity
+          }}
+        >
+          <LocationSearch />
         </Animated.View>
       </LinearGradient>
       <View
@@ -413,9 +394,6 @@ const LocationSearch = () => {
             horizontal={true}
             style={{}}
             showsHorizontalScrollIndicator={false}
-            // onScrollBeginDrag={() => console.log('ajskajskjaksj')}
-            // onContentSizeChange={(contentWidth, contentHeight) => console.log(contentHeight, contentWidth)}
-            // onLayout={(contentHeight) => console.log(contentHeight, 'contentHeight')}
           >
             <View style={styles.locationOption}>
               <NavigationArrow width={normalize(16)} height={normalize(16)} />
