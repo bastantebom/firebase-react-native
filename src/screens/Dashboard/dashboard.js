@@ -202,6 +202,9 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
     setPage(0);
   }
 
+  // const FULL_HEIGHT = normalize(107);
+  // const HIDDEN_HEIGHT = normalize(47.5);
+
   var headMov = scrollY.interpolate({
     inputRange: [0, 180, 181],
     outputRange: [0, -180, -180]
