@@ -18,15 +18,23 @@ import { useNavigation } from '@react-navigation/native';
 import {
   AppText,
   ScreenHeaderTitle,
+<<<<<<< HEAD
   BottomSheetHeader,
   FloatingAppInput
+=======
+  BottomSheetHeader
+>>>>>>> eb8b930... wip: date and time picker modals
 } from '@/components';
 import { normalize } from '@/globals';
 import { CalendarArrowLeft, CalendarArrowRight, ArrowRight, Calendar } from '@/assets/images/icons';
 
+<<<<<<< HEAD
 
 const PostExpiryModal = ({ closeModal }) => {
   const navigation = useNavigation();
+=======
+const PostExpiryModal = ({closeModal}) => {
+>>>>>>> eb8b930... wip: date and time picker modals
   const [timeModal, showTimeModal] = useState(false);
   const [dateModal, showDateModal] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -154,6 +162,7 @@ const PostExpiryModal = ({ closeModal }) => {
             <BottomSheetHeader />
             <View style={{paddingTop: 30}}>
               <AppText textStyle="body3">Set Time</AppText>
+<<<<<<< HEAD
               <View style={{position: 'relative'}}>
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -184,6 +193,15 @@ const PostExpiryModal = ({ closeModal }) => {
                   </AppText>
                 </TouchableOpacity>
               </View>
+=======
+              <TouchableOpacity
+                style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+                onPress={() => showDateModal(true)}>
+                <AppText textStyle="button2">
+                  Next: Set Date
+                </AppText>
+              </TouchableOpacity>
+>>>>>>> eb8b930... wip: date and time picker modals
             </View>
             <Modal
               isVisible={dateModal}
@@ -194,22 +212,34 @@ const PostExpiryModal = ({ closeModal }) => {
               style={{margin: 0, justifyContent: 'flex-end'}}
               customBackdrop={
                 <TouchableWithoutFeedback
+<<<<<<< HEAD
                   onPress={() => [showDateModal(false), showTimeModal(false)]}>
+=======
+                  onPress={() => showDateModal(false)}>
+>>>>>>> eb8b930... wip: date and time picker modals
                   <View style={{flex: 1, backgroundColor: 'transparent'}} />
                 </TouchableWithoutFeedback>
               }>
               <View 
                 style={{
                 backgroundColor: 'white',
+<<<<<<< HEAD
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
                 paddingHorizontal: 20,
                 paddingBottom: 30
+=======
+                height: '28%',
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                paddingHorizontal: 20
+>>>>>>> eb8b930... wip: date and time picker modals
               }}>
                 
               <BottomSheetHeader />
               <View style={{paddingTop: 30}}>
                 <AppText textStyle="body3">Set Date</AppText>
+<<<<<<< HEAD
                 <View style={{zIndex: 999999, paddingTop: 20}}>
                   <CalendarPicker
                     startFromMonday={true}
@@ -232,6 +262,15 @@ const PostExpiryModal = ({ closeModal }) => {
                     </AppText>
                   </TouchableOpacity>
                 </View>
+=======
+                <TouchableOpacity
+                  style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+                  onPress={() => [showDateModal(false), showTimeModal(false)]}>
+                  <AppText textStyle="button2">
+                    Save
+                  </AppText>
+                </TouchableOpacity>
+>>>>>>> eb8b930... wip: date and time picker modals
               </View>
 
               <Modal
@@ -251,9 +290,13 @@ const PostExpiryModal = ({ closeModal }) => {
             </View>
             </Modal>
           </View>
+<<<<<<< HEAD
         </Modal> */}
-      </View>
+=======
+        </Modal>
+>>>>>>> eb8b930... wip: date and time picker modals
     </View>
+    </View >
   );
 }
 
