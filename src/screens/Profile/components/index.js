@@ -19,6 +19,10 @@ import Gender from './EditProfile/Gender.js';
 import ContactServbees from './HelpSupport/ContactUs.js';
 import FaqScreen from './HelpSupport/Faq';
 
+import UpdateTempScreen from './Temperature/UpdateTemp';
+import TempHistory from './Temperature/TempHistory';
+import TempAboutScreen from './Temperature/TempAbout';
+
 export {
   About,
   AboutServbees,
@@ -36,4 +40,7 @@ export {
   InviteFriends,
   ContactServbees,
   FaqScreen,
+  UpdateTempScreen,
+  TempHistory,
+  TempAboutScreen,
 };

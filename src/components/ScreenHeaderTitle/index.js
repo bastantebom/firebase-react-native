@@ -24,7 +24,15 @@ import {Colors, normalize} from '@/globals';
  * } param0
  */
 
-const ScreenHeaderTitle = ({close, paddingSize, icon, iconSize = 24, title}) => {
+const ScreenHeaderTitle = ({
+  close,
+  paddingSize,
+  icon,
+  iconSize = 24,
+  title,
+  rightLink,
+  rightLinkEvent,
+}) => {
   const RenderIcon = () => {
     if (icon === 'close')
       return (
@@ -66,6 +74,16 @@ const ScreenHeaderTitle = ({close, paddingSize, icon, iconSize = 24, title}) => 
           <RenderIcon />
         </TouchableOpacity>
         <AppText textStyle="body3">{title}</AppText>
+        {rightLink ? (
+          <TouchableOpacity
+            onPress={rightLinkEvent}
+            activeOpacity={0.7}
+            style={{position: 'absolute', right: 0}}>
+            <AppText textStyle="captionConstant" color={Colors.contentOcean}>
+              {rightLink}
+            </AppText>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </PaddingView>
   );
