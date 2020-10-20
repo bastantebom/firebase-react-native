@@ -57,7 +57,6 @@ import AddItemModal from './modals/AddItemModal';
 import PrivacyModal from './modals/PrivacyModal';
 import PaymentMethodModal from './modals/PaymentMethodModal';
 import ShippingMethodModal from './modals/ShippingMethodModal';
-import PostExpiryModal from './modals/PostExpiryModal';
 
 const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
   const {
@@ -719,6 +718,49 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           data={data}
           closeModal={() => showAddItemModal(false)}
         />
+      </Modal>
+      <Modal
+        isVisible={privacyModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showPrivacyModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={paymentMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={shippingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
       </Modal>
       <Modal
         isVisible={privacyModal}
