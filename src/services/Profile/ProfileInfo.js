@@ -69,7 +69,6 @@ const follow = (uid, follow) => {
     headers: {
       'Content-Type': 'application/json',
     },
-
   });
 };
 
@@ -97,7 +96,18 @@ const getFollowing = async (uid) => {
   });
 };
 
-
+const updateTemp = async (payload) => {
+  //GET /users/:uid/followers
+  //console.log(`/users/${payload.uid}/temperature`);
+  return await BaseAPI({
+    url: `/users/${payload.uid}/temperature`,
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  });
+};
 
 const ProfileInfoService = {
   getUser,
@@ -108,6 +118,7 @@ const ProfileInfoService = {
   follow,
   getFollowers,
   getFollowing,
+  updateTemp,
 };
 
 export default ProfileInfoService;

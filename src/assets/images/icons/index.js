@@ -163,6 +163,8 @@ import EmailContactUs from './email-contactus.svg';
 import CallContactUs from './call-contactus.svg';
 import LocationContactUs from './location-contactus.svg';
 
+import LatestTemp from './current-temp.svg';
+
 export {
   ContactTelephone,
   ContactEmail,
@@ -282,4 +284,5 @@ export {
   LocationContactUs,
   HeaderFollowingBlack,
   HeaderFollowBlack,
+  LatestTemp,
 };

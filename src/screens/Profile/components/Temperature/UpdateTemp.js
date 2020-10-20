@@ -13,34 +13,80 @@ import {
   PaddingView,
   AppText,
   AppButton,
-  AppInput,
   FloatingAppInput,
 } from '@/components';
 import {TempHistory, TempAboutScreen} from '@/screens/Profile/components';
+import {UserContext} from '@/context/UserContext';
 
-import {ContactUsImg} from '@/assets/images';
-import {
-  EmailContactUs,
-  CallContactUs,
-  LocationContactUs,
-} from '@/assets/images/icons';
 import {normalize, Colors} from '@/globals';
 import Modal from 'react-native-modal';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
 // create a component
 const UpdateTemp = ({toggleUpdateTemp}) => {
+  const {userInfo, user, setUserInfo} = useContext(UserContext);
   const [history, setHistory] = useState(false);
+  const [tempAbout, setTempAbout] = useState(false);
+  const [temp, setTemp] = useState('');
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: Colors.buttonDisable,
+    borderColor: Colors.buttonDisable,
+  });
+  const [buttonDisable, setButtonDisable] = useState(true);
+  const [IS_UPDATING, setIS_UPDATING] = useState(false);
+
   const toggleHistory = () => {
     setHistory(!history);
   };
 
-  const [tempAbout, setTempAbout] = useState(false);
   const toggleTempAbout = () => {
     setTempAbout(!tempAbout);
   };
 
-  const [temp, setTemp] = useState('');
+  const onTempChangeHandler = (temp) => {
+    if (temp > 0) {
+      setButtonState(false);
+    } else {
+      setButtonState(true);
+    }
+    setTemp(temp);
+  };
+
+  const setButtonState = (j) => {
+    //console.log(j);
+    if (j) {
+      setButtonStyle({
+        backgroundColor: Colors.buttonDisable,
+        borderColor: Colors.buttonDisable,
+      });
+    } else {
+      setButtonStyle({});
+    }
+    //console.log(buttonStyle);
+    setButtonDisable(j);
+  };
+
+  const updateTempHandler = () => {
+    setIS_UPDATING(true);
+    ProfileInfoService.updateTemp({
+      uid: user.uid,
+      temperature: temp,
+    })
+      .then((response) => {
+        //console.log(response);
+        if (response.success) {
+          setIS_UPDATING(false);
+          setTemp('');
+        } else {
+          setIS_UPDATING(false);
+        }
+      })
+      .catch((error) => {
+        setIS_UPDATING(false);
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -77,7 +123,7 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
               keyboardType="number-pad"
               customStyle={{marginTop: 16}}
               onChangeText={(temp) => {
-                setTemp(temp);
+                onTempChangeHandler(temp);
               }}
             />
           </View>
@@ -85,10 +131,10 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
           <AppButton
             text="Save"
             type="primary"
-            size="l"
             height="xl"
-            onPress={() => {}}
-            customStyle={{marginTop: normalize(20)}}
+            disabled={buttonDisable}
+            customStyle={{...buttonStyle}}
+            onPress={() => updateTempHandler()}
           />
         </PaddingView>
       </SafeAreaView>
