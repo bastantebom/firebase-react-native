@@ -57,6 +57,7 @@ import AddItemModal from './modals/AddItemModal';
 import PrivacyModal from './modals/PrivacyModal';
 import PaymentMethodModal from './modals/PaymentMethodModal';
 import ShippingMethodModal from './modals/ShippingMethodModal';
+import PostExpiryModal from './modals/PostExpiryModal';
 
 const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
   const {
@@ -890,6 +891,20 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           height: Dimensions.get('window').height,
         }}>
         <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={postExpiryModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PostExpiryModal closeModal={() => showPostExpiryModal(false)} />
       </Modal>
     </>
   );

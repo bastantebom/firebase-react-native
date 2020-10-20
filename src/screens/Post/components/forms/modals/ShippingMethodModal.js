@@ -9,7 +9,7 @@ import {
   TextInput
 } from 'react-native';
 
-import Slider from '@react-native-community/slider';
+// import Slider from '@react-native-community/slider';
 
 import {
   AppText,
@@ -62,10 +62,8 @@ const ShippingMethodModal = ({ closeModal }) => {
             }}>
             <AppText textStyle="body3">Pick up</AppText>
             <Switch
-              // value={pickUp}
-              // onValueChange={() => setPickUp(!pickUp)}
-              onValueChange={() => setActiveSwitch(1)}
-              value={activeSwitch === 1}
+              value={pickUp}
+              onValueChange={() => setPickUp(!pickUp)}
             />
           </View>
           <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
@@ -94,11 +92,8 @@ const ShippingMethodModal = ({ closeModal }) => {
             }}>
             <AppText textStyle="body3">Delivery</AppText>
             <Switch
-              // value={delivery}
-              // onValueChange={() => setDelivery(!delivery)}
-              // onValueChange={switchTwo}
-              onValueChange={() => setActiveSwitch(2)}
-              value={activeSwitch === 2}
+              value={delivery}
+              onValueChange={() => setDelivery(!delivery)}
             />
           </View>
           <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
@@ -230,6 +225,28 @@ const ShippingMethodModal = ({ closeModal }) => {
               </PaddingView>
             </>
           )}
+
+          {/* <PaddingView paddingSize={2}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
+              <AppText textStyle="promo">Browse Offers Within</AppText>
+              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <AppText textStyle="caption" color="#999">0</AppText>
+              <Slider
+                style={{width: '90%'}}
+                minimumValue={0}
+                maximumValue={200}
+                step={5}
+                value={rangeValue}
+                onValueChange={rangeValue => setRangeValue(rangeValue)}
+                minimumTrackTintColor={Colors.primaryYellow}
+                maximumTrackTintColor={Colors.neutralGray}
+                thumbTintColor={Colors.primaryYellow}
+              />
+              <AppText textStyle="caption" color="#999">200</AppText>
+            </View>
+          </PaddingView> */}
         </View>
       </ScrollView>
     </SafeAreaView>

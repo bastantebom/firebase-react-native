@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -13,7 +13,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TimePicker from 'react-native-simple-time-picker';
 import moment from 'moment';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   AppText,
@@ -21,11 +21,11 @@ import {
   BottomSheetHeader,
   FloatingAppInput
 } from '@/components';
-import {normalize} from '@/globals';
+import { normalize } from '@/globals';
 import { CalendarArrowLeft, CalendarArrowRight, ArrowRight, Calendar } from '@/assets/images/icons';
 
 
-const PostExpiryModal = ({closeModal}) => { 
+const PostExpiryModal = ({ closeModal }) => {
   const navigation = useNavigation();
   const [timeModal, showTimeModal] = useState(false);
   const [dateModal, showDateModal] = useState(false);
@@ -45,17 +45,17 @@ const PostExpiryModal = ({closeModal}) => {
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
   };
- 
+
   const showMode = (currentMode) => {
     setShow(true);
     setShowTime(true);
     setMode(currentMode);
   };
- 
+
   const showDatepicker = () => {
     showMode('date');
   };
- 
+
   const showTimepicker = () => {
     showMode('time');
   };
@@ -77,15 +77,15 @@ const PostExpiryModal = ({closeModal}) => {
         paddingSize={2}
         close={() => navigation.goBack()}
       />
-      <View style={{padding: normalize(16), height: '100%'}}>
-        <View style={{flex: .8}}>
+      <View style={{ padding: normalize(16), height: '100%' }}>
+        <View style={{ flex: .8 }}>
           <AppText textStyle="body2">Something, something</AppText>
           <AppText textStyle="captionDashboard">Something, something</AppText>
           <TouchableOpacity
             style={styles.btnTransparent}
             onPress={showDatepicker}>
             <AppText textStyle="button2">
-              Set Date 
+              Set Date
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -109,8 +109,8 @@ const PostExpiryModal = ({closeModal}) => {
         </View>
         <TouchableOpacity
           style={styles.btnYellow}
-          // onPress={() => [showDateModal(false), showTimeModal(false)]}
-          >
+        // onPress={() => [showDateModal(false), showTimeModal(false)]}
+        >
           <AppText textStyle="button2">
             Set Post Expiry
           </AppText>
@@ -265,21 +265,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   btnTransparent: {
-    paddingVertical: 12, 
-    width: '100%', 
+    paddingVertical: 12,
+    width: '100%',
     alignItems: 'center',
-    backgroundColor: 'transparent', 
-    borderWidth: 1, 
-    borderColor: '#000', 
-    borderRadius: 3 ,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 3,
     marginTop: normalize(20)
   },
   btnYellow: {
-    paddingVertical: 12, 
-    width: '100%', 
-    alignItems: 'center', 
-    backgroundColor: '#FFD400', 
-    borderRadius: 3 
+    paddingVertical: 12,
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#FFD400',
+    borderRadius: 3
   }
 })
 
