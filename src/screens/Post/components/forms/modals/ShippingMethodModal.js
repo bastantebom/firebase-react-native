@@ -62,8 +62,10 @@ const ShippingMethodModal = ({ closeModal }) => {
             }}>
             <AppText textStyle="body3">Pick up</AppText>
             <Switch
-              value={pickUp}
-              onValueChange={() => setPickUp(!pickUp)}
+              // value={pickUp}
+              // onValueChange={() => setPickUp(!pickUp)}
+              onValueChange={() => setActiveSwitch(1)}
+              value={activeSwitch === 1}
             />
           </View>
           <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
@@ -92,8 +94,11 @@ const ShippingMethodModal = ({ closeModal }) => {
             }}>
             <AppText textStyle="body3">Delivery</AppText>
             <Switch
-              value={delivery}
-              onValueChange={() => setDelivery(!delivery)}
+              // value={delivery}
+              // onValueChange={() => setDelivery(!delivery)}
+              // onValueChange={switchTwo}
+              onValueChange={() => setActiveSwitch(2)}
+              value={activeSwitch === 2}
             />
           </View>
           <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
@@ -225,7 +230,6 @@ const ShippingMethodModal = ({ closeModal }) => {
               </PaddingView>
             </>
           )}
-
         </View>
       </ScrollView>
     </SafeAreaView>
