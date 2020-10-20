@@ -180,6 +180,11 @@ const styles = StyleSheet.create({
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(13),
   },
+  activity: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(defaultFontSize - 6),
+    letterSpacing: 0.8,
+  },
 });
 
 export default AppText;

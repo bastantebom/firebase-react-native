@@ -1,46 +1,48 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
+  StyleSheet,
 } from 'react-native';
-import Modal from 'react-native-modal';
+import { useNavigation } from '@react-navigation/native';
 
-import {ProfileList, AppText} from '@/components';
+import { AppText } from '@/components';
+import { normalize } from '@/globals';
+
+import IllustHive from '@/assets/images/hive-img1.svg';
 
 const Hive = () => {
-  const [followersModal, setFollowersModal] = useState(false);
 
-  const toggleFollowersModal = () => {
-    setFollowersModal(!followersModal);
-  };
+  const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <TouchableOpacity onPress={toggleFollowersModal}>
-        <AppText>Open modal</AppText>
+    <SafeAreaView style={styles.contentWrapper}>
+      <IllustHive />
+      <AppText
+        textStyle="body1"
+        customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
+        Under Construction
+        </AppText>
+      <TouchableOpacity
+        style={{ marginTop: 40, paddingVertical: 12, width: '100%', alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+        onPress={() => navigation.navigate('Servbees')}>
+        <AppText textStyle="button2">
+          Go to Dashboard
+        </AppText>
       </TouchableOpacity>
-
-      <Modal
-        isVisible={followersModal}
-        animationIn="slideInUp"
-        animationInTiming={750}
-        animationOut="slideOutLeft"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-          justifyContent: 'flex-start'
-        }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
-
-        <ProfileList closeModal={toggleFollowersModal} />
-      </Modal>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  contentWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: normalize(16),
+    textAlign: 'center',
+    backgroundColor: 'white',
+  }
+});
 
 export default Hive;

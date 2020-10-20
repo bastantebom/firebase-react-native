@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,10 +7,10 @@ import {
   Text,
 } from 'react-native';
 
-import {AppText} from '@/components';
-import {Colors, normalize} from '@/globals';
+import { AppText } from '@/components';
+import { Colors, normalize } from '@/globals';
 
-const TabNavigation = ({routesList, bottomTab}) => {
+const TabNavigation = ({ routesList, bottomTab, activityTab }) => {
   if (!routesList)
     return <AppText color="red">routeList props is required</AppText>;
 
@@ -29,13 +29,13 @@ const TabNavigation = ({routesList, bottomTab}) => {
         <TouchableOpacity
           key={route.key}
           activeOpacity={0.7}
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           onPress={() => tabChangeHandler(route.key, index)}>
           <View style={styles.navigationItem}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <AppText
                 textStyle="tabNavigation"
-                customStyle={{textAlign: 'center'}}
+                customStyle={{ textAlign: 'center' }}
                 color={
                   activeTab === route.key
                     ? Colors.contentEbony
@@ -43,16 +43,18 @@ const TabNavigation = ({routesList, bottomTab}) => {
                 }>
                 {route.title}
               </AppText>
-              {/* <View
-                style={{
-                  backgroundColor: Colors.neutralsGainsboro,
-                  height: normalize(19),
-                  paddingHorizontal: 4,
-                  borderRadius: 8,
-                  marginLeft: 8,
-                }}>
-                <AppText>{route.numberBadge}</AppText>
-              </View> */}
+              {route.numberBadge ? (
+                <View
+                  style={{
+                    backgroundColor: Colors.neutralsGainsboro,
+                    height: normalize(19),
+                    paddingHorizontal: 4,
+                    borderRadius: 8,
+                    marginLeft: 8,
+                  }}>
+                  <AppText>{route.numberBadge}</AppText>
+                </View>
+              ) : <></>}
             </View>
 
             <View
@@ -87,15 +89,16 @@ const TabNavigation = ({routesList, bottomTab}) => {
   // }, []);
 
   return (
-    <View style={[styles.container, {paddingBottom: bottomTab && 65}]}>
+    <View style={[styles.container, { paddingBottom: bottomTab && 65,  borderTopWidth: activityTab && 0}]}>
       <View
         style={[
           styles.navigationContainer,
           bottomTab && bottomStyle.bottomTabStyle,
+          activityTab && activityStyle.activityTabStyle
         ]}>
         <RenderRoutes />
       </View>
-      <View style={{flex: 1}}>{routesList[activeContent].renderPage}</View>
+      <View style={{ flex: 1 }}>{routesList[activeContent].renderPage}</View>
     </View>
   );
 };
@@ -105,6 +108,12 @@ const bottomStyle = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
+  },
+});
+
+const activityStyle = StyleSheet.create({
+  activityTabStyle: {
+    borderBottomWidth: 0,
   },
 });
 

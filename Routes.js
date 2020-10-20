@@ -34,6 +34,7 @@ import {PostScreen} from '@/screens/Post';
 import SampleScreen from '@/screens/SampleScreen';
 
 import {ProfileInfoModal, SinglePostOthersView} from '@/components';
+import {Past} from '@/screens/Activity';
 
 import {
   AlmostThere,
@@ -106,6 +107,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="AlmostThere" component={AlmostThere} />
       <AuthStack.Screen name="AlmostThereMap" component={AlmostThereMap} />
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+      <AuthStack.Screen name="Past" component={Past} />
       <AuthStack.Screen name="TabStack" component={TabStack} />
       <AuthStack.Screen name="NBTScreen" component={NoBottomTabScreens} />
     </AuthStack.Navigator>
@@ -210,6 +212,7 @@ function ActivityStackScreen() {
   return (
     <ActivityStack.Navigator headerMode="none">
       <ActivityStack.Screen name="Activity" component={Activity} />
+      <ActivityStack.Screen name="Past" component={Past} />
     </ActivityStack.Navigator>
   );
 }
@@ -283,11 +286,11 @@ function TabStack() {
           // borderTopWidth: 0,
           // elevation: 25,
           position: 'relative',
-          paddingHorizontal: normalize(60),
+          // paddingHorizontal: normalize(60),
         },
         tabStyle: {
           flex: 1,
-          alignItems: 'center',
+          alignItems: 'center'
         },
         labelStyle: {
           fontSize: normalize(13),
@@ -313,7 +316,7 @@ function TabStack() {
           },
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Hive"
         component={HiveStackScreen}
         options={{
@@ -326,7 +329,7 @@ function TabStack() {
             return <>{icon}</>;
           },
         }}
-      /> */}
+      />
       <Tab.Screen
         name="Post"
         component={PostStackScreen}
@@ -334,7 +337,7 @@ function TabStack() {
           tabBarButton: () => <Post />,
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
         options={{
@@ -375,7 +378,7 @@ function TabStack() {
             );
           },
         }}
-      /> */}
+      />
       <Tab.Screen
         name="Profile"
         component={ProfileStackScreen}

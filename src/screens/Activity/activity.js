@@ -1,27 +1,98 @@
-import React, {useContext} from 'react'
+import React, { useState } from 'react'
 import {
-  View,
-  Text,
   SafeAreaView,
+  View,
+  TouchableOpacity,
+  StyleSheet
 } from 'react-native';
-import { AppText } from '@/components';
-import {UserContext} from '@/context/UserContext';
+import { useNavigation } from '@react-navigation/native';
+import { AppText, TabNavigation } from '@/components';
+import { Colors, normalize } from '@/globals';
+
+import IllustActivity from '@/assets/images/activity-img1.svg';
+import Ongoing from './components/Ongoing';
+import Notifications from './components/Notifications';
 
 const Activity = () => {
-  const { user } = useContext(UserContext);
+  const [activity, setActivity] = useState({
+    onGoing: [],
+    notifications: []
+  });
+
+  const uploadTabs = [
+    {
+      key: 'ongoing',
+      title: 'ONGOING',
+      numberBadge: '4',
+      renderPage: <Ongoing />,
+    },
+    {
+      key: 'notifications',
+      title: 'NOTIFICATIONS',
+      numberBadge: '4',
+      renderPage: <Notifications />,
+    },
+  ];
+
+  const navigation = useNavigation();
 
   return (
-    <SafeAreaView>
-      <Text>Activity</Text>
-      { user && 
-        <>
-          <AppText>{user.displayName}</AppText>
-          <AppText>{user.email}</AppText>
-          <AppText>{user.uid}</AppText>
-        </>
+    <SafeAreaView style={styles.contentWrapper}>
+      {activity.onGoing.length == 0 && activity.notifications.length == 0 ? (
+        <View style={{ paddingHorizontal: normalize(12), justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <IllustActivity />
+          <AppText
+            textStyle="body1"
+            customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
+            Get Active and Whatnots {"\n"} & Click Like or Whatever eh!
+            </AppText>
+          <View style={styles.descHolder}>
+            <AppText
+              customStyle={{ textAlign: 'center' }}>
+              Ang mas-tarush mong Shamcey Supsup ay nag-jembot-jembot ng eklat.
+              </AppText>
+            <TouchableOpacity
+              style={{ marginTop: 40, paddingVertical: 12, alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
+              onPress={() => navigation.navigate('Servbees')}>
+              <AppText textStyle="button2">
+                Explore Postings Near You
+              </AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+          <>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', paddingBottom: normalize(20) }}>
+              <AppText textStyle="body3">My Activities</AppText>
+              <TouchableOpacity
+                style={{ position: 'absolute', right: 16 }}
+                onPress={() => navigation.navigate('Past')}
+              >
+                <AppText
+                  color={Colors.contentOcean}
+                  textStyle="body2">Past</AppText>
+              </TouchableOpacity>
+            </View>
+            <TabNavigation routesList={uploadTabs} activityTab />
+          </>
+        )
       }
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  contentWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: normalize(16),
+    textAlign: 'center',
+    backgroundColor: 'white',
+  },
+  descHolder: {
+    paddingTop: 10,
+    paddingBottom: 30
+  }
+});
 
 export default Activity;

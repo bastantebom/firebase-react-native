@@ -149,6 +149,13 @@ import LoginGoogle from './new-google.svg';
 // import LoginApple from './apple.svg';
 import Public from './public.svg';
 
+//Activities
+import YellowBadge from './yellow-badge.svg';
+import RedBadge from './red-badge.svg';
+import Bee from './bee.svg';
+import ArrowLeft from './arrow-left.svg';
+import Search from './search.svg';
+
 //OWN MENU ICONS
 import HidePost from './hide-post.svg';
 import AboutRed from './info-menu.svg';
@@ -286,6 +293,11 @@ export {
   LoginFB,
   LoginGoogle,
   LoginApple,
+  YellowBadge,
+  RedBadge,
+  Bee,
+  ArrowLeft,
+  Search,
   HidePost,
   AboutRed,
   BlockedUsers,
