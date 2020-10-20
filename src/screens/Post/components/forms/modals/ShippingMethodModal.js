@@ -157,7 +157,8 @@ const ShippingMethodModal = ({ closeModal }) => {
               {within && (
                 <>
                   <PaddingView paddingSize={2}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(20), marginBottom: 20 }}>
+                      <AppText textStyle="promo">Ship Within</AppText>
                       <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -203,51 +204,8 @@ const ShippingMethodModal = ({ closeModal }) => {
                   />
                 </>
               )}
-              <PaddingView paddingSize={2}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
-                  <AppText textStyle="promo">Ship Within</AppText>
-                  <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <AppText textStyle="caption" color="#999">0</AppText>
-                  <Slider
-                    style={{ width: '90%' }}
-                    minimumValue={0}
-                    maximumValue={200}
-                    step={5}
-                    value={rangeValue}
-                    onValueChange={rangeValue => setRangeValue(rangeValue)}
-                    minimumTrackTintColor={Colors.primaryYellow}
-                    maximumTrackTintColor={Colors.neutralGray}
-                    thumbTintColor={Colors.primaryYellow}
-                  />
-                  <AppText textStyle="caption" color="#999">200</AppText>
-                </View>
-              </PaddingView>
             </>
           )}
-
-          {/* <PaddingView paddingSize={2}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(45), marginBottom: 20 }}>
-              <AppText textStyle="promo">Browse Offers Within</AppText>
-              <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <AppText textStyle="caption" color="#999">0</AppText>
-              <Slider
-                style={{width: '90%'}}
-                minimumValue={0}
-                maximumValue={200}
-                step={5}
-                value={rangeValue}
-                onValueChange={rangeValue => setRangeValue(rangeValue)}
-                minimumTrackTintColor={Colors.primaryYellow}
-                maximumTrackTintColor={Colors.neutralGray}
-                thumbTintColor={Colors.primaryYellow}
-              />
-              <AppText textStyle="caption" color="#999">200</AppText>
-            </View>
-          </PaddingView> */}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import storage from '@react-native-firebase/storage';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
+import { useNavigation } from '@react-navigation/native';
 
 /*Map Essentials*/
 // import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';

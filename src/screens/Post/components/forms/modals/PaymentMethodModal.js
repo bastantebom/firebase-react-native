@@ -13,12 +13,17 @@ import {
 } from '@/components';
 import { useNavigation } from '@react-navigation/native';
 
-const PaymentMethodModal = ({ closeModal }) => {
+const PaymentMethodModal = () => {
+  const navigation = useNavigation();
+  const [cash, setCash] = useState(false);
+  const [gcash, setGcash] = useState(false);
+  const [paymaya, setPaymaya] = useState(false);
+  const [onlineBanking, setOnlineBanking] = useState(false);
   const [others, setOthers] = useState(false);
   const [bank, setBank] = useState('');
 
   return (
-    <SafeAreaView style={{ flex: 1 }} >
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
       <ScreenHeaderTitle
         close={() => navigation.goBack()}
         title="Payment Methods"
