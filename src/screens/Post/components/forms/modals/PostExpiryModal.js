@@ -94,6 +94,11 @@ const PostExpiryModal = () => {
     setShowTime(true);
   };
 
+  const clearExpiry = () => {
+    setSelectedTime('');
+    setSelectedDate('');
+  }
+
   // useEffect(() => {
   //   if (date) {
   //     setSelectedDate(moment.utc(date).format('MMMM D, YYYY'));
@@ -112,19 +117,23 @@ const PostExpiryModal = () => {
         <View style={{ flex: .8 }}>
           <AppText textStyle="body2">Set post cut off date</AppText>
           <AppText textStyle="captionDashboard">Something, something</AppText>
+          <TouchableOpacity onPress={clearExpiry} disabled={selectedTime || selectedDate ? false : true}><AppText textStyle="body3" customStyle={{ textAlign: 'right', color: selectedTime || selectedDate ? '#3781FC' : '#CACBCC' }}>Clear</AppText></TouchableOpacity>
           <TouchableOpacity
             style={styles.btn}
             onPress={showTimepicker}>
             <View style={{ flex: .75 }}>
-              <View style={{ flexDirection: 'row' }}>
-                <AppText textStyle="body3">Set Time</AppText>
+              <View style={{ flexDirection: 'column' }}>
+                {selectedTime ? (
+                  <>
+                    <AppText textStyle="body3">Time</AppText>
+                    <View style={{ flexDirection: 'row' }}>
+                      <PostClock width={normalize(22)} height={normalize(22)} />
+                      <AppText textStyle="caption" customStyle={{ marginLeft: 10 }}>{selectedTime}</AppText>
+                    </View>
+                  </>)
+                  : <AppText textStyle="body3">Set Time</AppText>
+                }
               </View>
-              {selectedTime ?
-                <View style={{ flexDirection: 'row' }}>
-                  <PostClock width={normalize(22)} height={normalize(22)} />
-                  <AppText textStyle="caption" customStyle={{ marginLeft: 10 }}>{selectedTime}</AppText>
-                </View> : <></>
-              }
             </View>
             <View style={{ flex: .25, justifyContent: 'center', alignItems: 'flex-end' }}>
               <ArrowRight />
@@ -134,15 +143,18 @@ const PostExpiryModal = () => {
             style={[styles.btn, { borderTopColor: '#DADCE0', borderTopWidth: 1 }]}
             onPress={showDatepicker}>
             <View style={{ flex: .75 }}>
-              <View style={{ flexDirection: 'row' }}>
-                <AppText textStyle="body3">Set Date</AppText>
+              <View style={{ flexDirection: 'column' }}>
+                {selectedDate ? (
+                  <>
+                    <AppText textStyle="body3">Date</AppText>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Calendar width={normalize(25)} height={normalize(25)} />
+                      <AppText textStyle="caption" customStyle={{ marginLeft: 10 }}>{selectedDate}</AppText>
+                    </View>
+                  </>)
+                  : <AppText textStyle="body3">Set Date</AppText>
+                }
               </View>
-              {selectedDate ?
-                <View style={{ flexDirection: 'row' }}>
-                  <Calendar width={normalize(25)} height={normalize(25)} />
-                  <AppText textStyle="caption" customStyle={{ marginLeft: 10 }}>{selectedDate}</AppText>
-                </View> : <></>
-              }
             </View>
             <View
               style={{ flex: .25, justifyContent: 'center', alignItems: 'flex-end' }}>
@@ -168,10 +180,10 @@ const PostExpiryModal = () => {
           </View>
         </View>
         <TouchableOpacity
-          style={styles.btnYellow}
+          style={selectedTime && selectedDate ? styles.btnYellow : styles.btnDisabled}
         >
           <AppText textStyle="button2">
-            Set Post Expiry
+            Set Cut off
           </AppText>
         </TouchableOpacity>
         {/* <TouchableOpacity 
@@ -312,7 +324,7 @@ const PostExpiryModal = () => {
           </View>
         </Modal> */}
       </View>
-    </View>
+    </View >
   );
 }
 
@@ -328,6 +340,13 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: '#FFD400',
+    borderRadius: 3
+  },
+  btnDisabled: {
+    paddingVertical: 12,
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: '#F2F4F6',
     borderRadius: 3
   }
 })
