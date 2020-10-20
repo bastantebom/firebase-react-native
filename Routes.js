@@ -25,7 +25,10 @@ import {
   SinglePostViewExternal,
   AddItemScreen,
   AddedItemPreviewScreen,
-  EditItemScreen
+  EditItemScreen,
+  PostExpiryScreen,
+  ShippingMethodScreen,
+  PaymentMethodScreen
 } from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 import SampleScreen from '@/screens/SampleScreen';
@@ -173,6 +176,9 @@ function CreatePostStackScreen() {
       <CreatePostStack.Screen name="AddItemScreen" component={AddItemScreen} />
       <CreatePostStack.Screen name="EditItemScreen" component={EditItemScreen} />
       <CreatePostStack.Screen name="AddedItemPreviewScreen" component={AddedItemPreviewScreen} />
+      <CreatePostStack.Screen name="PostExpiryScreen" component={PostExpiryScreen} />
+      <CreatePostStack.Screen name="ShippingMethodScreen" component={ShippingMethodScreen} />
+      <CreatePostStack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
     </CreatePostStack.Navigator>
   );
 }

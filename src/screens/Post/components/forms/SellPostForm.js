@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,12 +6,14 @@ import {
   Dimensions,
   TextInput,
   Animated,
+  TouchableWithoutFeedback
 } from 'react-native';
-import {Divider} from 'react-native-paper';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { Divider } from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import storage from '@react-native-firebase/storage';
 // import {Switch} from 'react-native-switch';
 import Textarea from 'react-native-textarea';
+import { useNavigation } from '@react-navigation/native';
 
 /*Map Essentials*/
 // import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
@@ -45,23 +47,20 @@ import {
   AppRadio,
   AppCheckbox,
   ItemCategory,
+  BottomSheetHeader
 } from '@/components';
-import {normalize, Colors, GlobalStyle} from '@/globals';
-import {PostService, ImageUpload, MapService} from '@/services';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context';
-import {PostImageUpload} from '../PostImageUpload';
+import { normalize, Colors, GlobalStyle } from '@/globals';
+import { PostService, ImageUpload, MapService } from '@/services';
+import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context';
+import { PostImageUpload } from '../PostImageUpload';
 import AddItemModal from './modals/AddItemModal';
+import PrivacyModal from './modals/PrivacyModal';
+import PaymentMethodModal from './modals/PaymentMethodModal';
+import ShippingMethodModal from './modals/ShippingMethodModal';
+import PostExpiryModal from './modals/PostExpiryModal';
 
-import {useNavigation} from '@react-navigation/native';
-
-const SellPostForm = ({
-  navToPost,
-  togglePostModal,
-  formState,
-  initialData,
-  ...props
-}) => {
+const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
   const {
     coverPhoto,
     setNeedsRefresh,
@@ -73,7 +72,7 @@ const SellPostForm = ({
     setImageCurrent,
     items,
   } = useContext(Context);
-  const {user, userInfo, setUserInfo} = useContext(UserContext);
+  const { user, userInfo, setUserInfo } = useContext(UserContext);
   const [buttonEnabled, setButtonEnabled] = useState(false);
 
   // Converting to route
@@ -81,7 +80,7 @@ const SellPostForm = ({
 
   /*MAP Essentials */
   const [map, setMap] = useState(false);
-  const {address} = userInfo;
+  const { address } = userInfo;
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
@@ -92,6 +91,10 @@ const SellPostForm = ({
   const [showLocation, setShowLocation] = useState(false);
   const [stringAddress, setStringAddress] = useState('');
   const [addItemModal, showAddItemModal] = useState(false);
+  const [privacyModal, showPrivacyModal] = useState(false);
+  const [paymentMethodModal, showPaymentMethodModal] = useState(false);
+  const [shippingMethodModal, showShippingMethodModal] = useState(false);
+  const [postExpiryModal, showPostExpiryModal] = useState(false);
   // const [listAsSingle, setListAsSingle] = useState(false);
   const [data, setData] = useState([]);
 
@@ -101,7 +104,7 @@ const SellPostForm = ({
     }
     if (initialData.post_id) {
       console.log('edit post');
-      const {store_location} = initialData;
+      const { store_location } = initialData;
       MapService.getStringAddress(
         store_location.latitude,
         store_location.longitude,
@@ -112,7 +115,7 @@ const SellPostForm = ({
       );
     } else {
       if (userInfo.address) {
-        const {address} = userInfo;
+        const { address } = userInfo;
         MapService.getStringAddress(
           address.latitude,
           address.longitude,
@@ -164,7 +167,7 @@ const SellPostForm = ({
     freeCheckbox,
     setFreeCheckbox,
     setPostInStore,
-    postInStore,
+    postInStore
   } = formState;
 
   const togglePickupState = () => {
@@ -274,6 +277,12 @@ const SellPostForm = ({
       hideSingle();
       showMultiple();
     }
+    if (val === 'public') {
+      setPublicPost(true);
+    }
+    // if (val === 'postToHive') {
+    //   setHivePost(true);
+    // }
   };
 
   /**FOR ANIMATION */
@@ -378,10 +387,12 @@ const SellPostForm = ({
             marginBottom: 12,
             justifyContent: 'space-between',
           }}>
-          <AppText textStyle="caption" customStyle={{fontSize: 16}}>
+          <AppText textStyle="caption" customStyle={{ fontSize: 16 }}>
             Who can see your post?*
           </AppText>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => showPrivacyModal(true)}>
             <View
               style={{
                 flexDirection: 'row',
@@ -394,12 +405,12 @@ const SellPostForm = ({
               }}>
               <Public />
               <AppText
-                customStyle={{paddingLeft: 4}}
+                customStyle={{ paddingLeft: 4 }}
                 color={Colors.checkboxBorderDefault}
                 textStyle="caption">
                 Public
               </AppText>
-              <View style={{paddingLeft: 12}}>
+              <View style={{ paddingLeft: 12 }}>
                 <ArrowDown />
               </View>
             </View>
@@ -409,7 +420,7 @@ const SellPostForm = ({
         <PostImageUpload />
 
         <AppInput
-          style={{marginBottom: 16}}
+          style={{ marginBottom: 16 }}
           label="Title"
           placeholder="Eg. Iphone, Macbook"
           value={title}
@@ -470,13 +481,13 @@ const SellPostForm = ({
         <AppRadio
           label="List as Single Item"
           value={listAsSingle}
-          style={{paddingLeft: 0}}
+          style={{ paddingLeft: 0 }}
           valueChangeHandler={() => RadioStateHandler('single')}
         />
 
         <Animated.View style={[singleActiveStyle]}>
           <AppInput
-            customStyle={{marginBottom: 16}}
+            customStyle={{ marginBottom: 16 }}
             label="Price"
             value={price}
             onChangeText={(text) => setPrice(text)}
@@ -490,15 +501,15 @@ const SellPostForm = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => setFreeCheckbox(!freeCheckbox)}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <PostInfo />
                 <AppText
-                  customStyle={{paddingLeft: 4}}
+                  customStyle={{ paddingLeft: 4 }}
                   textStyle="caption"
                   color={Colors.contentPlaceholder}>
                   I'm offering this item for{' '}
                   <AppText
-                    customStyle={{fontWeight: 'bold'}}
+                    customStyle={{ fontWeight: 'bold' }}
                     color={Colors.contentPlaceholder}>
                     FREE.
                   </AppText>
@@ -513,12 +524,12 @@ const SellPostForm = ({
           </View>
         </Animated.View>
 
-        <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
+        <Divider style={[GlobalStyle.dividerStyle, { marginVertical: 16 }]} />
 
         <AppRadio
           label="List as Multiple Items"
           value={listAsMultiple}
-          style={{paddingLeft: 0}}
+          style={{ paddingLeft: 0 }}
           valueChangeHandler={() => RadioStateHandler('multiple')}
         />
         <AppText textStyle="caption" color={Colors.contentPlaceholder}>
@@ -533,8 +544,8 @@ const SellPostForm = ({
             <ItemCategory items={items} />
           </View>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
@@ -543,9 +554,10 @@ const SellPostForm = ({
               navigation.navigate('AddItemScreen');
             }}
             activeOpacity={0.7}
-            style={{flexDirection: 'row', alignItems: 'center', marginTop: 24}}>
+            style={{ flexDirection: 'row', alignItems: 'center', marginTop: 24 }}
+            onPress={() => showAddItemModal(true)}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
-            <AppText customStyle={{paddingLeft: 8}} textStyle="body2">
+            <AppText customStyle={{ paddingLeft: 8 }} textStyle="body2">
               Add an Item
             </AppText>
           </TouchableOpacity>
@@ -573,7 +585,8 @@ const SellPostForm = ({
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          onPress={() => navigation.navigate('PaymentMethodScreen')}>
           <AppText textStyle="body2">Payment Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -581,7 +594,8 @@ const SellPostForm = ({
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          onPress={() => navigation.navigate('ShippingMethodScreen')}>
           <AppText textStyle="body2">Shipping Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -590,7 +604,8 @@ const SellPostForm = ({
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          onPress={() => navigation.navigate('PostExpiryScreen')}>
           <AppText textStyle="body2">Post Expiry</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -657,10 +672,10 @@ const SellPostForm = ({
           {loadingSubmit ? (
             <ActivityIndicator />
           ) : (
-            <AppText textStyle="button2">
-              {initialData.post_id ? 'Update' : 'Publish'}
-            </AppText>
-          )}
+              <AppText textStyle="button2">
+                {initialData.post_id ? 'Update' : 'Publish'}
+              </AppText>
+            )}
         </TouchableOpacity>
       </Section>
 
@@ -706,11 +721,197 @@ const SellPostForm = ({
           closeModal={() => showAddItemModal(false)}
         />
       </Modal>
+      <Modal
+        isVisible={privacyModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showPrivacyModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={paymentMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={shippingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={privacyModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showPrivacyModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={paymentMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={shippingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={privacyModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showPrivacyModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={paymentMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={shippingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={privacyModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showPrivacyModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={paymentMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={shippingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={postExpiryModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <PostExpiryModal closeModal={() => showPostExpiryModal(false)} />
+      </Modal>
     </>
   );
 };
 
-const Section = ({children, style}) => {
+const Section = ({ children, style }) => {
   return (
     <View
       style={{

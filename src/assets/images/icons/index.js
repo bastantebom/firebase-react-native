@@ -167,6 +167,9 @@ import LoginApple from './login_Apple03.svg';
 import CircleAdd from './CircleAdd.svg';
 import VerticalEllipsis from './VerticalEllipsis.svg'
 
+//Calendar
+import CalendarArrowLeft from '@/assets/images/icons/calendar-arrow-left.svg';
+import CalendarArrowRight from '@/assets/images/icons/calendar-arrow-right.svg';
 // import LoginApple from './apple.svg';
 // import Public from './public.svg';
 
@@ -290,4 +293,6 @@ export {
   Faq,
   ContactUs,
   Notifications,
+  CalendarArrowLeft,
+  CalendarArrowRight
 };
