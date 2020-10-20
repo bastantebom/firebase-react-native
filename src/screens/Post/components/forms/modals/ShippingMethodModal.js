@@ -9,7 +9,7 @@ import {
   TextInput
 } from 'react-native';
 
-// import Slider from '@react-native-community/slider';
+import Slider from '@react-native-community/slider';
 
 import {
   AppText,
