@@ -94,7 +94,7 @@ const ProfileInfo = ({profileData}) => {
           }}>
           <Temperature width={normalize(16)} height={normalize(16)} />
           <AppText textStyle="caption" customStyle={{marginLeft: 4}}>
-            {temperature.value
+            {temperature && temperature.value
               ? temperature.value +
                 ' °C at ' +
                 timeAgo(Date.now() / 1000 - temperature.date._seconds)
