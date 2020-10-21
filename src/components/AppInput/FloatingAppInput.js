@@ -1,14 +1,14 @@
 //import liraries
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, TextInput, StyleSheet, Animated} from 'react-native';
-import {Colors, normalize} from '@/globals';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TextInput, StyleSheet, Animated } from 'react-native';
+import { Colors, normalize } from '@/globals';
 import AppText from '../AppText/AppText';
 import ValidationList from './Validation';
 import ValidationFunctions from './ValidationFunctions';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import _ from 'lodash';
 
-import {VerifiedGreen} from '@/assets/images/icons';
+import { VerifiedGreen } from '@/assets/images/icons';
 
 // create a component
 const FloatingAppInput = (props) => {
@@ -208,6 +208,7 @@ const FloatingAppInput = (props) => {
 
   useEffect(() => {
     // console.log('Validation Current:', validation);
+    //console.log('Validation Current:', validation);
     // setValidationError('');
     if (setValidationRule)
       changingValidation
@@ -236,7 +237,10 @@ const FloatingAppInput = (props) => {
     // //console.log('Value useeffect');
     // //console.log(value);
 
-    if (value !== '' && (value !== undefined || placeholder !== undefined)) {
+    if (
+      (value !== '' || placeholder !== '') &&
+      (value !== undefined || placeholder !== undefined)
+    ) {
       animateFocus();
     }
   }, [value, placeholder, validation]);
@@ -277,8 +281,8 @@ const FloatingAppInput = (props) => {
 
   const fontSize =
     !isActive &&
-    (value === undefined || value === '') &&
-    placeholder === undefined
+      (value === undefined || value === '') &&
+      (placeholder === undefined || placeholder === '')
       ? normalize(16)
       : normalize(12);
 
@@ -309,7 +313,7 @@ const FloatingAppInput = (props) => {
           <AppText
             textStyle="body1"
             color={activeTextColor}
-            customStyle={{fontSize: fontSize}}>
+            customStyle={{ fontSize: fontSize }}>
             {label}
           </AppText>
         </Animated.Text>

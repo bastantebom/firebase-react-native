@@ -384,7 +384,7 @@ const SignUp = (props) => {
         closeSlider();
       })
       .catch((error) => {
-        console.log('With Error in the API SignUp ' + error);
+        console.log(error);
       })
       .finally(() => {
         setIsLoading(false);

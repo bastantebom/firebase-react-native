@@ -33,6 +33,8 @@ const ScreenHeaderTitle = ({
   title,
   openOptions,
   withOptions = false,
+  rightLink,
+  rightLinkEvent,
 }) => {
   const RenderIcon = () => {
     if (icon === 'close')
@@ -85,6 +87,17 @@ const ScreenHeaderTitle = ({
             <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
           </TouchableOpacity>
         )}
+       
+        {rightLink ? (
+          <TouchableOpacity
+            onPress={rightLinkEvent}
+            activeOpacity={0.7}
+            style={{position: 'absolute', right: 0}}>
+            <AppText textStyle="captionConstant" color={Colors.contentOcean}>
+              {rightLink}
+            </AppText>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </PaddingView>
   );

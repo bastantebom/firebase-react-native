@@ -42,6 +42,7 @@ export const ContextProvider = ({children}) => {
   const [searchType, setSearchType] = useState('posts');
   const [results, setResults] = useState([])
   const [page, setPage] = useState(0)
+  const [refreshFollowerList, setRefreshFollowerList] = useState(false);
 
   const getItemsByCategory = (cat) => {
     const result = [
@@ -297,7 +298,9 @@ export const ContextProvider = ({children}) => {
         handleSearch,
         handleSearchUser,
         handleOnEndReach,
-        handleOnUserEndReach
+        handleOnUserEndReach,
+        refreshFollowerList,
+        setRefreshFollowerList,
       }}>
       {children}
     </Context.Provider>

@@ -36,6 +36,8 @@ import DefaultService from './default-service.svg';
 import InviteFriend from './InviteFriends.svg';
 import ContactUsImg from './ContactUsImg.svg';
 
+import BodyTemp from './Body-Temp.svg';
+
 export {
   DefaultNeed,
   DefaultSell,
@@ -62,4 +64,5 @@ export {
   VerifySms,
   InviteFriend,
   ContactUsImg,
+  BodyTemp,
 };

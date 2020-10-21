@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,7 +10,7 @@ import {
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   AppText,
@@ -26,14 +26,14 @@ import {
   CacheableImage,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context/index';
+import { ProfileHeaderDefault } from '@/assets/images';
+import { normalize, Colors } from '@/globals';
+import { UserContext } from '@/context/UserContext';
+import { Context } from '@/context/index';
 
-import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
+import { MoreInfo, Reviews } from '@/screens/Profile/Tabs';
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
 // import {GuestProfile} from './components/GuestProfile';
 
@@ -41,20 +41,13 @@ function ProfileInfoModal(props) {
   //console.log('PROPS');
   //console.log(props.route.params);
 
-  console.log('Profile screen');
-  console.log(props.route.params.uid);
-
-  // if(props.route?.params?.id){
-    
-  // }
-
-  const {profileViewType = 'other', uid} = props.route?.params;
+  const { profileViewType = 'other', uid } = props.route?.params;
 
   const navigation = useNavigation();
-  const {user, signOut} = useContext(UserContext);
-  const {userPosts, otherUserPosts} = useContext(Context);
+  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext);
+  const { userPosts, otherUserPosts } = useContext(Context);
   //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
-  const [userInfo, setUserInfo] = useState({});
+  const [otherUserInfo, setOtherUserInfo] = useState({});
   //const [userDataAvailable, setUserDataAvailable] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
@@ -63,10 +56,12 @@ function ProfileInfoModal(props) {
   const [QR, setQR] = useState(false);
 
   const [visibleHives, setVisibleHives] = useState(false);
-  const [visibleFollowing, setVisibleFollowing] = useState(false);
+  const [profileList, setProfileList] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
 
   const [headerState, setHeaderState] = useState(profileViewType);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [addFollowers, setAddFollowers] = useState(null);
 
   const changeHeaderHandler = () => {
     headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
@@ -80,10 +75,6 @@ function ProfileInfoModal(props) {
     setEllipsisState(!ellipsisState);
   };
 
-  const toggleFollowing = () => {
-    setFollowing(!following);
-  };
-
   const toggleMenu = () => {
     setMenu(!menu);
   };
@@ -91,9 +82,32 @@ function ProfileInfoModal(props) {
   const toggleHives = () => {
     setVisibleHives(!visibleHives);
   };
-  const toggleConnections = () => {
+  const toggleProfileList = () => {
     //alert('text');
-    setVisibleFollowing(!visibleFollowing);
+    setProfileList(!profileList);
+  };
+
+  const toggleFollowing = () => {
+    //setFollowing(!following);
+    connectUser();
+  };
+
+  const connectUser = () => {
+    ProfileInfoService.follow(uid, isFollowing)
+      .then((response) => {
+        const updatedFollowingList = {
+          following: [...response.data],
+        }
+        setUserInfo({ ...userInfo, ...updatedFollowingList });
+        setIsFollowing(response.data.includes(uid));
+        setAddFollowers(response.data.includes(uid));
+        //console.log('following list ');
+        //console.log(response.data);
+      })
+      .catch((err) => {
+        //setIsFollowing(response.data.includes(uid));
+        console.log('Err: ' + err);
+      })
   };
 
   const [profileImageUrl, setProfileImageUrl] = useState('');
@@ -110,7 +124,7 @@ function ProfileInfoModal(props) {
     setIsDataLoading(true);
     ProfileInfoService.getUser(uid)
       .then((response) => {
-        if (mounted) setUserInfo(response);
+        if (mounted) setOtherUserInfo(response.data);
       })
       .catch((err) => {
         console.log('Err: ' + err);
@@ -121,11 +135,15 @@ function ProfileInfoModal(props) {
           setIsDataLoading(false);
         }
       });
-
+    if (userInfo.following) {
+      setIsFollowing(userInfo.following.includes(uid));
+      console.log("userInfo following " + userInfo.following);
+    }
     return () => {
       mounted = false;
     };
   }, []);
+
 
   const profileTabs = [
     {
@@ -144,7 +162,7 @@ function ProfileInfoModal(props) {
     {
       key: 'moreinfo',
       title: 'More Info',
-      renderPage: <MoreInfo profileInfo={userInfo} />,
+      renderPage: <MoreInfo profileInfo={otherUserInfo} />,
     },
   ];
 
@@ -155,51 +173,53 @@ function ProfileInfoModal(props) {
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
         toggleFollowing={toggleFollowing}
-        following={following}
+        isFollowing={isFollowing}
         toggleMenu={toggleMenu}
         menu={menu}
         signOut={signOut}
         toggleQR={toggleQR}
         QR={QR}
         backFunction={() => navigation.goBack()}
-        userInfo={userInfo}
+        userInfo={otherUserInfo}
         userID={uid}
       />
       <View
-        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
-        {userInfo.cover_photo ? (
+        style={{ backgroundColor: Colors.buttonDisable, height: normalize(158) }}>
+        {otherUserInfo.cover_photo ? (
           <CacheableImage
-            source={{uri: userInfo.cover_photo}}
-            style={{width: normalize(375), height: normalize(158)}}
+            source={{ uri: otherUserInfo.cover_photo }}
+            style={{ width: normalize(375), height: normalize(158) }}
           />
         ) : (
-          <ProfileHeaderDefault
-            width={normalize(375 * 1.2)}
-            height={normalize(158 * 1.2)}
-          />
-        )}
+            <ProfileHeaderDefault
+              width={normalize(375 * 1.2)}
+              height={normalize(158 * 1.2)}
+            />
+          )}
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
           {/* <ProfileImageUpload size={150} /> */}
-          <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
+          <HexagonBorder size={140} imgSrc={otherUserInfo.profile_photo} />
         </View>
 
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
-          toggleConnections={toggleConnections}
+          toggleProfileList={toggleProfileList}
           visibleHives={visibleHives}
-          visibleFollowing={visibleFollowing}
-          userInfo={userInfo}
+          profileList={profileList}
+          userInfo={otherUserInfo}
+          addFollowers={addFollowers}
+          viewType="other-user-links"
         />
       </View>
-      <View style={{backgroundColor: Colors.primaryYellow}}>
+      <View style={{ backgroundColor: Colors.primaryYellow }}>
         <LoadingUserInfo isLoading={isDataLoading}>
-          <ProfileInfo profileData={userInfo} />
+          <ProfileInfo profileData={otherUserInfo} />
         </LoadingUserInfo>
       </View>
 
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
@@ -208,10 +228,10 @@ function ProfileInfoModal(props) {
   );
 }
 
-const LoadingUserInfo = ({children, isLoading}) => {
+const LoadingUserInfo = ({ children, isLoading }) => {
   return (
     <SkeletonContent
-      containerStyle={{flexDirection: 'column', backgroundColor: 'white'}}
+      containerStyle={{ flexDirection: 'column', backgroundColor: 'white' }}
       isLoading={isLoading}
       layout={[
         {

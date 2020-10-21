@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 });
 
 // create a component
-const Location = ({back, address, changeFromMapHandler}, route) => {
+const Location = ({toggleMap, address, changeFromMapHandler}) => {
   //const {userInfo, setUserInfo} = useContext(UserContext);
   //const navigation = useNavigation();
   const [changeMapAddress, setChangeMapAddress] = useState('');
@@ -59,6 +59,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     country: '',
     longitude: 0,
     latitude: 0,
+    full_address: '',
   });
   //const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [addressRunCount, setAddressRunCount] = useState(0);
@@ -135,6 +136,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
             city: splitAddress[0],
             province: splitAddress[1],
             country: splitAddress[2],
+            full_address: strAddress ? strAddress : stringMapDrag,
           },
           //setChangeMapAddress(addressComponent);
         });
@@ -159,8 +161,8 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
     //   address: addressComponents,
     // };
     //setUserInfo({...userInfo, ...dataToUpdate});
-    changeFromMapHandler(addressComponents, changeMapAddress);
-    back();
+    changeFromMapHandler(addressComponents);
+    toggleMap();
   };
 
   return (
@@ -168,7 +170,7 @@ const Location = ({back, address, changeFromMapHandler}, route) => {
       <PaddingView paddingSize={3}>
         <View style={styles.modalHeader}>
           <TouchableOpacity
-            onPress={back}
+            onPress={toggleMap}
             activeOpacity={0.7}
             style={{position: 'absolute', left: 0}}>
             <HeaderBackGray width={normalize(16)} height={normalize(16)} />

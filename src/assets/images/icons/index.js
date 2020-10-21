@@ -83,6 +83,8 @@ import HeaderBackGray from './header-back-gray.svg';
 import HeaderEllipsis from './header-ellipsis';
 import HeaderFollow from './header-follow.svg';
 import HeaderFollowing from './header-following.svg';
+import HeaderFollowBlack from './header-follow-black.svg';
+import HeaderFollowingBlack from './header-following-black.svg';
 import HeaderMenu from './header-menu.svg';
 import HeaderQR from './header-qr.svg';
 import HeaderShare from './header-share.svg';
@@ -196,6 +198,8 @@ import CalendarArrowRight from '@/assets/images/icons/calendar-arrow-right.svg';
 // import Public from './public.svg';
 
 // import Search from './search.svg';
+
+import LatestTemp from './current-temp.svg';
 
 export {
   VerticalEllipsis,
@@ -338,4 +342,7 @@ export {
   LocationContactUs,
   CalendarArrowLeft,
   CalendarArrowRight
+  HeaderFollowingBlack,
+  HeaderFollowBlack,
+  LatestTemp,
 };

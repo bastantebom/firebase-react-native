@@ -2,7 +2,7 @@
  * Component for profile info
  */
 
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -12,19 +12,19 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {AppText, CacheableImage} from '@/components';
-import {GlobalStyle, Colors, normalize, timePassed} from '@/globals';
-import {Verified, ProfileImageDefault, StarRating} from '@/assets/images/icons';
-import {UserContext} from '@/context/UserContext';
-import {Profile} from '@/screens/Profile';
+import { AppText, CacheableImage } from '@/components';
+import { GlobalStyle, Colors, normalize, timePassed } from '@/globals';
+import { Verified, ProfileImageDefault } from '@/assets/images/icons';
+import { UserContext } from '@/context/UserContext';
+import { Profile } from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
 import AppButton from '../AppButton/AppButton';
-import {PaddingView} from '../AppViewContainer';
+import { PaddingView } from '../AppViewContainer';
 
-const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
-  const {user} = useContext(UserContext);
+const ProfileInfo = ({ userInfo, type, cancelModalToggle }) => {
+  const { user } = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
 
@@ -38,9 +38,7 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
     post_type
   } = userInfo;
 
-  const rating = 3.5
-
-  const VerifiedBadge = ({width = 10, height = 11.25}) => {
+  const VerifiedBadge = ({ width = 10, height = 11.25 }) => {
     return account_verified ? (
       <Verified width={normalize(width)} height={normalize(height)} />
     ) : null;
@@ -50,7 +48,7 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
     return '• ' + timePassed(time) + ' ago';
   };
 
-  const ProfilePhoto = ({size}) => {
+  const ProfilePhoto = ({ size }) => {
     return profile_photo ? (
       <CacheableImage
         style={GlobalStyle.image}
@@ -59,8 +57,8 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
         }}
       />
     ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    );
+        <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+      );
   };
 
   openProfileHandler = () => {
@@ -78,7 +76,7 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
       console.log('Going to NBTS');
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: {uid: uid},
+        params: { uid: uid },
       });
       // navigation.navigate('Post', {
       //   screen: 'SinglePostView',
@@ -90,7 +88,7 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
   if (type === 'dashboard')
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <View
             style={{
               height: normalize(32),
@@ -138,7 +136,7 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
               <AppText
                 textStyle="eyebrow2"
                 color={Colors.contentPlaceholder}
-                customStyle={{paddingHorizontal: 4}}>
+                customStyle={{ paddingHorizontal: 4 }}>
                 {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
               <AppText
@@ -192,13 +190,13 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
   if (type === 'own-post')
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <View style={styles.userInfoImageContainer}>
             <ProfilePhoto size={42} />
           </View>
-          <View style={{marginLeft: 8, justifyContent: 'center'}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <AppText textStyle="body2" customStyle={{marginRight: 4}}>
+          <View style={{ marginLeft: 8, justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText textStyle="body2" customStyle={{ marginRight: 4 }}>
                 {display_name}
               </AppText>
               <VerifiedBadge />
@@ -226,9 +224,9 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
         <View style={styles.userInfoImageContainer}>
           <ProfilePhoto size={42} />
         </View>
-        <View style={{marginLeft: 8, justifyContent: 'center'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <AppText textStyle="body2" customStyle={{marginRight: 4}}>
+        <View style={{ marginLeft: 8, justifyContent: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <AppText textStyle="body2" customStyle={{ marginRight: 4 }}>
               {display_name.length > 20
                 ? `${display_name.substring(0, 20)}...`
                 : display_name}
@@ -241,7 +239,7 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
             </AppText>
           </View>
         </View>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <TouchableOpacity
             onPress={() => {
               cancelModalToggle();
@@ -263,6 +261,60 @@ const ProfileInfo = ({userInfo, type, cancelModalToggle, isModal}) => {
               Unblock
             </AppText>
           </TouchableOpacity>
+        </View>
+      </View>
+    );
+
+  if (type === 'follow')
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          borderBottomColor: Colors.neutralsZircon,
+          borderBottomWidth: 1,
+          paddingHorizontal: normalize(16),
+          paddingVertical: normalize(16),
+        }}>
+        <View style={styles.userInfoImageContainer}>
+          <ProfilePhoto size={42} />
+        </View>
+        <View style={{ marginLeft: 8, justifyContent: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <AppText textStyle="body2" customStyle={{ marginRight: 4 }}>
+              {display_name.length > 20
+                ? `${display_name.substring(0, 20)}...`
+                : display_name}
+            </AppText>
+            <VerifiedBadge />
+          </View>
+          <View>
+            <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+              @{username.toLowerCase()}
+            </AppText>
+          </View>
+        </View>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          {/* <TouchableOpacity
+            onPress={() => {
+              cancelModalToggle();
+            }}
+            style={{
+              paddingHorizontal: normalize(8),
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderColor: Colors.contentEbony,
+              borderWidth: 1,
+              borderRadius: 6,
+              height: normalize(30),
+              width: normalize(90),
+              marginVertical: normalize(8),
+              marginHorizontal: normalize(4),
+            }}>
+            <AppText textStyle="caption" color={Colors.contentEbony}>
+              Unblock
+            </AppText>
+          </TouchableOpacity> */}
         </View>
       </View>
     );

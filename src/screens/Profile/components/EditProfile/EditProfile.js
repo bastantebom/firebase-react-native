@@ -26,6 +26,7 @@ import {
   AppText,
   ProfileImageUpload,
   TransitionIndicator,
+  AppRadio,
 } from '@/components';
 import {AppInput, Validator, valueHandler} from '@/components/AppInput';
 
@@ -39,7 +40,6 @@ import {
 } from '@/assets/images/icons';
 
 import {Colors, normalize} from '@/globals';
-import EditAddress from './EditAddress';
 import GenderList from './Gender';
 import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -53,10 +53,16 @@ import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import {debounce} from 'lodash';
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
 import DebounceInput from 'react-native-debounce-input';
+import AddAddress from './AddAddress';
 
 // create a component
-const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
-  const [map, setMap] = useState(false);
+const EditProfile = ({
+  toggleEditProfile,
+  toggleMenu,
+  triggerNotify,
+  source,
+}) => {
+  const [addAddress, setAddAddress] = useState(false);
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -86,7 +92,7 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     full_name,
     username,
     description,
-    address,
+    addresses,
     email,
     secondary_email,
     phone_number,
@@ -108,6 +114,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState({});
+  const [additional, setAdditional] = useState(null);
+  // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
   const [enabled, setEnabled] = useState(false);
   const [errors, setErrors] = useState({
@@ -139,6 +148,10 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
         break;
       }
     }
+  };  
+  
+  const onChangeUsername = (uName) => {
+    //console.log('On change function');
 
     if (temp) {
       // ENABLE BUTTON
@@ -164,18 +177,18 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
 
   /*Username Validations */
   const [desc, setDesc] = useState(description);
-  const [addName, setAddName] = useState(address.name);
-  const [stringAddress, setStringAddress] = useState();
-  const [addDet, setAddDet] = useState(address.details);
-  const [addNote, setAddNote] = useState(address.note);
+
   const [em, setEm] = useState(email);
   const [sEm, setSEm] = useState(secondary_email);
   const [mobile, setMobile] = useState(phone_number);
   const [bDate, setBDate] = useState(birth_date);
   const [g, setG] = useState(gender);
 
-  const toggleMap = () => {
-    setMap(!map);
+  const toggleAddAddress = () => {
+    //setSelectedAddress(null);
+    setAdditional(true);
+    setSelectedAddress(addresses.find((address) => address.default));
+    setAddAddress(!addAddress);
   };
 
   const toggleGender = () => {
@@ -197,46 +210,15 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     }
   };
 
-  const getStringAddress = (lat, lng, addStr) => {
-    Geocoder.init(Config.apiKey);
-    Geocoder.from(lat, lng)
-      .then((json) => {
-        setStringAddress(addStr ? addStr : json.results[1].formatted_address);
-        const arrayToExtract =
-          json.results.length == 14
-            ? 9
-            : json.results.length == 13
-            ? 8
-            : json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
-        const splitAddress = json.results[
-          arrayToExtract
-        ].formatted_address.split(',');
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            latitude: lat,
-            longitude: lng,
-            city: splitAddress[0],
-            province: splitAddress[1],
-            country: splitAddress[2],
-          },
-          //setChangeMapAddress(addressComponent);
-        });
-      })
-      .catch((error) => console.warn(error));
-  };
+  useEffect(() => {
+    let isSubscribed = true;
+    if (userInfo) {
+      if (isSubscribed) {
+        setDateFromString();
+      }
+    }
+    return () => (isSubscribed = false);
+  }, []);
 
   const setDateFromString = () => {
     if (bDate) {
@@ -294,10 +276,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     setButtonDisable(j);
   };
 
-  const prepareAddressUpdate = (fullAddress, addStr) => {
-    getStringAddress(fullAddress.latitude, fullAddress.longitude, addStr);
-  };
-
   const uploadImageHandler = async (image) => {
     if (image) {
       const {uri} = image;
@@ -319,18 +297,6 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
   };
 
   const updateProfile = async () => {
-    const addressToUpdate = {
-      details: addDet,
-      note: addNote,
-      name: addName,
-      ...addressComponents,
-    };
-
-    Object.keys(addressToUpdate).forEach(
-      (key) =>
-        addressToUpdate[key] === undefined && delete addressToUpdate[key],
-    );
-
     const dataToUpdate = {
       //cover_photo: cPhoto,
       //profile_photo: pPhoto,
@@ -338,13 +304,15 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
       description: desc,
       full_name: name,
       username: uName,
-      address: {...userInfo.address, ...addressToUpdate},
       birth_date: bDate,
       email: em,
       secondary_email: sEm,
       phone_number: mobile,
       gender: g,
+      addresses: userInfo.addresses,
     };
+
+    //console.log(dataToUpdate);
 
     Object.keys(dataToUpdate).forEach(
       (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
@@ -380,9 +348,9 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
             setIS_UPDATING(false);
             setUserInfo({...userInfo, ...response.data});
             setNeedsRefresh(true);
-            toggleEditProfile();
-            toggleMenu();
             triggerNotify(true);
+            toggleEditProfile();
+            if (source === 'own-menu') toggleMenu();
           } else {
             setIS_UPDATING(false);
           }
@@ -394,19 +362,13 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
     });
   };
 
-  useEffect(() => {
-    //let isMounted = true;
-    //if (isMounted) {
-    let isSubscribed = true;
-    if (userInfo) {
-      if (isSubscribed) {
-        getStringAddress(address.latitude, address.longitude);
-        setDateFromString();
-      }
-    }
-    return () => (isSubscribed = false);
-  }, []);
-
+  const changeDefaultAddress = (selected) => {
+    const nAdd = [...addresses];
+    nAdd.forEach((address, index) => {
+      selected === index ? (address.default = true) : (address.default = false);
+    });
+    setUserInfo({...userInfo, addresses: [...nAdd]});
+  };
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -647,87 +609,74 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
                 customStyle={{marginBottom: normalize(8)}}>
                 Address
               </AppText>
-              {/* <FloatingAppInput
-                value={addName}
-                onChangeText={(addName) => {
-                  setAddName(addName);
-                }}
-                label="Name"
-                customStyle={{marginBottom: normalize(16)}}
-                placeholder="ex. Home"
-              /> */}
-              <AppInput
-                label="Address Name"
-                style={{marginBottom: normalize(16)}}
-                onChangeText={(addName) => {
-                  setAddName(addName);
-                }}
-                value={addName}
-              />
-              <View style={{position: 'relative'}}>
-                <TouchableOpacity onPress={() => toggleMap()}>
-                  <FloatingAppInput
-                    value={stringAddress}
-                    label="Address"
-                    customStyle={{marginBottom: normalize(16)}}
-                    onFocus={() => toggleMap()}
-                  />
-                  {/* <AppInput
-                    label="Address"
-                    editable={false}
-                    style={{marginBottom: normalize(16)}}
-                    // onChangeText={() => {
-                    //   return;
-                    // }}
-                    value={stringAddress}
-                    onFocus={() => toggleMap()}
-                  /> */}
-                  <View
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: 12,
-                      right: 12,
-                    }}>
-                    <ArrowRight height={normalize(24)} width={normalize(24)} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <FloatingAppInput
-                value={addDet}
-                label="Address Details"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(addDet) => {
-                  setAddDet(addDet);
-                }}
-              />
-              {/* <AppInput
-                label="Address Details"
-                style={{marginBottom: normalize(16)}}
-                onChangeText={(addDet) => {
-                  setAddDet(addDet);
-                }}
-                value={addDet}
-              /> */}
-              {/* <FloatingAppInput
-                value={addNote}
-                label="Notes"
-                placeholder="ex. Yellow Gate"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(addNote) => {
-                  setAddNote(addNote);
-                }}
-              /> */}
 
-              <AppInput
-                label="Notes"
-                style={{marginBottom: normalize(16)}}
-                onChangeText={(addNote) => {
-                  setAddNote(addNote);
-                }}
-                value={addNote}
-                placeholder="ex. Yellow Gate"
-              />
+              <AppText
+                textStyle="body2"
+                customStyle={{marginBottom: normalize(8)}}>
+                You can save multiple addresses.
+              </AppText>
+
+              {addresses.map((address, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{flexDirection: 'row', paddingVertical: 8}}>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                      }}>
+                      <AppRadio
+                        value={address.default}
+                        valueChangeHandler={() => {
+                          changeDefaultAddress(index);
+                        }}
+                        style={{
+                          backgroundColor: Colors.neutralsWhite,
+                          paddingLeft: 0,
+                          margin: 0,
+                        }}
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        flex: 8,
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                      }}>
+                      <AppText textStyle="body1medium">
+                        {address.name ? address.name : 'Home'}
+                      </AppText>
+                      <AppText textStyle="caption">
+                        {address.full_address}
+                      </AppText>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setAdditional(index);
+                        setSelectedAddress(address);
+                        setAddAddress(true);
+                      }}
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'flex-end',
+                      }}>
+                      <View>
+                        <ArrowRight width={24} height={24} />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+
+              <TouchableOpacity onPress={toggleAddAddress}>
+                <AppText textStyle="body2" color={Colors.contentOcean}>
+                  Add an Address
+                </AppText>
+              </TouchableOpacity>
             </PaddingView>
           </View>
           <View
@@ -876,23 +825,21 @@ const EditProfile = ({toggleEditProfile, toggleMenu, triggerNotify}) => {
         </KeyboardAwareScrollView>
 
         <Modal
-          isVisible={map}
+          isVisible={addAddress}
           animationIn="slideInRight"
           animationInTiming={750}
           animationOut="slideOutRight"
           animationOutTiming={750}
-          onBackButtonPress={() => setMap(false)}
+          onBackButtonPress={() => setAddAddress(false)}
           style={{
             margin: 0,
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          <EditAddress
-            address={userInfo.address}
-            back={() => setMap(false)}
-            changeFromMapHandler={(fullAddress, addStr) =>
-              prepareAddressUpdate(fullAddress, addStr)
-            }
+          <AddAddress
+            toggleAddAddress={toggleAddAddress}
+            address={selectedAddress}
+            additional={additional}
           />
         </Modal>
 

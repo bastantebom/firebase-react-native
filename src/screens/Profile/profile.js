@@ -34,6 +34,7 @@ import {Context} from '@/context/index';
 
 import {MoreInfo, Reviews} from './Tabs';
 import ProfileInfo from './components/ProfileInfo';
+import ProfileButtons from './components/ProfileButtons';
 import {GuestProfile} from './components/GuestProfile';
 
 function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
@@ -63,6 +64,7 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
   const [visibleHives, setVisibleHives] = useState(false);
   const [visibleFollowing, setVisibleFollowing] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [profileList, setProfileList] = useState(false);
 
   const [headerState, setHeaderState] = useState(profileViewType);
 
@@ -92,6 +94,11 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
   const toggleConnections = () => {
     //alert('text');
     setVisibleFollowing(!visibleFollowing);
+  };
+
+  const toggleProfileList = () => {
+    //alert('text');
+    setProfileList(!profileList);
   };
 
   const triggerNotification = (message, type) => {
@@ -228,14 +235,25 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
 
         <ProfileLinks
           toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
-          toggleConnections={toggleConnections}
+          toggleProfileList={toggleProfileList}
+          profileList={profileList}
           visibleHives={visibleHives}
           visibleFollowing={visibleFollowing}
           userInfo={userInfo}
+          viewType="own-links"
         />
       </View>
       <View style={{backgroundColor: Colors.primaryYellow}}>
         <ProfileInfo profileData={userInfo} />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: Colors.neutralsWhite,
+          paddingHorizontal: 24,
+          paddingVertical: 8,
+        }}>
+        <ProfileButtons triggerNotify={triggerNotify} />
       </View>
       <View style={{flex: 1}}>
         <View style={styles.container}>

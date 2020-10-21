@@ -12,7 +12,7 @@ import {normalize, GlobalStyle, Colors} from '@/globals';
 import {ProfileListUnfollow} from '@/assets/images/icons';
 import {Verified, ProfileImageDefault} from '@/assets/images/icons';
 
-const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
+const ReportContent = ({data, reportToggleUser, reportUserHandler}) => {
   const {profile_photo, username, display_name} = data;
 
   const ProfilePhoto = ({size}) => {
@@ -43,12 +43,15 @@ const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
             <ProfilePhoto size={42} />
           </View>
           <AppText textStyle="display6" customStyle={{marginTop: 16}}>
-            Unfollow {display_name}?
+            Report {display_name}?
+          </AppText>
+          <AppText textStyle="body2">
+            Servbees won’t tell {display_name} that you reported her/him.
           </AppText>
           <Divider style={styles.dividerStyle} />
 
           <TouchableOpacity
-            onPress={unfollowHandler}
+            onPress={() => {}}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -59,12 +62,12 @@ const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
               textStyle="body1"
               customStyle={{marginLeft: 8}}
               color={Colors.secondaryBrinkPink}>
-              Unfollow @{username}{' '}
+              Report @{username}{' '}
             </AppText>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity activeOpacity={0.7} onPress={unfollowToggle}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
           <View
             style={{
               backgroundColor: Colors.neutralsZircon,
@@ -90,9 +93,9 @@ const styles = StyleSheet.create({
   dividerStyle: {
     backgroundColor: Colors.neutralsZircon,
     width: '100%',
-    marginTop: 8,
+    marginTop: 16,
     marginBottom: 32,
   },
 });
 
-export default UnfollowContent;
+export default ReportContent;

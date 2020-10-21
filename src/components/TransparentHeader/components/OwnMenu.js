@@ -314,6 +314,7 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
           toggleMenu={toggleMenu}
           toggleEditProfile={toggleEditProfile}
           triggerNotify={triggerNotify}
+          source="own-menu"
         />
       </Modal>
 

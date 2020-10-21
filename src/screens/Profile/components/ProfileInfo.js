@@ -3,7 +3,13 @@ import {View} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {AppText} from '@/components';
-import {normalize, Colors, joinedDate, GlobalStyle} from '@/globals';
+import {
+  normalize,
+  Colors,
+  joinedDate,
+  GlobalStyle,
+  timePassedShort,
+} from '@/globals';
 import {
   Verified,
   Temperature,
@@ -22,10 +28,11 @@ const ProfileInfo = ({profileData}) => {
     is_verified,
     full_name,
     username,
-    temperature_history,
+    temperature,
     ratings_count,
     ratings_average,
     date_joined,
+    addresses,
     address,
   } = profileData;
 
@@ -36,6 +43,10 @@ const ProfileInfo = ({profileData}) => {
       fetch();
     }
   }, []);
+
+  let timeAgo = (time) => {
+    return timePassedShort(time) + ' ago';
+  };
 
   return (
     <View style={{paddingHorizontal: 16, backgroundColor: 'white'}}>
@@ -66,13 +77,13 @@ const ProfileInfo = ({profileData}) => {
         )}
       </View>
 
-      {/* <View
+      <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          marginTop: 16,
-        }}> */}
-      {/* <View
+          marginTop: 8,
+        }}>
+        <View
           style={{
             flexDirection: 'row',
             paddingHorizontal: 8,
@@ -80,11 +91,17 @@ const ProfileInfo = ({profileData}) => {
             backgroundColor: Colors.secondarySolitude,
             // backgroundColor: 'black',
             borderRadius: 16,
-          }}> */}
-      {/* <Temperature width={normalize(16)} height={normalize(16)} />
-          <AppText textStyle="caption" customStyle={{marginLeft: 4}}>{temperature_history[0].temp}°C 1h ago </AppText> */}
-      {/* </View> */}
-      {/* </View> */}
+          }}>
+          <Temperature width={normalize(16)} height={normalize(16)} />
+          <AppText textStyle="caption" customStyle={{marginLeft: 4}}>
+            {temperature && temperature.value
+              ? temperature.value +
+                ' °C at ' +
+                timeAgo(Date.now() / 1000 - temperature.date._seconds)
+              : 'No temp history'}
+          </AppText>
+        </View>
+      </View>
 
       {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 16}}>
         <StarRating width={normalize(16)} height={normalize(16)} />
@@ -116,7 +133,9 @@ const ProfileInfo = ({profileData}) => {
         <AppText
           textStyle="body2"
           customStyle={{marginLeft: 4, marginRight: 16}}>
-          {address ? address.city : 'Manila City'}
+          {addresses
+            ? addresses.find((address) => address.default).city
+            : 'Manila City'}
         </AppText>
       </View>
     </View>

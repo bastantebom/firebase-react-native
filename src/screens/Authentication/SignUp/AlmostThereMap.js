@@ -1,6 +1,6 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
 
 //import Geolocation from '@react-native-community/geolocation';
 import Config from '@/services/Config';
@@ -12,14 +12,14 @@ import {
   TransitionIndicator,
   ScreenHeaderTitle,
 } from '@/components';
-import {Colors} from '@/globals';
+import { Colors } from '@/globals';
 
 import GooglePlacesInput from '@/components/LocationSearchInput';
 
-import {NavigationPin, Close} from '@/assets/images/icons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { NavigationPin, Close } from '@/assets/images/icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import SignUpService from '@/services/SignUpService';
 import auth from '@react-native-firebase/auth';
 
@@ -41,6 +41,8 @@ const AlmostThereMap = (route) => {
     country: '',
     longitude: 0,
     latitude: 0,
+    full_address: '',
+    default: true,
   });
 
   const onRegionChange = (region) => {
@@ -65,20 +67,20 @@ const AlmostThereMap = (route) => {
           json.results.length == 14
             ? 9
             : json.results.length == 13
-            ? 8
-            : json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
+              ? 8
+              : json.results.length == 12
+                ? 7
+                : json.results.length == 11
+                  ? 6
+                  : json.results.length == 10
+                    ? 5
+                    : json.results.length == 9
+                      ? 4
+                      : json.results.length == 8
+                        ? 3
+                        : json.results.length < 8
+                          ? 2
+                          : 2;
         const splitAddress = json.results[
           arrayToExtract
         ].formatted_address.split(',');
@@ -91,6 +93,7 @@ const AlmostThereMap = (route) => {
             city: splitAddress[0],
             province: splitAddress[1],
             country: splitAddress[2],
+            full_address: addressComponent,
           },
         });
         setChangeMapAddress(addressComponent);
@@ -179,9 +182,9 @@ const AlmostThereMap = (route) => {
   return (
     <>
       <TransitionIndicator loading={isScreenLoading} />
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <SafeAreaView>
-          <View style={{padding: 24}}>
+          <View style={{ padding: 24 }}>
             <ScreenHeaderTitle
               title="Select location"
               close={() => {
@@ -190,7 +193,7 @@ const AlmostThereMap = (route) => {
             />
           </View>
         </SafeAreaView>
-        <View style={{flex: 1, position: 'relative'}}>
+        <View style={{ flex: 1, position: 'relative' }}>
           {route?.route?.params.address ? (
             <>
               <View style={styles.textInputWrapper}>

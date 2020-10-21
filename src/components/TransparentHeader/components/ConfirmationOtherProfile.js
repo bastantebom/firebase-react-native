@@ -1,17 +1,17 @@
 //import liraries
-import React, {useState, useContext} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import {AppText, BottomSheetHeader, PaddingView} from '@/components';
+import { AppText, BottomSheetHeader, PaddingView } from '@/components';
 import Modal from 'react-native-modal';
-import {Colors, normalize} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {useNavigation} from '@react-navigation/native';
+import { Colors, normalize } from '@/globals';
+import { UserContext } from '@/context/UserContext';
+import { useNavigation } from '@react-navigation/native';
 import AdminFunctionService from '@/services/Admin/AdminFunctions';
 
 // create a component
-const ConfirmationOtherProfile = ({userID, toggleEllipsisState}) => {
-  const {user, userInfo, setUserInfo} = useContext(UserContext);
+const ConfirmationOtherProfile = ({ userID, toggleEllipsisState, cancelModalToggle }) => {
+  const { user, userInfo, setUserInfo } = useContext(UserContext);
   const navigation = useNavigation();
 
   const blockUser = async () => {
@@ -22,7 +22,7 @@ const ConfirmationOtherProfile = ({userID, toggleEllipsisState}) => {
     }).then((res) => {
       //console.log(res);
       if (res.success) {
-        setUserInfo({...userInfo, blocked_users: res.data});
+        setUserInfo({ ...userInfo, blocked_users: res.data });
         toggleEllipsisState();
         navigation.goBack();
       }
@@ -39,14 +39,14 @@ const ConfirmationOtherProfile = ({userID, toggleEllipsisState}) => {
         justifyContent: 'center',
         padding: 16,
       }}>
-      <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+      <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
         Block this User?
       </AppText>
 
       <AppText
         textStyle="caption"
-        customStyle={{textAlign: 'center'}}
-        customStyle={{marginBottom: 16}}>
+        customStyle={{ textAlign: 'center' }}
+        customStyle={{ marginBottom: 16 }}>
         Are you sure you want to block this user?
       </AppText>
 
@@ -66,8 +66,8 @@ const ConfirmationOtherProfile = ({userID, toggleEllipsisState}) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => closeHandler('cancel')}
-        style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+        onPress={cancelModalToggle}
+        style={{ paddingVertical: 14, width: '100%', alignItems: 'center' }}>
         <AppText textStyle="button2" color={Colors.contentOcean}>
           Cancel
         </AppText>

@@ -35,6 +35,8 @@ const AlmostThere = (route) => {
     city: '',
     province: '',
     country: '',
+    full_address: '',
+    default: true,
   });
 
   //Address Components
@@ -74,6 +76,7 @@ const AlmostThere = (route) => {
             city: splitAddress[0],
             province: splitAddress[1],
             country: splitAddress[2],
+            full_address: addressComponent,
           },
         });
 
@@ -127,9 +130,9 @@ const AlmostThere = (route) => {
         const initialPosition = JSON.stringify({
           altitude: 0,
           altitudeAccuracy: -1,
-          latitude: 14.5831,
+          latitude: 14.582919,
           accuracy: 5,
-          longitude: 120.9794,
+          longitude: 120.979683,
           heading: -1,
           speed: -1,
         });
@@ -142,7 +145,7 @@ const AlmostThere = (route) => {
   }
 
   const saveLocationHandler = (fullAddress) => {
-    console.log(fullAddress);
+    //console.log(fullAddress);
     setIsScreenLoading(true);
     if (route?.route?.params?.uid) {
       SignUpService.saveLocation({
@@ -159,7 +162,7 @@ const AlmostThere = (route) => {
         })
         .catch((error) => {
           setIsScreenLoading(false);
-          console.log('With Error in the API SignUp ' + error);
+          console.log(error);
         });
     } else {
       setIsScreenLoading(false);

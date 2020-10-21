@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,11 +6,13 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import { AppText, BottomSheetHeader, PaddingView } from '@/components';
+import {AppText, BottomSheetHeader, PaddingView} from '@/components';
 import Modal from 'react-native-modal';
-import { Colors, normalize } from '@/globals';
-import { UserContext } from '@/context/UserContext';
-import ConfirmationOtherProfile from './ConfirmationOtherProfile.js';
+import {Colors, normalize} from '@/globals';
+import {UserContext} from '@/context/UserContext';
+import UnfollowContent from './UnfollowContent';
+//import RemoveFollowerContent from './RemovFollowerContent';
+import ConfirmationOtherProfile from '@/components/TransparentHeader/components/ConfirmationOtherProfile';
 
 import {
   ProfileMute,
@@ -19,24 +21,32 @@ import {
   HeaderFollowingBlack,
   HeaderFollowBlack,
 } from '@/assets/images/icons';
-import Report from './Report';
+import Report from '@/components/TransparentHeader/components/Report';
+import ReportContent from './ReportContent';
 
-const EllipsisMenu = ({
-  toggleEllipsisState,
+const FollowEllipsis = ({
+  showEllipsisToggle,
   togglePostModal,
   userInfo,
   userID,
   isFollowing,
-  toggleFollowing,
-  //blockUser,
+  connectUser,
 }) => {
-  const { username } = userInfo;
-  //console.log(userID);
+  const {username} = userInfo;
   const [reportUser, setReportUser] = useState(false);
+  const [unfollow, setUnfollow] = useState(false);
+
+  const unfollowToggle = () => {
+    if (isFollowing) {
+      setUnfollow(!unfollow);
+    } else {
+      followingHandler();
+    }
+  };
 
   const toggleReportUser = () => {
     setReportUser(!reportUser);
-    if (reportUser) toggleEllipsisState();
+    if (reportUser) showEllipsisToggle();
   };
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -46,15 +56,11 @@ const EllipsisMenu = ({
 
   const closeHandler = (value) => {
     cancelModalToggle();
-    setTimeout(() => {
-      togglePostModal = { togglePostModal };
-    }, 200);
-    cancelModalToggle();
   };
 
   const followingHandler = () => {
-    toggleEllipsisState();
-    toggleFollowing();
+    showEllipsisToggle();
+    connectUser(userInfo.uid, isFollowing);
   };
 
   return (
@@ -68,20 +74,7 @@ const EllipsisMenu = ({
         }}>
         <BottomSheetHeader />
         <PaddingView paddingSize={2}>
-          {/* <TouchableOpacity activeOpacity={0.7}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 16,
-            }}>
-            <ProfileMute />
-            <AppText customStyle={{marginLeft: 8}} textStyle="body2">
-              Mute @{username}
-            </AppText>
-          </View>
-        </TouchableOpacity> */}
-          <TouchableOpacity activeOpacity={0.7} onPress={() => { followingHandler() }}>
+          <TouchableOpacity activeOpacity={0.7} onPress={unfollowToggle}>
             <View
               style={{
                 flexDirection: 'row',
@@ -94,13 +87,13 @@ const EllipsisMenu = ({
                   height={normalize(20)}
                 />
               ) : (
-                  <HeaderFollowBlack
-                    width={normalize(20)}
-                    height={normalize(20)}
-                  />
-                )}
-              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
-                {isFollowing ? 'Following' : 'Follow'}
+                <HeaderFollowBlack
+                  width={normalize(20)}
+                  height={normalize(20)}
+                />
+              )}
+              <AppText customStyle={{marginLeft: 8}} textStyle="body2">
+                {isFollowing ? 'Unfollow' : 'Follow'} @{username}
               </AppText>
             </View>
           </TouchableOpacity>
@@ -112,7 +105,7 @@ const EllipsisMenu = ({
                 marginBottom: 16,
               }}>
               <ProfileReport />
-              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
+              <AppText customStyle={{marginLeft: 8}} textStyle="body2">
                 Report @{username}
               </AppText>
             </View>
@@ -131,14 +124,14 @@ const EllipsisMenu = ({
               <ProfileBlockRed />
               <AppText
                 color={Colors.red}
-                customStyle={{ marginLeft: 8 }}
+                customStyle={{marginLeft: 8}}
                 textStyle="body2">
                 Block @{username}
               </AppText>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7} onPress={toggleEllipsisState}>
+          <TouchableOpacity activeOpacity={0.7} onPress={showEllipsisToggle}>
             <View
               style={{
                 backgroundColor: Colors.neutralsZircon,
@@ -151,48 +144,62 @@ const EllipsisMenu = ({
           </TouchableOpacity>
         </PaddingView>
       </View>
-      <Modal
-        isVisible={showCancelModal}
-        animationIn="bounceIn"
-        animationInTiming={450}
-        animationOut="bounceOut"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <ConfirmationOtherProfile
-          toggleEllipsisState={toggleEllipsisState}
-          userID={userID}
-        />
-      </Modal>
+
       <Modal
         isVisible={reportUser}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
+        onSwipeComplete={toggleReportUser}
+        swipeDirection="down"
         style={{
+          justifyContent: 'flex-end',
           margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <Report
-          toggleReportUser={toggleReportUser}
-          username={username}
-          userID={userID}
-          type="user"
-        />
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={toggleReportUser}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View>
+          <ReportContent
+            data={userInfo}
+            reportToggleUser={toggleReportUser}
+            reportUserHandler={() => {}}
+          />
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={unfollow}
+        animationIn="slideInUp"
+        animationInTiming={500}
+        animationOut="slideOutDown"
+        animationOutTiming={500}
+        onSwipeComplete={unfollowToggle}
+        swipeDirection="down"
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={unfollowToggle}>
+            <View style={{flex: 1, backgroundColor: 'black'}} />
+          </TouchableWithoutFeedback>
+        }>
+        <View>
+          <UnfollowContent
+            data={userInfo}
+            unfollowToggle={unfollowToggle}
+            unfollowHandler={followingHandler}
+            isFollowing={isFollowing}
+            showEllipsisToggle={showEllipsisToggle}
+          />
+        </View>
       </Modal>
     </>
   );
 };
 
-export default EllipsisMenu;
+export default FollowEllipsis;
