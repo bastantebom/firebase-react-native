@@ -10,7 +10,7 @@ import { AppInput, PaddingView, AppText, ScreenHeaderTitle, FloatingAppInput } f
 import { Colors, normalize } from '@/globals';
 import { HeaderBackGray, ArrowRight } from '@/assets/images/icons';
 import { VerifyMap } from './components/Map';
-import EditAddress from '../../Profile/components/EditProfile/EditAddress';
+import EditAddress from '@/screens/Profile/components/EditProfile/MapAddress';
 import Modal from 'react-native-modal';
 import { UserContext } from '@/context/UserContext';
 

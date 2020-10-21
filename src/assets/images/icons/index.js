@@ -341,7 +341,7 @@ export {
   CallContactUs,
   LocationContactUs,
   CalendarArrowLeft,
-  CalendarArrowRight
+  CalendarArrowRight,
   HeaderFollowingBlack,
   HeaderFollowBlack,
   LatestTemp,

@@ -16,14 +16,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import { AppText, CacheableImage } from '@/components';
 import { GlobalStyle, Colors, normalize, timePassed } from '@/globals';
-import { Verified, ProfileImageDefault } from '@/assets/images/icons';
+import { Verified, ProfileImageDefault, StarRating} from '@/assets/images/icons';
 import { UserContext } from '@/context/UserContext';
 import { Profile } from '@/screens/Profile';
 import ProfileInfoModal from './ProfileInfoModal';
 import AppButton from '../AppButton/AppButton';
 import { PaddingView } from '../AppViewContainer';
 
-const ProfileInfo = ({ userInfo, type, cancelModalToggle }) => {
+const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
   const { user } = useContext(UserContext);
   const [profileModal, setProfileModal] = useState(false);
   const navigation = useNavigation();
@@ -121,7 +121,7 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle }) => {
                 @{username.toLowerCase()}
               </AppText> */}
 
-              <View style={styles.starRatingContainer}>
+              {/* <View style={styles.starRatingContainer}>
                 <View style={{ top: -1, marginRight: 4 }}>
                   <StarRating width={normalize(13)} height={normalize(13)} />
                 </View>
@@ -131,7 +131,7 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle }) => {
                 >
                   {rating}
                 </AppText>
-              </View>
+              </View> */}
 
               <AppText
                 textStyle="eyebrow2"
