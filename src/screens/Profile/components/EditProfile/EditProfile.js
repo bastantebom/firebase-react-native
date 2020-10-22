@@ -1,14 +1,7 @@
 //import liraries
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  useCallback,
-} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   SafeAreaView,
   Dimensions,
@@ -37,6 +30,7 @@ import {
   ArrowDown,
   Calendar,
   VerifiedGreen,
+  CircleAdd,
 } from '@/assets/images/icons';
 
 import {Colors, normalize} from '@/globals';
@@ -46,13 +40,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {UserContext} from '@/context/UserContext';
 import {Context} from '@/context';
-import Geocoder from 'react-native-geocoding';
-import Config from '@/services/Config';
+
 import moment from 'moment';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import {debounce} from 'lodash';
+
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
-import DebounceInput from 'react-native-debounce-input';
+
 import AddAddress from './AddAddress';
 
 // create a component
@@ -110,13 +103,11 @@ const EditProfile = ({
   const [profilePhotoClick, setProfilePhotoClick] = useState(false);
   const [dName, setDName] = useState(display_name ? display_name : full_name);
   const [name, setName] = useState(full_name);
-  /*Username Validations */
   const [uName, setUName] = useState(username);
   const [invalidUser, setInvalidUser] = useState(true);
   const [invalidUserFormat, setInvalidUserFormat] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState({});
   const [additional, setAdditional] = useState(null);
-  // const delayedUsernameValidation = _.debounce((un) => sendValidation(un), 800);
 
   const [enabled, setEnabled] = useState(false);
   const [errors, setErrors] = useState({
@@ -139,27 +130,22 @@ const EditProfile = ({
 
   const checkErrorState = () => {
     let temp = true;
-
-    console.log(errors);
-
     for (const [key, value] of Object.entries(errors)) {
       if (!value.passed) {
         temp = false;
+        setEnabled(temp);
         break;
       }
+      setEnabled(temp);
     }
-  };  
-  
-  const onChangeUsername = (uName) => {
-    //console.log('On change function');
+  };
 
+  const onChangeUsername = (uName) => {
     if (temp) {
-      // ENABLE BUTTON
       console.log('Button is Enabled');
       setEnabled(true);
       setButtonStyle(false);
     } else {
-      // DISABLE BUTTON
       console.log('Button is Disabled');
       setEnabled(false);
       setButtonStyle(true);
@@ -170,14 +156,8 @@ const EditProfile = ({
     checkErrorState();
   }, [errors]);
 
-
-  // const
-  // const [error, setError] = useState([]);
   const [verified, setVerified] = useState(false);
-
-  /*Username Validations */
   const [desc, setDesc] = useState(description);
-
   const [em, setEm] = useState(email);
   const [sEm, setSEm] = useState(secondary_email);
   const [mobile, setMobile] = useState(phone_number);
@@ -185,7 +165,6 @@ const EditProfile = ({
   const [g, setG] = useState(gender);
 
   const toggleAddAddress = () => {
-    //setSelectedAddress(null);
     setAdditional(true);
     setSelectedAddress(addresses.find((address) => address.default));
     setAddAddress(!addAddress);
@@ -252,18 +231,6 @@ const EditProfile = ({
     }
   };
 
-  const mobileChangeHandler = (mobile) => {
-    setMobile(mobile);
-    if (
-      (mobile.trim().length !== 11 || mobile.trim().length !== 13) &&
-      isMobileRequired
-    ) {
-      setButtonState(true);
-    } else {
-      setButtonState(false);
-    }
-  };
-
   const setButtonState = (j) => {
     if (j) {
       setButtonStyle({
@@ -298,8 +265,6 @@ const EditProfile = ({
 
   const updateProfile = async () => {
     const dataToUpdate = {
-      //cover_photo: cPhoto,
-      //profile_photo: pPhoto,
       display_name: dName,
       description: desc,
       full_name: name,
@@ -311,8 +276,6 @@ const EditProfile = ({
       gender: g,
       addresses: userInfo.addresses,
     };
-
-    //console.log(dataToUpdate);
 
     Object.keys(dataToUpdate).forEach(
       (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
@@ -334,13 +297,9 @@ const EditProfile = ({
       );
 
     await uploadProfileImagesHandler().then((response) => {
-      //console.log(response);
-      //response[0] !== 'empty' ?
       dataToUpdate.cover_photo = response[0] === 'empty' ? cPhoto : response[0];
       dataToUpdate.profile_photo =
         response[1] === 'empty' ? pPhoto : response[1];
-      //console.log('-----------------');
-      //console.log(dataToUpdate);
 
       ProfileInfoService.updateUser(dataToUpdate, uid)
         .then((response) => {
@@ -369,6 +328,7 @@ const EditProfile = ({
     });
     setUserInfo({...userInfo, addresses: [...nAdd]});
   };
+
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -380,13 +340,10 @@ const EditProfile = ({
             close={toggleEditProfile}
           />
         </PaddingView>
-
         <KeyboardAwareScrollView
           style={styles.container}
           extraScrollHeight={40}
-          keyboardOpeningTime={50}
-          // enableOnAndroid={true}
-        >
+          keyboardOpeningTime={50}>
           <View
             style={[
               styles.contentWrapper,
@@ -444,13 +401,6 @@ const EditProfile = ({
           </View>
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
-              {/* <FloatingAppInput
-                value={dName}
-                label="Display Name"
-                onChangeText={(dName) => {
-                  setDName(dName);
-                }}
-              /> */}
               <Validator errorState={errors.dName}>
                 <AppInput
                   label="Display Name"
@@ -494,14 +444,6 @@ const EditProfile = ({
                 }}>
                 You can only change your Display Name twice every 14 days.
               </AppText>
-              {/* <FloatingAppInput
-                value={name}
-                label="Full Name"
-                customStyle={{marginBottom: 16}}
-                onChangeText={(name) => {
-                  setName(name);
-                }}
-              /> */}
               <Validator errorState={errors.name} style={{marginBottom: 16}}>
                 <AppInput
                   label="Full Name"
@@ -521,20 +463,6 @@ const EditProfile = ({
                 />
               </Validator>
               <View style={{position: 'relative'}}>
-                {/* <FloatingAppInput
-                  value={uName}
-                  valueHandler={setUName}
-                  lowercase={true}
-                  label="Username"
-                  customStyle={{marginBottom: normalize(16)}}
-                  // invalidField={!invalidUser || invalidUserFormat}
-                  validation={['username']}
-                  setError={setError}
-                  error={error}
-                  setButtonState={setButtonState}
-                  // onChangeText={(uName) => onChangeUsername(uName)}
-                /> */}
-
                 <Validator errorState={errors.uName} style={{marginBottom: 16}}>
                   <AppInput
                     label="Username"
@@ -613,14 +541,26 @@ const EditProfile = ({
               <AppText
                 textStyle="body2"
                 customStyle={{marginBottom: normalize(8)}}>
-                You can save multiple addresses.
+                Choose your default address. You can also save multiple
+                addresses.
               </AppText>
 
               {addresses.map((address, index) => {
+                const customBorder =
+                  index > 0
+                    ? {
+                        borderTopWidth: 1,
+                        borderTopColor: Colors.neutralsGainsboro,
+                      }
+                    : {};
                 return (
                   <View
                     key={index}
-                    style={{flexDirection: 'row', paddingVertical: 8}}>
+                    style={{
+                      flexDirection: 'row',
+                      paddingVertical: 16,
+                      ...customBorder,
+                    }}>
                     <View
                       style={{
                         flex: 1,
@@ -672,8 +612,14 @@ const EditProfile = ({
                 );
               })}
 
-              <TouchableOpacity onPress={toggleAddAddress}>
-                <AppText textStyle="body2" color={Colors.contentOcean}>
+              <TouchableOpacity
+                style={{flexDirection: 'row'}}
+                onPress={toggleAddAddress}>
+                <CircleAdd width={24} height={24} />
+                <AppText
+                  customStyle={{marginLeft: 12}}
+                  textStyle="body2"
+                  color={Colors.contentOcean}>
                   Add an Address
                 </AppText>
               </TouchableOpacity>
@@ -717,17 +663,6 @@ const EditProfile = ({
                   setSEm(sEm);
                 }}
               />
-              {/* <FloatingAppInput
-                // editable={false}
-                selectTextOnFocus={false}
-                value={mobile}
-                label="Mobile Number"
-                keyboardType="phone-pad"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(mobile) => {
-                  mobileChangeHandler(mobile);
-                }}
-              /> */}
               <FloatingAppInput
                 editable={false}
                 value={mobile}
@@ -737,8 +672,6 @@ const EditProfile = ({
                 customStyle={{marginBottom: normalize(16)}}
                 keyboardType="phone-pad"
                 validation={['number']}
-                // setError={setError}
-                // error={error}
                 setButtonState={setButtonState}
               />
               <View style={{position: 'relative'}}>
@@ -810,7 +743,6 @@ const EditProfile = ({
               type="primary"
               height="xl"
               disabled={!enabled}
-              // disabled
               customStyle={{
                 backgroundColor: !enabled
                   ? Colors.buttonDisable
@@ -872,12 +804,10 @@ const EditProfile = ({
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.neutralsZircon,
-    //padding: normalize(16),
     width: Dimensions.width,
   },
   contentWrapper: {
@@ -917,5 +847,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default EditProfile;

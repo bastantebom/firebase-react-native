@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -344,7 +344,6 @@ const OwnMenu = ({toggleMenu, signOut, triggerNotify}) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <HiddenPost toggleHiddenPost={toggleHiddenPost} />
       </Modal>
 

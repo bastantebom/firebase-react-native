@@ -1,14 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {TouchableOpacity, View, StyleSheet, SafeAreaView} from 'react-native';
 import Geocoder from 'react-native-geocoding';
-//import {useNavigation} from '@react-navigation/native';
-
 import {HeaderBackGray} from '@/assets/images/icons';
 import Config from '@/services/Config';
 import GooglePlacesInput from '@/components/LocationSearchInput';
 import {PaddingView, AppText, MapComponent, AppButton} from '@/components';
 import {Colors, normalize} from '@/globals';
-//import {UserContext} from '@/context/UserContext';
 
 const styles = StyleSheet.create({
   modalHeader: {
@@ -16,7 +13,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    //marginBottom: 32,
   },
   buttonWrapper: {
     width: '100%',
@@ -36,15 +32,14 @@ const styles = StyleSheet.create({
     zIndex: 100,
     top: 70,
     marginTop: 25,
-    // elevation: 100,
   },
 });
 
 // create a component
 const Location = ({toggleMap, address, changeFromMapHandler}) => {
-  //const {userInfo, setUserInfo} = useContext(UserContext);
-  //const navigation = useNavigation();
-  const [changeMapAddress, setChangeMapAddress] = useState('');
+  const [changeMapAddress, setChangeMapAddress] = useState(
+    address.full_address,
+  );
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
@@ -52,7 +47,6 @@ const Location = ({toggleMap, address, changeFromMapHandler}) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   Geocoder.init(Config.apiKey);
   const [newCoords, setNewCoords] = useState({});
-  const [newLoc, setNewLoc] = useState({});
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
@@ -61,31 +55,23 @@ const Location = ({toggleMap, address, changeFromMapHandler}) => {
     latitude: 0,
     full_address: '',
   });
-  //const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [addressRunCount, setAddressRunCount] = useState(0);
 
   //MAP DRAG
   const onRegionChange = (region) => {
-    console.log('addressRunCount ' + addressRunCount);
-
     if (addressRunCount === 0) {
       getStringAddress(region, null);
     } else {
       setAddressRunCount(addressRunCount - 1);
     }
-
     setButtonDisabled(false);
     setButtonStyle({});
   };
 
   const getPositionFromString = (address) => {
-    //console.log('getPositionFromString ' + address);
-    //console.log('getStringAddress ' + strAddress);
-
     Geocoder.from(address)
       .then((json) => {
         const location = json.results[0].geometry.location;
-        //console.log(location);
         const convertedLocation = {
           latitude: location.lat,
           longitude: location.lng,
@@ -103,25 +89,8 @@ const Location = ({toggleMap, address, changeFromMapHandler}) => {
     Geocoder.from(location.latitude, location.longitude)
       .then((json) => {
         const stringMapDrag = json.results[1].formatted_address;
-        //console.log(json.results);
         const arrayToExtract =
-          json.results.length == 14
-            ? 9
-            : json.results.length == 13
-            ? 8
-            : json.results.length == 12
-            ? 7
-            : json.results.length == 11
-            ? 6
-            : json.results.length == 10
-            ? 5
-            : json.results.length == 9
-            ? 4
-            : json.results.length == 8
-            ? 3
-            : json.results.length < 8
-            ? 2
-            : 2;
+          json.results.length < 8 ? 2 : json.results.length - 5;
 
         setChangeMapAddress(strAddress ? strAddress : stringMapDrag);
         const splitAddress = json.results[
@@ -138,29 +107,17 @@ const Location = ({toggleMap, address, changeFromMapHandler}) => {
             country: splitAddress[2],
             full_address: strAddress ? strAddress : stringMapDrag,
           },
-          //setChangeMapAddress(addressComponent);
         });
       })
       .catch((error) => console.warn(error));
-
-    //console.log(addressComponents);
-    //setButtonDisabled(false);
-    //setButtonStyle({});
   };
 
   //SEARCH ADDRESS
   const onSearchLocationHandler = (data) => {
-    //console.log('onSearchLocationHandler ' + data);
-    //setChangeMapAddress(data);
-    //getStringAddress(data);
     getPositionFromString(data);
   };
 
   const saveRefineLocation = () => {
-    // const dataToUpdate = {
-    //   address: addressComponents,
-    // };
-    //setUserInfo({...userInfo, ...dataToUpdate});
     changeFromMapHandler(addressComponents);
     toggleMap();
   };
@@ -182,19 +139,13 @@ const Location = ({toggleMap, address, changeFromMapHandler}) => {
       <View style={styles.textInputWrapper}>
         <GooglePlacesInput
           onResultsClick={(data) => {
-            //alert(data);
-            //console.log('nag search');
-
             onSearchLocationHandler(data);
-            //alert(data);
           }}
           onClearInput={() => {}}
           currentValue={changeMapAddress}
         />
       </View>
       <MapComponent
-        // latitude={latitude}
-        // longitude={longitude}
         latitude={address.latitude}
         longitude={address.longitude}
         reCenter={newCoords}
@@ -215,7 +166,6 @@ const Location = ({toggleMap, address, changeFromMapHandler}) => {
           }}
         />
       </View>
-      {/* </View> */}
     </SafeAreaView>
   );
 };
