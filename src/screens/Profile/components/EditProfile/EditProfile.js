@@ -30,6 +30,7 @@ import {
   ArrowDown,
   Calendar,
   VerifiedGreen,
+  CircleAdd,
 } from '@/assets/images/icons';
 
 import {Colors, normalize} from '@/globals';
@@ -540,14 +541,26 @@ const EditProfile = ({
               <AppText
                 textStyle="body2"
                 customStyle={{marginBottom: normalize(8)}}>
-                You can save multiple addresses.
+                Choose your default address. You can also save multiple
+                addresses.
               </AppText>
 
               {addresses.map((address, index) => {
+                const customBorder =
+                  index > 0
+                    ? {
+                        borderTopWidth: 1,
+                        borderTopColor: Colors.neutralsGainsboro,
+                      }
+                    : {};
                 return (
                   <View
                     key={index}
-                    style={{flexDirection: 'row', paddingVertical: 8}}>
+                    style={{
+                      flexDirection: 'row',
+                      paddingVertical: 16,
+                      ...customBorder,
+                    }}>
                     <View
                       style={{
                         flex: 1,
@@ -599,8 +612,14 @@ const EditProfile = ({
                 );
               })}
 
-              <TouchableOpacity onPress={toggleAddAddress}>
-                <AppText textStyle="body2" color={Colors.contentOcean}>
+              <TouchableOpacity
+                style={{flexDirection: 'row'}}
+                onPress={toggleAddAddress}>
+                <CircleAdd width={24} height={24} />
+                <AppText
+                  customStyle={{marginLeft: 12}}
+                  textStyle="body2"
+                  color={Colors.contentOcean}>
                   Add an Address
                 </AppText>
               </TouchableOpacity>
