@@ -2,24 +2,20 @@
 import React, {useState, useContext} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import {Context} from '@/context';
 import {UserContext} from '@/context/UserContext';
 import Modal from 'react-native-modal';
 import {normalize, Colors} from '@/globals';
 import {
   ScreenHeaderTitle,
-  Notification,
   TransitionIndicator,
   FloatingAppInput,
   AppButton,
-  PaddingView,
   AppText,
 } from '@/components';
 
@@ -27,7 +23,6 @@ import {ArrowRight} from '@/assets/images/icons';
 import MapAddress from './MapAddress';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 
-// create a component
 const AddAddress = ({toggleAddAddress, address, additional}) => {
   const {userInfo, user, setUserInfo} = useContext(UserContext);
   const [currentAddress, setCurrentAddress] = useState(address);
@@ -52,8 +47,6 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
   const [map, setMap] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const cancelModalToggle = () => {
-    //console.log(title);
-    //setSelectedPost(post);
     setShowCancelModal(!showCancelModal);
   };
 
@@ -88,11 +81,8 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
       };
     }
 
-    //console.log([...nAdd]);
-
     ProfileInfoService.updateUser({addresses: [...nAdd]}, user.uid)
       .then((response) => {
-        //console.log(response.data.addresses);
         if (response.success) {
           setIS_LOADING(false);
           setUserInfo({...userInfo, ...response.data});
@@ -106,8 +96,6 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
         setIS_LOADING(false);
         console.log(error);
       });
-
-    //console.log(fAdd);
   };
 
   const deleteAddress = async () => {
@@ -118,7 +106,6 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
       .concat(nAdd.slice(additional + 1, nAdd.length));
     ProfileInfoService.updateUser({addresses: [...cleanListAddress]}, user.uid)
       .then((response) => {
-        //console.log(response.data.addresses);
         if (response.success) {
           setIS_LOADING(false);
           setUserInfo({...userInfo, ...response.data});

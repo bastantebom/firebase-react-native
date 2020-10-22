@@ -28,7 +28,7 @@ import {
   EditItemScreen,
   PostExpiryScreen,
   ShippingMethodScreen,
-  PaymentMethodScreen
+  PaymentMethodScreen,
 } from '@/screens/Post';
 import {PostScreen} from '@/screens/Post';
 import SampleScreen from '@/screens/SampleScreen';
@@ -176,11 +176,26 @@ function CreatePostStackScreen() {
     <CreatePostStack.Navigator headerMode="none">
       <CreatePostStack.Screen name="CreatePostScreen" component={PostScreen} />
       <CreatePostStack.Screen name="AddItemScreen" component={AddItemScreen} />
-      <CreatePostStack.Screen name="EditItemScreen" component={EditItemScreen} />
-      <CreatePostStack.Screen name="AddedItemPreviewScreen" component={AddedItemPreviewScreen} />
-      <CreatePostStack.Screen name="PostExpiryScreen" component={PostExpiryScreen} />
-      <CreatePostStack.Screen name="ShippingMethodScreen" component={ShippingMethodScreen} />
-      <CreatePostStack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
+      <CreatePostStack.Screen
+        name="EditItemScreen"
+        component={EditItemScreen}
+      />
+      <CreatePostStack.Screen
+        name="AddedItemPreviewScreen"
+        component={AddedItemPreviewScreen}
+      />
+      <CreatePostStack.Screen
+        name="PostExpiryScreen"
+        component={PostExpiryScreen}
+      />
+      <CreatePostStack.Screen
+        name="ShippingMethodScreen"
+        component={ShippingMethodScreen}
+      />
+      <CreatePostStack.Screen
+        name="PaymentMethodScreen"
+        component={PaymentMethodScreen}
+      />
     </CreatePostStack.Navigator>
   );
 }
@@ -218,13 +233,18 @@ function ActivityStackScreen() {
 }
 
 function ProfileStackScreen() {
-  return (
-    <>
-      <ProfileStack.Navigator headerMode="none">
-        <ProfileStack.Screen name="Profile" component={Profile} />
-      </ProfileStack.Navigator>
-    </>
-  );
+  const {user} = useContext(UserContext);
+  if (user) {
+    return (
+      <>
+        <ProfileStack.Navigator headerMode="none">
+          <ProfileStack.Screen name="Profile" component={Profile} />
+        </ProfileStack.Navigator>
+      </>
+    );
+  } else {
+    return null;
+  }
 }
 
 function TabStack() {
@@ -290,7 +310,7 @@ function TabStack() {
         },
         tabStyle: {
           flex: 1,
-          alignItems: 'center'
+          alignItems: 'center',
         },
         labelStyle: {
           fontSize: normalize(13),
