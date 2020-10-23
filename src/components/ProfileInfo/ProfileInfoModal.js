@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,7 +10,7 @@ import {
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import {
   AppText,
@@ -26,29 +26,23 @@ import {
   CacheableImage,
 } from '@/components';
 import PostFilter from '@/components/Post/PostFilter';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import {TabView, SceneMap} from 'react-native-tab-view';
 
-import { ProfileHeaderDefault } from '@/assets/images';
-import { normalize, Colors } from '@/globals';
-import { UserContext } from '@/context/UserContext';
-import { Context } from '@/context/index';
+import {ProfileHeaderDefault} from '@/assets/images';
+import {normalize, Colors} from '@/globals';
+import {UserContext} from '@/context/UserContext';
+import {Context} from '@/context/index';
 
-import { MoreInfo, Reviews } from '@/screens/Profile/Tabs';
+import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
-// import {GuestProfile} from './components/GuestProfile';
 
 function ProfileInfoModal(props) {
-  //console.log('PROPS');
-  //console.log(props.route.params);
-
-  const { profileViewType = 'other', uid } = props.route?.params;
+  const {profileViewType = 'other', uid} = props.route?.params;
 
   const navigation = useNavigation();
-  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext);
-  const { userPosts, otherUserPosts } = useContext(Context);
-  //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
+  const {user, signOut, userInfo, setUserInfo} = useContext(UserContext);
+  const {userPosts, otherUserPosts} = useContext(Context);
   const [otherUserInfo, setOtherUserInfo] = useState({});
-  //const [userDataAvailable, setUserDataAvailable] = useState(false);
 
   const [ellipsisState, setEllipsisState] = useState(false);
   const [following, setFollowing] = useState(false);
@@ -83,12 +77,10 @@ function ProfileInfoModal(props) {
     setVisibleHives(!visibleHives);
   };
   const toggleProfileList = () => {
-    //alert('text');
     setProfileList(!profileList);
   };
 
   const toggleFollowing = () => {
-    //setFollowing(!following);
     connectUser();
   };
 
@@ -97,26 +89,19 @@ function ProfileInfoModal(props) {
       .then((response) => {
         const updatedFollowingList = {
           following: [...response.data],
-        }
-        setUserInfo({ ...userInfo, ...updatedFollowingList });
+        };
+        setUserInfo({...userInfo, ...updatedFollowingList});
         setIsFollowing(response.data.includes(uid));
         setAddFollowers(response.data.includes(uid));
-        //console.log('following list ');
-        //console.log(response.data);
       })
       .catch((err) => {
-        //setIsFollowing(response.data.includes(uid));
-        console.log('Err: ' + err);
-      })
+        console.log(err);
+      });
   };
 
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
   const width = Dimensions.get('window').width;
-
-  // if (!user) {
-  //   return <GuestProfile />;
-  // }
 
   useEffect(() => {
     let mounted = true;
@@ -137,13 +122,11 @@ function ProfileInfoModal(props) {
       });
     if (userInfo.following) {
       setIsFollowing(userInfo.following.includes(uid));
-      console.log("userInfo following " + userInfo.following);
     }
     return () => {
       mounted = false;
     };
   }, []);
-
 
   const profileTabs = [
     {
@@ -184,27 +167,26 @@ function ProfileInfoModal(props) {
         userID={uid}
       />
       <View
-        style={{ backgroundColor: Colors.buttonDisable, height: normalize(158) }}>
+        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
         {otherUserInfo.cover_photo ? (
           <CacheableImage
-            source={{ uri: otherUserInfo.cover_photo }}
-            style={{ width: normalize(375), height: normalize(158) }}
+            source={{uri: otherUserInfo.cover_photo}}
+            style={{width: normalize(375), height: normalize(158)}}
           />
         ) : (
-            <ProfileHeaderDefault
-              width={normalize(375 * 1.2)}
-              height={normalize(158 * 1.2)}
-            />
-          )}
+          <ProfileHeaderDefault
+            width={normalize(375 * 1.2)}
+            height={normalize(158 * 1.2)}
+          />
+        )}
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
-          {/* <ProfileImageUpload size={150} /> */}
           <HexagonBorder size={140} imgSrc={otherUserInfo.profile_photo} />
         </View>
 
         <ProfileLinks
-          toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
+          toggleHives={toggleHives}
           toggleProfileList={toggleProfileList}
           visibleHives={visibleHives}
           profileList={profileList}
@@ -213,13 +195,13 @@ function ProfileInfoModal(props) {
           viewType="other-user-links"
         />
       </View>
-      <View style={{ backgroundColor: Colors.primaryYellow }}>
+      <View style={{backgroundColor: Colors.primaryYellow}}>
         <LoadingUserInfo isLoading={isDataLoading}>
           <ProfileInfo profileData={otherUserInfo} />
         </LoadingUserInfo>
       </View>
 
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
@@ -228,10 +210,10 @@ function ProfileInfoModal(props) {
   );
 }
 
-const LoadingUserInfo = ({ children, isLoading }) => {
+const LoadingUserInfo = ({children, isLoading}) => {
   return (
     <SkeletonContent
-      containerStyle={{ flexDirection: 'column', backgroundColor: 'white' }}
+      containerStyle={{flexDirection: 'column', backgroundColor: 'white'}}
       isLoading={isLoading}
       layout={[
         {
@@ -293,7 +275,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     position: 'relative',
-    // justifyContent: 'center',
   },
 
   profileBasicInfo: {
@@ -307,6 +288,5 @@ const styles = StyleSheet.create({
     height: normalize(160),
     top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
-    //backgroundColor: 'red',
   },
 });

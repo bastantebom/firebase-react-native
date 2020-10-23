@@ -42,7 +42,7 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
   // console.log(props.route.params.id);
 
   // if(props.route?.params?.id){
-    
+
   // }
 
   const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);

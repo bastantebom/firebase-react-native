@@ -1,7 +1,7 @@
-import React, {useContext, useEffect} from 'react';
-import {View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, Dimensions} from 'react-native';
 import {Divider} from 'react-native-paper';
-
+import {TempHistory} from '@/screens/Profile/components';
 import {AppText} from '@/components';
 import {
   normalize,
@@ -18,7 +18,7 @@ import {
   NavigationPinRed,
 } from '@/assets/images/icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-
+import Modal from 'react-native-modal';
 import {UserContext} from '@/context/UserContext';
 //import {joinedDate} from '@/globals/Utils';
 
@@ -29,12 +29,20 @@ const ProfileInfo = ({profileData}) => {
     full_name,
     username,
     temperature,
+    temperature_history,
     ratings_count,
     ratings_average,
     date_joined,
     addresses,
     address,
   } = profileData;
+
+  const ALLOWED_TEMP = 37.2;
+
+  const [history, setHistory] = useState(false);
+  const toggleHistory = () => {
+    setHistory(!history);
+  };
 
   const {fetch} = useContext(UserContext);
 
@@ -45,65 +53,73 @@ const ProfileInfo = ({profileData}) => {
   }, []);
 
   let timeAgo = (time) => {
-    return timePassedShort(time) + ' ago';
+    return !timePassedShort(time)
+      ? ' just now'
+      : timePassedShort(time) + ' ago';
   };
 
   return (
-    <View style={{paddingHorizontal: 16, backgroundColor: 'white'}}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <AppText
-          textStyle="subtitle1"
-          color={Colors.primaryMidnightBlue}
-          customStyle={{marginRight: 8}}>
-          {display_name ? display_name : full_name}
-        </AppText>
-
-        {/* <Verified width={normalize(11)} height={normalize(12.4)} /> */}
-      </View>
-      <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
-        <AppText textStyle="body3" customStyle={{marginRight: 16}}>
-          {full_name}
-        </AppText>
-        {username ? (
-          <AppText textStyle="body2" customStyle={{marginRight: 16}}>
-            @{username}
-          </AppText>
-        ) : (
-          <TouchableOpacity>
-            <AppText textStyle="body2" customStyle={{marginRight: 16}}>
-              @ADDUSERID
-            </AppText>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 8,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingHorizontal: 8,
-            paddingVertical: 4,
-            backgroundColor: Colors.secondarySolitude,
-            // backgroundColor: 'black',
-            borderRadius: 16,
-          }}>
-          <Temperature width={normalize(16)} height={normalize(16)} />
-          <AppText textStyle="caption" customStyle={{marginLeft: 4}}>
-            {temperature && temperature.value
-              ? temperature.value +
-                ' °C at ' +
-                timeAgo(Date.now() / 1000 - temperature.date._seconds)
-              : 'No temp history'}
+    <>
+      <View style={{paddingHorizontal: 16, backgroundColor: 'white'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <AppText
+            textStyle="subtitle1"
+            color={Colors.primaryMidnightBlue}
+            customStyle={{marginRight: 8}}>
+            {display_name ? display_name : full_name}
           </AppText>
         </View>
-      </View>
+        <View
+          style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
+          <AppText textStyle="body3" customStyle={{marginRight: 16}}>
+            {full_name}
+          </AppText>
+          {username ? (
+            <AppText textStyle="body2" customStyle={{marginRight: 16}}>
+              @{username}
+            </AppText>
+          ) : (
+            <TouchableOpacity>
+              <AppText textStyle="body2" customStyle={{marginRight: 16}}>
+                @ADDUSERID
+              </AppText>
+            </TouchableOpacity>
+          )}
+        </View>
 
-      {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 16}}>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 8,
+          }}
+          onPress={() => {
+            temperature && temperature.value ? toggleHistory() : '';
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              backgroundColor:
+                temperature?.value && temperature.value > ALLOWED_TEMP
+                  ? Colors.secondaryPomelo
+                  : Colors.secondarySolitude,
+
+              borderRadius: 16,
+            }}>
+            <Temperature width={normalize(16)} height={normalize(16)} />
+            <AppText textStyle="caption" customStyle={{marginLeft: 4}}>
+              {temperature?.value
+                ? temperature?.value +
+                  ' °C at ' +
+                  timeAgo(Date.now() / 1000 - temperature.date._seconds)
+                : 'No record shown'}
+            </AppText>
+          </View>
+        </TouchableOpacity>
+
+        {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 16}}>
         <StarRating width={normalize(16)} height={normalize(16)} />
         <AppText textStyle="body3" customStyle={{marginRight: 8}}>
           {' '}
@@ -114,31 +130,49 @@ const ProfileInfo = ({profileData}) => {
         </AppText>
       </View> */}
 
-      <Divider
-        style={[
-          GlobalStyle.dividerStyle,
-          {marginVertical: 16, backgroundColor: 'rgba(164, 176, 190, 0.6)'},
-        ]}
-      />
+        <Divider
+          style={[
+            GlobalStyle.dividerStyle,
+            {marginVertical: 16, backgroundColor: 'rgba(164, 176, 190, 0.6)'},
+          ]}
+        />
 
-      <View
-        style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16}}>
-        <BeeJoinedTime width={normalize(16)} height={normalize(16)} />
-        <AppText
-          textStyle="body2"
-          customStyle={{marginLeft: 4, marginRight: 16}}>
-          Joined {joinedDate(date_joined)}
-        </AppText>
-        <NavigationPinRed width={normalize(16)} height={normalize(16)} />
-        <AppText
-          textStyle="body2"
-          customStyle={{marginLeft: 4, marginRight: 16}}>
-          {addresses
-            ? addresses.find((address) => address.default).city
-            : 'Manila City'}
-        </AppText>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 16,
+          }}>
+          <BeeJoinedTime width={normalize(16)} height={normalize(16)} />
+          <AppText
+            textStyle="body2"
+            customStyle={{marginLeft: 4, marginRight: 16}}>
+            Joined {joinedDate(date_joined)}
+          </AppText>
+          <NavigationPinRed width={normalize(16)} height={normalize(16)} />
+          <AppText
+            textStyle="body2"
+            customStyle={{marginLeft: 4, marginRight: 16}}>
+            {addresses
+              ? addresses.find((address) => address.default).city
+              : 'Manila City'}
+          </AppText>
+        </View>
       </View>
-    </View>
+      <Modal
+        isVisible={history}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <TempHistory profileData={profileData} toggleHistory={toggleHistory} />
+      </Modal>
+    </>
   );
 };
 

@@ -1,9 +1,6 @@
 import BaseAPI from '@/services/BaseAPI';
-//import {UserContext} from '@/context/UserContext';
 
 const getUser = async (payload) => {
-  //url: /uses/:uid
-  //console.log(`users/${payload}`);
   return await BaseAPI({
     url: `users/${payload}`,
     method: 'GET',
@@ -25,7 +22,6 @@ const updateUser = (payload, UID) => {
 };
 
 const updatePassword = (payload, UID) => {
-  //url: /users/:uid/change-password
   return BaseAPI({
     url: `users/${UID}/change-password`,
     method: 'PUT',
@@ -37,7 +33,6 @@ const updatePassword = (payload, UID) => {
 };
 
 const validateUsername = (payload) => {
-  //url: /users/verify-username
   return BaseAPI({
     url: `users/verify-username`,
     method: 'POST',
@@ -60,7 +55,6 @@ const validateCurrentPassword = (payload) => {
 };
 
 const follow = (uid, follow) => {
-  /// users/:uid/follow
   const connect = follow ? 'unfollow' : 'follow';
   console.log(`users/${uid}/${connect}`);
   return BaseAPI({
@@ -73,8 +67,6 @@ const follow = (uid, follow) => {
 };
 
 const getFollowers = async (uid) => {
-  //GET /users/:uid/followers
-  //console.log(`/users/${uid}/followers`);
   return await BaseAPI({
     url: `/users/${uid}/followers`,
     method: 'GET',
@@ -85,8 +77,6 @@ const getFollowers = async (uid) => {
 };
 
 const getFollowing = async (uid) => {
-  //GET /users/:uid/followers
-  //console.log(`/users/${uid}/followers`);
   return await BaseAPI({
     url: `/users/${uid}/following`,
     method: 'GET',
@@ -97,8 +87,7 @@ const getFollowing = async (uid) => {
 };
 
 const updateTemp = async (payload) => {
-  //GET /users/:uid/followers
-  //console.log(`/users/${payload.uid}/temperature`);
+  console.log(`/users/${payload.uid}/temperature`);
   return await BaseAPI({
     url: `/users/${payload.uid}/temperature`,
     method: 'PUT',

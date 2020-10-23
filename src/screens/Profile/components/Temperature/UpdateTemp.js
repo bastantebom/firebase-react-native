@@ -2,30 +2,31 @@
 import React, {useState, useContext} from 'react';
 import {
   View,
-  StyleSheet,
   SafeAreaView,
-  TextInput,
   Dimensions,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import {
   ScreenHeaderTitle,
-  PaddingView,
   AppText,
   AppButton,
   FloatingAppInput,
+  Notification,
 } from '@/components';
 import {TempHistory, TempAboutScreen} from '@/screens/Profile/components';
 import {UserContext} from '@/context/UserContext';
 
-import {normalize, Colors} from '@/globals';
+import {Colors, normalize} from '@/globals';
 import Modal from 'react-native-modal';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import {Context} from '@/context';
 
 // create a component
 const UpdateTemp = ({toggleUpdateTemp}) => {
   const {userInfo, user, setUserInfo} = useContext(UserContext);
+  const {temperature_history} = userInfo;
   const [history, setHistory] = useState(false);
   const [tempAbout, setTempAbout] = useState(false);
   const [temp, setTemp] = useState('');
@@ -35,6 +36,10 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
   });
   const [buttonDisable, setButtonDisable] = useState(true);
   const [IS_UPDATING, setIS_UPDATING] = useState(false);
+  const [copyGuide, setCopyGuide] = useState(false);
+  const {openNotification, closeNotification} = useContext(Context);
+  const [notificationMessage, setNotificationMessage] = useState();
+  const [notificationType, setNotificationType] = useState();
 
   const toggleHistory = () => {
     setHistory(!history);
@@ -63,7 +68,7 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
     } else {
       setButtonStyle({});
     }
-    //console.log(buttonStyle);
+
     setButtonDisable(j);
   };
 
@@ -74,24 +79,81 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
       temperature: temp,
     })
       .then((response) => {
-        //console.log(response);
         if (response.success) {
           setIS_UPDATING(false);
+          const nTemp = [...temperature_history];
+          nTemp[temperature_history.length] = response.data;
+          setUserInfo({
+            ...userInfo,
+            temperature_history: [...nTemp],
+            temperature: response.data,
+          });
           setTemp('');
+          setButtonState(true);
+          triggerNotification(
+            'Temperature has been updated successfully!',
+            'success',
+          );
         } else {
           setIS_UPDATING(false);
+          triggerNotification('Temperature update failed!', 'error');
         }
       })
       .catch((error) => {
         setIS_UPDATING(false);
+        triggerNotification('Temperature update failed!', 'error');
         console.log(error);
       });
+  };
+
+  const notificationErrorTextStyle = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    color: 'white',
+    flexWrap: 'wrap',
+  };
+
+  const notificationText = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    flexWrap: 'wrap',
+  };
+
+  const triggerNotification = (message, type) => {
+    setNotificationType(type);
+    setNotificationMessage(
+      <AppText
+        textStyle="body2"
+        customStyle={
+          type === 'success' ? notificationText : notificationErrorTextStyle
+        }>
+        {message}
+      </AppText>,
+    );
+    openNotification();
+    closeNotificationTimer();
+  };
+
+  const closeNotificationTimer = () => {
+    setTimeout(() => {
+      setNotificationType();
+      setNotificationMessage();
+      closeNotification();
+    }, 5000);
   };
 
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <PaddingView paddingSize={3}>
+        <Notification
+          message={notificationMessage}
+          type={notificationType}
+          top={normalize(30)}
+          position="absolute"
+        />
+        <KeyboardAvoidingView style={{flex: 1, padding: 24}}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Update Body Temperature"
@@ -125,18 +187,29 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
               onChangeText={(temp) => {
                 onTempChangeHandler(temp);
               }}
+              onInputFocus={() => {
+                setCopyGuide(true);
+                //console.log('Focus');
+              }}
             />
+            {copyGuide ? (
+              <AppText textStyle="captionConstant" customStyle={{marginTop: 8}}>
+                Body temperature should be in °Celsius
+              </AppText>
+            ) : null}
           </View>
 
-          <AppButton
-            text="Save"
-            type="primary"
-            height="xl"
-            disabled={buttonDisable}
-            customStyle={{...buttonStyle}}
-            onPress={() => updateTempHandler()}
-          />
-        </PaddingView>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <AppButton
+              text="Save"
+              type="primary"
+              height="xl"
+              disabled={buttonDisable}
+              customStyle={{...buttonStyle}}
+              onPress={() => updateTempHandler()}
+            />
+          </View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
 
       <Modal
@@ -150,7 +223,7 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        <TempHistory toggleHistory={toggleHistory} />
+        <TempHistory profileData={userInfo} toggleHistory={toggleHistory} />
       </Modal>
 
       <Modal
@@ -169,42 +242,6 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
     </>
   );
 };
-
-// define your styles
-// define your styles
-const styles = StyleSheet.create({
-  imageWrapper: {
-    marginBottom: normalize(16),
-    alignItems: 'center',
-  },
-  contentWrapper: {
-    backgroundColor: Colors.neutralsWhite,
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  copyWrapper: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginBottom: normalize(24),
-    backgroundColor: Colors.neutralsWhite,
-  },
-  centerCopy: {
-    textAlign: 'left',
-    marginBottom: normalize(8),
-  },
-  input: {
-    color: Colors.contentEbony,
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(16),
-    letterSpacing: 0.5,
-    borderColor: Colors.neutralGray,
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-});
 
 //make this component available to the app
 export default UpdateTemp;

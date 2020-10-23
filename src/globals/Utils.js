@@ -87,6 +87,46 @@ export const joinedDate = (completeDate) => {
   }
 };
 
+export const tempHistory = (completeDate) => {
+  if (completeDate) {
+    const newCompleteDate = new Date(completeDate);
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const rawHour =
+      newCompleteDate.getHours() > 12
+        ? newCompleteDate.getHours() - 12
+        : newCompleteDate.getHours();
+
+    const hour = rawHour.toString().padStart(2, 0);
+    const minutes = newCompleteDate.getMinutes().toString().padStart(2, 0);
+    const AMPM = newCompleteDate.getHours() > 12 ? 'PM' : 'AM';
+    const day = newCompleteDate.getDate().toString().padStart(2, 0);
+
+    return (
+      monthNames[newCompleteDate.getMonth()] +
+      ' ' +
+      day +
+      ', ' +
+      hour +
+      ':' +
+      minutes +
+      AMPM
+    );
+  }
+};
+
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const scale = SCREEN_WIDTH / 375;

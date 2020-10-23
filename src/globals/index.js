@@ -6,6 +6,7 @@ import {
   normalize,
   timePassedShort,
   joinedDate,
+  tempHistory,
 } from '@/globals/Utils';
 
 export {
@@ -16,4 +17,5 @@ export {
   normalize,
   timePassedShort,
   joinedDate,
+  tempHistory,
 };

@@ -1,26 +1,17 @@
 //import liraries
-import React, {useState, useContext} from 'react';
-import {View, StyleSheet, SafeAreaView, TextInput} from 'react-native';
-
-import {
-  ScreenHeaderTitle,
-  PaddingView,
-  AppText,
-  AppButton,
-  Dimensions,
-} from '@/components';
-
-import {ContactUsImg} from '@/assets/images';
-import {
-  EmailContactUs,
-  CallContactUs,
-  LocationContactUs,
-} from '@/assets/images/icons';
-import {normalize, Colors} from '@/globals';
-import Modal from 'react-native-modal';
+import React from 'react';
+import {StyleSheet, SafeAreaView, View} from 'react-native';
+import {ScreenHeaderTitle, PaddingView, AppText} from '@/components';
+import {normalize, Colors, tempHistory, joinedDate} from '@/globals';
+import {ScrollView} from 'react-native-gesture-handler';
 
 // create a component
-const TempHistory = ({toggleHistory}) => {
+const TempHistory = ({toggleHistory, profileData}) => {
+  const {temperature_history} = profileData;
+  const history = temperature_history?.map((item) => item).reverse();
+
+  const ALLOWED_TEMP = 37.2;
+
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -30,47 +21,81 @@ const TempHistory = ({toggleHistory}) => {
             title="Body Temperature History"
             close={toggleHistory}
           />
+          <ScrollView>
+            {history
+              ? history.map((temp, index) => {
+                  const tempColor =
+                    temp.value > ALLOWED_TEMP
+                      ? Colors.errColor
+                      : Colors.contentEbony;
+                  const customBorder = !index
+                    ? {}
+                    : {
+                        borderTopWidth: 1,
+                        borderTopColor: Colors.neutralsGainsboro,
+                      };
+                  const monthLabel =
+                    joinedDate(Date.now()) ===
+                    joinedDate(temp.date._seconds * 1000)
+                      ? 'This month'
+                      : joinedDate(temp.date._seconds * 1000);
+                  const fLabel =
+                    monthLabel === 'This month' ||
+                    monthLabel === joinedDate(temp.date._seconds * 1000)
+                      ? null
+                      : joinedDate(temp.date._seconds * 1000);
+                  const label = !index ? monthLabel : fLabel;
+
+                  return (
+                    <>
+                      {label ? (
+                        <View key={index + 1000} style={{marginTop: 32}}>
+                          <AppText
+                            key={index + 6000}
+                            textStyle="captionConstant"
+                            color={Colors.contentPlaceholder}
+                            customStyle={{flex: 1}}>
+                            {label}
+                          </AppText>
+                        </View>
+                      ) : null}
+                      <View
+                        key={index + 2000}
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingVertical: 16,
+                          ...customBorder,
+                        }}>
+                        <AppText
+                          key={index + 3000}
+                          textStyle="body1"
+                          color={tempColor}
+                          customStyle={{flex: 4}}>
+                          {temp.value} °C
+                        </AppText>
+                        <AppText
+                          key={index + 4000}
+                          customStyle={{
+                            flex: 2,
+                            justifyContent: 'flex-end',
+                            textAlign: 'right',
+                          }}
+                          textStyle="captionConstant"
+                          color={Colors.contentPlaceholder}>
+                          {tempHistory(temp.date._seconds * 1000)}
+                        </AppText>
+                      </View>
+                    </>
+                  );
+                })
+              : null}
+          </ScrollView>
         </PaddingView>
       </SafeAreaView>
     </>
   );
 };
-
-// define your styles
-// define your styles
-const styles = StyleSheet.create({
-  imageWrapper: {
-    marginBottom: normalize(16),
-    alignItems: 'center',
-  },
-  contentWrapper: {
-    backgroundColor: Colors.neutralsWhite,
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  copyWrapper: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginBottom: normalize(24),
-    backgroundColor: Colors.neutralsWhite,
-  },
-  centerCopy: {
-    textAlign: 'left',
-    marginBottom: normalize(8),
-  },
-  input: {
-    color: Colors.contentEbony,
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(16),
-    letterSpacing: 0.5,
-    borderColor: Colors.neutralGray,
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-});
 
 //make this component available to the app
 export default TempHistory;
