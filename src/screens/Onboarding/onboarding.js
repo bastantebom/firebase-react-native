@@ -1,4 +1,10 @@
-import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
+import React, {
+  useRef,
+  createRef,
+  useState,
+  useEffect,
+  useContext,
+} from 'react'
 import {
   View,
   Image,
@@ -10,68 +16,67 @@ import {
   Easing,
   Platform,
   TouchableWithoutFeedback,
-} from 'react-native';
-import Swiper from 'react-native-swiper';
-import Modal from 'react-native-modal';
-import BottomSheet from 'reanimated-bottom-sheet';
+} from 'react-native'
+import Swiper from 'react-native-swiper'
+import Modal from 'react-native-modal'
+import BottomSheet from 'reanimated-bottom-sheet'
 
 import {
   AppText,
   AppButton,
   AppViewContainer,
   BottomSheetHeader,
-} from '@/components';
+} from '@/components'
 
-import Colors from '@/globals/Colors';
-import Login from '@/screens/Authentication/Login/login';
-import SignUp from '@/screens/Authentication/SignUp/SignUp';
+import Colors from '@/globals/Colors'
+import Login from '@/screens/Authentication/Login/login'
+import SignUp from '@/screens/Authentication/SignUp/SignUp'
 
-import PolygonStatic from '@/assets/images/polygon-static.svg';
-import IllustOne from '@/assets/images/onboarding-img1.svg';
-import IllustTwo from '@/assets/images/onboarding-img2.svg';
-import IllustThree from '@/assets/images/onboarding-img3.svg';
-import IllustFour from '@/assets/images/onboarding-img4.svg';
+import PolygonStatic from '@/assets/images/polygon-static.svg'
+import IllustOne from '@/assets/images/onboarding-img1.svg'
+import IllustTwo from '@/assets/images/onboarding-img2.svg'
+import IllustThree from '@/assets/images/onboarding-img3.svg'
+import IllustFour from '@/assets/images/onboarding-img4.svg'
 
-import {Context} from '@/context';
+import { Context } from '@/context'
 
-const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
 
-const Onboarding = ({navigation, illustration}) => {
+const Onboarding = ({ navigation, illustration }) => {
   const {
     sliderState,
     closeSlider,
-    openSlider,
     authType,
     setAuthType,
     authenticationSheet,
     showAuthenticationSheet,
-  } = useContext(Context);
+  } = useContext(Context)
 
   const RenderContent = () => {
     if (authType === 'signup') {
-      return <SignUp />;
+      return <SignUp />
     }
     if (authType === 'login') {
-      return <Login />;
+      return <Login />
     }
-  };
+  }
 
-  const animation = new Animated.Value(0);
+  const animation = new Animated.Value(0)
 
   const rotation = animation.interpolate({
     inputRange: [0, 1, 2, 3],
     outputRange: ['15deg', '60deg', '74.35deg', '97.93deg'],
-  });
+  })
 
-  const onSwipe = (index) => {
+  const onSwipe = index => {
     Animated.timing(animation, {
       toValue: index,
       duration: 200,
       easing: Easing.linear,
       useNativeDriver: true,
-    }).start();
-  };
+    }).start()
+  }
 
   const [slideInfo] = useState([
     {
@@ -98,7 +103,7 @@ const Onboarding = ({navigation, illustration}) => {
       description:
         'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
     },
-  ]);
+  ])
 
   return (
     <>
@@ -107,7 +112,6 @@ const Onboarding = ({navigation, illustration}) => {
           <PolygonStatic width={width} height={height} />
         </Animated.View>
         <TouchableOpacity
-          // onPress={() => navigation.push('Dashboard')}
           onPress={() => navigation.push('TabStack')}
           style={styles.link}>
           <AppText textStyle="body2">Skip</AppText>
@@ -116,7 +120,6 @@ const Onboarding = ({navigation, illustration}) => {
           <Swiper
             dot={<View style={styles.dot} />}
             activeDot={<View style={[styles.dot, styles.dotActive]} />}
-            // loop={false}
             loop
             autoplay
             autoplayTimeout={4.0}
@@ -124,7 +127,7 @@ const Onboarding = ({navigation, illustration}) => {
             {slideInfo.map((item, i) => {
               return (
                 <View key={i} style={styles.slideHolder}>
-                  <View style={{zIndex: 100, width: '100%'}}>
+                  <View style={{ zIndex: 100, width: '100%' }}>
                     {item.illustration}
                   </View>
                   <AppText textStyle="display6">{item.title}</AppText>
@@ -134,7 +137,7 @@ const Onboarding = ({navigation, illustration}) => {
                     </AppText>
                   </View>
                 </View>
-              );
+              )
             })}
           </Swiper>
         </View>
@@ -146,8 +149,8 @@ const Onboarding = ({navigation, illustration}) => {
             height="xl"
             borderColor="primary"
             onPress={() => {
-              setAuthType('login');
-              showAuthenticationSheet(true);
+              setAuthType('login')
+              showAuthenticationSheet(true)
             }}
           />
           <AppButton
@@ -157,8 +160,8 @@ const Onboarding = ({navigation, illustration}) => {
             borderColor="primary"
             propsButtonCustomStyle=""
             onPress={() => {
-              setAuthType('signup');
-              showAuthenticationSheet(true);
+              setAuthType('signup')
+              showAuthenticationSheet(true)
             }}
           />
         </View>
@@ -170,11 +173,11 @@ const Onboarding = ({navigation, illustration}) => {
         animationInTiming={450}
         animationOut="slideOutDown"
         animationOutTiming={450}
-        style={{margin: 0, justifyContent: 'flex-end'}}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
         customBackdrop={
           <TouchableWithoutFeedback
             onPress={() => showAuthenticationSheet(false)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -189,8 +192,8 @@ const Onboarding = ({navigation, illustration}) => {
         </View>
       </Modal>
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   contentHolder: {
@@ -250,6 +253,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     backgroundColor: 'transparent',
   },
-});
+})
 
-export default Onboarding;
+export default Onboarding

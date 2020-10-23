@@ -1,14 +1,16 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import React, { useState } from 'react'
+import { View, TouchableOpacity } from 'react-native'
 
-import {AppText} from '@/components';
-import {normalize, Colors} from '@/globals';
+import { AppText } from '@/components'
+import { normalize, Colors } from '@/globals'
 
-import {CheckboxCheck} from '@/assets/images/icons';
+import { CheckboxCheck } from '@/assets/images/icons'
 
-const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
+const Checkbox = ({ Icon, label, style, value, valueChangeHandler }) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} onPress={() => valueChangeHandler()}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => valueChangeHandler(!value)}>
       <View
         style={{
           // backgroundColor: 'blue',
@@ -19,9 +21,9 @@ const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
           ...style,
           justifyContent: 'space-between',
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           {Icon ? <Icon /> : null}
-          <AppText textStyle="body3" customStyle={{marginLeft: Icon ? 8 : 0}}>
+          <AppText textStyle="body3" customStyle={{ marginLeft: Icon ? 8 : 0 }}>
             {label}
           </AppText>
         </View>
@@ -51,7 +53,7 @@ const Checkbox = ({Icon, label, style, value, valueChangeHandler}) => {
         </View>
       </View>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
-export default Checkbox;
+export default Checkbox

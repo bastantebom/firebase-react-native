@@ -21,4 +21,4 @@ export default {
     googleSignIn:
       '78822170583-7gtfq9r1n2q25rujl2sjtq46q0sspv6d.apps.googleusercontent.com',
   },
-};
+}

@@ -1,21 +1,12 @@
-//import liraries
-import React, {useState, useContext, useEffect, createRef} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, LinkText} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import AppColor from '@/globals/Colors';
+import { Context } from '@/context'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import VF from '@/components/AppInput/ValidationFunctions'
+import AppColor from '@/globals/Colors'
+import { useNavigation } from '@react-navigation/native'
 
-import {
-  AppText,
-  AppCheckbox,
-  AppButton,
-  FloatingAppInput,
-  AppInput,
-} from '@/components';
-import Validator from '@/components/AppInput/Validator';
-import valueHandler from '@/components/AppInput/ValueHandler';
-
-import SignUpService from '@/services/SignUpService';
-import LoginService from '@/services/LoginService';
+import { AppText, AppButton, AppInput, AppCheckbox } from '@/components'
+import { ScrollView } from 'react-native-gesture-handler'
 import {
   Close,
   EyeDark,
@@ -23,375 +14,146 @@ import {
   LoginApple,
   LoginFB,
   LoginGoogle,
-  CheckboxCheck,
-} from '@/assets/images/icons/';
+} from '@/assets/images/icons'
+import LoginService from '@/services/LoginService'
+import { normalize } from '@/globals'
+import Validator from '@/components/AppInput/Validator'
+import SwitchComponent from '@/components/Switch/Switch'
+import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy'
+import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse'
+import SignUpService from '@/services/SignUpService'
 
-import {Context} from '@/context';
-import SwitchComponent from '@/components/Switch/Switch';
-
-import {ScrollView} from 'react-native-gesture-handler';
-
-import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy';
-import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse';
-import {normalize} from '@/globals';
-
-// create a component
-const SignUp = (props) => {
-  const [isPromo, setIsPromo] = useState(false);
-  const [isTerms, setIsTerms] = useState(false);
-  const [modalContentNumber, setModalContentNumber] = useState(0);
-  const toggleSwitch = () => {
-    setIsPromo((previousState) => !previousState);
-  };
-
-  const toggleTerms = () => {
-    setIsTerms((previousState) => !previousState);
-  };
-
-  const [isModalVisible, setModalVisible] = useState(false);
-  const toggleModal = () => {
-    setModalVisible((previousState) => !previousState);
-  };
-  const [isModalVisibleT, setModalVisibleT] = useState(false);
-  const toggleModalT = () => {
-    setModalVisibleT((previousState) => !previousState);
-  };
-  const modalContent = (contentNum) => setModalContentNumber(contentNum);
-  const [error, setError] = useState([]);
-  const [isToggleVisible, setIsToggleVisible] = useState(false);
-  const [signUpLabel, setSignUpLabel] = useState('email');
-  const [isVisible, setIsVisible] = useState(false);
-  const [buttonDisable, setButtonDisable] = useState(false);
-  const [loginUse, setLoginUse] = useState('');
-  const [isValidLogin, setIsValidLogin] = useState(true);
-  const [isValidMobileNumber, setIsValidMobileNumber] = useState(false);
-  const [email, setEmail] = useState('');
-  const [emailBorder, setEmailBorder] = useState({});
-  const [isValidEmail, setIsValidEmail] = useState(false);
-  const [name, setName] = useState('');
-  const [isValidName, setIsValidName] = useState(true);
-  const [nameBorder, setNameBorder] = useState({});
-  const [password, setPassword] = useState('');
-  const [isValidPassword, setIsValidPassword] = useState(true);
-  const [passwordBorder, setPasswordBorder] = useState({});
-  const [signUpForm, setSignUpForm] = useState({
+const SignUp = props => {
+  const [formData, setFormData] = useState({
+    login: '',
+    name: '',
+    password: '',
     terms_conditions: false,
     receive_updates: false,
-  });
-  const [buttonStyle, setButtonStyle] = useState({
-    backgroundColor: buttonDisabled
-      ? AppColor.buttonDisable
-      : AppColor.primaryYellow,
-    borderColor: AppColor.buttonDisable,
-  });
-  const [changingValidation, setChangingValidation] = useState(false);
-  const inputRef = createRef();
-
+  })
   const [errors, setErrors] = useState({
-    email: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-    name: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-    password: {
-      passed: false,
-      shown: false,
-      message: '',
-    },
-  });
+    login: '',
+    name: '',
+    password: '',
+  })
+  const [dirtyStates, setDirtyStates] = useState([])
 
-  const checkErrorState = () => {
-    let temp = true;
+  const [signUpMethod, setSignUpMethod] = useState('email')
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isToggleVisible, setIsToggleVisible] = useState(false)
+  const [canSubmit, setCanSubmit] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isTermsVisible, setIsTermsVisible] = useState(false)
+  const [isPrivacyVisible, setIsPrivacyVisible] = useState(false)
+  const { closeSlider, openSlider, setAuthType } = useContext(Context)
 
-    for (const [key, value] of Object.entries(errors)) {
-      if (!value.passed) {
-        temp = false;
-        break;
+  const handleFormChange = ({ key, value }) => {
+    setFormData({
+      ...formData,
+      [key]: value,
+    })
+  }
+
+  const validate = async () => {
+    const errors = {
+      login: '',
+      name: '',
+      password: '',
+    }
+    if (signUpMethod === 'email' && ~dirtyStates.indexOf('login')) {
+      try {
+        await VF.emailValidator(formData.login)
+      } catch (error) {
+        errors.login = error
+      }
+    } else if (~dirtyStates.indexOf('login')) {
+      try {
+        await VF.MobileNumberValidator(formData.login)
+      } catch (error) {
+        errors.login = error
       }
     }
 
-    if (temp && isTerms) {
-      // ENABLE BUTTON
-      // console.log('All fields are valid');
-      setButtonDisabled(false);
-    } else {
-      // DISABLE BUTTON
-      // console.log('One or more field is invalid');
-      setButtonDisabled(true);
+    if (~dirtyStates.indexOf('name')) {
+      try {
+        await VF.NameValidator(formData.name)
+      } catch (error) {
+        errors.name = error
+      }
     }
-  };
 
-  useEffect(() => {
-    checkErrorState();
-  }, [errors, isTerms]);
+    if (~dirtyStates.indexOf('password')) {
+      try {
+        await VF.PasswordValidator(formData.password)
+      } catch (error) {
+        errors.password = error
+      }
+    }
 
-  const toggleSignUpMethod = () => {
-    setEmail('');
-    // setError([]);
-    setChangingValidation(!changingValidation);
-    setSignUpLabel((previousState) => !previousState);
-  };
+    setErrors(errors)
+  }
 
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [validationRule, setValidationRule] = useState(['email']);
-
-  const cleanSignUpForm = () => {
-    setLoginUse('');
-    setIsValidLogin(true);
-
-    setIsValidMobileNumber(false);
-    setEmail('');
-    setEmailBorder({});
-    setIsValidEmail(false);
-
-    setName('');
-    setIsValidName(true);
-    setNameBorder({});
-
-    setPassword('');
-    setIsValidPassword(true);
-    setPasswordBorder({});
-
-    setSignUpForm({
+  const navigation = useNavigation()
+  const clearForm = () => {
+    setDirtyStates([])
+    setFormData({
+      login: '',
+      name: '',
+      password: '',
       terms_conditions: false,
       receive_updates: false,
-    });
+    })
+  }
 
-    setButtonStyle({
-      backgroundColor: AppColor.buttonDisable,
-      borderColor: AppColor.buttonDisable,
-    });
+  const signUp = async () => {
+    if (!canSubmit) return
+    setIsLoading(true)
 
-    setButtonDisabled(true);
-    //setButtonText('Sign up');
+    try {
+      const {
+        login,
+        password,
+        name: full_name,
+        terms_conditions,
+        receive_updates,
+      } = formData
+      const response = await SignUpService.createUser({
+        login,
+        password,
+        full_name,
+        terms_conditions,
+        receive_updates,
+      })
 
-    setIsValidMobileNumber(false);
-  };
-
-  // useEffect(() => {
-  //   // exit early when we reach 0
-  //   const newKeyValue = {
-  //     login: email.length === 11 ? '+63' + email.substr(1) : email,
-  //   };
-  //   setSignUpForm({...signUpForm, ...newKeyValue});
-  //   checkInputComplete();
-  // }, [isValidMobileNumber]);
-
-  useEffect(() => {
-    // exit early when we reach 0
-    const newKeyValue = {receive_updates: isPromo};
-    setSignUpForm({...signUpForm, ...newKeyValue});
-  }, [isPromo]);
-
-  useEffect(() => {
-    // exit early when we reach 0
-    const newKeyValue = {terms_conditions: isTerms};
-    setSignUpForm({...signUpForm, ...newKeyValue});
-    // checkInputComplete();
-  }, [isTerms]);
-
-  // const validateEmail = (email) => {
-  //   let mobileReg = /^(09|\+639)\d{9}$/;
-  //   if (
-  //     mobileReg.test(email) === true &&
-  //     ((email.substring(0, 1) === '0' && email.length === 11) ||
-  //       (email.length === 13 && email.substring(0, 1) === '+'))
-  //   ) {
-  //     setEmail(email);
-  //     setIsValidMobileNumber((isValidMobileNumber) => !isValidMobileNumber);
-  //     return true;
-  //   } else {
-  //     setIsValidMobileNumber(false);
-  //     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  //     if (reg.test(email) === false) {
-  //       setEmail(email);
-  //       return false;
-  //     } else {
-  //       setEmail(email);
-  //       return true;
-  //     }
-  //   }
-  // };
-
-  // const onEmailChange = (email) => {
-  //   if (validateEmail(email)) {
-  //     //setButtonText('Sign up');
-  //     setIsValidEmail(true);
-  //     const newKeyValue = {login: email};
-  //     setSignUpForm({...signUpForm, ...newKeyValue});
-  //     //console.log(signUpForm);
-  //     checkInputComplete();
-  //   } else {
-  //     if (email.substring(0, 1) === '+' || email.substring(0, 1) === '0') {
-  //       setLoginUse(() => {
-  //         setLoginUse('mobile number');
-  //       });
-  //     } else {
-  //       setLoginUse(() => {
-  //         setLoginUse('email');
-  //       });
-  //     }
-
-  //     setIsValidEmail(false);
-  //     //setButtonText('Sign up');
-  //   }
-  // };
-
-  // const onNameChange = (name) => {
-  //   let nameReg = /^[a-z ,.'-]+$/i;
-  //   if (nameReg.test(name)) {
-  //     setName(name);
-  //     setIsValidName(true);
-
-  //     const newKeyValue = {full_name: name};
-  //     setSignUpForm({...signUpForm, ...newKeyValue});
-  //     //console.log('Password Valid');
-  //     //console.log(signUpForm);
-  //     checkInputComplete();
-  //   } else {
-  //     setName(name);
-  //     setIsValidName(false);
-  //   }
-
-  //   if (name.length === 0) {
-  //     setIsValidName(true);
-  //   }
-  // };
-
-  // const onPasswordChange = (password) => {
-  //   if (password.length > 5) {
-  //     setIsValidPassword(true);
-  //     setPassword(password);
-
-  //     const newKeyValue = {password: password};
-  //     setSignUpForm({...signUpForm, ...newKeyValue});
-  //     //console.log('Password Valid');
-  //     //console.log(signUpForm);
-  //     checkInputComplete();
-  //   } else {
-  //     setPassword(password);
-  //     setIsValidPassword(false);
-  //     setButtonStyle({
-  //       backgroundColor: AppColor.buttonDisable,
-  //       borderColor: AppColor.buttonDisable,
-  //     });
-  //     setButtonDisabled(true);
-  //   }
-  // };
-
-  // const checkInputComplete = () => {
-  //   if (isValidMobileNumber && name.length > 1) {
-  //     setButtonStyle({});
-  //     setButtonDisabled(false);
-  //   } else {
-  //     if (
-  //       !isValidMobileNumber &&
-  //       isValidEmail &&
-  //       name.length > 1 &&
-  //       password.length > 1 &&
-  //       isTerms
-  //     ) {
-  //       setButtonStyle({});
-  //       setButtonDisabled(false);
-  //     } else {
-  //       if (name.length === 0) {
-  //         setNameBorder({});
-  //       }
-  //       if (name.length === 0) {
-  //         setPasswordBorder({});
-  //       }
-  //       setButtonStyle({
-  //         backgroundColor: AppColor.buttonDisable,
-  //         borderColor: AppColor.buttonDisable,
-  //       });
-  //       setButtonDisabled(true);
-  //     }
-  //   }
-  // };
-
-  const onFocusEmail = () => {
-    setIsValidLogin(true);
-    setEmailBorder({borderColor: AppColor.contentOcean});
-    // setSignUpLabel('Email Address');
-    setIsToggleVisible(true);
-  };
-
-  const onBlurName = () => {
-    setNameBorder({});
-  };
-
-  const onFocusName = () => {
-    setNameBorder({borderColor: AppColor.contentOcean});
-  };
-
-  const onBlurPassword = () => {
-    setPasswordBorder({});
-  };
-
-  const onFocusPassword = () => {
-    setPasswordBorder({borderColor: AppColor.contentOcean});
-    setIsValidPassword(true);
-  };
-
-  const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
-
-  const setButtonState = (j) => {
-    if (j) {
-      setButtonStyle({
-        backgroundColor: AppColor.buttonDisable,
-        borderColor: AppColor.buttonDisable,
-      });
-    } else {
-      setButtonStyle({});
+      if (!response.success) {
+        navigation.navigate('Onboarding')
+        throw new Error(response.message)
+      } else {
+        clearForm()
+        closeSlider()
+        navigation.navigate('VerifyAccount', {
+          ...formData,
+          uid: response.uid,
+          provider: signUpMethod,
+        })
+      }
+    } catch (error) {
+      console.log(error?.message || error)
     }
-    setButtonDisabled(j);
-  };
+    setIsLoading(false)
+  }
 
-  const signUpEmail = (formValues) => {
-    console.log(formValues);
-    console.log('Signup button clicked');
-    console.log('password:', password);
-    console.log('name:', name);
-    console.log('email:', email);
+  useEffect(() => {
+    validate()
+  }, [formData])
+  useEffect(() => {
+    setCanSubmit(
+      Object.values(errors).every(value => !value.length) &&
+        formData.terms_conditions
+    )
+  }, [errors])
 
-    let formSubmitted = {
-      ...formValues,
-      login: email,
-      full_name: name,
-      password: password,
-    };
-
-    setIsLoading(true);
-    SignUpService.createUser(JSON.stringify(formSubmitted))
-      .then((response) => {
-        cleanSignUpForm();
-        console.log(response);
-
-        if (response.success) {
-          navigation.navigate('VerifyAccount', {...response, ...formValues});
-        } else {
-          //console.log('_________________');
-          alert(response.message);
-          navigation.navigate('Onboarding');
-        }
-        closeSlider();
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  const TandC = () => {
+  const TermsCheckbox = () => {
     return (
       <>
         <View style={styles.promos}>
@@ -399,8 +161,10 @@ const SignUp = (props) => {
             <AppCheckbox
               Icon=""
               label=""
-              value={signUpForm.terms_conditions}
-              valueChangeHandler={toggleTerms}
+              value={formData.terms_conditions}
+              valueChangeHandler={value =>
+                handleFormChange({ key: 'terms_conditions', value })
+              }
               style={{
                 marginLeft: 0,
                 paddingLeft: 0,
@@ -412,13 +176,12 @@ const SignUp = (props) => {
           <View style={styles.terms}>
             <AppText
               textStyle="caption"
-              customStyle={{color: AppColor.promoCopy}}>
+              customStyle={{ color: AppColor.promoCopy }}>
               By signing up, I agree to Servbees
             </AppText>
             <TouchableOpacity
               onPress={() => {
-                //modalContent(0);
-                toggleModalT();
+                setIsTermsVisible(true)
               }}>
               <AppText
                 textStyle="promo"
@@ -432,13 +195,13 @@ const SignUp = (props) => {
 
             <AppText
               textStyle="caption"
-              customStyle={{color: AppColor.promoCopy}}>
+              customStyle={{ color: AppColor.promoCopy }}>
               {' '}
               and{' '}
             </AppText>
             <TouchableOpacity
               onPress={() => {
-                toggleModal();
+                setIsPromoVisible(true)
               }}>
               <AppText
                 textStyle="promo"
@@ -455,17 +218,22 @@ const SignUp = (props) => {
           <View style={styles.promoCopy}>
             <AppText
               textStyle="caption"
-              customStyle={{color: AppColor.promoCopy}}>
+              customStyle={{ color: AppColor.promoCopy }}>
               I want to receive offers, promos, and updates from Servbees.
             </AppText>
           </View>
           <View style={styles.promoSwitch}>
-            <SwitchComponent onValueChange={toggleSwitch} value={isPromo} />
+            <SwitchComponent
+              onValueChange={value =>
+                handleFormChange({ key: 'receive_updates', value })
+              }
+              value={formData.receive_updates}
+            />
           </View>
         </View>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -482,219 +250,129 @@ const SignUp = (props) => {
               Join Servbees today. It’s free!
             </AppText>
             <View style={styles.formWrapper}>
-              {/* <FloatingAppInput
-                value={email}
-                valueHandler={setEmail}
-                label={!signUpLabel ? 'Email' : 'Mobile Number'}
-                customStyle={{marginBottom: normalize(8)}}
-                validation={validationRule}
-                setValidationRule={setValidationRule}
-                // validation={['email', 'number']}
-                keyboardType={!signUpLabel ? 'email-address' : 'phone-pad'}
-                onInputFocus={onFocusEmail}
-                setError={setError}
-                error={error}
-                setButtonState={setButtonState}
-                onChangeTextInput={(email) => onEmailChange(email)}
-                setChangingValidation={setChangingValidation}
-                changingValidation={changingValidation}
-              /> */}
               <Validator
-                style={{marginBottom: normalize(16)}}
-                errorState={errors.email}>
+                style={{ marginBottom: normalize(16) }}
+                errorState={{
+                  message: errors.login,
+                  shown: errors.login.length,
+                }}>
                 <AppInput
-                  label={
-                    signUpLabel === 'number' ? 'Mobile Number' : 'Email'
-                    // signUpLabel.charAt(0).toUpperCase() + signUpLabel.slice(1)
-                  }
-                  onChangeText={(email) =>
-                    valueHandler(
-                      email,
-                      signUpLabel,
-                      'email',
-                      errors,
-                      setErrors,
-                      setEmail,
-                    )
-                  }
-                  value={email}
-                  inputRef={inputRef}
+                  label={signUpMethod === 'email' ? 'Email' : 'Mobile Number'}
+                  value={formData.login}
                   onFocusInput={() => {
-                    setIsToggleVisible(true);
+                    setIsToggleVisible(true)
                   }}
                   onBlurInput={() => {
-                    console.log('BLURR');
-                    setIsToggleVisible(false);
-                  }}
-                  onEndEditing={() => {
-                    console.log('DONE');
+                    setDirtyStates([...new Set([...dirtyStates, 'login'])])
+                    setIsToggleVisible(false)
                   }}
                   keyboardType={
-                    signUpLabel === 'email' ? 'email-address' : 'phone-pad'
+                    signUpMethod === 'email' ? 'email-address' : 'phone-pad'
                   }
-                  onKeyPress={(e) => {
-                    setErrors({
-                      ...errors,
-                      email: {
-                        ...errors.email,
-                        shown: false,
-                      },
-                    });
+                  onChangeText={value => {
+                    setDirtyStates([...new Set([...dirtyStates, 'login'])])
+                    handleFormChange({ key: 'login', value })
                   }}
                 />
               </Validator>
 
-              <View style={{display: isToggleVisible ? 'flex' : 'none'}}>
+              <View style={{ display: isToggleVisible ? 'flex' : 'none' }}>
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(signUpLabel);
-                    signUpLabel === 'number'
-                      ? setSignUpLabel('email')
-                      : setSignUpLabel('number');
-
-                    valueHandler(
-                      email,
-                      signUpLabel === 'number' ? 'email' : 'number',
-                      'email',
-                      errors,
-                      setErrors,
-                      setEmail,
-                    );
+                    setSignUpMethod(
+                      signUpMethod === 'number' ? 'email' : 'number'
+                    )
+                    validate()
                   }}>
                   <AppText
                     textStyle="button3"
                     color={AppColor.contentOcean}
-                    customStyle={{marginBottom: 16}}>
-                    {signUpLabel === 'email'
+                    customStyle={{ marginBottom: 16 }}>
+                    {signUpMethod === 'email'
                       ? 'Use mobile number instead'
                       : 'Use email instead'}
                   </AppText>
                 </TouchableOpacity>
               </View>
-
-              {/* <FloatingAppInput
-                label="Full Name"
-                value={name}
-                onBlur={onBlurName}
-                onFocus={onFocusName}
-                keyboardType="default"
-                customStyle={{
-                  ...styles.customInputStyle,
-                  ...(!isValidName && name.length > 0
-                    ? styles.withError
-                    : isValidName && name.length > 0
-                    ? styles.withoutError
-                    : styles.defaultBorder),
-                  ...nameBorder,
-                }}
-                onChangeText={(name) => onNameChange(name)}
-              /> */}
               <Validator
-                style={{marginBottom: normalize(16)}}
-                errorState={errors.name}>
+                style={{ marginBottom: normalize(16) }}
+                errorState={{
+                  message: errors.name,
+                  shown: errors.name.length,
+                }}>
                 <AppInput
                   label="Full Name"
-                  onChangeText={(name) =>
-                    valueHandler(
-                      name,
-                      'name',
-                      'name',
-                      errors,
-                      setErrors,
-                      setName,
-                    )
-                  }
-                  value={name}
-                  // keyboardType={'email-address'}
-                  onKeyPress={() => {
-                    setErrors({
-                      ...errors,
-                      name: {
-                        ...errors.name,
-                        shown: false,
-                      },
-                    });
+                  onBlurInput={() => {
+                    setDirtyStates([...new Set([...dirtyStates, 'name'])])
                   }}
+                  onChangeText={value => {
+                    setDirtyStates([...new Set([...dirtyStates, 'name'])])
+                    handleFormChange({ key: 'name', value })
+                  }}
+                  value={formData.name}
                 />
               </Validator>
 
-              <View style={{position: 'relative'}}>
-                {/* <FloatingAppInput
-                  label="Password"
-                  onBlur={onBlurPassword}
-                  onFocus={onFocusPassword}
-                  secureTextEntry={!isVisible ? true : false}
-                  password
-                  value={password}
-                  valueHandler={setPassword}
-                  keyboardType="default"
-                  setError={setError}
-                  error={error}
-                  validation={['password']}
-                  setButtonState={setButtonState}
-                  onChangeText={(val) => onPasswordChange(val)}
-                /> */}
-
+              <View style={{ position: 'relative' }}>
                 <Validator
-                  style={{marginBottom: normalize(16)}}
-                  errorState={errors.password}>
+                  style={{ marginBottom: normalize(16) }}
+                  errorState={{
+                    message: errors.password,
+                    shown: errors.password.length,
+                  }}>
                   <AppInput
                     label="Password"
-                    onChangeText={(password) =>
-                      valueHandler(
-                        password,
-                        'password',
-                        'password',
-                        errors,
-                        setErrors,
-                        setPassword,
-                      )
-                    }
-                    secureTextEntry={!isVisible ? true : false}
-                    value={password}
-                    onKeyPress={() => {
-                      setErrors({
-                        ...errors,
-                        password: {
-                          ...errors.password,
-                          shown: false,
-                        },
-                      });
+                    onBlurInput={() => {
+                      setDirtyStates([...new Set([...dirtyStates, 'password'])])
                     }}
+                    onChangeText={value => {
+                      setDirtyStates([...new Set([...dirtyStates, 'password'])])
+                      handleFormChange({
+                        key: 'password',
+                        value,
+                      })
+                    }}
+                    secureTextEntry={!isPasswordVisible ? true : false}
+                    value={formData.password}
                   />
                 </Validator>
 
                 <View style={styles.passwordToggle}>
-                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
-                    {!isVisible ? <EyeDark /> : <EyeLight />}
+                  <TouchableOpacity
+                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                    {!isPasswordVisible ? <EyeDark /> : <EyeLight />}
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
 
-            <TandC />
-            <Privacy isModalVisible={isModalVisible} onClose={toggleModal} />
-            <Terms isModalVisibleT={isModalVisibleT} onClose={toggleModalT} />
+            <TermsCheckbox />
+            <Terms
+              isVisible={isTermsVisible}
+              onClose={() => setIsTermsVisible(false)}
+            />
+            <Privacy
+              isVisible={isPrivacyVisible}
+              onClose={() => setIsPrivacyVisible(false)}
+            />
 
-            <View style={{marginTop: 16}}>
+            <View style={{ marginTop: 16 }}>
               <AppButton
                 text="Sign up"
                 type="primary"
                 height="xl"
-                disabled={buttonDisabled}
+                disabled={!canSubmit}
                 customStyle={{
                   ...styles.customButtonStyle,
-                  backgroundColor: buttonDisabled
+                  backgroundColor: !canSubmit
                     ? AppColor.buttonDisable
                     : AppColor.primaryYellow,
 
-                  borderColor: buttonDisabled
+                  borderColor: !canSubmit
                     ? AppColor.buttonDisable
                     : AppColor.primaryYellow,
                 }}
-                onPress={() => {
-                  signUpEmail(signUpForm);
-                }}
+                onPress={signUp}
                 loading={isLoading}
               />
             </View>
@@ -704,31 +382,28 @@ const SignUp = (props) => {
             <View style={styles.socialMediaLogin}>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
-                  onPress={() => {
-                    //alert();
-                    LoginService.appleLogin().then(() => {
-                      closeSlider();
-                    });
+                  onPress={async () => {
+                    await LoginService.signInWithProvider('apple')
+                    closeSlider()
                   }}
-                  style={{paddingHorizontal: normalize(8)}}>
+                  style={{ paddingHorizontal: normalize(8) }}>
                   <LoginApple />
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
-                onPress={() => {
-                  LoginService.facebookSignIn().then(() => closeSlider());
+                onPress={async () => {
+                  await LoginService.signInWithProvider('facebook')
+                  closeSlider()
                 }}
-                style={{paddingHorizontal: normalize(8)}}>
+                style={{ paddingHorizontal: normalize(8) }}>
                 <LoginFB />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  LoginService.googleLogin().then(() => {
-                    console.log('Signed in with Google!');
-                    closeSlider();
-                  });
+                onPress={async () => {
+                  await LoginService.signInWithProvider('google')
+                  closeSlider()
                 }}
-                style={{paddingHorizontal: normalize(8)}}>
+                style={{ paddingHorizontal: normalize(8) }}>
                 <LoginGoogle />
               </TouchableOpacity>
             </View>
@@ -737,11 +412,11 @@ const SignUp = (props) => {
               <AppText textStyle="button2">Already have an account?</AppText>
               <TouchableOpacity
                 onPress={() => {
-                  closeSlider();
+                  closeSlider()
                   setTimeout(() => {
-                    setAuthType('login');
-                    openSlider();
-                  }, 450);
+                    setAuthType('login')
+                    openSlider()
+                  }, 450)
                 }}>
                 <AppText textStyle="button2" customStyle={styles.underLineText}>
                   Login
@@ -752,10 +427,9 @@ const SignUp = (props) => {
         </View>
       </ScrollView>
     </>
-  );
-};
+  )
+}
 
-// define your styles
 const styles = StyleSheet.create({
   mainWrapper: {
     padding: 24,
@@ -852,7 +526,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    //justifyContent: 'center',
     alignItems: 'flex-start',
     marginBottom: 16,
     marginTop: 16,
@@ -861,7 +534,6 @@ const styles = StyleSheet.create({
   promos: {
     flex: 1,
     flexDirection: 'row',
-    //justifyContent: 'center',
     alignItems: 'flex-start',
   },
 
@@ -880,7 +552,6 @@ const styles = StyleSheet.create({
     paddingTop: normalize(8),
     paddingBottom: normalize(16),
   },
-});
+})
 
-//make this component available to the app
-export default SignUp;
+export default SignUp

@@ -1,23 +1,20 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   Platform,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-import LoginService from '@/services/LoginService';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AppButton, AppText, FloatingAppInput} from '@/components';
-import Colors from '@/globals/Colors';
-import AppViewContainer from '@/components/AppViewContainer/AppViewContainer';
-////import Close from '@/assets/images/icons/close.svg';
-////import EyeDark from '@/assets/images/icons/eye-dark.svg';
-////import EyeLight from '@/assets/images/icons/eye-light.svg';
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import auth from '@react-native-firebase/auth'
+import LoginService from '@/services/LoginService'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { AppButton, AppText, FloatingAppInput } from '@/components'
+import Colors from '@/globals/Colors'
+import AppViewContainer from '@/components/AppViewContainer/AppViewContainer'
 
-import {AppInput, Validator, valueHandler} from '@/components/AppInput';
+import { AppInput, Validator, valueHandler } from '@/components/AppInput'
 
 import {
   Close,
@@ -26,12 +23,12 @@ import {
   LoginApple,
   LoginFB,
   LoginGoogle,
-} from '@/assets/images/icons';
+} from '@/assets/images/icons'
 
-import {PaddingView} from '@/components';
+import { PaddingView } from '@/components'
 
-import {Context} from '@/context';
-import {normalize} from '@/globals';
+import { Context } from '@/context'
+import { normalize } from '@/globals'
 
 function Divider() {
   return (
@@ -41,21 +38,20 @@ function Divider() {
         or
       </AppText>
     </View>
-  );
+  )
 }
 
 function Login() {
-  const navigation = useNavigation();
-  // const [authType, setAuthType] = useState('login');
+  const navigation = useNavigation()
 
-  const [emailAddress, setEmailAddress] = useState('');
+  const [emailAddress, setEmailAddress] = useState('')
 
-  const [password, setPassword] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
+  const [password, setPassword] = useState('')
+  const [isVisible, setIsVisible] = useState(false)
 
-  const {closeSlider, openSlider, authType, setAuthType} = useContext(Context);
-  const [isLoading, setIsLoading] = useState(false);
-  const [enabled, setEnabled] = useState(false);
+  const { closeSlider, openSlider, authType, setAuthType } = useContext(Context)
+  const [isLoading, setIsLoading] = useState(false)
+  const [enabled, setEnabled] = useState(false)
 
   const [errors, setErrors] = useState({
     password: {
@@ -63,96 +59,82 @@ function Login() {
       shown: false,
       message: '',
     },
-  });
+  })
 
   const checkErrorState = () => {
-    let temp = true;
+    let temp = true
 
     for (const [key, value] of Object.entries(errors)) {
       if (!value.passed) {
-        temp = false;
-        break;
+        temp = false
+        break
       }
     }
-
-    if (temp) {
-      // ENABLE BUTTON
-      setEnabled(true);
-    } else {
-      // DISABLE BUTTON
-      setEnabled(false);
-    }
-  };
+    setEnabled(!!temp)
+  }
 
   useEffect(() => {
-    checkErrorState();
-  }, [errors]);
+    checkErrorState()
+  }, [errors])
 
   const handleLogin = async () => {
-    let mounted = true;
-    setIsLoading(true);
-    console.log('Handle login');
+    let mounted = true
+    setIsLoading(true)
+    console.log('Handle login')
 
     if (mounted)
       await LoginService.loginMobile({
         login: emailAddress,
         password: password,
       })
-        .then((response) => {
-          //console.log('Response');
-          //console.log(response);
+        .then(response => {
           if (response.success && response.verified) {
-            //console.log('SUCCESS---------------');
-            //console.log(response.custom_token);
-
             return auth()
               .signInWithCustomToken(response.custom_token)
-              .then((res) => {
-                //console.log(res);
-                setIsLoading(false);
-                navigation.push('TabStack');
+              .then(res => {
+                setIsLoading(false)
+                navigation.push('TabStack')
               })
-              .catch((err) => {
-                setIsLoading(false);
-                console.log(err);
-              });
+              .catch(err => {
+                setIsLoading(false)
+                console.log(err)
+              })
           }
           if (response.success && !response.verified) {
-            closeSlider();
+            closeSlider()
             navigation.navigate('VerifyAccount', {
               uid: response.uid,
               login: emailAddress,
-            });
+            })
           }
 
           if (!response.success) {
-            setIsLoading(false);
-            alert('Invalid login credentials');
-            setPassword('');
-            //console.log(response);
+            setIsLoading(false)
+            alert('Invalid login credentials')
+            setPassword('')
           }
         })
-        .catch((error) => {
-          console.log('FAILED---------------');
-          console.log('With Error in the API Login ' + error);
+        .catch(error => {
+          console.log('FAILED---------------')
+          console.log('With Error in the API Login ' + error)
         })
         .finally(() => {
-          setIsLoading(false);
-        });
+          setIsLoading(false)
+        })
     return () => {
-      mounted = false;
-    };
-  };
+      mounted = false
+    }
+  }
 
   return (
     <ScrollView>
-      <KeyboardAwareScrollView resetScrollToCoords={{x: 0, y: 0}}>
+      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
         <PaddingView
           paddingSize={2}
-          style={{paddingTop: 5, paddingBottom: 100}}>
+          style={{ paddingTop: 5, paddingBottom: 100 }}>
           <AppViewContainer
             paddingSize={2}
-            customStyle={{paddingTop: 0, paddingHorizontal: 0}}>
+            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}>
             <TouchableOpacity onPress={closeSlider}>
               <Close />
             </TouchableOpacity>
@@ -165,35 +147,28 @@ function Login() {
             </AppText>
             <AppViewContainer
               marginSize={3}
-              customStyle={{marginHorizontal: 0, marginBottom: 0}}>
+              customStyle={{ marginHorizontal: 0, marginBottom: 0 }}>
               <AppInput
                 label="Email or Mobile Number"
                 style={styles.inputText}
-                onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+                onChangeText={emailAddress => setEmailAddress(emailAddress)}
                 value={emailAddress}
                 keyboardType={'email-address'}
               />
               <Validator
-                style={{marginBottom: normalize(16)}}
+                style={{ marginBottom: normalize(16) }}
                 errorState={errors.password}>
-                <View style={{position: 'relative'}}>
-                  {/* <AppInput
-                  label="Password"
-                  onChangeText={(password) => setPassword(password)}
-                  value={password}
-                  secureTextEntry={!isVisible ? true : false}
-                /> */}
-
+                <View style={{ position: 'relative' }}>
                   <AppInput
                     label="Password"
-                    onChangeText={(password) =>
+                    onChangeText={password =>
                       valueHandler(
                         password,
                         'password',
                         'password',
                         errors,
                         setErrors,
-                        setPassword,
+                        setPassword
                       )
                     }
                     secureTextEntry={!isVisible ? true : false}
@@ -205,7 +180,7 @@ function Login() {
                           ...errors.password,
                           shown: false,
                         },
-                      });
+                      })
                     }}
                   />
                   <View style={styles.passwordToggle}>
@@ -217,8 +192,8 @@ function Login() {
               </Validator>
               <TouchableOpacity
                 onPress={() => {
-                  closeSlider();
-                  navigation.push('ResetPassword');
+                  closeSlider()
+                  navigation.push('ResetPassword')
                 }}>
                 <AppText textStyle="caption" customStyle={styles.caption}>
                   Forgot Password?
@@ -230,7 +205,7 @@ function Login() {
                 height="xl"
                 customStyle={styles.customLogin}
                 onPress={() => {
-                  handleLogin();
+                  handleLogin()
                 }}
                 disabled={!enabled}
                 loading={isLoading}
@@ -242,31 +217,28 @@ function Login() {
             <View style={styles.socialMediaLogin}>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
-                  onPress={() => {
-                    //alert();
-                    LoginService.appleLogin().then(() => {
-                      closeSlider();
-                    });
+                  onPress={async () => {
+                    await LoginService.signInWithProvider('apple')
+                    closeSlider()
                   }}
-                  style={{paddingHorizontal: normalize(8)}}>
+                  style={{ paddingHorizontal: normalize(8) }}>
                   <LoginApple />
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
-                onPress={() => {
-                  LoginService.facebookSignIn().then(() => closeSlider());
+                onPress={async () => {
+                  await LoginService.signInWithProvider('facebook')
+                  closeSlider()
                 }}
-                style={{paddingHorizontal: normalize(8)}}>
+                style={{ paddingHorizontal: normalize(8) }}>
                 <LoginFB />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  LoginService.googleLogin().then(() => {
-                    console.log('Signed in with Google!');
-                    closeSlider();
-                  });
+                onPress={async () => {
+                  await LoginService.signInWithProvider('google')
+                  closeSlider()
                 }}
-                style={{paddingHorizontal: normalize(8)}}>
+                style={{ paddingHorizontal: normalize(8) }}>
                 <LoginGoogle />
               </TouchableOpacity>
             </View>
@@ -275,11 +247,11 @@ function Login() {
               <AppText textStyle="button2">Don't have an account? </AppText>
               <TouchableOpacity
                 onPress={() => {
-                  closeSlider();
+                  closeSlider()
                   setTimeout(() => {
-                    setAuthType('signup');
-                    openSlider();
-                  }, 450);
+                    setAuthType('signup')
+                    openSlider()
+                  }, 450)
                 }}>
                 <AppText textStyle="button2" customStyle={styles.link}>
                   Sign up
@@ -290,7 +262,7 @@ function Login() {
         </PaddingView>
       </KeyboardAwareScrollView>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -312,7 +284,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   customButton: {
-    //change button color
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
     marginBottom: 16,
@@ -320,17 +291,8 @@ const styles = StyleSheet.create({
   customLogin: {
     marginTop: 25,
   },
-  // divider: {
-  //   position: 'relative',
-  //   borderWidth: StyleSheet.hairlineWidth,
-  //   width: '100%',
-  //   borderColor: Colors.buttonDisable,
-  //   zIndex: 0
-  // },
+
   dividerText: {
-    // position: 'absolute',
-    // top: -12,
-    // width: 75,
     textAlign: 'center',
     marginVertical: 16,
   },
@@ -347,6 +309,6 @@ const styles = StyleSheet.create({
     paddingTop: normalize(8),
     paddingBottom: normalize(16),
   },
-});
+})
 
-export default Login;
+export default Login

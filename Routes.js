@@ -1,24 +1,24 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {
-  NavigationContainer,
-  TouchableWithoutFeedback,
-} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import auth from '@react-native-firebase/auth';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Animated, Linking} from 'react-native';
-import SplashScreenComponent from './SplashScreen';
+import React, { useEffect, useState, useContext } from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { View, Animated } from 'react-native'
+import SplashScreenComponent from './SplashScreen'
 
-import {Notification} from '@/components';
-import {useNavigation} from '@react-navigation/native';
-import {PostService} from '@/services';
+import Bell from '@/assets/images/icons/bell.svg'
+import BellActive from '@/assets/images/icons/bell-active.svg'
+import Hive from '@/assets/images/icons/hive.svg'
+import HiveActive from '@/assets/images/icons/hive-active.svg'
+
+import { useNavigation } from '@react-navigation/native'
+import { PostService } from '@/services'
 
 //screens
-import {Onboarding} from '@/screens/Onboarding';
-import {Dashboard} from '@/screens/Dashboard';
-import {Profile} from '@/screens/Profile';
-import {Hives} from '@/screens/Hive';
-import {Activity} from '@/screens/Activity';
+import { Onboarding } from '@/screens/Onboarding'
+import { Dashboard } from '@/screens/Dashboard'
+import { Profile } from '@/screens/Profile'
+import { Hives } from '@/screens/Hive'
+import { Activity } from '@/screens/Activity'
 import {
   Post,
   SinglePostView,
@@ -29,116 +29,42 @@ import {
   PostExpiryScreen,
   ShippingMethodScreen,
   PaymentMethodScreen,
-} from '@/screens/Post';
-import {PostScreen} from '@/screens/Post';
-import SampleScreen from '@/screens/SampleScreen';
+} from '@/screens/Post'
+import { PostScreen } from '@/screens/Post'
 
-import {ProfileInfoModal, SinglePostOthersView} from '@/components';
-import {Past} from '@/screens/Activity';
+import { ProfileInfoModal } from '@/components'
+import { Past } from '@/screens/Activity'
 
 import {
   AlmostThere,
   AlmostThereMap,
   VerifyAccount,
   ResetPassword,
-} from '@/screens/Authentication';
+} from '@/screens/Authentication'
 
-import {normalize} from '@/globals';
-import {Context} from '@/context';
-import {UserContext} from '@/context/UserContext';
+import { normalize } from '@/globals'
+import { Context } from '@/context'
+import { UserContext } from '@/context/UserContext'
 
 import {
   ServbeesAlt,
   ServbeesAltActive,
-  Hive,
-  HiveActive,
-  Bell,
-  BellActive,
   UserAlt,
   UserAltActive,
   NotificationDot,
-} from '@/assets/images/icons';
-import {SafeAreaView} from 'react-navigation';
+} from '@/assets/images/icons'
 
-const AuthStack = createStackNavigator();
+const DashboardStack = createStackNavigator()
+const HiveStack = createStackNavigator()
+const PostStack = createStackNavigator()
+const ActivityStack = createStackNavigator()
+const ProfileStack = createStackNavigator()
+const Tab = createBottomTabNavigator()
+const CreatePostStack = createStackNavigator()
 
-function AuthStackScreen() {
-  const navigation = useNavigation();
+const Stack = createStackNavigator()
+const NoBottomTabScreenStack = createStackNavigator()
 
-  // console.log('ROUTES PROPS');
-  // console.log(navigation);
-
-  // useEffect(() => {
-  //   console.log('Hello android');
-  //   if (Platform.OS === 'android') {
-  //     Linking.getInitialURL().then((url) => {
-  //       navigation.navigate(url);
-  //     });
-  //   } else {
-  //     Linking.addEventListener('url', handleOpenURL);
-  //   }
-  // });
-
-  const handleOpenURL = (event) => {
-    navigate(event.url);
-  };
-
-  const navigate = (url) => {
-    const route = url.replace(/.*?:\/\//g, '');
-    const uid = route.split('/')[1];
-    const routeName = route.split('/')[0];
-
-    console.log(routeName);
-    if (routeName === 'profile') {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: {uid: uid},
-      });
-    }
-    if (routeName === 'dashboard') {
-      navigation.navigate('Servbees');
-    }
-  };
-
-  return (
-    <AuthStack.Navigator headerMode="none">
-      <AuthStack.Screen name="Onboarding" component={Onboarding} />
-      <AuthStack.Screen name="VerifyAccount" component={VerifyAccount} />
-      <AuthStack.Screen name="AlmostThere" component={AlmostThere} />
-      <AuthStack.Screen name="AlmostThereMap" component={AlmostThereMap} />
-      <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
-      <AuthStack.Screen name="Past" component={Past} />
-      <AuthStack.Screen name="TabStack" component={TabStack} />
-      <AuthStack.Screen name="NBTScreen" component={NoBottomTabScreens} />
-    </AuthStack.Navigator>
-  );
-}
-
-const DashboardStack = createStackNavigator();
-const HiveStack = createStackNavigator();
-const PostStack = createStackNavigator();
-const ActivityStack = createStackNavigator();
-const ProfileStack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-const CreatePostStack = createStackNavigator();
-
-const Stack = createStackNavigator();
-const NoBottomTabScreenStack = createStackNavigator();
-
-// function HomeTabs() {
-//   return (
-//     <Tab.Navigator>
-//       <Tab.Screen
-//         name="Sampley"
-//         component={SampleScreen}
-//         // options={{tabBarVisible: false}}
-//       />
-//       <Tab.Screen name="Samplez" component={SampleScreen2} />
-//     </Tab.Navigator>
-//   );
-// }
-
-// START: Put screens without bottom tab navigation here
 function NoBottomTabScreens() {
   return (
     <NoBottomTabScreenStack.Navigator headerMode="none">
@@ -159,16 +85,15 @@ function NoBottomTabScreens() {
         component={CreatePostStackScreen}
       />
     </NoBottomTabScreenStack.Navigator>
-  );
+  )
 }
-// END: Put screens without bottom tab navigation here
 
 function DashboardStackScreen() {
   return (
     <DashboardStack.Navigator headerMode="none">
       <DashboardStack.Screen name="Servbees" component={Dashboard} />
     </DashboardStack.Navigator>
-  );
+  )
 }
 
 function CreatePostStackScreen() {
@@ -197,7 +122,7 @@ function CreatePostStackScreen() {
         component={PaymentMethodScreen}
       />
     </CreatePostStack.Navigator>
-  );
+  )
 }
 
 function HiveStackScreen() {
@@ -205,12 +130,10 @@ function HiveStackScreen() {
     <HiveStack.Navigator headerMode="none">
       <HiveStack.Screen name="Hive" component={Hives} />
     </HiveStack.Navigator>
-  );
+  )
 }
 
-function PostStackScreen({navigation}) {
-  const {user} = useContext(UserContext);
-
+function PostStackScreen({ navigation }) {
   return (
     <>
       {/* { !user ? null :  */}
@@ -220,7 +143,7 @@ function PostStackScreen({navigation}) {
       </PostStack.Navigator>
       {/* } */}
     </>
-  );
+  )
 }
 
 function ActivityStackScreen() {
@@ -229,11 +152,11 @@ function ActivityStackScreen() {
       <ActivityStack.Screen name="Activity" component={Activity} />
       <ActivityStack.Screen name="Past" component={Past} />
     </ActivityStack.Navigator>
-  );
+  )
 }
 
 function ProfileStackScreen() {
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext)
   if (user) {
     return (
       <>
@@ -241,63 +164,45 @@ function ProfileStackScreen() {
           <ProfileStack.Screen name="Profile" component={Profile} />
         </ProfileStack.Navigator>
       </>
-    );
+    )
   } else {
-    return null;
+    return null
   }
 }
 
 function TabStack() {
-  const [activityNotification, setActivityNotification] = useState(true);
-  const [profileNotification, setProfileNotification] = useState(false);
-  const {closePostButtons} = useContext(Context);
+  const [activityNotification, setActivityNotification] = useState(true)
+  const [profileNotification] = useState(false)
+  const { closePostButtons } = useContext(Context)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
+  const navigate = url => {
+    const route = url.replace(/.*?:\/\//g, '')
+    const id = route.split('/')[1]
+    const routeName = route.split('/')[0]
 
-  // console.log('ROUTES PROPS');
-  // console.log(navigation);
-
-  // useEffect(() => {
-  //   if (Platform.OS === 'android') {
-  //     Linking.getInitialURL().then((url) => {
-  //       navigation.navigate(url);
-  //     });
-  //   } else {
-  //     Linking.addEventListener('url', handleOpenURL);
-  //   }
-  // }, []);
-
-  const handleOpenURL = (event) => {
-    navigate(event.url);
-  };
-
-  const navigate = (url) => {
-    const route = url.replace(/.*?:\/\//g, '');
-    const id = route.split('/')[1];
-    const routeName = route.split('/')[0];
-
-    console.log(routeName);
+    console.log(routeName)
     if (routeName === 'profile') {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: {uid: id},
-      });
+        params: { uid: id },
+      })
     }
     if (routeName === 'post') {
       // navigation.navigate('Servbees', {pid: id});
 
       PostService.getPost(id)
-        .then((res) => {
+        .then(res => {
           navigation.navigate('NBTScreen', {
             screen: 'OthersPost',
-            params: {...res, othersView: true},
-          });
+            params: { ...res, othersView: true },
+          })
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch(err => {
+          console.log(err)
+        })
     }
-  };
+  }
 
   return (
     <Tab.Navigator
@@ -323,16 +228,16 @@ function TabStack() {
         name="Servbees"
         component={DashboardStackScreen}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <ServbeesAltActive width={normalize(25)} height={normalize(25)} />
             ) : (
               <ServbeesAlt width={normalize(25)} height={normalize(25)} />
-            );
-            return <>{icon}</>;
+            )
+            return <>{icon}</>
           },
           tabBarOnPress: () => {
-            closePostButtons;
+            closePostButtons
           },
         }}
       />
@@ -340,13 +245,13 @@ function TabStack() {
         name="Hive"
         component={HiveStackScreen}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <HiveActive width={normalize(25)} height={normalize(25)} />
             ) : (
               <Hive width={normalize(25)} height={normalize(25)} />
-            );
-            return <>{icon}</>;
+            )
+            return <>{icon}</>
           },
         }}
       />
@@ -361,12 +266,12 @@ function TabStack() {
         name="Activity"
         component={ActivityStackScreen}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <BellActive width={normalize(25)} height={normalize(25)} />
             ) : (
               <Bell width={normalize(25)} height={normalize(25)} />
-            );
+            )
             return (
               <View
                 style={{
@@ -395,7 +300,7 @@ function TabStack() {
                   {icon}
                 </View>
               </View>
-            );
+            )
           },
         }}
       />
@@ -403,12 +308,12 @@ function TabStack() {
         name="Profile"
         component={ProfileStackScreen}
         options={{
-          tabBarIcon: ({focused}) => {
+          tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <UserAltActive width={normalize(25)} height={normalize(25)} />
             ) : (
               <UserAlt width={normalize(25)} height={normalize(25)} />
-            );
+            )
             return (
               <View
                 style={{
@@ -437,79 +342,68 @@ function TabStack() {
                   {icon}
                 </View>
               </View>
-            );
+            )
           },
         }}
       />
     </Tab.Navigator>
-  );
+  )
 }
 
 function Routes() {
-  const {user} = useContext(UserContext);
-  const {deleteNotif, setDeleteNotif} = useContext(Context);
+  const { token, userInfo } = useContext(UserContext)
+  const { addresses } = userInfo
 
-  const [containerOpacity] = useState(new Animated.Value(0));
+  const [containerOpacity] = useState(new Animated.Value(0))
 
   let fadingContainerStyle = {
     opacity: containerOpacity,
     flex: 1,
-  };
+  }
 
   useEffect(() => {
     setTimeout(() => {
-      setShowSplash(false);
+      setShowSplash(false)
 
       Animated.timing(containerOpacity, {
         toValue: 1,
         duration: 750,
         useNativeDriver: false,
-      }).start();
-    }, 2500);
-  }, []);
+      }).start()
+    }, 2500)
+  }, [])
 
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(true)
 
-  if (showSplash) return <SplashScreenComponent />;
-
-  // const DeleteNotification = () => {
-  //   if (deleteNotif) {
-  //     return (
-  //       <SafeAreaView>
-  //         <Notification type={'verified'} position="relative" />
-  //       </SafeAreaView>
-  //     );
-  //   }
-
-  //   return <></>;
-  // };
+  if (showSplash) return <SplashScreenComponent />
 
   return (
     <Animated.View style={fadingContainerStyle}>
       <NavigationContainer>
-        {!user ? (
-          <Stack.Navigator headerMode="none">
-            <Stack.Screen name="AuthStack" component={AuthStackScreen} />
-          </Stack.Navigator>
+        {token ? (
+          !addresses?.length ? (
+            <Stack.Navigator headerMode="none">
+              <Stack.Screen name="AlmostThere" component={AlmostThere} />
+              <Stack.Screen name="AlmostThereMap" component={AlmostThereMap} />
+            </Stack.Navigator>
+          ) : (
+            <Stack.Navigator headerMode="none">
+              <Stack.Screen name="TabStack" component={TabStack} />
+              <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
+            </Stack.Navigator>
+          )
         ) : (
-          // <TabStack />
           <Stack.Navigator headerMode="none">
-            {/* <Stack.Screen name="TabStack" component={SampleScreen} /> */}
+            <Stack.Screen name="Onboarding" component={Onboarding} />
+            <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
             <Stack.Screen name="TabStack" component={TabStack} />
             <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
           </Stack.Navigator>
         )}
       </NavigationContainer>
     </Animated.View>
-  );
+  )
 }
 
-// const MainScreens = () => {
-//   const navigation = useNavigation();
-
-//   console.log('ROUTES PROPS');
-//   console.log(navigation);
-//   return <Stack.Screen name="TabStack" component={TabStack} />;
-// };
-
-export default Routes;
+export default Routes

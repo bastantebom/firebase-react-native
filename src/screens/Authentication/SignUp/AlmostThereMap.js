@@ -1,40 +1,37 @@
 //import liraries
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react'
+import { StyleSheet, View, Text, SafeAreaView } from 'react-native'
 
 //import Geolocation from '@react-native-community/geolocation';
-import Config from '@/services/Config';
-import Geocoder from 'react-native-geocoding';
-import MapComponent from '@/components/MapComponent/MapComponent';
+import Config from '@/services/Config'
+import Geocoder from 'react-native-geocoding'
+import MapComponent from '@/components/MapComponent/MapComponent'
 import {
   AppText,
   AppButton,
   TransitionIndicator,
   ScreenHeaderTitle,
-} from '@/components';
-import { Colors } from '@/globals';
+} from '@/components'
+import { Colors } from '@/globals'
 
-import GooglePlacesInput from '@/components/LocationSearchInput';
+import GooglePlacesInput from '@/components/LocationSearchInput'
 
-import { NavigationPin, Close } from '@/assets/images/icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-import { useNavigation } from '@react-navigation/native';
-import SignUpService from '@/services/SignUpService';
-import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native'
+import SignUpService from '@/services/SignUpService'
+import { UserContext } from '@/context/UserContext'
 
 // create a component
-const AlmostThereMap = (route) => {
-  const navigation = useNavigation();
-  const [changeMapAddress, setChangeMapAddress] = useState('');
+const AlmostThereMap = route => {
+  const navigation = useNavigation()
+  const [changeMapAddress, setChangeMapAddress] = useState('')
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
-  });
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  Geocoder.init(Config.apiKey);
-  const [newCoords, setNewCoords] = useState({});
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  })
+  const [buttonDisabled, setButtonDisabled] = useState(true)
+  Geocoder.init(Config.apiKey)
+  const [newCoords, setNewCoords] = useState({})
+  const [isScreenLoading, setIsScreenLoading] = useState(false)
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
@@ -43,47 +40,26 @@ const AlmostThereMap = (route) => {
     latitude: 0,
     full_address: '',
     default: true,
-  });
+  })
 
-  const onRegionChange = (region) => {
-    //console.log(region);
-    getStringAddress(region);
-    setButtonDisabled(false);
-    setButtonStyle({});
-  };
+  const { user, fetch: updateUserInfo } = useContext(UserContext)
 
-  const getStringAddress = (location) => {
-    // console.log(
-    //   'dumadaan sa Get Sstring' +
-    //     route?.route?.params?.latitude +
-    //     ' ' +
-    //     route?.route?.params?.longitude,
-    // );
+  const onRegionChange = region => {
+    getStringAddress(region)
+    setButtonDisabled(false)
+    setButtonStyle({})
+  }
+
+  const getStringAddress = location => {
     Geocoder.from(location.latitude, location.longitude)
-      .then((json) => {
-        console.log(json);
-        const addressComponent = json.results[1].formatted_address;
+      .then(json => {
+        console.log(json)
+        const addressComponent = json.results[1].formatted_address
         const arrayToExtract =
-          json.results.length == 14
-            ? 9
-            : json.results.length == 13
-              ? 8
-              : json.results.length == 12
-                ? 7
-                : json.results.length == 11
-                  ? 6
-                  : json.results.length == 10
-                    ? 5
-                    : json.results.length == 9
-                      ? 4
-                      : json.results.length == 8
-                        ? 3
-                        : json.results.length < 8
-                          ? 2
-                          : 2;
+          json.results.length < 8 ? 2 : json.results.length - 5
         const splitAddress = json.results[
           arrayToExtract
-        ].formatted_address.split(',');
+        ].formatted_address.split(',')
 
         setAddressComponents({
           ...addressComponents,
@@ -95,76 +71,56 @@ const AlmostThereMap = (route) => {
             country: splitAddress[2],
             full_address: addressComponent,
           },
-        });
-        setChangeMapAddress(addressComponent);
-        console.log(addressComponents);
+        })
+        setChangeMapAddress(addressComponent)
+        console.log(addressComponents)
       })
-      .catch((error) => console.warn(error));
-    console.log(addressComponents);
-  };
+      .catch(error => console.warn(error))
+    console.log(addressComponents)
+  }
 
-  const getPositionFromString = (address) => {
+  const getPositionFromString = address => {
     Geocoder.from(address)
-      .then((json) => {
-        var location = json.results[0].geometry.location;
-        console.log('New Coords');
-        setNewCoords(location);
-        setButtonDisabled(false);
-        setButtonStyle({});
+      .then(json => {
+        var location = json.results[0].geometry.location
+        console.log('New Coords')
+        setNewCoords(location)
+        setButtonDisabled(false)
+        setButtonStyle({})
       })
-      .catch((error) => console.warn(error));
-  };
+      .catch(error => console.warn(error))
+  }
 
-  const onSearchLocationHandler = (data) => {
-    console.log(data);
-    setChangeMapAddress(data);
-    getStringAddress(data);
-    getPositionFromString(data);
-  };
+  const onSearchLocationHandler = data => {
+    console.log(data)
+    setChangeMapAddress(data)
+    getStringAddress(data)
+    getPositionFromString(data)
+  }
 
-  const saveRefineLocation = () => {
-    setIsScreenLoading(true);
-    if (route?.route?.params?.uid) {
-      SignUpService.saveLocation({
-        uid: route?.route?.params?.uid,
-        ...addressComponents,
-      })
-        .then((response) => {
-          if (response.success) {
-            signInAfterSaveLocation();
-          }
+  const saveRefineLocation = async () => {
+    setIsScreenLoading(true)
+    const { uid } = user
+    if (uid) {
+      try {
+        const response = await SignUpService.saveLocation({
+          uid,
+          ...addressComponents
         })
-        .catch((error) => {
-          setIsScreenLoading(false);
-          console.log('With Error in the API SignUp ' + error);
-        });
+        if (!response.success) throw new Error(response.message)
+        else await updateUserInfo()
+        setIsScreenLoading(false)
+      } catch (error) {
+        console.log(error.message)
+      }
     } else {
-      setIsScreenLoading(false);
-      navigation.push('TabStack');
+      setIsScreenLoading(false)
     }
-  };
-
-  const signInAfterSaveLocation = () => {
-    if (route?.route?.params?.custom_token) {
-      auth()
-        .signInWithCustomToken(route?.route?.params?.custom_token)
-        .then(() => {
-          setIsScreenLoading(false);
-          navigation.push('TabStack');
-        })
-        .catch((err) => {
-          setIsScreenLoading(false);
-          console.log(err);
-        });
-    } else {
-      setIsScreenLoading(false);
-      navigation.push('TabStack');
-    }
-  };
+  }
 
   useEffect(() => {
     // exit early when we reach 0
-    console.log(route?.route?.params?.latitude);
+    console.log(route?.route?.params?.latitude)
     if (route?.route?.params?.country && route?.route?.params?.city) {
       setAddressComponents({
         ...addressComponents,
@@ -175,9 +131,9 @@ const AlmostThereMap = (route) => {
           province: route?.route?.params?.province,
           country: route?.route?.params?.country,
         },
-      });
+      })
     }
-  }, []);
+  }, [])
 
   return (
     <>
@@ -188,7 +144,7 @@ const AlmostThereMap = (route) => {
             <ScreenHeaderTitle
               title="Select location"
               close={() => {
-                navigation.goBack();
+                navigation.goBack()
               }}
             />
           </View>
@@ -198,12 +154,12 @@ const AlmostThereMap = (route) => {
             <>
               <View style={styles.textInputWrapper}>
                 <GooglePlacesInput
-                  onResultsClick={(data) => {
-                    onSearchLocationHandler(data);
+                  onResultsClick={data => {
+                    onSearchLocationHandler(data)
                     //alert(data);
                   }}
-                  onClearInput={(textValue) => {
-                    console.log('setvalue');
+                  onClearInput={textValue => {
+                    console.log('setvalue')
                   }}
                   currentValue={
                     changeMapAddress.length > 0
@@ -217,8 +173,8 @@ const AlmostThereMap = (route) => {
                 latitude={route?.route?.params.latitude}
                 longitude={route?.route?.params.longitude}
                 reCenter={newCoords}
-                onRegionChange={(region) => {
-                  onRegionChange(region);
+                onRegionChange={region => {
+                  onRegionChange(region)
                 }}
                 withCurrentMarker={true}
               />
@@ -230,7 +186,7 @@ const AlmostThereMap = (route) => {
                   customStyle={buttonStyle}
                   disabled={buttonDisabled}
                   onPress={() => {
-                    saveRefineLocation();
+                    saveRefineLocation()
                   }}
                 />
               </View>
@@ -239,8 +195,8 @@ const AlmostThereMap = (route) => {
         </View>
       </View>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -309,6 +265,6 @@ const styles = StyleSheet.create({
     zIndex: 101,
     elevation: 101,
   },
-});
+})
 
-export default AlmostThereMap;
+export default AlmostThereMap

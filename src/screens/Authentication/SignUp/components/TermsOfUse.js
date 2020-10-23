@@ -1,15 +1,20 @@
 //import liraries
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import Modal from 'react-native-modal';
+import React, { useState } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import Modal from 'react-native-modal'
 
-import {ScrollView} from 'react-native-gesture-handler';
-import {Close} from '@/assets/images/icons/';
-import {AppButton, AppViewContainer, AppText, WhiteOpacity} from '@/components';
-import {Faded} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
+import { ScrollView } from 'react-native-gesture-handler'
+import { Close } from '@/assets/images/icons/'
+import {
+  AppButton,
+  AppViewContainer,
+  AppText,
+  WhiteOpacity,
+} from '@/components'
+import { Faded } from '@/assets/images'
+import { normalize, Colors } from '@/globals'
 // create a component
-const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
+const ModalComponent = ({ isVisible, onClose, modalContentNumber }) => {
   //const [isModalVisible, setModalVisible] = useState(false);
   const [modalContent] = useState([
     {
@@ -21,10 +26,10 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
     {
       title: 'Privacy Policy',
     },
-  ]);
+  ])
 
   return (
-    <Modal isVisible={isModalVisibleT}>
+    <Modal isVisible={isVisible}>
       <View style={styles.modalWrapper}>
         <TouchableOpacity style={styles.closeIconWrapper} onPress={onClose}>
           <Close height={24} width={24} />
@@ -38,12 +43,12 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
             <View>
               <AppText
                 textStyle="body1medium"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Terms of Use
               </AppText>
               <AppText textStyle="body2">Last updated:[11 August 2020]</AppText>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 The Servbees Mobile Application is an internet application
                 (“Servbees Mobile Application” or the “Application”) owned and
@@ -60,7 +65,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 This is an Agreement between you and SERVBEES PTE. LTD., a
                 company incorporated in Singapore (
@@ -79,7 +84,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 If you are accepting this Agreement on behalf of your employer
                 or another entity, you represent and warrant that (a) you have
@@ -96,7 +101,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 By signing up for an Account (as defined below), by using an
                 Account (as defined below), by using the Platform (as defined
@@ -107,19 +112,20 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">
                 IF YOU DO NOT AGREE TO BE BOUND BY THIS AGREEMENT AND ABIDE BY
                 ITS TERMS, YOU MAY NOT USE OR ACCESS THE SERVBEES PLATFORM.
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">
                 DEFINITIONS AND INTERPRETATION
               </AppText>
             </View>
-            <View style={{marginTop: normalize(24), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(24), paddingLeft: normalize(8) }}>
               <AppText textStyle="body1">
                 1. Definitions. In this Agreement, unless the context otherwise
                 requires:
@@ -131,7 +137,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">
                     “Acceptable Use Policy”
                   </AppText>{' '}
@@ -141,14 +147,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Account”</AppText> means an
                   account registered with us enabling you to use the Platform.
                 </AppText>
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Content”</AppText> means any
                   images, photographs, designs, graphics, logos, marks, audio
                   files, video, software, technology, communications, text,
@@ -157,7 +163,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Fee Schedule”</AppText>{' '}
                   means the fee schedule set out on this webpage ([link]), as
                   varied or amended by us from time to time in our sole
@@ -165,7 +171,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Identity Checks”</AppText>{' '}
                   means any checks done by us to verify the identity,
                   qualification or skills of any User (including, but not
@@ -175,13 +181,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Platform”</AppText> means
                   collectively the Site and Services.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Privacy Policy”</AppText>{' '}
                   means the privacy policy set out on this webpage ([link]), as
                   varied or amended by us from time to time in our sole
@@ -189,14 +195,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Services”</AppText> means
                   the services made available online by Servbees through the
                   Site.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Site”</AppText> means the
                   website located at https://www.servbees.com and any of our
                   associated websites, application programming interfaces (API)
@@ -204,7 +210,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">
                     “Service Completion”
                   </AppText>{' '}
@@ -214,7 +220,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Service Contract”</AppText>{' '}
                   means the separate contract which is formed between a Service
                   Recipient and a Service Provider for Services to be rendered.
@@ -225,7 +231,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Service Fees”</AppText>{' '}
                   means the agreed price for a Service Contract, but does not
                   include any costs incurred by the Service Provider when
@@ -234,28 +240,28 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Service Offer”</AppText>{' '}
                   means an offer made by a User in response to a Service
                   Posting.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Needs Posting”</AppText>{' '}
                   means the listing or post created by Users on the Platform
                   inviting offers for the supplying or receiving of Services.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Service Providers”</AppText>{' '}
                   means the Users providing or seeking to provide Services to
                   Service Recipients on the Platform.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">
                     “Service Recipients”
                   </AppText>{' '}
@@ -264,27 +270,28 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“Services”</AppText> means
                   the services described in a Service Posting, Service Offer or
                   under a Service Contract (as the case may be).
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“User Content”</AppText>{' '}
                   means Content uploaded, transmitted, posted or submitted to us
                   through the Platform by a User.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   <AppText textStyle="body1medium">“User”</AppText> means any
                   visitor or user of the Platform, and shall include you.
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(24), paddingLeft: normalize(8) }}>
               <AppText textStyle="body1">
                 2. Interpretation. In this Agreement, unless the context
                 otherwise requires:
@@ -296,7 +303,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. headings, underlines and bold type are for ease of
                   reference only and shall not affect the interpretation of this
                   Agreement;
@@ -304,43 +311,43 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. the singular includes the plural and the plural includes
                   the singular;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. other parts of speech and grammatical forms of a word or
                   phrase defined in this Agreement have a corresponding meaning;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. references to a document include all amendments or
                   supplements to, or replacements or novations of that document;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. references to a party to a document includes the successors
                   and permitted assigns;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   6. references to time is a reference to Singapore time;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   7. no provision of this Agreement shall be construed adversely
                   to a party because that party was responsible for the
                   preparation of this Agreement or that provision;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   8. a reference to a clause, attachment, exhibit or schedule is
                   a reference to a clause, attachment, exhibit or schedule to
                   this Agreement, and a reference to this Agreement includes any
@@ -348,14 +355,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   9. a reference to any legislation includes all delegated
                   legislation made under it and amendments, consolidations,
                   replacements or re-enactments of any of them;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   10. the terms “
                   <AppText textStyle="body1medium">personal data</AppText>” and
                   “<AppText textStyle="body1medium">processing</AppText>” (when
@@ -365,7 +372,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   11. the terms “
                   <AppText textStyle="body1medium">related corporation</AppText>
                   ” and “<AppText textStyle="body1medium">corporation</AppText>”
@@ -374,19 +381,20 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   12. the expression “<AppText>including</AppText>” or similar
                   expression does not limit what else is included.
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">THE PLATFORM</AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 1. Eligibility. We grant you the limited, worldwide,
                 non-exclusive, non-transferable, non-sublicensable, revocable
                 licence to use the Platform, subject to you complying with all
@@ -399,14 +407,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. if you are an individual, you must be at least 18 years
                   old;
                 </AppText>
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. if you are not an individual:
                 </AppText>
                 <View
@@ -416,20 +424,20 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. you must be validly existing under the laws of the
                     jurisdiction of your incorporation or registration; and
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. the individual using the Platform on your behalf must
                     have full legal authority to bind you;
                   </AppText>
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. you must at all times comply with and satisfy all of our
                   due diligence procedures and requirements (including, but not
                   limited to, complying with our Identity Checks from time to
@@ -437,7 +445,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. all provisions of this Agreement, the Acceptable Use Policy
                   and the Privacy Policy (each of which you hereby confirm that
                   you have read and understood, and which shall be deemed
@@ -445,7 +453,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. all such other terms and conditions (including, but not
                   limited to, your representations and warranties) as are set
                   out or incorporated herein and as we way from time to time
@@ -454,7 +462,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </View>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 2. Marketplace Venue. The Platform is a marketplace venue
                 enabling connections to be made between Users for the
                 publication of Task Postings, communication of Task Offers and
@@ -474,14 +482,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 3. Restriction of Features and Functionalities. Certain features
                 and/or functionalities on the Platform may be restricted from
                 time to time in our sole and absolute discretion.
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 4. Ancillary Items. In order to use the Platform, an Internet
                 connection and certain equipment (such as a computer and
                 smartphone) may be required. You are responsible at your own
@@ -490,19 +498,20 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 5. Support. If you require any assistance with the Platform, you
                 may contact us at help@servbees.com. We make no representation
                 or warranty on the level of support we will provide to you.
               </AppText>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">ACCOUNTS</AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 1. Opening. In order to use certain features of the Platform,
                 you must open an Account by providing us with your name, email
                 address, mobile number, password and/or such other information
@@ -512,7 +521,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 2. Access. Your Account will be secured through the use of such
                 login credentials and other forms of authentication as we may
                 from time to time require. In connection with the security of
@@ -529,7 +538,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 3. Suspension. We may at any time in our sole discretion suspend
                 any Account for reasons such as (a) any breach or suspected
                 breach of this Agreement; (b) your Account becoming subject to
@@ -544,7 +553,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 4. Closure. We may at any time in our sole discretion close any
                 Account for reasons such as (a) any breach or suspected breach
                 of this Agreement; (b) your Account becoming subject to any
@@ -556,14 +565,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 5. Identity Verification. We may from time to time conduct
                 Identity Checks on our Users.
               </AppText>
 
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 6. Limitations of Identity Checks. You agree that our Identity
                 Checks may not be fully accurate as we are dependent on
                 User-supplied information and/or information or verification
@@ -573,13 +582,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 Platform.
               </AppText>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">SERVICES</AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 1. Use of the Platform. When you use the Platform to create,
                 publish or edit a Service Posting, make or accept a Service
                 Offer and/or enter into a Service Contract, you agree that:
@@ -591,13 +601,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. any Content supplied must not be false, inaccurate or
                   misleading or deceptive;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. any Content supplied must not infringe any third party’s
                   copyright, patent, trademark, trade secret or other
                   proprietary rights or intellectual property rights, rights of
@@ -605,7 +615,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. any Content posted on the Platform must not, in any way
                   whatsoever, be potentially or actually harmful to us or any
                   other person. Harm includes, but is not limited to, economic
@@ -614,7 +624,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. you are granting us the unrestricted, worldwide,
                   royalty-free and irrevocable licence to use, reproduce, modify
                   and adapt any content and information posted or communicated
@@ -625,10 +635,11 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 2. Providing Services. When providing any Services, you agree
                 that:
               </AppText>
@@ -639,20 +650,20 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. you will provide timely and high-quality services to the
                   Service Recipient with due care, skill and diligence;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. you will only offer and provide Services for which you have
                   the necessary skills and expertise, and you will provide the
                   Services safely and in accordance with all applicable laws;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. you must not, when providing the Services, charge the
                   Service Recipient any fees on top of the Task Fee. However,
                   the parties to a Service Contract may agree to amend the Task
@@ -660,7 +671,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. you must fulfil the Services in accordance with the Service
                   Contract, unless prohibited by law, this Agreement, an
                   agreement between the User and a third party or by any of our
@@ -668,14 +679,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. you must not request for payments outside of the Platform
                   from the Service Recipient except to the extent permitted by
                   clause 4.2.4; and
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   6. if you agree to pay some costs of completing the Services
                   (such as providing additional equipment), you are solely
                   responsible for obtaining any reimbursement from the Service
@@ -686,20 +697,22 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 3. Pricing of Services. You are solely responsible for the
                 pricing of the Services, although we reserve the absolute and
                 sole discretion to impose restrictions, floors and/or ceilings
                 on such pricing.
               </AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 4. Separate Agreement. When a Task Offer is made or accepted by
                 you:
               </AppText>
@@ -710,7 +723,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. (where you are the offeror) you acknowledge that you are
                   offering to enter into a separate legal and binding agreement
                   with the offeree of that Task Offer; or (where you are the
@@ -720,7 +733,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. the terms of the Service Contract shall be supplemental to
                   that Task Offer, and you agree to comply with the Service
                   Contract and this Agreement during the engagement, performance
@@ -728,7 +741,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. where you are the Service Recipient, you shall determine
                   whether you will be present when the Services are performed
                   and/or completed, and if you choose not to be present when the
@@ -740,7 +753,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. where the Service Contract is not or will not be settled in
                   cash, you agree to appoint us as limited collection agent for
                   you, to facilitate payment of the Task Fee by the Service
@@ -748,23 +761,24 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. where you are the Service Recipient, you agree to pay to us
                   all fees chargeable by us hereunder; and
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   6. you agree to notify us of any disputes prior to negotiation
                   of or filing of any claims and to negotiate any dispute
                   informally via us.
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 5. Cancellation. We may from time to time consent to the
                 cancellation or withdrawal of your Task Postings, Task Offers
                 and/or Service Contract. However, we may charge cancellation
@@ -772,10 +786,11 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 required for such cancellation or withdrawal.
               </AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 6. Completion. With respect to a Service Contract:
               </AppText>
               <View
@@ -785,13 +800,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. you may inform us of the completion of the Services through
                   the Platform; and
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. Task Completion shall be deemed achieved:
                 </AppText>
                 <View
@@ -801,13 +816,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. when both you and the other User confirm completion of
                     the Services through the Platform; or
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. upon the effluxion of one (1) week following the other
                     User’s confirmation that the Services are completed, should
                     you fail to confirm completion of the Services or fail to
@@ -817,10 +832,11 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
               </View>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 7. Dispute with other Users. If you have any complaints or
                 dispute with another User, such complaints or dispute must be
                 taken up with that User directly. If, at your or that User’s
@@ -834,7 +850,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   1. you acknowledge and agree that we are acting as experts
                   (and not as arbitrators), and you may at any time proceed with
@@ -843,7 +859,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   2. you acknowledge and agree that we are acting as experts
                   (and not as arbitrators), and you may at any time proceed with
@@ -852,7 +868,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   3. you must co-operate with all investigation conducted by us
                   and provide us with all such information and documents as we
@@ -860,7 +876,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   4. until such time the dispute is resolved, we shall (where
                   payment for the Services is by credit or debit card) have the
@@ -870,14 +886,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   5. you consent to us disclosing your personal data to that
                   User for purposes in connection with this dispute;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   6. you agree to abide and be bound by the final determination
                   made by us (acting reasonably) on this dispute and to the
@@ -886,7 +902,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   {' '}
                   7. notwithstanding the above, we will not be a party to
                   disputes and/or negotiations of any disputes between Users and
@@ -896,7 +912,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </View>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 {' '}
                 8. Removal. Notwithstanding any provision to the contrary, we
                 reserve the right at any time without notice to you and for
@@ -907,7 +923,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 {' '}
                 9. Tax, Legal and Regulatory Compliance. You must have the right
                 to provide or receive services under a Service Contract (as the
@@ -919,10 +935,11 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 Contract.
               </AppText>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">FEES</AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <View
                 style={{
                   marginTop: normalize(8),
@@ -942,13 +959,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. all Service Fees due to the Service Provider.
                   </AppText>
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. Payment Method.
                 </AppText>
                 <View
@@ -958,7 +975,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. Payment of all fees and the Services, Seller and Needs
                     Fees hereunder shall be through cash, credit or debit card,
                     or such other payment methods as we may from time to time
@@ -966,7 +983,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. You may be required to provide your payment method
                     details to us and any third party we may use to process
                     payments. For all credit or debit card details you provide
@@ -977,7 +994,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     3. If the Service Fee is or will be paid in cash (as agreed
                     between the Service Provider and the Service Recipient under
                     a Service Contract and permitted by Servbees), the Service
@@ -989,7 +1006,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. Charging your Card.
                 </AppText>
                 <View
@@ -999,14 +1016,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. This clause 5.3 applies only if the Task Posting or Task
                     Offer indicates that payment will be made by credit or debit
                     card.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. When a Service Recipient creates, the Service Recipient
                     is authorising us to confirm with the issuing bank of his,
                     her or its credit or debit card that it is a valid account,
@@ -1015,7 +1032,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     3. When a Task Offer is accepted, the Service Recipient is
                     authorising us to request for a card authorisation hold on
                     his/her/its credit or debit card for the full Task Fee and
@@ -1028,7 +1045,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4. Upon Task Completion, the Service Recipient is deemed to
                     have authorised us to charge his/her/its credit or debit
                     card for the full Task Fee and all fees chargeable by us
@@ -1037,7 +1054,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. Release of Task Fees.
                 </AppText>
                 <View
@@ -1047,13 +1064,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. This clause 5.4 applies only if the Task Fees are paid to
                     us pending Task Completion.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. Following Task Completion, the Task Fees (less all fees
                     chargeable by us hereunder) shall be released to the Service
                     Provider in such manner as prescribed by us from time to
@@ -1061,7 +1078,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     3. Notwithstanding any provision to the contrary, we shall
                     be entitled:
                   </AppText>
@@ -1072,7 +1089,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                     }}>
                     <AppText
                       textStyle="body1"
-                      customStyle={{marginTop: normalize(8)}}>
+                      customStyle={{ marginTop: normalize(8) }}>
                       1. to return the Task Fee to the Service Recipient at any
                       time if the Task Posting, Task Offer, Services and/or
                       Service Contract is suspended, cancelled, withdrawn,
@@ -1081,7 +1098,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                     </AppText>
                     <AppText
                       textStyle="body1"
-                      customStyle={{marginTop: normalize(8)}}>
+                      customStyle={{ marginTop: normalize(8) }}>
                       2. to release and/or return the Task Fee to the Service
                       Provider and/or the Service Recipient in such proportions
                       as determined by us in accordance with clause 4.7.6.
@@ -1089,7 +1106,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </View>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4. You irrevocably agree that you shall have no claim
                     against us for the release of the Task Fee to the Service
                     Provider or the return of the Task Fee to the Service
@@ -1098,7 +1115,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. Reimbursement to Service Provider. If a Task Posting, Task
                   Offer and/or Service Contract requires a Service Provider to
                   incur additional costs outside of the Platform, the cost
@@ -1110,21 +1127,21 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   6. No Refund. Unless otherwise stated expressly in this
                   Agreement, all fees and charges payable to us are
                   non-cancellable and are non-refundable.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   7. Dispute with Card Company. In the event of any dispute with
                   your credit or debit card company or financial institution,
                   you shall be solely responsible for resolving them.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   8. Restriction on Account. We reserve the right to restrict
                   your Account or to suspend the processing of any transaction
                   or to disable or limit the use of your credit or debit card if
@@ -1137,7 +1154,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   9. Set Off. All payments made to us shall be without set off,
                   counterclaim, taxes, duties, withholding (except to the extent
                   required by law) and deduction. However, we shall be entitled
@@ -1150,7 +1167,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   10. Payment Services Provider. Payment processing services
                   hereunder are provided by Stripe and are subject to the Stripe
                   Connected Account Agreement
@@ -1168,20 +1185,21 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">TERMINATION</AppText>
             </View>
-            <View style={{marginTop: normalize(8), paddingLeft: normalize(8)}}>
+            <View
+              style={{ marginTop: normalize(8), paddingLeft: normalize(8) }}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 1. Termination by Us. We may in our absolute and sole discretion
                 close your Account and terminate this Agreement at any time for
                 any reason.
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 2. Termination by You. You may terminate this Agreement at any
                 time by informing us of your intention to terminate this
                 Agreement and requesting us to close your Account. Upon the
@@ -1194,14 +1212,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 3. Survival. All parts of this Agreement which by their nature
                 should survive the expiration or termination of this Agreement
                 shall continue in full force and effect subsequent to and
                 notwithstanding the expiration or termination of this Agreement.
               </AppText>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">
                 REPRESENTATIONS, WARRANTIES, UNDERTAKINGS AND ACKNOWLEDGEMENTS
               </AppText>
@@ -1212,7 +1230,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. Warranties and Undertakings. You represent, warrant and
                   undertake to us as follows:
                 </AppText>
@@ -1223,14 +1241,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. if you are an individual, you are 18 years of age or
                     older and have full power and authority to enter into this
                     Agreement and to perform all your obligations hereunder;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2. if you are not an individual:
                   </AppText>
                   <View
@@ -1240,20 +1258,20 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                     }}>
                     <AppText
                       textStyle="body1"
-                      customStyle={{marginTop: normalize(8)}}>
+                      customStyle={{ marginTop: normalize(8) }}>
                       1. you must be validly existing under the laws of the
                       jurisdiction of your incorporation or registration; and
                     </AppText>
                     <AppText
                       textStyle="body1"
-                      customStyle={{marginTop: normalize(8)}}>
+                      customStyle={{ marginTop: normalize(8) }}>
                       2. the individual using the Platform on your behalf must
                       have full legal authority to bind you;
                     </AppText>
                   </View>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     3. your entry into this Agreement have been duly and
                     effectively authorized by all necessary actions on your part
                     and this Agreement constitutes binding and enforceable
@@ -1261,7 +1279,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4. the entry into and performance by you of your obligations
                     hereunder do not and will not conflict with or result in a
                     breach of any law, regulation, order, judgment or decree of
@@ -1270,13 +1288,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     5. you will comply with our Acceptable Use Policy;
                   </AppText>
 
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     6. you will comply in all respects with all laws and
                     regulations applicable to you in relation to your use of the
                     Platform (including, but not limited to making a Task
@@ -1285,53 +1303,53 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     7. you will not knowingly infringe or violate any third
                     party right, or breach any agreements or legal obligations
                     that you may have toward any third party;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     8. you will not submit or post any Content on the Platform
                     which you know to be false, misleading, inaccurate,
                     deceptive or fraudulent;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     9. you will fulfil the commitments you make to other Users;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     10. you will not use the Platform for any immoral or illegal
                     purposes;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     11. you will respect the privacy (including, but not limited
                     to, the private, family and home life), property and data
                     protection rights of Users;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     12. you will not record (whether video, audio or otherwise)
                     your provision or receipt of the Services or your any
                     interaction with any User;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     13. you will not threaten, abuse, harass, defame, or engage
                     in behaviour that is libellous, tortious, obscene, profane,
                     or invasive of another person’s privacy;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     14. you will not distribute unsolicited or unauthorized
                     advertising or promotional material, or any junk mail, spam,
                     or chain letters, and will not run any mailing lists,
@@ -1340,7 +1358,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     15. you will not distribute software viruses, or anything
                     else designed to interfere with (a) the proper functioning
                     of any software, hardware, or equipment on or relating to
@@ -1350,7 +1368,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     16. you will not bypass any measures that we have put in
                     place to secure the Platform, take actions to gain
                     unauthorized access to any system, data, passwords, or other
@@ -1361,28 +1379,28 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     17. all Content as you may from time to time submit to us
                     are true, accurate, authentic and not misleading in any
                     manner;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     18. your Account must only be used by yourself and you must
                     not allow any other person to use your Account or to use the
                     Platform through your Account; and
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     19. you are fully responsible for all applicable tax with
                     respect to your use of the Platform.
                   </AppText>
                 </View>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">INTELLECTUAL PROPERTY</AppText>
               <View
                 style={{
@@ -1391,7 +1409,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. Our Intellectual Property. We shall retain all rights,
                   title and interests in and to all of our intellectual property
                   rights. Except as expressly provided in this Agreement, no
@@ -1401,7 +1419,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. Your User Content. We reserve the right at any time to
                   reject or remove any User Content from the Platform. You will
                   retain all rights, title and interests in and to your User
@@ -1415,7 +1433,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1. you are granting us a perpetual, worldwide,
                     non-exclusive, irrevocable, royalty-free, fully paid-up,
                     sub-licensable (without limit as to the number of tiers),
@@ -1426,7 +1444,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2.you are representing and warranting to us that (a) you
                     have all necessary rights, licences, consents and
                     permissions to grant the rights and licences to us in the
@@ -1445,7 +1463,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. Removal of Content. We shall have the sole and absolute
                   discretion to remove any Content, Task Postings and/or Task
                   Offers (whether submitted by you or otherwise) from the
@@ -1453,7 +1471,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. Other Content. We grant to you a limited, worldwide,
                   non-exclusive, non-sublicensable, non-transferable, revocable
                   licence to access and use the User Content and our Content
@@ -1468,14 +1486,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. No Infringement. You must not in connection with your use
                   of the Services infringe upon any intellectual property rights
                   of us or of any third party.
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">DATA PROTECTION</AppText>
               <View
                 style={{
@@ -1553,7 +1571,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">LIABILITIES</AppText>
               <View
                 style={{
@@ -1783,7 +1801,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">
                 CHANGES AND MODIFICATIONS
               </AppText>
@@ -1817,7 +1835,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </AppText>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">GENERAL</AppText>
               <View
                 style={{
@@ -2096,16 +2114,16 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
               </View>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1medium">APPENDIX A</AppText>
               <AppText
                 textStyle="body1medium"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 MODEL SERVICE CONTRACT
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 The terms used in this Service Contract have the meaning set out
                 in the Servbees Glossary. A Service Contract is created in
                 accordance with the Servbees Agreement. Unless otherwise agreed,
@@ -2119,7 +2137,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   1. COMMENCEMENT DATE AND TERM
                 </AppText>
                 <View
@@ -2129,7 +2147,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1.1 The Service Contract is created when the Poster accepts
                     the Service's Offer on a Posted Task to provide Services.
                     When using Search Assist, the Service Contract is created
@@ -2137,14 +2155,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     1.2 The Contract will continue until terminated in
                     accordance with clause 7.
                   </AppText>
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   2. SERVICES
                 </AppText>
                 <View
@@ -2154,19 +2172,19 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2.1 The Tasker will perform Services in a proper and
                     workmanlike manner.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2.2 The Tasker must perform the Services at the time and
                     location agreed.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2.3 The parties must perform their obligations in accordance
                     with any other terms or conditions agreed by the parties
                     during or subsequent to the creation of the Service
@@ -2174,7 +2192,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2.4 The parties acknowledge that the Service Contract is one
                     of personal service where the Poster selected the Tasker to
                     perform the Services. Therefore the Tasker must not
@@ -2183,7 +2201,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     2.5 The Tasker remains responsible and liable at all times
                     to the Poster for any acts or omissions of a subcontractor
                     as if those acts or omissions had been made by the Tasker.
@@ -2191,7 +2209,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3. WARRANTIES
                 </AppText>
                 <View
@@ -2201,13 +2219,13 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     3.1 Each party warrants that the information provided in the
                     creation of the Service Contract is true and accurate.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     3.2 The Tasker warrants that they have (and any
                     subcontractor has) the right to work and provide Services
                     and hold all relevant licences in the jurisdiction where the
@@ -2216,7 +2234,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4. PAYMENT OR CANCELLATION
                 </AppText>
                 <View
@@ -2226,19 +2244,19 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4.1 Upon the creation of the Service Contract, the Poster
                     must pay the Agreed Price into the Payment Account.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4.2 Upon the Services being completed, the Tasker will
                     provide notice on the Servbees Platform.
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4.3 The Poster will be prompted to confirm the Services are
                     complete. If the Tasker has completed the Services in
                     accordance with clause 2, the Poster must use the Servbees
@@ -2250,7 +2268,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4.4 If the parties agree to cancel the Service Contract, or
                     the Poster is unable to contact the Tasker to perform the
                     Service Contract, the Tasker Funds will be dealt with in
@@ -2260,7 +2278,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   5. LIMITATION OF LIABILITY
                 </AppText>
                 <View
@@ -2270,7 +2288,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     5.1 Except for liability in relation to a breach of a
                     Non-excludable Condition, the parties exclude all
                     Consequential Loss arising out of or in connection to the
@@ -2280,7 +2298,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     5.2 Subject to any insurance or agreement to the contrary,
                     the liability of each party to the other except for a breach
                     of any Non-Excludable Condition is capped at the Agreed
@@ -2290,7 +2308,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   6. DISPUTES
                 </AppText>
                 <View
@@ -2300,14 +2318,14 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     6.1 If a dispute arises between the parties, the parties
                     will attempt to resolve the dispute within 14 days by
                     informal negotiation (by phone, email or otherwise).
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     6.2 If the parties are unable to resolve the dispute in
                     accordance with clause 6.1, either party may refer the
                     dispute to Servbees and act in accordance with clause 18 of
@@ -2317,12 +2335,12 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   7. TERMINATION OF CONTRACT
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   The Service Contract will terminate when:
                 </AppText>
 
@@ -2333,47 +2351,47 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
                   }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     (a) the Services are completed and the Agreed Price is
                     released from the Payment Account;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     (b) a party is terminated or suspended from the Servbees
                     Platform, at the election of the other party;
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     (c) otherwise agreed by the parties or the Third Party
                     Dispute Service; or
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     (d) notified by Servbees in accordance with the party's
                     Servbees Agreement.
                   </AppText>
                 </View>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   8. APPLICATION OF POLICIES
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   The parties incorporate by reference the applicable Policies.
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   9. GOVERNING LAW
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   The Service Contract is governed by the laws of the
                   jurisdiction where the Posted Task was posted on the Servbees
                   Platform.
@@ -2383,7 +2401,7 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
           </AppViewContainer>
         </ScrollView>
         <WhiteOpacity />
-        <View style={{marginTop: normalize(16)}}>
+        <View style={{ marginTop: normalize(16) }}>
           <AppButton
             text="Agree"
             type="secondary"
@@ -2393,8 +2411,8 @@ const ModalComponent = ({isModalVisibleT, onClose, modalContentNumber}) => {
         </View>
       </View>
     </Modal>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -2408,13 +2426,13 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
   },
 
-  closeIconWrapper: {paddingBottom: 16},
+  closeIconWrapper: { paddingBottom: 16 },
 
   contentWrapper: {
     padding: 5,
     marginTop: 12,
   },
-});
+})
 
 //make this component available to the app
-export default ModalComponent;
+export default ModalComponent

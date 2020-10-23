@@ -1,6 +1,6 @@
-import BaseAPI from '@/services/BaseAPI';
+import BaseAPI from '@/services/BaseAPI'
 
-const createUser = (payload) => {
+const createUser = payload => {
   return BaseAPI({
     url: 'users/',
     method: 'POST',
@@ -8,10 +8,10 @@ const createUser = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const saveSocials = (payload) => {
+const saveSocials = payload => {
   return BaseAPI({
     url: 'users/save-socials',
     method: 'POST',
@@ -19,10 +19,10 @@ const saveSocials = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const saveLocation = (payload) => {
+const saveLocation = payload => {
   return BaseAPI({
     url: `users/${payload.uid}/location`,
     method: 'POST',
@@ -30,21 +30,21 @@ const saveLocation = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
 const getAll = () => {
   return BaseAPI({
     url: 'users',
     method: 'GET',
-  });
-};
+  })
+}
 
 const SignUpService = {
   createUser,
   getAll,
   saveLocation,
   saveSocials,
-};
+}
 
-export default SignUpService;
+export default SignUpService

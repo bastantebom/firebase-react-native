@@ -1,248 +1,183 @@
-//import liraries
-import React, {useRef, useState, useContext} from 'react';
+import React, { useRef, useState, useContext } from 'react'
 import {
   View,
   TextInput,
   StyleSheet,
   Keyboard,
   SafeAreaView,
-} from 'react-native';
-import AppColor from '@/globals/Colors';
-import {useNavigation} from '@react-navigation/native';
-import VerifyIcon from '@/assets/images/verify.svg';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+} from 'react-native'
+import AppColor from '@/globals/Colors'
+import { useNavigation } from '@react-navigation/native'
+import VerifyIcon from '@/assets/images/verify.svg'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import {Context} from '@/context';
+import { Context } from '@/context'
 
-import {AppText, TransitionIndicator, Notification} from '@/components';
-import VerifyService from '@/services/VerifyService';
+import { AppText, TransitionIndicator, Notification } from '@/components'
+import VerifyService from '@/services/VerifyService'
+import auth from '@react-native-firebase/auth'
 
-// create a component
-const VerifyAccount = (route) => {
-  const {openNotification, closeNotification} = useContext(Context);
-  const navigation = useNavigation();
-  //const verify = route.params;
-  const firstTextInput = useRef(null);
-  const secondTextInput = useRef(null);
-  const thirdTextInput = useRef(null);
-  const fourthTextInput = useRef(null);
+const VerifyAccount = route => {
+  const { openNotification, closeNotification } = useContext(Context)
+  const navigation = useNavigation()
+  const firstTextInput = useRef(null)
+  const secondTextInput = useRef(null)
+  const thirdTextInput = useRef(null)
+  const fourthTextInput = useRef(null)
 
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
 
-  const [inputStyle, setInputStyle] = useState([]);
-  const [verifyArray, setVerifyArray] = useState(['', '', '', '']);
+  const [inputStyle, setInputStyle] = useState([])
+  const [verifyArray, setVerifyArray] = useState(['', '', '', ''])
 
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [isScreenLoading, setIsScreenLoading] = useState(false)
 
-  const onVerifyChange = (index) => {
-    return (value) => {
+  const onVerifyChange = index => {
+    return value => {
       if (isNaN(Number(value))) {
-        // do nothing when a non digit is pressed
-        return;
+        return
       }
-      const verifyArrayCopy = verifyArray.concat();
-      verifyArrayCopy[index] = value;
-      setVerifyArray(verifyArrayCopy);
+      const verifyArrayCopy = verifyArray.concat()
+      verifyArrayCopy[index] = value
+      setVerifyArray(verifyArrayCopy)
 
-      const inputStyleCopy = inputStyle.concat();
-      inputStyleCopy[index] = {borderColor: AppColor.contentOcean};
-      setInputStyle(inputStyleCopy);
-      //setInputState[index] = true;
+      const inputStyleCopy = inputStyle.concat()
+      inputStyleCopy[index] = { borderColor: AppColor.contentOcean }
+      setInputStyle(inputStyleCopy)
 
-      // auto focus to next InputText if value is not blank
       if (value !== '') {
-        sendVerification(verifyArrayCopy);
+        sendVerification(verifyArrayCopy)
         if (index === 0) {
-          secondTextInput.current.focus();
+          secondTextInput.current.focus()
         } else if (index === 1) {
-          //secondTextInput.current.style.borderColor = AppColor.contentOcean;
-          thirdTextInput.current.focus();
+          thirdTextInput.current.focus()
         } else if (index === 2) {
-          //thirdTextInput.current.style.borderColor = AppColor.contentOcean;
-          fourthTextInput.current.focus();
+          fourthTextInput.current.focus()
         } else if (index === 3) {
-          //fourthTextInput.current.style.borderColor = AppColor.contentOcean;
-          Keyboard.dismiss();
-          //navigation.navigate('Dashboard');
-          //console.log();
+          Keyboard.dismiss()
         }
       }
-    };
-  };
+    }
+  }
 
-  const onVerifyKeyPress = (index) => {
-    return ({nativeEvent: {key: value}}) => {
-      // auto focus to previous InputText if value is blank and existing value is also blank
+  const onVerifyKeyPress = index => {
+    return ({ nativeEvent: { key: value } }) => {
       if (value === 'Backspace' && verifyArray[index] === '') {
-        const inputStyleCopy = inputStyle.concat();
-        inputStyleCopy[index] = {borderColor: AppColor.contentEbony};
-        setInputStyle(inputStyleCopy);
+        const inputStyleCopy = inputStyle.concat()
+        inputStyleCopy[index] = { borderColor: AppColor.contentEbony }
+        setInputStyle(inputStyleCopy)
 
         if (index === 1) {
-          firstTextInput.current.focus();
+          firstTextInput.current.focus()
         } else if (index === 2) {
-          secondTextInput.current.focus();
+          secondTextInput.current.focus()
         } else if (index === 3) {
-          thirdTextInput.current.focus();
+          thirdTextInput.current.focus()
         } else {
-          Keyboard.dismiss();
-          //alert('Backspace');
+          Keyboard.dismiss()
         }
 
-        /**
-         * clear the focused text box as well only on Android because on mweb onOtpChange will be also called
-         * doing this thing for us
-         * todo check this behaviour on ios
-         */
         if (index > 0) {
-          const verifyArrayCopy = verifyArray.concat();
-          verifyArrayCopy[index - 1] = ''; // clear the previous box which will be in focus
-          setVerifyArray(verifyArrayCopy);
+          const verifyArrayCopy = verifyArray.concat()
+          verifyArrayCopy[index - 1] = ''
+          setVerifyArray(verifyArrayCopy)
         }
       }
-    };
-  };
-
-  const sendVerification = (code) => {
-    if (code.join('').length === 4) {
-      const nCode = parseInt(code.join(''));
-      setIsScreenLoading(true);
-      //console.log('SEND VERIFICATION');
-
-      if (route?.route?.params?.login) {
-        var newProvider = route?.route?.params?.login;
-        var providerText = 'number';
-        if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
-          providerText = 'email';
-        }
-      }
-      console.log('---------------------------------');
-      console.log(providerText);
-      console.log(route?.route?.params?.uid);
-      console.log(nCode);
-      console.log('---------------------------------');
-
-      VerifyService.verifyCode({
-        uid: route?.route?.params?.uid,
-        verification_code: nCode,
-        provider: providerText,
-      })
-        .then((response) => {
-          if (response.success) {
-            setIsScreenLoading(false);
-            //auth()
-            //  .signInWithCustomToken(response.custom_token)
-            //  .then(() => {
-            navigation.push('AlmostThere', {
-              ...{
-                uid: route?.route?.params?.uid,
-                custom_token: response.custom_token,
-              },
-            });
-            //  })
-            // .catch((err) => {
-            //   console.log(err);
-            // });
-          } else {
-            setIsScreenLoading(false);
-            console.log('Error sa Verification Code');
-          }
-        })
-        .catch((error) => {
-          setIsScreenLoading(false);
-          console.log('With Error in the API SignUp ' + error);
-        });
-    } else {
-      return;
     }
-  };
+  }
+
+  const sendVerification = async code => {
+    if (code.join('').length === 4) {
+      const nCode = parseInt(code.join(''))
+      setIsScreenLoading(true)
+
+      const { uid, provider } = route?.route.params || {}
+
+      try {
+        const response = await VerifyService.verifyCode({
+          uid,
+          provider,
+          verification_code: nCode,
+        })
+
+        const { custom_token, success } = response
+        if (success) {
+          await auth().signInWithCustomToken(custom_token)
+        } else {
+          throw new Error(response.message)
+        }
+      } catch (error) {
+        console.log(error?.message || error)
+      }
+      setIsScreenLoading(false)
+    }
+    return
+  }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      closeNotification();
-    }, 5000);
-  };
+      closeNotification()
+    }, 5000)
+  }
 
-  const resendCodeHandler = () => {
-    setIsScreenLoading(true);
-    if (route?.route?.params?.login) {
-      var newProvider = route?.route?.params?.login;
-      var providerText = 'number';
-      if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
-        providerText = 'email';
-      }
-    }
-    VerifyService.resendCode({
-      uid: route?.route?.params?.uid,
-      provider: providerText,
-    })
-      .then((response) => {
-        if (response.success) {
-          setNotificationType('success');
-          setNotificationMessage(
-            <AppText textStyle="body2" customStyle={notificationText}>
-              Verification code has been sent to your {providerText}{' '}
-              {route?.route?.params?.login}
-            </AppText>,
-          );
-          openNotification();
-          setIsScreenLoading(false);
-          closeNotificationTimer();
-          //alert('Code has been sent');
-        } else {
-          setNotificationType('error');
-          setNotificationMessage(
-            <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
-              Failed resend verification code {providerText}{' '}
-              {route?.route?.params?.login}
-            </AppText>,
-          );
-          openNotification();
-          setIsScreenLoading(false);
-          closeNotificationTimer();
-        }
-      })
-      .catch((error) => {
-        setNotificationType('error');
+  const resendCodeHandler = async () => {
+    setIsScreenLoading(true)
+    const { uid, provider, login } = route?.route.params || {}
+
+    try {
+      const response = await VerifyService.resendCode()
+      if (response.success) {
+        setNotificationType('success')
         setNotificationMessage(
-          'Failed verification ' +
-            providerText +
-            ' ' +
-            route?.route?.params?.login,
-        );
-        openNotification();
-        setIsScreenLoading(false);
-        closeNotificationTimer();
-        //console.log('With Error in the API SignUp ' + error);
-      });
-  };
+          <AppText textStyle="body2" customStyle={notificationText}>
+            Verification code has been sent to your {provider} {login}
+          </AppText>
+        )
+        openNotification()
+        setIsScreenLoading(false)
+        closeNotificationTimer()
+      } else {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      setNotificationType('error')
+      setNotificationMessage(
+        <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
+          Failed resend verification code {provider} {login}
+        </AppText>
+      )
+      openNotification()
+      setIsScreenLoading(false)
+      closeNotificationTimer()
+    }
+  }
 
   const notificationErrorTextStyle = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     color: 'white',
-  };
+  }
 
   const notificationText = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
-  };
+  }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Notification message={notificationMessage} type={notificationType} />
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.defaultStyle}>
           <VerifyIcon />
         </View>
-        <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
+        <View style={{ ...styles.defaultStyle, ...styles.spacingBottom }}>
           <AppText textStyle="display5">Enter Your Verification</AppText>
         </View>
-        <View style={{...styles.defaultStyle, ...styles.spacingBottomx2}}>
+        <View style={{ ...styles.defaultStyle, ...styles.spacingBottomx2 }}>
           <AppText textStyle="body2" customStyle={styles.bodyContent}>
             An email with the 4-digit code has been sent to{' '}
             <AppText textStyle="body3" customStyle={styles.bodyContent}>
@@ -252,7 +187,7 @@ const VerifyAccount = (route) => {
         </View>
 
         <View
-          style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
+          style={{ ...styles.verificationWrapper, ...styles.spacingBottomx4 }}>
           {[
             firstTextInput,
             secondTextInput,
@@ -281,7 +216,7 @@ const VerifyAccount = (route) => {
           ))}
         </View>
 
-        <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
+        <View style={{ ...styles.defaultStyle, ...styles.spacingBottom }}>
           <AppText textStyle="body2" customStyle={styles.bodyContent}>
             Didn’t receive a code?
           </AppText>
@@ -289,8 +224,7 @@ const VerifyAccount = (route) => {
         <TouchableOpacity
           customStyle={styles.defaultStyle}
           onPress={() => {
-            resendCodeHandler();
-            //navigation.navigate('Dashboard', 'Jayson Ilagan');
+            resendCodeHandler()
           }}>
           <AppText
             textStyle="body2"
@@ -303,10 +237,9 @@ const VerifyAccount = (route) => {
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -314,37 +247,28 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingTop: 96,
   },
-
   bodyContent: {
     textAlign: 'center',
   },
-
   spacingBottom: {
     marginBottom: 8,
   },
-
   spacingBottomx2: {
     marginBottom: 16,
   },
-
   spacingBottomx4: {
     marginBottom: 32,
   },
-
   timerWrapper: {
-    //flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-
   timerText: {
     textAlign: 'right',
   },
-
   verificationWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
   inputVerification: {
     flex: 1,
     borderWidth: 1,
@@ -359,23 +283,18 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     borderColor: AppColor.contentEbony,
   },
-
   resetMarginLeft: {
     marginLeft: 0,
   },
-
   resetMarginRight: {
     marginRight: 0,
   },
-
   defaultStyle: {
     alignItems: 'center',
   },
-
   contentColorOverride: {
     color: AppColor.contentOcean,
   },
-});
+})
 
-//make this component available to the app
-export default VerifyAccount;
+export default VerifyAccount

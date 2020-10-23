@@ -9,7 +9,9 @@
     "prod": "cd firebase_env && ./prod-env.sh && cd ../android && ./gradlew clean",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "debug": "npm run android -- --variant=debug",
+    "release": "npm run android -- --variant=release"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.0.2",
@@ -32,6 +34,7 @@
     "@sentry/react-native": "^1.7.2",
     "algoliasearch": "^4.5.1",
     "axios": "^0.19.2",
+    "eslint-config-prettier": "^6.13.0",
     "lottie-ios": "3.1.8",
     "lottie-react-native": "^3.5.0",
     "moment": "^2.29.1",

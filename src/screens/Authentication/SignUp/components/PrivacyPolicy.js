@@ -1,30 +1,20 @@
-//import liraries
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import Modal from 'react-native-modal';
+import React from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import Modal from 'react-native-modal'
 
-import {ScrollView} from 'react-native-gesture-handler';
-import {Close} from '@/assets/images/icons/';
-import {AppButton, AppViewContainer, AppText, WhiteOpacity} from '@/components';
-import {Faded} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-// create a component
-const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
-  //const [isModalVisible, setModalVisible] = useState(false);
-  const [modalContent] = useState([
-    {
-      title: 'Terms & Services',
-    },
-    {
-      title: 'Payments Terms of Servbees',
-    },
-    {
-      title: 'Privacy Policy',
-    },
-  ]);
+import { ScrollView } from 'react-native-gesture-handler'
+import { Close } from '@/assets/images/icons/'
+import {
+  AppButton,
+  AppViewContainer,
+  AppText,
+  WhiteOpacity,
+} from '@/components'
+import { normalize, Colors } from '@/globals'
 
+export default ModalComponent = ({ isVisible, onClose }) => {
   return (
-    <Modal isVisible={isModalVisible}>
+    <Modal isVisible={isVisible}>
       <View style={styles.modalWrapper}>
         <TouchableOpacity style={styles.closeIconWrapper} onPress={onClose}>
           <Close height={24} width={24} />
@@ -38,14 +28,14 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
             <View>
               <AppText
                 textStyle="body1medium"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Privacy Policy
               </AppText>
               <AppText textStyle="body2">
                 Last updated: [04 August 2020]
               </AppText>
             </View>
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 Servbees Pte. Ltd. and its affiliates (collectively “Servbees”,
                 “we”, or “us”) is a marketplace platform company that provides
@@ -59,7 +49,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 When you use our Service as a Customer or Servbees (collectively
                 “user” or “you”), you share your information with us. We respect
@@ -70,7 +60,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 Our Privacy Policy describes our practices regarding personal
                 information (“Personal Data”) that we collect from users through
@@ -79,7 +69,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               </AppText>
             </View>
 
-            <View style={{marginTop: normalize(24)}}>
+            <View style={{ marginTop: normalize(24) }}>
               <AppText textStyle="body1">
                 The important thing we want you to know is that we use
                 information collected only for the purpose of providing and
@@ -99,7 +89,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               }}>
               <AppText
                 textStyle="body1medium"
-                customStyle={{marginTop: normalize(24)}}>
+                customStyle={{ marginTop: normalize(24) }}>
                 1. DEFINITIONS
               </AppText>
             </View>
@@ -116,39 +106,39 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 “process” and “processed” has a meaning analogous to processing.{' '}
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 “processing” has the meaning given to it in the Personal Data
                 Protection Act 2012 of Singapore.{' '}
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 “Service Providers” means our third-party suppliers, vendors,
                 contractors and business partners, whether in Singapore or
                 elsewhere and whether former, current or prospective.
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 “Services” means our products, services, content, features,
                 technologies or functions offered on websites, applications and
                 services operated by us or our Service Providers.
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 “We”, “we”, “our”, “us”, “Us” means I SERVBEES PTE. LTD.
                 (Company Registration No. 202023057N, a company incorporated in
                 Singapore, and its related corporations.
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 “You”, “you”, “Your”, “your” means the persons to whom this
                 Privacy Policy applies.
               </AppText>
@@ -175,14 +165,14 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 2.2 You are deemed to have accepted this Privacy Policy when you
                 provide us with personal data or otherwise sign up for, access
                 or use any of our Services.
               </AppText>
               <AppText
                 textStyle="body1"
-                customStyle={{marginTop: normalize(8)}}>
+                customStyle={{ marginTop: normalize(8) }}>
                 2.3 Notwithstanding the foregoing, you may withdraw your consent
                 for us to collect, use or disclose your personal data, but this
                 may affect our ability to provide you with the Services. We will
@@ -211,10 +201,10 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 personal data in order to provide you with the Services and also
                 to improve your experience. Such personal data may include:
               </AppText>
-              <View style={{paddingLeft: normalize(8)}}>
+              <View style={{ paddingLeft: normalize(8) }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.1 general identification and contact information (for
                   example, name, address, email address, telephone number, age,
                   date of birth, gender, marital status, occupation, username,
@@ -222,26 +212,26 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.2 financial information and account details (for example,
                   wallet addresses, bank account numbers, credit card numbers,
                   assets, liabilities, salary, etc);
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.3 information from cookies, pixel tags, web beacons or
                   similar technologies;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.4 images, photographs, closed-circuit television (CCTV)
                   footage, voice recordings and electronic communications;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.5 data about the pages you access, your Internet protocol
                   address, your device unique identifier, your device type, your
                   geo-location information, your mobile network information,
@@ -251,7 +241,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.6 where necessary for our business purpose, sensitive
                   personal data such as your health information, racial or
                   ethnic origins, religious or philosophical beliefs, trade
@@ -259,7 +249,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.1.7 other information you may provide us with.
                 </AppText>
               </View>
@@ -273,16 +263,16 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
               <AppText textStyle="body1">
                 3.2 Collection Methods. Your personal data may be collected:
               </AppText>
-              <View style={{paddingLeft: normalize(8)}}>
+              <View style={{ paddingLeft: normalize(8) }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.2.1 automatically (for example, when your device or service
                   provider automatically sends us that data);
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.2.2 from you (for example, when you submit a web form to us,
                   add or update your account information, participate in
                   discussions, chats or dispute resolutions, or correspond with
@@ -290,7 +280,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   3.2.3 from third parties (for example, from social media
                   sites).
                 </AppText>
@@ -315,22 +305,22 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 personal data for one or more of the following business
                 purposes:
               </AppText>
-              <View style={{paddingLeft: normalize(8)}}>
+              <View style={{ paddingLeft: normalize(8) }}>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.1 to provide you with the Services; measure the
                   performance of our Services; monitor the Services provided by
                   or made available through us;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.2 process payments made or received by you;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.3 determine your geographic location, provide localized or
                   targeted content, provide you with customized or personalized
                   recommendations or content, determine your Internet service
@@ -341,20 +331,20 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.4 communicate with you (such as by email, text messaging,
                   online messaging, push notifications) to assist you with
                   operational requests such as password reset requests;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.5 verify your identity; conduct due diligence checks;
                 </AppText>
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.6 prevent, detect and investigate fraud or other
                   potentially prohibited or illegal activities; to detect,
                   prevent and remediate any violations of our policies or terms
@@ -362,44 +352,44 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.7 address or investigate any complaints, claims or
                   disputes;
                 </AppText>
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.8 handle requests for data access or correction;
                 </AppText>
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.9 analyze and understand our users; improve our services
                   (including our user interface experiences); participate in
                   industry exercises and studies;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.10 coach employees and Service Providers; monitor for
                   quality assurance;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.11 enforce any obligations owed to us;
                 </AppText>
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.12 seek professional advice, such as legal advice;
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.13 prepare and maintain financial reporting, regulatory
                   reporting, management reporting, risk management, audit and
                   record keeping purposes;
@@ -407,7 +397,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.14 enable any actual or proposed assignee, transferee,
                   participant or sub-participant of our rights, business or
                   obligations to evaluate any proposed transaction; negotiate a
@@ -416,7 +406,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                 </AppText>
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.15 manage our infrastructure and business operations
                   (including information technology infrastructure) and
                   complying with internal policies and procedures;
@@ -424,7 +414,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.16 conduct due diligence enquiries and comply with
                   enforcement of tax, sanctions or prevention or detection of
                   money laundering, terrorism financing or other unlawful
@@ -433,7 +423,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.17 comply with all applicable laws, regulations, rules,
                   directions, orders, instructions and requests from any
                   authorities (whether local or foreign), including any
@@ -443,7 +433,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
 
                 <AppText
                   textStyle="body1"
-                  customStyle={{marginTop: normalize(8)}}>
+                  customStyle={{ marginTop: normalize(8) }}>
                   4.1.18 any other purpose specifically provided for in any
                   particulate product or service offered by us or permitted or
                   required by law or the relevant authorities.
@@ -458,10 +448,10 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                   4.2 Marketing Purpose. We may also collect, use or process
                   your personal data to:
                 </AppText>
-                <View style={{paddingLeft: normalize(8)}}>
+                <View style={{ paddingLeft: normalize(8) }}>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4.2.1 offer you our Services (such as special offers,
                     promotions, contests or entitlements that may be of interest
                     to you or for which you may be eligible), via various modes
@@ -470,14 +460,14 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
                   </AppText>
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     4.2.2 improve and personalize the Services, content and
                     advertisements.
                   </AppText>
 
                   <AppText
                     textStyle="body1"
-                    customStyle={{marginTop: normalize(8)}}>
+                    customStyle={{ marginTop: normalize(8) }}>
                     If you do not wish to receive marketing communications from
                     us or to participate in our advertisement personalization
                     program, please let us know.
@@ -726,7 +716,7 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
           </AppViewContainer>
         </ScrollView>
         <WhiteOpacity />
-        <View style={{marginTop: normalize(16)}}>
+        <View style={{ marginTop: normalize(16) }}>
           <AppButton
             text="Agree"
             type="secondary"
@@ -736,8 +726,8 @@ const ModalComponent = ({isModalVisible, onClose, modalContentNumber}) => {
         </View>
       </View>
     </Modal>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -751,13 +741,10 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
   },
 
-  closeIconWrapper: {paddingBottom: 16},
+  closeIconWrapper: { paddingBottom: 16 },
 
   contentWrapper: {
     padding: 5,
     marginTop: 12,
   },
-});
-
-//make this component available to the app
-export default ModalComponent;
+})
