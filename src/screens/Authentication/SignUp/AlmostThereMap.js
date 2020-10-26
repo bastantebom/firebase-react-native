@@ -105,7 +105,7 @@ const AlmostThereMap = route => {
       try {
         const response = await SignUpService.saveLocation({
           uid,
-          ...addressComponents
+          ...addressComponents,
         })
         if (!response.success) throw new Error(response.message)
         else await updateUserInfo()

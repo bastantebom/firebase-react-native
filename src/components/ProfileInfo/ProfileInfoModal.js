@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -6,11 +6,11 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
-} from 'react-native';
+} from 'react-native'
 
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-import {useNavigation} from '@react-navigation/native';
+import ProfileInfoService from '@/services/Profile/ProfileInfo'
+import SkeletonContent from 'react-native-skeleton-content-nonexpo'
+import { useNavigation } from '@react-navigation/native'
 
 import {
   AppText,
@@ -24,109 +24,103 @@ import {
   UserPosts,
   OtherUserPosts,
   CacheableImage,
-} from '@/components';
-import PostFilter from '@/components/Post/PostFilter';
-import {TabView, SceneMap} from 'react-native-tab-view';
+} from '@/components'
+import PostFilter from '@/components/Post/PostFilter'
+import { TabView, SceneMap } from 'react-native-tab-view'
 
-import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context/index';
+import { ProfileHeaderDefault } from '@/assets/images'
+import { normalize, Colors } from '@/globals'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context/index'
 
-import {MoreInfo, Reviews} from '@/screens/Profile/Tabs';
-import ProfileInfo from '@/screens/Profile/components/ProfileInfo';
+import { MoreInfo, Reviews } from '@/screens/Profile/Tabs'
+import ProfileInfo from '@/screens/Profile/components/ProfileInfo'
 
 function ProfileInfoModal(props) {
-  const {profileViewType = 'other', uid} = props.route?.params;
+  const { profileViewType = 'other', uid } = props.route?.params
 
-  const navigation = useNavigation();
-  const {user, signOut, userInfo, setUserInfo} = useContext(UserContext);
-  const {userPosts, otherUserPosts} = useContext(Context);
-  const [otherUserInfo, setOtherUserInfo] = useState({});
+  const navigation = useNavigation()
+  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext)
+  const { userPosts, otherUserPosts } = useContext(Context)
+  const [otherUserInfo, setOtherUserInfo] = useState({})
 
-  const [ellipsisState, setEllipsisState] = useState(false);
-  const [following, setFollowing] = useState(false);
-  const [menu, setMenu] = useState(false);
-  const [QR, setQR] = useState(false);
+  const [ellipsisState, setEllipsisState] = useState(false)
+  const [following, setFollowing] = useState(false)
+  const [menu, setMenu] = useState(false)
+  const [QR, setQR] = useState(false)
 
-  const [visibleHives, setVisibleHives] = useState(false);
-  const [profileList, setProfileList] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [visibleHives, setVisibleHives] = useState(false)
+  const [profileList, setProfileList] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(true)
 
-  const [headerState, setHeaderState] = useState(profileViewType);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [addFollowers, setAddFollowers] = useState(null);
+  const [headerState, setHeaderState] = useState(profileViewType)
+  const [isFollowing, setIsFollowing] = useState(false)
+  const [addFollowers, setAddFollowers] = useState(null)
 
   const changeHeaderHandler = () => {
-    headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
-  };
+    headerState === 'own' ? setHeaderState('other') : setHeaderState('own')
+  }
 
   const toggleQR = () => {
-    setQR(!QR);
-  };
+    setQR(!QR)
+  }
 
   const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState);
-  };
+    setEllipsisState(!ellipsisState)
+  }
 
   const toggleMenu = () => {
-    setMenu(!menu);
-  };
+    setMenu(!menu)
+  }
 
   const toggleHives = () => {
-    setVisibleHives(!visibleHives);
-  };
+    setVisibleHives(!visibleHives)
+  }
   const toggleProfileList = () => {
-    setProfileList(!profileList);
-  };
+    setProfileList(!profileList)
+  }
 
   const toggleFollowing = () => {
-    connectUser();
-  };
+    connectUser()
+  }
 
   const connectUser = () => {
     ProfileInfoService.follow(uid, isFollowing)
-      .then((response) => {
-        const updatedFollowingList = {
-          following: [...response.data],
-        };
-        setUserInfo({...userInfo, ...updatedFollowingList});
-        setIsFollowing(response.data.includes(uid));
-        setAddFollowers(response.data.includes(uid));
+      .then(response => {
+        setIsFollowing(response.data.is_following)
+        setAddFollowers(response.data.is_following)
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
-  const [profileImageUrl, setProfileImageUrl] = useState('');
+  const [profileImageUrl, setProfileImageUrl] = useState('')
 
-  const width = Dimensions.get('window').width;
+  const width = Dimensions.get('window').width
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
 
-    setIsDataLoading(true);
+    setIsDataLoading(true)
     ProfileInfoService.getUser(uid)
-      .then((response) => {
-        if (mounted) setOtherUserInfo(response.data);
+      .then(response => {
+        if (mounted) setOtherUserInfo(response.data)
+        setIsFollowing(response.data.is_following)
       })
-      .catch((err) => {
-        console.log('Err: ' + err);
+      .catch(err => {
+        console.log(err)
       })
       .finally(() => {
         if (mounted) {
-          console.log('FINALLY');
-          setIsDataLoading(false);
+          setIsDataLoading(false)
         }
-      });
-    if (userInfo.following) {
-      setIsFollowing(userInfo.following.includes(uid));
-    }
+      })
+
     return () => {
-      mounted = false;
-    };
-  }, []);
+      mounted = false
+    }
+  }, [])
 
   const profileTabs = [
     {
@@ -147,7 +141,7 @@ function ProfileInfoModal(props) {
       title: 'More Info',
       renderPage: <MoreInfo profileInfo={otherUserInfo} />,
     },
-  ];
+  ]
 
   return (
     <>
@@ -167,11 +161,14 @@ function ProfileInfoModal(props) {
         userID={uid}
       />
       <View
-        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        style={{
+          backgroundColor: Colors.buttonDisable,
+          height: normalize(158),
+        }}>
         {otherUserInfo.cover_photo ? (
           <CacheableImage
-            source={{uri: otherUserInfo.cover_photo}}
-            style={{width: normalize(375), height: normalize(158)}}
+            source={{ uri: otherUserInfo.cover_photo }}
+            style={{ width: normalize(375), height: normalize(158) }}
           />
         ) : (
           <ProfileHeaderDefault
@@ -195,25 +192,25 @@ function ProfileInfoModal(props) {
           viewType="other-user-links"
         />
       </View>
-      <View style={{backgroundColor: Colors.primaryYellow}}>
+      <View style={{ backgroundColor: Colors.primaryYellow }}>
         <LoadingUserInfo isLoading={isDataLoading}>
           <ProfileInfo profileData={otherUserInfo} />
         </LoadingUserInfo>
       </View>
 
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
       </View>
     </>
-  );
+  )
 }
 
-const LoadingUserInfo = ({children, isLoading}) => {
+const LoadingUserInfo = ({ children, isLoading }) => {
   return (
     <SkeletonContent
-      containerStyle={{flexDirection: 'column', backgroundColor: 'white'}}
+      containerStyle={{ flexDirection: 'column', backgroundColor: 'white' }}
       isLoading={isLoading}
       layout={[
         {
@@ -262,10 +259,10 @@ const LoadingUserInfo = ({children, isLoading}) => {
       ]}>
       {children}
     </SkeletonContent>
-  );
-};
+  )
+}
 
-export default ProfileInfoModal;
+export default ProfileInfoModal
 
 const styles = StyleSheet.create({
   container: {
@@ -289,4 +286,4 @@ const styles = StyleSheet.create({
     top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
   },
-});
+})
