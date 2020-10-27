@@ -380,7 +380,7 @@ function Routes() {
   return (
     <Animated.View style={fadingContainerStyle}>
       <NavigationContainer>
-        {token ? (
+        {token && userInfo?.uid ? (
           !addresses?.length ? (
             <Stack.Navigator headerMode="none">
               <Stack.Screen name="AlmostThere" component={AlmostThere} />
