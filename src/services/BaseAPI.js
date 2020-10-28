@@ -3,7 +3,8 @@ import APIURL from '@/services/Config'
 import AsyncStorage from '@react-native-community/async-storage'
 
 const client = axios.create({
-  baseURL: APIURL.dev.api,
+  baseURL: APIURL.local.api,
+  //headers: {Authorization: `bearer ${token}`},
 })
 
 const BaseAPI = function (options) {

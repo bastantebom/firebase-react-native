@@ -53,13 +53,14 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
   useEffect(() => {
     let mounted = true;
 
-    if (mounted) getCategories();
+    if (mounted) getCategories().then((res) => console.log('ASDASDSAD', res));
     else return (mounted = false);
   }, []);
 
   const getCategories = async () => {
     // Get list of categories from backend
     let categories = await CategoryService.getCategories().then((res) => {
+      console.log(res);
       return res;
     });
 
@@ -94,9 +95,6 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
           selected: false,
         };
     });
-
-    console.log('awaited 2');
-    console.log(categoryChoices);
     setCatChoices(categoryChoices);
   };
 
@@ -169,8 +167,6 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
 
         {catChoices.length <= 1 &&
           catChoices.map((choice, index) => {
-            console.log(choice);
-
             if (choice.category === 'items') {
               return (
                 <>
@@ -201,8 +197,6 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
           })}
 
         {catChoices.map((choice, index) => {
-          console.log(choice);
-
           if (choice.category === 'items') {
             return <></>;
           }
@@ -221,12 +215,12 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
           );
         })}
 
-        <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
+        {catChoices.length > 1 && (
+          <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
+        )}
 
-        {catChoices.length >= 1 &&
+        {catChoices.length > 1 &&
           catChoices.map((choice) => {
-            console.log(choice);
-
             if (choice.category === 'items') {
               return (
                 <>
@@ -309,6 +303,7 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
           <CategoryFormModal
             close={() => {
               setNewCategoryModal(false);
+              close();
             }}
           />
         </Modal>

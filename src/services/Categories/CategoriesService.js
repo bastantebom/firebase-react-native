@@ -1,18 +1,7 @@
 import BaseAPI from '@/services/BaseAPI';
-let categories = [
-  {
-    name: 'burgers',
-    id: 1,
-  },
-  {
-    name: 'drinks',
-    id: 2,
-  },
-];
 
 const createCategory = (categoryName) => {
-  // return (categories = [...categories, payload]);
-
+  console.log('HELLO');
   return BaseAPI({
     url: `/categories`,
     method: 'POST',
@@ -64,7 +53,7 @@ const CategoryService = {
   getCategories,
   createCategory,
   editCategory,
-  deleteCategory
+  deleteCategory,
 };
 
 export default CategoryService;

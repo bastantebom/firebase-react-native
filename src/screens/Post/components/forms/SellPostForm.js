@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -6,21 +6,21 @@ import {
   Dimensions,
   TextInput,
   Animated,
-  TouchableWithoutFeedback
-} from 'react-native';
-import { Divider } from 'react-native-paper';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import storage from '@react-native-firebase/storage';
+  TouchableWithoutFeedback,
+} from 'react-native'
+import { Divider } from 'react-native-paper'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import storage from '@react-native-firebase/storage'
 // import {Switch} from 'react-native-switch';
-import Textarea from 'react-native-textarea';
-import { useNavigation } from '@react-navigation/native';
+import Textarea from 'react-native-textarea'
+import { useNavigation } from '@react-navigation/native'
 
 /*Map Essentials*/
 // import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
-import Geocoder from 'react-native-geocoding';
-import Config from '@/services/Config';
-import Modal from 'react-native-modal';
-import StoreLocation from '../StoreLocation';
+import Geocoder from 'react-native-geocoding'
+import Config from '@/services/Config'
+import Modal from 'react-native-modal'
+import StoreLocation from '../StoreLocation'
 /*Map Essentials*/
 
 import {
@@ -28,7 +28,7 @@ import {
   Validator,
   valueHandler,
   PriceInput,
-} from '@/components/AppInput';
+} from '@/components/AppInput'
 import {
   ArrowRight,
   Public,
@@ -37,7 +37,7 @@ import {
   PostInfo,
   PostAdd,
   FormArrowRight,
-} from '@/assets/images/icons';
+} from '@/assets/images/icons'
 import {
   AppText,
   Switch,
@@ -47,20 +47,25 @@ import {
   AppRadio,
   AppCheckbox,
   ItemCategory,
-  BottomSheetHeader
-} from '@/components';
-import { normalize, Colors, GlobalStyle } from '@/globals';
-import { PostService, ImageUpload, MapService } from '@/services';
-import { UserContext } from '@/context/UserContext';
-import { Context } from '@/context';
-import { PostImageUpload } from '../PostImageUpload';
-import AddItemModal from './modals/AddItemModal';
-import PrivacyModal from './modals/PrivacyModal';
-import PaymentMethodModal from './modals/PaymentMethodModal';
-import ShippingMethodModal from './modals/ShippingMethodModal';
-import PostExpiryModal from './modals/PostExpiryModal';
+  BottomSheetHeader,
+} from '@/components'
+import { normalize, Colors, GlobalStyle } from '@/globals'
+import { PostService, ImageUpload, MapService } from '@/services'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
+import { PostImageUpload } from '../PostImageUpload'
+import AddItemModal from './modals/AddItemModal'
+import PrivacyModal from './modals/PrivacyModal'
+import PaymentMethodModal from './modals/PaymentMethodModal'
+import ShippingMethodModal from './modals/ShippingMethodModal'
+import PostExpiryModal from './modals/PostExpiryModal'
 
-const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) => {
+const SellPostForm = ({
+  navToPost,
+  togglePostModal,
+  formState,
+  initialData,
+}) => {
   const {
     coverPhoto,
     setNeedsRefresh,
@@ -71,62 +76,66 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
     setSelected,
     setImageCurrent,
     items,
-  } = useContext(Context);
-  const { user, userInfo, setUserInfo } = useContext(UserContext);
-  const [buttonEnabled, setButtonEnabled] = useState(false);
+  } = useContext(Context)
+  const { user, userInfo, setUserInfo } = useContext(UserContext)
+  const [buttonEnabled, setButtonEnabled] = useState(false)
 
   // Converting to route
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   /*MAP Essentials */
-  const [map, setMap] = useState(false);
-  const { address } = userInfo;
+  const [map, setMap] = useState(false)
+  const { addresses } = userInfo
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
     country: '',
     longitude: 0,
     latitude: 0,
-  });
-  const [showLocation, setShowLocation] = useState(false);
-  const [stringAddress, setStringAddress] = useState('');
-  const [addItemModal, showAddItemModal] = useState(false);
-  const [privacyModal, showPrivacyModal] = useState(false);
-  const [paymentMethodModal, showPaymentMethodModal] = useState(false);
-  const [shippingMethodModal, showShippingMethodModal] = useState(false);
-  const [postExpiryModal, showPostExpiryModal] = useState(false);
+  })
+  const [showLocation, setShowLocation] = useState(false)
+  const [stringAddress, setStringAddress] = useState('')
+  const [addItemModal, showAddItemModal] = useState(false)
+  const [privacyModal, showPrivacyModal] = useState(false)
+  const [paymentMethodModal, showPaymentMethodModal] = useState(false)
+  const [shippingMethodModal, showShippingMethodModal] = useState(false)
+  const [postExpiryModal, showPostExpiryModal] = useState(false)
   // const [listAsSingle, setListAsSingle] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([])
 
-  useEffect(() => {
-    if (images) {
-      setCameraImage(images);
-    }
-    if (initialData.post_id) {
-      console.log('edit post');
-      const { store_location } = initialData;
-      MapService.getStringAddress(
-        store_location.latitude,
-        store_location.longitude,
-        '',
-        setStringAddress,
-        setAddressComponents,
-        addressComponents,
-      );
-    } else {
-      if (userInfo.address) {
-        const { address } = userInfo;
-        MapService.getStringAddress(
-          address.latitude,
-          address.longitude,
-          '',
-          setStringAddress,
-          setAddressComponents,
-          addressComponents,
-        );
-      }
-    }
-  }, [address]);
+  const [pickupAddress, setPickupAddress] = useState(
+    addresses.find(address => address.default)
+  )
+
+  // useEffect(() => {
+  //   if (images) {
+  //     setCameraImage(images)
+  //   }
+  //   if (initialData.post_id) {
+  //     console.log('edit post')
+  //     const { store_location } = initialData
+  //     MapService.getStringAddress(
+  //       store_location.latitude,
+  //       store_location.longitude,
+  //       '',
+  //       setStringAddress,
+  //       setAddressComponents,
+  //       addressComponents
+  //     )
+  //   } else {
+  //     if (userInfo.address) {
+  //       const { address } = userInfo
+  //       MapService.getStringAddress(
+  //         address.latitude,
+  //         address.longitude,
+  //         '',
+  //         setStringAddress,
+  //         setAddressComponents,
+  //         addressComponents
+  //       )
+  //     }
+  //   }
+  // }, [address])
 
   const prepareAddressUpdate = (fullAddress, addStr) => {
     MapService.getStringAddress(
@@ -135,13 +144,13 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
       addStr,
       setStringAddress,
       setAddressComponents,
-      addressComponents,
-    );
-  };
+      addressComponents
+    )
+  }
 
   const toggleMap = () => {
-    setMap(!map);
-  };
+    setMap(!map)
+  }
   /*MAP Essentials */
 
   const {
@@ -167,38 +176,48 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
     freeCheckbox,
     setFreeCheckbox,
     setPostInStore,
-    postInStore
-  } = formState;
+    postInStore,
+    paymentMethods,
+    setPaymentMethods,
+    postExpiry,
+    setPostExpiry,
+  } = formState
 
   const togglePickupState = () => {
-    setPickupState(!pickupState);
-  };
+    setPickupState(!pickupState)
+  }
 
   const toggleDeliveryState = () => {
-    setDeliveryState(!deliveryState);
-  };
+    setDeliveryState(!deliveryState)
+  }
 
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
 
   const clearForm = () => {
-    setTitle('');
-    setPrice('');
-    setDescription('');
-    setPickupState(false);
-    setDeliveryState(false);
-    setStoreLocation('');
-    setPaymentMethod('');
-  };
+    setTitle('')
+    setPrice('')
+    setDescription('')
+    setPickupState(false)
+    setDeliveryState(false)
+    setStoreLocation('')
+    setPaymentMethod('')
+  }
 
   const checkFormContent = () => {
-    if (title && price && (pickupState || deliveryState) && paymentMethod)
-      return setButtonEnabled(false);
+    let paymentListValues = Object.values(paymentMethods)
 
-    return setButtonEnabled(true);
-  };
+    if (
+      title &&
+      price &&
+      (pickupState || (deliveryState && paymentListValues.includes(true)))
+    )
+      return setButtonEnabled(false)
+
+    return setButtonEnabled(true)
+  }
 
   useEffect(() => {
-    checkFormContent();
+    checkFormContent()
   }, [
     title,
     price,
@@ -207,99 +226,142 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
     storeLocation,
     paymentMethod,
     description,
-  ]);
+  ])
 
   const publish = async () => {
-    setLoadingSubmit(true);
+    setLoadingSubmit(true)
 
     const data = {
       uid: user.uid,
       post_type: 'sell',
       images: await Promise.all(
-        coverPhoto.map(
-          async (image) => await ImageUpload.upload(image, user.uid),
-        ),
+        coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
       ),
       title: title,
-      price: price,
+      //   type: 'sell',
+      type: 'sell',
+      //   privacy: string, //public private
+      privacy: 'public',
+      //   title: title,
+      title: title,
+      //   description: 0,
       description: description,
-      payment_method: paymentMethod,
-      store_location: addressComponents,
-      delivery_method: {
+      //   cover_photos: await Promise.all(
+      //     coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
+      //   ),
+      cover_photos: await Promise.all(
+        coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
+      ),
+      //   items: [
+      //     {
+      //       category: string,
+      //       image: string,
+      //       name: string,
+      //       description: string,
+      //       price: 0,
+      //       free: true,
+      //     },
+      //   ],
+      items: itemsToSave,
+      is_multiple: listAsMultiple,
+
+      //   delivery_methods: {
+      //     pickup: {
+      //       location: {
+      //         city: string,
+      //         country: string,
+      //         default: true,
+      //         full_address: string,
+      //         latitude: 0,
+      //         longitude: 0,
+      //         province: string,
+      //       },
+      //     },
+      //     delivery: {
+      //       nationwide: {
+      //         notes: string,
+      //       },
+      //       radius: {
+      //         notes: string,
+      //         distance: 0,
+      //       },
+      //     },
+      //   },
+      delivery_methods: {
         pickup: pickupState,
         delivery: deliveryState,
       },
-    };
+    }
 
     if (initialData.post_id) {
-      const res = await PostService.editPost(initialData.post_id, data);
+      const res = await PostService.editPost(initialData.post_id, data)
       navToPost({
         ...res,
         viewing: false,
         created: false,
         edited: true,
-      });
+      })
     } else {
-      const res = await PostService.createPost(data);
+      const res = await PostService.createPost(data)
       setUserInfo({
         ...userInfo,
         post_count: userInfo.post_count + 1,
-      });
+      })
       navToPost({
         ...res,
         viewing: false,
         created: true,
         edited: false,
-      });
+      })
     }
 
-    togglePostModal();
-    setLoadingSubmit(false);
-    setNeedsRefresh(true);
-    setCoverPhoto([]);
-    setLibImages([]);
-    setCameraImage([]);
-    setSingleCameraImage([]);
-    setSelected([]);
-    setImageCurrent('');
-  };
+    togglePostModal()
+    setLoadingSubmit(false)
+    setNeedsRefresh(true)
+    setCoverPhoto([])
+    setLibImages([])
+    setCameraImage([])
+    setSingleCameraImage([])
+    setSelected([])
+    setImageCurrent('')
+  }
 
-  const RadioStateHandler = (val) => {
+  const RadioStateHandler = val => {
     if (val === 'single') {
-      setListAsMultiple(false);
-      setListAsSingle(true);
-      showSingle();
-      hideMultiple();
+      setListAsMultiple(false)
+      setListAsSingle(true)
+      showSingle()
+      hideMultiple()
     }
     if (val === 'multiple') {
-      setListAsMultiple(true);
-      setListAsSingle(false);
-      hideSingle();
-      showMultiple();
+      setListAsMultiple(true)
+      setListAsSingle(false)
+      hideSingle()
+      showMultiple()
     }
     if (val === 'public') {
-      setPublicPost(true);
+      setPublicPost(true)
     }
     // if (val === 'postToHive') {
     //   setHivePost(true);
     // }
-  };
+  }
 
   /**FOR ANIMATION */
-  const [singleActiveHeight] = useState(new Animated.Value(0));
-  const [singleActiveOpacity] = useState(new Animated.Value(0));
-  const [multipleActiveHeight] = useState(new Animated.Value(0));
-  const [multipleActiveOpacity] = useState(new Animated.Value(0));
+  const [singleActiveHeight] = useState(new Animated.Value(0))
+  const [singleActiveOpacity] = useState(new Animated.Value(0))
+  const [multipleActiveHeight] = useState(new Animated.Value(0))
+  const [multipleActiveOpacity] = useState(new Animated.Value(0))
 
   let multipleActiveStyle = {
     height: multipleActiveHeight,
     opacity: multipleActiveOpacity,
-  };
+  }
 
   let singleActiveStyle = {
     height: singleActiveHeight,
     opacity: singleActiveOpacity,
-  };
+  }
 
   const showSingle = async () => {
     Animated.sequence([
@@ -313,8 +375,8 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         duration: 300,
         useNativeDriver: false,
       }),
-    ]).start();
-  };
+    ]).start()
+  }
 
   const hideSingle = async () => {
     Animated.sequence([
@@ -328,8 +390,8 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         duration: 200,
         useNativeDriver: false,
       }),
-    ]).start();
-  };
+    ]).start()
+  }
 
   const showMultiple = async () => {
     Animated.sequence([
@@ -343,8 +405,8 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         duration: 300,
         useNativeDriver: false,
       }),
-    ]).start();
-  };
+    ]).start()
+  }
 
   const hideMultiple = async () => {
     Animated.sequence([
@@ -358,8 +420,8 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         duration: 200,
         useNativeDriver: false,
       }),
-    ]).start();
-  };
+    ]).start()
+  }
 
   /**FOR ANIMATION */
 
@@ -367,6 +429,31 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
   //   console.log('POST FORM ITEMS');
   //   console.log(data);
   // });
+
+  const SelectedPaymentMethods = () => {
+    let paymentMethodList = []
+    for (const [key, value] of Object.entries(paymentMethods)) {
+      if (value === true) {
+        if (key === 'onlineBanking') {
+          paymentMethodList.push('Online Banking')
+        } else {
+          paymentMethodList.push(key)
+        }
+      }
+    }
+
+    let display = paymentMethodList.join(', ')
+
+    if (display)
+      return (
+        <AppText customStyle={{ textTransform: 'capitalize' }}>
+          {display}
+        </AppText>
+      )
+    else {
+      return <></>
+    }
+  }
 
   return (
     <>
@@ -424,7 +511,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           label="Title"
           placeholder="Eg. Iphone, Macbook"
           value={title}
-          onChangeText={(text) => setTitle(text)}
+          onChangeText={text => setTitle(text)}
         />
         {/* <AppInput
           customStyle={{marginBottom: 16}}
@@ -461,7 +548,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
             marginBottom: 16,
             textAlign: 'left',
           }}
-          onChangeText={(text) => setDescription(text)}
+          onChangeText={text => setDescription(text)}
           underlineColorAndroid={'transparent'}
           textAlignVertical="top"
           scrollEnabled={false}
@@ -490,7 +577,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
             customStyle={{ marginBottom: 16 }}
             label="Price"
             value={price}
-            onChangeText={(text) => setPrice(text)}
+            onChangeText={text => setPrice(text)}
           />
           <View
             style={{
@@ -544,18 +631,21 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
             <ItemCategory items={items} />
           </View>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
 
         <Animated.View style={[multipleActiveStyle]}>
           <TouchableOpacity
             onPress={() => {
               // showAddItemModal(true)
-              navigation.navigate('AddItemScreen');
+              navigation.navigate('AddItemScreen')
             }}
             activeOpacity={0.7}
-            style={{ flexDirection: 'row', alignItems: 'center', marginTop: 24 }}
-            onPress={() => showAddItemModal(true)}>
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 24,
+            }}>
             <PostAdd width={normalize(24)} height={normalize(24)} />
             <AppText customStyle={{ paddingLeft: 8 }} textStyle="body2">
               Add an Item
@@ -586,26 +676,76 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         <TouchableOpacity
           activeOpacity={0.7}
           style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          onPress={() => navigation.navigate('PaymentMethodScreen')}>
+          onPress={() => showPaymentMethodModal(true)}>
           <AppText textStyle="body2">Payment Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
+
+        <View style={{ flexDirection: 'row' }}>
+          <SelectedPaymentMethods />
+        </View>
       </Section>
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
           style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          onPress={() => navigation.navigate('ShippingMethodScreen')}>
+          onPress={() => {
+            showShippingMethodModal(true)
+            // navigation.navigate('ShippingMethodScreen')
+          }}>
           <AppText textStyle="body2">Shipping Methods*</AppText>
           <FormArrowRight />
         </TouchableOpacity>
+
+        {console.log('PICKUP STATE', pickupState)}
+        {pickupState ? (
+          Object.keys(pickupState).length === 0 ? (
+            <></>
+          ) : (
+            <AppText>Pick Up</AppText>
+          )
+        ) : (
+          <></>
+        )}
+        {pickupState?.location?.name ? (
+          <>
+            <AppText>{pickupState?.location?.name}</AppText>
+            <AppText>{pickupState?.location?.full_address}</AppText>
+          </>
+        ) : (
+          <AppText>{pickupAddress.full_address}</AppText>
+        )}
+        {deliveryState ? (
+          Object.keys(deliveryState).length === 0 ? (
+            <></>
+          ) : (
+            <AppText>Delivery</AppText>
+          )
+        ) : (
+          <></>
+        )}
+        {deliveryState?.nationwide ? (
+          <AppText>{deliveryState?.nationwide?.notes} nationwide</AppText>
+        ) : (
+          <></>
+        )}
+        {deliveryState?.radius?.notes ? (
+          <AppText>
+            {deliveryState?.radius?.notes} {deliveryState?.radius?.distance}
+          </AppText>
+        ) : (
+          <></>
+        )}
       </Section>
 
       <Section>
         <TouchableOpacity
           activeOpacity={0.7}
           style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          onPress={() => navigation.navigate('PostExpiryScreen')}>
+          onPress={() => {
+            showPostExpiryModal(true)
+            // navigation.navigate('PostExpiryScreen')
+          }}>
           <AppText textStyle="body2">Post Expiry</AppText>
           <FormArrowRight />
         </TouchableOpacity>
@@ -659,7 +799,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         <TouchableOpacity
           onPress={publish}
           activeOpacity={0.7}
-          disabled={buttonEnabled || loadingSubmit}
+          // disabled={buttonEnabled || loadingSubmit}
           style={{
             backgroundColor: buttonEnabled
               ? Colors.neutralsGainsboro
@@ -672,10 +812,10 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           {loadingSubmit ? (
             <ActivityIndicator />
           ) : (
-              <AppText textStyle="button2">
-                {initialData.post_id ? 'Update' : 'Publish'}
-              </AppText>
-            )}
+            <AppText textStyle="button2">
+              {initialData.post_id ? 'Update' : 'Publish'}
+            </AppText>
+          )}
         </TouchableOpacity>
       </Section>
 
@@ -721,6 +861,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           closeModal={() => showAddItemModal(false)}
         />
       </Modal>
+
       <Modal
         isVisible={privacyModal}
         animationIn="slideInUp"
@@ -729,8 +870,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
         animationOutTiming={450}
         style={{ margin: 0, justifyContent: 'flex-end' }}
         customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => showPrivacyModal(false)}>
+          <TouchableWithoutFeedback onPress={() => showPrivacyModal(false)}>
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
@@ -748,7 +888,7 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           justifyContent: 'flex-start',
           height: Dimensions.get('window').height,
         }}>
-        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
+        <PaymentMethodModal close={() => showPaymentMethodModal(false)} />
       </Modal>
       <Modal
         isVisible={shippingMethodModal}
@@ -762,136 +902,15 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           justifyContent: 'flex-start',
           height: Dimensions.get('window').height,
         }}>
-        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={privacyModal}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => showPrivacyModal(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={paymentMethodModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={shippingMethodModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={privacyModal}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => showPrivacyModal(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={paymentMethodModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={shippingMethodModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={privacyModal}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => showPrivacyModal(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <PrivacyModal closeModal={() => showPrivacyModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={paymentMethodModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <PaymentMethodModal closeModal={() => showPaymentMethodModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={shippingMethodModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <ShippingMethodModal closeModal={() => showShippingMethodModal(false)} />
+        <ShippingMethodModal
+          close={() => showShippingMethodModal(false)}
+          setPickupState={setPickupState}
+          pickupState={pickupState}
+          deliveryState={deliveryState}
+          setDeliveryState={setDeliveryState}
+          pickupAddress={pickupAddress}
+          setPickupAddress={setPickupAddress}
+        />
       </Modal>
       <Modal
         isVisible={postExpiryModal}
@@ -905,11 +924,15 @@ const SellPostForm = ({ navToPost, togglePostModal, formState, initialData }) =>
           justifyContent: 'flex-start',
           height: Dimensions.get('window').height,
         }}>
-        <PostExpiryModal closeModal={() => showPostExpiryModal(false)} />
+        <PostExpiryModal
+          close={() => showPostExpiryModal(false)}
+          postExpiry={postExpiry}
+          setPostExpiry={setPostExpiry}
+        />
       </Modal>
     </>
-  );
-};
+  )
+}
 
 const Section = ({ children, style }) => {
   return (
@@ -926,7 +949,7 @@ const Section = ({ children, style }) => {
       }}>
       {children}
     </View>
-  );
-};
+  )
+}
 
-export default SellPostForm;
+export default SellPostForm

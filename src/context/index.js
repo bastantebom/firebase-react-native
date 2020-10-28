@@ -125,6 +125,16 @@ export const ContextProvider = ({ children }) => {
     setItems(itemArray)
   }
 
+  const deleteItemsByCategory = categoryName => {
+    let itemArray = items.slice()
+
+    let result = itemArray.filter(item => {
+      return item.categoryName !== categoryName
+    })
+
+    setItems(result)
+  }
+
   const addItem = item => {
     console.log('Add Item context triggered')
     console.log(item)
@@ -137,9 +147,7 @@ export const ContextProvider = ({ children }) => {
     let itemArray = [...items]
 
     itemArray.push(itemWithID)
-
     setItems(itemArray)
-    setItemId(itemId + 1)
   }
 
   const handleSearch = async value => {
@@ -256,6 +264,7 @@ export const ContextProvider = ({ children }) => {
   return (
     <Context.Provider
       value={{
+        deleteItemsByCategory,
         editCategory,
         items,
         addItem,

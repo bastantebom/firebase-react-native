@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
@@ -6,49 +6,101 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  TextInput
-} from 'react-native';
+  TextInput,
+  Dimensions,
+} from 'react-native'
 
-import Slider from '@react-native-community/slider';
-import moment from 'moment';
+import Modal from 'react-native-modal'
 
+import Slider from '@react-native-community/slider'
+
+import LocationModal from './LocationModal'
 import {
   AppText,
   AppCheckbox,
   Switch,
   ScreenHeaderTitle,
-  PaddingView
-} from '@/components';
+  PaddingView,
+} from '@/components'
 
-import { ArrowRight } from '@/assets/images/icons';
+import { ArrowRight } from '@/assets/images/icons'
 
-import { Colors, normalize } from '@/globals';
-import { useNavigation } from '@react-navigation/native';
+import { Colors, normalize } from '@/globals'
+import { useNavigation } from '@react-navigation/native'
 
-const ShippingMethodModal = ({ closeModal }) => {
-  const navigation = useNavigation();
-  const [pickUp, setPickUp] = useState(false)
-  const [delivery, setDelivery] = useState(false)
-  const [nationwide, setNationwide] = useState(false)
-  const [within, setWithin] = useState(false)
-  const [activeSwitch, setActiveSwitch] = useState(null)
-  const [rangeValue, setRangeValue] = useState(0)
+const ShippingMethodModal = ({
+  close,
+  deliveryState,
+  setDeliveryState,
+  pickupState,
+  setPickupState,
+  setPickupAddress,
+  pickupAddress,
+}) => {
+  const navigation = useNavigation()
 
-  const CheckboxStateHandler = (val) => {
+  console.log(pickupState)
+  const [pickUp, setPickUp] = useState(
+    pickupState ? (Object.keys(pickupState).length === 0 ? false : true) : false
+  )
+  const [delivery, setDelivery] = useState(
+    deliveryState
+      ? Object.keys(deliveryState).length === 0
+        ? false
+        : true
+      : false
+  )
+  const [nationwide, setNationwide] = useState(
+    deliveryState?.nationwide ? true : false
+  )
+  const [within, setWithin] = useState(deliveryState?.radius ? true : false)
+  const [nationwideNotes, setNationwideNotes] = useState(
+    deliveryState?.nationwide?.notes || ''
+  )
+  const [withinNotes, setWithinNotes] = useState(
+    deliveryState?.radius?.notes || ''
+  )
+  // const [activeSwitch, setActiveSwitch] = useState(null);
+  const [rangeValue, setRangeValue] = useState(
+    deliveryState?.radius?.distance || 0
+  )
+
+  useEffect(() => {
+    console.log('SHIPPING METHODS')
+    console.log(pickupAddress)
+  }, [])
+
+  const CheckboxStateHandler = val => {
     if (val === 'nationwide') {
-      setNationwide(true);
-      setWithin(false);
+      setNationwide(true)
+      setWithinNotes('')
+      setRangeValue(0)
+      setWithin(false)
+      setDeliveryState({
+        nationwide: {},
+      })
     }
     if (val === 'within') {
-      setWithin(true);
-      setNationwide(false);
+      setWithin(true)
+      setNationwideNotes('')
+      setNationwide(false)
+      setDeliveryState({
+        radius: {},
+      })
     }
-  };
+  }
+
+  const [locationModal, showLocationModal] = useState(false)
+
+  const openLocationHandler = () => {
+    console.log('asdas')
+    showLocationModal(true)
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScreenHeaderTitle
-        close={() => navigation.goBack()}
+        close={close}
         title="Shipping Methods"
         paddingSize={2}
       />
@@ -64,22 +116,56 @@ const ShippingMethodModal = ({ closeModal }) => {
             <AppText textStyle="body3">Pick up</AppText>
             <Switch
               value={pickUp}
-              onValueChange={() => setPickUp(!pickUp)}
+              onValueChange={() => {
+                if (pickUp) {
+                  setPickupState({})
+                  setPickUp(false)
+                } else {
+                  setPickupState({
+                    location: pickupAddress,
+                  })
+                  setPickUp(true)
+                }
+              }}
             />
           </View>
-          <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
+          <AppText
+            textStyle="captionDashboard"
+            color={Colors.contentPlaceholder}>
             Orders can be picked up at your specified address.
           </AppText>
           {pickUp && (
-            <TouchableOpacity style={styles.btn}>
-              <View style={{ flex: .75 }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <AppText textStyle="body2">My Restaurant</AppText>
-                  <AppText textStyle="body3" customStyle={{ marginLeft: normalize(5) }}>(Default)</AppText>
-                </View>
-                <Text style={{ fontFamily: 'RoundedMplus1c-Regular', fontSize: 15 }} numberOfLines={1} ellipsizeMode='tail'>Wayne’s Burger and Smoothies, Hon. B. Soliven</Text>
+            <TouchableOpacity onPress={openLocationHandler} style={styles.btn}>
+              <View style={{ flex: 0.75 }}>
+                {pickupAddress.name && (
+                  <View style={{ flexDirection: 'row' }}>
+                    {/* // If may address name from profile */}
+                    <AppText textStyle="body2">{pickupAddress.name}</AppText>
+                    {pickupAddress.default && (
+                      <AppText
+                        textStyle="body3"
+                        customStyle={{ marginLeft: normalize(5) }}>
+                        {/* //if true yung default property */}
+                        (Default)
+                      </AppText>
+                    )}
+                  </View>
+                )}
+                <Text
+                  style={{ fontFamily: 'RoundedMplus1c-Regular', fontSize: 15 }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {/* Full address from address */}
+                  {/* Wayne’s Burger and Smoothies, Hon. B. Soliven */}
+                  {pickupAddress ? pickupAddress.full_address : 'No address'}
+                </Text>
               </View>
-              <View style={{ flex: .25, justifyContent: 'center', alignItems: 'flex-end' }}>
+              <View
+                style={{
+                  flex: 0.25,
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                }}>
                 <ArrowRight />
               </View>
             </TouchableOpacity>
@@ -89,15 +175,35 @@ const ShippingMethodModal = ({ closeModal }) => {
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}>
             <AppText textStyle="body3">Delivery</AppText>
             <Switch
               value={delivery}
-              onValueChange={() => setDelivery(!delivery)}
+              onValueChange={() => {
+                if (delivery) {
+                  setDeliveryState({})
+                  setDelivery(false)
+                } else {
+                  setDeliveryState({
+                    delivery: {
+                      nationwide: {
+                        notes: '',
+                      },
+                      radius: {
+                        notes: '',
+                        distance: 0,
+                      },
+                    },
+                  })
+                  setDelivery(true)
+                }
+              }}
             />
           </View>
-          <AppText textStyle="captionDashboard" color={Colors.contentPlaceholder}>
+          <AppText
+            textStyle="captionDashboard"
+            color={Colors.contentPlaceholder}>
             Orders can be shipped nationwide or within your specifid area.
           </AppText>
           {delivery && (
@@ -111,13 +217,15 @@ const ShippingMethodModal = ({ closeModal }) => {
                 <AppCheckbox
                   style={{ paddingLeft: 0 }}
                   value={nationwide}
-                  valueChangeHandler={() => CheckboxStateHandler('nationwide')}
+                  valueChangeHandler={() => {
+                    CheckboxStateHandler('nationwide')
+                  }}
                 />
                 <AppText>Nationwide</AppText>
               </View>
               {nationwide && (
                 <TextInput
-                  // value={description}
+                  value={nationwideNotes}
                   multiline={true}
                   placeholder="Are there additional delivery fees and options? (Optional)"
                   placeholderTextColor={Colors.neutralGray}
@@ -136,7 +244,19 @@ const ShippingMethodModal = ({ closeModal }) => {
                     marginBottom: 16,
                     textAlign: 'left',
                   }}
-                  // onChangeText={(text) => setDescription(text)}
+                  onChangeText={text => {
+                    setNationwideNotes(text)
+                    setDeliveryState({
+                      delivery: {
+                        ...deliveryState.delivery,
+                        nationwide: {
+                          notes: text,
+                        },
+                      },
+                    })
+                    console.log('DEL STATE')
+                    console.log(deliveryState)
+                  }}
                   underlineColorAndroid={'transparent'}
                   textAlignVertical="top"
                   scrollEnabled={false}
@@ -157,28 +277,55 @@ const ShippingMethodModal = ({ closeModal }) => {
               {within && (
                 <>
                   <PaddingView paddingSize={2}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: normalize(20), marginBottom: normalize(20) }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginTop: normalize(20),
+                        marginBottom: normalize(20),
+                      }}>
                       <AppText textStyle="promo">Ship Within</AppText>
-                      <AppText textStyle="caption" color="#999">{rangeValue} KM</AppText>
+                      <AppText textStyle="caption" color="#999">
+                        {rangeValue} KM
+                      </AppText>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <AppText textStyle="caption" color="#999">0</AppText>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <AppText textStyle="caption" color="#999">
+                        0
+                      </AppText>
                       <Slider
                         style={{ width: '90%' }}
                         minimumValue={0}
                         maximumValue={200}
                         step={5}
                         value={rangeValue}
-                        onValueChange={rangeValue => setRangeValue(rangeValue)}
+                        onValueChange={rangeValue => {
+                          setRangeValue(rangeValue)
+                          setDeliveryState({
+                            delivery: {
+                              ...deliveryState.delivery,
+                              radius: {
+                                ...deliveryState.radius,
+                                distance: rangeValue,
+                              },
+                            },
+                          })
+                        }}
                         minimumTrackTintColor={Colors.primaryYellow}
                         maximumTrackTintColor={Colors.neutralGray}
                         thumbTintColor={Colors.primaryYellow}
                       />
-                      <AppText textStyle="caption" color="#999">200</AppText>
+                      <AppText textStyle="caption" color="#999">
+                        200
+                      </AppText>
                     </View>
                   </PaddingView>
                   <TextInput
-                    // value={description}
+                    value={withinNotes}
                     multiline={true}
                     placeholder="Are there additional delivery fees and options? (Optional)"
                     placeholderTextColor={Colors.neutralGray}
@@ -197,7 +344,18 @@ const ShippingMethodModal = ({ closeModal }) => {
                       marginBottom: 16,
                       textAlign: 'left',
                     }}
-                    // onChangeText={(text) => setDescription(text)}
+                    onChangeText={text => {
+                      setWithinNotes(text)
+                      setDeliveryState({
+                        delivery: {
+                          ...deliveryState.delivery,
+                          radius: {
+                            ...deliveryState.radius,
+                            notes: text,
+                          },
+                        },
+                      })
+                    }}
                     underlineColorAndroid={'transparent'}
                     textAlignVertical="top"
                     scrollEnabled={false}
@@ -208,15 +366,35 @@ const ShippingMethodModal = ({ closeModal }) => {
           )}
         </View>
       </ScrollView>
+      <Modal
+        isVisible={locationModal}
+        animationIn="slideInRight"
+        animationInTiming={500}
+        animationOut="slideOutLeft"
+        animationOutTiming={500}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+          justifyContent: 'flex-start',
+        }}>
+        <LocationModal
+          close={() => showLocationModal(false)}
+          closeAll={close}
+          pickupAddress={pickupAddress}
+          setPickupAddress={setPickupAddress}
+          setPickupState={setPickupState}
+        />
+      </Modal>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   withBorder: {
     borderBottomWidth: 1,
     borderBottomColor: '#e8e8e8',
-    paddingVertical: 20
+    paddingVertical: 20,
   },
   btn: {
     paddingHorizontal: normalize(16),
@@ -226,8 +404,8 @@ const styles = StyleSheet.create({
     borderColor: '#DADCE0',
     borderRadius: 4,
     justifyContent: 'space-between',
-    flexDirection: 'row'
-  }
+    flexDirection: 'row',
+  },
 })
 
-export default ShippingMethodModal;
+export default ShippingMethodModal

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react'
 import {
   View,
   Text,
@@ -6,63 +6,63 @@ import {
   Animated,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
-import {AppText} from '@/components';
-import {normalize, Colors} from '@/globals';
-import {PostSell, PostService, PostNeed} from '@/assets/images/icons';
+import { AppText } from '@/components'
+import { normalize, Colors } from '@/globals'
+import { PostSell, PostService, PostNeed } from '@/assets/images/icons'
 
-import {SellPostForm, NeedPostForm, ServicePostForm} from './forms';
+import { SellPostForm, NeedPostForm, ServicePostForm } from './forms'
 
-const Post = ({card, togglePostModal, initialData}) => {
+const Post = ({ card, togglePostModal, initialData }) => {
   useEffect(() => {
-    selectActive(card);
-  }, []);
+    selectActive(card)
+  }, [])
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
-  const navToPost = (data) => {
+  const navToPost = data => {
     navigation.navigate('Post', {
       screen: 'SinglePostView',
       params: data,
-    });
-  };
+    })
+  }
 
-  const [pickingState, setPickingState] = useState(true);
+  const [pickingState, setPickingState] = useState(true)
 
-  const [postPosition] = useState(new Animated.Value(0));
-  const [postSize] = useState(new Animated.Value(normalize(114)));
+  const [postPosition] = useState(new Animated.Value(0))
+  const [postSize] = useState(new Animated.Value(normalize(114)))
 
-  const [sellPosition] = useState(new Animated.Value(0));
-  const [sellSize] = useState(new Animated.Value(normalize(114)));
+  const [sellPosition] = useState(new Animated.Value(0))
+  const [sellSize] = useState(new Animated.Value(normalize(114)))
 
-  const [needPosition] = useState(new Animated.Value(0));
-  const [needSize] = useState(new Animated.Value(normalize(114)));
+  const [needPosition] = useState(new Animated.Value(0))
+  const [needSize] = useState(new Animated.Value(normalize(114)))
 
-  const [activeCard, setActiveCard] = useState('none');
-  const [highlightedCard, setHighlightedCard] = useState('none');
+  const [activeCard, setActiveCard] = useState('none')
+  const [highlightedCard, setHighlightedCard] = useState('none')
 
-  const [postDotOpacity] = useState(new Animated.Value(0));
-  const [needDotOpacity] = useState(new Animated.Value(0));
-  const [sellDotOpacity] = useState(new Animated.Value(0));
+  const [postDotOpacity] = useState(new Animated.Value(0))
+  const [needDotOpacity] = useState(new Animated.Value(0))
+  const [sellDotOpacity] = useState(new Animated.Value(0))
 
-  const [cardTextOpacity] = useState(new Animated.Value(1));
+  const [cardTextOpacity] = useState(new Animated.Value(1))
 
-  const [postText, setPostText] = useState('Find What You Need');
-  const [sellText, setSellText] = useState('Start Selling');
-  const [needText, setNeedText] = useState('Offer Your Services');
+  const [postText, setPostText] = useState('Find What You Need')
+  const [sellText, setSellText] = useState('Start Selling')
+  const [needText, setNeedText] = useState('Offer Your Services')
 
-  const [activeScreen, setActiveScreen] = useState(card);
+  const [activeScreen, setActiveScreen] = useState(card)
 
   const resetPicking = () => {
     setTimeout(() => {
-      setHighlightedCard(activeCard);
-      setActiveCard('none');
-      setPostText('Find What You Need');
-      setSellText('Start Selling');
-      setNeedText('Offer Your Services');
-    }, 200);
+      setHighlightedCard(activeCard)
+      setActiveCard('none')
+      setPostText('Find What You Need')
+      setSellText('Start Selling')
+      setNeedText('Offer Your Services')
+    }, 200)
 
     const showDot = () => {
       if (activeCard === 'post')
@@ -73,7 +73,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             duration: 300,
             useNativeDriver: false,
           }),
-        ]);
+        ])
       if (activeCard === 'need')
         return Animated.parallel([
           transitionFinish(),
@@ -82,7 +82,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             duration: 300,
             useNativeDriver: false,
           }),
-        ]);
+        ])
       if (activeCard === 'sell')
         return Animated.parallel([
           transitionFinish(),
@@ -91,8 +91,8 @@ const Post = ({card, togglePostModal, initialData}) => {
             duration: 300,
             useNativeDriver: false,
           }),
-        ]);
-    };
+        ])
+    }
 
     Animated.sequence([
       transitionActive(),
@@ -129,8 +129,8 @@ const Post = ({card, togglePostModal, initialData}) => {
         }),
       ]),
       showDot(),
-    ]).start();
-  };
+    ]).start()
+  }
 
   const hideDots = () => {
     return Animated.parallel([
@@ -150,37 +150,37 @@ const Post = ({card, togglePostModal, initialData}) => {
         duration: 200,
         useNativeDriver: false,
       }),
-    ]);
-  };
+    ])
+  }
 
   const transitionActive = () => {
     return Animated.timing(cardTextOpacity, {
       toValue: 0,
       duration: 200,
       useNativeDriver: false,
-    });
-  };
+    })
+  }
 
   const transitionFinish = () => {
     return Animated.timing(cardTextOpacity, {
       toValue: 1,
       duration: 400,
       useNativeDriver: false,
-    });
-  };
+    })
+  }
 
-  const selectActive = (selectedCard) => {
-    setPickingState(!pickingState);
+  const selectActive = selectedCard => {
+    setPickingState(!pickingState)
 
     if (pickingState) {
       switch (selectedCard) {
         case 'post':
           setTimeout(() => {
-            setActiveCard('post');
-            setHighlightedCard('none');
-            setPostText('What are you looking for today?');
-            setActiveScreen('post');
-          }, 200);
+            setActiveCard('post')
+            setHighlightedCard('none')
+            setPostText('What are you looking for today?')
+            setActiveScreen('post')
+          }, 200)
 
           Animated.sequence([
             hideDots(),
@@ -212,15 +212,15 @@ const Post = ({card, togglePostModal, initialData}) => {
               }),
             ]),
             transitionFinish(),
-          ]).start();
-          break;
+          ]).start()
+          break
         case 'need':
           setTimeout(() => {
-            setActiveCard('need');
-            setHighlightedCard('none');
-            setNeedText('What services do you want to list today?');
-            setActiveScreen('need');
-          }, 200);
+            setActiveCard('need')
+            setHighlightedCard('none')
+            setNeedText('What services do you want to list today?')
+            setActiveScreen('need')
+          }, 200)
           Animated.sequence([
             hideDots(),
             Animated.parallel([
@@ -256,15 +256,15 @@ const Post = ({card, togglePostModal, initialData}) => {
               }),
             ]),
             transitionFinish(),
-          ]).start();
-          break;
+          ]).start()
+          break
         case 'sell':
           setTimeout(() => {
-            setSellText('What are you listing today?');
-            setActiveCard('sell');
-            setHighlightedCard('none');
-            setActiveScreen('sell');
-          }, 200);
+            setSellText('What are you listing today?')
+            setActiveCard('sell')
+            setHighlightedCard('none')
+            setActiveScreen('sell')
+          }, 200)
           Animated.sequence([
             hideDots(),
             Animated.parallel([
@@ -300,44 +300,44 @@ const Post = ({card, togglePostModal, initialData}) => {
               }),
             ]),
             transitionFinish(),
-          ]).start();
-          break;
+          ]).start()
+          break
       }
     } else {
-      resetPicking();
+      resetPicking()
     }
-  };
+  }
 
   let PostAnimationStyle = {
-    transform: [{translateX: postPosition}],
+    transform: [{ translateX: postPosition }],
     width: postSize,
-  };
+  }
 
   let SellAnimationStyle = {
-    transform: [{translateX: sellPosition}],
+    transform: [{ translateX: sellPosition }],
     width: sellSize,
-  };
+  }
 
   let NeedAnimationStyle = {
-    transform: [{translateX: needPosition}],
+    transform: [{ translateX: needPosition }],
     width: needSize,
-  };
+  }
 
   let PostDotAnimationStyle = {
     opacity: postDotOpacity,
-  };
+  }
 
   let NeedDotAnimationStyle = {
     opacity: needDotOpacity,
-  };
+  }
 
   let SellDotAnimationStyle = {
     opacity: sellDotOpacity,
-  };
+  }
 
   let PostTextOpacity = {
     opacity: cardTextOpacity,
-  };
+  }
 
   const PostContent = () => {
     if (activeCard !== 'none' && activeCard !== 'post') {
@@ -356,7 +356,7 @@ const Post = ({card, togglePostModal, initialData}) => {
           ]}>
           <PostNeed width={normalize(24)} height={normalize(24)} />
         </Animated.View>
-      );
+      )
     }
 
     if (activeCard === 'post')
@@ -374,7 +374,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             },
             PostTextOpacity,
           ]}>
-          <Animated.View style={{flex: 1, justifyContent: 'center'}}>
+          <Animated.View style={{ flex: 1, justifyContent: 'center' }}>
             <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
               Find What You Need
             </AppText>
@@ -384,7 +384,7 @@ const Post = ({card, togglePostModal, initialData}) => {
           </Animated.View>
           <PostNeed width={normalize(24)} height={normalize(24)} />
         </Animated.View>
-      );
+      )
 
     return (
       <Animated.View
@@ -399,14 +399,14 @@ const Post = ({card, togglePostModal, initialData}) => {
           PostTextOpacity,
         ]}>
         <PostNeed width={normalize(24)} height={normalize(24)} />
-        <Animated.View style={{flex: 1, justifyContent: 'center'}}>
+        <Animated.View style={{ flex: 1, justifyContent: 'center' }}>
           <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
             {postText}
           </AppText>
         </Animated.View>
       </Animated.View>
-    );
-  };
+    )
+  }
 
   const SellContent = () => {
     if (activeCard !== 'none' && activeCard !== 'sell') {
@@ -425,7 +425,7 @@ const Post = ({card, togglePostModal, initialData}) => {
           ]}>
           <PostSell width={normalize(24)} height={normalize(24)} />
         </Animated.View>
-      );
+      )
     }
 
     if (activeCard === 'sell')
@@ -443,7 +443,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             },
             PostTextOpacity,
           ]}>
-          <Animated.View style={{flex: 1, justifyContent: 'center'}}>
+          <Animated.View style={{ flex: 1, justifyContent: 'center' }}>
             <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
               Start Selling
             </AppText>
@@ -453,7 +453,7 @@ const Post = ({card, togglePostModal, initialData}) => {
           </Animated.View>
           <PostSell width={normalize(24)} height={normalize(24)} />
         </Animated.View>
-      );
+      )
 
     return (
       <Animated.View
@@ -468,14 +468,14 @@ const Post = ({card, togglePostModal, initialData}) => {
           PostTextOpacity,
         ]}>
         <PostSell width={normalize(24)} height={normalize(24)} />
-        <Animated.View style={{flex: 1, justifyContent: 'center'}}>
+        <Animated.View style={{ flex: 1, justifyContent: 'center' }}>
           <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
             {sellText}
           </AppText>
         </Animated.View>
       </Animated.View>
-    );
-  };
+    )
+  }
 
   const NeedContent = () => {
     if (activeCard !== 'none' && activeCard !== 'need') {
@@ -494,7 +494,7 @@ const Post = ({card, togglePostModal, initialData}) => {
           ]}>
           <PostService width={normalize(24)} height={normalize(24)} />
         </Animated.View>
-      );
+      )
     }
 
     if (activeCard === 'need')
@@ -512,7 +512,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             },
             PostTextOpacity,
           ]}>
-          <Animated.View style={{flex: 1, justifyContent: 'center'}}>
+          <Animated.View style={{ flex: 1, justifyContent: 'center' }}>
             <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
               Offer Your Services
             </AppText>
@@ -522,7 +522,7 @@ const Post = ({card, togglePostModal, initialData}) => {
           </Animated.View>
           <PostService width={normalize(24)} height={normalize(24)} />
         </Animated.View>
-      );
+      )
 
     return (
       <Animated.View
@@ -537,14 +537,14 @@ const Post = ({card, togglePostModal, initialData}) => {
           PostTextOpacity,
         ]}>
         <PostService width={normalize(24)} height={normalize(24)} />
-        <Animated.View style={{flex: 1, justifyContent: 'center'}}>
+        <Animated.View style={{ flex: 1, justifyContent: 'center' }}>
           <AppText textStyle="subtitle2constant" color={Colors.neutralsWhite}>
             {needText}
           </AppText>
         </Animated.View>
       </Animated.View>
-    );
-  };
+    )
+  }
 
   return (
     <SafeAreaView>
@@ -562,9 +562,9 @@ const Post = ({card, togglePostModal, initialData}) => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
-                selectActive('post');
+                selectActive('post')
                 if (activeCard !== 'none' && activeCard !== 'post') {
-                  resetPicking();
+                  resetPicking()
                 }
               }}>
               <PostContent />
@@ -573,7 +573,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             <Animated.View
               style={[
                 styles.needDot,
-                {backgroundColor: Colors.secondaryMountainMeadow},
+                { backgroundColor: Colors.secondaryMountainMeadow },
                 PostDotAnimationStyle,
               ]}
             />
@@ -583,9 +583,9 @@ const Post = ({card, togglePostModal, initialData}) => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
-                selectActive('sell');
+                selectActive('sell')
                 if (activeCard !== 'none' && activeCard !== 'sell') {
-                  resetPicking();
+                  resetPicking()
                 }
               }}>
               <SellContent />
@@ -593,7 +593,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             <Animated.View
               style={[
                 styles.needDot,
-                {backgroundColor: Colors.secondaryRoyalBlue},
+                { backgroundColor: Colors.secondaryRoyalBlue },
                 SellDotAnimationStyle,
               ]}
             />
@@ -603,9 +603,9 @@ const Post = ({card, togglePostModal, initialData}) => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
-                selectActive('need');
+                selectActive('need')
                 if (activeCard !== 'none' && activeCard !== 'need') {
-                  resetPicking();
+                  resetPicking()
                 }
               }}>
               <NeedContent />
@@ -614,7 +614,7 @@ const Post = ({card, togglePostModal, initialData}) => {
             <Animated.View
               style={[
                 styles.needDot,
-                {backgroundColor: Colors.secondaryBrinkPink},
+                { backgroundColor: Colors.secondaryBrinkPink },
                 NeedDotAnimationStyle,
               ]}
             />
@@ -628,8 +628,8 @@ const Post = ({card, togglePostModal, initialData}) => {
         initialData={initialData ? initialData : {}}
       />
     </SafeAreaView>
-  );
-};
+  )
+}
 
 const RenderActiveForm = ({
   activeScreen,
@@ -637,28 +637,39 @@ const RenderActiveForm = ({
   togglePostModal,
   initialData,
 }) => {
-  const [title, setTitle] = useState(initialData.title);
-  const [images, setImages] = useState(initialData.images);
-  const [price, setPrice] = useState(initialData.price?.toString());
-  const [description, setDescription] = useState(initialData.description);
+  const [title, setTitle] = useState(initialData.title)
+  const [images, setImages] = useState(initialData.images)
+  const [price, setPrice] = useState(initialData.price?.toString())
+  const [description, setDescription] = useState(initialData.description)
   const [pickupState, setPickupState] = useState(
-    initialData ? initialData?.delivery_method?.pickup : false,
-  );
+    initialData ? initialData?.delivery_method?.pickup : {}
+  )
   const [deliveryState, setDeliveryState] = useState(
-    initialData ? initialData?.delivery_method?.delivery : false,
-  );
-  const [storeLocation, setStoreLocation] = useState(
-    initialData.store_location,
-  );
-  const [paymentMethod, setPaymentMethod] = useState(
-    initialData.payment_method,
-  );
-  const [listAsSingle, setListAsSingle] = useState(false);
-  const [listAsMultiple, setListAsMultiple] = useState(false);
-  const [freeCheckbox, setFreeCheckbox] = useState(false);
-  const [postInStore, setPostInStore] = useState(false);
+    initialData ? initialData?.delivery_method?.delivery : {}
+  )
+  const [storeLocation, setStoreLocation] = useState(initialData.store_location)
+  const [paymentMethod, setPaymentMethod] = useState(initialData.payment_method)
+  const [listAsSingle, setListAsSingle] = useState(false)
+  const [listAsMultiple, setListAsMultiple] = useState(false)
+  const [freeCheckbox, setFreeCheckbox] = useState(false)
+  const [postInStore, setPostInStore] = useState(false)
+  const [paymentMethods, setPaymentMethods] = useState({
+    cash: false,
+    gcash: false,
+    paymaya: false,
+    onlineBanking: false,
+    bank: '',
+    others: false,
+    otherMethods: '',
+  })
+
+  const [postExpiry, setPostExpiry] = useState()
 
   const formState = {
+    postExpiry,
+    setPostExpiry,
+    paymentMethods,
+    setPaymentMethods,
     title: title,
     setTitle: setTitle,
     images: images,
@@ -683,7 +694,7 @@ const RenderActiveForm = ({
     setFreeCheckbox: setFreeCheckbox,
     postInStore,
     setPostInStore,
-  };
+  }
 
   if (activeScreen === 'post')
     return (
@@ -693,7 +704,7 @@ const RenderActiveForm = ({
         formState={formState}
         initialData={initialData}
       />
-    );
+    )
 
   if (activeScreen === 'sell')
     return (
@@ -703,7 +714,7 @@ const RenderActiveForm = ({
         formState={formState}
         initialData={initialData}
       />
-    );
+    )
 
   if (activeScreen === 'need')
     return (
@@ -713,10 +724,10 @@ const RenderActiveForm = ({
         formState={formState}
         initialData={initialData}
       />
-    );
+    )
 
   return <></>
-};
+}
 
 const styles = StyleSheet.create({
   postAnimationContainer: {
@@ -752,6 +763,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf: 'center',
   },
-});
+})
 
-export default Post;
+export default Post

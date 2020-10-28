@@ -20,33 +20,22 @@ const CategoryFormModal = ({close, editing, categoryName}) => {
 
   const submitHandler = () => {
     console.log('save new category');
-    // call createCategory api
-    CategoryService.createCategory(newCategoryName);
-    // update choices state
+    CategoryService.createCategory(newCategoryName).then((res) => {
+      console.log(res);
+    });
     close();
   };
 
   const editHandler = async (oldCategoryName) => {
-    console.log('Handle editing');
-    console.log(items);
-    console.log(oldCategoryName);
-
     editCategory(newCategoryName, oldCategoryName);
 
     let cats = await CategoryService.getCategories().then((res) => {
       return res;
     });
 
-    console.log(cats);
-
     cats.map((category) => {
       if (category.category === oldCategoryName) {
-        CategoryService.editCategory(category.id, newCategoryName).then(
-          (res) => {
-            console.log('EDIT CATEGORY ARRAY BACKEND RESPONSE');
-            console.log(res);
-          },
-        );
+        CategoryService.editCategory(category.id, newCategoryName);
       }
       return;
     });
@@ -89,7 +78,6 @@ const CategoryFormModal = ({close, editing, categoryName}) => {
           onChangeText={(value) => setNewCategoryName(value)}
           customStyle={{marginBottom: normalize(16)}}
           onInputFocus={() => {
-            console.log('INCREASE PADDING');
             setButtonPadding(340);
           }}
           onInputBlur={() => {
