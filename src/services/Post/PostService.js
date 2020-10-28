@@ -1,18 +1,32 @@
-import BaseAPI from '@/services/BaseAPI';
+import BaseAPI from '@/services/BaseAPI'
+import { ProfileInfoService } from '@/services'
 
-const getPosts = (payload) => {
+const getPosts = async payload => {
   //?limit=5&page=0
   // console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
-  return BaseAPI({
+  const response = await BaseAPI({
     url: `posts?limit=${payload.limit}&page=${payload.page}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-  });
-};
+  })
 
-const searchPosts = (payload) => {
+  const { data, success } = response
+
+  return {
+    success,
+    data: await Promise.all(
+      data.map(async post => ({
+        ...post,
+        price: post.is_multiple ? '' : post.items[0].price,
+        user: (await ProfileInfoService.getUser(post.uid)).data,
+      }))
+    ),
+  }
+}
+
+const searchPosts = payload => {
   //?limit=5&page=0
   // console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
   return BaseAPI({
@@ -21,11 +35,11 @@ const searchPosts = (payload) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    params: payload
-  });
-};
+    params: payload,
+  })
+}
 
-const searchUsers = (payload) => {
+const searchUsers = payload => {
   //?limit=5&page=0
   // console.log(`posts?limit=${payload.limit}&page=${payload.page}`);
   return BaseAPI({
@@ -34,25 +48,38 @@ const searchUsers = (payload) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    params: payload
-  });
-};
+    params: payload,
+  })
+}
 
-const getUserPosts = (payload) => {
+const getUserPosts = async payload => {
   //users/:uid/posts
   //  console.log(
   //   `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`
   //  );
-  return BaseAPI({
+  const response = await BaseAPI({
     url: `users/${payload.uid}/posts?limit=${payload.limit}&page=${payload.page}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-  });
-};
+  })
 
-const getPostsLocation = (payload) => {
+  const { data, success } = response
+
+  return {
+    success,
+    data: await Promise.all(
+      data.map(async post => ({
+        ...post,
+        price: post.is_multiple ? '' : post.items[0].price,
+        user: (await ProfileInfoService.getUser(post.uid)).data,
+      }))
+    ),
+  }
+}
+
+const getPostsLocation = payload => {
   // console.log(
   //   `posts?limit=${payload.limit}&page=${payload.page}&city=${payload.city}`,
   // );
@@ -63,10 +90,10 @@ const getPostsLocation = (payload) => {
       'Content-Type': 'application/json',
     },
     //data: payload,
-  });
-};
+  })
+}
 
-const createPost = (payload) => {
+const createPost = payload => {
   //console.log(payload);
   return BaseAPI({
     url: '/posts',
@@ -75,8 +102,8 @@ const createPost = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
 const editPost = (PID, payload) => {
   /**
@@ -89,10 +116,10 @@ const editPost = (PID, payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const deletePost = (PID) => {
+const deletePost = PID => {
   /**
    * Accepts Post ID
    */
@@ -102,10 +129,10 @@ const deletePost = (PID) => {
     headers: {
       'Content-Type': 'application/json',
     },
-  });
-};
+  })
+}
 
-const hidePost = (payload) => {
+const hidePost = payload => {
   /**
    * Accepts Post ID
    * UID
@@ -117,10 +144,10 @@ const hidePost = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const reportPost = (payload) => {
+const reportPost = payload => {
   /**
    * Accepts Post ID
    * UID
@@ -133,10 +160,10 @@ const reportPost = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const unHidePost = (payload) => {
+const unHidePost = payload => {
   /**
    * Accepts Post ID
    * UID
@@ -148,10 +175,10 @@ const unHidePost = (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const getPost = (PID) => {
+const getPost = PID => {
   /**
    * Accepts Post ID
    * UID
@@ -162,8 +189,8 @@ const getPost = (PID) => {
     headers: {
       'Content-Type': 'application/json',
     },
-  });
-};
+  })
+}
 
 const PostService = {
   createPost,
@@ -177,7 +204,7 @@ const PostService = {
   hidePost,
   reportPost,
   unHidePost,
-  getPost
-};
+  getPost,
+}
 
-export default PostService;
+export default PostService

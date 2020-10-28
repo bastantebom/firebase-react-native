@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   ScrollView,
@@ -8,19 +8,19 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Linking,
-} from 'react-native';
-import {Divider} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
-import Modal from 'react-native-modal';
-import Swiper from 'react-native-swiper';
+} from 'react-native'
+import { Divider } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native'
+import Modal from 'react-native-modal'
+import Swiper from 'react-native-swiper'
 
 import {
   AppText,
   TransparentHeader,
   ProfileInfo,
   CacheableImage,
-} from '@/components';
-import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
+} from '@/components'
+import { normalize, GlobalStyle, Colors, timePassed } from '@/globals'
 import {
   PostClock,
   PostNavigation,
@@ -33,40 +33,40 @@ import {
   CloseLight,
   ContactEmail,
   ContactTelephone,
-} from '@/assets/images/icons';
-import {CoverNeed, CoverSell, CoverService} from '@/assets/images';
+} from '@/assets/images/icons'
+import { CoverNeed, CoverSell, CoverService } from '@/assets/images'
 
-import {PostService} from '@/services';
-import {UserContext} from '@/context/UserContext';
-import EditPostScreen from './EditPostScreen';
-import {ImageModal} from './ImageModal';
+import { PostService } from '@/services'
+import { UserContext } from '@/context/UserContext'
+import EditPostScreen from './EditPostScreen'
+import { ImageModal } from './ImageModal'
 
-const SinglePostView = (props) => {
-  const {othersView = false} = props.route?.params;
+const SinglePostView = props => {
+  const { othersView = false } = props.route?.params
 
-  console.log(props.route.params);
+  console.log(props.route.params)
 
   const {
-    uid,
+    user: { display_name, profile_photo, email, phone_number },
     post_type,
-    images,
+    cover_photos,
     title,
     description,
     payment_method,
     price,
-    store_location: {city, province, country},
-    delivery_method: {pickup, delivery},
+    store_details: {
+      schedule,
+      location: { city, province, country },
+    },
+    delivery_method: { pickup, delivery },
     available,
     username,
-    profile_photo,
     account_verified,
-    display_name,
     date_posted,
     post_id,
     full_name,
-    email,
-    phone_number,
-  } = props.route?.params?.data;
+    uid,
+  } = props.route?.params?.data
 
   // console.log("Images in single post view")
 
@@ -82,53 +82,53 @@ const SinglePostView = (props) => {
   //     });
   // });
 
-  const navigation = useNavigation();
-  const [showNotification, setShowNotification] = useState(false);
-  const [ellipsisState, setEllipsisState] = useState(false);
-  const [otherPostModal, setOtherPostModal] = useState(false);
+  const navigation = useNavigation()
+  const [showNotification, setShowNotification] = useState(false)
+  const [ellipsisState, setEllipsisState] = useState(false)
+  const [otherPostModal, setOtherPostModal] = useState(false)
 
-  const [editPost, showEditPost] = useState(false);
-  const [postImageModal, setPostImageModal] = useState(false);
+  const [editPost, showEditPost] = useState(false)
+  const [postImageModal, setPostImageModal] = useState(false)
 
-  const {user, setUserInfo, userInfo} = useContext(UserContext);
+  const { user, setUserInfo, userInfo } = useContext(UserContext)
 
   const toggleEditPost = () => {
-    toggleEllipsisState();
+    toggleEllipsisState()
     setTimeout(() => {
-      showEditPost(!editPost);
-    }, 500);
-  };
+      showEditPost(!editPost)
+    }, 500)
+  }
 
   const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState);
-  };
+    setEllipsisState(!ellipsisState)
+  }
 
   const closeNotification = () => {
-    setShowNotification(false);
-  };
+    setShowNotification(false)
+  }
 
   const togglePostImageModal = () => {
-    setPostImageModal(!postImageModal);
-  };
+    setPostImageModal(!postImageModal)
+  }
 
   useEffect(() => {
     // console.log('LOGGING ROUTE PROPS');
     // if (!(uid === user?.uid)) setOtherPostModal(true);
 
-    setShowNotification(setNotification());
+    setShowNotification(setNotification())
 
     setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  }, [props]);
+      setShowNotification(false)
+    }, 3000)
+  }, [props])
 
   const setNotification = () => {
     return props.route.params?.created
       ? props.route.params?.created
       : props.route.params?.edited
       ? props.route.params?.edited
-      : false;
-  };
+      : false
+  }
 
   const profileInfo = {
     username: username,
@@ -136,86 +136,86 @@ const SinglePostView = (props) => {
     account_verified: account_verified,
     display_name: display_name ? display_name : full_name,
     uid: uid,
-  };
+  }
 
   const defaultImage = [
     {
       key: 0,
       image: require('@/assets/images/logo.png'),
     },
-  ];
+  ]
   const deletePost = async () => {
-    console.log('delete this post with id: ');
-    console.log(post_id);
+    console.log('delete this post with id: ')
+    console.log(post_id)
     return await PostService.deletePost(post_id).then(() => {
-      toggleEllipsisState();
-      console.log('deletePost ' + userInfo.post_count);
-      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
-      navigation.goBack();
-    });
-  };
+      toggleEllipsisState()
+      console.log('deletePost ' + userInfo.post_count)
+      setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
+      navigation.goBack()
+    })
+  }
 
   const hidePost = async () => {
     //body: { uid, pid }
-    return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
-      (res) => {
-        toggleEllipsisState();
+    return await PostService.hidePost({ uid: user?.uid, pid: post_id }).then(
+      res => {
+        toggleEllipsisState()
         //console.log('deletePost ' + userInfo.post_count);
-        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
-        console.log(userInfo.hidden_posts);
-        navigation.goBack();
-      },
-    );
+        setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
+        console.log(userInfo.hidden_posts)
+        navigation.goBack()
+      }
+    )
     //navigation.goBack();
     //alert('hide Post View Post');
-  };
+  }
 
-  let timeAgo = (time) => {
+  let timeAgo = time => {
     if (time <= 60) {
-      return 'Just now';
+      return 'Just now'
     }
 
-    return timePassed(time) + ' ago';
-  };
+    return timePassed(time) + ' ago'
+  }
 
   let makeCall = () => {
-    let phoneNumber = '';
+    let phoneNumber = ''
     if (Platform.OS === 'android') {
-      phoneNumber = `tel:${phone_number}`;
+      phoneNumber = `tel:${phone_number}`
     } else {
-      phoneNumber = `telprompt:${phone_number}`;
+      phoneNumber = `telprompt:${phone_number}`
     }
-    Linking.openURL(phoneNumber);
-  };
+    Linking.openURL(phoneNumber)
+  }
 
   const CustomNotification = () => {
     const backgroundColor = props.route.params?.created
       ? Colors.primaryYellow
-      : Colors.secondaryRoyalBlue;
+      : Colors.secondaryRoyalBlue
 
     const notificationMessage = props.route.params?.created
       ? 'Post Successful!'
-      : 'Post edited successfully';
+      : 'Post edited successfully'
 
     const notificationColor = props.route.params?.created
       ? Colors.contentEbony
-      : 'white';
+      : 'white'
 
     const NotificationCheckbox = () => {
       return props.route.params?.created ? (
         <CircleTick width={normalize(24)} height={normalize(24)} />
       ) : (
         <CircleTickWhite width={normalize(24)} height={normalize(24)} />
-      );
-    };
+      )
+    }
 
     const NotificationClose = () => {
       return props.route.params?.created ? (
         <CloseDark width={normalize(24)} height={normalize(24)} />
       ) : (
         <CloseLight width={normalize(24)} height={normalize(24)} />
-      );
-    };
+      )
+    }
 
     if (showNotification)
       return (
@@ -236,7 +236,7 @@ const SinglePostView = (props) => {
           }}>
           <NotificationCheckbox />
           <AppText
-            customStyle={{flex: 1, marginLeft: 8}}
+            customStyle={{ flex: 1, marginLeft: 8 }}
             color={notificationColor}
             textStyle="body2">
             {notificationMessage}
@@ -245,9 +245,9 @@ const SinglePostView = (props) => {
             <NotificationClose />
           </TouchableOpacity>
         </View>
-      );
-    return null;
-  };
+      )
+    return null
+  }
 
   // const stickySegmentControlX = this.state.scrollY.interpolate({
   //   inputRange: [0, STICKY_SCROLL_DISTANCE],
@@ -257,8 +257,8 @@ const SinglePostView = (props) => {
 
   const SinglePostContent = () => {
     return (
-      <View style={{flex: 1}}>
-        <ScrollView style={{backgroundColor: 'white'}}>
+      <View style={{ flex: 1 }}>
+        <ScrollView style={{ backgroundColor: 'white' }}>
           <View style={styles.postImageContainer}>
             {/* <Image
             style={GlobalStyle.image}
@@ -267,7 +267,7 @@ const SinglePostView = (props) => {
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
           /> */}
-            {images === undefined || images.length == 0 ? (
+            {cover_photos === undefined || cover_photos.length == 0 ? (
               post_type === 'Need' || post_type === 'need' ? (
                 <Image
                   style={GlobalStyle.image}
@@ -298,7 +298,7 @@ const SinglePostView = (props) => {
                   width: normalize(6),
                   height: normalize(6),
                 }}>
-                {images.map((item, index) => {
+                {cover_photos.map((item, index) => {
                   // console.log(item);
                   return (
                     <TouchableWithoutFeedback
@@ -311,7 +311,7 @@ const SinglePostView = (props) => {
                         }}
                       />
                     </TouchableWithoutFeedback>
-                  );
+                  )
                 })}
               </Swiper>
             )}
@@ -331,7 +331,7 @@ const SinglePostView = (props) => {
 
             <AppText
               textStyle="subtitle1"
-              customStyle={{marginTop: 24, marginBottom: 16}}>
+              customStyle={{ marginTop: 24, marginBottom: 16 }}>
               {title}
               {/* {post_type} */}
             </AppText>
@@ -339,13 +339,13 @@ const SinglePostView = (props) => {
             <AppText
               textStyle="subtitle1"
               color={Colors.secondaryMountainMeadow}
-              customStyle={{marginBottom: 12}}>
+              customStyle={{ marginBottom: 12 }}>
               ₱ {price}
             </AppText>
 
             <View style={styles.iconText}>
               <PostClock width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                 {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
             </View>
@@ -353,7 +353,7 @@ const SinglePostView = (props) => {
               <PostNavigation width={normalize(24)} height={normalize(24)} />
               <AppText
                 textStyle="body2"
-                customStyle={{marginLeft: 8, marginRight: 20}}>
+                customStyle={{ marginLeft: 8, marginRight: 20 }}>
                 {city}, {province}
               </AppText>
             </View>
@@ -361,14 +361,14 @@ const SinglePostView = (props) => {
               <PostInfo width={normalize(24)} height={normalize(24)} />
               <AppText
                 textStyle="body2"
-                customStyle={{marginLeft: 8, marginRight: 20}}>
+                customStyle={{ marginLeft: 8, marginRight: 20 }}>
                 {description}
               </AppText>
             </View>
-            <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
+            <Divider style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]} />
             <View style={styles.iconText}>
               <PostCash width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                 {payment_method}
               </AppText>
             </View>
@@ -377,7 +377,7 @@ const SinglePostView = (props) => {
             ) : (
               <View style={styles.iconText}>
                 <PostBox width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+                <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                   {pickup && delivery
                     ? 'Pickup & Delivery'
                     : delivery
@@ -409,7 +409,7 @@ const SinglePostView = (props) => {
               }}>
               {phone_number ? (
                 <TouchableOpacity
-                  style={{flex: 1, marginRight: email ? 8 : 0}}
+                  style={{ flex: 1, marginRight: email ? 8 : 0 }}
                   activeOpacity={0.7}
                   // onPress={() => Linking.openURL(`tel:${phone_number}`)}
                   onPress={makeCall}>
@@ -418,7 +418,9 @@ const SinglePostView = (props) => {
                       width={normalize(24)}
                       height={normalize(24)}
                     />
-                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                    <AppText
+                      textStyle="button2"
+                      customStyle={{ marginLeft: 8 }}>
                       Call Seller
                     </AppText>
                   </View>
@@ -428,19 +430,21 @@ const SinglePostView = (props) => {
               )}
               {email ? (
                 <TouchableOpacity
-                  style={{flex: 1, marginLeft: phone_number ? 8 : 0}}
+                  style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
                   activeOpacity={0.7}
                   onPress={() => {
                     Linking.openURL(
-                      `mailto:${email}?subject=Servbees: Is this still available?`,
-                    );
+                      `mailto:${email}?subject=Servbees: Is this still available?`
+                    )
                   }}>
                   <View style={styles.contactButtonContainer}>
                     <ContactEmail
                       width={normalize(24)}
                       height={normalize(24)}
                     />
-                    <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                    <AppText
+                      textStyle="button2"
+                      customStyle={{ marginLeft: 8 }}>
                       Send Email
                     </AppText>
                   </View>
@@ -452,8 +456,8 @@ const SinglePostView = (props) => {
           </SafeAreaView>
         )}
       </View>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -483,7 +487,7 @@ const SinglePostView = (props) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => showEditPost(false)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <EditPostScreen
@@ -504,21 +508,23 @@ const SinglePostView = (props) => {
         <ImageModal
           close={togglePostImageModal}
           data={
-            images === undefined || images.length == 0 ? defaultImage : images
+            cover_photos === undefined || cover_photos.length == 0
+              ? defaultImage
+              : cover_photos
           }
         />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-const cardMap = (card) => {
+const cardMap = card => {
   return card === 'service'
     ? 'need'
     : card === 'Need' || card === 'need'
     ? 'post'
-    : 'sell';
-};
+    : 'sell'
+}
 
 const styles = StyleSheet.create({
   postImageContainer: {
@@ -560,6 +566,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.neutralsWhite,
   },
-});
+})
 
-export default SinglePostView;
+export default SinglePostView

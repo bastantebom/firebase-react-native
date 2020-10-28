@@ -9,6 +9,7 @@ import { AppText } from '@/components'
 import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
 import LoadingScreen from './loading'
 import { normalize } from '@/globals'
+import { ProfileInfoService } from '@/services'
 
 const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   const { user, userInfo } = useContext(UserContext)
@@ -99,12 +100,10 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   const getMorePost = async () => {
     console.log('GET MORE')
     try {
-      console.log(onEndReachedCalledDuringMomentum)
       if (onEndReachedCalledDuringMomentum) {
         setOnEndReachedCalledDuringMomentum(false)
 
         if (locationFilter) {
-          console.log('with location filter')
           if (lastPID !== 0) {
             const params = {
               city: locationFilter,
@@ -129,15 +128,11 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
             setFecthMore(false)
           }
         } else {
-          console.log('wala location filter')
-
           const params = {
             limit: limit,
             page: lastPID,
           }
           const res = await PostService.getPosts(params)
-          console.log('------------------')
-          //console.log(res);
           if (!res.length || type === 'liked' || type === 'archived') {
             setFecthMore(false)
             setIsLoading(false)
@@ -146,7 +141,7 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
           }
 
           if (res.data && res.data.length > 0) {
-            setPosts(prev => [...prev, ...res.data])
+            setPosts(prev => [...prev, ...posts])
           }
 
           setLastPID(lastPID + 1)
@@ -212,32 +207,38 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   //   }
   // };
 
+  console.log('++++++++++++++++++++++++++')
+  console.log(posts)
+
   if (data.length > 0) {
     return (
-      // <FlatList
-      //   data={data}
-      //   renderItem={renderItem}
-      //   keyExtractor={(item) => item.post_id}
-      //   onRefresh={refreshPosts}
-      //   refreshing={refresh}
-      //   onEndReached={() => getMorePost()}
-      //   onEndReachedThreshold={0.1}
-      //   onMomentumScrollBegin={onMomentumScrollBegin}
-      //   // ListHeaderComponent={headerComponent}
-      //   ListFooterComponent={
-      //     <View style={{alignItems: 'center', marginTop: 8,
-      //     // marginBottom: normalize(100)
-      //     marginBottom: normalize(160)
-      //     }}>
-      //       {fetchMore ? (
-      //         <ActivityIndicator />
-      //       ) : (
-      //         <AppText>{'Oops, you’ve run out of posts.'}</AppText>
-      //       )}
-      //     </View>
-      //   }
-      // />
-      <></>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={item => item.post_id}
+        onRefresh={refreshPosts}
+        refreshing={refresh}
+        onEndReached={() => getMorePost()}
+        onEndReachedThreshold={0.1}
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        // ListHeaderComponent={headerComponent}
+        ListFooterComponent={
+          <View
+            style={{
+              alignItems: 'center',
+              marginTop: 8,
+              // marginBottom: normalize(100)
+              marginBottom: normalize(160),
+            }}>
+            {fetchMore ? (
+              <ActivityIndicator />
+            ) : (
+              <AppText>{'Oops, you’ve run out of posts.'}</AppText>
+            )}
+          </View>
+        }
+      />
+      // <></>
     )
   }
 

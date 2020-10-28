@@ -9,7 +9,7 @@ import { appleAuth } from '@invertase/react-native-apple-authentication'
 import SignUpService from '@/services/SignUpService'
 
 GoogleSignin.configure({
-  webClientId: Config.local.googleSignIn,
+  webClientId: Config.dev.googleSignIn,
 })
 
 const loginMobile = payload => {

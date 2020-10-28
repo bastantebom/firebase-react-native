@@ -78,6 +78,48 @@ const DeleteCategoryModal = ({ close, categoryName }) => {
     if (option === 'move') setMoveItems(true)
   }
 
+  const deleteCategoryHandler = async () => {
+    // DELETE CATEGORY FROM CATEGORY ARRAY
+    let cats = await CategoryService.getCategories().then(res => {
+      return res
+    })
+
+    cats.map(category => {
+      if (category.category === categoryName) {
+        CategoryService.deleteCategory(category.id).then(res => {
+          console.log('DELETE CATEGORY BACKEND RESPONSE')
+          console.log(res)
+        })
+      }
+      return
+    })
+
+    // PROMPT TO DELETE ITEMS UNDER THE CATEGORY OR MOVE ITEMS TO CERTAIN CATEGORY???
+    // kung imomove parang equal lang din sya to rename category?
+    if (deleteItems) {
+      // delete all items that have this category
+      deleteItemsByCategory(categoryName)
+    }
+
+    // MOVE ITEMS UNDER THIS CATEGORY
+    if (moveItems) {
+      editCategory(NewCategoryName, categoryName)
+    }
+
+    navigation.push('AddedItemPreviewScreen', {
+      categoryName: NewCategoryName,
+    })
+
+    // close();
+  }
+
+  const select = option => {
+    setDeleteItems(false)
+    setMoveItems(false)
+    if (option === 'delete') setDeleteItems(true)
+    if (option === 'move') setMoveItems(true)
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle

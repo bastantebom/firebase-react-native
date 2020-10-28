@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -9,18 +9,18 @@ import {
   Linking,
   ScrollView,
   Dimensions,
-} from 'react-native';
-import {Divider} from 'react-native-paper';
-import Modal from 'react-native-modal';
-import Swiper from 'react-native-swiper';
+} from 'react-native'
+import { Divider } from 'react-native-paper'
+import Modal from 'react-native-modal'
+import Swiper from 'react-native-swiper'
 
 import {
   AppText,
   TransparentHeader,
   ProfileInfo,
   CacheableImage,
-} from '@/components';
-import {normalize, GlobalStyle, Colors, timePassed} from '@/globals';
+} from '@/components'
+import { normalize, GlobalStyle, Colors, timePassed } from '@/globals'
 import {
   PostClock,
   PostNavigation,
@@ -29,14 +29,14 @@ import {
   PostBox,
   ContactEmail,
   ContactTelephone,
-} from '@/assets/images/icons';
-import {PostService} from '@/services';
-import {UserContext} from '@/context/UserContext';
-import {ImageModal} from '@/screens/Post/components/ImageModal';
-import { useNavigation } from '@react-navigation/native';
-import EditPostScreen from '@/screens/Post/components/EditPostScreen';
+} from '@/assets/images/icons'
+import { PostService } from '@/services'
+import { UserContext } from '@/context/UserContext'
+import { ImageModal } from '@/screens/Post/components/ImageModal'
+import { useNavigation } from '@react-navigation/native'
+import EditPostScreen from '@/screens/Post/components/EditPostScreen'
 
-const SinglePostOthersView = ({data, closePostModal}) => {
+const SinglePostOthersView = ({ data, closePostModal }) => {
   // console.log("SINGLEW POST VIEW POST PROPS")
   // console.log(props)
 
@@ -47,44 +47,46 @@ const SinglePostOthersView = ({data, closePostModal}) => {
   // console.log('****************************data****************************')
   // console.log(data)
 
-  const navigation = useNavigation();
-  const [showNotification, setShowNotification] = useState(false);
-  const [ellipsisState, setEllipsisState] = useState(false);
-  const [otherPostModal, setOtherPostModal] = useState(false);
-  const [postImageModal, setPostImageModal] = useState(false);
+  const navigation = useNavigation()
+  const [showNotification, setShowNotification] = useState(false)
+  const [ellipsisState, setEllipsisState] = useState(false)
+  const [otherPostModal, setOtherPostModal] = useState(false)
+  const [postImageModal, setPostImageModal] = useState(false)
 
-  const [editPost, showEditPost] = useState(false);
+  const [editPost, showEditPost] = useState(false)
 
-  const {user, setUserInfo, userInfo} = useContext(UserContext);
+  const { user, setUserInfo, userInfo } = useContext(UserContext)
 
   const {
-    uid,
-    post_type,
-    images,
-    title,
-    description,
-    payment_method,
-    price,
-    store_location: {longitude, latitude, city, province, country},
-    delivery_method: pickup, delivery,
-    available,
-    username,
-    profile_photo,
-    account_verified,
-    display_name,
+    user: { display_name, profile_photo },
     date_posted,
+    available,
+    payment_method,
+    store_details: {
+      schedule,
+      location: { city, province, country },
+    },
+    title,
+    username,
+    delivery_method: { pickup, delivery },
+    description,
+    uid,
+    price,
     post_id,
+    cover_photos,
+    account_verified,
     email,
     phone_number,
+    post_type,
     full_name,
-  } = data;
+  } = data
 
   const defaultImage = [
     {
       key: 0,
       image: require('@/assets/images/logo.png'),
     },
-  ];
+  ]
 
   const userPostInfo = {
     username: username,
@@ -92,73 +94,72 @@ const SinglePostOthersView = ({data, closePostModal}) => {
     account_verified: account_verified,
     display_name: display_name ? display_name : full_name,
     uid: uid,
-  };
+  }
 
-  let timeAgo = (time) => {
-    return timePassed(time) + ' ago';
-  };
+  let timeAgo = time => {
+    return timePassed(time) + ' ago'
+  }
 
   let makeCall = () => {
-    let phoneNumber = '';
+    let phoneNumber = ''
     if (Platform.OS === 'android') {
-      phoneNumber = `tel:${phone_number}`;
+      phoneNumber = `tel:${phone_number}`
     } else {
-      phoneNumber = `telprompt:${phone_number}`;
+      phoneNumber = `telprompt:${phone_number}`
     }
-    Linking.openURL(phoneNumber);
-  };
+    Linking.openURL(phoneNumber)
+  }
 
   const togglePostImageModal = () => {
-    setPostImageModal(!postImageModal);
-  };
+    setPostImageModal(!postImageModal)
+  }
 
   const toggleEditPost = () => {
-    toggleEllipsisState();
+    toggleEllipsisState()
     setTimeout(() => {
-      
-      showEditPost(!editPost);
-    }, 500);
-  };
+      showEditPost(!editPost)
+    }, 500)
+  }
 
   const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState);
-  };
+    setEllipsisState(!ellipsisState)
+  }
 
   const closeNotification = () => {
-    setShowNotification(false);
-  };
+    setShowNotification(false)
+  }
 
   const deletePost = async () => {
-    console.log('delete this post with id: ');
-    console.log(post_id);
+    console.log('delete this post with id: ')
+    console.log(post_id)
     return await PostService.deletePost(post_id).then(() => {
-      toggleEllipsisState();
-      console.log('deletePost ' + userInfo.post_count);
-      setUserInfo({...userInfo, post_count: userInfo.post_count - 1});
+      toggleEllipsisState()
+      console.log('deletePost ' + userInfo.post_count)
+      setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
       // navigation.goBack();
-      closePostModal();
-    });
-  };
+      closePostModal()
+    })
+  }
 
   const hidePost = async () => {
     //body: { uid, pid }
-    return await PostService.hidePost({uid: user?.uid, pid: post_id}).then(
-      (res) => {
-        toggleEllipsisState();
+    return await PostService.hidePost({ uid: user?.uid, pid: post_id }).then(
+      res => {
+        toggleEllipsisState()
         //console.log('deletePost ' + userInfo.post_count);
-        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
-        console.log(userInfo.hidden_posts);
+        setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
+        console.log(userInfo.hidden_posts)
         // navigation.goBack();
-        closePostModal();
-      },
-    );
+        closePostModal()
+      }
+    )
     //navigation.goBack();
     //alert('hide Post View Post');
-  };
+  }
 
-  const SinglePostContent = ({children}) => {
+  const SinglePostContent = ({ children }) => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.postImageContainer}>
           {/* <Image
             style={GlobalStyle.image}
@@ -167,7 +168,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
                 'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
             }}
           /> */}
-          {images === undefined || images.length == 0 ? (
+          {cover_photos === undefined || cover_photos.length == 0 ? (
             post_type === 'Need' || post_type === 'need' ? (
               <Image
                 style={GlobalStyle.image}
@@ -188,9 +189,9 @@ const SinglePostOthersView = ({data, closePostModal}) => {
             <Swiper
               activeDotColor={Colors.primaryYellow}
               dotColor={Colors.neutralsIron}
-              dotStyle={{marginRight: 9}}
-              activeDotStyle={{marginRight: 9}}>
-              {images.map((item, index) => {
+              dotStyle={{ marginRight: 9 }}
+              activeDotStyle={{ marginRight: 9 }}>
+              {cover_photos.map((item, index) => {
                 // console.log(item);
                 return (
                   <TouchableWithoutFeedback
@@ -203,7 +204,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
                       }}
                     />
                   </TouchableWithoutFeedback>
-                );
+                )
               })}
             </Swiper>
           )}
@@ -211,24 +212,24 @@ const SinglePostOthersView = ({data, closePostModal}) => {
         <ScrollView style={styles.postInfoContainer}>
           <ProfileInfo
             userInfo={userPostInfo}
-            type='own-post'
+            type="own-post"
             cancelModalToggle={closePostModal}
             isModal
           />
 
           <AppText
             textStyle="subtitle1"
-            customStyle={{marginTop: 24, marginBottom: 16}}>
+            customStyle={{ marginTop: 24, marginBottom: 16 }}>
             {title}
           </AppText>
 
-          <AppText textStyle="subtitle1" customStyle={{marginBottom: 12}}>
+          <AppText textStyle="subtitle1" customStyle={{ marginBottom: 12 }}>
             ₱ {price}
           </AppText>
 
           <View style={styles.iconText}>
             <PostClock width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+            <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
               {timeAgo(Date.now() / 1000 - date_posted._seconds)}
             </AppText>
           </View>
@@ -236,7 +237,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
             <PostNavigation width={normalize(24)} height={normalize(24)} />
             <AppText
               textStyle="body2"
-              customStyle={{marginLeft: 8, marginRight: 20}}>
+              customStyle={{ marginLeft: 8, marginRight: 20 }}>
               {city}, {province}
             </AppText>
           </View>
@@ -244,14 +245,14 @@ const SinglePostOthersView = ({data, closePostModal}) => {
             <PostInfo width={normalize(24)} height={normalize(24)} />
             <AppText
               textStyle="body2"
-              customStyle={{marginLeft: 8, marginRight: 20}}>
+              customStyle={{ marginLeft: 8, marginRight: 20 }}>
               {description}
             </AppText>
           </View>
-          <Divider style={[GlobalStyle.dividerStyle, {marginBottom: 16}]} />
+          <Divider style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]} />
           <View style={styles.iconText}>
             <PostCash width={normalize(24)} height={normalize(24)} />
-            <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+            <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
               {payment_method}
             </AppText>
           </View>
@@ -260,7 +261,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
           ) : (
             <View style={styles.iconText}>
               <PostBox width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{marginLeft: 8}}>
+              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                 {pickup && delivery
                   ? 'Pickup & Delivery'
                   : delivery
@@ -274,8 +275,8 @@ const SinglePostOthersView = ({data, closePostModal}) => {
         </ScrollView>
         {children}
       </View>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -318,7 +319,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
             }}
             customBackdrop={
               <TouchableWithoutFeedback onPress={() => showEditPost(false)}>
-                <View style={{flex: 1, backgroundColor: 'black'}} />
+                <View style={{ flex: 1, backgroundColor: 'black' }} />
               </TouchableWithoutFeedback>
             }>
             <EditPostScreen
@@ -336,7 +337,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <ImageModal close={togglePostImageModal} data={images} />
+            <ImageModal close={togglePostImageModal} data={cover_photos} />
           </Modal>
         </View>
       </ScrollView>
@@ -358,7 +359,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
           }}>
           {phone_number ? (
             <TouchableOpacity
-              style={{flex: 1, marginRight: email ? 8 : 0}}
+              style={{ flex: 1, marginRight: email ? 8 : 0 }}
               activeOpacity={0.7}
               // onPress={() => Linking.openURL(`tel:${phone_number}`)}
               onPress={makeCall}>
@@ -367,7 +368,7 @@ const SinglePostOthersView = ({data, closePostModal}) => {
                   width={normalize(24)}
                   height={normalize(24)}
                 />
-                <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                <AppText textStyle="button2" customStyle={{ marginLeft: 8 }}>
                   Call Seller
                 </AppText>
               </View>
@@ -377,16 +378,16 @@ const SinglePostOthersView = ({data, closePostModal}) => {
           )}
           {email ? (
             <TouchableOpacity
-              style={{flex: 1, marginLeft: phone_number ? 8 : 0}}
+              style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
               activeOpacity={0.7}
               onPress={() => {
                 Linking.openURL(
-                  `mailto:${email}?subject=Servbees: Is this still available?`,
-                );
+                  `mailto:${email}?subject=Servbees: Is this still available?`
+                )
               }}>
               <View style={styles.contactButtonContainer}>
                 <ContactEmail width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="button2" customStyle={{marginLeft: 8}}>
+                <AppText textStyle="button2" customStyle={{ marginLeft: 8 }}>
                   Send Email
                 </AppText>
               </View>
@@ -397,16 +398,16 @@ const SinglePostOthersView = ({data, closePostModal}) => {
         </View>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
-const cardMap = (card) => {
+const cardMap = card => {
   return card === 'service'
     ? 'need'
     : card === 'Need' || card === 'need'
     ? 'post'
-    : 'sell';
-};
+    : 'sell'
+}
 
 const styles = StyleSheet.create({
   postImageContainer: {
@@ -445,6 +446,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.neutralsWhite,
   },
-});
+})
 
-export default SinglePostOthersView;
+export default SinglePostOthersView

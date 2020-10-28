@@ -1,20 +1,20 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react'
 import {
   View,
   Image,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from 'react-native';
-import {Divider} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
-import Modal from 'react-native-modal';
+} from 'react-native'
+import { Divider } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native'
+import Modal from 'react-native-modal'
 
-import {Colors, GlobalStyle, timePassed, normalize} from '@/globals';
-import OwnPost from './OwnPost';
-import ArchivePost from './ArchivePost';
-import {PaddingView, AppText, ProfileInfo, CacheableImage} from '@/components';
-import {UserContext} from '@/context/UserContext';
+import { Colors, GlobalStyle, timePassed, normalize } from '@/globals'
+import OwnPost from './OwnPost'
+import ArchivePost from './ArchivePost'
+import { PaddingView, AppText, ProfileInfo, CacheableImage } from '@/components'
+import { UserContext } from '@/context/UserContext'
 import {
   Verified,
   JarHeart,
@@ -23,49 +23,61 @@ import {
   NavigationPinRed,
   NavigationArrow,
   TransportationBox,
-} from '@/assets/images/icons';
-import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
+} from '@/assets/images/icons'
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
-import LoadingScreen from './loading';
-import SinglePostOthersView from './SinglePostOthersView';
+import LoadingScreen from './loading'
+import SinglePostOthersView from './SinglePostOthersView'
 
-const Post = ({data, type, isLoading}) => {
-  const {user} = useContext(UserContext);
-  const [showPost, setShowPost] = useState(false);
-  const [likePost, setLikePost] = useState(false);
+const Post = ({ data, type, isLoading }) => {
+  const { user } = useContext(UserContext)
+  const [showPost, setShowPost] = useState(false)
+  const [likePost, setLikePost] = useState(false)
+  // let city, province, country
+  let images = []
+
+  // promise
+
+  console.log('DATA')
+  console.log(data)
 
   const {
-    display_name,
+    user: { display_name, profile_photo },
     date_posted,
     available,
-    profile_photo,
     payment_method,
-    store_location: {city, province, country},
+    // store_location: {city, province, country},
+    store_details: {
+      schedule,
+      location: { city, province, country },
+    },
     title,
     username,
-    delivery_method: {pickup, delivery},
+    delivery_method: { pickup, delivery },
     description,
+    items,
     uid,
-    price,
     post_id,
-    images,
+    cover_photos,
     account_verified,
     email,
     phone_number,
     post_type,
+    is_multiple,
     full_name,
-  } = data;
+    price,
+  } = data
 
   const VerifiedBadge = () => {
-    return account_verified ? <Verified /> : <></>;
-  };
+    return account_verified ? <Verified /> : <></>
+  }
 
-  let timeAgo = (time) => {
-    return '• ' + timePassed(time) + ' ago';
-  };
+  let timeAgo = time => {
+    return '• ' + timePassed(time) + ' ago'
+  }
 
   const toggleLike = () => {
-    setLikePost(!likePost);
+    setLikePost(!likePost)
   }
 
   const userInfo = {
@@ -75,10 +87,10 @@ const Post = ({data, type, isLoading}) => {
     display_name: display_name ? display_name : full_name,
     date_posted: date_posted,
     uid: uid,
-    post_type: post_type
-  };
+    post_type: post_type,
+  }
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const navToPost = () => {
     let computedData = {
@@ -86,42 +98,47 @@ const Post = ({data, type, isLoading}) => {
       viewing: true,
       created: false,
       edited: false,
-    };
+    }
 
     if (user && user.uid === uid)
       navigation.navigate('Post', {
         screen: 'SinglePostView',
         params: computedData,
-      });
+      })
     else
       navigation.navigate('NBTScreen', {
         screen: 'OthersPost',
-        params: {...computedData, othersView: true},
-      });
-  };
+        params: { ...computedData, othersView: true },
+      })
+  }
 
   if (type === 'dashboard')
     return (
       <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
         <PaddingView paddingSize={2} style={styles.container}>
           <ProfileInfo userInfo={userInfo} type="dashboard" />
-          <View style={{ position: 'absolute', top: normalize(11), right: 11, padding: 5 }}>
-            <TouchableOpacity 
-              onPress={toggleLike}
-              activeOpacity={.7}
-            >
-              { 
-                likePost  ? <JarHeartColored width={normalize(20)} height={normalize(20)}/> : <JarHeart width={normalize(20)} height={normalize(20)} />
-              }
+          <View
+            style={{
+              position: 'absolute',
+              top: normalize(11),
+              right: 11,
+              padding: 5,
+            }}>
+            <TouchableOpacity onPress={toggleLike} activeOpacity={0.7}>
+              {likePost ? (
+                <JarHeartColored width={normalize(20)} height={normalize(20)} />
+              ) : (
+                <JarHeart width={normalize(20)} height={normalize(20)} />
+              )}
             </TouchableOpacity>
           </View>
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
-                {images.length > 0 ? (
+                {cover_photos.length > 0 ? (
                   <CacheableImage
                     style={GlobalStyle.image}
-                    source={{uri: images[0]}}
+                    source={{ uri: cover_photos[0] }}
                   />
                 ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
                 post_type === 'service' ? (
@@ -151,8 +168,7 @@ const Post = ({data, type, isLoading}) => {
                     color={
                       Colors.secondaryMountainMeadow
                       // Colors.neutralsMischka
-                    }
-                  >
+                    }>
                     ₱{price}
                   </AppText>
                   {/* <AppText
@@ -181,8 +197,8 @@ const Post = ({data, type, isLoading}) => {
                   <AppText
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}
-                    customStyle={{marginLeft: 4}}>
-                    {/* {city}, {province} */}
+                    customStyle={{ marginLeft: 4 }}>
+                    {city}, {province}
                   </AppText>
                 </View>
                 {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
@@ -201,7 +217,7 @@ const Post = ({data, type, isLoading}) => {
 
                   <AppText
                     textStyle="eyebrow2"
-                    customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
+                    customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
                     {pickup && delivery
                       ? 'Pickup & Delivery'
                       : delivery
@@ -233,7 +249,7 @@ const Post = ({data, type, isLoading}) => {
           />
         </Modal>
       </LoadingScreen.LoadingPublicPost>
-    );
+    )
 
   if (type === 'liked')
     return (
@@ -244,10 +260,10 @@ const Post = ({data, type, isLoading}) => {
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
-                {images.length > 0 ? (
+                {cover_photos.length > 0 ? (
                   <CacheableImage
                     style={GlobalStyle.image}
-                    source={{uri: images[0]}}
+                    source={{ uri: cover_photos[0] }}
                   />
                 ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
                 post_type === 'service' ? (
@@ -286,7 +302,7 @@ const Post = ({data, type, isLoading}) => {
                   <AppText
                     textStyle="eyebrow2"
                     color={Colors.contentPlaceholder}
-                    customStyle={{marginLeft: 4}}>
+                    customStyle={{ marginLeft: 4 }}>
                     {city}, {province}
                   </AppText>
                 </View>
@@ -306,7 +322,7 @@ const Post = ({data, type, isLoading}) => {
 
                   <AppText
                     textStyle="eyebrow2"
-                    customStyle={{color: Colors.contentEbony, marginLeft: 4}}>
+                    customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
                     {pickup && delivery
                       ? 'Pickup & Delivery'
                       : delivery
@@ -338,18 +354,18 @@ const Post = ({data, type, isLoading}) => {
           />
         </Modal>
       </LoadingScreen.LoadingPublicPost>
-    );
+    )
 
-  if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />;
+  if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />
   if (type === 'archived')
-    return <ArchivePost data={data} isLoading={isLoading} />;
+    return <ArchivePost data={data} isLoading={isLoading} />
 
   return (
     <AppText color={'red'}>
       type of list is required. Type: 'own' | 'dashboard'
     </AppText>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -420,8 +436,8 @@ const styles = StyleSheet.create({
   },
   priceText: {
     // marginBottom: 8,
-    marginRight: 8
+    marginRight: 8,
   },
-});
+})
 
-export default Post;
+export default Post

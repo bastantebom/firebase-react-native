@@ -1,71 +1,73 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react'
 import {
   View,
   Image,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import Modal from 'react-native-modal';
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import Modal from 'react-native-modal'
 
-import {AppText, MarginView, ProfileInfo, CacheableImage} from '@/components';
-import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
-import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
-import {Verified, ProfileImageDefault} from '@/assets/images/icons';
-import {UserContext} from '@/context/UserContext';
-import LoadingScreen from './loading';
-import SinglePostOthersView from './SinglePostOthersView';
+import { AppText, MarginView, ProfileInfo, CacheableImage } from '@/components'
+import { GlobalStyle, normalize, timePassedShort, Colors } from '@/globals'
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import { Verified, ProfileImageDefault } from '@/assets/images/icons'
+import { UserContext } from '@/context/UserContext'
+import LoadingScreen from './loading'
+import SinglePostOthersView from './SinglePostOthersView'
 
-const OwnPost = ({data, isLoading}) => {
-  const {user} = useContext(UserContext);
-  const [showPost, setShowPost] = useState(false);
+const OwnPost = ({ data, isLoading }) => {
+  const { user } = useContext(UserContext)
+  const [showPost, setShowPost] = useState(false)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const {
-    display_name,
+    user: { display_name, profile_photo },
     date_posted,
     available,
-    profile_photo,
     payment_method,
-    store_location: {city, province, country},
+    store_details: {
+      schedule,
+      location: { city, province, country },
+    },
     title,
     username,
-    delivery_method: {pickup, delivery},
+    delivery_method: { pickup, delivery },
     description,
     uid,
     price,
     post_id,
-    images,
+    cover_photos,
     account_verified,
     email,
     phone_number,
     post_type,
     full_name,
-  } = data;
+  } = data
 
   const VerifiedBadge = () => {
     return account_verified ? (
       <Verified width={normalize(9)} height={normalize(10.12)} />
     ) : (
       <></>
-    );
-  };
+    )
+  }
 
-  const timeAgo = (time) => {
-    return timePassedShort(time);
-  };
+  const timeAgo = time => {
+    return timePassedShort(time)
+  }
 
   const statusBackground = () => {
-    if (status === 'ongoing') return Colors.secondaryDarkTangerine;
+    if (status === 'ongoing') return Colors.secondaryDarkTangerine
 
-    if (status === 'completed') return Colors.secondaryShamrock;
+    if (status === 'completed') return Colors.secondaryShamrock
 
-    return 'red';
-  };
+    return 'red'
+  }
 
-  const ProfilePhoto = ({size}) => {
+  const ProfilePhoto = ({ size }) => {
     return profile_photo ? (
       <CacheableImage
         style={GlobalStyle.image}
@@ -75,8 +77,8 @@ const OwnPost = ({data, isLoading}) => {
       />
     ) : (
       <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    );
-  };
+    )
+  }
 
   const navToPost = () => {
     let computedData = {
@@ -84,20 +86,20 @@ const OwnPost = ({data, isLoading}) => {
       viewing: true,
       created: false,
       edited: false,
-    };
+    }
 
     if (user && user.uid === uid)
       navigation.navigate('Post', {
         screen: 'SinglePostView',
         params: computedData,
-      });
+      })
     // change navigation.push to navigate
     else
       navigation.navigate('NBTScreen', {
         screen: 'OthersPost',
-        params: {...computedData, othersView: true},
-      });
-  };
+        params: { ...computedData, othersView: true },
+      })
+  }
 
   return (
     <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
@@ -118,12 +120,12 @@ const OwnPost = ({data, isLoading}) => {
             shadowRadius: 8,
             elevation: 4,
           }}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <View style={styles.postImageContainer}>
-              {images.length > 0 ? (
+              {cover_photos.length > 0 ? (
                 <CacheableImage
                   style={GlobalStyle.image}
-                  source={{uri: images[0]}}
+                  source={{ uri: cover_photos[0] }}
                 />
               ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
               post_type === 'service' ? (
@@ -135,7 +137,7 @@ const OwnPost = ({data, isLoading}) => {
               )}
             </View>
 
-            <View style={{paddingLeft: 12, flex: 1}}>
+            <View style={{ paddingLeft: 12, flex: 1 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -191,7 +193,7 @@ const OwnPost = ({data, isLoading}) => {
                 2 Offers
               </AppText> */}
               </View>
-              <AppText customStyle={{marginTop: 4}} textStyle="caption2">
+              <AppText customStyle={{ marginTop: 4 }} textStyle="caption2">
                 {title}
               </AppText>
               {/* <AppText textStyle="metadata">{description}</AppText> */}
@@ -217,8 +219,8 @@ const OwnPost = ({data, isLoading}) => {
         />
       </Modal>
     </LoadingScreen.LoadingOwnPost>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   postImageContainer: {
@@ -233,6 +235,6 @@ const styles = StyleSheet.create({
     borderRadius: normalize(20 / 2),
     overflow: 'hidden',
   },
-});
+})
 
-export default OwnPost;
+export default OwnPost
