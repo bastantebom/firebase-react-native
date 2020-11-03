@@ -1,0 +1,47 @@
+const CodeGen = require('swagger-js-codegen').CodeGen
+const Converter = require('api-spec-converter')
+const fs = require('fs')
+const prettier = require('prettier')
+
+const baseURL =
+  process.env.BASE_URL ||
+  (() => {
+    switch (process.env.NODE_ENV) {
+      case 'develop':
+        return 'https://servbees-api-dev.onrender.com'
+      case 'production':
+        return 'https://api.servbees.com/'
+    }
+
+    return 'http://localhost:5000'
+  })()
+
+;(async () => {
+  const swagger = (
+    await Converter.convert({
+      from: 'openapi_3',
+      to: 'swagger_2',
+      source: `${baseURL}/swagger.json`,
+    })
+  ).spec
+
+  const config = JSON.parse(fs.readFileSync('.vscode/.prettierrc', 'utf-8'))
+  let code = prettier.format(
+    CodeGen.getReactCode({ className: 'API', swagger })
+      .replace(
+        /exports\.API = API/g,
+        'const Api = new API(); \n export default Api'
+      )
+      .replace(
+        'API.prototype.request = function',
+        'API.prototype.request = async function'
+      )
+      .replace(
+        'fetch(',
+        `const token = await AsyncStorage.getItem('token')\nheaders.Authorization = \`Bearer \${token}\`\nfetch(`
+      ),
+    { ...config, parser: 'babel' }
+  )
+  code = `import AsyncStorage from '@react-native-community/async-storage'\n${code}`
+  fs.writeFileSync('./src/services/Api.js', code)
+})()

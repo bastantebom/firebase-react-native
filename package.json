@@ -10,8 +10,10 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "debug": "npm run android -- --variant=debug",
-    "release": "npm run android -- --variant=release"
+    "debug": "yarn android -- --variant=debug",
+    "release": "yarn android -- --variant=release",
+    "generate:services": "node ./src/scripts/generate-services",
+    "postinstall": "yarn generate:services"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.0.2",
@@ -26,6 +28,7 @@
     "@react-native-community/slider": "^3.0.3",
     "@react-native-firebase/app": "^8.2.0",
     "@react-native-firebase/auth": "^8.2.0",
+    "@react-native-firebase/firestore": "^7.8.7",
     "@react-native-firebase/storage": "^7.2.2",
     "@react-navigation/bottom-tabs": "^5.7.2",
     "@react-navigation/drawer": "^5.8.4",
@@ -54,6 +57,7 @@
     "react-native-fluid-transitions": "^0.1.1",
     "react-native-geocoding": "^0.4.0",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-gifted-chat": "^0.16.3",
     "react-native-google-places-autocomplete": "^1.8.0",
     "react-native-image-crop-picker": "^0.32.2",
     "react-native-image-pan-zoom": "^2.1.12",
@@ -84,6 +88,7 @@
     "react-native-tab-view": "^2.15.0",
     "react-native-textarea": "^1.0.4",
     "react-native-vector-icons": "^7.0.0",
+    "react-native-video": "^5.1.0-alpha8",
     "react-navigation": "^4.4.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.20",
     "rn-fetch-blob": "^0.12.0"
@@ -92,14 +97,17 @@
     "@babel/core": "^7.10.4",
     "@babel/runtime": "^7.10.4",
     "@react-native-community/eslint-config": "^2.0.0",
+    "api-spec-converter": "^2.11.2",
     "babel-jest": "^26.1.0",
     "babel-plugin-root-import": "^6.5.0",
     "eslint": "^7.3.1",
     "jest": "^26.1.0",
     "metro-react-native-babel-preset": "^0.60.0",
     "node-sass": "^4.14.1",
+    "prettier": "^2.1.2",
     "react-native-svg-transformer": "^0.14.3",
-    "react-test-renderer": "16.11.0"
+    "react-test-renderer": "16.11.0",
+    "swagger-js-codegen": "^1.13.0"
   },
   "jest": {
     "preset": "react-native"
