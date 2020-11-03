@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-} from 'react-native';
+} from 'react-native'
 
 import {
   ScreenHeaderTitle,
@@ -20,10 +20,10 @@ import {
   ProfileImageUpload,
   TransitionIndicator,
   AppRadio,
-} from '@/components';
-import {AppInput, Validator, valueHandler} from '@/components/AppInput';
+} from '@/components'
+import { AppInput, Validator, valueHandler } from '@/components/AppInput'
 
-import storage from '@react-native-firebase/storage';
+import storage from '@react-native-firebase/storage'
 
 import {
   ArrowRight,
@@ -31,23 +31,21 @@ import {
   Calendar,
   VerifiedGreen,
   CircleAdd,
-} from '@/assets/images/icons';
+} from '@/assets/images/icons'
 
-import {Colors, normalize} from '@/globals';
-import GenderList from './Gender';
-import Modal from 'react-native-modal';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context';
-
-import moment from 'moment';
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
-
-import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload';
-
-import AddAddress from './AddAddress';
-
+import { Colors, normalize } from '@/globals'
+import GenderList from './Gender'
+import Modal from 'react-native-modal'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
+import moment from 'moment'
+import ProfileInfoService from '@/services/Profile/ProfileInfo'
+import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload'
+import AddAddress from './AddAddress'
+import EditLogin from './EditLogin'
+import SetPassword from './SetPassword'
 // create a component
 const EditProfile = ({
   toggleEditProfile,
@@ -55,28 +53,20 @@ const EditProfile = ({
   triggerNotify,
   source,
 }) => {
-  const [addAddress, setAddAddress] = useState(false);
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
-  const [genderVisible, setGenderVisible] = useState(false);
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
-  const {setNeedsRefresh} = useContext(Context);
-  const [buttonStyle, setButtonStyle] = useState({});
-  const [buttonDisable, setButtonDisable] = useState(false);
-  const [addressComponents, setAddressComponents] = useState({
-    city: '',
-    province: '',
-    country: '',
-    longitude: 0,
-    latitude: 0,
-  });
-
-  const [imageSource, setImageSource] = useState(null);
-  const [imageCoverSource, setImageCoverSource] = useState(null);
-  const [imgUploading, setImgUploading] = useState(false);
-  const [transferred, setTransferred] = useState(0);
-  const [IS_UPDATING, setIS_UPDATING] = useState(false);
+  const [addAddress, setAddAddress] = useState(false)
+  const [editLogin, setEditLogin] = useState(false)
+  const [provider, setProvider] = useState('')
+  const has_password = false
+  const [date, setDate] = useState(new Date(1598051730000))
+  const [mode, setMode] = useState('date')
+  const [show, setShow] = useState(false)
+  const [genderVisible, setGenderVisible] = useState(false)
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const { setNeedsRefresh } = useContext(Context)
+  const [imageSource, setImageSource] = useState(null)
+  const [imageCoverSource, setImageCoverSource] = useState(null)
+  const [transferred, setTransferred] = useState(0)
+  const [IS_UPDATING, setIS_UPDATING] = useState(false)
 
   const {
     cover_photo,
@@ -91,25 +81,22 @@ const EditProfile = ({
     phone_number,
     birth_date,
     gender,
-  } = userInfo;
+  } = userInfo
 
-  const {uid} = user;
+  const { uid } = user
 
-  const isEmailRequired = email ? true : false;
-  const isMobileRequired = phone_number ? true : false;
+  const [cPhoto, setCPhoto] = useState(cover_photo)
+  const [pPhoto, setPPhoto] = useState(profile_photo)
+  const [profilePhotoClick, setProfilePhotoClick] = useState(false)
+  const [dName, setDName] = useState(display_name ? display_name : full_name)
+  const [name, setName] = useState(full_name)
+  const [uName, setUName] = useState(username)
+  const [invalidUser, setInvalidUser] = useState(true)
+  const [invalidUserFormat, setInvalidUserFormat] = useState(false)
+  const [selectedAddress, setSelectedAddress] = useState({})
+  const [additional, setAdditional] = useState(null)
 
-  const [cPhoto, setCPhoto] = useState(cover_photo);
-  const [pPhoto, setPPhoto] = useState(profile_photo);
-  const [profilePhotoClick, setProfilePhotoClick] = useState(false);
-  const [dName, setDName] = useState(display_name ? display_name : full_name);
-  const [name, setName] = useState(full_name);
-  const [uName, setUName] = useState(username);
-  const [invalidUser, setInvalidUser] = useState(true);
-  const [invalidUserFormat, setInvalidUserFormat] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState({});
-  const [additional, setAdditional] = useState(null);
-
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(false)
   const [errors, setErrors] = useState({
     dName: {
       passed: true,
@@ -126,142 +113,111 @@ const EditProfile = ({
       shown: false,
       message: '',
     },
-  });
+  })
 
   const checkErrorState = () => {
-    let temp = true;
+    let temp = true
     for (const [key, value] of Object.entries(errors)) {
       if (!value.passed) {
-        temp = false;
-        setEnabled(temp);
-        break;
+        temp = false
+        setEnabled(temp)
+        break
       }
-      setEnabled(temp);
+      setEnabled(temp)
     }
-  };
-
-  const onChangeUsername = (uName) => {
-    if (temp) {
-      console.log('Button is Enabled');
-      setEnabled(true);
-      setButtonStyle(false);
-    } else {
-      console.log('Button is Disabled');
-      setEnabled(false);
-      setButtonStyle(true);
-    }
-  };
+  }
 
   useEffect(() => {
-    checkErrorState();
-  }, [errors]);
+    checkErrorState()
+  }, [errors])
 
-  const [verified, setVerified] = useState(false);
-  const [desc, setDesc] = useState(description);
-  const [em, setEm] = useState(email);
-  const [sEm, setSEm] = useState(secondary_email);
-  const [mobile, setMobile] = useState(phone_number);
-  const [bDate, setBDate] = useState(birth_date);
-  const [g, setG] = useState(gender);
+  const [verified, setVerified] = useState(false)
+  const [desc, setDesc] = useState(description)
+  const [em, setEm] = useState(email)
+  const [sEm, setSEm] = useState(secondary_email)
+  const [mobile, setMobile] = useState(phone_number)
+  const [bDate, setBDate] = useState(birth_date)
+  const [g, setG] = useState(gender)
 
   const toggleAddAddress = () => {
-    setAdditional(true);
-    setSelectedAddress(addresses.find((address) => address.default));
-    setAddAddress(!addAddress);
-  };
+    setAdditional(true)
+    setSelectedAddress(addresses.find(address => address.default))
+    setAddAddress(!addAddress)
+  }
+
+  const toggleEditLogin = prov => {
+    setEditLogin(!editLogin)
+    setProvider(prov)
+  }
 
   const toggleGender = () => {
-    setGenderVisible(!genderVisible);
-    if (show) setShow(!show);
-  };
+    setGenderVisible(!genderVisible)
+    if (show) setShow(!show)
+  }
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
+  const showMode = currentMode => {
+    setShow(true)
+    setMode(currentMode)
+  }
 
   const showDatepicker = () => {
     if (show) {
-      setShow(false);
+      setShow(false)
     } else {
-      Keyboard.dismiss();
-      showMode('date');
+      Keyboard.dismiss()
+      showMode('date')
     }
-  };
+  }
 
   useEffect(() => {
-    let isSubscribed = true;
+    let isSubscribed = true
     if (userInfo) {
-      if (isSubscribed) {
-        setDateFromString();
-      }
+      if (isSubscribed) setDateFromString()
     }
-    return () => (isSubscribed = false);
-  }, []);
+    return () => (isSubscribed = false)
+  }, [])
 
   const setDateFromString = () => {
     if (bDate) {
-      setDate(moment(new Date(bDate)).toDate());
+      setDate(moment(new Date(bDate)).toDate())
     }
-  };
+  }
 
-  const setGenderFromModal = (data) => {
+  const setGenderFromModal = data => {
     const tempG =
       data === 'notsay'
         ? 'Rather not say'
         : data === 'female'
         ? 'Female'
-        : 'Male';
-    setG(tempG);
-  };
+        : 'Male'
+    setG(tempG)
+  }
 
   const setBirthday = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-    setBDate(moment.utc(currentDate).add(1, 'day').format('MM/DD/YYYY'));
-  };
+    const currentDate = selectedDate || date
+    setShow(Platform.OS === 'ios')
+    setDate(currentDate)
+    setBDate(moment.utc(currentDate).add(1, 'day').format('MM/DD/YYYY'))
+  }
 
-  const emailChangeHandler = (em) => {
-    setEm(em);
-    if (em.trim().length === 0 && isEmailRequired) {
-      setButtonState(true);
-    } else {
-      setButtonState(false);
-    }
-  };
-
-  const setButtonState = (j) => {
-    if (j) {
-      setButtonStyle({
-        backgroundColor: Colors.buttonDisable,
-        borderColor: Colors.buttonDisable,
-      });
-    } else {
-      setButtonStyle({});
-    }
-    setButtonDisable(j);
-  };
-
-  const uploadImageHandler = async (image) => {
+  const uploadImageHandler = async image => {
     if (image) {
-      const {uri} = image;
+      const { uri } = image
       //console.log('Sa If');
-      let filename = uri;
+      let filename = uri
       if (!Platform.OS === 'ios')
-        filename = uri.substring(uri.lastIndexOf('/') + 1);
-      const uploadUri =
-        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+        filename = uri.substring(uri.lastIndexOf('/') + 1)
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
 
-      setTransferred(0);
-      const task = storage().ref();
-      const fileRef = task.child(`${user.uid}/display-photos/${filename}`);
-      await fileRef.putFile(uploadUri);
-      return Promise.resolve(await fileRef.getDownloadURL());
+      setTransferred(0)
+      const task = storage().ref()
+      const fileRef = task.child(`${user.uid}/display-photos/${filename}`)
+      await fileRef.putFile(uploadUri)
+      return Promise.resolve(await fileRef.getDownloadURL())
     } else {
-      return Promise.reject('empty');
+      return Promise.reject('empty')
     }
-  };
+  }
 
   const updateProfile = async () => {
     const dataToUpdate = {
@@ -275,63 +231,63 @@ const EditProfile = ({
       phone_number: mobile,
       gender: g,
       addresses: userInfo.addresses,
-    };
+    }
 
     Object.keys(dataToUpdate).forEach(
-      (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key],
-    );
+      key => dataToUpdate[key] === undefined && delete dataToUpdate[key]
+    )
 
-    setIS_UPDATING(true);
-    const images = [imageCoverSource, imageSource];
+    setIS_UPDATING(true)
+    const images = [imageCoverSource, imageSource]
 
     const uploadProfileImagesHandler = () =>
       Promise.all(
-        images.map(async (image) => {
+        images.map(async image => {
           try {
-            const res = await uploadImageHandler(image);
-            return res;
+            const res = await uploadImageHandler(image)
+            return res
           } catch (error) {
-            return error;
-          }
-        }),
-      );
-
-    await uploadProfileImagesHandler().then((response) => {
-      dataToUpdate.cover_photo = response[0] === 'empty' ? cPhoto : response[0];
-      dataToUpdate.profile_photo =
-        response[1] === 'empty' ? pPhoto : response[1];
-
-      ProfileInfoService.updateUser(dataToUpdate, uid)
-        .then((response) => {
-          if (response.success) {
-            setIS_UPDATING(false);
-            setUserInfo({...userInfo, ...response.data});
-            setNeedsRefresh(true);
-            triggerNotify(true);
-            toggleEditProfile();
-            if (source === 'own-menu') toggleMenu();
-          } else {
-            setIS_UPDATING(false);
+            return error
           }
         })
-        .catch((error) => {
-          setIS_UPDATING(false);
-          console.log(error);
-        });
-    });
-  };
+      )
 
-  const changeDefaultAddress = (selected) => {
-    const nAdd = [...addresses];
+    await uploadProfileImagesHandler().then(response => {
+      dataToUpdate.cover_photo = response[0] === 'empty' ? cPhoto : response[0]
+      dataToUpdate.profile_photo =
+        response[1] === 'empty' ? pPhoto : response[1]
+
+      ProfileInfoService.updateUser(dataToUpdate, uid)
+        .then(response => {
+          if (response.success) {
+            setIS_UPDATING(false)
+            setUserInfo({ ...userInfo, ...response.data })
+            setNeedsRefresh(true)
+            triggerNotify(true)
+            toggleEditProfile()
+            if (source === 'own-menu') toggleMenu()
+          } else {
+            setIS_UPDATING(false)
+          }
+        })
+        .catch(error => {
+          setIS_UPDATING(false)
+          console.log(error)
+        })
+    })
+  }
+
+  const changeDefaultAddress = selected => {
+    const nAdd = [...addresses]
     nAdd.forEach((address, index) => {
-      selected === index ? (address.default = true) : (address.default = false);
-    });
-    setUserInfo({...userInfo, addresses: [...nAdd]});
-  };
+      selected === index ? (address.default = true) : (address.default = false)
+    })
+    setUserInfo({ ...userInfo, addresses: [...nAdd] })
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <TransitionIndicator loading={IS_UPDATING} />
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
@@ -355,8 +311,8 @@ const EditProfile = ({
             ]}>
             <PaddingView paddingSize={3}>
               <CoverPhotoUpload
-                imgSourceHandler={(imgSrc) => {
-                  setImageCoverSource(imgSrc);
+                imgSourceHandler={imgSrc => {
+                  setImageCoverSource(imgSrc)
                 }}
                 imgSrc={cPhoto}
               />
@@ -375,9 +331,9 @@ const EditProfile = ({
               <View style={styles.profilePhoto}>
                 <View>
                   <ProfileImageUpload
-                    imgSourceHandler={(imgSrc) => {
-                      setImageSource(imgSrc);
-                      setProfilePhotoClick(false);
+                    imgSourceHandler={imgSrc => {
+                      setImageSource(imgSrc)
+                      setProfilePhotoClick(false)
                     }}
                     size={80}
                     imgSrc={pPhoto}
@@ -387,12 +343,12 @@ const EditProfile = ({
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    setProfilePhotoClick(true);
+                    setProfilePhotoClick(true)
                   }}>
                   <AppText
                     textStyle="caption"
                     color={Colors.contentOcean}
-                    customStyle={{marginLeft: normalize(8)}}>
+                    customStyle={{ marginLeft: normalize(8) }}>
                     Tap Image to change Profile Picture
                   </AppText>
                 </TouchableOpacity>
@@ -404,16 +360,16 @@ const EditProfile = ({
               <Validator errorState={errors.dName}>
                 <AppInput
                   label="Display Name"
-                  onChangeText={(dName) => {
-                    setDName();
+                  onChangeText={dName => {
+                    setDName()
                     valueHandler(
                       dName,
                       'display_name',
                       'dName',
                       errors,
                       setErrors,
-                      setDName,
-                    );
+                      setDName
+                    )
                   }}
                   value={dName}
                   onKeyPress={() => {
@@ -423,14 +379,14 @@ const EditProfile = ({
                         ...errors.dName,
                         shown: false,
                       },
-                    });
+                    })
                   }}
                 />
               </Validator>
               <AppText
                 textStyle="caption"
                 color={Colors.profileLink}
-                customStyle={{marginTop: normalize(5)}}>
+                customStyle={{ marginTop: normalize(5) }}>
                 Help people discover your account by using a name that describes
                 you or your service. This could be the name of your business, or
                 your nickname.
@@ -444,10 +400,10 @@ const EditProfile = ({
                 }}>
                 You can only change your Display Name twice every 14 days.
               </AppText>
-              <Validator errorState={errors.name} style={{marginBottom: 16}}>
+              <Validator errorState={errors.name} style={{ marginBottom: 16 }}>
                 <AppInput
                   label="Full Name"
-                  onChangeText={(name) =>
+                  onChangeText={name =>
                     valueHandler(name, '', 'name', errors, setErrors, setName)
                   }
                   value={name}
@@ -458,15 +414,17 @@ const EditProfile = ({
                         ...errors.name,
                         shown: false,
                       },
-                    });
+                    })
                   }}
                 />
               </Validator>
-              <View style={{position: 'relative'}}>
-                <Validator errorState={errors.uName} style={{marginBottom: 16}}>
+              <View style={{ position: 'relative' }}>
+                <Validator
+                  errorState={errors.uName}
+                  style={{ marginBottom: 16 }}>
                   <AppInput
                     label="Username"
-                    onChangeText={(uName) =>
+                    onChangeText={uName =>
                       valueHandler(
                         uName,
                         'username',
@@ -474,7 +432,7 @@ const EditProfile = ({
                         errors,
                         setErrors,
                         setUName,
-                        user.uid,
+                        user.uid
                       )
                     }
                     value={uName}
@@ -485,7 +443,7 @@ const EditProfile = ({
                           ...errors.uName,
                           shown: false,
                         },
-                      });
+                      })
                     }}
                   />
                 </Validator>
@@ -503,7 +461,7 @@ const EditProfile = ({
                   Username has already been used
                 </AppText>
               ) : null}
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <AppText textStyle="caption">servbees.com/</AppText>
                 <AppText textStyle="caption2">{uName}</AppText>
               </View>
@@ -522,8 +480,8 @@ const EditProfile = ({
                 numberOfLines={Platform.OS === 'ios' ? null : 6}
                 minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
                 style={[styles.input]}
-                onChangeText={(desc) => {
-                  setDesc(desc);
+                onChangeText={desc => {
+                  setDesc(desc)
                 }}
                 underlineColorAndroid={'transparent'}
                 textAlignVertical="top"
@@ -534,13 +492,13 @@ const EditProfile = ({
             <PaddingView paddingSize={3}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Address
               </AppText>
 
               <AppText
                 textStyle="body2"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Choose your default address. You can also save multiple
                 addresses.
               </AppText>
@@ -552,7 +510,7 @@ const EditProfile = ({
                         borderTopWidth: 1,
                         borderTopColor: Colors.neutralsGainsboro,
                       }
-                    : {};
+                    : {}
                 return (
                   <View
                     key={index}
@@ -570,7 +528,7 @@ const EditProfile = ({
                       <AppRadio
                         value={address.default}
                         valueChangeHandler={() => {
-                          changeDefaultAddress(index);
+                          changeDefaultAddress(index)
                         }}
                         style={{
                           backgroundColor: Colors.neutralsWhite,
@@ -595,9 +553,9 @@ const EditProfile = ({
                     </View>
                     <TouchableOpacity
                       onPress={() => {
-                        setAdditional(index);
-                        setSelectedAddress(address);
-                        setAddAddress(true);
+                        setAdditional(index)
+                        setSelectedAddress(address)
+                        setAddAddress(true)
                       }}
                       style={{
                         flex: 1,
@@ -609,15 +567,15 @@ const EditProfile = ({
                       </View>
                     </TouchableOpacity>
                   </View>
-                );
+                )
               })}
 
               <TouchableOpacity
-                style={{flexDirection: 'row'}}
+                style={{ flexDirection: 'row' }}
                 onPress={toggleAddAddress}>
                 <CircleAdd width={24} height={24} />
                 <AppText
-                  customStyle={{marginLeft: 12}}
+                  customStyle={{ marginLeft: 12 }}
                   textStyle="body2"
                   color={Colors.contentOcean}>
                   Add an Address
@@ -637,48 +595,47 @@ const EditProfile = ({
             <PaddingView paddingSize={3}>
               <AppText
                 textStyle="body1"
-                customStyle={{marginBottom: normalize(8)}}>
+                customStyle={{ marginBottom: normalize(8) }}>
                 Personal Information
               </AppText>
-              <FloatingAppInput
-                editable={false}
-                selectTextOnFocus={false}
-                value={em}
-                label="Email"
-                keyboardType="email-address"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(em) => {
-                  emailChangeHandler(em);
-                }}
-                validation={['email']}
-              />
-              <FloatingAppInput
-                editable={false}
-                selectTextOnFocus={false}
-                value={sEm}
-                label="Secondary Email"
-                keyboardType="email-address"
-                customStyle={{marginBottom: normalize(16)}}
-                onChangeText={(sEm) => {
-                  setSEm(sEm);
-                }}
-              />
-              <FloatingAppInput
-                editable={false}
-                value={mobile}
-                selectTextOnFocus={false}
-                valueHandler={setMobile}
-                label="Mobile Number"
-                customStyle={{marginBottom: normalize(16)}}
-                keyboardType="phone-pad"
-                validation={['number']}
-                setButtonState={setButtonState}
-              />
-              <View style={{position: 'relative'}}>
+
+              {em ? (
+                <>
+                  <AppText textStyle="body2">Email</AppText>
+                  <AppText textStyle="body1">{em}</AppText>
+                  <TouchableOpacity
+                    style={{ marginTop: 8 }}
+                    onPress={() => {
+                      toggleEditLogin('email')
+                    }}>
+                    <AppText textStyle="body2" color={Colors.contentOcean}>
+                      Change Email Address
+                    </AppText>
+                  </TouchableOpacity>
+                </>
+              ) : null}
+
+              {mobile ? (
+                <>
+                  <AppText textStyle="body2">Mobile Number</AppText>
+                  <AppText textStyle="body1">{mobile}</AppText>
+                  <TouchableOpacity
+                    style={{ marginTop: 8 }}
+                    onPress={() => {
+                      toggleEditLogin('mobile')
+                    }}>
+                    <AppText textStyle="body2" color={Colors.contentOcean}>
+                      Change Mobile Number
+                    </AppText>
+                  </TouchableOpacity>
+                </>
+              ) : null}
+
+              <View style={{ position: 'relative', marginTop: 16 }}>
                 <FloatingAppInput
                   value={bDate}
                   label="Birthday"
-                  customStyle={{marginBottom: normalize(16)}}
+                  customStyle={{ marginBottom: normalize(16) }}
                   onFocus={showDatepicker}
                   editable={false}
                 />
@@ -703,12 +660,12 @@ const EditProfile = ({
                   />
                 )}
               </View>
-              <View style={{position: 'relative'}}>
+              <View style={{ position: 'relative' }}>
                 <FloatingAppInput
                   value={g}
                   label="Gender"
                   onFocus={toggleGender}
-                  customStyle={{marginBottom: normalize(16)}}
+                  customStyle={{ marginBottom: normalize(16) }}
                   editable={false}
                 />
                 <TouchableOpacity
@@ -789,20 +746,45 @@ const EditProfile = ({
           }}
           customBackdrop={
             <TouchableWithoutFeedback onPress={toggleGender}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           <View>
             <GenderList
               toggleGender={toggleGender}
-              setGenderValue={(pGender) => setGenderFromModal(pGender)}
+              setGenderValue={pGender => setGenderFromModal(pGender)}
             />
           </View>
         </Modal>
+
+        <Modal
+          isVisible={editLogin}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          onBackButtonPress={() => setEditLogin(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          {has_password ? (
+            <EditLogin
+              toggleEditLogin={prov => toggleEditLogin(prov)}
+              provider={provider}
+            />
+          ) : (
+            <SetPassword
+              toggleEditLogin={prov => toggleEditLogin(prov)}
+              provider={provider}
+            />
+          )}
+        </Modal>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -845,6 +827,6 @@ const styles = StyleSheet.create({
     right: normalize(10),
     top: normalize(18),
   },
-});
+})
 
-export default EditProfile;
+export default EditProfile

@@ -1,16 +1,16 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {FlatList, View, ActivityIndicator} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react'
+import { FlatList, View, ActivityIndicator } from 'react-native'
 
-import Post from '@/components/Post/Post';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context';
-import {PostService} from '@/services';
-import {AppText} from '@/components';
-import PostOwnEmpty from '@/screens/Profile/Tabs/Post';
-import LoadingScreen from './loading';
+import Post from '@/components/Post/Post'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
+import { PostService } from '@/services'
+import { AppText } from '@/components'
+import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
+import LoadingScreen from './loading'
 
-const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
-  const {user, userInfo} = useContext(UserContext);
+const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
+  const { user, userInfo } = useContext(UserContext)
   const {
     setUserPosts,
     userPosts,
@@ -18,89 +18,89 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
     otherUserPosts,
     needsRefresh,
     setNeedsRefresh,
-  } = useContext(Context);
-  const renderItem = ({item}) => (
+  } = useContext(Context)
+  const renderItem = ({ item }) => (
     <Post data={item} type={type} isLoading={isLoading} />
-  );
+  )
 
-  const [refresh, setRefresh] = useState(false);
-  const [lastPID, setLastPID] = useState(0);
-  const [fetchMore, setFecthMore] = useState(false);
-  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
+  const [refresh, setRefresh] = useState(false)
+  const [lastPID, setLastPID] = useState(0)
+  const [fetchMore, setFecthMore] = useState(false)
+  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
   const [
     onEndReachedCalledDuringMomentum,
     setOnEndReachedCalledDuringMomentum,
-  ] = useState(true);
+  ] = useState(true)
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
 
     if (isMounted) {
-      refreshPosts();
+      refreshPosts()
     }
 
     return () => {
-      isMounted = false;
-    };
-  }, []);
+      isMounted = false
+    }
+  }, [])
 
   const refreshPosts = async () => {
     try {
-      setOtherUserPosts([]);
-      setRefresh(true);
-      setLastPID(0);
+      setOtherUserPosts([])
+      setRefresh(true)
+      setLastPID(0)
 
       const params = {
         uid: userID,
         limit: 5,
         page: 0,
-      };
-
-      const res = await PostService.getUserPosts(params);
-      setLastPID(1);
-      setIsLoading(false);
-
-      if (res.data.length > 0) {
-        setOtherUserPosts(res.data);
       }
 
-      setRefresh(false);
+      const res = await PostService.getUserPosts(params)
+      setLastPID(1)
+      setIsLoading(false)
+
+      if (res.data.length > 0) {
+        setOtherUserPosts(res.data)
+      }
+
+      setRefresh(false)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const getMorePost = async () => {
     if (!onEndReachedCalledDuringMomentum) {
-      setOnEndReachedCalledDuringMomentum(true);
-      setFecthMore(true);
+      setOnEndReachedCalledDuringMomentum(true)
+      setFecthMore(true)
 
       if (!thereIsMoreFlag) {
-        setFecthMore(false);
+        setFecthMore(false)
         // console.log('Stopping getting more post');
-        return;
+        return
       }
 
       let getPostsParams = {
         uid: userID,
         limit: 5,
         page: lastPID,
-      };
+      }
 
       await PostService.getUserPosts(getPostsParams)
-        .then((res) => {
+        .then(res => {
           if (res.success) {
-            setLastPID(lastPID + 1);
-            setOtherUserPosts((prev) => [...prev, ...res.data]);
-            setFecthMore(false);
+            setLastPID(lastPID + 1)
+            setOtherUserPosts(prev => [...prev, ...res.data])
+            setFecthMore(false)
           } else {
-            setThereIsMoreFlag(false);
-            setFecthMore(false);
+            setThereIsMoreFlag(false)
+            setFecthMore(false)
           }
         })
-        .catch((err) => {
-          setFecthMore(false);
-        });
+        .catch(err => {
+          setFecthMore(false)
+        })
     }
     // if (!onEndReachedCalledDuringMomentum) {
     //   setOnEndReachedCalledDuringMomentum(true);
@@ -139,24 +139,24 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
     //       setFecthMore(false);
     //     });
     // }
-  };
+  }
 
-  const onMomentumScrollBegin = () =>
-    setOnEndReachedCalledDuringMomentum(false);
+  const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(false)
 
   if (data.length > 0) {
     return (
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.post_id}
+        keyExtractor={item => item.post_id}
         onRefresh={refreshPosts}
         refreshing={refresh}
         onEndReached={getMorePost}
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
         ListFooterComponent={
-          <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+          <View
+            style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
             {fetchMore ? (
               <ActivityIndicator />
             ) : (
@@ -167,33 +167,33 @@ const UserPosts = ({data, type, isLoading, setIsLoading, userID}) => {
           </View>
         }
       />
-    );
+    )
   }
 
   if (type === 'own' && data.length == 0) {
     if (refresh) {
       return (
         <View>
-          <LoadingScreen.LoadingOwnPost />
-          <LoadingScreen.LoadingOwnPost />
-          <LoadingScreen.LoadingOwnPost />
-          <LoadingScreen.LoadingOwnPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
         </View>
-      );
+      )
     }
-    return <PostOwnEmpty isLoading={isLoading} />;
+    return <PostOwnEmpty isLoading={isLoading} />
   }
 
   if (type !== 'own') {
     if (refresh) {
-      return <ActivityIndicator />;
+      return <ActivityIndicator />
     }
     return (
-      <View style={{alignItems: 'center', marginTop: 8, marginBottom: 24}}>
+      <View style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
         <AppText>No user posts</AppText>
       </View>
-    );
+    )
   }
-};
+}
 
-export default UserPosts;
+export default UserPosts

@@ -28,19 +28,16 @@ import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
 import LoadingScreen from './loading'
 import SinglePostOthersView from './SinglePostOthersView'
+import { PostService } from '@/services'
 
-const Post = ({ data, type, isLoading }) => {
+const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
   const { user } = useContext(UserContext)
   const [showPost, setShowPost] = useState(false)
-  const [likePost, setLikePost] = useState(false)
+
   // let city, province, country
   let images = []
 
   // promise
-
-  console.log('DATA')
-  console.log(data)
-
   const {
     user: { display_name, profile_photo },
     date_posted,
@@ -57,7 +54,7 @@ const Post = ({ data, type, isLoading }) => {
     description,
     items,
     uid,
-    post_id,
+    id,
     cover_photos,
     account_verified,
     email,
@@ -66,7 +63,11 @@ const Post = ({ data, type, isLoading }) => {
     is_multiple,
     full_name,
     price,
+    likers,
   } = data
+
+  const isLike = ~likers?.indexOf(user.uid)
+  const [likePost, setLikePost] = useState(isLike)
 
   const VerifiedBadge = () => {
     return account_verified ? <Verified /> : <></>
@@ -76,7 +77,8 @@ const Post = ({ data, type, isLoading }) => {
     return '• ' + timePassed(time) + ' ago'
   }
 
-  const toggleLike = () => {
+  const toggleLike = async () => {
+    const res = await PostService.likeUnlike(id, isLike)
     setLikePost(!likePost)
   }
 
@@ -98,6 +100,10 @@ const Post = ({ data, type, isLoading }) => {
       viewing: true,
       created: false,
       edited: false,
+    }
+    if (type === 'liked') {
+      toggleLikePost()
+      toggleMenu()
     }
 
     if (user && user.uid === uid)
@@ -255,7 +261,12 @@ const Post = ({ data, type, isLoading }) => {
     return (
       <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
         <PaddingView paddingSize={2} style={styles.container}>
-          <ProfileInfo userInfo={userInfo} type="dashboard" />
+          <ProfileInfo
+            userInfo={userInfo}
+            type="dashboard"
+            toggleLikePost={toggleLikePost}
+            toggleMenu={toggleMenu}
+          />
 
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>

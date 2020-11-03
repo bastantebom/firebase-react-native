@@ -17,6 +17,7 @@ export const ContextProvider = ({ children }) => {
   const [posts, setPosts] = useState([])
   const [userPosts, setUserPosts] = useState([])
   const [otherUserPosts, setOtherUserPosts] = useState([])
+  const [likedPosts, setLikedPosts] = useState([])
 
   const [locationFilter, setLocationFilter] = useState(null)
 
@@ -326,6 +327,8 @@ export const ContextProvider = ({ children }) => {
         handleOnUserEndReach,
         refreshFollowerList,
         setRefreshFollowerList,
+        likedPosts,
+        setLikedPosts,
       }}>
       {children}
     </Context.Provider>

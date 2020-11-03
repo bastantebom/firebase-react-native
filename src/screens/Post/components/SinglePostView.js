@@ -44,7 +44,7 @@ import { ImageModal } from './ImageModal'
 const SinglePostView = props => {
   const { othersView = false } = props.route?.params
 
-  console.log(props.route.params)
+  //console.log(props.route.params)
 
   const {
     user: { display_name, profile_photo, email, phone_number },
@@ -145,11 +145,11 @@ const SinglePostView = props => {
     },
   ]
   const deletePost = async () => {
-    console.log('delete this post with id: ')
-    console.log(post_id)
+    //console.log('delete this post with id: ')
+    //console.log(post_id)
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState()
-      console.log('deletePost ' + userInfo.post_count)
+      //console.log('deletePost ' + userInfo.post_count)
       setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
       navigation.goBack()
     })
@@ -162,7 +162,7 @@ const SinglePostView = props => {
         toggleEllipsisState()
         //console.log('deletePost ' + userInfo.post_count);
         setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
-        console.log(userInfo.hidden_posts)
+        //console.log(userInfo.hidden_posts)
         navigation.goBack()
       }
     )

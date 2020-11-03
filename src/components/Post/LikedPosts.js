@@ -6,21 +6,28 @@ import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import { PostService } from '@/services'
 import { AppText } from '@/components'
-import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
+import PostOwnEmpty from '@/screens/Profile/components/Account/EmptyLikedPosts'
 import LoadingScreen from './loading'
 
-const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
-  const { user, userInfo } = useContext(UserContext)
-  const {
-    setUserPosts,
-    userPosts,
-    setOtherUserPosts,
-    otherUserPosts,
-    needsRefresh,
-    setNeedsRefresh,
-  } = useContext(Context)
+const LikedPosts = ({
+  data,
+  type,
+  isLoading,
+  setIsLoading,
+  userID,
+  toggleLikePost,
+  toggleMenu,
+}) => {
+  const { user } = useContext(UserContext)
+  const { setLikedPosts } = useContext(Context)
   const renderItem = ({ item }) => (
-    <Post data={item} type={type} isLoading={isLoading} />
+    <Post
+      data={item}
+      type={type}
+      isLoading={isLoading}
+      toggleLikePost={toggleLikePost}
+      toggleMenu={toggleMenu}
+    />
   )
 
   const [refresh, setRefresh] = useState(false)
@@ -36,41 +43,37 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
     let isMounted = true
 
     if (isMounted) {
-      if (needsRefresh) {
-        refreshPosts()
-      }
+      refreshPosts()
     }
 
     return () => {
       isMounted = false
     }
-  }, [needsRefresh])
+  }, [])
 
   const refreshPosts = async () => {
     try {
-      setUserPosts([])
-      setLastPID(0)
+      setLikedPosts([])
       setRefresh(true)
+      setLastPID(0)
 
       const params = {
-        uid: userID,
+        uid: user.uid,
         limit: 5,
         page: 0,
       }
 
-      const res = await PostService.getUserPosts(params)
+      const res = await PostService.getLikedPosts(params)
       setLastPID(1)
       setIsLoading(false)
 
       if (res.data.length > 0) {
-        //console.log(res);
-        setUserPosts(res.data)
+        setLikedPosts(res.data)
       }
 
-      setNeedsRefresh(false)
       setRefresh(false)
     } catch (err) {
-      setRefresh(false)
+      console.log(err.message)
     }
   }
 
@@ -81,37 +84,24 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
 
       if (!thereIsMoreFlag) {
         setFecthMore(false)
-        // console.log('Stopping getting more post');
         return
       }
 
       let getPostsParams = {
-        uid: userID,
+        uid: user.uid,
         limit: 5,
         page: lastPID,
       }
-      //console.log('GET MORE POST');
-      //console.log(lastPID);
-      // console.log(getPostsParams);
 
-      await PostService.getUserPosts(getPostsParams)
-        .then(res => {
-          //console.log('API CALL');
-          if (res.success) {
-            //console.log(res);
-            setLastPID(lastPID + 1)
-            setUserPosts(
-              res.data ? [...userPosts, ...res.data] : [...userPosts]
-            )
-            setFecthMore(false)
-          } else {
-            setThereIsMoreFlag(false)
-            setFecthMore(false)
-          }
-        })
-        .catch(err => {
-          setFecthMore(false)
-        })
+      try {
+        const res = await PostService.getLikedPost(getPostsParams)
+        setLastPID(lastPID + 1)
+        setLikedPosts(prev => [...prev, ...res.data])
+        setFecthMore(false)
+      } catch (error) {
+        setThereIsMoreFlag(false)
+        setFecthMore(false)
+      }
     }
   }
 
@@ -135,7 +125,7 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
               <ActivityIndicator />
             ) : (
               <AppText>
-                {lastPID === 'none' ? 'No more userPosts available' : ''}
+                {lastPID === 'none' ? 'No more liked available' : ''}
               </AppText>
             )}
           </View>
@@ -144,7 +134,7 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
     )
   }
 
-  if (type === 'own' && data.length == 0) {
+  if (type === 'liked' && !data.length) {
     if (refresh) {
       return (
         <View>
@@ -158,7 +148,7 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
     return <PostOwnEmpty isLoading={isLoading} />
   }
 
-  if (type !== 'own') {
+  if (type !== 'liked') {
     if (refresh) {
       return <ActivityIndicator />
     }
@@ -170,4 +160,4 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
   }
 }
 
-export default UserPosts
+export default LikedPosts

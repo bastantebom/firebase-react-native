@@ -21,6 +21,7 @@ const getPosts = async payload => {
         ...post,
         price: post.is_multiple ? '' : post.items[0].price,
         user: (await ProfileInfoService.getUser(post.uid)).data,
+        likers: (await getLikers(post.id)).likes,
       }))
     ),
   }
@@ -67,6 +68,51 @@ const getUserPosts = async payload => {
 
   const { data, success } = response
 
+  return {
+    success,
+    data: await Promise.all(
+      data.map(async post => ({
+        ...post,
+        price: post.is_multiple ? '' : post.items[0].price,
+        user: (await ProfileInfoService.getUser(post.uid)).data,
+      }))
+    ),
+  }
+}
+
+const getLikedPosts = async payload => {
+  // console.log(
+  //   `/users/${payload.uid}/posts/liked?limit=${payload.limit}&page=${payload.page}`
+  // )
+  const response = await BaseAPI({
+    url: `/users/${payload.uid}/posts/liked?limit=${payload.limit}&page=${payload.page}`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  const { data, success } = response
+  return {
+    success,
+    data: await Promise.all(
+      data.map(async post => ({
+        ...post,
+        price: post.is_multiple ? '' : post.items[0].price,
+        user: (await ProfileInfoService.getUser(post.uid)).data,
+      }))
+    ),
+  }
+}
+
+const getArchivedPosts = async payload => {
+  const response = await BaseAPI({
+    url: `users/${payload.uid}/posts/archived?limit=${payload.limit}&page=${payload.page}`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  const { data, success } = response
   return {
     success,
     data: await Promise.all(
@@ -192,6 +238,28 @@ const getPost = PID => {
   })
 }
 
+const likeUnlike = async (pid, isLike) => {
+  const mark = isLike ? 'unlike' : 'like'
+  return BaseAPI({
+    url: `/posts/${pid}/${mark}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+const getLikers = async pid => {
+  //console.log(`/posts/${pid}/likes`)
+  return BaseAPI({
+    url: `/posts/${pid}/likes`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
 const PostService = {
   createPost,
   getPosts,
@@ -205,6 +273,10 @@ const PostService = {
   reportPost,
   unHidePost,
   getPost,
+  getLikedPosts,
+  getArchivedPosts,
+  likeUnlike,
+  getLikers,
 }
 
 export default PostService

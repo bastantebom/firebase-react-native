@@ -2,7 +2,7 @@
  * Component for profile info
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -10,23 +10,34 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
-} from 'react-native';
-import Modal from 'react-native-modal';
-import { useNavigation } from '@react-navigation/native';
+} from 'react-native'
+import Modal from 'react-native-modal'
+import { useNavigation } from '@react-navigation/native'
 
-import { AppText, CacheableImage } from '@/components';
-import { GlobalStyle, Colors, normalize, timePassed } from '@/globals';
-import { Verified, ProfileImageDefault, StarRating} from '@/assets/images/icons';
-import { UserContext } from '@/context/UserContext';
-import { Profile } from '@/screens/Profile';
-import ProfileInfoModal from './ProfileInfoModal';
-import AppButton from '../AppButton/AppButton';
-import { PaddingView } from '../AppViewContainer';
+import { AppText, CacheableImage } from '@/components'
+import { GlobalStyle, Colors, normalize, timePassed } from '@/globals'
+import {
+  Verified,
+  ProfileImageDefault,
+  StarRating,
+} from '@/assets/images/icons'
+import { UserContext } from '@/context/UserContext'
+import { Profile } from '@/screens/Profile'
+import ProfileInfoModal from './ProfileInfoModal'
+import AppButton from '../AppButton/AppButton'
+import { PaddingView } from '../AppViewContainer'
 
-const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
-  const { user } = useContext(UserContext);
-  const [profileModal, setProfileModal] = useState(false);
-  const navigation = useNavigation();
+const ProfileInfo = ({
+  userInfo,
+  type,
+  cancelModalToggle,
+  isModal,
+  toggleMenu,
+  toggleLikePost,
+}) => {
+  const { user } = useContext(UserContext)
+  const [profileModal, setProfileModal] = useState(false)
+  const navigation = useNavigation()
 
   const {
     username = 'defaultuser',
@@ -35,18 +46,18 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
     display_name = 'Busy Bee',
     date_posted,
     uid,
-    post_type
-  } = userInfo;
+    post_type,
+  } = userInfo
 
   const VerifiedBadge = ({ width = 10, height = 11.25 }) => {
     return account_verified ? (
       <Verified width={normalize(width)} height={normalize(height)} />
-    ) : null;
-  };
+    ) : null
+  }
 
-  let timeAgo = (time) => {
-    return '• ' + timePassed(time) + ' ago';
-  };
+  let timeAgo = time => {
+    return '• ' + timePassed(time) + ' ago'
+  }
 
   const ProfilePhoto = ({ size }) => {
     return profile_photo ? (
@@ -57,33 +68,36 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
         }}
       />
     ) : (
-        <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-      );
-  };
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    )
+  }
 
   openProfileHandler = () => {
     // console.log(user.uid);
-    console.log('I HAVE THIS UID');
-    console.log(uid);
+    //console.log('I HAVE THIS UID')
+    //console.log(uid)
+
+    toggleLikePost()
+    toggleMenu()
 
     if (user && user.uid === uid) {
-      isModal && cancelModalToggle();
+      isModal && cancelModalToggle()
       navigation.navigate('Profile', {
         screen: 'Profile',
-      });
+      })
     } else {
-      isModal && cancelModalToggle();
-      console.log('Going to NBTS');
+      isModal && cancelModalToggle()
+      console.log('Going to NBTS')
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
         params: { uid: uid },
-      });
+      })
       // navigation.navigate('Post', {
       //   screen: 'SinglePostView',
       //   params: computedData,
       // });
     }
-  };
+  }
 
   if (type === 'dashboard')
     return (
@@ -142,24 +156,24 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
               <AppText
                 textStyle="eyebrow2"
                 color={Colors.contentPlaceholder}
-                customStyle={{paddingHorizontal: 4}}
-              >
+                customStyle={{ paddingHorizontal: 4 }}>
                 • in
               </AppText>
               <AppText
                 textStyle="eyebrow2"
                 color={
-                  post_type === 'service' ? Colors.secondaryBrinkPink : 
-                  post_type === 'sell' ? Colors.contentOcean : 
-                  Colors.secondaryMountainMeadow
+                  post_type === 'service'
+                    ? Colors.secondaryBrinkPink
+                    : post_type === 'sell'
+                    ? Colors.contentOcean
+                    : Colors.secondaryMountainMeadow
                 }
-                customStyle={{paddingHorizontal: 4}}
-              >
-                { 
-                  post_type === 'sell' ? 'Sell' : 
-                  post_type === 'service' ? 'Services' :
-                  'Needs'
-                }
+                customStyle={{ paddingHorizontal: 4 }}>
+                {post_type === 'sell'
+                  ? 'Sell'
+                  : post_type === 'service'
+                  ? 'Services'
+                  : 'Needs'}
               </AppText>
             </View>
           </View>
@@ -184,7 +198,7 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
           />
         </Modal> */}
       </TouchableOpacity>
-    );
+    )
 
   // OWN POST VIEW
   if (type === 'own-post')
@@ -209,7 +223,7 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
           </View>
         </View>
       </TouchableOpacity>
-    );
+    )
 
   if (type === 'block-user')
     return (
@@ -242,7 +256,7 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <TouchableOpacity
             onPress={() => {
-              cancelModalToggle();
+              cancelModalToggle()
             }}
             style={{
               paddingHorizontal: normalize(8),
@@ -263,7 +277,7 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
           </TouchableOpacity>
         </View>
       </View>
-    );
+    )
 
   if (type === 'follow')
     return (
@@ -317,8 +331,8 @@ const ProfileInfo = ({ userInfo, type, cancelModalToggle, isModal }) => {
           </TouchableOpacity> */}
         </View>
       </View>
-    );
-};
+    )
+}
 
 const styles = StyleSheet.create({
   userInfoImageContainer: {
@@ -348,6 +362,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     alignItems: 'center',
   },
-});
+})
 
-export default ProfileInfo;
+export default ProfileInfo

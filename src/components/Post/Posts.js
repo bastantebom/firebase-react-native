@@ -9,7 +9,8 @@ import { AppText } from '@/components'
 import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
 import LoadingScreen from './loading'
 import { normalize } from '@/globals'
-import { ProfileInfoService } from '@/services'
+
+//import { PostService } from '@/services'
 
 const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   const { user, userInfo } = useContext(UserContext)
@@ -82,6 +83,8 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
 
         const res = await PostService.getPosts(params)
         if (res.data && res.data.length > 0) {
+          //console.log('0000000000000000000')
+          //console.log(res.data)
           setPosts(res.data)
         }
 
@@ -207,15 +210,15 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   //   }
   // };
 
-  console.log('++++++++++++++++++++++++++')
-  console.log(posts)
+  //console.log('++++++++++++++++++++++++++')
+  //console.log(posts)
 
   if (data.length > 0) {
     return (
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={item => item.post_id}
+        keyExtractor={item => item.id}
         onRefresh={refreshPosts}
         refreshing={refresh}
         onEndReached={() => getMorePost()}
