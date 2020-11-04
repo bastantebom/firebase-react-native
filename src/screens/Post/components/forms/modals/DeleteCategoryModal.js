@@ -45,8 +45,8 @@ const DeleteCategoryModal = ({ close, categoryName }) => {
     cats.map(category => {
       if (category.category === categoryName) {
         CategoryService.deleteCategory(category.id).then(res => {
-          console.log('DELETE CATEGORY BACKEND RESPONSE')
-          console.log(res)
+          // console.log('DELETE CATEGORY BACKEND RESPONSE')
+          // console.log(res)
         })
       }
       return

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, { useEffect, useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
@@ -7,8 +7,8 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Dimensions,
-} from 'react-native';
-import Modal from 'react-native-modal';
+} from 'react-native'
+import Modal from 'react-native-modal'
 
 import {
   AppText,
@@ -16,18 +16,18 @@ import {
   FloatingAppInput,
   AppCheckbox,
   BottomSheetHeader,
-} from '@/components';
-import {AngleDown, PostInfo} from '@/assets/images/icons';
-import {Colors, normalize} from '@/globals';
-import Section from '../../Section';
-import ItemImageUpload from '../../ItemImageUpload';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AppInput, PriceInput} from '@/components/AppInput';
+} from '@/components'
+import { AngleDown, PostInfo } from '@/assets/images/icons'
+import { Colors, normalize } from '@/globals'
+import Section from '../../Section'
+import ItemImageUpload from '../../ItemImageUpload'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { AppInput, PriceInput } from '@/components/AppInput'
 
-import AddCategoryModal from './AddCategoryModal';
-import AddedItemPreview from './AddedItemPreview';
-import {CategoryService} from '@/services';
-import {Context} from '@/context';
+import AddCategoryModal from './AddCategoryModal'
+import AddedItemPreview from './AddedItemPreview'
+import { CategoryService } from '@/services'
+import { Context } from '@/context'
 
 const EditItemModal = ({
   closeModal,
@@ -37,38 +37,32 @@ const EditItemModal = ({
   indexOfItemToEdit,
   ...props
 }) => {
-  console.log('EDIT ITEM SCREEN');
-  console.log(props.route);
+  const { navigation } = props
 
-  const {navigation} = props;
+  const { itemToEdit } = props?.route?.params
 
-  const {itemToEdit} = props?.route?.params;
+  const { editItem } = useContext(Context)
 
-  const {editItem} = useContext(Context);
+  const [title, setTitle] = useState(itemToEdit.title)
+  const [description, setDescription] = useState(itemToEdit.description)
+  const [itemImage, setItemImage] = useState(itemToEdit.itemImage)
+  const [price, setPrice] = useState(itemToEdit.price)
+  const [free, setFree] = useState(itemToEdit.price === 'Free' ? true : false)
+  const [categoryName, setCategoryName] = useState(itemToEdit.categoryName)
 
-  const [title, setTitle] = useState(itemToEdit.title);
-  const [description, setDescription] = useState(itemToEdit.description);
-  const [itemImage, setItemImage] = useState(itemToEdit.itemImage);
-  const [price, setPrice] = useState(itemToEdit.price);
-  const [free, setFree] = useState(itemToEdit.price === 'Free' ? true : false);
-  const [categoryName, setCategoryName] = useState(itemToEdit.categoryName);
+  const [categoryModal, setCategoryModal] = useState(false)
+  const [previewItemModal, setPreviewItemModal] = useState(false)
 
-  const [categoryModal, setCategoryModal] = useState(false);
-  const [previewItemModal, setPreviewItemModal] = useState(false);
-
-  const [buttonEnabled, setButtonEnabled] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [buttonEnabled, setButtonEnabled] = useState(false)
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
 
   // If editing
-  const [index, setIndex] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
+  const [index, setIndex] = useState(0)
+  const [isEditing, setIsEditing] = useState(false)
 
   // const [data, setData] = useState([]);
 
   const editItemHandler = () => {
-    console.log('Data submitted: ');
-    console.log(setData);
-
     let newData = {
       ...itemToEdit,
       title: title,
@@ -76,65 +70,65 @@ const EditItemModal = ({
       itemImage: itemImage,
       price: price,
       categoryName: categoryName,
-    };
+    }
 
     // let itemArray = [...data];
 
     // itemArray[indexOfItemToEdit] = newData;
 
-    editItem(newData);
-    clearData();
+    editItem(newData)
+    clearData()
 
     navigation.push('AddedItemPreviewScreen', {
       categoryName: categoryName,
-    });
+    })
 
     // setPreviewItemModal(true);
-  };
+  }
 
   const clearData = () => {
-    setTitle('');
-    setDescription('');
-    setItemImage();
-    setPrice();
-    setCategoryName('');
-    setFree(false);
-  };
+    setTitle('')
+    setDescription('')
+    setItemImage()
+    setPrice()
+    setCategoryName('')
+    setFree(false)
+  }
 
   const freeItemHandler = () => {
-    setFree(!free);
-  };
+    setFree(!free)
+  }
 
-  const [categoryList, setCategoryList] = useState([]);
+  const [categoryList, setCategoryList] = useState([])
 
   useEffect(() => {
     // CategoryService.deleteCategory('Cdn4bLyPq7RXKgMrXkJI');
-    CategoryService.getCategories().then((res) => {
-      setCategoryList(res);
-    });
-  }, []);
+    CategoryService.getCategories().then(res => {
+      setCategoryList(res)
+    })
+  }, [])
 
   useEffect(() => {
     if (free) {
-      setPrice('Free');
+      setPrice('Free')
     } else {
       if (price === 'Free') {
-        setPrice('');
+        setPrice('')
       }
     }
-  }, [free, price]);
+  }, [free, price])
 
   // check if all required fields are not empty
   useEffect(() => {
     if (title && price) {
-      setButtonEnabled(true);
+      setButtonEnabled(true)
     } else {
-      setButtonEnabled(false);
+      setButtonEnabled(false)
     }
-  }, [title, price]);
+  }, [title, price])
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         close={() => navigation.goBack()}
         title="Add an Item"
@@ -173,7 +167,7 @@ const EditItemModal = ({
                 alignItems: 'center',
                 marginTop: 24,
               }}>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 {categoryName === 'uncategorized' ? (
                   <AppText textStyle="body2">Select Category</AppText>
                 ) : (
@@ -181,7 +175,7 @@ const EditItemModal = ({
                 )}
                 <AppText
                   textStyle="body1"
-                  customStyle={{textTransform: 'capitalize'}}>
+                  customStyle={{ textTransform: 'capitalize' }}>
                   {categoryName}
                 </AppText>
               </View>
@@ -190,7 +184,7 @@ const EditItemModal = ({
           </Section>
 
           <Section>
-            <View style={{alignItems: 'center', marginBottom: 24}}>
+            <View style={{ alignItems: 'center', marginBottom: 24 }}>
               <View
                 style={{
                   // backgroundColor: 'red',
@@ -199,8 +193,8 @@ const EditItemModal = ({
                   borderRadius: 4,
                 }}>
                 <ItemImageUpload
-                  imgSourceHandler={(itemImage) => {
-                    setItemImage(itemImage);
+                  imgSourceHandler={itemImage => {
+                    setItemImage(itemImage)
                   }}
                   imgSrc={itemImage}
                 />
@@ -208,10 +202,10 @@ const EditItemModal = ({
             </View>
 
             <FloatingAppInput
-              customStyle={{marginBottom: 16}}
+              customStyle={{ marginBottom: 16 }}
               label="Item Name"
               value={title}
-              onChangeText={(text) => setTitle(text)}
+              onChangeText={text => setTitle(text)}
             />
 
             <TextInput
@@ -234,7 +228,7 @@ const EditItemModal = ({
                 marginBottom: 16,
                 textAlign: 'left',
               }}
-              onChangeText={(text) => setDescription(text)}
+              onChangeText={text => setDescription(text)}
               underlineColorAndroid={'transparent'}
               textAlignVertical="top"
               scrollEnabled={false}
@@ -247,7 +241,7 @@ const EditItemModal = ({
               onChangeText={(text) => setTitle(text)}
             /> */}
 
-            <View style={{marginBottom: 64}}>
+            <View style={{ marginBottom: 64 }}>
               {/* <FloatingAppInput
                 label="Price"
                 customStyle={{marginBottom: 8}}
@@ -258,7 +252,7 @@ const EditItemModal = ({
               <PriceInput
                 value={price}
                 keyboardType="number-pad"
-                onChangeText={(text) => setPrice(text)}
+                onChangeText={text => setPrice(text)}
                 placeholder="00"
                 editable={!free}
               />
@@ -271,9 +265,9 @@ const EditItemModal = ({
                 <TouchableOpacity
                   onPress={freeItemHandler}
                   activeOpacity={0.7}
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <PostInfo />
-                  <AppText customStyle={{marginLeft: 4}}>
+                  <AppText customStyle={{ marginLeft: 4 }}>
                     I'm offering this item for FREE
                   </AppText>
                 </TouchableOpacity>
@@ -322,7 +316,7 @@ const EditItemModal = ({
         customBackdrop={
           <TouchableWithoutFeedback
             onPress={() => setCategoryModal(!categoryModal)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <AddCategoryModal
@@ -353,7 +347,7 @@ const EditItemModal = ({
         />
       </Modal>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default EditItemModal;
+export default EditItemModal

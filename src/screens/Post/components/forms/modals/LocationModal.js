@@ -38,16 +38,14 @@ const AddedItemPreview = ({
   const [addressSelected, setAddressSelected] = useState()
 
   const openMapHandler = () => {
-    console.log('OPEN MAP')
-    console.log(addresses.find(address => address.default))
+    // console.log('OPEN MAP')
+    // console.log(addresses.find(address => address.default))
     setAddressSelected(addresses.find(address => address.default))
 
     showLocationModal(true)
   }
 
   const getSelectedAddress = fullAddress => {
-    console.log('Full address from map')
-    console.log(fullAddress) // => object {city, country, full_address}
     setPickupAddress(fullAddress)
     setPickupState({
       location: fullAddress,
@@ -56,8 +54,6 @@ const AddedItemPreview = ({
   }
 
   const selectSavedAddress = address => {
-    console.log('Select from saved address')
-    console.log(address)
     setPickupAddress(address)
     setPickupState({
       location: address,
@@ -90,12 +86,13 @@ const AddedItemPreview = ({
           </TouchableOpacity>
 
           <TouchableOpacity style={{ marginTop: 16 }} onPress={openMapHandler}>
-            <AppText color={Colors.contentOcean}>Search from map</AppText>
+            <AppText color={Colors.contentOcean} textStyle="body2">
+              Search from map
+            </AppText>
           </TouchableOpacity>
           <View>
             <AppText>Saved Address</AppText>
             {addresses.map(address => {
-              console.log(address)
               return (
                 <TouchableOpacity
                   style={{ marginTop: 16 }}

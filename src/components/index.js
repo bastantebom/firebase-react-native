@@ -45,7 +45,10 @@ import ItemCategory from './ItemCategory/ItemCategory'
 
 import RangeSlider from './Slider/RangeSlider'
 
+import Divider from './Divider'
+
 export {
+  Divider,
   ItemCategory,
   Item,
   ProfileInfoModal,

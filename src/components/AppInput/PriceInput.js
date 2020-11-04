@@ -1,15 +1,15 @@
-import React, {createRef, useState} from 'react';
-import {TextInput, View, TouchableOpacity} from 'react-native';
-import {AppText} from '@/components';
-import {Colors, normalize} from '@/globals';
+import React, { createRef, useState } from 'react'
+import { TextInput, View, TouchableOpacity } from 'react-native'
+import { AppText } from '@/components'
+import { Colors, normalize } from '@/globals'
 
-const PriceInput = ({styles, ...props}) => {
-  const inputRef = createRef();
+const PriceInput = ({ style, label, ...props }) => {
+  const inputRef = createRef()
 
   const handleClick = () => {
-    console.log('focus');
-    inputRef.current.focus();
-  };
+    console.log('focus')
+    inputRef.current.focus()
+  }
 
   return (
     <TouchableOpacity
@@ -25,10 +25,10 @@ const PriceInput = ({styles, ...props}) => {
           paddingHorizontal: 16,
           borderColor: Colors.neutralGray,
         },
-        styles,
+        style,
       ]}>
       <View>
-        <AppText textStyle="body2">Price</AppText>
+        <AppText textStyle="body2">{label ? label : 'Price '}</AppText>
         <AppText textStyle="body2">PHP</AppText>
       </View>
       <TextInput
@@ -37,8 +37,8 @@ const PriceInput = ({styles, ...props}) => {
         style={constantStyles.floatingInput}
       />
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 const constantStyles = {
   floatingInput: {
@@ -47,6 +47,6 @@ const constantStyles = {
     letterSpacing: 0.5,
     textAlign: 'right',
   },
-};
+}
 
-export default PriceInput;
+export default PriceInput

@@ -1,19 +1,19 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
+} from 'react-native'
 
-import {AppText, Item, ScreenHeaderTitle} from '@/components';
-import {Colors, normalize} from '@/globals';
-import {CircleAdd} from '@/assets/images/icons';
-import Modal from 'react-native-modal';
-import CategoryOptions from './CategoryOptions';
+import { AppText, Item, ScreenHeaderTitle } from '@/components'
+import { Colors, normalize } from '@/globals'
+import { CircleAdd } from '@/assets/images/icons'
+import Modal from 'react-native-modal'
+import CategoryOptions from './CategoryOptions'
 
-import {Context} from '@/context';
+import { Context } from '@/context'
 
 const AddedItemPreview = ({
   closeAddItemModal,
@@ -25,39 +25,39 @@ const AddedItemPreview = ({
   ...props
 }) => {
   // console.log(data);
-  const {getItemsByCategory, editItem} = useContext(Context);
+  const { getItemsByCategory, editItem } = useContext(Context)
 
-  const {navigation} = props;
+  const { navigation } = props
 
-  const {categoryName} = props?.route?.params;
+  const { categoryName } = props?.route?.params
 
-  const [items, setItems] = useState(getItemsByCategory(categoryName));
-  const [editItemModal, showEditItemModal] = useState(false);
-  const [itemToEdit, setItemToEdit] = useState(false);
-  const [indexOfItemToEdit, setIndexOfItemToEdit] = useState(0);
-  const [options, showOptions] = useState(false);
+  const [items, setItems] = useState(getItemsByCategory(categoryName))
+  const [editItemModal, showEditItemModal] = useState(false)
+  const [itemToEdit, setItemToEdit] = useState(false)
+  const [indexOfItemToEdit, setIndexOfItemToEdit] = useState(0)
+  const [options, showOptions] = useState(false)
 
   const AddAnotherItemHandler = () => {
     // console.log(navigation)
-    navigation.navigate('AddItemScreen');
-  };
+    navigation.navigate('AddItemScreen')
+  }
 
   const submitAddedItems = () => {
     // closeModal();
     // closeAddItemModal();
-    navigation.navigate('CreatePostScreen');
-  };
+    navigation.navigate('CreatePostScreen')
+  }
 
   const editItemHandler = (item, index) => {
-    console.log('Edit this:');
-    console.log(item);
-    setItemToEdit(item);
-    setIndexOfItemToEdit(index);
+    // console.log('Edit this:');
+    // console.log(item);
+    setItemToEdit(item)
+    setIndexOfItemToEdit(index)
 
-    console.log(editItem(item));
+    // console.log(editItem(item));
 
-    navigation.navigate('EditItemScreen', {itemToEdit: item});
-  };
+    navigation.navigate('EditItemScreen', { itemToEdit: item })
+  }
 
   const ItemList = () => {
     return items.map((item, index) => {
@@ -69,12 +69,12 @@ const AddedItemPreview = ({
             </AppText>
           </TouchableOpacity>
         </Item>
-      );
-    });
-  };
+      )
+    })
+  }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
           flex: 1,
@@ -84,24 +84,24 @@ const AddedItemPreview = ({
         <View>
           <ScreenHeaderTitle
             close={() => {
-              navigation.navigate('CreatePostScreen');
+              navigation.navigate('CreatePostScreen')
             }}
             title={categoryName}
             paddingSize={0}
             withOptions={true}
             openOptions={() => {
-              showOptions(true);
+              showOptions(true)
             }}
           />
-          <View style={{paddingTop: 24}}>
+          <View style={{ paddingTop: 24 }}>
             <ItemList />
           </View>
 
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={AddAnotherItemHandler}
-            style={{marginTop: 24}}>
-            <AppText textStyle="caption" customStyle={{alignItems: 'center'}}>
+            style={{ marginTop: 24 }}>
+            <AppText textStyle="caption" customStyle={{ alignItems: 'center' }}>
               <CircleAdd /> Add an Item
             </AppText>
           </TouchableOpacity>
@@ -132,7 +132,7 @@ const AddedItemPreview = ({
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => showOptions(false)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <CategoryOptions
@@ -141,7 +141,7 @@ const AddedItemPreview = ({
         />
       </Modal>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default AddedItemPreview;
+export default AddedItemPreview

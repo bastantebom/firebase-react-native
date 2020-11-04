@@ -1,30 +1,30 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   TouchableWithoutFeedback,
-} from 'react-native';
-import Modal from 'react-native-modal';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+} from 'react-native'
+import Modal from 'react-native-modal'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import {AppText, ScreenHeaderTitle} from '@/components';
+import { AppText, ScreenHeaderTitle } from '@/components'
 
-import PostHeader from './components/PostHeader';
-import {Colors, normalize} from '@/globals';
-import {GuestPost} from './components/GuestPost';
-import {Context} from '@/context';
-import {UserContext} from '@/context/UserContext';
+import PostHeader from './components/PostHeader'
+import { Colors, normalize } from '@/globals'
+import { GuestPost } from './components/GuestPost'
+import { Context } from '@/context'
+import { UserContext } from '@/context/UserContext'
 
-const PostScreen = ({togglePostModal, ...props}) => {
-  console.log('Post Screen Props');
-  console.log(props.route.params);
+const PostScreen = ({ togglePostModal, ...props }) => {
+  // console.log('Post Screen Props')
+  // console.log(props.route.params)
 
-  const {card} = props?.route?.params;
+  const { card } = props?.route?.params
 
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const {user} = useContext(UserContext);
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const { user } = useContext(UserContext)
   const {
     setCoverPhoto,
     setPostCameraImage,
@@ -32,35 +32,31 @@ const PostScreen = ({togglePostModal, ...props}) => {
     setPostImage,
     setImageCount,
     setImageCurrent,
-  } = useContext(Context);
+  } = useContext(Context)
 
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
-  const closeHandler = (value) => {
+    setShowCancelModal(!showCancelModal)
+  }
+  const closeHandler = value => {
     if (value === 'continue') {
-      cancelModalToggle();
-      // setPostImage([]);
-      setCoverPhoto([]);
-      setPostCameraImage([]);
-      setSelected([]);
-      setImageCount(0);
-      setImageCurrent('');
-      // setTimeout(() => {
-      //   togglePostModal();
-      // }, 200);
-      props.navigation.goBack();
+      cancelModalToggle()
+      setCoverPhoto([])
+      setPostCameraImage([])
+      setSelected([])
+      setImageCount(0)
+      setImageCurrent('')
+      props.navigation.goBack()
     }
 
-    cancelModalToggle();
-  };
+    cancelModalToggle()
+  }
 
   if (!user) {
-    return <GuestPost />;
+    return <GuestPost />
   }
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: Colors.neutralsZircon}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.neutralsZircon }}>
       <View style={styles.container}>
         <ScreenHeaderTitle
           close={closeHandler}
@@ -95,7 +91,7 @@ const PostScreen = ({togglePostModal, ...props}) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -107,17 +103,17 @@ const PostScreen = ({togglePostModal, ...props}) => {
             justifyContent: 'center',
             padding: 16,
           }}>
-          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
             Cancel Post?
           </AppText>
 
-          <AppText textStyle="caption" customStyle={{textAlign: 'center'}}>
+          <AppText textStyle="caption" customStyle={{ textAlign: 'center' }}>
             You haven't finished your post yet.
           </AppText>
           <AppText
             textStyle="caption"
-            customStyle={{textAlign: 'center'}}
-            customStyle={{marginBottom: 16}}>
+            customStyle={{ textAlign: 'center' }}
+            customStyle={{ marginBottom: 16 }}>
             Do you want to leave without finishing?
           </AppText>
 
@@ -136,7 +132,11 @@ const PostScreen = ({togglePostModal, ...props}) => {
 
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
-            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
             <AppText textStyle="button2" color={Colors.contentOcean}>
               Cancel
             </AppText>
@@ -144,8 +144,8 @@ const PostScreen = ({togglePostModal, ...props}) => {
         </View>
       </Modal>
     </SafeAreaView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -154,6 +154,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutralsZircon,
     flex: 1,
   },
-});
+})
 
-export default PostScreen;
+export default PostScreen

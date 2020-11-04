@@ -194,9 +194,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                   </AppText> */}
                 </View>
               </TouchableOpacity>
-
               <Divider style={styles.dividerStyle} />
-
               <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
                 <View style={GlobalStyle.rowCenter}>
                   <NavigationPinRed width={16} height={16} />

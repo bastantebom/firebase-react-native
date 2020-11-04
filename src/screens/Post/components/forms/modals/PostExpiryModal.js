@@ -53,13 +53,13 @@ const PostExpiryModal = ({ close, postExpiry, setPostExpiry }) => {
   }
 
   const submitHandler = () => {
-    console.log(selectedDate)
-    console.log(selectedTime)
+    // console.log(selectedDate)
+    // console.log(selectedTime)
 
     let expiryTimeStamp = new Date(`${selectedDate} ${selectedTime}`)
 
-    setPostExpiry(expiryTimeStamp)
-    close()
+    // setPostExpiry(expiryTimeStamp)
+    // close()
   }
 
   return (

@@ -38,8 +38,6 @@ const ShippingMethodModal = ({
   pickupAddress,
 }) => {
   const navigation = useNavigation()
-
-  console.log(pickupState)
   const [pickUp, setPickUp] = useState(
     pickupState ? (Object.keys(pickupState).length === 0 ? false : true) : false
   )
@@ -65,25 +63,18 @@ const ShippingMethodModal = ({
     deliveryState?.radius?.distance || 0
   )
 
-  useEffect(() => {
-    console.log('SHIPPING METHODS')
-    console.log(pickupAddress)
-  }, [])
-
   const CheckboxStateHandler = val => {
     if (val === 'nationwide') {
-      setNationwide(true)
+      setNationwide(!nationwide)
       setWithinNotes('')
       setRangeValue(0)
-      setWithin(false)
       setDeliveryState({
         nationwide: {},
       })
     }
     if (val === 'within') {
-      setWithin(true)
+      setWithin(!within)
       setNationwideNotes('')
-      setNationwide(false)
       setDeliveryState({
         radius: {},
       })
@@ -93,7 +84,6 @@ const ShippingMethodModal = ({
   const [locationModal, showLocationModal] = useState(false)
 
   const openLocationHandler = () => {
-    console.log('asdas')
     showLocationModal(true)
   }
 
@@ -104,9 +94,11 @@ const ShippingMethodModal = ({
         title="Shipping Methods"
         paddingSize={2}
       />
-      <ScrollView style={{ paddingHorizontal: 16 }}>
-        <AppText textStyle="body2">Something, something</AppText>
-        <AppText textStyle="captionDashboard">Something, something</AppText>
+      <ScrollView style={{ paddingHorizontal: 24 }}>
+        <AppText textStyle="body1">How do you deliver your products?</AppText>
+        <AppText textStyle="captionDashboard">
+          Select the shipping options that you want to offer.
+        </AppText>
         <View style={styles.withBorder}>
           <View
             style={{
@@ -203,8 +195,9 @@ const ShippingMethodModal = ({
           </View>
           <AppText
             textStyle="captionDashboard"
+            customStyle={{ marginTop: 4 }}
             color={Colors.contentPlaceholder}>
-            Orders can be shipped nationwide or within your specifid area.
+            Orders can be shipped nationwide or within your specified area.
           </AppText>
           {delivery && (
             <>
@@ -221,7 +214,12 @@ const ShippingMethodModal = ({
                     CheckboxStateHandler('nationwide')
                   }}
                 />
-                <AppText>Nationwide</AppText>
+                <View style={{ flex: 1 }}>
+                  <AppText textStyle="caption">
+                    Ship your products via local courier or third party couriers
+                    (e.g. Lalamovem LBC, Grab Delivery)
+                  </AppText>
+                </View>
               </View>
               {nationwide && (
                 <TextInput
@@ -254,8 +252,6 @@ const ShippingMethodModal = ({
                         },
                       },
                     })
-                    console.log('DEL STATE')
-                    console.log(deliveryState)
                   }}
                   underlineColorAndroid={'transparent'}
                   textAlignVertical="top"
@@ -266,18 +262,21 @@ const ShippingMethodModal = ({
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
+                  marginTop: 24,
                 }}>
                 <AppCheckbox
                   style={{ paddingLeft: 0 }}
                   value={within}
                   valueChangeHandler={() => CheckboxStateHandler('within')}
                 />
-                <AppText>Within your specified area</AppText>
+                <AppText textStyle="caption">
+                  Deliver your products in person via your own vehicle or your
+                  delivery employees
+                </AppText>
               </View>
               {within && (
                 <>
-                  <PaddingView paddingSize={2}>
-                    <View
+                  {/* <View
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -288,8 +287,8 @@ const ShippingMethodModal = ({
                       <AppText textStyle="caption" color="#999">
                         {rangeValue} KM
                       </AppText>
-                    </View>
-                    <View
+                    </View> */}
+                  {/* <View
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -322,8 +321,7 @@ const ShippingMethodModal = ({
                       <AppText textStyle="caption" color="#999">
                         200
                       </AppText>
-                    </View>
-                  </PaddingView>
+                    </View> */}
                   <TextInput
                     value={withinNotes}
                     multiline={true}
@@ -366,6 +364,25 @@ const ShippingMethodModal = ({
           )}
         </View>
       </ScrollView>
+
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => {
+          setParentPaymentMethods(paymentMethods)
+          close()
+        }}
+        style={{
+          backgroundColor: Colors.primaryYellow,
+          paddingVertical: 8,
+          marginHorizontal: 24,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: 24,
+          borderRadius: 4,
+        }}>
+        <AppText textStyle="body3">Save</AppText>
+      </TouchableOpacity>
+
       <Modal
         isVisible={locationModal}
         animationIn="slideInRight"

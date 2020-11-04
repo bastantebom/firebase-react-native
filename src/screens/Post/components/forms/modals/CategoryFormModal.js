@@ -1,62 +1,62 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {SafeAreaView, TouchableOpacity, View, Keyboard} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react'
+import { SafeAreaView, TouchableOpacity, View, Keyboard } from 'react-native'
 
-import {AppText, FloatingAppInput, ScreenHeaderTitle} from '@/components';
-import {Colors, normalize} from '@/globals';
-import {CategoryService} from '@/services';
-import {Context} from '@/context';
-import {useNavigation} from '@react-navigation/native';
+import { AppText, FloatingAppInput, ScreenHeaderTitle } from '@/components'
+import { Colors, normalize } from '@/globals'
+import { CategoryService } from '@/services'
+import { Context } from '@/context'
+import { useNavigation } from '@react-navigation/native'
 
-const CategoryFormModal = ({close, editing, categoryName}) => {
+const CategoryFormModal = ({ close, editing, categoryName }) => {
   const [newCategoryName, setNewCategoryName] = useState(
-    editing ? categoryName : '',
-  );
-  const [buttonPadding, setButtonPadding] = useState(0);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+    editing ? categoryName : ''
+  )
+  const [buttonPadding, setButtonPadding] = useState(0)
+  const [buttonDisabled, setButtonDisabled] = useState(true)
 
-  const {items, editCategory} = useContext(Context);
+  const { items, editCategory } = useContext(Context)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const submitHandler = () => {
-    console.log('save new category');
-    CategoryService.createCategory(newCategoryName).then((res) => {
-      console.log(res);
-    });
-    close();
-  };
+    // console.log('save new category');
+    CategoryService.createCategory(newCategoryName).then(res => {
+      // console.log(res);
+    })
+    close()
+  }
 
-  const editHandler = async (oldCategoryName) => {
-    editCategory(newCategoryName, oldCategoryName);
+  const editHandler = async oldCategoryName => {
+    editCategory(newCategoryName, oldCategoryName)
 
-    let cats = await CategoryService.getCategories().then((res) => {
-      return res;
-    });
+    let cats = await CategoryService.getCategories().then(res => {
+      return res
+    })
 
-    cats.map((category) => {
+    cats.map(category => {
       if (category.category === oldCategoryName) {
-        CategoryService.editCategory(category.id, newCategoryName);
+        CategoryService.editCategory(category.id, newCategoryName)
       }
-      return;
-    });
+      return
+    })
 
     // CategoryService.editCategory(id, newCategoryName)
 
     navigation.push('AddedItemPreviewScreen', {
       categoryName: newCategoryName,
-    });
+    })
 
-    close();
-  };
+    close()
+  }
 
   useEffect(() => {
     if (newCategoryName) {
-      setButtonDisabled(false);
+      setButtonDisabled(false)
     }
-  }, [newCategoryName]);
+  }, [newCategoryName])
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         // close={closeModal}
         close={close}
@@ -75,13 +75,13 @@ const CategoryFormModal = ({close, editing, categoryName}) => {
         <FloatingAppInput
           label="Category"
           value={newCategoryName}
-          onChangeText={(value) => setNewCategoryName(value)}
-          customStyle={{marginBottom: normalize(16)}}
+          onChangeText={value => setNewCategoryName(value)}
+          customStyle={{ marginBottom: normalize(16) }}
           onInputFocus={() => {
-            setButtonPadding(340);
+            setButtonPadding(340)
           }}
           onInputBlur={() => {
-            setButtonPadding(0);
+            setButtonPadding(0)
           }}
         />
 
@@ -104,7 +104,7 @@ const CategoryFormModal = ({close, editing, categoryName}) => {
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default CategoryFormModal;
+export default CategoryFormModal

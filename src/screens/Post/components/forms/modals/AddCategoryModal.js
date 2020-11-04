@@ -1,86 +1,85 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   View,
   TouchableOpacity,
   Animated,
   Dimensions,
   SafeAreaView,
-} from 'react-native';
-import {Divider} from 'react-native-paper';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+} from 'react-native'
+import { Divider } from 'react-native-paper'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import Modal from 'react-native-modal';
-import CategoryFormModal from './CategoryFormModal';
+import Modal from 'react-native-modal'
+import CategoryFormModal from './CategoryFormModal'
 
-import {GlobalStyle, Colors, normalize} from '@/globals';
+import { GlobalStyle, Colors, normalize } from '@/globals'
 import {
   AppText,
   BottomSheetHeader,
   AppRadio,
   FloatingAppInput,
-} from '@/components';
+} from '@/components'
 
-import {CategoryService} from '@/services';
+import { CategoryService } from '@/services'
 
-const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
-  const [newCategoryName, setNewCategoryName] = useState(categoryName);
-  const [newCategoryModal, setNewCategoryModal] = useState(false);
-  const [catChoices, setCatChoices] = useState([]);
+const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
+  const [newCategoryName, setNewCategoryName] = useState(categoryName)
+  const [newCategoryModal, setNewCategoryModal] = useState(false)
+  const [catChoices, setCatChoices] = useState([])
 
   const onFocusHandler = () => {
-    setPaddingBottom(320);
-  };
+    setPaddingBottom(320)
+  }
 
   const onEndEditHandler = () => {
-    setPaddingBottom(40);
-  };
+    setPaddingBottom(40)
+  }
 
-  const [paddingBottom, setPaddingBottom] = useState(40);
+  const [paddingBottom, setPaddingBottom] = useState(40)
 
   const submitHandler = () => {
-    close();
-  };
+    close()
+  }
 
-  const [newActiveHeight] = useState(new Animated.Value(0));
-  const [newActiveOpacity] = useState(new Animated.Value(0));
+  const [newActiveHeight] = useState(new Animated.Value(0))
+  const [newActiveOpacity] = useState(new Animated.Value(0))
 
   let newActiveStyle = {
     height: newActiveHeight,
     opacity: newActiveOpacity,
     marginBottom: 16,
-  };
+  }
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
 
-    if (mounted) getCategories().then((res) => console.log('ASDASDSAD', res));
-    else return (mounted = false);
-  }, []);
+    if (mounted) getCategories()
+    else return (mounted = false)
+  }, [])
 
   const getCategories = async () => {
     // Get list of categories from backend
-    let categories = await CategoryService.getCategories().then((res) => {
-      console.log(res);
-      return res;
-    });
+    let categories = await CategoryService.getCategories().then(res => {
+      return res
+    })
 
     // add "items" category if it does not exist yet
-    const found = categories.some((el) => el.category === 'items');
+    const found = categories.some(el => el.category === 'items')
     if (!found) {
       // if not found or existing, add a category with items as category name.
-      CategoryService.createCategory('items');
-      categories = await CategoryService.getCategories().then((res) => {
-        return res;
-      });
+      CategoryService.createCategory('items')
+      categories = await CategoryService.getCategories().then(res => {
+        return res
+      })
     }
 
     // add property/properties to be used
-    let categoryChoices = categories.map((category) => {
+    let categoryChoices = categories.map(category => {
       if (categoryName === category.category) {
         return {
           ...category,
           selected: true,
-        };
+        }
       } else if (
         categoryName === 'uncategorized' &&
         category.category === 'items'
@@ -88,15 +87,15 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
         return {
           ...category,
           selected: true,
-        };
+        }
       } else
         return {
           ...category,
           selected: false,
-        };
-    });
-    setCatChoices(categoryChoices);
-  };
+        }
+    })
+    setCatChoices(categoryChoices)
+  }
 
   // useEffect(() => {
   //   if (choices.newCategory) showNewCategory();
@@ -114,8 +113,8 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
         duration: 300,
         useNativeDriver: false,
       }),
-    ]).start();
-  };
+    ]).start()
+  }
 
   const hideNewCategory = async () => {
     Animated.sequence([
@@ -129,25 +128,25 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
         duration: 200,
         useNativeDriver: false,
       }),
-    ]).start();
-  };
+    ]).start()
+  }
 
-  const radioGroupHandler = (selected) => {
-    setCatChoices((choice) => {
-      return choice.map((choice) => {
+  const radioGroupHandler = selected => {
+    setCatChoices(choice => {
+      return choice.map(choice => {
         return {
           ...choice,
           selected: selected.id === choice.id ? true : false,
-        };
-      });
-    });
+        }
+      })
+    })
 
     if (selected.category === 'items') {
-      setCategoryName('uncategorized');
-    } else setCategoryName(selected.category);
+      setCategoryName('uncategorized')
+    } else setCategoryName(selected.category)
 
-    close();
-  };
+    close()
+  }
 
   return (
     <SafeAreaView
@@ -157,11 +156,11 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
         borderTopStartRadius: 8,
         flex: catChoices.length >= 5 ? 1 : 0,
       }}>
-      <View style={{paddingHorizontal: 24}}>
+      <View style={{ paddingHorizontal: 24 }}>
         {catChoices.length >= 5 ? <></> : <BottomSheetHeader />}
         <AppText
           textStyle="body2"
-          customStyle={{marginVertical: 16, fontWeight: 'bold'}}>
+          customStyle={{ marginVertical: 16, fontWeight: 'bold' }}>
           Your Categories
         </AppText>
 
@@ -174,9 +173,9 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
                     key={choice.id}
                     label={'Uncategorized'}
                     value={choice.selected}
-                    style={{paddingLeft: 0, marginBottom: 8}}
+                    style={{ paddingLeft: 0, marginBottom: 8 }}
                     valueChangeHandler={() => {
-                      radioGroupHandler(choice);
+                      radioGroupHandler(choice)
                     }}
                   />
                   <AppText
@@ -187,18 +186,18 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
                   </AppText>
 
                   <Divider
-                    style={[GlobalStyle.dividerStyle, {marginVertical: 16}]}
+                    style={[GlobalStyle.dividerStyle, { marginVertical: 16 }]}
                   />
                 </>
-              );
+              )
             }
 
-            return <></>;
+            return <></>
           })}
 
         {catChoices.map((choice, index) => {
           if (choice.category === 'items') {
-            return <></>;
+            return <></>
           }
 
           return (
@@ -206,21 +205,21 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
               key={choice.id}
               label={choice.category}
               value={choice.selected}
-              style={{paddingLeft: 0, marginBottom: 8}}
+              style={{ paddingLeft: 0, marginBottom: 8 }}
               valueChangeHandler={() => {
-                radioGroupHandler(choice);
+                radioGroupHandler(choice)
               }}
             />
             // <AppText>asdas</AppText>
-          );
+          )
         })}
 
         {catChoices.length > 1 && (
-          <Divider style={[GlobalStyle.dividerStyle, {marginVertical: 16}]} />
+          <Divider style={[GlobalStyle.dividerStyle, { marginVertical: 16 }]} />
         )}
 
         {catChoices.length > 1 &&
-          catChoices.map((choice) => {
+          catChoices.map(choice => {
             if (choice.category === 'items') {
               return (
                 <>
@@ -228,9 +227,9 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
                     key={choice.id}
                     label={'Uncategorized'}
                     value={choice.selected}
-                    style={{paddingLeft: 0, marginBottom: 8}}
+                    style={{ paddingLeft: 0, marginBottom: 8 }}
                     valueChangeHandler={() => {
-                      radioGroupHandler(choice);
+                      radioGroupHandler(choice)
                     }}
                   />
                   <AppText
@@ -241,13 +240,13 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
                   </AppText>
 
                   <Divider
-                    style={[GlobalStyle.dividerStyle, {marginVertical: 16}]}
+                    style={[GlobalStyle.dividerStyle, { marginVertical: 16 }]}
                   />
                 </>
-              );
+              )
             }
 
-            return <></>;
+            return <></>
           })}
 
         <TouchableOpacity
@@ -255,7 +254,7 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
           activeOpacity={0.7}>
           <AppText
             textStyle="body2"
-            customStyle={{fontWeight: 'bold'}}
+            customStyle={{ fontWeight: 'bold' }}
             color={Colors.contentOcean}>
             or Create a New Category
           </AppText>
@@ -270,8 +269,8 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
             value={newCategoryName}
             onInputFocus={onFocusHandler}
             onEndEditing={onEndEditHandler}
-            onChangeText={(value) => setNewCategoryName(value)}
-            customStyle={{marginBottom: normalize(16)}}
+            onChangeText={value => setNewCategoryName(value)}
+            customStyle={{ marginBottom: normalize(16) }}
           />
         </Animated.View>
         <TouchableOpacity
@@ -302,14 +301,14 @@ const AddCategoryModal = ({categoryName, setCategoryName, close}) => {
           }}>
           <CategoryFormModal
             close={() => {
-              setNewCategoryModal(false);
-              close();
+              setNewCategoryModal(false)
+              close()
             }}
           />
         </Modal>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default AddCategoryModal;
+export default AddCategoryModal

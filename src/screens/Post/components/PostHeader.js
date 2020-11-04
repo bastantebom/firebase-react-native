@@ -696,37 +696,15 @@ const RenderActiveForm = ({
     setPostInStore,
   }
 
-  if (activeScreen === 'post')
-    return (
-      <NeedPostForm
-        navToPost={navToPost}
-        togglePostModal={togglePostModal}
-        formState={formState}
-        initialData={initialData}
-      />
-    )
-
-  if (activeScreen === 'sell')
-    return (
-      <SellPostForm
-        navToPost={navToPost}
-        togglePostModal={togglePostModal}
-        formState={formState}
-        initialData={initialData}
-      />
-    )
-
-  if (activeScreen === 'need')
-    return (
-      <ServicePostForm
-        navToPost={navToPost}
-        togglePostModal={togglePostModal}
-        formState={formState}
-        initialData={initialData}
-      />
-    )
-
-  return <></>
+  return (
+    <SellPostForm
+      navToPost={navToPost}
+      togglePostModal={togglePostModal}
+      formState={formState}
+      initialData={initialData}
+      activeScreen={activeScreen}
+    />
+  )
 }
 
 const styles = StyleSheet.create({
