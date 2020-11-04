@@ -68,7 +68,7 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
     },
     title,
     username,
-    delivery_method: { pickup, delivery },
+    delivery_methods,
     description,
     uid,
     price,

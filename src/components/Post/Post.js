@@ -50,7 +50,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     },
     title,
     username,
-    delivery_method: { pickup, delivery },
+    delivery_methods,
     description,
     items,
     uid,
@@ -217,18 +217,18 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                   </AppText>
                 </View> */}
               </View>
-              {pickup || delivery ? (
+              {delivery_methods?.pickup || delivery_methods?.delivery ? (
                 <View style={GlobalStyle.rowCenter}>
                   <TransportationBox width={16} height={16} />
 
                   <AppText
                     textStyle="eyebrow2"
                     customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
-                    {pickup && delivery
+                    {delivery_methods?.pickup && delivery_methods?.delivery
                       ? 'Pickup & Delivery'
-                      : delivery
+                      : delivery_methods?.delivery
                       ? 'Delivery'
-                      : pickup
+                      : delivery_methods?.pickup
                       ? 'Pickup'
                       : 'Not set'}
                   </AppText>
@@ -327,7 +327,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                   </AppText>
                 </View> */}
               </View>
-              {pickup || delivery ? (
+              {/* {pickup || delivery ? (
                 <View style={GlobalStyle.rowCenter}>
                   <TransportationBox width={16} height={16} />
 
@@ -343,7 +343,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                       : 'Not set'}
                   </AppText>
                 </View>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
         </PaddingView>

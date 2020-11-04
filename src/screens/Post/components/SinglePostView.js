@@ -58,7 +58,7 @@ const SinglePostView = props => {
       schedule,
       location: { city, province, country },
     },
-    delivery_method: { pickup, delivery },
+    delivery_methods,
     available,
     username,
     account_verified,
@@ -372,17 +372,15 @@ const SinglePostView = props => {
                 {payment_method}
               </AppText>
             </View>
-            {!pickup && !delivery ? (
-              <></>
-            ) : (
+            {delivery_methods?.pickup && delivery_methods?.delivery && (
               <View style={styles.iconText}>
                 <PostBox width={normalize(24)} height={normalize(24)} />
                 <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                  {pickup && delivery
+                  {delivery_methods?.pickup && delivery_methods?.delivery
                     ? 'Pickup & Delivery'
-                    : delivery
+                    : delivery_methods?.delivery
                     ? 'Delivery'
-                    : pickup
+                    : delivery_methods?.pickup
                     ? 'Pickup'
                     : ''}
                 </AppText>
