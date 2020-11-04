@@ -1,20 +1,8 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {
-  View,
-  StyleSheet,
-  Button,
-  SafeAreaView,
-  ScrollView,
-  Dimensions,
-  Image,
-} from 'react-native';
-
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import React, { useState, useEffect, useContext } from 'react'
+import { View, StyleSheet, Dimensions } from 'react-native'
 
 import {
   AppText,
-  AppButton,
-  ProfileImageUpload,
   HexagonBorder,
   TransparentHeader,
   TabNavigation,
@@ -23,86 +11,77 @@ import {
   Notification,
   UserPosts,
   CacheableImage,
-} from '@/components';
-import PostFilter from '@/components/Post/PostFilter';
-import {TabView, SceneMap} from 'react-native-tab-view';
+} from '@/components'
 
-import {ProfileHeaderDefault} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context/index';
+import PostFilter from '@/components/Post/PostFilter'
+import { TabView, SceneMap } from 'react-native-tab-view'
 
-import {MoreInfo, Reviews} from './Tabs';
-import ProfileInfo from './components/ProfileInfo';
-import ProfileButtons from './components/ProfileButtons';
-import {GuestProfile} from './components/GuestProfile';
+import { ProfileHeaderDefault } from '@/assets/images'
+import { normalize, Colors } from '@/globals'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context/index'
 
-function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
-  // console.log('Profile screen');
-  // console.log(props.route.params.id);
+import { MoreInfo, Reviews } from './Tabs'
+import ProfileInfo from './components/ProfileInfo'
+import ProfileButtons from './components/ProfileButtons'
+import { GuestProfile } from './components/GuestProfile'
+import { VerificationStatus } from './components'
 
-  // if(props.route?.params?.id){
+function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
+  const { user, signOut, userInfo, userStatus } = useContext(UserContext)
+  const { openNotification, closeNotification, posts, userPosts } = useContext(
+    Context
+  )
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
+  const [ellipsisState, setEllipsisState] = useState(false)
+  const [following, setFollowing] = useState(false)
+  const [menu, setMenu] = useState(false)
+  const [QR, setQR] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // }
+  const [visibleHives, setVisibleHives] = useState(false)
+  const [visibleFollowing, setVisibleFollowing] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(true)
+  const [profileList, setProfileList] = useState(false)
 
-  const {user, signOut, userInfo, userDataAvailable} = useContext(UserContext);
-  const {openNotification, closeNotification, posts, userPosts} = useContext(
-    Context,
-  );
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
-  //const {userInfo, userDataAvailable} = useContext(ProfileInfoContext);
-  //const [userInfo, setUserInfo] = useState({});
-  //const [userDataAvailable, setUserDataAvailable] = useState(false);
-
-  const [ellipsisState, setEllipsisState] = useState(false);
-  const [following, setFollowing] = useState(false);
-  const [menu, setMenu] = useState(false);
-  const [QR, setQR] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [visibleHives, setVisibleHives] = useState(false);
-  const [visibleFollowing, setVisibleFollowing] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [profileList, setProfileList] = useState(false);
-
-  const [headerState, setHeaderState] = useState(profileViewType);
+  const [headerState, setHeaderState] = useState(profileViewType)
 
   const changeHeaderHandler = () => {
-    headerState === 'own' ? setHeaderState('other') : setHeaderState('own');
-  };
+    headerState === 'own' ? setHeaderState('other') : setHeaderState('own')
+  }
 
   const toggleQR = () => {
-    setQR(!QR);
-  };
+    setQR(!QR)
+  }
 
   const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState);
-  };
+    setEllipsisState(!ellipsisState)
+  }
 
   const toggleFollowing = () => {
-    setFollowing(!following);
-  };
+    setFollowing(!following)
+  }
 
   const toggleMenu = () => {
-    setMenu(!menu);
-  };
+    setMenu(!menu)
+  }
 
   const toggleHives = () => {
-    setVisibleHives(!visibleHives);
-  };
+    setVisibleHives(!visibleHives)
+  }
   const toggleConnections = () => {
     //alert('text');
-    setVisibleFollowing(!visibleFollowing);
-  };
+    setVisibleFollowing(!visibleFollowing)
+  }
 
   const toggleProfileList = () => {
     //alert('text');
-    setProfileList(!profileList);
-  };
+    setProfileList(!profileList)
+  }
 
   const triggerNotification = (message, type) => {
-    setNotificationType(type);
+    setNotificationType(type)
     setNotificationMessage(
       <AppText
         textStyle="body2"
@@ -110,15 +89,15 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
           type === 'success' ? notificationText : notificationErrorTextStyle
         }>
         {message}
-      </AppText>,
-    );
-    openNotification();
+      </AppText>
+    )
+    openNotification()
     //setIsScreenLoading(false);
-    closeNotificationTimer();
-  };
+    closeNotificationTimer()
+  }
 
   if (!user) {
-    return <GuestProfile />;
+    return <GuestProfile />
   }
 
   const notificationErrorTextStyle = {
@@ -127,22 +106,22 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
     marginRight: 12,
     color: 'white',
     flexWrap: 'wrap',
-  };
+  }
 
   const notificationText = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     flexWrap: 'wrap',
-  };
+  }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      setNotificationType();
-      setNotificationMessage();
-      closeNotification();
-    }, 5000);
-  };
+      setNotificationType()
+      setNotificationMessage()
+      closeNotification()
+    }, 5000)
+  }
 
   const profileTabs = [
     {
@@ -155,43 +134,38 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           userID={user.uid}
-          //hideLocationComponent={hideLocationComponent}
-          //showLocationComponent={showLocationComponent}
         />
       ),
-
-      //<></>
     },
-    //{key: 'ownpost', title: 'Posts', renderPage: <></>},
-    // {key: 'review', title: 'Reviews', renderPage: <Reviews />},
     {
       key: 'moreinfo',
       title: 'More Info',
       renderPage: <MoreInfo profileInfo={userInfo} />,
     },
-  ];
+  ]
 
   useEffect(() => {
-    //console.log(posts);
     setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+      setIsLoading(false)
+    }, 1000)
+  }, [])
 
-  const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height;
-  //console.log(height);
-
-  const triggerNotify = (notify) => {
+  const triggerNotify = notify => {
     if (notify) {
-      triggerNotification('Profile has been updated successfully!', 'success');
+      triggerNotification('Profile has been updated successfully!', 'success')
     } else {
-      triggerNotification('Profile update Failed!', 'error');
+      triggerNotification('Profile update Failed!', 'error')
     }
-  };
+  }
+
+  const statusPercentage =
+    Object.values(userStatus).reduce(
+      (a, status) => a + (status === 'completed' ? 1 : 0),
+      0
+    ) * 0.25
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Notification
         message={notificationMessage}
         type={notificationType}
@@ -214,11 +188,14 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
       />
 
       <View
-        style={{backgroundColor: Colors.buttonDisable, height: normalize(158)}}>
+        style={{
+          backgroundColor: Colors.buttonDisable,
+          height: normalize(158),
+        }}>
         {userInfo.cover_photo ? (
           <CacheableImage
-            source={{uri: userInfo.cover_photo}}
-            style={{width: normalize(375), height: normalize(158)}}
+            source={{ uri: userInfo.cover_photo }}
+            style={{ width: normalize(375), height: normalize(158) }}
           />
         ) : (
           <ProfileHeaderDefault
@@ -229,12 +206,11 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
       </View>
       <View style={styles.profileBasicInfo}>
         <View style={styles.profileImageWrapper}>
-          {/* <ProfileImageUpload size={150} /> */}
           <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
         </View>
 
         <ProfileLinks
-          toggleHives={toggleHives} //navigation.navigate('ProfileHives')}
+          toggleHives={toggleHives}
           toggleProfileList={toggleProfileList}
           profileList={profileList}
           visibleHives={visibleHives}
@@ -243,9 +219,14 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
           viewType="own-links"
         />
       </View>
-      <View style={{backgroundColor: Colors.primaryYellow}}>
+      <View style={{ backgroundColor: Colors.primaryYellow }}>
         <ProfileInfo profileData={userInfo} />
       </View>
+
+      {statusPercentage < 1 ? (
+        <VerificationStatus statusPercentage={statusPercentage} />
+      ) : null}
+
       <View
         style={{
           flexDirection: 'row',
@@ -255,17 +236,17 @@ function Profile({profileViewType = 'own', backFunction, uid, ...props}) {
         }}>
         <ProfileButtons triggerNotify={triggerNotify} />
       </View>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <TabNavigation routesList={profileTabs} />
         </View>
       </View>
       <WhiteOpacity />
     </View>
-  );
+  )
 }
 
-export default Profile;
+export default Profile
 
 const styles = StyleSheet.create({
   container: {
@@ -275,7 +256,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     position: 'relative',
-    // justifyContent: 'center',
   },
 
   profileBasicInfo: {
@@ -289,6 +269,5 @@ const styles = StyleSheet.create({
     height: normalize(160),
     top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
-    //backgroundColor: 'red',
   },
-});
+})

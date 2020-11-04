@@ -40,6 +40,7 @@ export const VerificationScreen = ({
   menu,
   toggleMenu,
   modalBack,
+  type,
 }) => {
   const navigation = useNavigation()
   const [screen, setScreen] = useState('initial')
@@ -138,21 +139,35 @@ export const VerificationScreen = ({
 
   return (
     <View style={{ zIndex: 999, position: 'relative' }}>
-      <View
-        style={{
-          width: '100%',
-          justifyContent: 'space-evenly',
-          marginLeft: 15,
-        }}>
-        <TouchableOpacity onPress={onPress}>
-          <AppText textStyle="subtitle1" color={Colors.neutralsWhite}>
-            Get the verified badge
-          </AppText>
-          <AppText textStyle="caption" color={Colors.neutralsWhite}>
-            Short blurb here explaining why
-          </AppText>
-        </TouchableOpacity>
-      </View>
+      {type === 'profile' ? (
+        <View style={{ marginHorizontal: 16 }}>
+          <TouchableOpacity onPress={onPress}>
+            <AppText textStyle="body1" color={Colors.primaryMidnightBlue}>
+              Get the verified badge
+            </AppText>
+            <AppText textStyle="caption" color={Colors.primaryMidnightBlue}>
+              Short blurb here explaining why
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'space-evenly',
+            marginLeft: 15,
+          }}>
+          <TouchableOpacity onPress={onPress}>
+            <AppText textStyle="subtitle1" color={Colors.neutralsWhite}>
+              Get the verified badge
+            </AppText>
+            <AppText textStyle="caption" color={Colors.neutralsWhite}>
+              Short blurb here explaining why
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <Modal
         isVisible={menu}
         animationIn="slideInRight"

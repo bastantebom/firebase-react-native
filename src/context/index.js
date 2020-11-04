@@ -148,7 +148,9 @@ export const ContextProvider = ({ children }) => {
     let itemArray = [...items]
 
     itemArray.push(itemWithID)
+
     setItems(itemArray)
+    setItemId(itemId + 1)
   }
 
   const handleSearch = async value => {

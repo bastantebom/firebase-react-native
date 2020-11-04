@@ -10,6 +10,7 @@ export const UserContextProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({})
   const [userDataAvailable, setUserDataAvailable] = useState(false)
   const [token, setToken] = useState(null)
+  const [userStatus, setUserStatus] = useState({})
 
   async function onAuthStateChanged(user) {
     if (user) {
@@ -47,6 +48,14 @@ export const UserContextProvider = ({ children }) => {
         .catch(error => {
           setUserDataAvailable(false)
         })
+
+      ProfileInfoService.getStatus(user.uid)
+        .then(res => {
+          setUserStatus({ ...userStatus, ...res.status.verified })
+        })
+        .catch(error => {
+          console.log(error.message)
+        })
     }
   }, [user])
 
@@ -80,6 +89,8 @@ export const UserContextProvider = ({ children }) => {
         signOut,
         userInfo,
         setUserInfo,
+        userStatus,
+        setUserStatus,
         userDataAvailable,
         fetch,
         token,

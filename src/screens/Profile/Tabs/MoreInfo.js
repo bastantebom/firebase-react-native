@@ -1,37 +1,54 @@
 //import liraries
-import React, {useState, useEffect, useContext} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Colors, normalize} from '@/globals';
+import React, { useState, useEffect, useContext } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { Colors, normalize } from '@/globals'
 
-import {NoInfo} from '@/assets/images';
-import {AppText, PaddingView} from '@/components';
-import {UserContext} from '@/context/UserContext';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Users } from '@/assets/images/icons'
+import { NoInfo } from '@/assets/images'
+import { AppText, PaddingView } from '@/components'
+import { UserContext } from '@/context/UserContext'
+import { ScrollView } from 'react-native-gesture-handler'
+import ProfileInfoService from '@/services/Profile/ProfileInfo'
 
 // create a component
-const MoreInfo = ({profileInfo}) => {
-  const {userInfo} = useContext(UserContext);
-  const [hasInfo, setHasInfo] = useState(false);
-  //const [email, setEmail] = useState('');
-  //const [name, setName] = useState('');
-  const {description, full_name} = profileInfo;
+const MoreInfo = ({ profileInfo }) => {
+  const [hasInfo, setHasInfo] = useState(false)
+  const { description, uid } = profileInfo
+  const [followers, setFollowers] = useState(0)
+  const [following, setFollowing] = useState(0)
 
   useEffect(() => {
-    ///console.log(description);
-    if (description) {
-      //console.log('More Info ' + full_name);
-      if (description.trim().length > 0) {
-        //console.log('moreinfo');
-        setHasInfo(true);
+    async function consolidatedFunctions() {
+      if (description) {
+        if (description.trim().length > 0) {
+          setHasInfo(true)
+        }
       }
+
+      const fllwers = await ProfileInfoService.getFollowers(uid)
+      setFollowers(fllwers.data.length)
+
+      const fllwing = await ProfileInfoService.getFollowing(uid)
+      setFollowing(fllwing.data.length)
     }
-  }, [profileInfo]);
+
+    let mounted = true
+    if (uid && mounted) {
+      consolidatedFunctions()
+    }
+    return () => {
+      mounted = false
+    }
+  }, [profileInfo])
 
   const WithInfo = () => {
     return (
       <>
         <View
-          style={{borderBottomColor: Colors.neutralGray, borderBottomWidth: 1}}>
+          style={{
+            borderBottomColor: Colors.neutralGray,
+            borderBottomWidth: 1,
+          }}>
           <PaddingView paddingSize={4}>
             <View style={styles.titleWrapper}>
               <AppText textStyle="subtitle2">About</AppText>
@@ -41,22 +58,22 @@ const MoreInfo = ({profileInfo}) => {
                 <AppText textStyle="body2">{description}</AppText>
               </ScrollView>
             </View>
-            {/* <View style={styles.connectionWrapper}>
+            <View style={styles.connectionWrapper}>
               <View style={styles.followers}>
                 <Users width={normalize(14)} height={normalize(14)} />
                 <AppText
                   textStyle="caption"
                   color={Colors.profileLink}
-                  customStyle={{marginLeft: 4}}>
-                  29 Followers
+                  customStyle={{ marginLeft: 4 }}>
+                  {followers} {followers > 1 ? ' Followers' : ' Follower'}
                 </AppText>
               </View>
               <View style={styles.following}>
                 <AppText textStyle="caption" color={Colors.profileLink}>
-                  8 Following
+                  {following} {following > 1 ? ' Followings' : ' Following'}
                 </AppText>
               </View>
-            </View> */}
+            </View>
           </PaddingView>
         </View>
         {/* <PaddingView paddingSize={4}>
@@ -67,8 +84,8 @@ const MoreInfo = ({profileInfo}) => {
           </View>
         </PaddingView> */}
       </>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -103,8 +120,8 @@ const MoreInfo = ({profileInfo}) => {
         </ScrollView>
       )}
     </>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -154,7 +171,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-});
+})
 
 //make this component available to the app
-export default MoreInfo;
+export default MoreInfo

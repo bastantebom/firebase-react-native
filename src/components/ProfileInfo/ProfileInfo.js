@@ -73,12 +73,10 @@ const ProfileInfo = ({
   }
 
   openProfileHandler = () => {
-    // console.log(user.uid);
-    //console.log('I HAVE THIS UID')
-    //console.log(uid)
-
-    toggleLikePost()
-    toggleMenu()
+    if (toggleMenu && toggleLikePost) {
+      toggleLikePost()
+      toggleMenu()
+    }
 
     if (user && user.uid === uid) {
       isModal && cancelModalToggle()

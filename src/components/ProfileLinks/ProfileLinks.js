@@ -1,16 +1,16 @@
 //import liraries
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {normalize, Colors} from '@/globals';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react'
+import { View, StyleSheet, Dimensions } from 'react-native'
+import { normalize, Colors } from '@/globals'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import {ProfileList} from '@/components';
-import Hives from './components/hives';
-import Modal from 'react-native-modal';
+import { ProfileList } from '@/components'
+import Hives from './components/hives'
+import Modal from 'react-native-modal'
 
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import ProfileInfoService from '@/services/Profile/ProfileInfo'
 
-import {AppText} from '@/components';
+import { AppText } from '@/components'
 // create a component
 const ProfileLinks = ({
   visibleHives,
@@ -21,43 +21,43 @@ const ProfileLinks = ({
   addFollowers,
   viewType,
 }) => {
-  const {uid} = userInfo;
-  const [followers, setFollowers] = useState(0);
+  const { uid } = userInfo
+  const [followers, setFollowers] = useState(0)
 
   //console.log(uid);
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
     if (uid && mounted)
       ProfileInfoService.getFollowers(uid)
-        .then((response) => {
-          setFollowers(response.data.length);
+        .then(response => {
+          setFollowers(response.data.length)
           //console.log(response.data);
           //if (mounted) setOtherUserInfo(response.data);
         })
-        .catch((err) => {
-          console.log('Err: ' + err);
-        });
+        .catch(err => {
+          console.log('Err: ' + err)
+        })
     return () => {
-      mounted = false;
-    };
-  }, [uid]);
+      mounted = false
+    }
+  }, [uid])
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
     if (addFollowers !== null) {
       if (addFollowers) {
-        setFollowers(followers + 1);
+        setFollowers(followers + 1)
       } else {
-        setFollowers(followers - 1);
+        setFollowers(followers - 1)
       }
       //console.log('nag follow');
     }
     return () => {
-      mounted = false;
-    };
-  }, [addFollowers]);
+      mounted = false
+    }
+  }, [addFollowers])
 
-  const {post_count} = userInfo;
+  const { post_count } = userInfo
   //const [followers, setFollowers] = useState(0);
   //console.log(userInfo);
   return (
@@ -70,7 +70,7 @@ const ProfileLinks = ({
           <AppText
             textStyle="captionDashboard"
             color={Colors.profileLink}
-            customStyle={{paddingLeft: normalize(8)}}>
+            customStyle={{ paddingLeft: normalize(8) }}>
             {post_count == 1 ? 'Post' : 'Posts'}
           </AppText>
         </View>
@@ -132,8 +132,8 @@ const ProfileLinks = ({
         <Hives toggleHives={toggleHives} />
       </Modal>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: normalize(24),
   },
-});
+})
 
 //make this component available to the app
-export default ProfileLinks;
+export default ProfileLinks

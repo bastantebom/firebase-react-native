@@ -116,6 +116,16 @@ const getArchivedPost = async payload => {
   })
 }
 
+const getStatus = async uid => {
+  return await BaseAPI({
+    url: `/users/${uid}/status`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
 const ProfileInfoService = {
   getUser,
   updateUser,
@@ -128,6 +138,7 @@ const ProfileInfoService = {
   updateTemp,
   getLikedPost,
   getArchivedPost,
+  getStatus,
 }
 
 export default ProfileInfoService
