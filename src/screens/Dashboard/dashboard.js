@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import {
   View,
   StyleSheet,
@@ -8,10 +8,10 @@ import {
   ScrollView,
   Animated,
   Dimensions,
-  Keyboard
-} from 'react-native';
+  Keyboard,
+} from 'react-native'
 
-import {PostService} from '@/services';
+import { PostService } from '@/services'
 
 import {
   Posts,
@@ -19,11 +19,11 @@ import {
   AppText,
   WhiteOpacity,
   Notification,
-  FloatingAppInput
-} from '@/components';
-import FilterSlider from './components/FilterSlider';
-import {useNavigation} from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
+  FloatingAppInput,
+} from '@/components'
+import FilterSlider from './components/FilterSlider'
+import { useNavigation } from '@react-navigation/native'
+import LinearGradient from 'react-native-linear-gradient'
 
 import {
   Filter,
@@ -33,47 +33,46 @@ import {
   NavigationArrow,
   NavigationPin,
   NavigationPinRed,
-  CloseDark, 
+  CloseDark,
   FilterServices,
   JarHeartColored,
-  NavigationPinAlt
-} from '@/assets/images/icons';
-import {GlobalStyle, Colors, normalize} from '@/globals';
+  NavigationPinAlt,
+} from '@/assets/images/icons'
+import { GlobalStyle, Colors, normalize } from '@/globals'
 
-import Modal from 'react-native-modal';
-import { Context } from '@/context';
-import { UserContext } from '@/context/UserContext';
-import LocationMap from '@/screens/Dashboard/components/Location';
-import {VerificationScreen} from '@/screens/Dashboard/Verification';
+import Modal from 'react-native-modal'
+import { Context } from '@/context'
+import { UserContext } from '@/context/UserContext'
+import LocationMap from '@/screens/Dashboard/components/Location'
+import { VerificationScreen } from '@/screens/Dashboard/Verification'
 
-import SearchBox from './components/Search/Searchbox';
-import SearchResults from './components/Search/SearchResults';
-import { ease } from 'react-native/Libraries/Animated/src/Easing';
+import SearchBox from './components/Search/Searchbox'
+import SearchResults from './components/Search/SearchResults'
+import { ease } from 'react-native/Libraries/Animated/src/Easing'
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window')
 
 // function Dashboard({ navigation }) {
 function Dashboard(props) {
+  const { user } = useContext(UserContext)
 
-  const { user } = useContext(UserContext);
+  const [modalState, setModalState] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [animateLocationBar, setAnimateLocationBar] = useState(0)
 
-  const [modalState, setModalState] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [animateLocationBar, setAnimateLocationBar] = useState(0);
-
-  const { posts } = useContext(Context);
+  const { posts } = useContext(Context)
 
   const toggleModal = () => {
-    setModalState(!modalState);
-  };
+    setModalState(!modalState)
+  }
 
-  const [menu, setMenu] = useState(false);
+  const [menu, setMenu] = useState(false)
 
   const toggleMenu = () => {
-    setMenu(!menu);
-  };
+    setMenu(!menu)
+  }
 
-  const handleScroll = (event) => {
+  const handleScroll = event => {
     setAnimateLocationBar(event.nativeEvent.contentOffset.y)
   }
 
@@ -83,7 +82,7 @@ function Dashboard(props) {
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
         {/* ---- Verification Notification ---- */}
-        { user && 
+        {user && (
           <Notification
             message={
               <VerificationScreen
@@ -97,12 +96,12 @@ function Dashboard(props) {
             position="relative"
             verification
           />
-        }
+        )}
         {/* ---- Verification Notification ---- */}
-      
+
         <View style={styles.container}>
-          <SearchBarWithFilter 
-            toggleFilter={toggleModal} 
+          <SearchBarWithFilter
+            toggleFilter={toggleModal}
             animateLocationBar={animateLocationBar}
             scrollY={scrollY}
           />
@@ -114,15 +113,14 @@ function Dashboard(props) {
             onScroll={Animated.event(
               [
                 {
-                  nativeEvent: { contentOffset: { y: scrollY } }
-                }
+                  nativeEvent: { contentOffset: { y: scrollY } },
+                },
               ],
               {
-                useNativeDriver: true  // <- Native Driver used for animated events
+                useNativeDriver: true, // <- Native Driver used for animated events
               }
             )}
-            scrollEventThrottle={16}
-          >
+            scrollEventThrottle={16}>
             <Posts
               type="dashboard"
               data={posts}
@@ -149,31 +147,29 @@ function Dashboard(props) {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={toggleModal}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <FilterSlider modalToggler={toggleModal} />
       </Modal>
     </>
-  );
+  )
 }
 
-
 const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
-  
-  const SHOW_HEIGHT = normalize(20);
-  const HIDE_HEIGHT = 0;
+  const SHOW_HEIGHT = normalize(20)
+  const HIDE_HEIGHT = 0
 
   const { searchType, setPage } = useContext(Context)
 
-  const [opacity] = useState(new Animated.Value(0));
-  const [locationBarHeight] = useState(new Animated.Value(SHOW_HEIGHT));
-  const [searchBarFocused, setSearchBarFocused] = useState(false);
-  const [likedPosts, setLikedPosts] = useState(false);
+  const [opacity] = useState(new Animated.Value(0))
+  const [locationBarHeight] = useState(new Animated.Value(SHOW_HEIGHT))
+  const [searchBarFocused, setSearchBarFocused] = useState(false)
+  const [likedPosts, setLikedPosts] = useState(false)
 
   const [searchValue, setSearchValue] = useState()
 
-  const onValueChange = (value) => {
+  const onValueChange = value => {
     setSearchValue(value)
   }
 
@@ -186,10 +182,10 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
       Animated.timing(opacity, {
         toValue: 1,
         duration: 10,
-        useNativeDriver: true
-      })
-    ]).start();
-    setSearchBarFocused(true);
+        useNativeDriver: true,
+      }),
+    ]).start()
+    setSearchBarFocused(true)
   }
 
   const onBackPress = () => {
@@ -197,12 +193,12 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
       Animated.timing(opacity, {
         toValue: 0,
         duration: 10,
-        useNativeDriver: true
-      })
-    ]).start();
-    setSearchBarFocused(false);
-    Keyboard.dismiss();
-    setPage(0);
+        useNativeDriver: true,
+      }),
+    ]).start()
+    setSearchBarFocused(false)
+    Keyboard.dismiss()
+    setPage(0)
   }
 
   // const FULL_HEIGHT = normalize(107);
@@ -210,75 +206,80 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
 
   var headMov = scrollY.interpolate({
     inputRange: [0, 180, 181],
-    outputRange: [0, -180, -180]
-  });
+    outputRange: [0, -180, -180],
+  })
 
   var barOpacity = scrollY.interpolate({
     inputRange: [0, 30, 50],
-    outputRange: [1, 0, 0]
-  });
+    outputRange: [1, 0, 0],
+  })
 
   var barHeight = scrollY.interpolate({
     inputRange: [0, 180, 181],
     outputRange: [0, -180, -180],
-  });
+  })
 
   return (
     <View>
-      <LinearGradient colors={['#ECEFF8', '#F8F9FC']} style={{ position: 'relative' }}>
-        <Animated.View style={{ 
-          margin: 16, 
-          height: searchType === 'posts' ? normalize(47.5) : normalize(107),
-          // transform: [{ translateY: barHeight }]
-        }}>
-          <View style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-            <View 
-              style={{ 
-                flex: 1, 
-                height: searchType !== 'posts' ? normalize(100) : '100%', 
+      <LinearGradient
+        colors={['#ECEFF8', '#F8F9FC']}
+        style={{ position: 'relative' }}>
+        <Animated.View
+          style={{
+            margin: 16,
+            height: searchType === 'posts' ? normalize(47.5) : normalize(107),
+            // transform: [{ translateY: barHeight }]
+          }}>
+          <View
+            style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
+            <View
+              style={{
+                flex: 1,
+                height: searchType !== 'posts' ? normalize(100) : '100%',
                 // backgroundColor: 'red'
                 // paddingBottom: 16
-              }}
-            >
+              }}>
               <SearchBox
-                onSearchFocus={onFocus} 
+                onSearchFocus={onFocus}
                 onBackPress={onBackPress}
                 valueHandler={onValueChange}
               />
-              <Animated.View 
-                style={{ 
-                  opacity: opacity, 
+              <Animated.View
+                style={{
+                  opacity: opacity,
                   display: searchBarFocused ? 'flex' : 'none',
                   zIndex: searchBarFocused ? 1 : 0,
                   flex: 1,
                   position: 'absolute',
-                }}
-              >
-                <SearchResults 
-                  onValueChange={searchValue}
-                />
+                }}>
+                <SearchResults onValueChange={searchValue} />
               </Animated.View>
             </View>
-            { searchBarFocused ? 
-              <View style={{ marginTop: normalize(47.5)}}/> 
-              : <View style={{ flexDirection: 'row', opacity: searchBarFocused ? 0 : 1 }}>
-                <TouchableOpacity activeOpacity={.7} onPress={toggleFilter}>
+            {searchBarFocused ? (
+              <View style={{ marginTop: normalize(47.5) }} />
+            ) : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  opacity: searchBarFocused ? 0 : 1,
+                }}>
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleFilter}>
                   <View style={styles.circleButton}>
                     <FilterDark />
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={.7} onPress={toggleLike}>
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleLike}>
                   <View style={styles.circleButton}>
-                    { likedPosts ? <JarHeartColored/> : <JarHeartDark /> }
+                    {likedPosts ? <JarHeartColored /> : <JarHeartDark />}
                     {/* <JarHeart />  */}
                   </View>
                 </TouchableOpacity>
               </View>
-            }
+            )}
           </View>
         </Animated.View>
-        <Animated.View 
-          style={{ 
+        <Animated.View
+          style={{
             display: searchBarFocused ? 'none' : 'flex',
             // position: "absolute",
             // height: {
@@ -290,9 +291,8 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
             // top: normalize(90),
             // backgroundColor: headColor,
             transform: [{ translateY: headMov }],
-            opacity: barOpacity
-          }}
-        >
+            opacity: barOpacity,
+          }}>
           <LocationSearch />
         </Animated.View>
       </LinearGradient>
@@ -300,46 +300,47 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
         style={{
           borderBottomColor: 'rgba(0,0,0,.5)',
           borderBottomWidth: StyleSheet.hairlineWidth,
-          opacity: .1,
+          opacity: 0.1,
           // height: 1,
           elevation: 3,
         }}
       />
     </View>
-  );
-};
+  )
+}
 
 const LocationSearch = () => {
-  const scrollRef = useRef();
-  const {setLocationFilter, locationFilter} = useContext(Context);
-  const [showLocation, setShowLocation] = useState(false);
+  const scrollRef = useRef()
+  const { setLocationFilter, locationFilter } = useContext(Context)
+  const [showLocation, setShowLocation] = useState(false)
 
-  const { userInfo } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext)
   // const {address} = userInfo;
 
-  changeFromMapHandler = async (fullAddress) => {
-    setLocationFilter(fullAddress.city);
-  };
+  changeFromMapHandler = async fullAddress => {
+    setLocationFilter(fullAddress.city)
+  }
 
   return (
     <>
       <View style={{ marginLeft: 16, marginBottom: 16 }}>
         <View style={GlobalStyle.rowCenter}>
-          <View 
-            style={{ 
-              paddingLeft: normalize(40), 
-              paddingRight: normalize(15), 
-              // marginRight: normalize(10), 
+          <View
+            style={{
+              paddingLeft: normalize(40),
+              paddingRight: normalize(15),
+              // marginRight: normalize(10),
               maxWidth: '60%',
-              minWidth: '60%' 
-            }}
-          >
+              minWidth: '60%',
+            }}>
             <TouchableOpacity
               onPress={() => {
-                setShowLocation(true);
+                setShowLocation(true)
               }}>
               <View>
-                <AppText textStyle="caption" color={Colors.contentPlaceholder}>Your location</AppText>
+                <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+                  Your location
+                </AppText>
               </View>
             </TouchableOpacity>
             <View
@@ -349,21 +350,19 @@ const LocationSearch = () => {
                 flexDirection: 'row',
                 // flex: 1,
                 justifyContent: 'space-between',
-                width: '100%'
+                width: '100%',
               }}>
               <TouchableOpacity
                 onPress={() => {
-                  setShowLocation(true);
+                  setShowLocation(true)
                 }}
-                style={{ marginRight: normalize(25) }}
-              >
-                <View style={{paddingVertical: normalize(1)}}>
+                style={{ marginRight: normalize(25) }}>
+                <View style={{ paddingVertical: normalize(1) }}>
                   <AppText
                     textStyle="body3"
                     color={Colors.primaryMidnightBlue}
                     // customStyle={{ marginRight: normalize(22) }}
-                    numberOfLines={1}
-                  >
+                    numberOfLines={1}>
                     {locationFilter}
                   </AppText>
                 </View>
@@ -371,16 +370,15 @@ const LocationSearch = () => {
               {locationFilter ? (
                 <TouchableOpacity
                   onPress={() => {
-                    setLocationFilter(null);
+                    setLocationFilter(null)
                   }}
                   // style={{width: '10%'}}
-                  style={{ 
-                    paddingVertical: normalize(4), 
-                    right: normalize(0), 
-                    position: 'absolute', 
-                    zIndex: 999
-                  }}
-                >
+                  style={{
+                    paddingVertical: normalize(4),
+                    right: normalize(0),
+                    position: 'absolute',
+                    zIndex: 999,
+                  }}>
                   <CloseDark height={normalize(16)} />
                 </TouchableOpacity>
               ) : null}
@@ -399,41 +397,37 @@ const LocationSearch = () => {
             // ref={scrollRef}
             horizontal={true}
             style={{}}
-            showsHorizontalScrollIndicator={false}
-          >
+            showsHorizontalScrollIndicator={false}>
             <View style={styles.locationOption}>
               <NavigationArrow width={normalize(16)} height={normalize(16)} />
-              <AppText 
+              <AppText
                 textStyle="eyebrow2"
                 customStyle={{
                   marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium'
-                }}
-              >
+                  fontFamily: 'RoundedMplus1c-Medium',
+                }}>
                 Nearest
               </AppText>
             </View>
             <View style={styles.locationOption}>
               <FilterServices width={16} height={16} />
-              <AppText 
+              <AppText
                 textStyle="eyebrow2"
                 customStyle={{
                   marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium'
-                }}
-              >
+                  fontFamily: 'RoundedMplus1c-Medium',
+                }}>
                 Services
               </AppText>
             </View>
             <View style={styles.locationOption}>
               <NavigationArrow width={16} height={16} />
-              <AppText 
+              <AppText
                 textStyle="eyebrow2"
                 customStyle={{
                   marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium'
-                }}
-              >
+                  fontFamily: 'RoundedMplus1c-Medium',
+                }}>
                 Sellers
               </AppText>
             </View>
@@ -467,10 +461,10 @@ const LocationSearch = () => {
                     latitude: userInfo.address.latitude,
                     longitude: userInfo.address.longitude,
                   }
-                : {latitude: 14.5831, longitude: 120.9794}
+                : { latitude: 14.5831, longitude: 120.9794 }
             }
             back={() => setShowLocation(false)}
-            changeFromMapHandler={(fullAddress) =>
+            changeFromMapHandler={fullAddress =>
               changeFromMapHandler(fullAddress)
             }
           />
@@ -522,6 +516,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flexDirection: 'row',
   },
-});
+})
 
-export default Dashboard;
+export default Dashboard
