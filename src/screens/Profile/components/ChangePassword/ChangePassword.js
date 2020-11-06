@@ -1,5 +1,4 @@
-//import liraries
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   Text,
@@ -7,8 +6,8 @@ import {
   SafeAreaView,
   Dimensions,
   TouchableOpacity,
-} from 'react-native';
-import {UserContext} from '@/context/UserContext';
+} from 'react-native'
+import { UserContext } from '@/context/UserContext'
 
 import {
   PaddingView,
@@ -18,116 +17,115 @@ import {
   TransitionIndicator,
   FloatingAppInput,
   Notification,
-} from '@/components';
-import {EyeDark, EyeLight, VerifiedGreen, Close} from '@/assets/images/icons';
-import {normalize, Colors} from '@/globals';
-//import {TransitionIndicator} from '@/components';
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import {Context} from '@/context';
-// create a component
-const ChangePassword = ({toggleChangePassword}) => {
-  const {user} = useContext(UserContext);
-  const {openNotification, closeNotification} = useContext(Context);
-  const [cPass, setCPass] = useState(undefined);
-  const [nPass, setNPass] = useState(undefined);
-  const [fPass, setFPass] = useState(undefined);
-  const [IS_UPDATING, setIS_UPDATING] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isVisibleg, setIsVisibleg] = useState(false);
-  const [isVisiblei, setIsVisiblei] = useState(false);
-  const {uid} = user;
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
-  const [verified, setVerified] = useState();
-  const [showVerified, setShowVerified] = useState(false);
-  const [buttonStyle, setButtonStyle] = useState({});
-  const [buttonDisable, setButtonDisable] = useState(false);
+} from '@/components'
+import { EyeDark, EyeLight, VerifiedGreen, Close } from '@/assets/images/icons'
+import { normalize, Colors } from '@/globals'
+
+import ProfileInfoService from '@/services/Profile/ProfileInfo'
+import { Context } from '@/context'
+
+const ChangePassword = ({ toggleChangePassword }) => {
+  const { user } = useContext(UserContext)
+  const { openNotification, closeNotification } = useContext(Context)
+  const [currentPassword, setCurrentPassword] = useState(undefined)
+  const [newPassword, setNewPassword] = useState(undefined)
+  const [confirmPassword, setConfirmPassword] = useState(undefined)
+  const [isUpdating, setisUpdating] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isVisibleg, setIsVisibleg] = useState(false)
+  const [isVisiblei, setIsVisiblei] = useState(false)
+  const { uid } = user
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
+  const [verified, setVerified] = useState()
+  const [showVerified, setShowVerified] = useState(false)
+  const [buttonStyle, setButtonStyle] = useState({})
+  const [buttonDisable, setButtonDisable] = useState(false)
 
   const onSaveHandler = () => {
-    setIS_UPDATING(true);
-    if (cPass && nPass && fPass) {
-      if (nPass === fPass) {
+    setisUpdating(true)
+    if (currentPassword && newPassword && confirmPassword) {
+      if (newPassword === confirmPassword) {
         ProfileInfoService.updatePassword(
           {
-            current_password: cPass,
-            new_password: nPass,
+            current_password: currentPassword,
+            new_password: newPassword,
           },
-          uid,
+          uid
         )
-          .then((response) => {
+          .then(response => {
             if (response.success) {
-              setIS_UPDATING(false);
+              setisUpdating(false)
               triggerNotification(
                 'Password has been updated successfully!',
-                'success',
-              );
+                'success'
+              )
             } else {
-              setIS_UPDATING(false);
-              triggerNotification(response.message, 'error');
-              console.log(response);
+              setisUpdating(false)
+              triggerNotification(response.message, 'error')
+              console.log(response)
             }
           })
-          .catch((error) => {
-            setIS_UPDATING(false);
-            //triggerNotification('Password update failed!', 'error');
-            console.log(error);
-          });
+          .catch(error => {
+            setisUpdating(false)
+            console.log(error)
+          })
       } else {
-        setIS_UPDATING(false);
+        setisUpdating(false)
         triggerNotification(
           "New Password and Confirm Password didn't match",
-          'error',
-        );
+          'error'
+        )
       }
     } else {
-      setIS_UPDATING(false);
+      setisUpdating(false)
       triggerNotification(
         'Please complete the form before you can update the your Password',
-        'error',
-      );
+        'error'
+      )
       //console.log('Please complete form');
     }
-  };
+  }
 
   const onCurrentPasswordValidate = () => {
     ProfileInfoService.validateCurrentPassword({
       uid: uid,
-      current_password: cPass,
+      current_password: currentPassword,
     })
-      .then((response) => {
+      .then(response => {
         if (response.verified) {
-          setVerified(true);
-          setShowVerified(true);
-          hideIcon();
-          setButtonState(false);
+          setVerified(true)
+          setShowVerified(true)
+          hideIcon()
+          setButtonState(false)
         } else {
-          triggerNotification('Current Password does not correct', 'error');
-          setButtonState(true);
+          triggerNotification('Current Password does not correct', 'error')
+          setButtonState(true)
         }
       })
-      .catch((error) => {
-        setIS_UPDATING(false);
-        setVerified(false);
-        setShowVerified(true);
-        hideIcon();
-        setButtonState(true);
-      });
-  };
+      .catch(error => {
+        setisUpdating(false)
+        setVerified(false)
+        setShowVerified(true)
+        hideIcon()
+        setButtonState(true)
+      })
+  }
 
-  const setButtonState = (j) => {
+  const setButtonState = j => {
     if (j) {
       setButtonStyle({
         backgroundColor: Colors.buttonDisable,
         borderColor: Colors.buttonDisable,
-      });
+      })
     } else {
-      setButtonStyle({});
+      setButtonStyle({})
     }
-    setButtonDisable(j);
-  };
+    setButtonDisable(j)
+  }
 
   const triggerNotification = (message, type) => {
-    setNotificationType(type);
+    setNotificationType(type)
     setNotificationMessage(
       <AppText
         textStyle="body2"
@@ -135,12 +133,11 @@ const ChangePassword = ({toggleChangePassword}) => {
           type === 'success' ? notificationText : notificationErrorTextStyle
         }>
         {message}
-      </AppText>,
-    );
-    openNotification();
-    //setIsScreenLoading(false);
-    closeNotificationTimer();
-  };
+      </AppText>
+    )
+    openNotification()
+    closeNotificationTimer()
+  }
 
   const notificationErrorTextStyle = {
     flex: 1,
@@ -148,34 +145,34 @@ const ChangePassword = ({toggleChangePassword}) => {
     marginRight: 12,
     color: 'white',
     flexWrap: 'wrap',
-  };
+  }
 
   const notificationText = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     flexWrap: 'wrap',
-  };
+  }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      setNotificationType();
-      setNotificationMessage();
-      closeNotification();
-    }, 5000);
-  };
+      setNotificationType()
+      setNotificationMessage()
+      closeNotification()
+    }, 5000)
+  }
 
   const hideIcon = () => {
     setTimeout(() => {
-      setShowVerified(false);
-    }, 5000);
-  };
+      setShowVerified(false)
+    }, 5000)
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <Notification message={notificationMessage} type={notificationType} />
-        <TransitionIndicator loading={IS_UPDATING} />
+        <TransitionIndicator loading={isUpdating} />
 
         <View
           style={{
@@ -187,12 +184,12 @@ const ChangePassword = ({toggleChangePassword}) => {
             close={toggleChangePassword}
           />
 
-          <View style={{position: 'relative'}}>
+          <View style={{ position: 'relative' }}>
             <FloatingAppInput
-              value={cPass}
+              value={currentPassword}
               label="Current Password"
-              onChangeText={(cPass) => {
-                setCPass(cPass);
+              onChangeText={currentPassword => {
+                setCurrentPassword(currentPassword)
               }}
               onEndEditing={onCurrentPasswordValidate}
               secureTextEntry={!isVisible ? true : false}
@@ -207,7 +204,7 @@ const ChangePassword = ({toggleChangePassword}) => {
                   {!isVisible ? <EyeDark /> : <EyeLight />}
                 </TouchableOpacity>
               ) : (
-                <View style={{paddingTop: normalize(4)}}>
+                <View style={{ paddingTop: normalize(4) }}>
                   {verified ? (
                     <VerifiedGreen
                       width={normalize(16)}
@@ -218,14 +215,14 @@ const ChangePassword = ({toggleChangePassword}) => {
               )}
             </View>
           </View>
-          <View style={{position: 'relative'}}>
+          <View style={{ position: 'relative' }}>
             <FloatingAppInput
-              value={nPass}
+              value={newPassword}
               label="New Password"
-              onChangeText={(nPass) => {
-                setNPass(nPass);
+              onChangeText={newPassword => {
+                setNewPassword(newPassword)
               }}
-              customStyle={{marginBottom: normalize(16)}}
+              customStyle={{ marginBottom: normalize(16) }}
               secureTextEntry={!isVisibleg ? true : false}
             />
             <View style={styles.passwordToggleO}>
@@ -234,12 +231,12 @@ const ChangePassword = ({toggleChangePassword}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{position: 'relative'}}>
+          <View style={{ position: 'relative' }}>
             <FloatingAppInput
-              value={fPass}
+              value={confirmPassword}
               label="Confirm New Password"
-              onChangeText={(fPass) => {
-                setFPass(fPass);
+              onChangeText={confirmPassword => {
+                setConfirmPassword(confirmPassword)
               }}
               secureTextEntry={!isVisiblei ? true : false}
             />
@@ -262,17 +259,16 @@ const ChangePassword = ({toggleChangePassword}) => {
               disabled={buttonDisable}
               customStyle={buttonStyle}
               onPress={() => {
-                onSaveHandler();
+                onSaveHandler()
               }}
             />
           </View>
         </View>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
-// define your styles
 const styles = StyleSheet.create({
   passwordToggle: {
     position: 'absolute',
@@ -285,7 +281,6 @@ const styles = StyleSheet.create({
     right: normalize(10),
     top: normalize(18),
   },
-});
+})
 
-//make this component available to the app
-export default ChangePassword;
+export default ChangePassword

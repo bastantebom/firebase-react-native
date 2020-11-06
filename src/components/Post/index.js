@@ -5,6 +5,7 @@ import UserPosts from './UserPosts'
 import OtherUserPosts from './OtherUserPosts'
 import SinglePostOthersView from './SinglePostOthersView'
 import LikedPosts from './LikedPosts'
+import ArchivedPosts from './ArchivePost'
 
 export {
   Post,
@@ -14,4 +15,5 @@ export {
   OtherUserPosts,
   SinglePostOthersView,
   LikedPosts,
+  ArchivedPosts,
 }

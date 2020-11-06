@@ -9,12 +9,14 @@ export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState()
   const [userInfo, setUserInfo] = useState({})
   const [userDataAvailable, setUserDataAvailable] = useState(false)
+  const [providerData, setProviderData] = useState({})
   const [token, setToken] = useState(null)
   const [userStatus, setUserStatus] = useState({})
 
   async function onAuthStateChanged(user) {
     if (user) {
-      const { uid, displayName, email } = user
+      const { uid, displayName, email, providerData } = user
+      setProviderData(providerData)
       setUser({
         uid: uid,
         displayName: displayName,
@@ -60,7 +62,7 @@ export const UserContextProvider = ({ children }) => {
   }, [user])
 
   const fetch = () => {
-    if (user)
+    if (user) {
       ProfileInfoService.getUser(user.uid)
         .then(response => {
           setUserInfo({ ...userInfo, ...response.data })
@@ -69,6 +71,15 @@ export const UserContextProvider = ({ children }) => {
         .catch(error => {
           setUserDataAvailable(false)
         })
+
+      ProfileInfoService.getStatus(user.uid)
+        .then(res => {
+          setUserStatus({ ...userStatus, ...res.status.verified })
+        })
+        .catch(error => {
+          console.log(error.message)
+        })
+    }
   }
 
   const signOut = async () => {
@@ -94,6 +105,7 @@ export const UserContextProvider = ({ children }) => {
         userDataAvailable,
         fetch,
         token,
+        providerData,
       }}>
       {children}
     </UserContext.Provider>

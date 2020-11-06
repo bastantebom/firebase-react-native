@@ -18,6 +18,7 @@ export const ContextProvider = ({ children }) => {
   const [userPosts, setUserPosts] = useState([])
   const [otherUserPosts, setOtherUserPosts] = useState([])
   const [likedPosts, setLikedPosts] = useState([])
+  const [archivedPosts, setArchivedPosts] = useState([])
 
   const [locationFilter, setLocationFilter] = useState(null)
 
@@ -335,6 +336,8 @@ export const ContextProvider = ({ children }) => {
         setDeliveryMethod,
         likedPosts,
         setLikedPosts,
+        archivedPosts,
+        setArchivedPosts,
       }}>
       {children}
     </Context.Provider>

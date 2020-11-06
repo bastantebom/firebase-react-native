@@ -56,17 +56,21 @@ const EditProfile = ({
   const [addAddress, setAddAddress] = useState(false)
   const [editLogin, setEditLogin] = useState(false)
   const [provider, setProvider] = useState('')
-  const has_password = false
   const [date, setDate] = useState(new Date(1598051730000))
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
   const [genderVisible, setGenderVisible] = useState(false)
-  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const { userInfo, user, setUserInfo, providerData } = useContext(UserContext)
   const { setNeedsRefresh } = useContext(Context)
   const [imageSource, setImageSource] = useState(null)
   const [imageCoverSource, setImageCoverSource] = useState(null)
   const [transferred, setTransferred] = useState(0)
   const [IS_UPDATING, setIS_UPDATING] = useState(false)
+  const [hasPassword, setHasPassword] = useState(false)
+
+  if (providerData.find(pd => pd.providerId === 'password')) {
+    setHasPassword(true)
+  }
 
   const {
     cover_photo,
@@ -82,7 +86,6 @@ const EditProfile = ({
     birth_date,
     gender,
   } = userInfo
-
   const { uid } = user
 
   const [cPhoto, setCPhoto] = useState(cover_photo)
@@ -599,37 +602,41 @@ const EditProfile = ({
                 Personal Information
               </AppText>
 
-              {em ? (
+              {em && (
                 <>
                   <AppText textStyle="body2">Email</AppText>
                   <AppText textStyle="body1">{em}</AppText>
-                  <TouchableOpacity
-                    style={{ marginTop: 8 }}
-                    onPress={() => {
-                      toggleEditLogin('email')
-                    }}>
-                    <AppText textStyle="body2" color={Colors.contentOcean}>
-                      Change Email Address
-                    </AppText>
-                  </TouchableOpacity>
+                  {hasPassword && (
+                    <TouchableOpacity
+                      style={{ marginTop: 8 }}
+                      onPress={() => {
+                        toggleEditLogin('email')
+                      }}>
+                      <AppText textStyle="body2" color={Colors.contentOcean}>
+                        Change Email Address
+                      </AppText>
+                    </TouchableOpacity>
+                  )}
                 </>
-              ) : null}
+              )}
 
-              {mobile ? (
+              {mobile && (
                 <>
                   <AppText textStyle="body2">Mobile Number</AppText>
                   <AppText textStyle="body1">{mobile}</AppText>
-                  <TouchableOpacity
-                    style={{ marginTop: 8 }}
-                    onPress={() => {
-                      toggleEditLogin('mobile')
-                    }}>
-                    <AppText textStyle="body2" color={Colors.contentOcean}>
-                      Change Mobile Number
-                    </AppText>
-                  </TouchableOpacity>
+                  {hasPassword && (
+                    <TouchableOpacity
+                      style={{ marginTop: 8 }}
+                      onPress={() => {
+                        toggleEditLogin('number')
+                      }}>
+                      <AppText textStyle="body2" color={Colors.contentOcean}>
+                        Change Mobile Number
+                      </AppText>
+                    </TouchableOpacity>
+                  )}
                 </>
-              ) : null}
+              )}
 
               <View style={{ position: 'relative', marginTop: 16 }}>
                 <FloatingAppInput
@@ -769,7 +776,7 @@ const EditProfile = ({
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          {has_password ? (
+          {hasPassword ? (
             <EditLogin
               toggleEditLogin={prov => toggleEditLogin(prov)}
               provider={provider}

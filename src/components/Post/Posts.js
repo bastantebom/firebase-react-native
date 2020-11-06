@@ -10,7 +10,6 @@ import LoadingScreen from './loading'
 import { normalize } from '@/globals'
 
 const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
-  const { user, userInfo } = useContext(UserContext)
   const { setPosts, posts, locationFilter, setLocationFilter } = useContext(
     Context
   )

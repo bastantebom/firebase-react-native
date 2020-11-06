@@ -1,6 +1,13 @@
 //import liraries
 import React, { useState, useContext } from 'react'
-import { View, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native'
+import Api from '@/services/Api'
 
 import {
   ScreenHeaderTitle,
@@ -8,15 +15,17 @@ import {
   AppText,
   AppButton,
   FloatingAppInput,
+  Notification,
 } from '@/components'
 import { UserContext } from '@/context/UserContext'
-
+import { Context } from '@/context'
+import { EyeDark, EyeLight } from '@/assets/images/icons'
 import { normalize, Colors } from '@/globals'
 import Verify from './VerifyAccount'
 import Modal from 'react-native-modal'
 
-// create a component
 const EditLogin = ({ toggleEditLogin, provider }) => {
+  const { openNotification, closeNotification } = useContext(Context)
   const { userInfo, user, setUserInfo } = useContext(UserContext)
   const [newEmail, setNewEmail] = useState('')
   const [newMobile, setNewMobile] = useState('')
@@ -24,6 +33,9 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
   const [enabled, setEnabled] = useState(false)
   const [verify, setVerify] = useState(false)
   const isEmail = provider === 'email' ? true : false
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
+  const [isVisible, setIsVisible] = useState(false)
 
   const emailChangeHandler = newEmail => {
     const email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -31,13 +43,73 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
     setNewEmail(newEmail)
   }
 
-  const toggleVerify = () => {
-    setVerify(!verify)
+  const toggleVerify = async () => {
+    const verifiedPasswordResponse = await Api.verifyPassword({
+      body: { password: password },
+    })
+    if (verifiedPasswordResponse.verified) {
+      const resendResponse = await Api.resendCode({
+        body: { uid: user.uid, provider: provider },
+      })
+      if (resendResponse.success) setVerify(!verify)
+      else {
+        triggerNotification('Code failed to sent', 'error')
+        setEnabled(false)
+      }
+    }
+    if (!verifiedPasswordResponse.verified) {
+      triggerNotification('Current Password is not correct', 'error')
+      setEnabled(false)
+    }
+  }
+
+  const triggerNotification = (message, type) => {
+    setNotificationType(type)
+    setNotificationMessage(
+      <AppText
+        textStyle="body2"
+        customStyle={
+          type === 'success' ? notificationText : notificationErrorTextStyle
+        }>
+        {message}
+      </AppText>
+    )
+    openNotification()
+    closeNotificationTimer()
+  }
+
+  const notificationErrorTextStyle = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    color: 'white',
+    flexWrap: 'wrap',
+  }
+
+  const notificationText = {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 12,
+    flexWrap: 'wrap',
+  }
+
+  const closeNotificationTimer = () => {
+    setTimeout(() => {
+      setNotificationType()
+      setNotificationMessage()
+      closeNotification()
+    }, 5000)
   }
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
+        <Notification
+          message={notificationMessage}
+          type={notificationType}
+          top={normalize(30)}
+          position="absolute"
+        />
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
             iconSize={16}
@@ -105,15 +177,23 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
                   }}
                 />
               )}
-
-              <FloatingAppInput
-                value={password}
-                label="Password"
-                customStyle={{ marginBottom: normalize(16) }}
-                onChangeText={password => {
-                  setPassword(password)
-                }}
-              />
+              <View style={{ position: 'relative' }}>
+                <FloatingAppInput
+                  value={password}
+                  label="Password"
+                  customStyle={{ marginBottom: normalize(16) }}
+                  onChangeText={password => {
+                    setPassword(password)
+                    setEnabled(true)
+                  }}
+                  secureTextEntry={!isVisible ? true : false}
+                />
+                <View style={styles.passwordToggle}>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                    {!isVisible ? <EyeDark /> : <EyeLight />}
+                  </TouchableOpacity>
+                </View>
+              </View>
             </PaddingView>
           </View>
           <View
@@ -155,9 +235,12 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
           height: Dimensions.get('window').height,
         }}>
         <Verify
-          toggleVerify={toggleVerify}
+          toggleVerify={() => {
+            setVerify(false)
+          }}
           provider={provider}
-          login={isEmail ? newEmail : newMobile}
+          login={isEmail ? userInfo.email : userInfo.phone_number}
+          newLogin={isEmail ? newEmail : newMobile}
         />
       </Modal>
     </>
@@ -192,6 +275,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginBottom: 16,
+  },
+  passwordToggle: {
+    position: 'absolute',
+    right: normalize(10),
+    top: normalize(14),
   },
 })
 

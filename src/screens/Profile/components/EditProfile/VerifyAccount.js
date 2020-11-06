@@ -13,10 +13,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import { AppText, TransitionIndicator, Notification } from '@/components'
-import VerifyService from '@/services/VerifyService'
+import Api from '@/services/Api'
 //import auth from '@react-native-firebase/auth'
 
-const VerifyAccount = ({ login, provider, toggleVerify }) => {
+const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
   const { openNotification, closeNotification } = useContext(Context)
   const { user } = useContext(UserContext)
   const { uid } = user
@@ -92,17 +92,18 @@ const VerifyAccount = ({ login, provider, toggleVerify }) => {
     if (code.join('').length === 4) {
       const nCode = parseInt(code.join(''))
       setIsScreenLoading(true)
-      //const { uid, provider } = route?.route.params || {}
-      try {
-        const response = await VerifyService.verifyCode({
-          uid,
-          provider,
-          verification_code: nCode,
-        })
 
+      try {
+        const response = await Api.verifyCode({
+          body: {
+            uid,
+            provider,
+            verification_code: nCode,
+          },
+        })
         const { custom_token, success } = response
         if (success) {
-          //await auth().signInWithCustomToken(custom_token)
+          updateProfile()
         } else {
           throw new Error(response.message)
         }
@@ -114,6 +115,17 @@ const VerifyAccount = ({ login, provider, toggleVerify }) => {
     return
   }
 
+  const updateProfile = async () => {
+    const dataToUpdate = {
+      email: newLogin,
+      phone_number: newLogin,
+      uid: uid,
+    }
+    Object.keys(dataToUpdate).forEach(
+      key => dataToUpdate[key] === undefined && delete dataToUpdate[key]
+    )
+  }
+
   const closeNotificationTimer = () => {
     setTimeout(() => {
       closeNotification()
@@ -122,8 +134,6 @@ const VerifyAccount = ({ login, provider, toggleVerify }) => {
 
   const resendCodeHandler = async () => {
     setIsScreenLoading(true)
-    //const { uid, provider, login } = route?.route.params || {}
-
     try {
       const response = await VerifyService.resendCode()
       if (response.success) {

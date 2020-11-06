@@ -1,241 +1,162 @@
-import React, {useContext, useState} from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import Modal from 'react-native-modal';
+import React, { useState, useContext, useEffect } from 'react'
+import { FlatList, View, ActivityIndicator } from 'react-native'
 
-import {AppText, MarginView, ProfileInfo, CacheableImage} from '@/components';
-import {GlobalStyle, normalize, timePassedShort, Colors} from '@/globals';
-import {DefaultSell, DefaultService, DefaultNeed} from '@/assets/images';
-import {Verified, ProfileImageDefault} from '@/assets/images/icons';
-import {UserContext} from '@/context/UserContext';
-import LoadingScreen from './loading';
-import SinglePostOthersView from './SinglePostOthersView';
+import Post from '@/components/Post/Post'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
+import { PostService } from '@/services'
+import { AppText } from '@/components'
+import PostOwnEmpty from '@/screens/Profile/components/Account/EmptyArchivedPost'
+import LoadingScreen from './loading'
 
-const ArchivePost = ({data, isLoading}) => {
-  const {user} = useContext(UserContext);
-  const [showPost, setShowPost] = useState(false);
+const ArchivePost = ({
+  data,
+  type,
+  isLoading,
+  setIsLoading,
+  userID,
+  toggleLikePost,
+  toggleMenu,
+}) => {
+  const { user } = useContext(UserContext)
+  const { setArchivedPosts } = useContext(Context)
+  const renderItem = ({ item }) => (
+    <Post
+      data={item}
+      type={type}
+      isLoading={isLoading}
+      toggleLikePost={toggleLikePost}
+      toggleMenu={toggleMenu}
+    />
+  )
 
-  const navigation = useNavigation();
+  const [refresh, setRefresh] = useState(false)
+  const [lastPID, setLastPID] = useState(0)
+  const [fetchMore, setFecthMore] = useState(false)
+  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
+  const [
+    onEndReachedCalledDuringMomentum,
+    setOnEndReachedCalledDuringMomentum,
+  ] = useState(true)
 
-  const {
-    display_name,
-    date_posted,
-    available,
-    profile_photo,
-    payment_method,
-    store_location: {city, province, country},
-    title,
-    username,
-    delivery_method: {pickup, delivery},
-    description,
-    uid,
-    price,
-    post_id,
-    images,
-    account_verified,
-    email,
-    phone_number,
-    post_type,
-    full_name,
-    status,
-  } = data;
+  useEffect(() => {
+    let isMounted = true
 
-  const VerifiedBadge = () => {
-    return account_verified ? (
-      <Verified width={normalize(9)} height={normalize(10.12)} />
-    ) : (
-      <></>
-    );
-  };
+    if (isMounted) {
+      refreshPosts()
+    }
 
-  const timeAgo = (time) => {
-    return timePassedShort(time);
-  };
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
-  const statusBackground = () => {
-    if (status === 'ongoing') return Colors.secondaryDarkTangerine;
+  const refreshPosts = async () => {
+    try {
+      setArchivedPosts([])
+      setRefresh(true)
+      setLastPID(0)
 
-    if (status === 'completed') return Colors.secondaryShamrock;
+      const params = {
+        uid: user.uid,
+        limit: 5,
+        page: 0,
+      }
 
-    if (status === 'archived') return Colors.neutralsMischka;
+      const res = await PostService.getArchivedPosts(params)
+      setLastPID(1)
+      setIsLoading(false)
+      if (res.data.length > 0) {
+        setArchivedPosts(res.data)
+      }
 
-    return 'red';
-  };
+      setRefresh(false)
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
 
-  const ProfilePhoto = ({size}) => {
-    return profile_photo ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: profile_photo,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    );
-  };
+  const getMorePost = async () => {
+    if (!onEndReachedCalledDuringMomentum) {
+      setOnEndReachedCalledDuringMomentum(true)
+      setFecthMore(true)
 
-  const navToPost = () => {
-    let computedData = {
-      data: data,
-      viewing: true,
-      created: false,
-      edited: false,
-    };
+      if (!thereIsMoreFlag) {
+        setFecthMore(false)
+        return
+      }
 
-    if (user && user.uid === uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params: computedData,
-      });
-    // change navigation.push to navigate
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: {...computedData, othersView: true},
-      });
-  };
+      let getPostsParams = {
+        uid: user.uid,
+        limit: 5,
+        page: lastPID,
+      }
 
-  return (
-    <LoadingScreen.LoadingOwnPost isLoading={isLoading}>
-      <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
-        <MarginView
-          marginSize={2}
-          style={{
-            marginBottom: 0,
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: 'white',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.06,
-            shadowRadius: 8,
-            elevation: 4,
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.postImageContainer}>
-              {images.length > 0 ? (
-                <CacheableImage
-                  style={GlobalStyle.image}
-                  source={{uri: images[0]}}
-                />
-              ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
-              post_type === 'service' ? (
-                <DefaultService width={normalize(64)} height={normalize(72)} />
-              ) : post_type === 'Need' ? (
-                <DefaultNeed width={normalize(64)} height={normalize(72)} />
-              ) : (
-                <DefaultSell width={normalize(64)} height={normalize(72)} />
-              )}
-            </View>
+      try {
+        const res = await PostService.getArchivedPosts(getPostsParams)
+        setLastPID(lastPID + 1)
+        setArchivedPosts(prev => [...prev, ...res.data])
+        setFecthMore(false)
+      } catch (error) {
+        setThereIsMoreFlag(false)
+        setFecthMore(false)
+      }
+    }
+  }
 
-            <View style={{paddingLeft: 12, flex: 1}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                }}>
-                <View style={styles.userInfoImageContainer}>
-                  <ProfilePhoto size={20} />
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    flex: 1,
-                  }}>
-                  <AppText
-                    textStyle="caption"
-                    customStyle={{
-                      flex: 1,
-                      paddingLeft: 8,
-                      paddingRight: 4,
-                    }}>
-                    {display_name ? display_name : full_name}
-                  </AppText>
-                  <VerifiedBadge />
+  const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(false)
 
-                  <AppText
-                    textStyle="captionConstant"
-                    color={Colors.contentPlaceholder}>
-                    {timeAgo(Date.now() / 1000 - date_posted._seconds)}
-                  </AppText>
-                </View>
-              </View>
-              <View
-                style={{
-                  marginTop: 8,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    backgroundColor: statusBackground(),
-                    borderRadius: 20,
-                    paddingHorizontal: 8,
-                  }}>
-                  <AppText
-                    textStyle="metadata"
-                    color={'white'}
-                    customStyle={{textTransform: 'capitalize'}}>
-                    {status}
-                  </AppText>
-                </View>
-                <AppText
-                  textStyle="metadata"
-                  customStyle={{textTransform: 'capitalize', marginLeft: 4}}>
-                  2 Offers
-                </AppText>
-              </View>
-              <AppText customStyle={{marginTop: 4}} textStyle="caption2">
-                {title}
+  if (data.length > 0) {
+    return (
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        onRefresh={refreshPosts}
+        refreshing={refresh}
+        onEndReached={getMorePost}
+        onEndReachedThreshold={0.1}
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        ListFooterComponent={
+          <View
+            style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
+            {fetchMore ? (
+              <ActivityIndicator />
+            ) : (
+              <AppText>
+                {lastPID === 'none' ? 'No more liked available' : ''}
               </AppText>
-              {/* <AppText textStyle="metadata">{description}</AppText> */}
-            </View>
+            )}
           </View>
-        </MarginView>
-      </TouchableOpacity>
-      <Modal
-        isVisible={showPost}
-        animationIn="slideInUp"
-        animationInTiming={500}
-        animationOut="slideOutLeft"
-        animationOutTiming={500}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-          justifyContent: 'flex-start',
-        }}>
-        <SinglePostOthersView
-          data={data}
-          backFunction={() => setShowPost(false)}
-        />
-      </Modal>
-    </LoadingScreen.LoadingOwnPost>
-  );
-};
+        }
+      />
+    )
+  }
 
-const styles = StyleSheet.create({
-  postImageContainer: {
-    width: normalize(64),
-    height: normalize(72),
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  userInfoImageContainer: {
-    height: normalize(20),
-    width: normalize(20),
-    borderRadius: normalize(20 / 2),
-    overflow: 'hidden',
-  },
-});
+  if (type === 'archived' && !data.length) {
+    if (refresh) {
+      return (
+        <View>
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+          <LoadingScreen.LoadingPublicPost />
+        </View>
+      )
+    }
+    return <PostOwnEmpty isLoading={isLoading} />
+  }
 
-export default ArchivePost;
+  if (type !== 'archived') {
+    if (refresh) {
+      return <ActivityIndicator />
+    }
+    return (
+      <View style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
+        <AppText>No user posts</AppText>
+      </View>
+    )
+  }
+}
+
+export default ArchivePost

@@ -66,7 +66,6 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     likers,
   } = data
 
-  const isLike = ~likers?.indexOf(user.uid)
   const [likePost, setLikePost] = useState(isLike)
 
   const VerifiedBadge = () => {
@@ -91,6 +90,8 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     uid: uid,
     post_type: post_type,
   }
+
+  const isLike = ~likers?.indexOf(user?.uid)
 
   const navigation = useNavigation()
 
@@ -367,7 +368,114 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
 
   if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />
   if (type === 'archived')
-    return <ArchivePost data={data} isLoading={isLoading} />
+    return (
+      <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
+        <PaddingView paddingSize={2} style={styles.container}>
+          <ProfileInfo
+            userInfo={userInfo}
+            type="dashboard"
+            toggleLikePost={toggleLikePost}
+            toggleMenu={toggleMenu}
+          />
+
+          <View style={styles.postContainer}>
+            <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+              <View style={styles.postImageContainer}>
+                {cover_photos.length > 0 ? (
+                  <CacheableImage
+                    style={GlobalStyle.image}
+                    source={{ uri: cover_photos[0] }}
+                  />
+                ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
+                post_type === 'service' ? (
+                  <DefaultService
+                    width={normalize(122)}
+                    height={normalize(126)}
+                  />
+                ) : post_type === 'need' || post_type === 'Need' ? (
+                  <DefaultNeed width={normalize(122)} height={normalize(126)} />
+                ) : (
+                  <DefaultSell width={normalize(122)} height={normalize(126)} />
+                )}
+              </View>
+            </TouchableOpacity>
+            <View style={styles.postDetailContainer}>
+              <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
+                <AppText
+                  textStyle="body2Dashboard"
+                  customStyle={GlobalStyle.marginBottom1}>
+                  {title}
+                </AppText>
+
+                <AppText
+                  textStyle="price"
+                  customStyle={styles.priceText}
+                  color={Colors.secondaryMountainMeadow}>
+                  ₱{price}
+                </AppText>
+              </TouchableOpacity>
+
+              <Divider style={styles.dividerStyle} />
+
+              <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
+                <View style={GlobalStyle.rowCenter}>
+                  <NavigationPinRed width={16} height={16} />
+                  <AppText
+                    textStyle="eyebrow2"
+                    color={Colors.contentPlaceholder}
+                    customStyle={{ marginLeft: 4 }}>
+                    {city}, {province}
+                  </AppText>
+                </View>
+                {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
+                <NavigationArrow width={12} height={12} />
+                <AppText
+                  textStyle="eyebrow2"
+                  color={Colors.contentPlaceholder}
+                  customStyle={{marginLeft: 4}}>
+                  {postServiceRadius}
+                </AppText>
+              </View> */}
+              </View>
+              {/* {pickup || delivery ? (
+              <View style={GlobalStyle.rowCenter}>
+                <TransportationBox width={16} height={16} />
+
+                <AppText
+                  textStyle="eyebrow2"
+                  customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
+                  {pickup && delivery
+                    ? 'Pickup & Delivery'
+                    : delivery
+                    ? 'Delivery'
+                    : pickup
+                    ? 'Pickup'
+                    : 'Not set'}
+                </AppText>
+              </View>
+            ) : null} */}
+            </View>
+          </View>
+        </PaddingView>
+        <Modal
+          isVisible={showPost}
+          animationIn="slideInUp"
+          animationInTiming={500}
+          animationOut="slideOutLeft"
+          animationOutTiming={500}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+            justifyContent: 'flex-start',
+          }}>
+          <SinglePostOthersView
+            data={data}
+            backFunction={() => setShowPost(false)}
+          />
+        </Modal>
+      </LoadingScreen.LoadingPublicPost>
+    )
 
   return (
     <AppText color={'red'}>

@@ -1,6 +1,6 @@
-import BaseAPI from '@/services/BaseAPI';
+import BaseAPI from '@/services/BaseAPI'
 
-const reportUser = async (payload) => {
+const reportUser = async payload => {
   //url: /users/:reported_uid/report
   //reported_uid
   return BaseAPI({
@@ -10,10 +10,10 @@ const reportUser = async (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const blockUser = async (payload) => {
+const blockUser = async payload => {
   ///users/:reported_uid/block
   return BaseAPI({
     url: `/users/${payload.reported_uid}/block`,
@@ -22,10 +22,10 @@ const blockUser = async (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
 
-const unBlockUser = async (payload) => {
+const unBlockUser = async payload => {
   //url: /users/:reported_uid/unblock
   return BaseAPI({
     url: `/users/${payload.reported_uid}/unblock`,
@@ -34,13 +34,28 @@ const unBlockUser = async (payload) => {
       'Content-Type': 'application/json',
     },
     data: payload,
-  });
-};
+  })
+}
+
+const contactServbees = async payload => {
+  //url: /users/:reported_uid/unblock
+  ////POST
+  //body: { full_name, email, message}
+  return BaseAPI({
+    url: `contact-us`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: payload,
+  })
+}
 
 const AdminFunctionService = {
   reportUser,
   blockUser,
   unBlockUser,
-};
+  contactServbees,
+}
 
-export default AdminFunctionService;
+export default AdminFunctionService
