@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
 import LoginService from '@/services/LoginService'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { AppButton, AppText, FloatingAppInput } from '@/components'
+import { AppButton, AppText } from '@/components'
 import Colors from '@/globals/Colors'
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer'
 
@@ -29,6 +29,7 @@ import { PaddingView } from '@/components'
 
 import { Context } from '@/context'
 import { normalize } from '@/globals'
+import Api from '@/services/Api'
 
 function Divider() {
   return (
@@ -49,7 +50,7 @@ function Login() {
   const [password, setPassword] = useState('')
   const [isVisible, setIsVisible] = useState(false)
 
-  const { closeSlider, openSlider, authType, setAuthType } = useContext(Context)
+  const { closeSlider, openSlider, setAuthType } = useContext(Context)
   const [isLoading, setIsLoading] = useState(false)
   const [enabled, setEnabled] = useState(false)
 
@@ -80,47 +81,34 @@ function Login() {
   const handleLogin = async () => {
     let mounted = true
     setIsLoading(true)
-    console.log('Handle login')
-
-    if (mounted)
-      await LoginService.loginMobile({
-        login: emailAddress,
-        password: password,
+    try {
+      const response = await Api.login({
+        body: {
+          login: emailAddress,
+          password,
+        },
       })
-        .then(response => {
-          if (response.success && response.verified) {
-            return auth()
-              .signInWithCustomToken(response.custom_token)
-              .then(res => {
-                setIsLoading(false)
-                navigation.push('TabStack')
-              })
-              .catch(err => {
-                setIsLoading(false)
-                console.log(err)
-              })
-          }
-          if (response.success && !response.verified) {
-            closeSlider()
-            navigation.navigate('VerifyAccount', {
-              uid: response.uid,
-              login: emailAddress,
-            })
-          }
+      const { custom_token, success, verified, uid } = response
+      if (success && verified && custom_token) {
+        await auth().signInWithCustomToken(custom_token)
+        closeSlider()
+        navigation.push('TabStack')
+      } else if (success && !verified) {
+        closeSlider()
+        navigation.navigate('VerifyAccount', {
+          uid,
+          login: emailAddress,
+        })
+      }
 
-          if (!response.success) {
-            setIsLoading(false)
-            alert('Invalid login credentials')
-            setPassword('')
-          }
-        })
-        .catch(error => {
-          console.log('FAILED---------------')
-          console.log('With Error in the API Login ' + error)
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
+      if (!success) {
+        alert('Invalid login credentials')
+        setPassword('')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    setIsLoading(false)
     return () => {
       mounted = false
     }

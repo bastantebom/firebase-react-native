@@ -1,25 +1,27 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
+} from 'react-native'
 
-import { AppText, BottomSheetHeader, PaddingView } from '@/components';
-import Modal from 'react-native-modal';
-import { Colors, normalize } from '@/globals';
-import { UserContext } from '@/context/UserContext';
-import ConfirmationOtherProfile from './ConfirmationOtherProfile.js';
+import { AppText, BottomSheetHeader, PaddingView } from '@/components'
+import Modal from 'react-native-modal'
+import { Colors, normalize } from '@/globals'
+import { useNavigation } from '@react-navigation/native'
+import { UserContext } from '@/context/UserContext'
+import firestore from '@react-native-firebase/firestore'
+import ConfirmationOtherProfile from './ConfirmationOtherProfile.js'
 
 import {
-  ProfileMute,
   ProfileReport,
   ProfileBlockRed,
   HeaderFollowingBlack,
   HeaderFollowBlack,
-} from '@/assets/images/icons';
-import Report from './Report';
+  SendMessage,
+} from '@/assets/images/icons'
+import Report from './Report'
 
 const EllipsisMenu = ({
   toggleEllipsisState,
@@ -28,34 +30,69 @@ const EllipsisMenu = ({
   userID,
   isFollowing,
   toggleFollowing,
-  //blockUser,
 }) => {
-  const { username } = userInfo;
-  //console.log(userID);
-  const [reportUser, setReportUser] = useState(false);
+  const { username } = userInfo
+  const navigation = useNavigation()
+  const { user } = useContext(UserContext)
+
+  const [reportUser, setReportUser] = useState(false)
 
   const toggleReportUser = () => {
-    setReportUser(!reportUser);
-    if (reportUser) toggleEllipsisState();
-  };
+    setReportUser(!reportUser)
+    if (reportUser) toggleEllipsisState()
+  }
 
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false)
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
+    setShowCancelModal(!showCancelModal)
+  }
 
-  const closeHandler = (value) => {
-    cancelModalToggle();
+  const closeHandler = value => {
+    cancelModalToggle()
     setTimeout(() => {
-      togglePostModal = { togglePostModal };
-    }, 200);
-    cancelModalToggle();
-  };
+      togglePostModal = { togglePostModal }
+    }, 200)
+    cancelModalToggle()
+  }
 
   const followingHandler = () => {
-    toggleEllipsisState();
-    toggleFollowing();
-  };
+    toggleEllipsisState()
+    toggleFollowing()
+  }
+
+  const handleChatPress = async () => {
+    let channel
+    try {
+      if (!user?.uid) return
+      const snapshot = await firestore()
+        .collection('chat_rooms')
+        .where('members', '==', {
+          [user.uid]: true,
+          [userID]: true,
+        })
+        .get()
+
+      if (!snapshot.docs.length) {
+        const ref = firestore().collection('chat_rooms')
+
+        const { id } = await ref.add({
+          members: {
+            [user.uid]: true,
+            [userID]: true,
+          },
+        })
+
+        await ref.doc(id).update({ id })
+        channel = (await ref.doc(id).get()).data()
+      } else {
+        channel = snapshot.docs[0].data()
+      }
+      toggleEllipsisState()
+      navigation.navigate('Chat', { user, channel })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <>
@@ -81,7 +118,11 @@ const EllipsisMenu = ({
             </AppText>
           </View>
         </TouchableOpacity> */}
-          <TouchableOpacity activeOpacity={0.7} onPress={() => { followingHandler() }}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              followingHandler()
+            }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -94,11 +135,11 @@ const EllipsisMenu = ({
                   height={normalize(20)}
                 />
               ) : (
-                  <HeaderFollowBlack
-                    width={normalize(20)}
-                    height={normalize(20)}
-                  />
-                )}
+                <HeaderFollowBlack
+                  width={normalize(20)}
+                  height={normalize(20)}
+                />
+              )}
               <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
                 {isFollowing ? 'Following' : 'Follow'}
               </AppText>
@@ -120,7 +161,7 @@ const EllipsisMenu = ({
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => {
-              closeHandler();
+              closeHandler()
             }}>
             <View
               style={{
@@ -134,6 +175,19 @@ const EllipsisMenu = ({
                 customStyle={{ marginLeft: 8 }}
                 textStyle="body2">
                 Block @{username}
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.7} onPress={handleChatPress}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 16,
+              }}>
+              <SendMessage style={{ color: '#91919C' }}></SendMessage>
+              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
+                Message @{username}
               </AppText>
             </View>
           </TouchableOpacity>
@@ -192,7 +246,7 @@ const EllipsisMenu = ({
         />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default EllipsisMenu;
+export default EllipsisMenu

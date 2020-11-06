@@ -7,13 +7,14 @@ const baseURL =
   process.env.BASE_URL ||
   (() => {
     switch (process.env.NODE_ENV) {
-      case 'develop':
-        return 'https://servbees-api-dev.onrender.com'
       case 'production':
         return 'https://api.servbees.com/'
+      case 'local':
+        return 'http://localhost:5000'
+      case 'development':
+      default:
+        return 'https://servbees-api-dev.onrender.com'
     }
-
-    return 'http://localhost:5000'
   })()
 
 ;(async () => {
@@ -38,7 +39,7 @@ const baseURL =
       )
       .replace(
         'fetch(',
-        `const token = await AsyncStorage.getItem('token')\nheaders.Authorization = \`Bearer \${token}\`\nfetch(`
+        "const token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
       ),
     { ...config, parser: 'babel' }
   )

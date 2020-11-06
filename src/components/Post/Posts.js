@@ -6,11 +6,8 @@ import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import { PostService } from '@/services'
 import { AppText } from '@/components'
-import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
 import LoadingScreen from './loading'
 import { normalize } from '@/globals'
-
-//import { PostService } from '@/services'
 
 const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   const { user, userInfo } = useContext(UserContext)
@@ -25,28 +22,17 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   const [lastPID, setLastPID] = useState(0)
   const [fetchMore, setFecthMore] = useState(true)
   const limit = 5
-  // const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true);
   const [
     onEndReachedCalledDuringMomentum,
     setOnEndReachedCalledDuringMomentum,
   ] = useState(true)
-
-  // const initialLocation = userInfo?.address?.city
-  //   ? userInfo?.address?.city
-  //   : '';
 
   useEffect(() => {
     setLastPID(0)
     refreshPosts()
   }, [locationFilter])
 
-  // useEffect(() => {
-  //   setLastPID(0);
-  // }, [lastPID]);
-
   const refreshPosts = async () => {
-    console.log('REFRESH')
-    //console.log(lastPID);
     try {
       setRefresh(true)
 
@@ -101,7 +87,6 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(true)
 
   const getMorePost = async () => {
-    console.log('GET MORE')
     try {
       if (onEndReachedCalledDuringMomentum) {
         setOnEndReachedCalledDuringMomentum(false)
@@ -209,9 +194,6 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
   //       });
   //   }
   // };
-
-  //console.log('++++++++++++++++++++++++++')
-  //console.log(posts)
 
   if (data.length > 0) {
     return (

@@ -19,6 +19,8 @@ import { Dashboard } from '@/screens/Dashboard'
 import { Profile } from '@/screens/Profile'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
+import { Chat } from '@/screens/Chat'
+
 import {
   Post,
   SinglePostView,
@@ -72,6 +74,7 @@ function NoBottomTabScreens() {
         name="OthersProfile"
         component={ProfileInfoModal}
       />
+      <NoBottomTabScreenStack.Screen name="Chat" component={Chat} />
       <NoBottomTabScreenStack.Screen
         name="OthersPost"
         component={SinglePostView}
@@ -170,18 +173,17 @@ function ProfileStackScreen() {
   }
 }
 
-function TabStack() {
+const TabStack = () => {
   const [activityNotification, setActivityNotification] = useState(true)
   const [profileNotification] = useState(false)
   const { closePostButtons } = useContext(Context)
 
   const navigation = useNavigation()
-  const navigate = url => {
+  const navigate = async url => {
     const route = url.replace(/.*?:\/\//g, '')
     const id = route.split('/')[1]
     const routeName = route.split('/')[0]
 
-    console.log(routeName)
     if (routeName === 'profile') {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
@@ -189,18 +191,15 @@ function TabStack() {
       })
     }
     if (routeName === 'post') {
-      // navigation.navigate('Servbees', {pid: id});
-
-      PostService.getPost(id)
-        .then(res => {
-          navigation.navigate('NBTScreen', {
-            screen: 'OthersPost',
-            params: { ...res, othersView: true },
-          })
+      try {
+        const response = await PostService.getPost(id)
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersPost',
+          params: { ...response, othersView: true },
         })
-        .catch(err => {
-          console.log(err)
-        })
+      } catch (error) {
+        console.log(error.message || error)
+      }
     }
   }
 
@@ -208,10 +207,7 @@ function TabStack() {
     <Tab.Navigator
       tabBarOptions={{
         style: {
-          // borderTopWidth: 0,
-          // elevation: 25,
           position: 'relative',
-          // paddingHorizontal: normalize(60),
         },
         tabStyle: {
           flex: 1,
@@ -236,9 +232,7 @@ function TabStack() {
             )
             return <>{icon}</>
           },
-          tabBarOnPress: () => {
-            closePostButtons
-          },
+          tabBarOnPress: closePostButtons,
         }}
       />
       <Tab.Screen
@@ -350,7 +344,7 @@ function TabStack() {
   )
 }
 
-function Routes() {
+export default Routes = () => {
   const { token, userInfo } = useContext(UserContext)
   const { addresses } = userInfo
 
@@ -405,5 +399,3 @@ function Routes() {
     </Animated.View>
   )
 }
-
-export default Routes

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, TouchableOpacity } from 'react-native'
 
 import { AppText } from '@/components'
@@ -13,7 +13,6 @@ const Checkbox = ({ Icon, label, style, value, valueChangeHandler }) => {
       onPress={() => valueChangeHandler(!value)}>
       <View
         style={{
-          // backgroundColor: 'blue',
           flexDirection: 'row',
           paddingLeft: 16,
           paddingRight: 8,
@@ -30,7 +29,6 @@ const Checkbox = ({ Icon, label, style, value, valueChangeHandler }) => {
 
         <View
           style={{
-            // backgroundColor: 'yellow',
             width: normalize(20),
             height: normalize(20),
             justifyContent: 'center',

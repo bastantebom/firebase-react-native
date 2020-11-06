@@ -1,23 +1,23 @@
-import React from 'react';
-import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
+import React from 'react'
+import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native'
 
-const TransitionIndicator = ({loading}) => {
+const TransitionIndicator = ({ loading, backgroundStyle }) => {
   return (
     <Modal
       transparent={true}
       animationType={'none'}
       visible={loading}
       onRequestClose={() => {
-        console.log('close modal');
+        console.log('close modal')
       }}>
-      <View style={styles.modalBackground}>
+      <View style={[styles.modalBackground, backgroundStyle]}>
         <View style={styles.activityIndicatorWrapper}>
           <ActivityIndicator size="large" animating={loading} />
         </View>
       </View>
     </Modal>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -36,6 +36,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-});
+})
 
-export default TransitionIndicator;
+export default TransitionIndicator

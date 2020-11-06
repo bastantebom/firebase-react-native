@@ -11,28 +11,14 @@ import {
   Keyboard,
 } from 'react-native'
 
-import { PostService } from '@/services'
-
-import {
-  Posts,
-  AppInput,
-  AppText,
-  WhiteOpacity,
-  Notification,
-  FloatingAppInput,
-} from '@/components'
+import { Posts, AppText, WhiteOpacity, Notification } from '@/components'
 import FilterSlider from './components/FilterSlider'
-import { useNavigation } from '@react-navigation/native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import {
-  Filter,
-  JarHeart,
   FilterDark,
   JarHeartDark,
   NavigationArrow,
-  NavigationPin,
-  NavigationPinRed,
   CloseDark,
   FilterServices,
   JarHeartColored,
@@ -48,11 +34,9 @@ import { VerificationScreen } from '@/screens/Dashboard/Verification'
 
 import SearchBox from './components/Search/Searchbox'
 import SearchResults from './components/Search/SearchResults'
-import { ease } from 'react-native/Libraries/Animated/src/Easing'
 
-const { height, width } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
-// function Dashboard({ navigation }) {
 function Dashboard(props) {
   const { user } = useContext(UserContext)
 
@@ -81,7 +65,6 @@ function Dashboard(props) {
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        {/* ---- Verification Notification ---- */}
         {user && (
           <Notification
             message={
@@ -97,7 +80,6 @@ function Dashboard(props) {
             verification
           />
         )}
-        {/* ---- Verification Notification ---- */}
 
         <View style={styles.container}>
           <SearchBarWithFilter
@@ -106,10 +88,6 @@ function Dashboard(props) {
             scrollY={scrollY}
           />
           <Animated.ScrollView
-            // onScroll={handleScroll}
-            // contentContainerStyle={{
-            //   paddingTop: normalize(100),
-            // }}
             onScroll={Animated.event(
               [
                 {
@@ -117,7 +95,7 @@ function Dashboard(props) {
                 },
               ],
               {
-                useNativeDriver: true, // <- Native Driver used for animated events
+                useNativeDriver: true,
               }
             )}
             scrollEventThrottle={16}>
@@ -126,7 +104,6 @@ function Dashboard(props) {
               data={posts}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
-              // headerComponent={<LocationSearch/>}
             />
           </Animated.ScrollView>
         </View>
@@ -158,12 +135,10 @@ function Dashboard(props) {
 
 const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
   const SHOW_HEIGHT = normalize(20)
-  const HIDE_HEIGHT = 0
 
   const { searchType, setPage } = useContext(Context)
 
   const [opacity] = useState(new Animated.Value(0))
-  const [locationBarHeight] = useState(new Animated.Value(SHOW_HEIGHT))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
   const [likedPosts, setLikedPosts] = useState(false)
 
@@ -201,9 +176,6 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
     setPage(0)
   }
 
-  // const FULL_HEIGHT = normalize(107);
-  // const HIDDEN_HEIGHT = normalize(47.5);
-
   var headMov = scrollY.interpolate({
     inputRange: [0, 180, 181],
     outputRange: [0, -180, -180],
@@ -228,7 +200,6 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
           style={{
             margin: 16,
             height: searchType === 'posts' ? normalize(47.5) : normalize(107),
-            // transform: [{ translateY: barHeight }]
           }}>
           <View
             style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
@@ -236,8 +207,6 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
               style={{
                 flex: 1,
                 height: searchType !== 'posts' ? normalize(100) : '100%',
-                // backgroundColor: 'red'
-                // paddingBottom: 16
               }}>
               <SearchBox
                 onSearchFocus={onFocus}
@@ -281,15 +250,7 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
         <Animated.View
           style={{
             display: searchBarFocused ? 'none' : 'flex',
-            // position: "absolute",
-            // height: {
-            //   transform: [{
-            //     translateY: barHeight
-            //   }]
-            // },
             width: width,
-            // top: normalize(90),
-            // backgroundColor: headColor,
             transform: [{ translateY: headMov }],
             opacity: barOpacity,
           }}>
@@ -301,7 +262,6 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
           borderBottomColor: 'rgba(0,0,0,.5)',
           borderBottomWidth: StyleSheet.hairlineWidth,
           opacity: 0.1,
-          // height: 1,
           elevation: 3,
         }}
       />
@@ -315,7 +275,6 @@ const LocationSearch = () => {
   const [showLocation, setShowLocation] = useState(false)
 
   const { userInfo } = useContext(UserContext)
-  // const {address} = userInfo;
 
   changeFromMapHandler = async fullAddress => {
     setLocationFilter(fullAddress.city)
@@ -329,7 +288,6 @@ const LocationSearch = () => {
             style={{
               paddingLeft: normalize(40),
               paddingRight: normalize(15),
-              // marginRight: normalize(10),
               maxWidth: '60%',
               minWidth: '60%',
             }}>
@@ -348,7 +306,6 @@ const LocationSearch = () => {
                 borderBottomWidth: 1,
                 borderBottomColor: Colors.primaryAliceBlue,
                 flexDirection: 'row',
-                // flex: 1,
                 justifyContent: 'space-between',
                 width: '100%',
               }}>
@@ -361,7 +318,6 @@ const LocationSearch = () => {
                   <AppText
                     textStyle="body3"
                     color={Colors.primaryMidnightBlue}
-                    // customStyle={{ marginRight: normalize(22) }}
                     numberOfLines={1}>
                     {locationFilter}
                   </AppText>
@@ -372,7 +328,6 @@ const LocationSearch = () => {
                   onPress={() => {
                     setLocationFilter(null)
                   }}
-                  // style={{width: '10%'}}
                   style={{
                     paddingVertical: normalize(4),
                     right: normalize(0),
@@ -394,7 +349,6 @@ const LocationSearch = () => {
             </View>
           </View>
           <ScrollView
-            // ref={scrollRef}
             horizontal={true}
             style={{}}
             showsHorizontalScrollIndicator={false}>
@@ -431,14 +385,6 @@ const LocationSearch = () => {
                 Sellers
               </AppText>
             </View>
-            {/* <View style={styles.locationOption}>
-              <NavigationArrow width={16} height={16} />
-              <AppText>Needs</AppText>
-            </View>
-            <View style={styles.locationOption}>
-              <NavigationArrow width={16} height={16} />
-              <AppText>Popular</AppText>
-            </View> */}
           </ScrollView>
         </View>
 
@@ -470,14 +416,6 @@ const LocationSearch = () => {
           />
         </Modal>
       </View>
-      {/* <View
-        style={{
-          // borderBottomColor: '#E5E5E5',
-          // borderBottomWidth: StyleSheet.hairlineWidth,
-          height: StyleSheet.hairlineWidth,
-          elevation: 2
-        }}
-      /> */}
     </>
   )
 }
@@ -487,19 +425,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    // flex: 1,
-    // flexGrow: 1,
-    // height: '100%',
     backgroundColor: 'white',
-    // backgroundColor: 'red',
   },
   circleButton: {
     width: 52,
     height: 52,
     borderRadius: 52 / 2,
-    // backgroundColor: "green",
-    // borderWidth: 1,
-    // borderColor: Colors.neutralGray,
     backgroundColor: Colors.neutralsWhite,
     flexBasis: 52,
     marginLeft: 8,
