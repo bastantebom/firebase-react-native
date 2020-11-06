@@ -13,13 +13,10 @@ import {
   ScreenHeaderTitle,
   FloatingAppInput,
 } from '@/components'
-import { Colors, normalize } from '@/globals'
-import { CircleAdd } from '@/assets/images/icons'
+import { Colors } from '@/globals'
 import Modal from 'react-native-modal'
-import CategoryOptions from './CategoryOptions'
 import MapAddress from '@/screens/Profile/components/EditProfile/MapAddress'
 
-import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 
 const AddedItemPreview = ({

@@ -34,8 +34,12 @@ import {
 } from '@/screens/Post'
 import { PostScreen } from '@/screens/Post'
 
-import { ProfileInfoModal } from '@/components'
+import { ProfileInfoModal, SinglePostOthersView } from '@/components'
 import { Past } from '@/screens/Activity'
+import { Badge } from '@/screens/Activity'
+import { Welcome } from '@/screens/Activity'
+import { Verified } from '@/screens/Activity'
+import { OngoingItem } from '@/screens/Activity'
 
 import {
   AlmostThere,
@@ -63,6 +67,9 @@ const ActivityStack = createStackNavigator()
 const ProfileStack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 const CreatePostStack = createStackNavigator()
+const WelcomeStack = createStackNavigator()
+const BadgeStack = createStackNavigator()
+const VerifiedStack = createStackNavigator()
 
 const Stack = createStackNavigator()
 const NoBottomTabScreenStack = createStackNavigator()
@@ -87,7 +94,43 @@ function NoBottomTabScreens() {
         name="CreatePost"
         component={CreatePostStackScreen}
       />
+      <NoBottomTabScreenStack.Screen
+        name="Welcome"
+        component={WelcomeStackScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="Badge"
+        component={BadgeStackScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="Verified"
+        component={VerifiedStackScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
+  )
+}
+
+function WelcomeStackScreen() {
+  return (
+    <WelcomeStack.Navigator headerMode="none">
+      <DashboardStack.Screen name="WelcomeScreen" component={Welcome} />
+    </WelcomeStack.Navigator>
+  )
+}
+
+function BadgeStackScreen() {
+  return (
+    <BadgeStack.Navigator headerMode="none">
+      <DashboardStack.Screen name="BadgeScreen" component={Badge} />
+    </BadgeStack.Navigator>
+  )
+}
+
+function VerifiedStackScreen() {
+  return (
+    <VerifiedStack.Navigator headerMode="none">
+      <DashboardStack.Screen name="VerifiedScreen" component={Verified} />
+    </VerifiedStack.Navigator>
   )
 }
 
@@ -139,12 +182,10 @@ function HiveStackScreen() {
 function PostStackScreen({ navigation }) {
   return (
     <>
-      {/* { !user ? null :  */}
       <PostStack.Navigator headerMode="none">
         <PostStack.Screen name="PostScreen" component={PostScreen} />
         <PostStack.Screen name="SinglePostView" component={SinglePostView} />
       </PostStack.Navigator>
-      {/* } */}
     </>
   )
 }
@@ -154,6 +195,10 @@ function ActivityStackScreen() {
     <ActivityStack.Navigator headerMode="none">
       <ActivityStack.Screen name="Activity" component={Activity} />
       <ActivityStack.Screen name="Past" component={Past} />
+      <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
+      {/* <ActivityStack.Screen name="Badge" component={Badge} />
+      <ActivityStack.Screen name="Welcome" component={Welcome} />
+      <ActivityStack.Screen name="Verified" component={Verified} /> */}
     </ActivityStack.Navigator>
   )
 }

@@ -10,9 +10,8 @@ import {
   Dimensions,
 } from 'react-native'
 
-import Modal from 'react-native-modal'
-
 import Slider from '@react-native-community/slider'
+import Modal from 'react-native-modal'
 
 import LocationModal from './LocationModal'
 import {
@@ -27,6 +26,7 @@ import { ArrowRight } from '@/assets/images/icons'
 
 import { Colors, normalize } from '@/globals'
 import { useNavigation } from '@react-navigation/native'
+import { RangeSlider } from '@/components/Slider/RangeSlider'
 
 const ShippingMethodModal = ({
   close,
@@ -41,6 +41,7 @@ const ShippingMethodModal = ({
   const [pickUp, setPickUp] = useState(
     pickupState ? (Object.keys(pickupState).length === 0 ? false : true) : false
   )
+
   const [delivery, setDelivery] = useState(
     deliveryState
       ? Object.keys(deliveryState).length === 0
@@ -281,7 +282,7 @@ const ShippingMethodModal = ({
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         marginTop: normalize(20),
-                        marginBottom: normalize(20),
+                        marginBottom: normalize(10),
                       }}>
                       <AppText textStyle="promo">Ship Within</AppText>
                       <AppText textStyle="caption" color="#999">

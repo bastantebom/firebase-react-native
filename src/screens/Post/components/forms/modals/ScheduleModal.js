@@ -197,8 +197,6 @@ const ScheduleModal = ({ close }) => {
   }
 
   const onChangeHolidayDate = (event, selectedtime) => {
-    // console.log('Change')
-    // console.log(selectedtime)
     setHolidayDate(selectedtime)
   }
 

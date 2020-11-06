@@ -9,10 +9,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import storage from '@react-native-firebase/storage'
-// import {Switch} from 'react-native-switch';
-import Textarea from 'react-native-textarea'
 import { useNavigation } from '@react-navigation/native'
 
 /*Map Essentials*/
@@ -69,7 +65,6 @@ const SellPostForm = ({
   initialData,
   activeScreen,
 }) => {
-  // active screen post=need sell=sell need=service initial
   const sellForm = {
     type: 'sell',
     privacy: false,
@@ -160,7 +155,6 @@ const SellPostForm = ({
   const [postExpiryModal, showPostExpiryModal] = useState(false)
   const [scheduleModal, showScheduleModal] = useState(false)
 
-  // const [listAsSingle, setListAsSingle] = useState(false);
   const [data, setData] = useState([])
 
   const [pickupAddress, setPickupAddress] = useState(
@@ -253,7 +247,6 @@ const SellPostForm = ({
   ])
 
   const publish = async () => {
-    // setLoadingSubmit(true)
     let paymentMethodsList = []
 
     for (const [key, value] of Object.entries(paymentMethods)) {
@@ -298,8 +291,6 @@ const SellPostForm = ({
       availability: true,
       allow_contact: allowContact,
     }
-
-    // console.log(data)
 
     if (initialData.id) {
       const res = await PostService.editPost(initialData.id, data)
@@ -433,11 +424,6 @@ const SellPostForm = ({
 
   /**FOR ANIMATION */
 
-  // useEffect(() => {
-  //   console.log('POST FORM ITEMS');
-  //   console.log(data);
-  // });
-
   const SelectedPaymentMethods = () => {
     let paymentMethodList = []
     for (const [key, value] of Object.entries(paymentMethods)) {
@@ -478,7 +464,6 @@ const SellPostForm = ({
           <View
             style={{
               flexDirection: 'row',
-              // backgroundColor: 'red',
               alignItems: 'center',
               marginBottom: 12,
               justifyContent: 'space-between',
@@ -523,21 +508,6 @@ const SellPostForm = ({
           value={title}
           onChangeText={text => setTitle(text)}
         />
-        {/* <AppInput
-          customStyle={{marginBottom: 16}}
-          label="Price"
-          value={price}
-          onChangeText={(text) => setPrice(text)}
-        /> */}
-
-        {/* <AppInput
-        // wont work because of fixed height
-        customStyle={{marginBottom: 16, height: undefined}}
-        label="Description"
-        multiline="true"
-        numberOfLines={5}
-        /> */}
-
         <TextInput
           value={description}
           multiline={true}

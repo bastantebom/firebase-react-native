@@ -43,6 +43,8 @@ export const ContextProvider = ({ children }) => {
   const [page, setPage] = useState(0)
   const [refreshFollowerList, setRefreshFollowerList] = useState(false)
 
+  const [deliveryMethod, setDeliveryMethod] = useState('delivery')
+
   const getItemsByCategory = cat => {
     const result = [
       ...items
@@ -329,6 +331,8 @@ export const ContextProvider = ({ children }) => {
         handleOnUserEndReach,
         refreshFollowerList,
         setRefreshFollowerList,
+        deliveryMethod,
+        setDeliveryMethod,
         likedPosts,
         setLikedPosts,
       }}>

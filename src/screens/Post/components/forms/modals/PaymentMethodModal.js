@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 
-import { AppText, AppCheckbox, AppInput, ScreenHeaderTitle } from '@/components'
+import { AppText, AppCheckbox, ScreenHeaderTitle } from '@/components'
 import { useNavigation } from '@react-navigation/native'
 
 import { Colors } from '@/globals'

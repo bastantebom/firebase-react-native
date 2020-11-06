@@ -15,7 +15,6 @@ import {
   ScreenHeaderTitle,
   FloatingAppInput,
   AppCheckbox,
-  BottomSheetHeader,
 } from '@/components'
 import { AngleDown, PostInfo } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'

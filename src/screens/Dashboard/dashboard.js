@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -38,11 +38,11 @@ import SearchResults from './components/Search/SearchResults'
 const { width } = Dimensions.get('window')
 
 function Dashboard(props) {
+
   const { user } = useContext(UserContext)
 
   const [modalState, setModalState] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [animateLocationBar, setAnimateLocationBar] = useState(0)
 
   const { posts } = useContext(Context)
 
@@ -56,11 +56,7 @@ function Dashboard(props) {
     setMenu(!menu)
   }
 
-  const handleScroll = event => {
-    setAnimateLocationBar(event.nativeEvent.contentOffset.y)
-  }
-
-  const [scrollY] = useState(new Animated.Value(0))
+  // const [scrollY] = useState(new Animated.Value(0))
 
   return (
     <>
@@ -84,10 +80,8 @@ function Dashboard(props) {
         <View style={styles.container}>
           <SearchBarWithFilter
             toggleFilter={toggleModal}
-            animateLocationBar={animateLocationBar}
-            scrollY={scrollY}
           />
-          <Animated.ScrollView
+          {/* <Animated.ScrollView
             onScroll={Animated.event(
               [
                 {
@@ -98,14 +92,14 @@ function Dashboard(props) {
                 useNativeDriver: true,
               }
             )}
-            scrollEventThrottle={16}>
+            scrollEventThrottle={16}> */}
             <Posts
               type="dashboard"
               data={posts}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
             />
-          </Animated.ScrollView>
+          {/* </Animated.ScrollView> */}
         </View>
         <WhiteOpacity />
       </SafeAreaView>
@@ -133,8 +127,8 @@ function Dashboard(props) {
   )
 }
 
-const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
-  const SHOW_HEIGHT = normalize(20)
+const SearchBarWithFilter = ({ toggleFilter }) => {
+  // const SHOW_HEIGHT = normalize(20)
 
   const { searchType, setPage } = useContext(Context)
 
@@ -175,21 +169,6 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
     Keyboard.dismiss()
     setPage(0)
   }
-
-  var headMov = scrollY.interpolate({
-    inputRange: [0, 180, 181],
-    outputRange: [0, -180, -180],
-  })
-
-  var barOpacity = scrollY.interpolate({
-    inputRange: [0, 30, 50],
-    outputRange: [1, 0, 0],
-  })
-
-  var barHeight = scrollY.interpolate({
-    inputRange: [0, 180, 181],
-    outputRange: [0, -180, -180],
-  })
 
   return (
     <View>
@@ -251,8 +230,8 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
           style={{
             display: searchBarFocused ? 'none' : 'flex',
             width: width,
-            transform: [{ translateY: headMov }],
-            opacity: barOpacity,
+            // transform: [{ translateY: headMov }],
+            // opacity: barOpacity,
           }}>
           <LocationSearch />
         </Animated.View>
@@ -270,7 +249,7 @@ const SearchBarWithFilter = ({ toggleFilter, animateLocationBar, scrollY }) => {
 }
 
 const LocationSearch = () => {
-  const scrollRef = useRef()
+  
   const { setLocationFilter, locationFilter } = useContext(Context)
   const [showLocation, setShowLocation] = useState(false)
 

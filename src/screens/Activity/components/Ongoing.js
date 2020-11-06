@@ -7,23 +7,29 @@ import {
   TextInput,
   StyleSheet,
   Animated,
-  Dimensions
-} from 'react-native';
+  Dimensions,
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
-const { width } = Dimensions.get("window");
-const PADDING = 16;
-const SEARCH_FULL_WIDTH =  width - PADDING * 2; 
-const SEARCH_SHRINK_WIDTH = normalize(56);
+const { width } = Dimensions.get('window')
+const PADDING = 16
+const SEARCH_FULL_WIDTH = width - PADDING * 2
+const SEARCH_SHRINK_WIDTH = normalize(45)
 
-import { AppText } from '@/components';
-import { normalize, Colors } from '@/globals';
-import { Search } from '@/assets/images/icons';
-
-import ActivitesCard from './ActivitesCard';
+import { AppText } from '@/components'
+import { normalize, Colors } from '@/globals'
+import { Search, Calendar } from '@/assets/images/icons'
+import IllustActivity from '@/assets/images/activity-img1.svg'
+import ActivitiesCard from './ActivitiesCard'
 
 const Ongoing = () => {
+  const navigation = useNavigation()
   const [activeButton, setActive] = useState('All')
-  const ongoingCards = [
+  const [ongoing, setOngoing] = useState({
+    ongoingActivity: [''],
+  })
+
+  const newOngoingCards = [
     {
       unread: true,
       status: 'Ongoing',
@@ -33,14 +39,17 @@ const Ongoing = () => {
       pending: '1',
       title: '🍔 Wayne’s Burgers and Smoothies!',
     },
+  ]
+
+  const oldOngoingCards = [
     {
       status: 'Confirmed',
       name: 'Pia Samson',
       time: '2h',
       date: 'Fri, May 15',
       price: '500.00',
-      title: 'Hello neighbors, any pasabuys to SM...',
-      reply: 'Will start shopping now! Let me know if you need...'
+      title: 'Hello neighbors, any pasabuys to SM',
+      reply: 'Will start shopping now! Let me know if you need',
     },
     {
       status: 'Declined',
@@ -54,23 +63,23 @@ const Ongoing = () => {
       name: 'Wayne Tayco',
       time: '2h',
       offers: '0',
-      title: 'Anyone selling leather?'
-    }
+      title: 'Anyone selling leather?',
+    },
   ]
 
   const filterBtns = [
     {
-      value: 'All'
+      value: 'All',
     },
     {
-      value: 'Services'
+      value: 'Services',
     },
     {
-      value: 'Sell'
+      value: 'Sell',
     },
     {
-      value: 'Need'
-    }
+      value: 'Need',
+    },
   ]
 
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
@@ -82,150 +91,217 @@ const Ongoing = () => {
       Animated.timing(inputLength, {
         toValue: SEARCH_FULL_WIDTH,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(cancelPosition, {
         toValue: 16,
         duration: 400,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: 250,
-        useNativeDriver: true
-      })
-    ]).start();
-  };
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }
 
   const onBlur = () => {
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_SHRINK_WIDTH,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(cancelPosition, {
         toValue: 0,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(opacity, {
         toValue: 0,
         duration: 250,
-        useNativeDriver: true
-      })
-    ]).start();
-  };
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        <View style={styles.filterWrapper}>
-          <View style={styles.filterBtns}>
-            {filterBtns.map((btn, i) => {
-              return(
-                <TouchableOpacity
-                  key={i}
-                  style={[activeButton === btn.value ? styles.btnActive : styles.btn]}
-                  onPress={() => setActive(btn.value)}>
-                  <AppText textStyle="metadata">{btn.value}</AppText>
-                </TouchableOpacity>
+      {ongoing.ongoingActivity.length == 0 ? (
+        <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <IllustActivity width={normalize(250)} height={normalize(200)} />
+            <AppText
+              textStyle="body1"
+              customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
+              Start buzzing on Servbees!
+            </AppText>
+            <View style={styles.descHolder}>
+              <AppText
+                customStyle={{
+                  textAlign: 'center',
+                  paddingHorizontal: normalize(60),
+                }}>
+                Get more project leads, buy and sell items, start your own
+                online business, or just bookmark posts for future reference—do
+                all these and more on Servbees.
+              </AppText>
+            </View>
+            <TouchableOpacity
+              style={{
+                paddingVertical: normalize(10),
+                paddingHorizontal: normalize(20),
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                backgroundColor: '#FFD400',
+                borderRadius: 3,
+              }}
+              onPress={() => navigation.navigate('Servbees')}>
+              <AppText textStyle="button3">Explore Postings Near You</AppText>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      ) : (
+        <ScrollView>
+          <View style={styles.filterWrapper}>
+            <View style={styles.filterBtns}>
+              {filterBtns.map((btn, i) => {
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    style={[
+                      activeButton === btn.value
+                        ? styles.btnActive
+                        : styles.btn,
+                    ]}
+                    onPress={() => setActive(btn.value)}>
+                    <AppText textStyle="caption">{btn.value}</AppText>
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+            <Animated.View style={[styles.search, { width: inputLength }]}>
+              <TextInput onBlur={onBlur} onFocus={onFocus} />
+              <View style={[styles.searchIcon]}>
+                <Search width={normalize(20)} height={normalize(20)} />
+              </View>
+            </Animated.View>
+          </View>
+          <View style={{ paddingTop: normalize(15) }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: normalize(15),
+              }}>
+              <Calendar
+                height={normalize(20)}
+                width={normalize(20)}
+                style={{ marginRight: 10 }}
+              />
+              <AppText textStyle="body3">Today</AppText>
+            </View>
+            <View style={{ paddingHorizontal: normalize(15) }}>
+              <AppText
+                textStyle="eyebrow1"
+                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                NEW
+              </AppText>
+            </View>
+            {newOngoingCards.map((info, i) => {
+              return (
+                <View key={i}>
+                  <ActivitiesCard info={info} />
+                </View>
               )
             })}
           </View>
-          <Animated.View
-            style={[
-                styles.search,{ width: inputLength},
-              ]}
-            >
-            <TextInput
-              style={styles.searchInput}
-              onBlur={onBlur}
-              onFocus={onFocus}
-            />
-            <View 
-              style={[styles.searchIcon]}
-            >
-              <Search width={normalize(24)} height={normalize(24)} />
+          <View>
+            <View style={{ paddingHorizontal: normalize(15) }}>
+              <AppText
+                textStyle="eyebrow1"
+                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                EARLIER
+              </AppText>
             </View>
-          </Animated.View>
-        </View>
-        {ongoingCards.map((info, i) => {
-          return (
-            <View key={i}>
-              <ActivitesCard
-                info={info}
-              />
-            </View>
-          )
-        })}
-      </ScrollView>
+            {oldOngoingCards.map((info, i) => {
+              return (
+                <View key={i}>
+                  <ActivitiesCard info={info} />
+                </View>
+              )
+            })}
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   searchContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: 72,
-    borderBottomColor: "#00000033",
-    paddingTop: 100
+    borderBottomColor: '#00000033',
+    paddingTop: 100,
   },
   search: {
-    flex: 1,
-    flexDirection: "row",
-    height: normalize(56),
+    height: normalize(45),
     paddingHorizontal: normalize(16),
-    position: "absolute",
+    position: 'absolute',
     right: 16,
-    alignSelf: "flex-end",
-    justifyContent: "flex-start",
-    alignItems: "center",
     borderRadius: 100,
     borderWidth: 1,
     borderColor: Colors.neutralGray,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   filterWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: normalize(30),
-    paddingBottom: normalize(16),
-    paddingHorizontal: normalize(16)
+    marginTop: normalize(15),
+    paddingTop: normalize(15),
+    paddingBottom: normalize(15),
+    paddingHorizontal: normalize(16),
   },
   filterBtns: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   btn: {
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    marginRight: 5,
+    paddingVertical: normalize(5),
+    paddingHorizontal: normalize(14),
+    marginRight: 8,
     backgroundColor: Colors.neutralsZircon,
-    borderRadius: 20
+    borderRadius: 20,
   },
   btnActive: {
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    marginRight: 5,
+    paddingVertical: normalize(5),
+    paddingHorizontal: normalize(14),
+    marginRight: 8,
     backgroundColor: Colors.primarySalomie,
-    borderRadius: 20
+    borderRadius: 20,
   },
   searchBtn: {
     position: 'relative',
-    width: normalize(56),
-    height: normalize(56),
+    width: normalize(45),
+    height: normalize(45),
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: Colors.neutralGray
+    borderColor: Colors.neutralGray,
   },
   searchIcon: {
     position: 'absolute',
-    top: 17,
-    right: 17,
-    zIndex: -1
-  }
-});
+    top: 13,
+    right: 12,
+    zIndex: -1,
+  },
+  descHolder: {
+    paddingTop: normalize(10),
+    paddingBottom: normalize(25),
+  },
+})
 
-export default Ongoing;
+export default Ongoing

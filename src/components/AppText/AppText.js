@@ -8,7 +8,7 @@ import { Colors, scaleFont, normalize } from '@/globals';
  * @param {listed on Apptext.scss} textStyle
  */
 
-const AppText = ({children, textStyle, customStyle, color, numberOfLines}) => {
+const AppText = ({ children, textStyle, customStyle, color, numberOfLines }) => {
   let computedTextStyle = styles[textStyle];
 
   if (customStyle || color) {
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     fontSize: normalize(defaultFontSize + 2),
     letterSpacing: 0.5,
   },
+
   body1medium: {
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(defaultFontSize + 2),
@@ -44,6 +45,13 @@ const styles = StyleSheet.create({
     fontSize: normalize(defaultFontSize),
     letterSpacing: 0.25,
   },
+
+  body2medium: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(defaultFontSize),
+    letterSpacing: 0.25,
+  },
+
   caption: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(defaultFontSize - 2),
@@ -179,12 +187,7 @@ const styles = StyleSheet.create({
   nav: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(13),
-  },
-  activity: {
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(defaultFontSize - 6),
-    letterSpacing: 0.8,
-  },
+  }
 });
 
 export default AppText;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   SafeAreaView,
   View,
@@ -9,16 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 import { AppText, TabNavigation } from '@/components';
 import { Colors, normalize } from '@/globals';
 
-import IllustActivity from '@/assets/images/activity-img1.svg';
 import Ongoing from './components/Ongoing';
 import Notifications from './components/Notifications';
 
 const Activity = () => {
-  const [activity, setActivity] = useState({
-    onGoing: [],
-    notifications: []
-  });
-
   const uploadTabs = [
     {
       key: 'ongoing',
@@ -38,45 +32,20 @@ const Activity = () => {
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      {activity.onGoing.length == 0 && activity.notifications.length == 0 ? (
-        <View style={{ paddingHorizontal: normalize(12), justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-          <IllustActivity />
-          <AppText
-            textStyle="body1"
-            customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
-            Get Active and Whatnots {"\n"} & Click Like or Whatever eh!
-            </AppText>
-          <View style={styles.descHolder}>
+      <>
+        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', paddingBottom: normalize(20) }}>
+          <AppText textStyle="body3">My Activities</AppText>
+          <TouchableOpacity
+            style={{ position: 'absolute', right: 16 }}
+            onPress={() => navigation.navigate('Past')}
+          >
             <AppText
-              customStyle={{ textAlign: 'center' }}>
-              Ang mas-tarush mong Shamcey Supsup ay nag-jembot-jembot ng eklat.
-              </AppText>
-            <TouchableOpacity
-              style={{ marginTop: 40, paddingVertical: 12, alignItems: 'center', backgroundColor: '#FFD400', borderRadius: 3 }}
-              onPress={() => navigation.navigate('Servbees')}>
-              <AppText textStyle="button2">
-                Explore Postings Near You
-              </AppText>
-            </TouchableOpacity>
-          </View>
+              color={Colors.contentOcean}
+              textStyle="body2">Past</AppText>
+          </TouchableOpacity>
         </View>
-      ) : (
-          <>
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', paddingBottom: normalize(20) }}>
-              <AppText textStyle="body3">My Activities</AppText>
-              <TouchableOpacity
-                style={{ position: 'absolute', right: 16 }}
-                onPress={() => navigation.navigate('Past')}
-              >
-                <AppText
-                  color={Colors.contentOcean}
-                  textStyle="body2">Past</AppText>
-              </TouchableOpacity>
-            </View>
-            <TabNavigation routesList={uploadTabs} activityTab />
-          </>
-        )
-      }
+        <TabNavigation routesList={uploadTabs} activityTab />
+      </>
     </SafeAreaView>
   )
 }

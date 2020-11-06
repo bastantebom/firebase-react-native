@@ -1,86 +1,177 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   SafeAreaView,
   ScrollView,
   View,
   StyleSheet,
-} from 'react-native';
+  TouchableOpacity,
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
-import { AppText } from '@/components';
-import { normalize } from '@/globals';
-import { Calendar } from '@/assets/images/icons';
-import NotificationsCard from './NotificationsCard';
+import { AppText } from '@/components'
+import { normalize } from '@/globals'
+import { Calendar } from '@/assets/images/icons'
+import NotificationsCard from './NotificationsCard'
 
 const Notifications = () => {
+  const [notifications, setNotifications] = useState({
+    notificationsActivity: [''],
+  })
+
+  const uponSignupCard = [
+    {
+      category: 'Default',
+      message:
+        'Welcome to Servbees, Buzzybee! Explore what you can do on Servbees and create your first post today.',
+      time: 'now',
+    },
+  ]
+
   const newNotificationsCards = [
     {
-      new: true,
-      category: 'Invite',
-      badge: 'Yellow',
-      name: 'Grae Joquico',
-      groupName: 'Tropang Woodlands',
-      position: 'Member Bee',
-      time: '3s'
+      new: 'true',
+      category: 'Order Approved',
+      seller: 'Wayne’s Burgers and Smoothies',
+      time: '3s',
+    },
+    {
+      new: 'true',
+      category: 'Order Declined',
+      seller: 'Wayne’s Burgers and Smoothies',
+      time: '3s',
+    },
+    {
+      new: 'true',
+      category: 'Default',
+      message: "You're rewarded with <badge>",
+      time: 'now',
+      withButton: true,
+    },
+    {
+      new: 'true',
+      category: 'Verified',
+      name: 'Wayne',
+      time: 'now',
+      badge: 'Verified',
+    },
+    {
+      new: 'true',
+      category: 'Not Verified',
+      name: 'Wayne',
+      time: 'now',
+      badge: 'Not Verified',
     },
   ]
 
   const oldNotificationsCards = [
     {
+      category: 'Invite',
+      badge: 'Yellow',
+      name: 'Grae Joquico',
+      groupName: 'Tropang Woodlands',
+      position: 'Member Bee',
+      time: '3s',
+    },
+    {
       category: 'Follow',
       badge: 'Red',
       name: 'Trisha Paredes',
-      time: '2h'
+      time: '2h',
     },
     {
       category: 'Approve',
       badge: 'Yellow',
       hiveName: 'Pixel',
-      time: '2h'
+      time: '2h',
     },
     {
-      category: 'Reminder',
-      name: 'Wayne',
-      reminder: "Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love.",
-      time: '2h'
-    }
+      category: 'Default',
+      message:
+        "Hey Wayne! Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love.",
+      time: '2h',
+    },
   ]
+
+  const navigation = useNavigation()
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      <ScrollView style={{paddingHorizontal: 15}}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Calendar height={normalize(20)} width={normalize(20)} style={{ marginRight: 10 }} />
-          <AppText textStyle="caption2">Today</AppText>
-        </View>
-        <View style={{paddingTop: 15}}>
-          <View>
-            <AppText customStyle={{color: '#91919C'}}>NEW</AppText>
+      {notifications.notificationsActivity.length == 0 ? (
+        <View style={{ paddingHorizontal: normalize(15) }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Calendar
+              height={normalize(20)}
+              width={normalize(20)}
+              style={{ marginRight: 10 }}
+            />
+            <AppText textStyle="body3">Today</AppText>
           </View>
-          {newNotificationsCards.map((info, i) => {
+          <AppText
+            textStyle="eyebrow1"
+            customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+            NEW
+          </AppText>
+          {uponSignupCard.map((info, i) => {
             return (
               <View key={i}>
-                 <NotificationsCard 
-                  info={info}
-                 />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('NBTScreen', {
+                      screen: 'Welcome',
+                      params: {
+                        screen: 'WelcomeScreen',
+                      },
+                    })
+                  }}>
+                  <NotificationsCard info={info} />
+                </TouchableOpacity>
               </View>
             )
           })}
         </View>
-        <View style={{paddingTop: 15}}>
-          <View>
-            <AppText customStyle={{color: '#91919C'}}>EARLIER</AppText>
+      ) : (
+        <ScrollView
+          contentContainerStyle={{ paddingHorizontal: normalize(15) }}>
+          <View style={{ paddingTop: 15 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Calendar
+                height={normalize(20)}
+                width={normalize(20)}
+                style={{ marginRight: 10 }}
+              />
+              <AppText textStyle="body3">Today</AppText>
+            </View>
+            <View>
+              <AppText
+                textStyle="eyebrow1"
+                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                NEW
+              </AppText>
+            </View>
+            {newNotificationsCards.map((info, i) => {
+              return (
+                <View key={i}>
+                  <NotificationsCard info={info} />
+                </View>
+              )
+            })}
           </View>
-          {oldNotificationsCards.map((info, i) => {
-            return (
-              <View key={i}>
-                 <NotificationsCard 
-                  info={info}
-                 />
-              </View>
-            )
-          })}
-        </View>
-      </ScrollView>
+          <View style={{ paddingTop: 15 }}>
+            <AppText
+              textStyle="eyebrow1"
+              customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+              EARLIER
+            </AppText>
+            {oldNotificationsCards.map((info, i) => {
+              return (
+                <View key={i}>
+                  <NotificationsCard info={info} />
+                </View>
+              )
+            })}
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
   )
 }
@@ -89,7 +180,7 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     backgroundColor: 'white',
-  }
-});
+  },
+})
 
 export default Notifications

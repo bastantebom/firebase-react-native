@@ -38,6 +38,7 @@ import JarHeart from '@/assets/images/icons/jar-heart.svg'
 import JarHeartColored from '@/assets/images/icons/jar-heart-colored.svg'
 import FilterDark from '@/assets/images/icons/filter-dark.svg'
 import JarHeartDark from '@/assets/images/icons/jar-heart-dark.svg'
+import JarHeartWhite from '@/assets/images/icons/jar-heart-white.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
@@ -114,6 +115,7 @@ import PostSell from './post-sell.svg'
 import PostNeed from './post-need.svg'
 import PostService from './post-service.svg'
 import PostImages from './post-images.svg'
+import PostTool from './post-tool.svg'
 
 import FollowingEllipsis from './following-ellipsis.svg'
 
@@ -143,6 +145,7 @@ import UploadIcon from '@/assets/images/icons/profile-upload.svg'
 import EmptyAvatar from '@/assets/images/icons/empty-avatar.svg'
 
 import PostBox from './PostBox.svg'
+import PostBoxBlue from './PostBoxBlue.svg'
 import PostCash from './PostCash.svg'
 import PostClock from './PostClock.svg'
 import PostInfo from './PostInfo.svg'
@@ -150,6 +153,10 @@ import PostNavigation from './PostNavigation.svg'
 import PostPencil from './PostPencil.svg'
 import PostRemove from './PostRemove.svg'
 import PostAdd from './post-add.svg'
+import PostNote from './PostNote.svg'
+import PostParcel from './PostParcel.svg'
+import PostInfoRed from './PostInfoRed.svg'
+import PostCalendar from './post-calendar.svg'
 
 import ProfileImageDefault from './profile-image-default.svg'
 
@@ -158,7 +165,6 @@ import ContactEmail from './contact-email.svg'
 
 import LoginFB from './new-facebook.svg'
 import LoginGoogle from './new-google.svg'
-// import LoginApple from './apple.svg';
 import Public from './public.svg'
 
 //Activities
@@ -167,6 +173,9 @@ import RedBadge from './red-badge.svg'
 import Bee from './bee.svg'
 import ArrowLeft from './arrow-left.svg'
 import Search from './search.svg'
+import PlusCircle from '@/assets/images/icons/plus-circle.svg'
+import NotVerified from '@/assets/images/icons/not-verified.svg'
+import VerifiedIllustration from '@/assets/images/icons/verified-illustration.svg'
 
 //OWN MENU ICONS
 import HidePost from './hide-post.svg'
@@ -195,12 +204,28 @@ import VerticalEllipsis from './VerticalEllipsis.svg'
 //Calendar
 import CalendarArrowLeft from '@/assets/images/icons/calendar-arrow-left.svg'
 import CalendarArrowRight from '@/assets/images/icons/calendar-arrow-right.svg'
-// import LoginApple from './apple.svg';
-// import Public from './public.svg';
 
-// import Search from './search.svg';
+//Badges
+import FriendlyBadge from '@/assets/images/icons/badge-friendly.svg'
+import HelpfulBadge from '@/assets/images/icons/badge-helpful.svg'
 
 import LatestTemp from './current-temp.svg'
+import Chat from './chat.svg'
+import ShoppingCart from './shopping-cart.svg'
+import PlusSign from './plus-sign.svg'
+import MinusSign from './minus-sign.svg'
+import CartDot from './cart-dot.svg'
+import DeliveryVan from './delivery-van.svg'
+import TrackerIllustration from './tracker-illustration.svg'
+import OrangeDot from './orange-dot.svg'
+import GreenDot from './green-dot.svg'
+import BlueDot from './blue-dot.svg'
+import ChevronUp from './chevron-up.svg'
+import ChevronDown from './chevron-down.svg'
+import GreenTick from './green-tick.svg'
+
+import Send from './send.svg'
+import Note from './note.svg'
 import AudioVideo from './audio-video.svg'
 
 export {
@@ -346,7 +371,32 @@ export {
   LocationContactUs,
   CalendarArrowLeft,
   CalendarArrowRight,
-  HeaderFollowingBlack,
-  HeaderFollowBlack,
+  FriendlyBadge,
+  HelpfulBadge,
+  PlusCircle,
+  NotVerified,
+  VerifiedIllustration,
+  Chat,
+  PostNote,
+  PostParcel,
+  PostInfoRed,
+  JarHeartWhite,
+  PostTool,
+  PostCalendar,
   LatestTemp,
+  ShoppingCart,
+  MinusSign,
+  PlusSign,
+  CartDot,
+  DeliveryVan,
+  TrackerIllustration,
+  OrangeDot,
+  BlueDot,
+  GreenDot,
+  ChevronUp,
+  ChevronDown,
+  GreenTick,
+  Send,
+  Note,
+  PostBoxBlue,
 }

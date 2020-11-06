@@ -62,7 +62,6 @@ const AddedItemPreview = ({ close, pickupAddress, setPickupAddress }) => {
           title={'Location'}
           paddingSize={2}
         />
-
         <View style={{ backgroundColor: Colors.neutralsZirconLight }}>
           <View
             style={{

@@ -30,6 +30,7 @@ import {
   ProfileMute,
   ProfileReport,
   ProfileBlockRed,
+  JarHeartWhite
 } from '@/assets/images/icons';
 import { normalize, GlobalStyle } from '@/globals';
 import { UserContext } from '@/context/UserContext';
@@ -114,18 +115,50 @@ const TransparentHeader = ({
             </View>
             {/* Right aligned icons */}
             {user ? (
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={toggleEllipsisState}>
-                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                    <HeaderEllipsis
-                      width={normalize(16)}
-                      height={normalize(16)}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
+              <>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
+                    <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
+                      {isFollowing ? (
+                        <HeaderFollowing
+                          width={normalize(16)}
+                          height={normalize(16)}
+                        />
+                      ) : (
+                          <HeaderFollow
+                            width={normalize(16)}
+                            height={normalize(16)}
+                          />
+                        )}
+                      <AppText
+                        textStyle="button3"
+                        color="white"
+                        customStyle={{ marginLeft: 4 }}>
+                        {isFollowing ? 'Following' : 'Follow'}
+                      </AppText>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.7}>
+                    <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                      <JarHeartWhite
+                        width={normalize(16)}
+                        height={normalize(16)}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={toggleEllipsisState}>
+                    <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                      <HeaderEllipsis
+                        width={normalize(16)}
+                        height={normalize(16)}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </>
             ) : null}
           </View>
         </SafeAreaView>

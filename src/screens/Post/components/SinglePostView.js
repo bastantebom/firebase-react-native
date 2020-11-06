@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   View,
   ScrollView,
@@ -8,11 +8,13 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Linking,
+  Dimensions,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import Swiper from 'react-native-swiper'
+import ReadMore from 'react-native-read-more-text'
 
 import {
   AppText,
@@ -33,6 +35,14 @@ import {
   CloseLight,
   ContactEmail,
   ContactTelephone,
+  Chat,
+  PostNote,
+  PostParcel,
+  PostInfoRed,
+  PostTool,
+  PostCalendar,
+  ShoppingCart,
+  CartDot,
 } from '@/assets/images/icons'
 import { CoverNeed, CoverSell, CoverService } from '@/assets/images'
 
@@ -40,15 +50,16 @@ import { PostService } from '@/services'
 import { UserContext } from '@/context/UserContext'
 import EditPostScreen from './EditPostScreen'
 import { ImageModal } from './ImageModal'
+import ItemModal from './forms/modals/ItemModal'
+import BasketModal from './forms/modals/BasketModal'
+import OfferModal from './forms/modals/OfferModal'
 
 const SinglePostView = props => {
   const { othersView = false } = props.route?.params
 
-  //console.log(props.route.params)
-
   const {
     user: { display_name, profile_photo, email, phone_number },
-    post_type,
+    type,
     cover_photos,
     title,
     description,
@@ -68,21 +79,9 @@ const SinglePostView = props => {
     uid,
   } = props.route?.params?.data
 
-  // console.log("Images in single post view")
-
-  // console.log(images);
-
-  // useEffect(() => {
-  //   PostService.getPost(post_id)
-  //     .then((res) => {
-  //       console.log(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // });
-
+  const { user, setUserInfo, userInfo } = useContext(UserContext)
   const navigation = useNavigation()
+
   const [showNotification, setShowNotification] = useState(false)
   const [ellipsisState, setEllipsisState] = useState(false)
   const [otherPostModal, setOtherPostModal] = useState(false)
@@ -90,7 +89,13 @@ const SinglePostView = props => {
   const [editPost, showEditPost] = useState(false)
   const [postImageModal, setPostImageModal] = useState(false)
 
-  const { user, setUserInfo, userInfo } = useContext(UserContext)
+  const [expired, setExpired] = useState(false)
+  const [following, setFollowing] = useState(false)
+  const [storeOpen, setStoreOpen] = useState(true)
+  const [multipleItems, setMultipleItems] = useState(true)
+  const [itemModal, showItemModal] = useState(false)
+  const [basketModal, showBasketModal] = useState(false)
+  const [offerModal, showOfferModal] = useState(false)
 
   const toggleEditPost = () => {
     toggleEllipsisState()
@@ -111,10 +116,11 @@ const SinglePostView = props => {
     setPostImageModal(!postImageModal)
   }
 
-  useEffect(() => {
-    // console.log('LOGGING ROUTE PROPS');
-    // if (!(uid === user?.uid)) setOtherPostModal(true);
+  const toggleFollowing = () => {
+    setFollowing(!following)
+  }
 
+  useEffect(() => {
     setShowNotification(setNotification())
 
     setTimeout(() => {
@@ -145,29 +151,21 @@ const SinglePostView = props => {
     },
   ]
   const deletePost = async () => {
-    //console.log('delete this post with id: ')
-    //console.log(post_id)
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState()
-      //console.log('deletePost ' + userInfo.post_count)
       setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
       navigation.goBack()
     })
   }
 
   const hidePost = async () => {
-    //body: { uid, pid }
     return await PostService.hidePost({ uid: user?.uid, pid: post_id }).then(
       res => {
         toggleEllipsisState()
-        //console.log('deletePost ' + userInfo.post_count);
         setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
-        //console.log(userInfo.hidden_posts)
         navigation.goBack()
       }
     )
-    //navigation.goBack();
-    //alert('hide Post View Post');
   }
 
   let timeAgo = time => {
@@ -249,31 +247,96 @@ const SinglePostView = props => {
     return null
   }
 
-  // const stickySegmentControlX = this.state.scrollY.interpolate({
-  //   inputRange: [0, STICKY_SCROLL_DISTANCE],
-  //   outputRange: [INIT_STICKY_HEADER, HEADER_MIN_HEIGHT],
-  //   extrapolate: 'clamp'
-  // })
+  const renderTruncatedFooter = handlePress => {
+    return (
+      <TouchableOpacity onPress={handlePress}>
+        <AppText
+          textStyle="body3"
+          color={Colors.contentOcean}
+          customStyle={{ marginTop: normalize(10) }}>
+          Read more
+        </AppText>
+      </TouchableOpacity>
+    )
+  }
+
+  const renderRevealedFooter = handlePress => {
+    return (
+      <TouchableOpacity onPress={handlePress}>
+        <AppText
+          textStyle="body3"
+          color={Colors.contentOcean}
+          customStyle={{ marginTop: normalize(10) }}>
+          Show less
+        </AppText>
+      </TouchableOpacity>
+    )
+  }
+
+  const multipleProducts = [
+    {
+      category: 'Burgers',
+      products: [
+        {
+          image: require('@/assets/images/burger.jpg'),
+          name: 'Beef Burger',
+          productPrice: '75',
+          description: 'Soo good you’ll forget your spouse’s name',
+        },
+        {
+          notAvailable: true,
+          image: require('@/assets/images/burger.jpg'),
+          name: 'Spicy Burger',
+          productPrice: '75',
+        },
+        {
+          name: 'Cheesy Classic Burger',
+          description: 'Soo good you’ll forget your spouse’s name',
+          productPrice: '75',
+        },
+        {
+          name: 'Cheesy Classic Burger',
+          productPrice: '45',
+        },
+      ],
+    },
+    {
+      category: 'Frappe & Drinks',
+      products: [
+        {
+          image: require('@/assets/images/frappe.jpg'),
+          name: 'Red Velvet Frappe',
+          productPrice: '75',
+          description: 'Soo good you’ll forget your spouse’s name',
+        },
+        {
+          name: 'Choco Mousse Frappe',
+          productPrice: '80',
+        },
+        {
+          name: 'Mocha Frappe',
+          productPrice: '80',
+        },
+        {
+          name: 'Caramel Macchiato',
+          productPrice: '90',
+        },
+      ],
+    },
+  ]
 
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView style={{ backgroundColor: 'white' }}>
+        <ScrollView>
           <View style={styles.postImageContainer}>
-            {/* <Image
-            style={GlobalStyle.image}
-            source={{
-              uri:
-                'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
-            }}
-          /> */}
             {cover_photos === undefined || cover_photos.length == 0 ? (
-              post_type === 'Need' || post_type === 'need' ? (
+              type === 'Need' || type === 'need' ? (
                 <Image
                   style={GlobalStyle.image}
                   source={require('@/assets/images/cover-need.png')}
                 />
-              ) : post_type === 'Sell' || post_type === 'sell' ? (
+              ) : type === 'Sell' || type === 'sell' ? (
                 <Image
                   style={GlobalStyle.image}
                   source={require('@/assets/images/cover-sell.png')}
@@ -299,7 +362,6 @@ const SinglePostView = props => {
                   height: normalize(6),
                 }}>
                 {cover_photos.map((item, index) => {
-                  // console.log(item);
                   return (
                     <TouchableWithoutFeedback
                       key={index}
@@ -320,29 +382,57 @@ const SinglePostView = props => {
 
           <View style={styles.postInfoContainer}>
             <ProfileInfo userInfo={profileInfo} type="own-post" />
-
-            {/* <Animated.View ref="stickyHeader" style={[styles.stickyStuff, {top: stickySegmentControlX}]}>
-              <AppText
-                textStyle="subtitle1"
-                customStyle={{ marginTop: 24, marginBottom: 16 }}>
-                {title}
-              </AppText>
-            </Animated.View> */}
-
             <AppText
               textStyle="subtitle1"
               customStyle={{ marginTop: 24, marginBottom: 16 }}>
               {title}
-              {/* {post_type} */}
             </AppText>
 
-            <AppText
-              textStyle="subtitle1"
-              color={Colors.secondaryMountainMeadow}
-              customStyle={{ marginBottom: 12 }}>
-              ₱ {price}
-            </AppText>
-
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: normalize(12),
+              }}>
+              <AppText
+                textStyle="subtitle1"
+                color={Colors.secondaryMountainMeadow}
+                customStyle={{ marginRight: 8 }}>
+                ₱ {price}
+              </AppText>
+              {type == 'need' ? (
+                <AppText customStyle={{ fontSize: normalize(10) }}>
+                  BUDGET
+                </AppText>
+              ) : (
+                <AppText customStyle={{ fontSize: normalize(10) }}>
+                  PRICE
+                </AppText>
+              )}
+            </View>
+            <View style={styles.iconText}>
+              <PostParcel width={normalize(24)} height={normalize(24)} />
+              <AppText
+                textStyle="body2"
+                customStyle={{ marginLeft: 8, marginRight: 4 }}>
+                in
+              </AppText>
+              {type === 'service' ? (
+                <AppText textStyle="body2" color={Colors.secondaryBrinkPink}>
+                  Services
+                </AppText>
+              ) : type === 'need' ? (
+                <AppText
+                  textStyle="body2"
+                  color={Colors.secondaryMountainMeadow}>
+                  Need
+                </AppText>
+              ) : (
+                <AppText textStyle="body2" color={Colors.secondaryRoyalBlue}>
+                  Sell
+                </AppText>
+              )}
+            </View>
             <View style={styles.iconText}>
               <PostClock width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
@@ -357,98 +447,338 @@ const SinglePostView = props => {
                 {city}, {province}
               </AppText>
             </View>
-            <View style={styles.iconText}>
-              <PostInfo width={normalize(24)} height={normalize(24)} />
-              <AppText
-                textStyle="body2"
-                customStyle={{ marginLeft: 8, marginRight: 20 }}>
-                {description}
-              </AppText>
-            </View>
-            <Divider style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]} />
-            <View style={styles.iconText}>
-              <PostCash width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                {payment_method}
-              </AppText>
-            </View>
-            {delivery_methods?.pickup && delivery_methods?.delivery && (
-              <View style={styles.iconText}>
-                <PostBox width={normalize(24)} height={normalize(24)} />
-                <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                  {delivery_methods?.pickup && delivery_methods?.delivery
-                    ? 'Pickup & Delivery'
-                    : delivery_methods?.delivery
-                    ? 'Delivery'
-                    : delivery_methods?.pickup
-                    ? 'Pickup'
-                    : ''}
+            {expired ? (
+              <View
+                style={[{ paddingBottom: normalize(100) }, styles.iconText]}>
+                <PostInfoRed width={normalize(24)} height={normalize(24)} />
+                <AppText
+                  textStyle="body2"
+                  customStyle={{ marginLeft: 8 }}
+                  color={Colors.errColor}>
+                  This post has expired
                 </AppText>
               </View>
+            ) : (
+              <>
+                {type == 'service' && (
+                  <View style={{ marginBottom: normalize(16) }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginBottom: 0,
+                      }}>
+                      <PostCalendar
+                        width={normalize(18)}
+                        height={normalize(18)}
+                      />
+                      <AppText
+                        textStyle="body2"
+                        customStyle={{ marginLeft: 8, marginRight: 20 }}>
+                        10:00 AM - 7:00 PM ( Tue - Sun )
+                      </AppText>
+                    </View>
+                    <>
+                      {storeOpen ? (
+                        <AppText
+                          textStyle="body2"
+                          customStyle={{ marginLeft: 30 }}
+                          color={Colors.secondaryMountainMeadow}>
+                          Open Now
+                        </AppText>
+                      ) : (
+                        <AppText
+                          textStyle="body2"
+                          customStyle={{ marginLeft: 30 }}
+                          color={Colors.errColor}>
+                          Closed
+                        </AppText>
+                      )}
+                    </>
+                  </View>
+                )}
+                <View style={styles.iconText}>
+                  <PostInfo width={normalize(24)} height={normalize(24)} />
+                  <View
+                    style={{
+                      marginLeft: normalize(8),
+                      marginRight: normalize(20),
+                    }}>
+                    <ReadMore
+                      numberOfLines={5}
+                      renderTruncatedFooter={renderTruncatedFooter}
+                      renderRevealedFooter={renderRevealedFooter}>
+                      <AppText textStyle="body2">{description}</AppText>
+                    </ReadMore>
+                  </View>
+                </View>
+                <Divider
+                  style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]}
+                />
+                <View style={styles.iconText}>
+                  <PostCash width={normalize(24)} height={normalize(24)} />
+                  <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                    {payment_method}
+                  </AppText>
+                </View>
+                {type == 'service' && (
+                  <View style={styles.iconText}>
+                    <PostTool width={normalize(20)} height={normalize(20)} />
+                    <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                      Serviceable area within 50KM
+                    </AppText>
+                  </View>
+                )}
+                {!delivery_methods?.pickup && !delivery_methods?.delivery ? (
+                  <></>
+                ) : (
+                  <View style={styles.iconText}>
+                    <PostBox width={normalize(24)} height={normalize(24)} />
+                    <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                      {delivery_methods?.pickup && delivery_methods?.delivery
+                        ? 'Pickup & Delivery'
+                        : delivery_methods?.delivery
+                        ? 'Delivery'
+                        : delivery_methods?.pickup
+                        ? 'Pickup'
+                        : ''}
+                    </AppText>
+                  </View>
+                )}
+                <View style={styles.iconText}>
+                  <PostNote width={normalize(22)} height={normalize(22)} />
+                  <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                    You can see the product in person
+                  </AppText>
+                </View>
+              </>
             )}
           </View>
+          {expired ? (
+            <></>
+          ) : (
+            <>
+              {multipleItems ? (
+                <>
+                  {multipleProducts.map((item, i) => {
+                    return (
+                      <View key={i} style={styles.categoryWrapper}>
+                        <AppText
+                          textStyle="subtitle1"
+                          customStyle={{ marginBottom: normalize(15) }}>
+                          {item.category}
+                        </AppText>
+                        {item.products.map((product, j) => {
+                          return (
+                            <TouchableOpacity
+                              key={j}
+                              onPress={() => showItemModal(true)}>
+                              <View style={styles.itemWrapper}>
+                                {product.image ? (
+                                  <View style={styles.imageWrapper}>
+                                    <Image
+                                      style={styles.image}
+                                      source={product.image}
+                                    />
+                                    {product.notAvailable ? (
+                                      <View style={styles.status}>
+                                        <AppText
+                                          color={Colors.neutralsWhite}
+                                          textStyle="metadata"
+                                          customStyle={{ textAlign: 'center' }}>
+                                          Not Available
+                                        </AppText>
+                                      </View>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </View>
+                                ) : (
+                                  <></>
+                                )}
+                                <View style={styles.detailWrapper}>
+                                  <View style={styles.titleDesc}>
+                                    <AppText textStyle="body1medium">
+                                      {product.name}
+                                    </AppText>
+                                    {product.description ? (
+                                      <AppText textStyle="body2">
+                                        {product.description}
+                                      </AppText>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </View>
+                                  <View style={styles.itemPrice}>
+                                    <AppText textStyle="subtitle1">
+                                      ₱{product.productPrice}
+                                    </AppText>
+                                  </View>
+                                </View>
+                              </View>
+                            </TouchableOpacity>
+                          )
+                        })}
+                      </View>
+                    )
+                  })}
+                </>
+              ) : (
+                <></>
+              )}
+            </>
+          )}
         </ScrollView>
         {othersView && (
           <SafeAreaView
             style={{
-              flex: 1,
               flexDirection: 'row',
               alignItems: 'flex-end',
-              position: 'absolute',
-              bottom: 0,
             }}>
             <View
               style={{
                 flex: 1,
                 flexDirection: 'row',
-                alignItems: 'flex-end',
+                justifyContent: 'space-between',
                 paddingHorizontal: 20,
                 paddingVertical: 20,
+                backgroundColor: 'white',
               }}>
               {phone_number ? (
                 <TouchableOpacity
-                  style={{ flex: 1, marginRight: email ? 8 : 0 }}
+                  style={{ marginRight: email ? 8 : 0 }}
                   activeOpacity={0.7}
-                  // onPress={() => Linking.openURL(`tel:${phone_number}`)}
                   onPress={makeCall}>
                   <View style={styles.contactButtonContainer}>
                     <ContactTelephone
                       width={normalize(24)}
                       height={normalize(24)}
                     />
-                    <AppText
-                      textStyle="button2"
-                      customStyle={{ marginLeft: 8 }}>
-                      Call Seller
-                    </AppText>
                   </View>
                 </TouchableOpacity>
               ) : (
                 <></>
               )}
-              {email ? (
+              <TouchableOpacity
+                style={{ marginRight: email ? 8 : 0 }}
+                activeOpacity={0.7}>
+                <View style={styles.contactButtonContainer}>
+                  <Chat width={normalize(24)} height={normalize(24)} />
+                </View>
+              </TouchableOpacity>
+              {multipleItems ? (
                 <TouchableOpacity
                   style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
                   activeOpacity={0.7}
-                  onPress={() => {
-                    Linking.openURL(
-                      `mailto:${email}?subject=Servbees: Is this still available?`
-                    )
-                  }}>
-                  <View style={styles.contactButtonContainer}>
-                    <ContactEmail
-                      width={normalize(24)}
-                      height={normalize(24)}
-                    />
-                    <AppText
-                      textStyle="button2"
-                      customStyle={{ marginLeft: 8 }}>
-                      Send Email
-                    </AppText>
+                  onPress={() => showBasketModal(true)}>
+                  <View style={styles.cartButtonContainer}>
+                    <View
+                      style={{
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        width: '100%',
+                        paddingHorizontal: normalize(16),
+                      }}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{ position: 'relative' }}>
+                          <ShoppingCart
+                            width={normalize(24)}
+                            height={normalize(24)}
+                          />
+                          <View
+                            style={{
+                              position: 'absolute',
+                              right: normalize(-4),
+                              top: normalize(-3),
+                            }}>
+                            <CartDot
+                              width={normalize(10)}
+                              height={normalize(10)}
+                            />
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            backgroundColor: 'white',
+                            paddingVertical: normalize(2),
+                            paddingHorizontal: normalize(7),
+                            borderRadius: 50,
+                            marginLeft: normalize(5),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <AppText
+                            textStyle="metadata"
+                            color={Colors.contentOcean}>
+                            12
+                          </AppText>
+                        </View>
+                      </View>
+                      <AppText textStyle="body1medium">₱0.00</AppText>
+                    </View>
                   </View>
                 </TouchableOpacity>
               ) : (
-                <></>
+                <>
+                  {type === 'sell' && (
+                    <TouchableOpacity
+                      style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
+                      activeOpacity={0.7}
+                      disabled={expired ? true : false}>
+                      <View
+                        style={
+                          expired
+                            ? styles.disabledBuyButtonContainer
+                            : styles.buyButtonContainer
+                        }>
+                        <AppText
+                          textStyle="button2"
+                          customStyle={{ marginLeft: 8 }}>
+                          Buy
+                        </AppText>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {type === 'service' && (
+                    <TouchableOpacity
+                      style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
+                      activeOpacity={0.7}
+                      disabled={expired ? true : false}>
+                      <View
+                        style={
+                          expired
+                            ? styles.disabledBuyButtonContainer
+                            : styles.buyButtonContainer
+                        }>
+                        <AppText
+                          textStyle="button2"
+                          customStyle={{ marginLeft: 8 }}>
+                          Book
+                        </AppText>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {type === 'need' && (
+                    <TouchableOpacity
+                      style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
+                      activeOpacity={0.7}
+                      disabled={expired ? true : false}
+                      onPress={() => showOfferModal(true)}>
+                      <View
+                        style={
+                          expired
+                            ? styles.disabledBuyButtonContainer
+                            : styles.buyButtonContainer
+                        }>
+                        <AppText
+                          textStyle="button2"
+                          customStyle={{ marginLeft: 8 }}>
+                          Make an Offer
+                        </AppText>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                </>
               )}
             </View>
           </SafeAreaView>
@@ -464,6 +794,8 @@ const SinglePostView = props => {
         type={uid === user?.uid ? 'post-own' : 'post-other'}
         ellipsisState={ellipsisState}
         toggleEllipsisState={toggleEllipsisState}
+        toggleFollowing={toggleFollowing}
+        following={following}
         backFunction={() => navigation.goBack()}
         editPostFunction={toggleEditPost}
         deletePostFunction={deletePost}
@@ -490,7 +822,7 @@ const SinglePostView = props => {
         }>
         <EditPostScreen
           data={props.route.params.data}
-          card={cardMap(post_type)}
+          card={cardMap(type)}
           togglePostModal={() => showEditPost(false)}
         />
       </Modal>
@@ -511,6 +843,51 @@ const SinglePostView = props => {
               : cover_photos
           }
         />
+      </Modal>
+      <Modal
+        isVisible={itemModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showItemModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <ItemModal closeModal={() => showItemModal(false)} postType={type} />
+      </Modal>
+      <Modal
+        isVisible={basketModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <BasketModal
+          closeModal={() => showBasketModal(false)}
+          postType={type}
+        />
+      </Modal>
+      <Modal
+        isVisible={offerModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showOfferModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <OfferModal closeModal={() => showOfferModal(false)} postType={type} />
       </Modal>
     </>
   )
@@ -534,11 +911,9 @@ const styles = StyleSheet.create({
   postInfoContainer: {
     backgroundColor: 'white',
     flex: 1,
-    borderTopRightRadius: 8,
-    borderTopLeftRadius: 8,
+    borderRadius: 8,
     paddingHorizontal: normalize(16),
     paddingTop: normalize(16),
-    paddingBottom: normalize(120),
     overflow: 'visible',
     zIndex: 10,
     position: 'relative',
@@ -549,20 +924,92 @@ const styles = StyleSheet.create({
     borderRadius: normalize(42 / 2),
     overflow: 'hidden',
   },
-
   iconText: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: 16,
   },
   contactButtonContainer: {
     flexDirection: 'row',
-    borderWidth: 1.2,
+    borderWidth: 2,
     borderColor: Colors.primaryYellow,
+    borderRadius: 5,
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 10,
     alignItems: 'center',
     backgroundColor: Colors.neutralsWhite,
+    width: normalize(50),
+  },
+  buyButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: Colors.primaryYellow,
+    borderRadius: 5,
+  },
+  disabledBuyButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: Colors.buttonDisable,
+    borderRadius: 5,
+  },
+  cartButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 11.5,
+    alignItems: 'center',
+    backgroundColor: Colors.primaryYellow,
+    borderRadius: 5,
+  },
+  categoryWrapper: {
+    paddingHorizontal: normalize(16),
+    paddingVertical: normalize(20),
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginTop: normalize(10),
+  },
+  itemWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: normalize(8),
+  },
+  imageWrapper: {
+    position: 'relative',
+    marginRight: normalize(10),
+  },
+  image: {
+    width: normalize(60),
+    height: normalize(60),
+    borderRadius: 4,
+  },
+  status: {
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: '#1F1A54',
+    opacity: 0.6,
+    borderBottomRightRadius: 4,
+    borderBottomLeftRadius: 4,
+    paddingHorizontal: normalize(3),
+  },
+  detailWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomColor: '#DADCE0',
+    borderBottomWidth: 1,
+    paddingVertical: normalize(10),
+    justifyContent: 'space-between',
+  },
+  titleDesc: {
+    flexDirection: 'column',
+    flex: 0.8,
+  },
+  itemPrice: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 })
 
