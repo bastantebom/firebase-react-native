@@ -602,7 +602,7 @@ const EditProfile = ({
                 Personal Information
               </AppText>
 
-              {em && (
+              {em ? (
                 <>
                   <AppText textStyle="body2">Email</AppText>
                   <AppText textStyle="body1">{em}</AppText>
@@ -618,9 +618,9 @@ const EditProfile = ({
                     </TouchableOpacity>
                   )}
                 </>
-              )}
+              ) : null}
 
-              {mobile && (
+              {mobile ? (
                 <>
                   <AppText textStyle="body2">Mobile Number</AppText>
                   <AppText textStyle="body1">{mobile}</AppText>
@@ -636,7 +636,7 @@ const EditProfile = ({
                     </TouchableOpacity>
                   )}
                 </>
-              )}
+              ) : null}
 
               <View style={{ position: 'relative', marginTop: 16 }}>
                 <FloatingAppInput
