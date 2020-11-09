@@ -1,11 +1,12 @@
-//import liraries
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
   Dimensions,
   KeyboardAvoidingView,
-} from 'react-native';
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native'
 
 import {
   ScreenHeaderTitle,
@@ -13,98 +14,96 @@ import {
   AppButton,
   FloatingAppInput,
   Notification,
-} from '@/components';
-import {TempHistory, TempAboutScreen} from '@/screens/Profile/components';
-import {UserContext} from '@/context/UserContext';
+} from '@/components'
+import { TempHistory, TempAboutScreen } from '@/screens/Profile/components'
+import { UserContext } from '@/context/UserContext'
 
-import {Colors, normalize} from '@/globals';
-import Modal from 'react-native-modal';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
-import {Context} from '@/context';
+import { Colors, normalize } from '@/globals'
+import Modal from 'react-native-modal'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import Api from '@/services/Api'
+import { Context } from '@/context'
 
-// create a component
-const UpdateTemp = ({toggleUpdateTemp}) => {
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
-  const {temperature_history} = userInfo;
-  const [history, setHistory] = useState(false);
-  const [tempAbout, setTempAbout] = useState(false);
-  const [temp, setTemp] = useState('');
+const UpdateTemp = ({ toggleUpdateTemp }) => {
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const { temperature_history } = userInfo
+  const [history, setHistory] = useState(false)
+  const [tempAbout, setTempAbout] = useState(false)
+  const [temp, setTemp] = useState('')
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
-  });
-  const [buttonDisable, setButtonDisable] = useState(true);
-  const [IS_UPDATING, setIS_UPDATING] = useState(false);
-  const [copyGuide, setCopyGuide] = useState(false);
-  const {openNotification, closeNotification} = useContext(Context);
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
+  })
+  const [buttonDisable, setButtonDisable] = useState(true)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [copyGuide, setCopyGuide] = useState(false)
+  const { openNotification, closeNotification } = useContext(Context)
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
 
   const toggleHistory = () => {
-    setHistory(!history);
-  };
+    setHistory(!history)
+  }
 
   const toggleTempAbout = () => {
-    setTempAbout(!tempAbout);
-  };
+    setTempAbout(!tempAbout)
+  }
 
-  const onTempChangeHandler = (temp) => {
+  const onTempChangeHandler = temp => {
     if (temp > 0) {
-      setButtonState(false);
+      setButtonState(false)
     } else {
-      setButtonState(true);
+      setButtonState(true)
     }
-    setTemp(temp);
-  };
+    setTemp(temp)
+  }
 
-  const setButtonState = (j) => {
-    //console.log(j);
+  const setButtonState = j => {
     if (j) {
       setButtonStyle({
         backgroundColor: Colors.buttonDisable,
         borderColor: Colors.buttonDisable,
-      });
+      })
     } else {
-      setButtonStyle({});
+      setButtonStyle({})
     }
 
-    setButtonDisable(j);
-  };
+    setButtonDisable(j)
+  }
 
-  const updateTempHandler = () => {
-    setIS_UPDATING(true);
-    ProfileInfoService.updateTemp({
-      uid: user.uid,
-      temperature: temp,
-    })
-      .then((response) => {
-        if (response.success) {
-          setIS_UPDATING(false);
-          const nTemp = [...temperature_history];
-          nTemp[temperature_history.length] = response.data;
-          setUserInfo({
-            ...userInfo,
-            temperature_history: [...nTemp],
-            temperature: response.data,
-          });
-          setTemp('');
-          setButtonState(true);
-          triggerNotification(
-            'Temperature has been updated successfully!',
-            'success',
-          );
-        } else {
-          setIS_UPDATING(false);
-          triggerNotification('Temperature update failed!', 'error');
-        }
+  const updateTempHandler = async () => {
+    setIsUpdating(true)
+    try {
+      const updateTempResponse = await Api.updateTemperature({
+        body: { temperature: temp },
+        uid: user.uid,
       })
-      .catch((error) => {
-        setIS_UPDATING(false);
-        triggerNotification('Temperature update failed!', 'error');
-        console.log(error);
-      });
-  };
+
+      if (updateTempResponse.success) {
+        const nTemp = [...temperature_history]
+        nTemp[temperature_history.length] = updateTempResponse.data
+        setUserInfo({
+          ...userInfo,
+          temperature_history: [...nTemp],
+          temperature: updateTempResponse.data,
+        })
+        setTemp('')
+        setButtonState(true)
+        triggerNotification(
+          'Temperature has been updated successfully!',
+          'success'
+        )
+      }
+      if (!updateTempResponse.success) {
+        triggerNotification('Temperature update failed!', 'error')
+      }
+      setIsUpdating(false)
+    } catch (error) {
+      setIsUpdating(false)
+      triggerNotification('Temperature update failed!', 'error')
+      console.log(error?.message || error)
+    }
+  }
 
   const notificationErrorTextStyle = {
     flex: 1,
@@ -112,17 +111,17 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
     marginRight: 12,
     color: 'white',
     flexWrap: 'wrap',
-  };
+  }
 
   const notificationText = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     flexWrap: 'wrap',
-  };
+  }
 
   const triggerNotification = (message, type) => {
-    setNotificationType(type);
+    setNotificationType(type)
     setNotificationMessage(
       <AppText
         textStyle="body2"
@@ -130,30 +129,25 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
           type === 'success' ? notificationText : notificationErrorTextStyle
         }>
         {message}
-      </AppText>,
-    );
-    openNotification();
-    closeNotificationTimer();
-  };
+      </AppText>
+    )
+    openNotification()
+    closeNotificationTimer()
+  }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      setNotificationType();
-      setNotificationMessage();
-      closeNotification();
-    }, 5000);
-  };
+      setNotificationType()
+      setNotificationMessage()
+      closeNotification()
+    }, 5000)
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <Notification
-          message={notificationMessage}
-          type={notificationType}
-          top={normalize(30)}
-          position="absolute"
-        />
-        <KeyboardAvoidingView style={{flex: 1, padding: 24}}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Notification message={notificationMessage} type={notificationType} />
+        <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Update Body Temperature"
@@ -161,54 +155,60 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
             rightLink="History"
             rightLinkEvent={toggleHistory}
           />
-          <View style={{paddingVertical: 24}}>
-            <AppText textStyle="body1" customStyle={{paddingBottom: 8}}>
-              What’s your body temperature today?
-            </AppText>
-            <AppText
-              textStyle="captionConstant"
-              customStyle={{paddingBottom: 8}}>
-              We’ll need your help to safeguard the health of both you and your
-              customers. Use a temperature scanner or a thermometer to take your
-              temperature.
-            </AppText>
-            <TouchableOpacity
-              onPress={toggleTempAbout}
-              customStyle={{paddingBottom: 8, marginBottom: 12}}>
-              <AppText textStyle="captionConstant" color={Colors.contentOcean}>
-                Why we’re asking this?
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={{ paddingVertical: 24 }}>
+              <AppText textStyle="body1" customStyle={{ paddingBottom: 8 }}>
+                What’s your body temperature today?
               </AppText>
-            </TouchableOpacity>
-            <FloatingAppInput
-              value={temp}
-              label="Body Temperature"
-              keyboardType="number-pad"
-              customStyle={{marginTop: 16}}
-              onChangeText={(temp) => {
-                onTempChangeHandler(temp);
-              }}
-              onInputFocus={() => {
-                setCopyGuide(true);
-                //console.log('Focus');
-              }}
-            />
-            {copyGuide ? (
-              <AppText textStyle="captionConstant" customStyle={{marginTop: 8}}>
-                Body temperature should be in °Celsius
+              <AppText
+                textStyle="captionConstant"
+                customStyle={{ paddingBottom: 8 }}>
+                We’ll need your help to safeguard the health of both you and
+                your customers. Use a temperature scanner or a thermometer to
+                take your temperature.
               </AppText>
-            ) : null}
-          </View>
-
-          <View style={{flex: 1, justifyContent: 'flex-end'}}>
-            <AppButton
-              text="Save"
-              type="primary"
-              height="xl"
-              disabled={buttonDisable}
-              customStyle={{...buttonStyle}}
-              onPress={() => updateTempHandler()}
-            />
-          </View>
+              <TouchableOpacity
+                onPress={toggleTempAbout}
+                customStyle={{ paddingBottom: 8, marginBottom: 12 }}>
+                <AppText
+                  textStyle="captionConstant"
+                  color={Colors.contentOcean}>
+                  Why we’re asking this?
+                </AppText>
+              </TouchableOpacity>
+              <FloatingAppInput
+                value={temp}
+                label="Body Temperature"
+                keyboardType="number-pad"
+                customStyle={{ marginTop: 16 }}
+                onChangeText={temp => {
+                  onTempChangeHandler(temp)
+                }}
+                onInputFocus={() => {
+                  setCopyGuide(true)
+                }}
+              />
+              {copyGuide ? (
+                <AppText
+                  textStyle="captionConstant"
+                  customStyle={{ marginTop: 8 }}>
+                  Body temperature should be in °Celsius
+                </AppText>
+              ) : null}
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <AppButton
+                text="Save"
+                type="primary"
+                height="xl"
+                disabled={buttonDisable}
+                customStyle={{ ...buttonStyle }}
+                onPress={() => updateTempHandler()}
+              />
+            </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </SafeAreaView>
 
@@ -240,8 +240,7 @@ const UpdateTemp = ({toggleUpdateTemp}) => {
         <TempAboutScreen toggleTempAbout={toggleTempAbout} />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-//make this component available to the app
-export default UpdateTemp;
+export default UpdateTemp
