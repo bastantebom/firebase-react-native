@@ -48,6 +48,7 @@ import { CoverNeed, CoverSell, CoverService } from '@/assets/images'
 
 import { PostService } from '@/services'
 import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 import EditPostScreen from './EditPostScreen'
 import { ImageModal } from './ImageModal'
 import ItemModal from './forms/modals/ItemModal'
@@ -59,11 +60,10 @@ const SinglePostView = props => {
 
   const {
     user: { display_name, profile_photo, email, phone_number },
-    type,
     cover_photos,
     title,
     description,
-    payment_method,
+    payment,
     price,
     store_details: {
       schedule,
@@ -77,9 +77,41 @@ const SinglePostView = props => {
     post_id,
     full_name,
     uid,
+    is_multiple,
+    type,
+    items,
   } = props.route?.params?.data
 
-  const { user, setUserInfo, userInfo } = useContext(UserContext)
+  const itemsByCategory = [
+    ...items
+      .reduce(
+        (
+          r,
+          { categoryName, description, itemImage, image, price, title, itemId }
+        ) => {
+          r.has(categoryName) ||
+            r.set(categoryName, {
+              categoryName,
+              items: [],
+            })
+
+          r.get(categoryName).items.push({
+            description,
+            itemImage,
+            image,
+            price,
+            title,
+            itemId,
+            categoryName,
+          })
+
+          return r
+        },
+        new Map()
+      )
+      .values(),
+  ]
+
   const navigation = useNavigation()
 
   const [showNotification, setShowNotification] = useState(false)
@@ -90,6 +122,8 @@ const SinglePostView = props => {
   const [postImageModal, setPostImageModal] = useState(false)
 
   const [expired, setExpired] = useState(false)
+  const { user, setUserInfo, userInfo } = useContext(UserContext)
+  const { userCart, setUserCart } = useContext(Context)
   const [following, setFollowing] = useState(false)
   const [storeOpen, setStoreOpen] = useState(true)
   const [multipleItems, setMultipleItems] = useState(true)
@@ -328,7 +362,7 @@ const SinglePostView = props => {
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.postImageContainer}>
             {cover_photos === undefined || cover_photos.length == 0 ? (
               type === 'Need' || type === 'need' ? (
@@ -387,29 +421,33 @@ const SinglePostView = props => {
               customStyle={{ marginTop: 24, marginBottom: 16 }}>
               {title}
             </AppText>
-
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginBottom: normalize(12),
               }}>
-              <AppText
-                textStyle="subtitle1"
-                color={Colors.secondaryMountainMeadow}
-                customStyle={{ marginRight: 8 }}>
-                ₱ {price}
-              </AppText>
-              {type == 'need' ? (
-                <AppText customStyle={{ fontSize: normalize(10) }}>
-                  BUDGET
-                </AppText>
-              ) : (
-                <AppText customStyle={{ fontSize: normalize(10) }}>
-                  PRICE
-                </AppText>
+              {!is_multiple && (
+                <>
+                  <AppText
+                    textStyle="subtitle1"
+                    color={Colors.secondaryMountainMeadow}
+                    customStyle={{ marginRight: 8 }}>
+                    ₱ {price}
+                  </AppText>
+                  <AppText customStyle={{ fontSize: normalize(10) }}>
+                    PRICE
+                  </AppText>
+                </>
               )}
             </View>
+            <View style={styles.iconText}>
+              <PostClock width={normalize(24)} height={normalize(24)} />
+              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
+              </AppText>
+            </View>
+
             <View style={styles.iconText}>
               <PostParcel width={normalize(24)} height={normalize(24)} />
               <AppText
@@ -419,7 +457,7 @@ const SinglePostView = props => {
               </AppText>
               {type === 'service' ? (
                 <AppText textStyle="body2" color={Colors.secondaryBrinkPink}>
-                  Services
+                  Service
                 </AppText>
               ) : type === 'need' ? (
                 <AppText
@@ -432,12 +470,6 @@ const SinglePostView = props => {
                   Sell
                 </AppText>
               )}
-            </View>
-            <View style={styles.iconText}>
-              <PostClock width={normalize(24)} height={normalize(24)} />
-              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
-              </AppText>
             </View>
             <View style={styles.iconText}>
               <PostNavigation width={normalize(24)} height={normalize(24)} />
@@ -515,33 +547,25 @@ const SinglePostView = props => {
                 <Divider
                   style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]}
                 />
-                <View style={styles.iconText}>
-                  <PostCash width={normalize(24)} height={normalize(24)} />
-                  <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                    {payment_method}
-                  </AppText>
-                </View>
+                {payment?.length > 0 && (
+                  <View style={styles.iconText}>
+                    <PostCash width={normalize(24)} height={normalize(24)} />
+
+                    <AppText
+                      textStyle="body2"
+                      customStyle={{
+                        marginLeft: 8,
+                        textTransform: 'capitalize',
+                      }}>
+                      {payment.join(', ')}
+                    </AppText>
+                  </View>
+                )}
                 {type == 'service' && (
                   <View style={styles.iconText}>
                     <PostTool width={normalize(20)} height={normalize(20)} />
                     <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                       Serviceable area within 50KM
-                    </AppText>
-                  </View>
-                )}
-                {!delivery_methods?.pickup && !delivery_methods?.delivery ? (
-                  <></>
-                ) : (
-                  <View style={styles.iconText}>
-                    <PostBox width={normalize(24)} height={normalize(24)} />
-                    <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                      {delivery_methods?.pickup && delivery_methods?.delivery
-                        ? 'Pickup & Delivery'
-                        : delivery_methods?.delivery
-                        ? 'Delivery'
-                        : delivery_methods?.pickup
-                        ? 'Pickup'
-                        : ''}
                     </AppText>
                   </View>
                 )}
@@ -554,78 +578,83 @@ const SinglePostView = props => {
               </>
             )}
           </View>
-          {expired ? (
-            <></>
-          ) : (
+          {is_multiple && (
             <>
-              {multipleItems ? (
-                <>
-                  {multipleProducts.map((item, i) => {
-                    return (
-                      <View key={i} style={styles.categoryWrapper}>
-                        <AppText
-                          textStyle="subtitle1"
-                          customStyle={{ marginBottom: normalize(15) }}>
-                          {item.category}
-                        </AppText>
-                        {item.products.map((product, j) => {
-                          return (
-                            <TouchableOpacity
-                              key={j}
-                              onPress={() => showItemModal(true)}>
-                              <View style={styles.itemWrapper}>
-                                {product.image ? (
-                                  <View style={styles.imageWrapper}>
-                                    <Image
-                                      style={styles.image}
-                                      source={product.image}
-                                    />
-                                    {product.notAvailable ? (
-                                      <View style={styles.status}>
-                                        <AppText
-                                          color={Colors.neutralsWhite}
-                                          textStyle="metadata"
-                                          customStyle={{ textAlign: 'center' }}>
-                                          Not Available
-                                        </AppText>
-                                      </View>
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </View>
+              {itemsByCategory.map((category, i) => {
+                return (
+                  <View key={i} style={styles.categoryWrapper}>
+                    <AppText
+                      textStyle="subtitle1"
+                      customStyle={{ marginBottom: normalize(15) }}>
+                      {category.categoryName}
+                    </AppText>
+                    {category.items.map((item, index) => {
+                      return (
+                        <TouchableOpacity
+                          disabled={uid === user.uid}
+                          key={index}
+                          onPress={() => showItemModal(true)}>
+                          <View style={styles.itemWrapper}>
+                            {item.image ? (
+                              <View style={styles.imageWrapper}>
+                                <Image
+                                  style={styles.image}
+                                  source={{ uri: item.image }}
+                                />
+                              </View>
+                            ) : (
+                              <>
+                                <AppText>No image</AppText>
+                              </>
+                            )}
+                            <View style={styles.detailWrapper}>
+                              <View style={styles.titleDesc}>
+                                <AppText textStyle="body1medium">
+                                  {item.title}
+                                </AppText>
+                                {item.description ? (
+                                  <AppText textStyle="body2">
+                                    {item.description}
+                                  </AppText>
                                 ) : (
                                   <></>
                                 )}
-                                <View style={styles.detailWrapper}>
-                                  <View style={styles.titleDesc}>
-                                    <AppText textStyle="body1medium">
-                                      {product.name}
-                                    </AppText>
-                                    {product.description ? (
-                                      <AppText textStyle="body2">
-                                        {product.description}
-                                      </AppText>
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </View>
-                                  <View style={styles.itemPrice}>
-                                    <AppText textStyle="subtitle1">
-                                      ₱{product.productPrice}
-                                    </AppText>
-                                  </View>
-                                </View>
                               </View>
-                            </TouchableOpacity>
-                          )
-                        })}
-                      </View>
-                    )
-                  })}
-                </>
-              ) : (
-                <></>
-              )}
+                              <View style={styles.itemPrice}>
+                                <AppText textStyle="subtitle1">
+                                  ₱{item.price}
+                                </AppText>
+                              </View>
+                            </View>
+                          </View>
+                          {/* ITEM MODAL */}
+                          <Modal
+                            isVisible={itemModal}
+                            animationIn="slideInUp"
+                            animationInTiming={450}
+                            animationOut="slideOutDown"
+                            animationOutTiming={450}
+                            style={{ margin: 0, justifyContent: 'flex-end' }}
+                            customBackdrop={
+                              <TouchableWithoutFeedback
+                                onPress={() => showItemModal(false)}>
+                                <View
+                                  style={{ flex: 1, backgroundColor: 'black' }}
+                                />
+                              </TouchableWithoutFeedback>
+                            }>
+                            <ItemModal
+                              item={item}
+                              closeModal={() => showItemModal(false)}
+                            />
+                          </Modal>
+                          {/* ITEM MODAL */}
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </View>
+                )
+              })}
             </>
           )}
         </ScrollView>
@@ -702,15 +731,13 @@ const SinglePostView = props => {
                             backgroundColor: 'white',
                             paddingVertical: normalize(2),
                             paddingHorizontal: normalize(7),
-                            borderRadius: 50,
+                            borderRadius: 11,
                             marginLeft: normalize(5),
-                            alignItems: 'center',
-                            justifyContent: 'center',
                           }}>
                           <AppText
-                            textStyle="metadata"
+                            textStyle="body3"
                             color={Colors.contentOcean}>
-                            12
+                            {userCart?.quantity}
                           </AppText>
                         </View>
                       </View>
@@ -719,66 +746,27 @@ const SinglePostView = props => {
                   </View>
                 </TouchableOpacity>
               ) : (
-                <>
-                  {type === 'sell' && (
-                    <TouchableOpacity
-                      style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
-                      activeOpacity={0.7}
-                      disabled={expired ? true : false}>
-                      <View
-                        style={
-                          expired
-                            ? styles.disabledBuyButtonContainer
-                            : styles.buyButtonContainer
-                        }>
-                        <AppText
-                          textStyle="button2"
-                          customStyle={{ marginLeft: 8 }}>
-                          Buy
-                        </AppText>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                  {type === 'service' && (
-                    <TouchableOpacity
-                      style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
-                      activeOpacity={0.7}
-                      disabled={expired ? true : false}>
-                      <View
-                        style={
-                          expired
-                            ? styles.disabledBuyButtonContainer
-                            : styles.buyButtonContainer
-                        }>
-                        <AppText
-                          textStyle="button2"
-                          customStyle={{ marginLeft: 8 }}>
-                          Book
-                        </AppText>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                  {type === 'need' && (
-                    <TouchableOpacity
-                      style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
-                      activeOpacity={0.7}
-                      disabled={expired ? true : false}
-                      onPress={() => showOfferModal(true)}>
-                      <View
-                        style={
-                          expired
-                            ? styles.disabledBuyButtonContainer
-                            : styles.buyButtonContainer
-                        }>
-                        <AppText
-                          textStyle="button2"
-                          customStyle={{ marginLeft: 8 }}>
-                          Make an Offer
-                        </AppText>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                </>
+                <TouchableOpacity
+                  style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
+                  activeOpacity={0.7}
+                  disabled={expired ? true : false}>
+                  <View
+                    style={
+                      expired
+                        ? styles.disabledBuyButtonContainer
+                        : styles.buyButtonContainer
+                    }>
+                    <AppText
+                      textStyle="button2"
+                      customStyle={{ marginLeft: 8 }}>
+                      {type === 'service'
+                        ? 'Book'
+                        : type === 'need'
+                        ? 'Make an Offer'
+                        : 'Buy'}
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
               )}
             </View>
           </SafeAreaView>
@@ -845,20 +833,6 @@ const SinglePostView = props => {
         />
       </Modal>
       <Modal
-        isVisible={itemModal}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => showItemModal(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <ItemModal closeModal={() => showItemModal(false)} postType={type} />
-      </Modal>
-      <Modal
         isVisible={basketModal}
         animationIn="slideInRight"
         animationInTiming={750}
@@ -906,7 +880,6 @@ const styles = StyleSheet.create({
     height: normalize(248),
     width: normalize(375),
     overflow: 'hidden',
-    marginBottom: -8,
   },
   postInfoContainer: {
     backgroundColor: 'white',
@@ -982,8 +955,8 @@ const styles = StyleSheet.create({
     marginRight: normalize(10),
   },
   image: {
-    width: normalize(60),
-    height: normalize(60),
+    width: normalize(80),
+    height: normalize(80),
     borderRadius: 4,
   },
   status: {

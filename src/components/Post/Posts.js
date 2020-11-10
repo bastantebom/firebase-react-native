@@ -68,8 +68,6 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
 
         const res = await PostService.getPosts(params)
         if (res.data && res.data.length > 0) {
-          //console.log('0000000000000000000')
-          //console.log(res.data)
           setPosts(res.data)
         }
 
@@ -140,60 +138,6 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
     }
   }
 
-  // const getMorePost = async () => {
-  //   // console.log("Call GET MORE")
-
-  //   if (!onEndReachedCalledDuringMomentum) {
-  //     setOnEndReachedCalledDuringMomentum(true);
-  //     setFecthMore(true);
-  //     // console.log('FLAGGER');
-  //     // console.log(thereIsMoreFlag);
-  //     if (!thereIsMoreFlag) {
-  //       setFecthMore(false);
-  //       // console.log('Stopping getting more post');
-  //       return;
-  //     }
-
-  //     let getPostsParams = {
-  //       uid: user.uid || 'JlW54zJC8EVqLhxeLsP7H0dvUuT2',
-  //       limit: 5,
-  //       last_pid: lastPID,
-  //       city: locationFilter ? locationFilter : initialLocation,
-  //     };
-  //     // console.log('GET MORE POST');
-  //     // console.log(lastPID);
-  //     // console.log(getPostsParams);
-
-  //     await PostService.getPostsLocation(getPostsParams)
-  //       .then((res) => {
-  //         console.log('API CALL');
-  //         // console.log('Get more posts function response');
-
-  //         // res.data.map((item) => {
-  //         //   console.log(item.post_id);
-  //         // });
-
-  //         // console.log('res.sucess: ', res.success);
-  //         // console.log(res.success);
-
-  //         // console.log(res.data);
-  //         // if (res.success) setLastPID(res.last_pid);
-  //         if (res.success) {
-  //           setLastPID(res.last_pid);
-  //           // console.log('INSIDE SUCCESS TRUE');
-  //           setPosts(res.data ? [...posts, ...res.data] : [...posts]);
-  //           setFecthMore(false);
-  //         } else {
-  //           setThereIsMoreFlag(false);
-  //           setFecthMore(false);
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         setFecthMore(false);
-  //       });
-  //   }
-  // };
-
   if (data.length > 0) {
     return (
       <FlatList
@@ -205,13 +149,11 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
         onEndReached={() => getMorePost()}
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
-        // ListHeaderComponent={headerComponent}
         ListFooterComponent={
           <View
             style={{
               alignItems: 'center',
               marginTop: 8,
-              // marginBottom: normalize(100)
               marginBottom: normalize(160),
             }}>
             {fetchMore ? (
@@ -222,13 +164,11 @@ const Posts = ({ data, type, isLoading, setIsLoading, headerComponent }) => {
           </View>
         }
       />
-      // <></>
     )
   }
 
   if (type !== 'own') {
     if (refresh) {
-      // I SHOULD SHOW SKELETON
       return (
         <View>
           <LoadingScreen.LoadingPublicPost />

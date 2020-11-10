@@ -34,16 +34,11 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
   const { user } = useContext(UserContext)
   const [showPost, setShowPost] = useState(false)
 
-  // let city, province, country
-  let images = []
-
-  // promise
   const {
     user: { display_name, profile_photo },
     date_posted,
     available,
     payment_method,
-    // store_location: {city, province, country},
     store_details: {
       schedule,
       location: { city, province, country },
@@ -59,14 +54,16 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     account_verified,
     email,
     phone_number,
-    post_type,
     is_multiple,
     full_name,
     price,
     likers,
   } = data
 
-  const [likePost, setLikePost] = useState(isLike)
+  const post_type = data?.type
+
+  const isLiked = ~likers?.indexOf(user?.uid)
+  const [likePost, setLikePost] = useState(isLiked)
 
   const VerifiedBadge = () => {
     return account_verified ? <Verified /> : <></>
@@ -77,7 +74,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
   }
 
   const toggleLike = async () => {
-    const res = await PostService.likeUnlike(id, isLike)
+    const res = await PostService.likeUnlike(id, isLiked)
     setLikePost(!likePost)
   }
 
@@ -90,8 +87,6 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     uid: uid,
     post_type: post_type,
   }
-
-  const isLike = ~likers?.indexOf(user?.uid)
 
   const navigation = useNavigation()
 
@@ -117,6 +112,22 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
         screen: 'OthersPost',
         params: { ...computedData, othersView: true },
       })
+  }
+
+  const getPrice = () => {
+    const prices = items.map(item => {
+      return Number(item.price)
+    })
+
+    if (prices.length === 1) return prices[0].toString()
+    else {
+      const min = Math.min(...prices)
+      const max = Math.max(...prices)
+
+      const finalPrices = [min, max]
+
+      return finalPrices.join(' - ')
+    }
   }
 
   if (type === 'dashboard')
@@ -147,8 +158,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                     style={GlobalStyle.image}
                     source={{ uri: cover_photos[0] }}
                   />
-                ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
-                post_type === 'service' ? (
+                ) : post_type === 'service' ? (
                   <DefaultService
                     width={normalize(122)}
                     height={normalize(126)}
@@ -172,27 +182,9 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                   <AppText
                     textStyle="price"
                     customStyle={styles.priceText}
-                    color={
-                      Colors.secondaryMountainMeadow
-                      // Colors.neutralsMischka
-                    }>
-                    ₱{price}
+                    color={Colors.secondaryMountainMeadow}>
+                    ₱{getPrice()}
                   </AppText>
-                  {/* <AppText
-                    textStyle="eyebrow2"
-                    customStyle={{ 
-                      // backgroundColor: Colors.neutralsMischka, 
-                      // minWidth: normalize(45), 
-                      fontSize: normalize(10),
-                      textAlign: 'center', 
-                      paddingHorizontal: 8, 
-                      paddingVertical: 3, 
-                      // borderRadius: 20, 
-                    }}
-                    color={Colors.neutralsMischka}
-                  >
-                    SOLD
-                  </AppText> */}
                 </View>
               </TouchableOpacity>
               <Divider style={styles.dividerStyle} />
@@ -206,15 +198,6 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                     {city}, {province}
                   </AppText>
                 </View>
-                {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
-                  <NavigationArrow width={12} height={12} />
-                  <AppText
-                    textStyle="eyebrow2"
-                    color={Colors.contentPlaceholder}
-                    customStyle={{marginLeft: 4}}>
-                    {postServiceRadius}
-                  </AppText>
-                </View> */}
               </View>
               {delivery_methods?.pickup || delivery_methods?.delivery ? (
                 <View style={GlobalStyle.rowCenter}>
@@ -300,7 +283,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                   textStyle="price"
                   customStyle={styles.priceText}
                   color={Colors.secondaryMountainMeadow}>
-                  ₱{price}
+                  ₱{getPrice()}
                 </AppText>
               </TouchableOpacity>
 
@@ -316,33 +299,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
                     {city}, {province}
                   </AppText>
                 </View>
-                {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
-                  <NavigationArrow width={12} height={12} />
-                  <AppText
-                    textStyle="eyebrow2"
-                    color={Colors.contentPlaceholder}
-                    customStyle={{marginLeft: 4}}>
-                    {postServiceRadius}
-                  </AppText>
-                </View> */}
               </View>
-              {/* {pickup || delivery ? (
-                <View style={GlobalStyle.rowCenter}>
-                  <TransportationBox width={16} height={16} />
-
-                  <AppText
-                    textStyle="eyebrow2"
-                    customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
-                    {pickup && delivery
-                      ? 'Pickup & Delivery'
-                      : delivery
-                      ? 'Delivery'
-                      : pickup
-                      ? 'Pickup'
-                      : 'Not set'}
-                  </AppText>
-                </View>
-              ) : null} */}
             </View>
           </View>
         </PaddingView>
@@ -486,15 +443,12 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "red"
-    // backgroundColor: 'red',
     borderStyle: 'solid',
     borderColor: Colors.neutralsZircon,
     borderBottomWidth: 1,
     paddingBottom: 0,
   },
   userInfoContainer: {
-    // backgroundColor: "blue",
     flexDirection: 'row',
   },
   userInfoImageContainer: {
@@ -510,7 +464,6 @@ const styles = StyleSheet.create({
   },
   userInfoDetailsContainer: {
     flex: 1,
-    // backgroundColor: "red",
     paddingLeft: 8,
   },
   userInfoDetailsNameContainer: {
@@ -552,7 +505,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   priceText: {
-    // marginBottom: 8,
     marginRight: 8,
   },
 })

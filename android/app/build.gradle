@@ -135,8 +135,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-        versionCode 8
-        versionName "1.0"
+        versionCode 18
+        versionName "1.1"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {
