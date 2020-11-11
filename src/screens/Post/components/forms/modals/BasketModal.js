@@ -565,7 +565,7 @@ const BasketModal = ({ closeModal, postType }) => {
         }}>
         <TrackerModal
           closeModal={() => showTrackerModal(false)}
-          postType={postType}
+          postType={'service'}
         />
       </Modal>
     </>

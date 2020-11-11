@@ -220,6 +220,7 @@ import TrackerIllustration from './tracker-illustration.svg'
 import OrangeDot from './orange-dot.svg'
 import GreenDot from './green-dot.svg'
 import BlueDot from './blue-dot.svg'
+import RedDot from './red-dot.svg'
 import ChevronUp from './chevron-up.svg'
 import ChevronDown from './chevron-down.svg'
 import GreenTick from './green-tick.svg'
@@ -399,4 +400,5 @@ export {
   Send,
   Note,
   PostBoxBlue,
+  RedDot,
 }
