@@ -1,28 +1,27 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
+} from 'react-native'
 
-import {AppText, BottomSheetHeader, PaddingView} from '@/components';
-import Modal from 'react-native-modal';
-import {Colors, normalize} from '@/globals';
-import {UserContext} from '@/context/UserContext';
-import UnfollowContent from './UnfollowContent';
+import { AppText, BottomSheetHeader, PaddingView } from '@/components'
+import Modal from 'react-native-modal'
+import { Colors, normalize } from '@/globals'
+import { UserContext } from '@/context/UserContext'
+import UnfollowContent from './UnfollowContent'
 //import RemoveFollowerContent from './RemovFollowerContent';
-import ConfirmationOtherProfile from '@/components/TransparentHeader/components/ConfirmationOtherProfile';
+import ConfirmationOtherProfile from '@/components/TransparentHeader/components/ConfirmationOtherProfile'
 
 import {
   ProfileMute,
   ProfileReport,
   ProfileBlockRed,
-  HeaderFollowingBlack,
-  HeaderFollowBlack,
-} from '@/assets/images/icons';
-import Report from '@/components/TransparentHeader/components/Report';
-import ReportContent from './ReportContent';
+  FollowUnfollow,
+} from '@/assets/images/icons'
+import Report from '@/components/TransparentHeader/components/Report'
+import ReportContent from './ReportContent'
 
 const FollowEllipsis = ({
   showEllipsisToggle,
@@ -32,36 +31,36 @@ const FollowEllipsis = ({
   isFollowing,
   connectUser,
 }) => {
-  const {username} = userInfo;
-  const [reportUser, setReportUser] = useState(false);
-  const [unfollow, setUnfollow] = useState(false);
+  const { username } = userInfo
+  const [reportUser, setReportUser] = useState(false)
+  const [unfollow, setUnfollow] = useState(false)
 
   const unfollowToggle = () => {
     if (isFollowing) {
-      setUnfollow(!unfollow);
+      setUnfollow(!unfollow)
     } else {
-      followingHandler();
+      followingHandler()
     }
-  };
+  }
 
   const toggleReportUser = () => {
-    setReportUser(!reportUser);
-    if (reportUser) showEllipsisToggle();
-  };
+    setReportUser(!reportUser)
+    if (reportUser) showEllipsisToggle()
+  }
 
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false)
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
+    setShowCancelModal(!showCancelModal)
+  }
 
-  const closeHandler = (value) => {
-    cancelModalToggle();
-  };
+  const closeHandler = value => {
+    cancelModalToggle()
+  }
 
   const followingHandler = () => {
-    showEllipsisToggle();
-    connectUser(userInfo.uid, isFollowing);
-  };
+    showEllipsisToggle()
+    connectUser(userInfo.uid, isFollowing)
+  }
 
   return (
     <>
@@ -82,17 +81,11 @@ const FollowEllipsis = ({
                 marginBottom: 16,
               }}>
               {isFollowing ? (
-                <HeaderFollowingBlack
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
+                <FollowUnfollow width={normalize(20)} height={normalize(20)} />
               ) : (
-                <HeaderFollowBlack
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
+                <FollowUnfollow width={normalize(20)} height={normalize(20)} />
               )}
-              <AppText customStyle={{marginLeft: 8}} textStyle="body2">
+              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
                 {isFollowing ? 'Unfollow' : 'Follow'} @{username}
               </AppText>
             </View>
@@ -105,7 +98,7 @@ const FollowEllipsis = ({
                 marginBottom: 16,
               }}>
               <ProfileReport />
-              <AppText customStyle={{marginLeft: 8}} textStyle="body2">
+              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
                 Report @{username}
               </AppText>
             </View>
@@ -113,7 +106,7 @@ const FollowEllipsis = ({
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => {
-              closeHandler();
+              closeHandler()
             }}>
             <View
               style={{
@@ -124,7 +117,7 @@ const FollowEllipsis = ({
               <ProfileBlockRed />
               <AppText
                 color={Colors.red}
-                customStyle={{marginLeft: 8}}
+                customStyle={{ marginLeft: 8 }}
                 textStyle="body2">
                 Block @{username}
               </AppText>
@@ -159,7 +152,7 @@ const FollowEllipsis = ({
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={toggleReportUser}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View>
@@ -185,7 +178,7 @@ const FollowEllipsis = ({
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={unfollowToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View>
@@ -199,7 +192,7 @@ const FollowEllipsis = ({
         </View>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default FollowEllipsis;
+export default FollowEllipsis

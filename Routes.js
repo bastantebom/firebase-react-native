@@ -219,9 +219,13 @@ function ProfileStackScreen() {
 }
 
 const TabStack = () => {
-  const [activityNotification, setActivityNotification] = useState(true)
   const [profileNotification] = useState(false)
-  const { closePostButtons } = useContext(Context)
+  const { closePostButtons, notificationsList, initNotifications } = useContext(
+    Context
+  )
+  const { user } = useContext(UserContext)
+  const newNotificationIndicator =
+    notificationsList?.filter(notif => !notif.read).length > 0
 
   const navigation = useNavigation()
   const navigate = async url => {
@@ -247,6 +251,10 @@ const TabStack = () => {
       }
     }
   }
+
+  useEffect(() => {
+    if (user) initNotifications(user?.uid)
+  }, [])
 
   return (
     <Tab.Navigator
@@ -318,7 +326,7 @@ const TabStack = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                {activityNotification && (
+                {newNotificationIndicator && (
                   <View
                     style={{
                       position: 'absolute',
@@ -391,6 +399,7 @@ const TabStack = () => {
 
 export default Routes = () => {
   const { token, userInfo } = useContext(UserContext)
+  const { initNotifications } = useContext(Context)
   const { addresses } = userInfo
 
   const [containerOpacity] = useState(new Animated.Value(0))

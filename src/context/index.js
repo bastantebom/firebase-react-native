@@ -1,7 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
 import NetInfo from '@react-native-community/netinfo'
 import { PostService } from '@/services'
-import { UserContext } from '@/context/UserContext'
+import firestore from '@react-native-firebase/firestore'
+import Api from '@/services/Api'
 
 export const Context = createContext()
 
@@ -46,6 +47,9 @@ export const ContextProvider = ({ children }) => {
 
   const [deliveryMethod, setDeliveryMethod] = useState('delivery')
 
+  const [notificationsList, setNotificationsList] = useState([])
+  const [activityNotification, setActivityNotification] = useState()
+
   const getItemsByCategory = cat => {
     const result = [
       ...items
@@ -87,17 +91,6 @@ export const ContextProvider = ({ children }) => {
 
   const editCategory = (newCategoryName, oldCategoryName) => {
     let itemArray = items.slice()
-
-    // itemArray.map((item) => {
-    //   return {
-    //     ...item,
-    //     categoryName:
-    //       item.categoryName === oldCategoryName
-    //         ? newCategoryName
-    //         : oldCategoryName,
-    //   };
-    // });
-
     itemArray = itemArray.map(item => {
       if (oldCategoryName === item.categoryName) {
         return {
@@ -108,9 +101,6 @@ export const ContextProvider = ({ children }) => {
         return item
       }
     })
-
-    console.log('new array value')
-    console.log(itemArray)
 
     setItems(itemArray)
   }
@@ -164,7 +154,6 @@ export const ContextProvider = ({ children }) => {
     })
     setResults(result.data)
     setPage(0)
-    // console.log('post search', result.length)
   }
 
   const handleSearchUser = async value => {
@@ -175,8 +164,6 @@ export const ContextProvider = ({ children }) => {
     })
     setResults(result.data)
     setPage(0)
-    // console.log('user search', result.length)
-    // console.log(value, 'value')
   }
 
   const handleOnEndReach = async value => {
@@ -199,16 +186,10 @@ export const ContextProvider = ({ children }) => {
     setPage(page + 1)
   }
 
-  // console.log('results', results)
-  // console.log('results length', results.length)
-
-  // console.log(page, 'page')
-
   useEffect(() => {
     setImageCount(coverPhoto.length)
   }, [coverPhoto])
 
-  // Set post coverphoto
   useEffect(() => {
     const newCoverPhoto = [...cameraImage, ...libImages].sort((a, b) =>
       !~coverPhoto.indexOf(b) && ~coverPhoto.indexOf(a)
@@ -249,23 +230,38 @@ export const ContextProvider = ({ children }) => {
 
   const fetchPosts = getPostsParams => {
     PostService.getPosts(getPostsParams).then(res => {
-      // console.log('POSTS');
-      // LAST ID TO BE USED FOR PAGINATION
-      console.log(res.last_id)
       setPosts(res.data)
     })
   }
 
-  const onChangeConnection = newState => {
-    setIsInternetReachable(newState)
+  const initNotifications = async uid => {
+    if (!uid) return
+    firestore()
+      .collection('activities')
+      .doc(uid)
+      .collection('notifications')
+      .onSnapshot(async snap => {
+        if (!snap) return
+        setNotificationsList([])
+        await Promise.all(
+          snap.docs.map(async doc => {
+            const data = doc.data()
+            const response = await Api.getUser({ uid: data.follower_uid })
+            if (response.success) {
+              setNotificationsList(notificationsList => [
+                ...notificationsList,
+                {
+                  profilePhoto: response.data.profile_photo,
+                  name: response.data.full_name,
+                  isFollowing: response.data.is_following,
+                  ...data,
+                },
+              ])
+            }
+          })
+        )
+      })
   }
-
-  useEffect(() => {
-    // NetInfo.isConnected.addEventListener(
-    //   'connectionChange',
-    //   onChangeConnection,
-    // );
-  }, [])
 
   return (
     <Context.Provider
@@ -338,6 +334,9 @@ export const ContextProvider = ({ children }) => {
         setLikedPosts,
         archivedPosts,
         setArchivedPosts,
+        notificationsList,
+        setNotificationsList,
+        initNotifications,
       }}>
       {children}
     </Context.Provider>

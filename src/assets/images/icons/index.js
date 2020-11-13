@@ -123,6 +123,8 @@ import ProfileListBlock from './profile-list-block.svg'
 import ProfileListMute from './profile-list-mute.svg'
 import ProfileListUnfollow from './profile-list-unfollow.svg'
 
+import FollowUnfollow from './FollowUnfollowGray.svg'
+
 // Verification
 import Card from '@/assets/images/icons/verify-card.svg'
 import Mobile from '@/assets/images/icons/verify-mobile.svg'
@@ -401,4 +403,5 @@ export {
   Note,
   PostBoxBlue,
   RedDot,
+  FollowUnfollow,
 }
