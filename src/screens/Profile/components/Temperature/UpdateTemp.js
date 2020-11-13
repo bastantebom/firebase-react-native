@@ -180,6 +180,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 value={temp}
                 label="Body Temperature"
                 keyboardType="number-pad"
+                returnKeyType={'done'}
                 customStyle={{ marginTop: 16 }}
                 onChangeText={temp => {
                   onTempChangeHandler(temp)

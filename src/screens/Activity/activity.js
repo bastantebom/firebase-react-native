@@ -20,7 +20,7 @@ const Activity = () => {
     {
       key: 'notifications',
       title: 'NOTIFICATIONS',
-      numberBadge: notificationsList.length,
+      numberBadge: notificationsList?.filter(notif => !notif.read).length,
       renderPage: <Notifications />,
     },
   ]

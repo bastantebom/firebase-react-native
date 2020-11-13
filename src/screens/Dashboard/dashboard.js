@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import {
   View,
   StyleSheet,
@@ -35,10 +35,11 @@ import { VerificationScreen } from '@/screens/Dashboard/Verification'
 import SearchBox from './components/Search/Searchbox'
 import SearchResults from './components/Search/SearchResults'
 
+import LikedPost from '@/screens/Profile/components/Account/LikedPost'
+
 const { width } = Dimensions.get('window')
 
 function Dashboard(props) {
-
   const { user } = useContext(UserContext)
 
   const [modalState, setModalState] = useState(false)
@@ -78,9 +79,7 @@ function Dashboard(props) {
         )}
 
         <View style={styles.container}>
-          <SearchBarWithFilter
-            toggleFilter={toggleModal}
-          />
+          <SearchBarWithFilter toggleFilter={toggleModal} />
           {/* <Animated.ScrollView
             onScroll={Animated.event(
               [
@@ -93,12 +92,12 @@ function Dashboard(props) {
               }
             )}
             scrollEventThrottle={16}> */}
-            <Posts
-              type="dashboard"
-              data={posts}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-            />
+          <Posts
+            type="dashboard"
+            data={posts}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
           {/* </Animated.ScrollView> */}
         </View>
         <WhiteOpacity />
@@ -142,7 +141,7 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
     setSearchValue(value)
   }
 
-  const toggleLike = () => {
+  const toggleLikePost = () => {
     setLikedPosts(!likedPosts)
   }
 
@@ -171,85 +170,101 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
   }
 
   return (
-    <View>
-      <LinearGradient
-        colors={['#ECEFF8', '#F8F9FC']}
-        style={{ position: 'relative' }}>
-        <Animated.View
-          style={{
-            margin: 16,
-            height: searchType === 'posts' ? normalize(47.5) : normalize(107),
-          }}>
-          <View
-            style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
+    <>
+      <View>
+        <LinearGradient
+          colors={['#ECEFF8', '#F8F9FC']}
+          style={{ position: 'relative' }}>
+          <Animated.View
+            style={{
+              margin: 16,
+              height: searchType === 'posts' ? normalize(47.5) : normalize(107),
+            }}>
             <View
-              style={{
-                flex: 1,
-                height: searchType !== 'posts' ? normalize(100) : '100%',
-              }}>
-              <SearchBox
-                onSearchFocus={onFocus}
-                onBackPress={onBackPress}
-                valueHandler={onValueChange}
-              />
-              <Animated.View
-                style={{
-                  opacity: opacity,
-                  display: searchBarFocused ? 'flex' : 'none',
-                  zIndex: searchBarFocused ? 1 : 0,
-                  flex: 1,
-                  position: 'absolute',
-                }}>
-                <SearchResults onValueChange={searchValue} />
-              </Animated.View>
-            </View>
-            {searchBarFocused ? (
-              <View style={{ marginTop: normalize(47.5) }} />
-            ) : (
+              style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
               <View
                 style={{
-                  flexDirection: 'row',
-                  opacity: searchBarFocused ? 0 : 1,
+                  flex: 1,
+                  height: searchType !== 'posts' ? normalize(100) : '100%',
                 }}>
-                <TouchableOpacity activeOpacity={0.7} onPress={toggleFilter}>
-                  <View style={styles.circleButton}>
-                    <FilterDark />
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} onPress={toggleLike}>
-                  <View style={styles.circleButton}>
-                    {likedPosts ? <JarHeartColored /> : <JarHeartDark />}
-                    {/* <JarHeart />  */}
-                  </View>
-                </TouchableOpacity>
+                <SearchBox
+                  onSearchFocus={onFocus}
+                  onBackPress={onBackPress}
+                  valueHandler={onValueChange}
+                />
+                <Animated.View
+                  style={{
+                    opacity: opacity,
+                    display: searchBarFocused ? 'flex' : 'none',
+                    zIndex: searchBarFocused ? 1 : 0,
+                    flex: 1,
+                    position: 'absolute',
+                  }}>
+                  <SearchResults onValueChange={searchValue} />
+                </Animated.View>
               </View>
-            )}
-          </View>
-        </Animated.View>
-        <Animated.View
+              {searchBarFocused ? (
+                <View style={{ marginTop: normalize(47.5) }} />
+              ) : (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    opacity: searchBarFocused ? 0 : 1,
+                  }}>
+                  <TouchableOpacity activeOpacity={0.7} onPress={toggleFilter}>
+                    <View style={styles.circleButton}>
+                      <FilterDark />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={toggleLikePost}>
+                    <View style={styles.circleButton}>
+                      {likedPosts ? <JarHeartColored /> : <JarHeartDark />}
+                      {/* <JarHeart />  */}
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </Animated.View>
+          <Animated.View
+            style={{
+              display: searchBarFocused ? 'none' : 'flex',
+              width: width,
+              // transform: [{ translateY: headMov }],
+              // opacity: barOpacity,
+            }}>
+            <LocationSearch />
+          </Animated.View>
+        </LinearGradient>
+        <View
           style={{
-            display: searchBarFocused ? 'none' : 'flex',
-            width: width,
-            // transform: [{ translateY: headMov }],
-            // opacity: barOpacity,
-          }}>
-          <LocationSearch />
-        </Animated.View>
-      </LinearGradient>
-      <View
+            borderBottomColor: 'rgba(0,0,0,.5)',
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            opacity: 0.1,
+            elevation: 3,
+          }}
+        />
+      </View>
+      <Modal
+        isVisible={likedPosts}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
         style={{
-          borderBottomColor: 'rgba(0,0,0,.5)',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          opacity: 0.1,
-          elevation: 3,
-        }}
-      />
-    </View>
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <LikedPost toggleMenu={() => {}} toggleLikePost={toggleLikePost} />
+      </Modal>
+    </>
   )
 }
 
 const LocationSearch = () => {
-  
   const { setLocationFilter, locationFilter } = useContext(Context)
   const [showLocation, setShowLocation] = useState(false)
 

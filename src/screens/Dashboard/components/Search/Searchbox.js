@@ -1,37 +1,51 @@
-import React, { useRef, useState, useContext, useEffect, useCallback } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Animated, 
+import React, {
+  useRef,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from 'react'
+import {
+  StyleSheet,
+  View,
+  Animated,
   Dimensions,
-  TouchableOpacity
-} from 'react-native';
-import { Searchbar } from 'react-native-paper';
-import { Colors, normalize } from '@/globals';
-import AppColor from '@/globals/Colors';
-import { HeaderBackGray, Search } from '@/assets/images/icons';
-import { AppText } from '@/components';
-import { Context } from '@/context';
-import {debounce} from 'lodash';
-import _ from 'lodash';
+  TouchableOpacity,
+} from 'react-native'
+import { Searchbar } from 'react-native-paper'
+import { Colors, normalize } from '@/globals'
+import AppColor from '@/globals/Colors'
+import { HeaderBackGray, Search } from '@/assets/images/icons'
+import { AppText } from '@/components'
+import { Context } from '@/context'
+import { debounce } from 'lodash'
+import _ from 'lodash'
 
-const { width } = Dimensions.get("window");
-const PADDING = 16;
-const SEARCH_FULL_WIDTH = width - (PADDING + normalize(20)) * 2;
-const SEARCH_SHRINK_WIDTH = width - PADDING - normalize(125);
-const FULL_WIDTH = width - PADDING * 2;
+const { width } = Dimensions.get('window')
+const PADDING = 16
+const SEARCH_FULL_WIDTH = width - (PADDING + normalize(20)) * 2
+const SEARCH_SHRINK_WIDTH = width - PADDING - normalize(125)
+const FULL_WIDTH = width - PADDING * 2
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity)
 
-const SearchBox = ({ 
-  onSearchFocus, 
-  onBackPress, 
+const SearchBox = ({
+  onSearchFocus,
+  onBackPress,
   valueHandler,
   customStyle,
-  props
- }) => {    
-
-  const { searchType, setSearchType, results, setResults, page, setPage, handleSearch, handleSearchUser } = useContext(Context);
+  props,
+}) => {
+  const {
+    searchType,
+    setSearchType,
+    results,
+    setResults,
+    page,
+    setPage,
+    handleSearch,
+    handleSearchUser,
+  } = useContext(Context)
 
   const searchbarRef = useRef(null)
   const [value, setValue] = useState()
@@ -45,88 +59,71 @@ const SearchBox = ({
   const [titlePosition] = useState(new Animated.Value(45))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
 
-
   const onFocus = () => {
-    // searchbarRef.current.isFocused(console.log('focused...'))
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_FULL_WIDTH,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(cancelPosition, {
         toValue: -16,
         duration: 400,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(barPosition, {
         toValue: 45,
         duration: 400,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: 250,
-        useNativeDriver: true
-      })
-    ]).start();
-    setSearchBarFocused(true);
-    onSearchFocus();
+        useNativeDriver: true,
+      }),
+    ]).start()
+    setSearchBarFocused(true)
+    onSearchFocus()
   }
-  
+
   const onBlur = () => {
-    // !searchbarRef.current.isFocused(console.log('blurred...'))
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_SHRINK_WIDTH,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(cancelPosition, {
         toValue: 0,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(barPosition, {
         toValue: 0,
         duration: 250,
-        useNativeDriver: false
+        useNativeDriver: false,
       }),
       Animated.timing(opacity, {
         toValue: 0,
         duration: 250,
-        useNativeDriver: true
-      })
-    ]).start();
+        useNativeDriver: true,
+      }),
+    ]).start()
     valueHandler()
-    searchbarRef.current.clear();
-    searchbarRef.current.blur();
+    searchbarRef.current.clear()
+    searchbarRef.current.blur()
     setSearchType('posts')
-    // searchbarRef.current.clear();
-    // setValue();
-    setSearchBarFocused(false);
-    // setSearchType('posts')
-    // searchbarRef.current.blur();
-    // clearTextInput();
+    setSearchBarFocused(false)
   }
 
-  // const clearTextInput = () => {
-  //   setValue();
-  // }
-
-  // console.log(titlePosition)
-  // console.log('barPositionFull', barPositionFull)
-  // console.log('barPosition', barPosition)
-
-
   const debounceHandler = useCallback(
-    debounce((value) => {
-      valueHandler(value) 
-      }, 2000),
-    [],
-  );
+    debounce(value => {
+      valueHandler(value)
+    }, 2000),
+    []
+  )
 
-  const handleValue = (value) => {
+  const handleValue = value => {
     debounceHandler(value)
   }
 
@@ -136,31 +133,26 @@ const SearchBox = ({
         Animated.timing(titleOpacity, {
           toValue: 0,
           duration: 100,
-          useNativeDriver: true
+          useNativeDriver: true,
         }),
         Animated.timing(titlePosition, {
           toValue: 45,
           duration: 100,
-          useNativeDriver: false
+          useNativeDriver: false,
         }),
         Animated.timing(barOpacity, {
           toValue: 0,
           duration: 100,
-          useNativeDriver: true
+          useNativeDriver: true,
         }),
-        // Animated.timing(barPositionFull, {
-        //   toValue: 75,
-        //   duration: 100,
-        //   useNativeDriver: false
-        // })
-      ]).start();
+      ]).start()
       valueHandler()
-      searchbarRef.current.clear();
-      searchbarRef.current.blur();
+      searchbarRef.current.clear()
+      searchbarRef.current.blur()
       setSearchType('posts')
     }, 500)
   }
-  
+
   useEffect(() => {
     if (searchType !== 'posts') {
       setTimeout(() => {
@@ -168,31 +160,22 @@ const SearchBox = ({
           Animated.timing(titleOpacity, {
             toValue: 1,
             duration: 100,
-            useNativeDriver: true
+            useNativeDriver: true,
           }),
           Animated.timing(titlePosition, {
             toValue: 0,
             duration: 100,
-            useNativeDriver: false
+            useNativeDriver: false,
           }),
           Animated.timing(barOpacity, {
             toValue: 1,
             duration: 100,
-            useNativeDriver: true
+            useNativeDriver: true,
           }),
-          // Animated.timing(barPositionFull, {
-          //   toValue: 0,
-          //   duration: 100,
-          //   useNativeDriver: false
-          // })
-        ]).start();
-      }, 500);
+        ]).start()
+      }, 500)
     }
   }, [searchType])
-
-  // console.log(value)
-  // console.log(searchType)
-  // console.log('searchType')
 
   return (
     <View style={styles.container}>
@@ -202,19 +185,17 @@ const SearchBox = ({
           position: 'absolute',
           zIndex: 1,
           left: searchType === 'posts' ? barPosition : 0,
-          // left: barPosition,
           top: searchType === 'posts' ? 0 : normalize(50),
-          opacity: searchType !== 'posts' ? barOpacity : 1
-        }}
-      >
+          opacity: searchType !== 'posts' ? barOpacity : 1,
+        }}>
         <Searchbar
-          placeholder="Start your search"
+          placeholder="Search..."
           onChangeText={value => {
             setValue(value)
-            handleValue(value) 
-            searchType === 'posts' ?
-            handleSearch(value) :
-            handleSearchUser(value)
+            handleValue(value)
+            searchType === 'posts'
+              ? handleSearch(value)
+              : handleSearchUser(value)
           }}
           value={value}
           onIconPress={onFocus}
@@ -224,37 +205,35 @@ const SearchBox = ({
               primary: AppColor.contentOcean,
             },
             fonts: {
-              regular: ''
+              regular: '',
             },
           }}
           inputStyle={{ paddingLeft: 0, paddingRight: 0 }}
-          style={{ 
-            marginTop: normalize(0), 
-            // borderWidth: 1, 
-            borderColor: searchBarFocused ? Colors.contentOcean : Colors.neutralGray,
+          style={{
+            marginTop: normalize(0),
+            borderColor: searchBarFocused
+              ? Colors.contentOcean
+              : Colors.neutralGray,
             elevation: 0,
             borderRadius: 40,
-            height: normalize(50)
+            height: normalize(50),
           }}
           ref={searchbarRef}
           onFocus={onFocus}
           {...props}
-          // onBlur={onBlur}
         />
       </Animated.View>
-      { searchType === 'posts' ? 
+      {searchType === 'posts' ? (
         <AnimatedTouchable
           style={[styles.cancelSearch, { left: cancelPosition }]}
-          onPress={() => { 
-            onBlur(), 
-            onBackPress() 
-          }}
-        >
+          onPress={() => {
+            onBlur(), onBackPress()
+          }}>
           <Animated.View style={{ opacity: opacity }}>
             <HeaderBackGray width={normalize(25)} height={normalize(25)} />
           </Animated.View>
-        </AnimatedTouchable> 
-          :
+        </AnimatedTouchable>
+      ) : (
         <View style={styles.modalHeader}>
           <AnimatedTouchable
             style={[styles.cancelSearch, { left: cancelPosition }]}
@@ -269,12 +248,12 @@ const SearchBox = ({
             </Animated.View>
           </AnimatedTouchable>
         </View>
-      } 
+      )}
     </View>
   )
-};
+}
 
-export default SearchBox;
+export default SearchBox
 
 const styles = StyleSheet.create({
   container: {
@@ -283,14 +262,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     zIndex: 5,
-    // height: normalize(50),
-    // backgroundColor: 'red'
   },
   cancelSearch: {
-    position: "absolute",
+    position: 'absolute',
     marginHorizontal: 16,
-    justifyContent: "center",
-    alignSelf: "center",
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   modalHeader: {
     position: 'absolute',
@@ -300,6 +277,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     marginTop: 13,
     width: '100%',
-    top: 0
-  }
-});
+    top: 0,
+  },
+})
