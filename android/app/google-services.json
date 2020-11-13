@@ -15,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "960850345935-qds3cmcsqsjl6b1tad8aaul59sn8ec2n.apps.googleusercontent.com",
+          "client_id": "960850345935-ai8cb1561jaaebk4kiglf500iushffnn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.servbees",
@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "960850345935-vikjeeqroaq3240mtcloup2abi6c97sd.apps.googleusercontent.com",
+              "client_id": "960850345935-8tdibatrapubbdd04mprfqtulc0h3bai.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.servbees"
+                "bundle_id": "com.servbees.appservbees"
               }
             }
           ]

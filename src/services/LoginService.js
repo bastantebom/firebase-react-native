@@ -7,6 +7,7 @@ import { GoogleSignin } from '@react-native-community/google-signin'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
 
 import SignUpService from '@/services/SignUpService'
+import AsyncStorage from '@react-native-community/async-storage'
 
 GoogleSignin.configure({
   webClientId: Config.dev.googleSignIn,
@@ -41,7 +42,7 @@ const signInWithProvider = async provider => {
           if (!accessToken)
             throw new Error('Something went wrong obtaining access token')
 
-          return auth.FacebookAuthProvider.credential(data.accessToken)
+          return auth.FacebookAuthProvider.credential(accessToken)
         }
         case 'google': {
           const { idToken } = await GoogleSignin.signIn()
@@ -63,19 +64,17 @@ const signInWithProvider = async provider => {
     })()
 
     const authResponse = await auth().signInWithCredential(credential)
-    const {
-      uid,
-      displayName: full_name,
-      additionalUserInfo: { profile },
-    } = authResponse.user
+    const uid = authResponse.user.uid
+    const { displayName: full_name, email } = authResponse.user
     const response = await SignUpService.saveSocials({
       uid,
       full_name,
-      email: profile.email,
+      email,
       provider,
     })
 
-    if (!response.success) throw new Error(response.message)
+    if (!response.success && response.message !== 'Account already exist')
+      throw new Error(response.message)
   } catch (error) {
     console.log(error)
   }
