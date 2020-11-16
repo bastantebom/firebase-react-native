@@ -87,7 +87,16 @@ const SinglePostView = props => {
       .reduce(
         (
           r,
-          { categoryName, description, itemImage, image, price, title, itemId }
+          {
+            categoryName,
+            description,
+            itemImage,
+            image,
+            price,
+            title,
+            itemId,
+            id,
+          }
         ) => {
           r.has(categoryName) ||
             r.set(categoryName, {
@@ -103,6 +112,7 @@ const SinglePostView = props => {
             title,
             itemId,
             categoryName,
+            id,
           })
 
           return r
@@ -128,8 +138,23 @@ const SinglePostView = props => {
   const [storeOpen, setStoreOpen] = useState(true)
   const [multipleItems, setMultipleItems] = useState(true)
   const [itemModal, showItemModal] = useState(false)
+  const [itemModalData, setItemModalData] = useState({})
+
   const [basketModal, showBasketModal] = useState(false)
   const [offerModal, showOfferModal] = useState(false)
+
+  const [totalCartPrice, setTotalCartPrice] = useState('0.00')
+
+  useEffect(() => {
+    let computedPrice = 0
+
+    if (userCart.length > 0)
+      userCart.map(item => {
+        computedPrice += item.price * item.quantity
+      })
+
+    setTotalCartPrice(computedPrice)
+  }, [userCart])
 
   const toggleEditPost = () => {
     toggleEllipsisState()
@@ -307,57 +332,10 @@ const SinglePostView = props => {
     )
   }
 
-  const multipleProducts = [
-    {
-      category: 'Burgers',
-      products: [
-        {
-          image: require('@/assets/images/burger.jpg'),
-          name: 'Beef Burger',
-          productPrice: '75',
-          description: 'Soo good you’ll forget your spouse’s name',
-        },
-        {
-          notAvailable: true,
-          image: require('@/assets/images/burger.jpg'),
-          name: 'Spicy Burger',
-          productPrice: '75',
-        },
-        {
-          name: 'Cheesy Classic Burger',
-          description: 'Soo good you’ll forget your spouse’s name',
-          productPrice: '75',
-        },
-        {
-          name: 'Cheesy Classic Burger',
-          productPrice: '45',
-        },
-      ],
-    },
-    {
-      category: 'Frappe & Drinks',
-      products: [
-        {
-          image: require('@/assets/images/frappe.jpg'),
-          name: 'Red Velvet Frappe',
-          productPrice: '75',
-          description: 'Soo good you’ll forget your spouse’s name',
-        },
-        {
-          name: 'Choco Mousse Frappe',
-          productPrice: '80',
-        },
-        {
-          name: 'Mocha Frappe',
-          productPrice: '80',
-        },
-        {
-          name: 'Caramel Macchiato',
-          productPrice: '90',
-        },
-      ],
-    },
-  ]
+  const showItemModalWithItem = item => {
+    showItemModal(true)
+    setItemModalData(item)
+  }
 
   const SinglePostContent = () => {
     return (
@@ -588,12 +566,12 @@ const SinglePostView = props => {
                       customStyle={{ marginBottom: normalize(15) }}>
                       {category.categoryName}
                     </AppText>
-                    {category.items.map((item, index) => {
+                    {category.items.map(item => {
                       return (
                         <TouchableOpacity
-                          disabled={uid === user.uid}
-                          key={index}
-                          onPress={() => showItemModal(true)}>
+                          disabled={uid === user?.uid}
+                          key={item.id}
+                          onPress={() => showItemModalWithItem(item)}>
                           <View style={styles.itemWrapper}>
                             {item.image ? (
                               <View style={styles.imageWrapper}>
@@ -627,28 +605,6 @@ const SinglePostView = props => {
                               </View>
                             </View>
                           </View>
-                          {/* ITEM MODAL */}
-                          <Modal
-                            isVisible={itemModal}
-                            animationIn="slideInUp"
-                            animationInTiming={450}
-                            animationOut="slideOutDown"
-                            animationOutTiming={450}
-                            style={{ margin: 0, justifyContent: 'flex-end' }}
-                            customBackdrop={
-                              <TouchableWithoutFeedback
-                                onPress={() => showItemModal(false)}>
-                                <View
-                                  style={{ flex: 1, backgroundColor: 'black' }}
-                                />
-                              </TouchableWithoutFeedback>
-                            }>
-                            <ItemModal
-                              item={item}
-                              closeModal={() => showItemModal(false)}
-                            />
-                          </Modal>
-                          {/* ITEM MODAL */}
                         </TouchableOpacity>
                       )
                     })}
@@ -658,6 +614,28 @@ const SinglePostView = props => {
             </>
           )}
         </ScrollView>
+
+        {/* ITEM MODAL */}
+        <Modal
+          isVisible={itemModal}
+          animationIn="slideInUp"
+          animationInTiming={450}
+          animationOut="slideOutDown"
+          animationOutTiming={450}
+          style={{ margin: 0, justifyContent: 'flex-end' }}
+          customBackdrop={
+            <TouchableWithoutFeedback onPress={() => showItemModal(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <ItemModal
+            item={itemModalData}
+            postType={type}
+            closeModal={() => showItemModal(false)}
+          />
+        </Modal>
+        {/* ITEM MODAL */}
+
         {othersView && (
           <SafeAreaView
             style={{
@@ -737,11 +715,13 @@ const SinglePostView = props => {
                           <AppText
                             textStyle="body3"
                             color={Colors.contentOcean}>
-                            {userCart?.quantity}
+                            {userCart?.length}
                           </AppText>
                         </View>
                       </View>
-                      <AppText textStyle="body1medium">₱0.00</AppText>
+                      <AppText textStyle="body1medium">
+                        ₱{totalCartPrice}
+                      </AppText>
                     </View>
                   </View>
                 </TouchableOpacity>

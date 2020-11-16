@@ -49,6 +49,19 @@ export const ContextProvider = ({ children }) => {
 
   const [notificationsList, setNotificationsList] = useState([])
   const [activityNotification, setActivityNotification] = useState()
+  const [userCart, setUserCart] = useState([])
+  const [currentPostOrder, setCurrentPostOrder] = useState()
+
+  const replaceCurrentPost = postID => {
+    if (postID === currentPostOrder) {
+      return false
+    }
+
+    if (postID !== currentPostOrder) {
+      setCurrentPostOrder(postID)
+      return true
+    }
+  }
 
   const getItemsByCategory = cat => {
     const result = [
@@ -130,9 +143,6 @@ export const ContextProvider = ({ children }) => {
   }
 
   const addItem = item => {
-    console.log('Add Item context triggered')
-    console.log(item)
-
     let itemWithID = {
       ...item,
       itemId: itemId,
@@ -337,6 +347,8 @@ export const ContextProvider = ({ children }) => {
         notificationsList,
         setNotificationsList,
         initNotifications,
+        userCart,
+        setUserCart,
       }}>
       {children}
     </Context.Provider>

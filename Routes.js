@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { View, Animated } from 'react-native'
+import { View, Animated, Linking, Platform } from 'react-native'
 import SplashScreenComponent from './SplashScreen'
 
 import Bell from '@/assets/images/icons/bell.svg'
@@ -46,6 +46,7 @@ import {
   AlmostThereMap,
   VerifyAccount,
   ResetPassword,
+  SetNewPassword,
 } from '@/screens/Authentication'
 
 import { normalize } from '@/globals'
@@ -105,6 +106,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="Verified"
         component={VerifiedStackScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="SetNewPassword"
+        component={SetNewPassword}
       />
     </NoBottomTabScreenStack.Navigator>
   )
@@ -218,7 +223,8 @@ function ProfileStackScreen() {
   }
 }
 
-const TabStack = () => {
+const TabStack = props => {
+  const [activityNotification, setActivityNotification] = useState(true)
   const [profileNotification] = useState(false)
   const { closePostButtons, notificationsList, initNotifications } = useContext(
     Context
@@ -228,29 +234,54 @@ const TabStack = () => {
     notificationsList?.filter(notif => !notif.read).length > 0
 
   const navigation = useNavigation()
-  const navigate = async url => {
-    const route = url.replace(/.*?:\/\//g, '')
-    const id = route.split('/')[1]
-    const routeName = route.split('/')[0]
 
-    if (routeName === 'profile') {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: id },
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      Linking.getInitialURL().then(url => {
+        navigate(url)
+      })
+    } else {
+      Linking.getInitialURL().then(url => {
+        navigate(url)
       })
     }
-    if (routeName === 'post') {
-      try {
-        const response = await PostService.getPost(id)
+
+    const handleOpenURL = event => {
+      navigate(event.url)
+    }
+
+    const navigate = async url => {
+      const route = url.replace(/.*?:\/\//g, '')
+      const id = route.split('/')[1]
+      const token = route.split('/')[2]
+      const routeName = route.split('/')[0]
+
+      if (routeName === 'reset-password') {
         navigation.navigate('NBTScreen', {
-          screen: 'OthersPost',
-          params: { ...response, othersView: true },
+          screen: 'SetNewPassword',
+          params: { token: token, id: id },
         })
-      } catch (error) {
-        console.log(error.message || error)
+      }
+
+      if (routeName === 'profile') {
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersProfile',
+          params: { uid: id },
+        })
+      }
+      if (routeName === 'post') {
+        try {
+          const response = await PostService.getPost(id)
+          navigation.navigate('NBTScreen', {
+            screen: 'OthersPost',
+            params: { ...response, othersView: true },
+          })
+        } catch (error) {
+          console.log(error.message || error)
+        }
       }
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (user) initNotifications(user?.uid)
@@ -411,8 +442,6 @@ export default Routes = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setShowSplash(false)
-
       Animated.timing(containerOpacity, {
         toValue: 1,
         duration: 750,
@@ -421,35 +450,40 @@ export default Routes = () => {
     }, 2500)
   }, [])
 
-  const [showSplash, setShowSplash] = useState(true)
-
-  if (showSplash) return <SplashScreenComponent />
-
   return (
-    <Animated.View style={fadingContainerStyle}>
-      <NavigationContainer>
-        {token && userInfo?.uid ? (
-          !addresses?.length ? (
-            <Stack.Navigator headerMode="none">
-              <Stack.Screen name="AlmostThere" component={AlmostThere} />
-              <Stack.Screen name="AlmostThereMap" component={AlmostThereMap} />
-            </Stack.Navigator>
+    <View style={{ flex: 1 }}>
+      <Animated.View style={{ position: 'relative' }}>
+        <SplashScreenComponent />
+      </Animated.View>
+
+      <Animated.View style={fadingContainerStyle}>
+        <NavigationContainer>
+          {token && userInfo?.uid ? (
+            !addresses?.length ? (
+              <Stack.Navigator headerMode="none">
+                <Stack.Screen name="AlmostThere" component={AlmostThere} />
+                <Stack.Screen
+                  name="AlmostThereMap"
+                  component={AlmostThereMap}
+                />
+              </Stack.Navigator>
+            ) : (
+              <Stack.Navigator headerMode="none">
+                <Stack.Screen name="TabStack" component={TabStack} />
+                <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
+              </Stack.Navigator>
+            )
           ) : (
             <Stack.Navigator headerMode="none">
+              <Stack.Screen name="Onboarding" component={Onboarding} />
+              <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
+              <Stack.Screen name="ResetPassword" component={ResetPassword} />
               <Stack.Screen name="TabStack" component={TabStack} />
               <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
             </Stack.Navigator>
-          )
-        ) : (
-          <Stack.Navigator headerMode="none">
-            <Stack.Screen name="Onboarding" component={Onboarding} />
-            <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
-            <Stack.Screen name="ResetPassword" component={ResetPassword} />
-            <Stack.Screen name="TabStack" component={TabStack} />
-            <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
-    </Animated.View>
+          )}
+        </NavigationContainer>
+      </Animated.View>
+    </View>
   )
 }

@@ -27,6 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>servbees</string>
 				<string>com.googleusercontent.apps.960850345935-8tdibatrapubbdd04mprfqtulc0h3bai</string>
 				<string>fb1251574315191207</string>
 			</array>

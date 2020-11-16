@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
+  SafeAreaView,
 } from 'react-native'
 
 import Modal from 'react-native-modal'
@@ -39,7 +40,12 @@ const BasketModal = ({ closeModal, postType }) => {
   const [addNoteModal, showAddNoteModal] = useState(false)
   const [trackerModal, showTrackerModal] = useState(false)
 
-  const { deliveryMethod, setDeliveryMethod } = useContext(Context)
+  const {
+    deliveryMethod,
+    setDeliveryMethod,
+    userCart,
+    setUserCart,
+  } = useContext(Context)
   const { userInfo } = useContext(UserContext)
   const { addresses } = userInfo
 
@@ -103,8 +109,19 @@ const BasketModal = ({ closeModal, postType }) => {
     },
   ]
 
+  const computedTotal = () => {
+    let computedPrice = 0
+
+    if (userCart.length > 0)
+      userCart.map(item => {
+        computedPrice += item.price * item.quantity
+      })
+
+    return computedPrice
+  }
+
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         style={{
           backgroundColor: 'white',
@@ -169,7 +186,7 @@ const BasketModal = ({ closeModal, postType }) => {
                 <AppText textStyle="body1">₱50,000</AppText>
               )}
             </View>
-            {orderList.map((item, k) => {
+            {userCart.map((item, k) => {
               return (
                 <View
                   key={k}
@@ -192,7 +209,9 @@ const BasketModal = ({ closeModal, postType }) => {
                       )}
                     </View>
                   </View>
-                  <AppText textStyle="body1">₱{item.price}</AppText>
+                  <AppText textStyle="body1">
+                    ₱{item.price * item.quantity}
+                  </AppText>
                 </View>
               )
             })}
@@ -207,7 +226,7 @@ const BasketModal = ({ closeModal, postType }) => {
                 display: postType !== 'need' ? 'flex' : 'none',
               }}>
               <AppText textStyle="body1medium">Total</AppText>
-              <AppText textStyle="body1medium">₱155.00</AppText>
+              <AppText textStyle="body1medium">₱{computedTotal()}</AppText>
             </View>
           </View>
           <View
@@ -568,7 +587,7 @@ const BasketModal = ({ closeModal, postType }) => {
           postType={'service'}
         />
       </Modal>
-    </>
+    </SafeAreaView>
   )
 }
 

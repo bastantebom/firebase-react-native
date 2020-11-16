@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -15,8 +15,9 @@ import { AppText, AppInput, ScreenHeaderTitle, AppButton } from '@/components'
 import { normalize, Colors } from '@/globals'
 
 import { ChevronDown, MinusSign, PlusSign } from '@/assets/images/icons'
+import { Context } from '@/context'
 
-const ItemModal = ({ closeModal, postType }) => {
+const ItemModal = ({ closeModal, postType, item }) => {
   const [notes, setNotes] = useState()
   const [qty, setQty] = useState(0)
   const [date, setDate] = useState(new Date())
@@ -25,6 +26,10 @@ const ItemModal = ({ closeModal, postType }) => {
   const [showTime, setShowTime] = useState(false)
   const [selectedDate, setSelectedDate] = useState()
   const [selectedTime, setSelectedTime] = useState()
+  const [subtotal, setSubtotal] = useState(0)
+  const [currentItem, setCurrentItem] = useState(item)
+
+  const { userCart, setUserCart } = useContext(Context)
 
   const onChangeDate = selectedDate => {
     const currentDate = selectedDate || date
@@ -67,11 +72,42 @@ const ItemModal = ({ closeModal, postType }) => {
     setQty(Number(qty))
   }
 
+  useEffect(() => {
+    setSubtotal(qty * item.price)
+  }, [qty])
+
+  const addToCart = () => {
+    let currentCart = userCart
+
+    const found = currentCart.find(item => item.id === currentItem.id)
+
+    const data = {
+      id: currentItem.id,
+      quantity: qty,
+      name: currentItem.title,
+      price: currentItem.price,
+      note: notes,
+    }
+
+    if (found) {
+      currentCart = currentCart.filter(item => {
+        if (item.id !== currentItem.id) {
+          return item
+        }
+      })
+
+      currentCart.push(data)
+    } else {
+      currentCart.push(data)
+    }
+
+    setUserCart(currentCart)
+  }
+
   return (
     <View>
       <KeyboardAwareScrollView
         keyboardOpeningTime={50}
-        // enableOnAndroid={true}
         style={{
           backgroundColor: 'white',
           borderTopLeftRadius: 10,
@@ -83,10 +119,7 @@ const ItemModal = ({ closeModal, postType }) => {
         <View style={{ paddingBottom: 30 }}>
           <View style={styles.itemWrapper}>
             <View style={styles.imageWrapper}>
-              <Image
-                style={styles.image}
-                source={require('@/assets/images/burger.jpg')}
-              />
+              <Image style={styles.image} source={{ uri: currentItem.image }} />
             </View>
             <View
               style={{
@@ -96,13 +129,11 @@ const ItemModal = ({ closeModal, postType }) => {
                 justifyContent: 'space-between',
               }}>
               <View style={styles.titleDesc}>
-                <AppText textStyle="body1medium">Cheesy Classic Burger</AppText>
-                <AppText textStyle="body2">
-                  Soo good you’ll forget your spouse’s name
-                </AppText>
+                <AppText textStyle="body1medium">{currentItem.title}</AppText>
+                <AppText textStyle="body2">{currentItem.description}</AppText>
               </View>
               <View style={styles.itemPrice}>
-                <AppText textStyle="subtitle1">₱0.00</AppText>
+                <AppText textStyle="subtitle1">₱{currentItem.price}</AppText>
               </View>
             </View>
           </View>
@@ -233,7 +264,9 @@ const ItemModal = ({ closeModal, postType }) => {
           )}
 
           {postType === 'sell' ? (
-            <TouchableOpacity disabled={qty == 0 ? true : false}>
+            <TouchableOpacity
+              disabled={qty == 0 ? true : false}
+              onPress={addToCart}>
               <View
                 style={
                   qty == 0
@@ -251,7 +284,7 @@ const ItemModal = ({ closeModal, postType }) => {
                       paddingHorizontal: normalize(30),
                     }}>
                     <AppText textStyle="body1medium">Add to order</AppText>
-                    <AppText textStyle="subtitle1">₱0.00</AppText>
+                    <AppText textStyle="subtitle1">₱{subtotal}</AppText>
                   </View>
                 )}
               </View>
@@ -296,9 +329,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   quantityWrapper: {
-    // borderTopWidth: 1,
-    // borderBottomWidth: 1,
-    // borderColor: '#DADCE0',
     paddingVertical: normalize(15),
     flexDirection: 'row',
     alignItems: 'center',

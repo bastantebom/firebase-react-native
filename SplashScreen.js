@@ -1,13 +1,19 @@
-import React, {useState, useEffect} from 'react';
-import {View, SafeAreaView, StyleSheet, Animated} from 'react-native';
-import LottieView from 'lottie-react-native';
+import React, { useState, useEffect } from 'react'
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  Animated,
+  Dimensions,
+} from 'react-native'
+import LottieView from 'lottie-react-native'
 
-import {AppText} from '@/components';
-import {Colors} from '@/globals';
+import { AppText } from '@/components'
+import { Colors } from '@/globals'
 
 const SplashScreenComponent = () => {
-  const [copyrightOpacity] = useState(new Animated.Value(0));
-  const [containerOpacity] = useState(new Animated.Value(1));
+  const [copyrightOpacity] = useState(new Animated.Value(0))
+  const [containerOpacity] = useState(new Animated.Value(1))
 
   useEffect(() => {
     Animated.sequence([
@@ -21,16 +27,16 @@ const SplashScreenComponent = () => {
         duration: 300,
         useNativeDriver: false,
       }),
-    ]).start();
-  }, []);
+    ]).start()
+  }, [])
 
   let copyrightAnimationStyle = {
     opacity: copyrightOpacity,
-  };
+  }
 
   let fadingAnimationStyle = {
     opacity: containerOpacity,
-  };
+  }
 
   return (
     <Animated.View style={[styles.container, fadingAnimationStyle]}>
@@ -44,19 +50,25 @@ const SplashScreenComponent = () => {
           <AppText textStyle="body2">All rights reserved</AppText>
           <AppText
             textStyle="metadata"
-            customStyle={{marginTop: 24, marginBottom: 8}}>
+            customStyle={{ marginTop: 24, marginBottom: 16 }}>
             www.servbees.com
           </AppText>
         </Animated.View>
       </SafeAreaView>
     </Animated.View>
-  );
-};
+  )
+}
+
+const { height, width } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primaryYellow,
+    height: height,
+    width: width,
+    position: 'absolute',
+    top: 0,
   },
   safeArea: {
     flex: 1,
@@ -66,6 +78,6 @@ const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
   },
-});
+})
 
-export default SplashScreenComponent;
+export default SplashScreenComponent
