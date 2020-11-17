@@ -37,6 +37,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
     date,
     follower_uid,
     id,
+    approved,
   } = info
   const [following, setFollowing] = useState(isFollowing)
 
@@ -86,6 +87,16 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
     }
   }
 
+  const viewNotVerifiedHandler = () => {
+    navigation.navigate('NBTScreen', {
+      screen: 'NotVerified',
+      params: {
+        screen: 'NotVerifiedScreen',
+        params: { date },
+      },
+    })
+  }
+
   return (
     <View>
       <View
@@ -94,9 +105,33 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
           { backgroundColor: !read ? '#F2F7FF' : '#FBFBFB' },
         ]}>
         <View style={styles.holder}>
-          <View style={styles.avatarHolder}>
-            {type === 'follow' && <AvatarPhoto size={35} />}
+          <View>
+            <View style={styles.avatarHolder}>
+              {type === 'follow' && <AvatarPhoto size={35} />}
+              {type === 'verification' && <AvatarPhoto size={35} />}
+            </View>
+            {
+              <View style={styles.badgeHolder}>
+                {type === 'verification' && !approved ? (
+                  <NotVerified width={normalize(18)} height={normalize(18)} />
+                ) : type === 'verification' && approved ? (
+                  <Verified width={normalize(18)} height={normalize(18)} />
+                ) : null}
+              </View>
+            }
           </View>
+
+          {type == 'verification' && !approved ? (
+            <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+              <Text>
+                <AppText textStyle="caption">
+                  Your account verification has been unsuccessful. You may opt
+                  to try again.
+                </AppText>
+              </Text>
+            </View>
+          ) : null}
+
           {type == 'follow' && (
             <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
               <Text>
@@ -118,7 +153,8 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
               {timeAgo(Date.now() / 1000 - date.seconds)}
             </AppText>
           </View>
-          {type == 'follow' && (
+
+          {type === 'follow' && (
             <>
               <TouchableOpacity
                 style={{
@@ -150,6 +186,22 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
               )}
             </>
           )}
+          {type === 'verification' && (
+            <>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 6,
+                  marginRight: 10,
+                  width: 130,
+                  alignItems: 'center',
+                  backgroundColor: '#FFD400',
+                  borderRadius: 5,
+                }}
+                onPress={() => viewNotVerifiedHandler()}>
+                <AppText textStyle="button3">View</AppText>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     </View>
@@ -172,7 +224,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatarHolder: {
-    position: 'relative',
     marginRight: normalize(15),
     width: normalize(35),
     height: normalize(35),
@@ -181,8 +232,8 @@ const styles = StyleSheet.create({
   },
   badgeHolder: {
     position: 'absolute',
-    bottom: -5,
-    right: -5,
+    bottom: -4,
+    right: normalize(10),
   },
   cta: {
     paddingTop: 20,

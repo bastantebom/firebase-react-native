@@ -256,7 +256,9 @@ export const ContextProvider = ({ children }) => {
         await Promise.all(
           snap.docs.map(async doc => {
             const data = doc.data()
-            const response = await Api.getUser({ uid: data.follower_uid })
+            const response = await Api.getUser({
+              uid: data.follower_uid || uid,
+            })
             if (response.success) {
               setNotificationsList(notificationsList => [
                 ...notificationsList,

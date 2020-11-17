@@ -39,6 +39,7 @@ import { Past } from '@/screens/Activity'
 import { Badge } from '@/screens/Activity'
 import { Welcome } from '@/screens/Activity'
 import { Verified } from '@/screens/Activity'
+import { NotVerified } from '@/screens/Activity'
 import { OngoingItem } from '@/screens/Activity'
 
 import {
@@ -71,6 +72,7 @@ const CreatePostStack = createStackNavigator()
 const WelcomeStack = createStackNavigator()
 const BadgeStack = createStackNavigator()
 const VerifiedStack = createStackNavigator()
+const NotVerifiedStack = createStackNavigator()
 
 const Stack = createStackNavigator()
 const NoBottomTabScreenStack = createStackNavigator()
@@ -111,6 +113,10 @@ function NoBottomTabScreens() {
         name="SetNewPassword"
         component={SetNewPassword}
       />
+      <NoBottomTabScreenStack.Screen
+        name="NotVerified"
+        component={NotVerifiedStackScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
   )
 }
@@ -136,6 +142,14 @@ function VerifiedStackScreen() {
     <VerifiedStack.Navigator headerMode="none">
       <DashboardStack.Screen name="VerifiedScreen" component={Verified} />
     </VerifiedStack.Navigator>
+  )
+}
+
+function NotVerifiedStackScreen() {
+  return (
+    <NotVerifiedStack.Navigator headerMode="none">
+      <DashboardStack.Screen name="NotVerifiedScreen" component={NotVerified} />
+    </NotVerifiedStack.Navigator>
   )
 }
 
