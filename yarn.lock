@@ -1334,6 +1334,16 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-3.0.3.tgz#830167fd757ba70ac638747ba3169b2dbae60330"
   integrity sha512-8IeHfDwJ9/CTUwFs6x90VlobV3BfuPgNLjTgC6dRZovfCWigaZwVNIFFJnHBakK3pW2xErAPwhdvNR4JeNoYbw==
 
+"@react-native-community/viewpager@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-2.0.2.tgz#622b190294b1310c4825c98daeaee1c8443f7124"
+  integrity sha512-CKVhIZdX/Cmb80muog8sKpi5vM8npwFp4tx4Dj1IvTBidZweuO22+VH2rDOj7E0LzdV9IYRJ4FGBwcPBD2qUrQ==
+
+"@react-native-community/viewpager@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-4.2.0.tgz#11a4453715eb45cb0f732c98666ce168b800dfa4"
+  integrity sha512-tptvkyStulE9Jv/LVYSldvydAq3DVOwsfqmy3mTh3NWl1LZwE4gZwZ455jiRmW5StsJ3Q/Od/GGsN0FI8gHAXQ==
+
 "@react-native-firebase/app@^8.2.0":
   version "8.4.6"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.4.6.tgz#05b4a48f2cd452acc88dd7b816a4ca934140927f"
@@ -3159,7 +3169,7 @@ create-error-class@^3.0.0:
   dependencies:
     capture-stack-trace "^1.0.0"
 
-create-react-class@^15.6.3:
+create-react-class@^15.6.2, create-react-class@^15.6.3:
   version "15.7.0"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.7.0.tgz#7499d7ca2e69bb51d13faf59bd04f0c65a1d6c1e"
   integrity sha512-QZv4sFWG9S5RUvkTYWbflxeZX+JG7Cz0Tn33rQBJ+WFQTqTfUTjMjiv9tnfXazjsO5r0KhPs+AqCjyrQX6h2ng==
@@ -3813,13 +3823,6 @@ escodegen@~0.0.24:
     source-map ">= 0.1.2"
 
 eslint-config-prettier@^6.10.1, eslint-config-prettier@^6.13.0:
-  version "6.13.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.13.0.tgz#207d88796b5624e5bb815bbbdfc5891ceb9ebffa"
-  integrity sha512-LcT0i0LSmnzqK2t764pyIt7kKH2AuuqKRTtJTdddWxOiUja9HdG5GXBVF2gmCTvVYWVsTu8J2MhJLVGRh+pj8w==
-  dependencies:
-    get-stdin "^6.0.0"
-
-eslint-config-prettier@^6.13.0:
   version "6.13.0"
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.13.0.tgz#207d88796b5624e5bb815bbbdfc5891ceb9ebffa"
   integrity sha512-LcT0i0LSmnzqK2t764pyIt7kKH2AuuqKRTtJTdddWxOiUja9HdG5GXBVF2gmCTvVYWVsTu8J2MhJLVGRh+pj8w==
@@ -8385,6 +8388,16 @@ react-native-screens@^2.9.0:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.12.0.tgz#579b7a6f99b3dd777ef4a447682e46f10ce9f5eb"
   integrity sha512-sJn7xrbVXYYQ1FBKp4eg3NXL7e2EpORT5xeQcXRJHCqt5ZcGduybZWE4tFbnBeaHE5YNab9owdrrDOJTBDKKFw==
 
+react-native-scrollable-tab-view@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-1.0.0.tgz#87319896067f7bb643ecd7fba2cba4d6d8f9e18b"
+  integrity sha512-lpZ9xz+PBdgSzpk93VjCIfxV0zvJDX9iEUP8ImDg3p1QJGHOWbWyfDx+lcx5VCDVrrdZdtuVAAdc0tkYXZyQDw==
+  dependencies:
+    "@react-native-community/viewpager" "^2.0.1"
+    create-react-class "^15.6.2"
+    prop-types "^15.6.0"
+    react-timer-mixin "^0.13.3"
+
 react-native-share@^3.7.0:
   version "3.8.5"
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.8.5.tgz#e74ed39401b9fceef700435cef7c28bc37c7e267"
@@ -8427,6 +8440,13 @@ react-native-splash-screen@^3.2.0:
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg==
 
+react-native-sticky-parallax-header@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-sticky-parallax-header/-/react-native-sticky-parallax-header-0.4.0.tgz#412f50f946dd9e14938ef0dc556608aab5e8a347"
+  integrity sha512-R2aYTxY/Gz/AKwqxsigY6ukxiXguXgLnletIuxmcKSYBK5R6UpgL9hfXrAsfFV3yhgiLsW5fsN9NhxzVGsIrYQ==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-svg-transformer@^0.14.3:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/react-native-svg-transformer/-/react-native-svg-transformer-0.14.3.tgz#43c8e176f5a11f16f39b87a64018e0ac090ffbdb"
@@ -8466,7 +8486,7 @@ react-native-switch@^2.0.0:
   dependencies:
     prop-types "^15.6.0"
 
-react-native-tab-view@^2.15.0:
+react-native-tab-view@^2.15.2:
   version "2.15.2"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.15.2.tgz#4bc7832d33a119306614efee667509672a7ee64e"
   integrity sha512-2hxLkBnZtEKFDyfvNO5EUywhy3f/EiLOBO8SWqKj4BMBTO0QwnybaPE5MVF00Fhz+VA4+h/iI40Dkrrtq70dGg==
@@ -8565,6 +8585,11 @@ react-test-renderer@16.11.0:
     prop-types "^15.6.2"
     react-is "^16.8.6"
     scheduler "^0.17.0"
+
+react-timer-mixin@^0.13.3:
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.4.tgz#75a00c3c94c13abe29b43d63b4c65a88fc8264d3"
+  integrity sha512-4+ow23tp/Tv7hBM5Az5/Be/eKKF7DIvJ09voz5LyHGQaqqz9WV8YMs31eFvcYQs7d451LSg7kDJV70XYN/Ug/Q==
 
 react@16.11.0:
   version "16.11.0"

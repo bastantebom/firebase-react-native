@@ -31,11 +31,19 @@ import {
   ProfileReport,
   ProfileBlockRed,
   JarHeartWhite,
+  HeaderShareGray,
+  HeaderQRGray,
+  HeaderMenuGray,
+  HeaderBackGray,
+  HeaderFollowingBlack,
+  HeaderFollowBlack,
+  HeaderEllipsisGray,
 } from '@/assets/images/icons'
 import { normalize, GlobalStyle } from '@/globals'
+import Colors from '@/globals/Colors'
 import { UserContext } from '@/context/UserContext'
 
-const TransparentHeader = ({
+const StickyHeader = ({
   toggleEllipsisState,
   ellipsisState,
   toggleFollowing,
@@ -56,9 +64,7 @@ const TransparentHeader = ({
   postId,
   isFollowing,
 }) => {
-  // console.log('Transparent Header');
-  // console.log(isFollowing);
-  // console.log('Transparent Header');
+  const { display_name, is_verified } = userInfo
 
   const navigation = useNavigation()
   const shareHandler = async () => {
@@ -71,22 +77,13 @@ const TransparentHeader = ({
 
     try {
       const ShareResponse = await Share.open(shareOptions)
-        .then(result => {
-          console.log(result)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-      // setResult(JSON.stringify(ShareResponse, null, 2));
     } catch (error) {
       console.log('Error =>', error)
-      // setResult('error: '.concat(getErrorString(error)));
     }
   }
   const { user } = useContext(UserContext)
 
   if (type === 'post-other') {
-    //console.log(postTitle);
     return (
       <>
         <SafeAreaView
@@ -104,7 +101,6 @@ const TransparentHeader = ({
               width: Dimensions.get('window').width,
               paddingTop: 4,
             }}>
-            {/* Left aligned icons */}
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
                 <View style={styles.circle}>
@@ -112,7 +108,6 @@ const TransparentHeader = ({
                 </View>
               </TouchableOpacity>
             </View>
-            {/* Right aligned icons */}
             {user ? (
               <>
                 <View style={{ flexDirection: 'row' }}>
@@ -183,7 +178,6 @@ const TransparentHeader = ({
               <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
-          {/* <FilterSlider modalToggler={toggleModal} /> */}
           <OtherPostEllipsis
             toggleEllipsisState={toggleEllipsisState}
             postId={postId}
@@ -213,7 +207,6 @@ const TransparentHeader = ({
               width: Dimensions.get('window').width,
               paddingTop: 4,
             }}>
-            {/* Left aligned icons */}
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
                 <View style={styles.circle}>
@@ -222,7 +215,6 @@ const TransparentHeader = ({
               </TouchableOpacity>
             </View>
 
-            {/* Right aligned icons */}
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity
                 activeOpacity={0.7}
@@ -258,7 +250,6 @@ const TransparentHeader = ({
               <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
-          {/* <FilterSlider modalToggler={toggleModal} /> */}
           <PostEllipsis
             toggleEllipsisState={toggleEllipsisState}
             editPostFunction={editPostFunction}
@@ -271,41 +262,48 @@ const TransparentHeader = ({
   if (type === 'own')
     return (
       <>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            position: 'absolute',
-            zIndex: 1,
-            backgroundColor: 'transparent',
-          }}>
-          <View
-            style={{
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              paddingHorizontal: 16,
-              width: Dimensions.get('window').width,
-              paddingTop: 4,
-            }}>
-            {/* Left aligned icons */}
-            <View></View>
-
-            {/* Right aligned icons */}
-            <View style={{ flexDirection: 'row' }}>
-              {/* <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(16)} height={normalize(16)} />
+        <SafeAreaView>
+          <View style={styles.profileStickyHeader}>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '60%',
+              }}>
+              <AppText
+                textStyle="subtitle2"
+                color={Colors.primaryMidnightBlue}
+                numberOfLines={1}>
+                {display_name}
+              </AppText>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '40%',
+                paddingLeft: 25,
+                justifyContent: 'space-between',
+              }}>
+              <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
+                <View style={GlobalStyle.marginLeft1}>
+                  <HeaderShareGray
+                    width={normalize(15)}
+                    height={normalize(15)}
+                  />
                 </View>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderQR width={normalize(16)} height={normalize(16)} />
+                <View style={GlobalStyle.marginLeft1}>
+                  <HeaderQRGray width={normalize(15)} height={normalize(15)} />
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderMenu width={normalize(16)} height={normalize(16)} />
+                <View style={GlobalStyle.marginLeft1}>
+                  <HeaderMenuGray
+                    width={normalize(15)}
+                    height={normalize(15)}
+                  />
                 </View>
               </TouchableOpacity>
             </View>
@@ -323,11 +321,9 @@ const TransparentHeader = ({
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          {/* <FilterSlider modalToggler={toggleModal} /> */}
           <OwnMenu
             signOut={() => {
               signOut().then(() => {
-                //console.log('helluu');
                 navigation.navigate('Onboarding')
               })
             }}
@@ -347,7 +343,6 @@ const TransparentHeader = ({
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          {/* <FilterSlider modalToggler={toggleModal} /> */}
           <QRScreen toggleQR={toggleQR} />
         </Modal>
       </>
@@ -356,68 +351,59 @@ const TransparentHeader = ({
   if (type === 'other')
     return (
       <>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            position: 'absolute',
-            zIndex: 1,
-            backgroundColor: 'transparent',
-          }}>
-          <View
-            style={{
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              paddingHorizontal: 16,
-              width: Dimensions.get('window').width,
-              paddingTop: 4,
-            }}>
-            {/* Left aligned icons */}
-            <View>
-              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-                <View style={styles.circle}>
-                  <HeaderBack width={normalize(16)} height={normalize(16)} />
-                </View>
-              </TouchableOpacity>
+        <SafeAreaView>
+          <View style={styles.profileStickyHeader}>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '60%',
+              }}>
+              <AppText
+                textStyle="subtitle2"
+                color={Colors.primaryMidnightBlue}
+                numberOfLines={1}>
+                {display_name}
+              </AppText>
             </View>
-
-            {/* Right aligned icons */}
             {user ? (
-              <View style={{ flexDirection: 'row' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '40%',
+                  paddingLeft: 25,
+                  justifyContent: 'space-between',
+                }}>
                 <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
-                  <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
+                  <View style={GlobalStyle.marginLeft1}>
                     {isFollowing ? (
-                      <HeaderFollowing
+                      <HeaderFollowingBlack
                         width={normalize(16)}
                         height={normalize(16)}
                       />
                     ) : (
-                      <HeaderFollow
+                      <HeaderFollowBlack
                         width={normalize(16)}
                         height={normalize(16)}
                       />
                     )}
-                    <AppText
-                      textStyle="button3"
-                      color="white"
-                      customStyle={{ marginLeft: 4 }}>
-                      {isFollowing ? 'Following' : 'Follow'}
-                    </AppText>
                   </View>
                 </TouchableOpacity>
-
-                {/* <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
-                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                    <HeaderShare width={normalize(16)} height={normalize(16)} />
+                <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
+                  <View style={GlobalStyle.marginLeft1}>
+                    <HeaderShareGray
+                      width={normalize(15)}
+                      height={normalize(15)}
+                    />
                   </View>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
 
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={toggleEllipsisState}>
-                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                    <HeaderEllipsis
-                      width={normalize(16)}
-                      height={normalize(16)}
+                  <View style={GlobalStyle.marginLeft1}>
+                    <HeaderEllipsisGray
+                      width={normalize(15)}
+                      height={normalize(15)}
                     />
                   </View>
                 </TouchableOpacity>
@@ -446,7 +432,6 @@ const TransparentHeader = ({
               <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
-          {/* <FilterSlider modalToggler={toggleModal} /> */}
           <EllipsisMenu
             toggleEllipsisState={toggleEllipsisState}
             userInfo={userInfo}
@@ -477,6 +462,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
   },
+  profileStickyHeader: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: normalize(17.5),
+    backgroundColor: Colors.neutralsWhite,
+    alignItems: 'center',
+  },
 })
 
-export default TransparentHeader
+export default StickyHeader

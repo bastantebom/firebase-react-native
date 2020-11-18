@@ -9,7 +9,14 @@ import { AppText } from '@/components'
 import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
 import LoadingScreen from './loading'
 
-const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
+const UserPosts = ({
+  data,
+  type,
+  isLoading,
+  setIsLoading,
+  userID,
+  isFetching,
+}) => {
   const { user, userInfo } = useContext(UserContext)
   const {
     setUserPosts,
@@ -25,7 +32,7 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
 
   const [refresh, setRefresh] = useState(false)
   const [lastPID, setLastPID] = useState(0)
-  const [fetchMore, setFecthMore] = useState(false)
+  const [fetchMore, setFetchMore] = useState(false)
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
   const [
     onEndReachedCalledDuringMomentum,
@@ -73,10 +80,10 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
   const getMorePost = async () => {
     if (!onEndReachedCalledDuringMomentum) {
       setOnEndReachedCalledDuringMomentum(true)
-      setFecthMore(true)
+      setFetchMore(true)
 
       if (!thereIsMoreFlag) {
-        setFecthMore(false)
+        setFetchMore(false)
         // console.log('Stopping getting more post');
         return
       }
@@ -92,22 +99,22 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
           if (res.success) {
             setLastPID(lastPID + 1)
             setOtherUserPosts(prev => [...prev, ...res.data])
-            setFecthMore(false)
+            setFetchMore(false)
           } else {
             setThereIsMoreFlag(false)
-            setFecthMore(false)
+            setFetchMore(false)
           }
         })
         .catch(err => {
-          setFecthMore(false)
+          setFetchMore(false)
         })
     }
     // if (!onEndReachedCalledDuringMomentum) {
     //   setOnEndReachedCalledDuringMomentum(true);
-    //   setFecthMore(true);
+    //   setFetchMore(true);
 
     //   if (!thereIsMoreFlag) {
-    //     setFecthMore(false);
+    //     setFetchMore(false);
     //     // console.log('Stopping getting more post');
     //     return;
     //   }
@@ -129,14 +136,14 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
     //         setOtherUserPosts(
     //           res.data ? [...otherUserPosts, ...res.data] : [...otherUserPosts],
     //         );
-    //         setFecthMore(false);
+    //         setFetchMore(false);
     //       } else {
     //         setThereIsMoreFlag(false);
-    //         setFecthMore(false);
+    //         setFetchMore(false);
     //       }
     //     })
     //     .catch((err) => {
-    //       setFecthMore(false);
+    //       setFetchMore(false);
     //     });
     // }
   }
@@ -157,12 +164,10 @@ const UserPosts = ({ data, type, isLoading, setIsLoading, userID }) => {
         ListFooterComponent={
           <View
             style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
-            {fetchMore ? (
+            {isFetching ? (
               <ActivityIndicator />
             ) : (
-              <AppText>
-                {lastPID === 'none' ? 'No more userPosts available' : ''}
-              </AppText>
+              <AppText>No more userPosts available</AppText>
             )}
           </View>
         }

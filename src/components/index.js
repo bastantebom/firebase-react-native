@@ -26,6 +26,7 @@ import MapComponent from '@/components/MapComponent/MapComponent'
 import TransitionIndicator from '@/components/TransitionIndicator/TransitionIndicator'
 import GooglePlaces from '@/components/LocationSearchInput'
 import TransparentHeader from '@/components/TransparentHeader/TransparentHeader'
+import StickyHeader from '@/components/TransparentHeader/StickyHeader'
 import BottomSheetHeader from './BottomSheet/header'
 import ProfileLinks from '@/components/ProfileLinks/ProfileLinks'
 import TabNavigation from './TabNavigation/TabNavigation'
@@ -80,6 +81,7 @@ export {
   TransitionIndicator,
   GooglePlaces,
   TransparentHeader,
+  StickyHeader,
   BottomSheetHeader,
   ProfileLinks,
   Reviews,

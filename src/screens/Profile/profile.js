@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { View, StyleSheet, Dimensions } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Animated,
+  RefreshControl,
+} from 'react-native'
 
 import {
   AppText,
@@ -11,10 +17,10 @@ import {
   Notification,
   UserPosts,
   CacheableImage,
+  StickyHeader,
 } from '@/components'
 
-import PostFilter from '@/components/Post/PostFilter'
-import { TabView, SceneMap } from 'react-native-tab-view'
+import StickyParallaxHeader from 'react-native-sticky-parallax-header'
 
 import { ProfileHeaderDefault } from '@/assets/images'
 import { normalize, Colors } from '@/globals'
@@ -26,12 +32,17 @@ import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
 import { GuestProfile } from './components/GuestProfile'
 import { VerificationStatus } from './components'
+import { PostService } from '@/services'
 
 function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
   const { user, signOut, userInfo, userStatus } = useContext(UserContext)
-  const { openNotification, closeNotification, posts, userPosts } = useContext(
-    Context
-  )
+  const {
+    openNotification,
+    closeNotification,
+    posts,
+    userPosts,
+    setUserPosts,
+  } = useContext(Context)
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
   const [ellipsisState, setEllipsisState] = useState(false)
@@ -71,12 +82,10 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
     setVisibleHives(!visibleHives)
   }
   const toggleConnections = () => {
-    //alert('text');
     setVisibleFollowing(!visibleFollowing)
   }
 
   const toggleProfileList = () => {
-    //alert('text');
     setProfileList(!profileList)
   }
 
@@ -92,7 +101,6 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
       </AppText>
     )
     openNotification()
-    //setIsScreenLoading(false);
     closeNotificationTimer()
   }
 
@@ -123,27 +131,6 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
     }, 5000)
   }
 
-  const profileTabs = [
-    {
-      key: 'ownpost',
-      title: 'Posts',
-      renderPage: (
-        <UserPosts
-          type="own"
-          data={userPosts}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          userID={user.uid}
-        />
-      ),
-    },
-    {
-      key: 'moreinfo',
-      title: 'More Info',
-      renderPage: <MoreInfo profileInfo={userInfo} />,
-    },
-  ]
-
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false)
@@ -164,85 +151,267 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
       0
     ) * 0.25
 
-  return (
-    <View style={{ flex: 1 }}>
-      <Notification
-        message={notificationMessage}
-        type={notificationType}
-        top={normalize(30)}
-        position="absolute"
-      />
-      <TransparentHeader
-        type={headerState}
-        ellipsisState={ellipsisState}
-        toggleEllipsisState={toggleEllipsisState}
-        toggleFollowing={toggleFollowing}
-        following={following}
-        toggleMenu={toggleMenu}
-        menu={menu}
-        signOut={signOut}
-        toggleQR={toggleQR}
-        QR={QR}
-        backFunction={backFunction}
-        triggerNotify={triggerNotify}
-      />
+  // fetch posts from userposts
 
-      <View
-        style={{
-          backgroundColor: Colors.buttonDisable,
-          height: normalize(158),
-        }}>
-        {userInfo.cover_photo ? (
-          <CacheableImage
-            source={{ uri: userInfo.cover_photo }}
-            style={{ width: normalize(375), height: normalize(158) }}
-          />
-        ) : (
-          <ProfileHeaderDefault
-            width={normalize(375 * 1.2)}
-            height={normalize(158 * 1.2)}
-          />
-        )}
-      </View>
-      <View style={styles.profileBasicInfo}>
-        <View style={styles.profileImageWrapper}>
-          <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
-        </View>
+  const [lastPID, setLastPID] = useState(0)
+  const [fetchMore, setFetchMore] = useState(false)
+  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
+  const [refresh, setRefresh] = useState(false)
 
-        <ProfileLinks
-          toggleHives={toggleHives}
-          toggleProfileList={toggleProfileList}
-          profileList={profileList}
-          visibleHives={visibleHives}
-          visibleFollowing={visibleFollowing}
-          userInfo={userInfo}
-          viewType="own-links"
+  const getMorePost = async () => {
+    try {
+      setFetchMore(true)
+
+      if (!thereIsMoreFlag) {
+        setFetchMore(false)
+        return
+      }
+
+      const getPostsParams = {
+        uid: user.uid,
+        limit: 5,
+        page: lastPID,
+      }
+
+      const res = await PostService.getUserPosts(getPostsParams)
+      if (res.success) {
+        setLastPID(lastPID + 1)
+        setUserPosts(res.data ? [...userPosts, ...res.data] : [...userPosts])
+        setFetchMore(false)
+      } else {
+        setThereIsMoreFlag(false)
+        setFetchMore(false)
+      }
+    } catch (err) {
+      setFetchMore(false)
+    }
+  }
+
+  const refreshPosts = async () => {
+    try {
+      setUserPosts([])
+      setLastPID(0)
+      setRefresh(true)
+
+      const params = {
+        uid: user.uid,
+        limit: 5,
+        page: 0,
+      }
+
+      const res = await PostService.getUserPosts(params)
+      setLastPID(1)
+      setIsLoading(false)
+
+      if (!res.data.length) {
+        setUserPosts(res.data)
+      }
+
+      setNeedsRefresh(false)
+      setRefresh(false)
+    } catch (err) {
+      setRefresh(false)
+    }
+  }
+
+  // sticky header
+
+  const [scroll] = useState(new Animated.Value(0))
+
+  const renderForeground = () => {
+    return (
+      <>
+        <Notification
+          message={notificationMessage}
+          type={notificationType}
+          top={normalize(30)}
+          position="absolute"
         />
-      </View>
-      <View style={{ backgroundColor: Colors.primaryYellow }}>
-        <ProfileInfo profileData={userInfo} />
-      </View>
+        <View>
+          <TransparentHeader
+            type={headerState}
+            ellipsisState={ellipsisState}
+            toggleEllipsisState={toggleEllipsisState}
+            toggleFollowing={toggleFollowing}
+            following={following}
+            toggleMenu={toggleMenu}
+            menu={menu}
+            signOut={signOut}
+            toggleQR={toggleQR}
+            QR={QR}
+            backFunction={backFunction}
+            triggerNotify={triggerNotify}
+          />
 
-      {statusPercentage < 1 ? (
-        <VerificationStatus statusPercentage={statusPercentage} />
-      ) : null}
+          <View
+            style={{
+              backgroundColor: Colors.buttonDisable,
+              height: normalize(158),
+            }}>
+            {userInfo.cover_photo ? (
+              <CacheableImage
+                source={{ uri: userInfo.cover_photo }}
+                style={{ width: normalize(375), height: normalize(158) }}
+              />
+            ) : (
+              <ProfileHeaderDefault
+                width={normalize(375 * 1.2)}
+                height={normalize(158 * 1.2)}
+              />
+            )}
+          </View>
+          <View style={styles.profileBasicInfo}>
+            <View style={styles.profileImageWrapper}>
+              <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
+            </View>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          backgroundColor: Colors.neutralsWhite,
-          paddingHorizontal: 24,
-          paddingVertical: 8,
-        }}>
-        <ProfileButtons triggerNotify={triggerNotify} />
-      </View>
-      <View style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <TabNavigation routesList={profileTabs} />
+            <ProfileLinks
+              toggleHives={toggleHives}
+              toggleProfileList={toggleProfileList}
+              profileList={profileList}
+              visibleHives={visibleHives}
+              visibleFollowing={visibleFollowing}
+              userInfo={userInfo}
+              viewType="own-links"
+            />
+          </View>
+          <ProfileInfo profileData={userInfo} />
+
+          {statusPercentage < 1 ? (
+            <VerificationStatus statusPercentage={statusPercentage} />
+          ) : null}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: Colors.neutralsWhite,
+              paddingHorizontal: 24,
+              paddingVertical: 8,
+            }}>
+            <ProfileButtons triggerNotify={triggerNotify} />
+          </View>
         </View>
-      </View>
+      </>
+    )
+  }
+
+  const renderHeader = () => {
+    const MAX_OPACITY = normalize(200)
+    const MIN_OPACITY = normalize(250)
+
+    const opacity = scroll.interpolate({
+      inputRange: [0, MAX_OPACITY, MIN_OPACITY],
+      outputRange: [0, 0, 1],
+    })
+
+    return (
+      <Animated.View
+        style={{
+          opacity: opacity,
+          borderBottomColor: Colors.neutralsZircon,
+          borderBottomWidth: 5,
+        }}>
+        <StickyHeader
+          type={headerState}
+          ellipsisState={ellipsisState}
+          toggleEllipsisState={toggleEllipsisState}
+          toggleFollowing={toggleFollowing}
+          following={following}
+          toggleMenu={toggleMenu}
+          menu={menu}
+          signOut={signOut}
+          toggleQR={toggleQR}
+          QR={QR}
+          backFunction={backFunction}
+          triggerNotify={triggerNotify}
+          userInfo={userInfo}
+        />
+      </Animated.View>
+    )
+  }
+
+  const profileTabs = [
+    {
+      title: 'Posts',
+      content: (
+        <UserPosts
+          type="own"
+          data={userPosts}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          userID={user.uid}
+          isFetching={fetchMore}
+        />
+      ),
+    },
+    {
+      title: 'More Info',
+      content: <MoreInfo profileInfo={userInfo} />,
+    },
+  ]
+
+  useEffect(() => {
+    scroll.addListener(({ value }) => value)
+  }, [scroll])
+
+  const [scrollPosition, setScrollPosition] = useState(0)
+
+  const handleScroll = event => {
+    const position = event.nativeEvent.contentOffset.y
+    setScrollPosition(position)
+  }
+
+  return (
+    <>
+      <StickyParallaxHeader
+        foreground={renderForeground()}
+        header={renderHeader()}
+        parallaxHeight={normalize(520)}
+        headerHeight={scrollPosition < 350 ? 0 : normalize(60)}
+        headerSize={() => {}}
+        scrollEvent={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scroll } } }],
+          {
+            useNativeDriver: false,
+            listener: event => handleScroll(event),
+          }
+        )}
+        snapToEdge={false}
+        transparentHeader={scrollPosition > 350 ? false : true}
+        onEndReached={getMorePost}
+        refreshControl={
+          <RefreshControl
+            style={{ zIndex: 1 }}
+            refreshing={refresh}
+            titleColor="white"
+            tintColor="white"
+            title="Refreshing"
+            onRefresh={refreshPosts}
+          />
+        }
+        tabs={profileTabs}
+        tabTextStyle={styles.tabTextStyle}
+        tabTextActiveStyle={{
+          color: Colors.secondaryRoyalBlue,
+        }}
+        tabTextContainerStyle={{
+          flexGrow: 1,
+          left: normalize(-18),
+        }}
+        tabTextContainerActiveStyle={{
+          borderBottomColor: Colors.secondaryRoyalBlue,
+          borderBottomWidth: 2,
+        }}
+        tabsContainerStyle={{
+          height: normalize(50),
+          width: Dimensions.get('window').width + normalize(18) * 2,
+          backgroundColor: Colors.neutralsWhite,
+        }}
+        contentContainerStyles={{
+          backgroundColor: Colors.neutralsWhite,
+        }}></StickyParallaxHeader>
       <WhiteOpacity />
-    </View>
+    </>
   )
 }
 
@@ -269,5 +438,13 @@ const styles = StyleSheet.create({
     height: normalize(160),
     top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
     paddingLeft: normalize(24),
+  },
+  tabTextStyle: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(14),
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    letterSpacing: normalize(2),
+    width: '50%',
   },
 })

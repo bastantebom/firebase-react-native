@@ -83,6 +83,7 @@ import RadioDot from './radiobutton-dot.svg'
 import HeaderBack from './header-back.svg'
 import HeaderBackGray from './header-back-gray.svg'
 import HeaderEllipsis from './header-ellipsis'
+import HeaderEllipsisGray from './header-ellipsis-gray'
 import HeaderFollow from './header-follow.svg'
 import HeaderFollowing from './header-following.svg'
 import HeaderFollowBlack from './header-follow-black.svg'
@@ -91,6 +92,9 @@ import HeaderMenu from './header-menu.svg'
 import HeaderQR from './header-qr.svg'
 import HeaderShare from './header-share.svg'
 import HeaderCloseGray from './header-close-gray.svg'
+import HeaderMenuGray from './header-menu-gray.svg'
+import HeaderQRGray from './header-qr-gray.svg'
+import HeaderShareGray from './header-share-gray.svg'
 
 import ProfileBlockRed from './profile-block-red.svg'
 import ProfileMute from './profile-mute.svg'
@@ -279,12 +283,18 @@ export {
   HeaderBack,
   HeaderBackGray,
   HeaderEllipsis,
+  HeaderEllipsisGray,
   HeaderFollow,
   HeaderFollowing,
+  HeaderFollowBlack,
+  HeaderFollowingBlack,
   HeaderMenu,
   HeaderQR,
   HeaderShare,
   HeaderCloseGray,
+  HeaderMenuGray,
+  HeaderShareGray,
+  HeaderQRGray,
   SortHighLow,
   SortLowHigh,
   SortPopular,
