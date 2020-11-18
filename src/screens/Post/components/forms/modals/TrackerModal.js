@@ -57,7 +57,7 @@ const TrackerModal = ({ closeModal, postType }) => {
   const [moreActions, setMoreActions] = useState(false)
   const [declineRequest, setDeclineRequest] = useState(false)
 
-  const [status, setStatus] = useState('pending')
+  const [status, setStatus] = useState('completed')
   const [statusHeader, setStatusHeader] = useState('')
   const [messageHeader, setMessageHeader] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
@@ -132,11 +132,6 @@ const TrackerModal = ({ closeModal, postType }) => {
               setMessageHeader('Scheduled')
               setStatusMessage('<Schedule confirmed copy>')
               break
-            case 'declined':
-              setStatusHeader('Service Declined')
-              setMessageHeader(null)
-              setStatusMessage(null)
-              break
             case 'cancelled':
               setStatusHeader('Service Cancelled')
               setMessageHeader(null)
@@ -167,6 +162,7 @@ const TrackerModal = ({ closeModal, postType }) => {
               setStatusHeader('Awaiting Confirmation')
               setMessageHeader('Awaiting Confirmation')
               setStatusMessage('<Awaiting Confirmation copy>')
+
               break
             case 'confirmed':
               setStatusHeader('Offer Accepted')
@@ -252,14 +248,55 @@ const TrackerModal = ({ closeModal, postType }) => {
               break
             case 'completed':
               setStatusHeader('Completed')
-              setMessageHeader('Declined')
-              setStatusMessage('<Declined copy>')
+              setMessageHeader('Completed')
+              setStatusMessage('<Completed copy>')
+              break
+            case 'cancelled':
+              setStatusHeader('Cancelled')
+              setMessageHeader('Cancelled by customer')
+              setStatusMessage('<Cancelled copy>')
               break
             default:
               null
           }
           break
       }
+    }
+  }
+
+  const title = () => {
+    if (postType === 'sell' && status === 'completed') {
+      return 'Order Completed'
+    } else if (
+      (buyer && postType === 'sell' && status === 'pending') ||
+      (buyer && postType === 'sell' && status === 'processing') ||
+      (buyer && postType === 'sell' && status === 'confirmed')
+    ) {
+      return 'Order Status'
+    } else if (buyer && postType === 'sell' && status === 'declined') {
+      return 'Order Declined'
+    } else if (buyer && postType === 'sell' && status === 'cancelled') {
+      return 'Order Cancelled'
+    } else if (seller && postType === 'sell' && status === 'declined') {
+      return 'Order Declined'
+    } else if (
+      (buyer && postType === 'service' && status === 'pending') ||
+      (buyer && postType === 'service' && status === 'ongoing') ||
+      (buyer && postType === 'service' && status === 'confirmed')
+    ) {
+      return 'Status'
+    } else if (buyer && postType === 'service' && status === 'cancelled') {
+      return 'Service Declined'
+    } else if (buyer && postType === 'service' && status === 'completed') {
+      return 'Completed'
+    } else if (seller && postType === 'service' && status === 'completed') {
+      return 'Completed'
+    } else if (seller && postType === 'service' && status === 'cancelled') {
+      return 'Service Cancelled'
+    } else if (seller && postType === 'service') {
+      return 'Service Request'
+    } else {
+      return 'Order Request'
     }
   }
 
@@ -278,30 +315,7 @@ const TrackerModal = ({ closeModal, postType }) => {
     <>
       <ScreenHeaderTitle
         close={closeModal}
-        title={
-          postType === 'sell' && status === 'completed'
-            ? 'Order Completed'
-            : (buyer && postType === 'sell' && status === 'pending') ||
-              (buyer && postType === 'sell' && status === 'processing')
-            ? 'Order Request'
-            : buyer && postType === 'sell' && status === 'declined'
-            ? 'Order Declined'
-            : buyer && postType === 'sell' && status === 'cancelled'
-            ? 'Order Cancelled'
-            : (buyer && postType === 'service' && status === 'pending') ||
-              (buyer && postType === 'service' && status === 'ongoing') ||
-              (buyer && postType === 'service' && status === 'confirmed')
-            ? 'Status'
-            : buyer && postType === 'service' && status === 'cancelled'
-            ? 'Service Declined'
-            : buyer && postType === 'service' && status === 'completed'
-            ? 'Completed'
-            : seller && postType === 'service' && status === 'completed'
-            ? 'Order Completed'
-            : seller && postType === 'service' && status === 'pending'
-            ? 'Service Request'
-            : 'Order Status'
-        }
+        title={title()}
         paddingSize={2}
         iconSize={normalize(16)}
       />
@@ -382,7 +396,11 @@ const TrackerModal = ({ closeModal, postType }) => {
               styles.section,
               {
                 display:
-                  (postType === 'service' && status === 'completed') ||
+                  (buyer && postType === 'service' && status === 'completed') ||
+                  (buyer && postType === 'service' && status === 'cancelled') ||
+                  (seller &&
+                    postType === 'service' &&
+                    status === 'completed') ||
                   status === 'declined'
                     ? 'none'
                     : 'flex',
@@ -400,11 +418,13 @@ const TrackerModal = ({ closeModal, postType }) => {
                 (buyer && status === 'cancelled') ||
                 (status === 'ongoing' && postType === 'need') ? (
                   <OrangeDot />
-                ) : status === 'confirmed' ||
-                  status === 'delivering' ||
-                  status === 'processing' ||
-                  status === 'ready' ||
-                  status === 'ongoing' ? (
+                ) : [
+                    'confirmed',
+                    'delivering',
+                    'processing',
+                    'read',
+                    'ongoing',
+                  ].includes(status) ? (
                   <GreenDot />
                 ) : status === 'cancelled' ? (
                   <RedDot />
@@ -493,7 +513,8 @@ const TrackerModal = ({ closeModal, postType }) => {
                     : (postType === 'service' && status === 'confirmed') ||
                       (postType === 'service' && status === 'completed') ||
                       (postType === 'service' && status === 'cancelled') ||
-                      (postType === 'service' && status === 'pending')
+                      (postType === 'service' && status === 'pending') ||
+                      (postType === 'service' && status === 'declined')
                     ? 'Service at'
                     : postType === 'service' && status === 'ongoing'
                     ? 'Servicing at'
@@ -661,7 +682,7 @@ const TrackerModal = ({ closeModal, postType }) => {
               display:
                 status === 'pending' ||
                 status === 'ongoing' ||
-                status === 'confirmed'
+                (postType === 'service' && status === 'confirmed')
                   ? 'flex'
                   : 'none',
             }}>

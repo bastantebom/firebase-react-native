@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useEffect, useCallback, createRef} from 'react';
+import React, { useState, useEffect, useCallback, createRef } from 'react'
 import {
   View,
   Text,
@@ -7,60 +7,60 @@ import {
   StyleSheet,
   Animated,
   ScrollView,
-} from 'react-native';
-import {Colors, normalize} from '@/globals';
-import AppText from '../AppText/AppText';
-import ValidationList from './Validation';
-import ValidationFunctions from './ValidationFunctions';
-import {debounce} from 'lodash';
-import _ from 'lodash';
+} from 'react-native'
+import { Colors, normalize } from '@/globals'
+import AppText from '../AppText/AppText'
+import ValidationList from './Validation'
+import ValidationFunctions from './ValidationFunctions'
+import { debounce } from 'lodash'
+import _ from 'lodash'
 
-import {VerifiedGreen} from '@/assets/images/icons';
-import DebounceInput from 'react-native-debounce-input';
+import { VerifiedGreen } from '@/assets/images/icons'
+import DebounceInput from 'react-native-debounce-input'
 
 // create a component
-const FloatingAppInput = ({value, style, label, ...props}) => {
-  const [labelPosition] = useState(new Animated.Value(0));
-  const [isActive, setIsActive] = useState(false);
+const FloatingAppInput = ({ value, style, label, ...props }) => {
+  const [labelPosition] = useState(new Animated.Value(0))
+  const [isActive, setIsActive] = useState(false)
 
   const onFocusInput = () => {
-    setIsActive(true);
-    animateFocus();
+    setIsActive(true)
+    animateFocus()
 
-    props.onFocusInput ? props.onFocusInput() : null;
-  };
+    props.onFocusInput ? props.onFocusInput() : null
+  }
 
   const onBlurInput = () => {
-    setIsActive(false);
+    setIsActive(false)
     if (value === '') {
-      animateBlur();
+      animateBlur()
     }
-  };
+  }
 
   useEffect(() => {
     if (
       value !== '' &&
       (value !== undefined || props.placeholder !== undefined)
     ) {
-      animateFocus();
+      animateFocus()
     }
-  }, [value, props.placeholder]);
+  }, [value, props.placeholder])
 
   const animateFocus = () => {
     Animated.timing(labelPosition, {
       toValue: normalize(-10),
       duration: 300,
       useNativeDriver: false,
-    }).start();
-  };
+    }).start()
+  }
 
   const animateBlur = () => {
     Animated.timing(labelPosition, {
       toValue: 0,
       duration: 300,
       useNativeDriver: false,
-    }).start();
-  };
+    }).start()
+  }
 
   let labelStyle = {
     transform: [
@@ -68,22 +68,22 @@ const FloatingAppInput = ({value, style, label, ...props}) => {
         translateY: labelPosition,
       },
     ],
-  };
+  }
 
-  const activeBorderColor = isActive ? Colors.contentOcean : Colors.neutralGray;
+  const activeBorderColor = isActive ? Colors.contentOcean : Colors.neutralGray
   const activeTextColor = isActive
     ? Colors.contentOcean
-    : Colors.contentPlaceholder;
+    : Colors.contentPlaceholder
 
   const fontSize = {
     fontSize: !isActive && value === '' ? normalize(16) : normalize(12),
-  };
+  }
 
   const paddingLeftCustom = {
     paddingLeft: normalize(
-      16 + (props.paddingLeftLabel ? props.paddingLeftLabel : 0),
+      16 + (props.paddingLeftLabel ? props.paddingLeftLabel : 0)
     ),
-  };
+  }
 
   /** VALIDATION HANDLER **/
 
@@ -118,7 +118,7 @@ const FloatingAppInput = ({value, style, label, ...props}) => {
           underlineColorAndroid="transparent"
           onFocus={onFocusInput}
           onBlur={() => {
-            onBlurInput();
+            onBlurInput()
           }}
           onEndEditing={onBlurInput}
           blurOnSubmit
@@ -127,8 +127,8 @@ const FloatingAppInput = ({value, style, label, ...props}) => {
         />
       </View>
     </View>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     right: normalize(10),
     top: normalize(18),
   },
-});
+})
 
 //make this component available to the app
-export default FloatingAppInput;
+export default FloatingAppInput
