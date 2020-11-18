@@ -51,6 +51,7 @@ import {
   ContactServbees,
   FaqScreen,
 } from '@/screens/Profile/components'
+import { UserContext } from '@/context/UserContext'
 
 const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const navigation = useNavigation()
@@ -64,6 +65,12 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const [inviteFriends, setInviteFriends] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
+  const [hasPassword, setHasPassword] = useState(false)
+  const { providerData } = useContext(UserContext)
+
+  if (providerData.some(pd => pd.providerId === 'password')) {
+    setHasPassword(true)
+  }
 
   const toggleEditProfile = () => {
     setEditProfile(!editProfile)
@@ -243,22 +250,27 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
                 Settings and Privacy
               </AppText>
 
-              <TouchableOpacity
-                style={{ marginTop: normalize(16) }}
-                activeOpacity={0.7}
-                onPress={toggleChangePassword}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <ChangePasswordRed
-                    width={normalize(24)}
-                    height={normalize(24)}
-                  />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
-                    Change Password
-                  </AppText>
-                </View>
-              </TouchableOpacity>
+              {hasPassword && (
+                <TouchableOpacity
+                  style={{ marginTop: normalize(16) }}
+                  activeOpacity={0.7}
+                  onPress={toggleChangePassword}>
+                  <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                    <ChangePasswordRed
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
+                    <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                      Change Password
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              )}
 
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleBlockedUser}>
+              <TouchableOpacity
+                style={{ marginTop: !hasPassword ? normalize(16) : 0 }}
+                activeOpacity={0.7}
+                onPress={toggleBlockedUser}>
                 <View style={{ flexDirection: 'row', marginBottom: 16 }}>
                   <BlockedUsers width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">

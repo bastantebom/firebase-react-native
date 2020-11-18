@@ -265,6 +265,7 @@ const TabStack = props => {
     }
 
     const navigate = async url => {
+      if (!url) return
       const route = url.replace(/.*?:\/\//g, '')
       const id = route.split('/')[1]
       const token = route.split('/')[2]

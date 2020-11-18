@@ -53,19 +53,26 @@ const signInWithProvider = async provider => {
             requestedOperation: appleAuth.Operation.LOGIN,
             requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
           })
-
           const { identityToken, nonce } = appleAuthResponse
           if (!identityToken)
             throw new Error('Apple Sign-In failed - no identify token returned')
 
-          return auth.AppleAuthProvider.credential(identityToken, nonce)
+          return {
+            ...auth.AppleAuthProvider.credential(identityToken, nonce),
+            fullName: appleAuthResponse.fullName,
+          }
         }
       }
     })()
 
+    let full_name
+    if (provider === 'apple')
+      full_name = `${credential.fullName.givenName} ${credential.fullName.familyName}`
+    delete credential.fullName
     const authResponse = await auth().signInWithCredential(credential)
+    if (provider !== 'apple') full_name = authResponse.user.displayName
     const uid = authResponse.user.uid
-    const { displayName: full_name, email } = authResponse.user
+    const { email } = authResponse.user
     const response = await SignUpService.saveSocials({
       uid,
       full_name,
