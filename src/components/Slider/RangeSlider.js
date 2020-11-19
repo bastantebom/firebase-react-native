@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import AppText from '../AppText/AppText'
 // import Slider from '@react-native-community/slider';
@@ -10,41 +10,28 @@ export const RangeSlider = ({
   minValue = 0, 
   maxValue = 200,
   step = 5,
-  value
+  value,
+  showRange
 }) => {
   
   const sliderRef = useRef(null)
   
   const [rangeValue, setRangeValue] = useState(0)
-  const [measurements, setMeasurements] = useState({})
-  // const tapSliderHandler = (evt) => { 
-  //   // slider.current.measure((fx, fy, width, height, px, py) => { 
-  //   //   // this.setState({value: (evt.nativeEvent.locationX - px) / width}); 
-  //   //   console.log(evt.nativeEvent.locationX - px)
-  //   // }); 
-  //   console.log(evt)
-  // }
-
-  const measure = () => {
-    sliderRef.current.measure((x, y, width, height) => {
-      setMeasurements({
-        x,
-        y,
-        width,
-        height
-      })
-    })
-    console.log(measurements)
-  }
 
   const tapSliderHandler = (evt) => {
-    if (sliderRef) {
-      sliderRef.current.measure((x, y, width, height, px) => {
-        setMeasurements({x, y, width, height})
-        const location = ((evt.nativeEvent.locationX - x) / width) * 100;
-        console.log(location)
-        setRangeValue(evt.nativeEvent.locationX - x)
-      })
+    if (sliderRef.current) {
+      sliderRef.current.measure((fx, fy, width, height, px) => {
+        const distanceRange = ((evt.nativeEvent.locationX - px) / width) * normalize(95);
+        if (distanceRange < 0) {
+          setRangeValue(Math.round(-(distanceRange * 0)))
+          value(Math.round(-(distanceRange * 0)));
+          console.log('negative value')
+        } else {
+          setRangeValue(Math.round((distanceRange * 100) / 100))
+          value(Math.round((distanceRange * 100) / 100));
+        }
+        // console.log(distanceRange)
+      });
     }
   };
 
@@ -53,15 +40,13 @@ export const RangeSlider = ({
       <View 
         style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <AppText textStyle="caption" color="#999">{minValue}</AppText>
-          {/* <TouchableWithoutFeedback onPressIn={tapSliderHandler}> */}
-            <View 
-              ref={sliderRef} 
-              style={{ width: '85%' }} 
-              onLayout={({ nativeEvent }) => {
-                setMeasurements(nativeEvent.layout)
-              }}
-            >
+        <AppText textStyle="caption" color="#999" customStyle={{ display: showRange ? 'flex' : 'none' }}>{minValue}</AppText>
+          <View 
+            ref={sliderRef} 
+            style={{ width: !showRange ? '100%' : '85%'}} 
+            onLayout={e => e.nativeEvent}
+          >
+            <TouchableWithoutFeedback onPressIn={tapSliderHandler}>
               <Slider
                 style={{ width: '100%' }}
                 trackStyle={{ height: normalize(6) }}
@@ -70,7 +55,7 @@ export const RangeSlider = ({
                 step={step}
                 value={rangeValue}
                 onValueChange={rangeValue => {
-                  setRangeValue(rangeValue), 
+                  setRangeValue(rangeValue)
                   value(rangeValue)
                 }}
                 minimumTrackTintColor={Colors.primaryYellow}
@@ -85,9 +70,9 @@ export const RangeSlider = ({
                   elevation: 3 
                 }}
               />
-            </View>
-          {/* </TouchableWithoutFeedback> */}
-        <AppText textStyle="caption" color="#999">{maxValue}</AppText>
+            </TouchableWithoutFeedback>
+          </View>
+        <AppText textStyle="caption" color="#999" customStyle={{ display: showRange ? 'flex' : 'none' }}>{maxValue}</AppText>
       </View>
       </>
   )

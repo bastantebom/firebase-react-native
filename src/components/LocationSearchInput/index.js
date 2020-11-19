@@ -1,9 +1,9 @@
-import React, {useRef, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
 import Global from '@/services/Config';
-import {Colors, normalize} from '@/globals';
-import {NavigationPinAlt} from '@/assets/images/icons';
+import { Colors, normalize } from '@/globals';
+import { NavigationPinAlt } from '@/assets/images/icons';
 
 const GooglePlacesInput = ({
   onResultsClick,
@@ -12,7 +12,7 @@ const GooglePlacesInput = ({
   adjustListPosition,
   cityOnly,
   onInputFocus,
-  onInputBlur,
+  // onInputBlur,
   customListViewStyle,
   customContainerStyle,
   customTextInputStyle,
@@ -20,6 +20,7 @@ const GooglePlacesInput = ({
   placeholder = "Enter street address or city",
   debounce = 0,
 }) => {
+
   const placesRef = useRef(null);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const GooglePlacesInput = ({
 
   return (
     <View style={styles.textInputWrapper}>
-      <View style={[styles.navIcon, {...customIconStyle}]}>
+      <View style={[styles.navIcon, { ...customIconStyle }]}>
         <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
       </View>
       <GooglePlacesAutocomplete
@@ -52,7 +53,6 @@ const GooglePlacesInput = ({
         textInputProps={{
           onChangeText: (value) => onClearInput(value),
           onFocus: onInputFocus,
-          onBlur: onInputBlur
         }}
         styles={{
           container: {
@@ -93,8 +93,8 @@ const GooglePlacesInput = ({
             color: Colors.contentEbony,
             fontFamily: 'RoundedMplus1c-Regular',
           },
-          poweredContainer: {display: 'none'},
-          description: {fontFamily: 'RoundedMplus1c-Regular'},
+          poweredContainer: { display: 'none' },
+          description: { fontFamily: 'RoundedMplus1c-Regular' },
         }}
         ref={placesRef}
         debounce={debounce}
@@ -110,9 +110,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
     elevation: 100,
   },
-
   navIcon: {
-    //backgroundColor: 'green',
     top: 20,
     left: 16,
     position: 'absolute',

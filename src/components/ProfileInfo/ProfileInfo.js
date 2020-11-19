@@ -56,7 +56,7 @@ const ProfileInfo = ({
   }
 
   let timeAgo = time => {
-    return '• ' + timePassed(time) + ' ago'
+    return timePassed(time) + ' ago'
   }
 
   const ProfilePhoto = ({ size }) => {
@@ -141,7 +141,7 @@ const ProfileInfo = ({
                   textStyle="eyebrow2"
                   color={Colors.contentPlaceholder}
                 >
-                  {rating}
+                  3.5  •
                 </AppText>
               </View> */}
 

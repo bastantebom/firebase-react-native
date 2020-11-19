@@ -31,6 +31,7 @@ import MapMarker from '@/assets/images/icons/pinbee_marker.svg'
 import NavigationArrowAlt from '@/assets/images/icons/navigation-arrow-alt.svg'
 import NavigationPinAlt from '@/assets/images/icons/navigation-pin-alt.svg'
 import PushPin from '@/assets/images/icons/push-pin-alt.svg'
+import PinBee from '@/assets/images/icons/pinbee-blue.svg'
 
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg'
@@ -72,6 +73,9 @@ import Users from '@/assets/images/icons/followers.svg'
 import FilterNeeds from './filter-needs.svg'
 import FilterSeller from './filter-seller.svg'
 import FilterServices from './filter-services.svg'
+import FilterNeedsWhite from './filter-needs-white.svg'
+import FilterSellerWhite from './filter-seller-white.svg'
+import FilterServicesWhite from './filter-services-white.svg'
 
 import SortHighLow from './sort-high-low.svg'
 import SortLowHigh from './sort-low-high.svg'
@@ -307,6 +311,9 @@ export {
   FilterNeeds,
   FilterSeller,
   FilterServices,
+  FilterNeedsWhite,
+  FilterSellerWhite,
+  FilterServicesWhite,
   Filter,
   JarHeart,
   JarHeartColored,
@@ -340,6 +347,7 @@ export {
   NavigationArrowAlt,
   NavigationPinAlt,
   PushPin,
+  PinBee,
   NavigationPinRed,
   MapMarker,
   Warning,
@@ -381,7 +389,6 @@ export {
   Faq,
   ContactUs,
   Notifications,
-  Search,
   EmailContactUs,
   CallContactUs,
   LocationContactUs,
@@ -420,4 +427,5 @@ export {
   Like,
   LikeColored,
   ChevronRightWhite,
+  Search,
 }

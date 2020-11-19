@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,8 +7,11 @@ import {
   ScrollView,
 } from 'react-native';
 
-import {AppText, AppViewContainer, AppRadio, AppCheckbox} from '@/components';
-import {normalize, Colors} from '@/globals';
+import { AppText, AppViewContainer, AppRadio, AppCheckbox } from '@/components';
+import { normalize, Colors } from '@/globals';
+
+import { PostService } from '@/services';
+
 
 import {
   CloseDark,
@@ -21,40 +24,65 @@ import {
   SortHighLow,
   SortNearest, SortCondition
 } from '@/assets/images/icons';
+import { Context } from '@/context';
 
-const FilterSlider = ({modalToggler}) => {
+const FilterSlider = ({ modalToggler }) => {
+
+  const { searchPosts, filters, setFilters } = useContext(Context)
+
   const [checkboxServices, setCheckboxServices] = useState(false);
   const [checkboxSeller, setCheckboxSeller] = useState(false);
   const [checkboxNeeds, setCheckboxNeeds] = useState(false);
   const [checkboxBrandNew, setCheckboxBrandNew] = useState(false);
   const [checkboxUsed, setCheckboxUsed] = useState(false);
+  const [sortValue, setSortValue] = useState('recent');
+  const [filterValue, setFilterValue] = useState([]);
 
   const [radioButtons, setRadioButtons] = useState({
     Popular: false,
-    Recent: false,
+    Recent: true,
     Nearest: false,
-    HighLow: false,
-    LowHigh: false,
+    Price_Desc: false,
+    Price_Asc: false,
   });
 
+  // useEffect(() => {
+
+  // }, [checkboxServices, checkboxSeller, checkboxNeeds, checkboxBrandNew, checkboxUsed, radioButtons]);
+
   useEffect(() => {
-    // console.log('Filter options: ', [
-    //   checkboxServices,
-    //   checkboxSeller,
-    //   checkboxNeeds,
-    // ]);
-  }, [checkboxServices, checkboxSeller, checkboxNeeds, checkboxBrandNew, checkboxUsed, radioButtons]);
+    console.log('filterValue');
+    console.log(filterValue);
+  }, [sortValue, filterValue])
 
   const checkboxServicesHandler = () => {
     setCheckboxServices(!checkboxServices);
+    if (!checkboxServices) {
+      setFilterValue([...filterValue, 'service'])
+    } else {
+      const newFilterValue = filterValue.filter((item) => item !== 'service');
+      setFilterValue(newFilterValue);
+    }
   };
 
   const checkboxSellerHandler = () => {
     setCheckboxSeller(!checkboxSeller);
+    if (!checkboxSeller) {
+      setFilterValue([...filterValue, 'sell'])
+    } else {
+      const newFilterValue = filterValue.filter((item) => item !== 'sell');
+      setFilterValue(newFilterValue);
+    }
   };
 
   const checkboxNeedsHandler = () => {
     setCheckboxNeeds(!checkboxNeeds);
+    if (!checkboxNeeds) {
+      setFilterValue([...filterValue, 'needs'])
+    } else {
+      const newFilterValue = filterValue.filter((item) => item !== 'needs');
+      setFilterValue(newFilterValue);
+    }
   };
 
   const checkboxBrandNewHandler = () => {
@@ -75,19 +103,13 @@ const FilterSlider = ({modalToggler}) => {
       Popular: false,
       Recent: false,
       Nearest: false,
-      HighLow: false,
-      LowHigh: false,
+      Price_Desc: false,
+      Price_Asc: false,
     });
   };
 
-  const applyFilters = () => {
-    // Api call
-    modalToggler();
-  };
-
   const radioHandler = (label) => {
-    console.log(radioButtons);
-    console.log('label return: ', label);
+    setSortValue(label.toLowerCase())
 
     switch (label) {
       case 'Popular':
@@ -95,8 +117,8 @@ const FilterSlider = ({modalToggler}) => {
           Popular: true,
           Recent: false,
           Nearest: false,
-          HighLow: false,
-          LowHigh: false,
+          Price_Desc: false,
+          Price_Asc: false,
         });
         break;
       case 'Recent':
@@ -104,8 +126,8 @@ const FilterSlider = ({modalToggler}) => {
           Popular: false,
           Recent: true,
           Nearest: false,
-          HighLow: false,
-          LowHigh: false,
+          Price_Desc: false,
+          Price_Asc: false,
         });
         break;
       case 'Nearest':
@@ -113,31 +135,40 @@ const FilterSlider = ({modalToggler}) => {
           Popular: false,
           Recent: false,
           Nearest: true,
-          HighLow: false,
-          LowHigh: false,
+          Price_Desc: false,
+          Price_Asc: false,
         });
         break;
-      case 'HighLow':
+      case 'Price_Desc':
         setRadioButtons({
           Popular: false,
           Recent: false,
           Nearest: false,
-          HighLow: true,
-          LowHigh: false,
+          Price_Desc: true,
+          Price_Asc: false,
         });
         break;
-      case 'LowHigh':
+      case 'Price_Asc':
         setRadioButtons({
           Popular: false,
           Recent: false,
           Nearest: false,
-          HighLow: false,
-          LowHigh: true,
+          Price_Desc: false,
+          Price_Asc: true,
         });
         break;
       default:
         break;
     }
+  };
+
+  const applyFilters = () => {
+    setFilters({
+      ...filters,
+      sort: sortValue,
+      type: filterValue
+    })
+    modalToggler();
   };
 
   return (
@@ -146,10 +177,10 @@ const FilterSlider = ({modalToggler}) => {
         backgroundColor: 'white',
         height: Dimensions.get('window').height,
       }}>
-      <ScrollView style={{paddingTop: 24}}>
+      <ScrollView style={{ paddingTop: 24 }}>
         <AppViewContainer marginSize={3}>
-          <View style={{flexDirection: 'row', marginBottom: 40}}>
-            <View style={{flex: 1}}>
+          <View style={{ flexDirection: 'row', marginBottom: 40 }}>
+            <View style={{ flex: 1 }}>
               <AppText textStyle="subtitle1">Filter & Sort</AppText>
               <AppText textStyle="caption" color={Colors.contentPlaceholder}>
                 Select all that applies
@@ -158,13 +189,13 @@ const FilterSlider = ({modalToggler}) => {
 
             <TouchableOpacity
               onPress={() => modalToggler()}
-              style={{justifyContent: 'flex-start'}}>
+              style={{ justifyContent: 'flex-start' }}>
               <CloseDark width={normalize(24)} height={normalize(24)} />
             </TouchableOpacity>
           </View>
 
-          <View style={{marginBottom: 32}}>
-            <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+          <View style={{ marginBottom: 32 }}>
+            <AppText textStyle="subtitle2" customStyle={{ marginBottom: 16 }}>
               Filter by
             </AppText>
             <AppCheckbox
@@ -174,7 +205,7 @@ const FilterSlider = ({modalToggler}) => {
               label="Services"
               value={checkboxServices}
               valueChangeHandler={checkboxServicesHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
             <AppCheckbox
               Icon={() => {
@@ -183,7 +214,7 @@ const FilterSlider = ({modalToggler}) => {
               label="Selling"
               value={checkboxSeller}
               valueChangeHandler={checkboxSellerHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
             <AppCheckbox
               Icon={() => {
@@ -192,12 +223,12 @@ const FilterSlider = ({modalToggler}) => {
               label="Needs"
               value={checkboxNeeds}
               valueChangeHandler={checkboxNeedsHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
           </View>
 
           <View>
-            <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+            <AppText textStyle="subtitle2" customStyle={{ marginBottom: 16 }}>
               Sort by
             </AppText>
             <AppRadio
@@ -208,7 +239,7 @@ const FilterSlider = ({modalToggler}) => {
               name="Popular"
               value={radioButtons.Popular}
               valueChangeHandler={radioHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
             <AppRadio
               Icon={() => {
@@ -218,7 +249,7 @@ const FilterSlider = ({modalToggler}) => {
               name="Recent"
               value={radioButtons.Recent}
               valueChangeHandler={radioHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
             <AppRadio
               Icon={() => {
@@ -228,9 +259,9 @@ const FilterSlider = ({modalToggler}) => {
               name="Nearest"
               value={radioButtons.Nearest}
               valueChangeHandler={radioHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
-            <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+            <AppText textStyle="subtitle2" customStyle={{ marginBottom: 16 }}>
               Price
             </AppText>
             <AppRadio
@@ -238,22 +269,22 @@ const FilterSlider = ({modalToggler}) => {
                 return <SortHighLow />;
               }}
               label="High to Low"
-              name="HighLow"
-              value={radioButtons.HighLow}
+              name="Price_Desc"
+              value={radioButtons.Price_Desc}
               valueChangeHandler={radioHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
             <AppRadio
               Icon={() => {
                 return <SortLowHigh />;
               }}
               label="Low to High"
-              name="LowHigh"
-              value={radioButtons.LowHigh}
+              name="Price_Asc"
+              value={radioButtons.Price_Asc}
               valueChangeHandler={radioHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
-            <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
+            <AppText textStyle="subtitle2" customStyle={{ marginBottom: 16 }}>
               Condition
             </AppText>
             <AppCheckbox
@@ -263,7 +294,7 @@ const FilterSlider = ({modalToggler}) => {
               label="Brand New"
               value={checkboxBrandNew}
               valueChangeHandler={checkboxBrandNewHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
             <AppCheckbox
               Icon={() => {
@@ -272,7 +303,7 @@ const FilterSlider = ({modalToggler}) => {
               label="Used"
               value={checkboxUsed}
               valueChangeHandler={checkboxUsedHandler}
-              style={{marginBottom: 16}}
+              style={{ marginBottom: 16 }}
             />
           </View>
         </AppViewContainer>

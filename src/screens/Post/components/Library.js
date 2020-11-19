@@ -39,14 +39,14 @@ export const Library = ({ cancel, next, data }) => {
     const num = imageUrl.length - 1
     setImageCurrent(num >= 0 ? images[num].uri : "");
   };
-  
+
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList);
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -56,7 +56,7 @@ export const Library = ({ cancel, next, data }) => {
           }}>
           <TouchableOpacity
             onPress={cancel}
-            style={{paddingVertical: 5, paddingHorizontal: 25}}>
+            style={{ paddingVertical: 5, paddingHorizontal: 25 }}>
             <AppText textStyle="body2">Cancel</AppText>
           </TouchableOpacity>
           <AppText textStyle="body1">All Photos</AppText>
@@ -70,8 +70,8 @@ export const Library = ({ cancel, next, data }) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             // disabled={selected.length < 1 && true}
-            onPress={() => {next()}}
-            style={{paddingVertical: 5, paddingHorizontal: 25}}>
+            onPress={() => { next() }}
+            style={{ paddingVertical: 5, paddingHorizontal: 25 }}>
             <AppText
               textStyle="body3"
               // color={
@@ -85,7 +85,7 @@ export const Library = ({ cancel, next, data }) => {
             </AppText>
           </TouchableOpacity>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               position: 'absolute',
@@ -97,10 +97,10 @@ export const Library = ({ cancel, next, data }) => {
             }}>
             <AppText
               textStyle="eyebrow2"
-              customStyle={{alignItems: 'center', textAlign: 'center'}}
+              customStyle={{ alignItems: 'center', textAlign: 'center' }}
               color={Colors.neutralsWhite}>
               <AppText
-                customStyle={{fontWeight: '700'}}
+                customStyle={{ fontWeight: '700' }}
                 color={Colors.neutralsWhite}>
                 Photos - {coverPhoto.length}/10{' '}
               </AppText>{' '}
@@ -109,7 +109,7 @@ export const Library = ({ cancel, next, data }) => {
           </View>
           {imageCurrent ? (
             <Image
-              source={{uri: imageCurrent}}
+              source={{ uri: imageCurrent }}
               style={{
                 width: '100%',
                 height: height / 2.2,
@@ -145,7 +145,7 @@ export const Library = ({ cancel, next, data }) => {
                     top: 6,
                   }}
                 >
-                  <CircleTickWhite width={normalize(28)} height={normalize(28)} style={{ backgroundColor: 'transparent', marginTop: -3, marginLeft: -3}} />
+                  <CircleTickWhite width={normalize(28)} height={normalize(28)} style={{ backgroundColor: 'transparent', marginTop: -3, marginLeft: -3 }} />
                 </View>
               }
               callback={() => getSelectedImages(selected)}
@@ -173,7 +173,7 @@ export const Library = ({ cancel, next, data }) => {
           }}
           customBackdrop={
             <TouchableWithoutFeedback onPress={toggleFolderList}>
-              <View style={{flex: 1, backgroundColor: 'black'}} />
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
             </TouchableWithoutFeedback>
           }>
           <PhotoAlbums />

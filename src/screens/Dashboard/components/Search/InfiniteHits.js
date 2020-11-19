@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  FlatList, 
-  TouchableOpacity, 
-  Dimensions, 
-  ActivityIndicator 
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
 } from 'react-native';
-import Modal from 'react-native-modal'; 
+import Modal from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
 
 import { Colors, normalize } from '@/globals';
@@ -42,12 +42,10 @@ const InfiniteHits = ({ value }) => {
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: {uid: uid},
+        params: { uid: uid },
       });
     }
   };
-
-  // console.log(page)
 
   return (
     <View>
@@ -56,47 +54,49 @@ const InfiniteHits = ({ value }) => {
           data={results}
           keyExtractor={item => item.objectID}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
-          onEndReached={() => 
-            {
-              searchType === 'posts' ?
+          onEndReached={() => {
+            searchType === 'posts' ?
               handleOnEndReach(value) :
               handleOnUserEndReach(value)
-            }
+          }
           }
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <TouchableOpacity onPress={() => 
-                searchType === 'posts' ? 
-                  goToPost(item) : 
-                  openProfile(item)
+              <TouchableOpacity
+                activeOpacity={.5}
+                onPress={() =>
+                  searchType === 'posts' ?
+                    goToPost(item) :
+                    openProfile(item)
                 }
+                // style={{ backgroundColor: 'red' }}
               >
-                <Highlight attribute="name" hit={item} />
+                <Highlight hit={item} />
               </TouchableOpacity>
             </View>
           )}
-        /> 
+        />
       ) : (
-        <View style={{ paddingTop: 16 }}>
-          <AppText textStyle="subtitle1">Your search “{value}” did not match any post. </AppText>
-          <AppText textStyle="subtitle1">Try another search?</AppText>
-          <View style={{ marginVertical: 15 }}>
-            <AppText textStyle="caption">
-              - Check if the spelling is  correct
+          <View style={{ paddingTop: 16 }}>
+            <AppText textStyle="subtitle1">Your search “{value}” did not match any post. </AppText>
+            <AppText textStyle="subtitle1">Try another search?</AppText>
+            <View style={{ marginVertical: 15 }}>
+              <AppText textStyle="caption">
+                - Check if the spelling is  correct
             </AppText>
-            <AppText textStyle="caption">
-              - Use different keywords
+              <AppText textStyle="caption">
+                - Use different keywords
             </AppText>
+            </View>
+            <AppButton
+              text="Change your location or distance"
+              type="primary"
+              height="sm"
+              customStyle={{ paddingVertical: 5, height: normalize(40) }}
+            />
+            <Tags />
           </View>
-          <AppButton
-            text="Change your location or distance"
-            type="primary"
-            height="sm"
-            customStyle={{ paddingVertical: 5, height: normalize(40) }}
-          />
-          <Tags/>
-        </View>
-      )}
+        )}
       <Modal
         isVisible={showPost}
         animationIn="slideInRight"
@@ -115,7 +115,7 @@ const InfiniteHits = ({ value }) => {
           closePostModal={() => setShowPost(false)}
         />
       </Modal>
-    </View> 
+    </View>
   )
 };
 

@@ -326,7 +326,7 @@ function ProfileInfoModal(props) {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
@@ -374,7 +374,7 @@ function ProfileInfoModal(props) {
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
         }}></StickyParallaxHeader>
-    </>
+    </SafeAreaView>
   )
 }
 

@@ -52,7 +52,7 @@ const SearchBox = ({
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
   const [cancelPosition] = useState(new Animated.Value(0))
   const [barPosition] = useState(new Animated.Value(0))
-  const [barPositionFull] = useState(new Animated.Value(75))
+  const [barPositionFull, setBarPositionFull] = useState(75)
   const [barOpacity] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
   const [titleOpacity] = useState(new Animated.Value(0))
@@ -155,6 +155,7 @@ const SearchBox = ({
 
   useEffect(() => {
     if (searchType !== 'posts') {
+      setBarPositionFull(0)
       setTimeout(() => {
         Animated.parallel([
           Animated.timing(titleOpacity, {

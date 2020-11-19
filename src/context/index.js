@@ -37,12 +37,83 @@ export const ContextProvider = ({ children }) => {
   const [cameraImage, setCameraImage] = useState([])
   const [libImages, setLibImages] = useState([])
 
-  // Added Items (multiple)
-  const [items, setItems] = useState([])
-  const [itemId, setItemId] = useState(1)
+  const [refresh, setRefresh] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   const [searchType, setSearchType] = useState('posts')
   const [results, setResults] = useState([])
   const [page, setPage] = useState(0)
+
+  const [filters, setFilters] = useState({
+    limit: 5,
+    page: 0,
+    search: undefined,
+    radius: undefined,
+    lat: undefined,
+    lon: undefined,
+    city: undefined,
+    type: undefined,
+    sort: undefined,
+  })
+
+  useEffect(() => {
+    ;(async () => {
+      // setIsLoading(true);
+      const result = await PostService.getPosts(filters)
+      if (filters.page) {
+        setPosts(prev => [...prev, ...result.data])
+      } else {
+        setPosts(result.data)
+      }
+      setRefresh(false)
+      setIsLoading(false)
+    })()
+  }, [filters])
+
+  const handleSearch = async value => {
+    const result = await PostService.searchPosts({
+      limit: 10,
+      page: 0,
+      search: value,
+    })
+    setResults(result.data)
+    setPage(0)
+  }
+
+  const handleSearchUser = async value => {
+    const result = await PostService.searchUsers({
+      limit: 10,
+      page: 0,
+      search: value,
+    })
+    setResults(result.data)
+    setPage(0)
+  }
+
+  const handleOnEndReach = async value => {
+    const results = await PostService.searchPosts({
+      limit: 10,
+      page: page + 1,
+      search: value,
+    })
+    setResults(prev => [...prev, ...results.data])
+    setPage(page + 1)
+  }
+
+  const handleOnUserEndReach = async value => {
+    const results = await PostService.searchUsers({
+      limit: 10,
+      page: page + 1,
+      search: value,
+    })
+    setResults(prev => [...prev, ...results.data])
+    setPage(page + 1)
+  }
+
+  // Added Items (multiple)
+  const [items, setItems] = useState([])
+  const [itemId, setItemId] = useState(1)
+
   const [refreshFollowerList, setRefreshFollowerList] = useState(false)
 
   const [deliveryMethod, setDeliveryMethod] = useState('delivery')
@@ -156,46 +227,6 @@ export const ContextProvider = ({ children }) => {
     setItemId(itemId + 1)
   }
 
-  const handleSearch = async value => {
-    const result = await PostService.searchPosts({
-      limit: 10,
-      page: 0,
-      search: value,
-    })
-    setResults(result.data)
-    setPage(0)
-  }
-
-  const handleSearchUser = async value => {
-    const result = await PostService.searchUsers({
-      limit: 10,
-      page: 0,
-      search: value,
-    })
-    setResults(result.data)
-    setPage(0)
-  }
-
-  const handleOnEndReach = async value => {
-    const results = await PostService.searchPosts({
-      limit: 10,
-      page: page + 1,
-      search: value,
-    })
-    setResults(prev => [...prev, ...results.data])
-    setPage(page + 1)
-  }
-
-  const handleOnUserEndReach = async value => {
-    const results = await PostService.searchUsers({
-      limit: 10,
-      page: page + 1,
-      search: value,
-    })
-    setResults(prev => [...prev, ...results.data])
-    setPage(page + 1)
-  }
-
   useEffect(() => {
     setImageCount(coverPhoto.length)
   }, [coverPhoto])
@@ -300,7 +331,7 @@ export const ContextProvider = ({ children }) => {
         setShowButtons,
         posts,
         setPosts,
-        fetchPosts,
+        // fetchPosts,
         deleteNotif,
         setDeleteNotif,
         imageCount,
@@ -351,6 +382,12 @@ export const ContextProvider = ({ children }) => {
         initNotifications,
         userCart,
         setUserCart,
+        filters,
+        setFilters,
+        isLoading,
+        setIsLoading,
+        refresh,
+        setRefresh,
       }}>
       {children}
     </Context.Provider>

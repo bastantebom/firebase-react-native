@@ -5,6 +5,7 @@ import {
   Dimensions,
   Animated,
   RefreshControl,
+  SafeAreaView,
 } from 'react-native'
 
 import {
@@ -362,7 +363,7 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
@@ -411,7 +412,7 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
           backgroundColor: Colors.neutralsWhite,
         }}></StickyParallaxHeader>
       <WhiteOpacity />
-    </>
+    </SafeAreaView>
   )
 }
 
