@@ -6,91 +6,99 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native'
-import { AppInput, PaddingView, AppText, AppButton, Notification, TransitionIndicator } from '@/components';
-import { normalize } from '@/globals';
-import AppColor from '@/globals/Colors';
 import {
-  HeaderBackGray,
-  ArrowRight
-} from '@/assets/images/icons';
-import {VerifySms} from '@/assets/images';
-import { VerifyMap } from './Map';
-import Modal from 'react-native-modal';
-import { VerifyAccount } from '@/screens/Authentication';
-import { Context } from '@/context';
-import { useNavigation } from '@react-navigation/native';
-import { TextInput } from 'react-native-paper';
+  AppInput,
+  PaddingView,
+  AppText,
+  AppButton,
+  Notification,
+  TransitionIndicator,
+} from '@/components'
+import { normalize } from '@/globals'
+import AppColor from '@/globals/Colors'
+import { HeaderBackGray, ArrowRight } from '@/assets/images/icons'
+import { VerifySms } from '@/assets/images'
+import { VerifyMap } from './Map'
+import Modal from 'react-native-modal'
+import { VerifyAccount } from '@/screens/Authentication'
+import { Context } from '@/context'
+import { useNavigation } from '@react-navigation/native'
+import { TextInput } from 'react-native-paper'
 
-export const VerifyCode = ({back, toggleMobileCode, providerText, provider}) => {
-
-  const {openNotification, closeNotification} = useContext(Context);
-  const navigation = useNavigation();
+export const VerifyCode = ({
+  back,
+  toggleMobileCode,
+  providerText,
+  provider,
+}) => {
+  const { openNotification, closeNotification } = useContext(Context)
+  const navigation = useNavigation()
   //const verify = route.params;
-  const firstTextInput = useRef(null);
-  const secondTextInput = useRef(null);
-  const thirdTextInput = useRef(null);
-  const fourthTextInput = useRef(null);
+  const firstTextInput = useRef(null)
+  const secondTextInput = useRef(null)
+  const thirdTextInput = useRef(null)
+  const fourthTextInput = useRef(null)
 
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
 
-  const [inputStyle, setInputStyle] = useState([]);
-  const [verifyArray, setVerifyArray] = useState(['', '', '', '']);
+  const [inputStyle, setInputStyle] = useState([])
+  const [verifyArray, setVerifyArray] = useState(['', '', '', ''])
 
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  const [isScreenLoading, setIsScreenLoading] = useState(false)
 
-  const onVerifyChange = (index) => {
-    return (value) => {
+  const onVerifyChange = index => {
+    return value => {
       if (isNaN(Number(value))) {
         // do nothing when a non digit is pressed
-        return;
+        return
       }
-      const verifyArrayCopy = verifyArray.concat();
-      verifyArrayCopy[index] = value;
-      setVerifyArray(verifyArrayCopy);
+      const verifyArrayCopy = verifyArray.concat()
+      verifyArrayCopy[index] = value
+      setVerifyArray(verifyArrayCopy)
 
-      const inputStyleCopy = inputStyle.concat();
-      inputStyleCopy[index] = {borderColor: AppColor.contentOcean};
-      setInputStyle(inputStyleCopy);
+      const inputStyleCopy = inputStyle.concat()
+      inputStyleCopy[index] = { borderColor: AppColor.contentOcean }
+      setInputStyle(inputStyleCopy)
       //setInputState[index] = true;
 
       // auto focus to next InputText if value is not blank
       if (value !== '') {
-        sendVerification(verifyArrayCopy);
+        sendVerification(verifyArrayCopy)
         if (index === 0) {
-          secondTextInput.current.focus();
+          secondTextInput.current.focus()
         } else if (index === 1) {
           //secondTextInput.current.style.borderColor = AppColor.contentOcean;
-          thirdTextInput.current.focus();
+          thirdTextInput.current.focus()
         } else if (index === 2) {
           //thirdTextInput.current.style.borderColor = AppColor.contentOcean;
-          fourthTextInput.current.focus();
+          fourthTextInput.current.focus()
         } else if (index === 3) {
           //fourthTextInput.current.style.borderColor = AppColor.contentOcean;
-          Keyboard.dismiss();
+          Keyboard.dismiss()
           //navigation.navigate('Dashboard');
           //console.log();
         }
       }
-    };
-  };
+    }
+  }
 
-  const onVerifyKeyPress = (index) => {
-    return ({nativeEvent: {key: value}}) => {
+  const onVerifyKeyPress = index => {
+    return ({ nativeEvent: { key: value } }) => {
       // auto focus to previous InputText if value is blank and existing value is also blank
       if (value === 'Backspace' && verifyArray[index] === '') {
-        const inputStyleCopy = inputStyle.concat();
-        inputStyleCopy[index] = {borderColor: AppColor.contentEbony};
-        setInputStyle(inputStyleCopy);
+        const inputStyleCopy = inputStyle.concat()
+        inputStyleCopy[index] = { borderColor: AppColor.contentEbony }
+        setInputStyle(inputStyleCopy)
 
         if (index === 1) {
-          firstTextInput.current.focus();
+          firstTextInput.current.focus()
         } else if (index === 2) {
-          secondTextInput.current.focus();
+          secondTextInput.current.focus()
         } else if (index === 3) {
-          thirdTextInput.current.focus();
+          thirdTextInput.current.focus()
         } else {
-          Keyboard.dismiss();
+          Keyboard.dismiss()
           //alert('Backspace');
         }
 
@@ -100,41 +108,41 @@ export const VerifyCode = ({back, toggleMobileCode, providerText, provider}) => 
          * todo check this behaviour on ios
          */
         if (index > 0) {
-          const verifyArrayCopy = verifyArray.concat();
-          verifyArrayCopy[index - 1] = ''; // clear the previous box which will be in focus
-          setVerifyArray(verifyArrayCopy);
+          const verifyArrayCopy = verifyArray.concat()
+          verifyArrayCopy[index - 1] = '' // clear the previous box which will be in focus
+          setVerifyArray(verifyArrayCopy)
         }
       }
-    };
-  };
+    }
+  }
 
-  const sendVerification = (code) => {
+  const sendVerification = code => {
     if (code.join('').length === 4) {
-      const nCode = parseInt(code.join(''));
-      setIsScreenLoading(true);
+      const nCode = parseInt(code.join(''))
+      setIsScreenLoading(true)
       //console.log('SEND VERIFICATION');
 
       if (route?.route?.params?.login) {
-        var newProvider = route?.route?.params?.login;
-        var providerText = 'number';
+        var newProvider = route?.route?.params?.login
+        var providerText = 'number'
         if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
-          providerText = 'email';
+          providerText = 'email'
         }
       }
-      console.log('---------------------------------');
-      console.log(providerText);
-      console.log(route?.route?.params?.uid);
-      console.log(nCode);
-      console.log('---------------------------------');
+      console.log('---------------------------------')
+      console.log(providerText)
+      console.log(route?.route?.params?.uid)
+      console.log(nCode)
+      console.log('---------------------------------')
 
       VerifyService.verifyCode({
         uid: route?.route?.params?.uid,
         verification_code: nCode,
         provider: providerText,
       })
-        .then((response) => {
+        .then(response => {
           if (response.success) {
-            setIsScreenLoading(false);
+            setIsScreenLoading(false)
             //auth()
             //  .signInWithCustomToken(response.custom_token)
             //  .then(() => {
@@ -143,108 +151,108 @@ export const VerifyCode = ({back, toggleMobileCode, providerText, provider}) => 
                 uid: route?.route?.params?.uid,
                 custom_token: response.custom_token,
               },
-            });
+            })
             //  })
             // .catch((err) => {
             //   console.log(err);
             // });
           } else {
-            setIsScreenLoading(false);
-            console.log('Error sa Verification Code');
+            setIsScreenLoading(false)
+            console.log('Error sa Verification Code')
           }
         })
-        .catch((error) => {
-          setIsScreenLoading(false);
-          console.log('With Error in the API SignUp ' + error);
-        });
+        .catch(error => {
+          setIsScreenLoading(false)
+          console.log('With Error in the API SignUp ' + error)
+        })
     } else {
-      return;
+      return
     }
-  };
+  }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      closeNotification();
-    }, 5000);
-  };
+      closeNotification()
+    }, 5000)
+  }
 
   const resendCodeHandler = () => {
-    setIsScreenLoading(true);
+    setIsScreenLoading(true)
     if (route?.route?.params?.login) {
-      var newProvider = route?.route?.params?.login;
-      var providerText = 'number';
+      var newProvider = route?.route?.params?.login
+      var providerText = 'number'
       if (isNaN(parseInt(newProvider.substr(newProvider.length - 5)))) {
-        providerText = 'email';
+        providerText = 'email'
       }
     }
     VerifyService.resendCode({
       uid: route?.route?.params?.uid,
       provider: providerText,
     })
-      .then((response) => {
+      .then(response => {
         if (response.success) {
-          setNotificationType('success');
+          setNotificationType('success')
           setNotificationMessage(
             <AppText textStyle="body2" customStyle={notificationText}>
               Verification code has been sent to your {providerText}{' '}
               {route?.route?.params?.login}
-            </AppText>,
-          );
-          openNotification();
-          setIsScreenLoading(false);
-          closeNotificationTimer();
+            </AppText>
+          )
+          openNotification()
+          setIsScreenLoading(false)
+          closeNotificationTimer()
           //alert('Code has been sent');
         } else {
-          setNotificationType('error');
+          setNotificationType('error')
           setNotificationMessage(
             <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
               Failed resend verification code {providerText}{' '}
               {route?.route?.params?.login}
-            </AppText>,
-          );
-          openNotification();
-          setIsScreenLoading(false);
-          closeNotificationTimer();
+            </AppText>
+          )
+          openNotification()
+          setIsScreenLoading(false)
+          closeNotificationTimer()
         }
       })
-      .catch((error) => {
-        setNotificationType('error');
+      .catch(error => {
+        setNotificationType('error')
         setNotificationMessage(
           'Failed verification ' +
             providerText +
             ' ' +
-            route?.route?.params?.login,
-        );
-        openNotification();
-        setIsScreenLoading(false);
-        closeNotificationTimer();
+            route?.route?.params?.login
+        )
+        openNotification()
+        setIsScreenLoading(false)
+        closeNotificationTimer()
         //console.log('With Error in the API SignUp ' + error);
-      });
-  };
+      })
+  }
 
   const notificationErrorTextStyle = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     color: 'white',
-  };
+  }
 
   const notificationText = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
-  };
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} >
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Notification message={notificationMessage} type={notificationType} />
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.defaultStyle}>
-          <VerifySms/>
+          <VerifySms />
         </View>
         <View style={[styles.defaultStyle, styles.spacingBottom]}>
-          <AppText textStyle="display5">Enter Your Verification</AppText>
+          <AppText textStyle="display5">Enter Verification Code</AppText>
         </View>
         <View style={[styles.defaultStyle, styles.spacingBottomx2]}>
           <AppText textStyle="body2" customStyle={styles.bodyContent}>
@@ -257,7 +265,8 @@ export const VerifyCode = ({back, toggleMobileCode, providerText, provider}) => 
             </AppText>
           </AppText>
         </View>
-        <View style={{...styles.verificationWrapper, ...styles.spacingBottomx4}}>
+        <View
+          style={{ ...styles.verificationWrapper, ...styles.spacingBottomx4 }}>
           {[
             firstTextInput,
             secondTextInput,
@@ -288,13 +297,13 @@ export const VerifyCode = ({back, toggleMobileCode, providerText, provider}) => 
                   primary: AppColor.contentOcean,
                 },
                 fonts: {
-                  regular: ''
+                  regular: '',
                 },
               }}
             />
           ))}
         </View>
-        <View style={{...styles.defaultStyle, ...styles.spacingBottom}}>
+        <View style={{ ...styles.defaultStyle, ...styles.spacingBottom }}>
           <AppText textStyle="body2" customStyle={styles.bodyContent}>
             Didn’t receive a code?
           </AppText>
@@ -302,7 +311,7 @@ export const VerifyCode = ({back, toggleMobileCode, providerText, provider}) => 
         <TouchableOpacity
           customStyle={styles.defaultStyle}
           onPress={() => {
-            resendCodeHandler();
+            resendCodeHandler()
             //navigation.navigate('Dashboard', 'Jayson Ilagan');
           }}>
           <AppText
@@ -389,4 +398,4 @@ const styles = StyleSheet.create({
   contentColorOverride: {
     color: AppColor.contentOcean,
   },
-});
+})

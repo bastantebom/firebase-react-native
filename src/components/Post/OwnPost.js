@@ -19,6 +19,8 @@ import {
   JarHeart,
   NavigationPinRed,
   TransportationBox,
+  LikeColored,
+  Like,
 } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
 import LoadingScreen from './loading'
@@ -111,9 +113,9 @@ const OwnPost = ({ data, isLoading }) => {
           }}>
           <TouchableOpacity onPress={toggleLike} activeOpacity={0.7}>
             {likePost ? (
-              <JarHeartColored width={normalize(20)} height={normalize(20)} />
+              <LikeColored width={normalize(20)} height={normalize(20)} />
             ) : (
-              <JarHeart width={normalize(20)} height={normalize(20)} />
+              <Like width={normalize(20)} height={normalize(20)} />
             )}
           </TouchableOpacity>
         </View>

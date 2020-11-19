@@ -17,12 +17,12 @@ import LinearGradient from 'react-native-linear-gradient'
 
 import {
   FilterDark,
-  JarHeartDark,
   NavigationArrow,
   CloseDark,
   FilterServices,
-  JarHeartColored,
   NavigationPinAlt,
+  Like,
+  LikeColored,
 } from '@/assets/images/icons'
 import { GlobalStyle, Colors, normalize } from '@/globals'
 
@@ -213,15 +213,24 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
                   }}>
                   <TouchableOpacity activeOpacity={0.7} onPress={toggleFilter}>
                     <View style={styles.circleButton}>
-                      <FilterDark />
+                      <FilterDark
+                        width={normalize(18)}
+                        height={normalize(18)}
+                      />
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={toggleLikePost}>
                     <View style={styles.circleButton}>
-                      {likedPosts ? <JarHeartColored /> : <JarHeartDark />}
-                      {/* <JarHeart />  */}
+                      {likedPosts ? (
+                        <LikeColored
+                          width={normalize(20)}
+                          height={normalize(20)}
+                        />
+                      ) : (
+                        <Like width={normalize(20)} height={normalize(20)} />
+                      )}
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -422,11 +431,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   circleButton: {
-    width: 52,
-    height: 52,
+    width: normalize(47),
+    height: normalize(47),
     borderRadius: 52 / 2,
     backgroundColor: Colors.neutralsWhite,
-    flexBasis: 52,
     marginLeft: 8,
     justifyContent: 'center',
     alignItems: 'center',

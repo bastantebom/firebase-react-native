@@ -184,7 +184,7 @@ const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
           <VerifyIcon />
         </View>
         <View style={{ ...styles.defaultStyle, ...styles.spacingBottom }}>
-          <AppText textStyle="display5">Enter Your Verification</AppText>
+          <AppText textStyle="display5">Enter Verification Code</AppText>
         </View>
         <View style={{ ...styles.defaultStyle, ...styles.spacingBottomx2 }}>
           <AppText textStyle="body2" customStyle={styles.bodyContent}>

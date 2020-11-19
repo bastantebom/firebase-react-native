@@ -39,6 +39,9 @@ import JarHeartColored from '@/assets/images/icons/jar-heart-colored.svg'
 import FilterDark from '@/assets/images/icons/filter-dark.svg'
 import JarHeartDark from '@/assets/images/icons/jar-heart-dark.svg'
 import JarHeartWhite from '@/assets/images/icons/jar-heart-white.svg'
+import Like from '@/assets/images/icons/like.svg'
+import LikeColored from '@/assets/images/icons/like-colored.svg'
+import ChevronRightWhite from '@/assets/images/icons/chevron-right-white.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
@@ -414,4 +417,7 @@ export {
   PostBoxBlue,
   RedDot,
   FollowUnfollow,
+  Like,
+  LikeColored,
+  ChevronRightWhite,
 }

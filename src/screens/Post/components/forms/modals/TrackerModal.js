@@ -57,7 +57,7 @@ const TrackerModal = ({ closeModal, postType }) => {
   const [moreActions, setMoreActions] = useState(false)
   const [declineRequest, setDeclineRequest] = useState(false)
 
-  const [status, setStatus] = useState('completed')
+  const [status, setStatus] = useState('pending')
   const [statusHeader, setStatusHeader] = useState('')
   const [messageHeader, setMessageHeader] = useState('')
   const [statusMessage, setStatusMessage] = useState('')

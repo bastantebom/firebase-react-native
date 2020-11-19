@@ -77,11 +77,11 @@ const Notification = ({
   }
 
   useEffect(() => {
-    if (isDashboardVisible === 'open')
+    if (verification && isDashboardVisible === 'open')
       setTimeout(() => {
         Animated.timing(notificationHeight, {
           useNativeDriver: false,
-          toValue: 70,
+          toValue: 110,
           duration: 500,
         }).start()
       }, 4000)

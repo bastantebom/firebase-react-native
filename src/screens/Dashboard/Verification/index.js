@@ -21,6 +21,8 @@ import {
   Id,
   ArrowRight,
   VerifyTick,
+  ChevronRight,
+  ChevronRightWhite,
 } from '@/assets/images/icons'
 import { MobileVerification } from './MobileVerification'
 import { UploadGovernmentId } from './UploadId'
@@ -156,14 +158,20 @@ export const VerificationScreen = ({
             width: '100%',
             justifyContent: 'space-evenly',
             marginLeft: 15,
+            height: normalize(70),
           }}>
           <TouchableOpacity onPress={onPress}>
-            <AppText textStyle="subtitle1" color={Colors.neutralsWhite}>
-              Get the verified badge
+            <AppText
+              textStyle="body2"
+              color={Colors.neutralsWhite}
+              customStyle={{ marginBottom: 10 }}>
+              Safeguard your account and boost your credibility within the
+              community.
             </AppText>
-            <AppText textStyle="caption" color={Colors.neutralsWhite}>
-              Short blurb here explaining why
+            <AppText textStyle="body2" color={Colors.neutralsWhite}>
+              Get bee-rified
             </AppText>
+            {/* <ChevronRightWhite width={normalize(16)} height={normalize(16)} /> */}
           </TouchableOpacity>
         </View>
       )}

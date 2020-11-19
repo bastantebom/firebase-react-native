@@ -17,12 +17,12 @@ import { PaddingView, AppText, ProfileInfo, CacheableImage } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import {
   Verified,
-  JarHeart,
-  JarHeartColored,
   StarRating,
   NavigationPinRed,
   NavigationArrow,
   TransportationBox,
+  Like,
+  LikeColored,
 } from '@/assets/images/icons'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
@@ -144,9 +144,9 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
             }}>
             <TouchableOpacity onPress={toggleLike} activeOpacity={0.7}>
               {likePost ? (
-                <JarHeartColored width={normalize(20)} height={normalize(20)} />
+                <LikeColored width={normalize(20)} height={normalize(20)} />
               ) : (
-                <JarHeart width={normalize(20)} height={normalize(20)} />
+                <Like width={normalize(20)} height={normalize(20)} />
               )}
             </TouchableOpacity>
           </View>

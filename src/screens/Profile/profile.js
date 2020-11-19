@@ -220,7 +220,7 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
 
   const renderForeground = () => {
     return (
-      <>
+      <Animated.View>
         <Notification
           message={notificationMessage}
           type={notificationType}
@@ -291,7 +291,7 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
             <ProfileButtons triggerNotify={triggerNotify} />
           </View>
         </View>
-      </>
+      </Animated.View>
     )
   }
 
@@ -366,7 +366,7 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
-        parallaxHeight={normalize(520)}
+        parallaxHeight={statusPercentage < 1 ? normalize(520) : normalize(435)}
         headerHeight={scrollPosition < 350 ? 0 : normalize(60)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
