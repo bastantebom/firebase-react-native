@@ -1,31 +1,41 @@
-import React from 'react';
-import { Text, Dimensions, PixelRatio, StyleSheet } from 'react-native';
+import React from 'react'
+import { Text, Dimensions, PixelRatio, StyleSheet } from 'react-native'
 // import styles from './AppText.scss';
-import { Colors, scaleFont, normalize } from '@/globals';
+import { Colors, scaleFont, normalize } from '@/globals'
 
 /**
  *
  * @param {listed on Apptext.scss} textStyle
  */
 
-const AppText = ({ children, textStyle, customStyle, color, numberOfLines }) => {
-  let computedTextStyle = styles[textStyle];
+const AppText = ({
+  children,
+  textStyle,
+  customStyle,
+  color,
+  numberOfLines,
+}) => {
+  let computedTextStyle = styles[textStyle]
 
   if (customStyle || color) {
     computedTextStyle = {
       ...computedTextStyle,
       color: color ? color : Colors.contentEbony,
       ...customStyle,
-    };
+    }
   }
 
   // console.log(color)
 
-  return <Text style={computedTextStyle} numberOfLines={numberOfLines}>{children}</Text>;
-};
+  return (
+    <Text style={computedTextStyle} numberOfLines={numberOfLines}>
+      {children}
+    </Text>
+  )
+}
 
 // first value is 14
-const defaultFontSize = 14;
+const defaultFontSize = 14
 
 const styles = StyleSheet.create({
   body1: {
@@ -187,7 +197,7 @@ const styles = StyleSheet.create({
   nav: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(13),
-  }
-});
+  },
+})
 
-export default AppText;
+export default AppText

@@ -23,79 +23,64 @@ import { UserContext } from '@/context/UserContext'
 // create a component
 const AlmostThereMap = route => {
   const navigation = useNavigation()
-  const [changeMapAddress, setChangeMapAddress] = useState('')
+
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
   })
-  const [buttonDisabled, setButtonDisabled] = useState(true)
-  Geocoder.init(Config.apiKey)
-  const [newCoords, setNewCoords] = useState({})
+
   const [isScreenLoading, setIsScreenLoading] = useState(false)
-  const [addressComponents, setAddressComponents] = useState({
-    city: '',
-    province: '',
-    country: '',
-    longitude: 0,
-    latitude: 0,
-    full_address: '',
-    default: true,
-  })
 
   const { user, fetch: updateUserInfo } = useContext(UserContext)
+  Geocoder.init(Config.apiKey)
+  const [addressData, setAddressData] = useState(route?.route?.params)
+  const [mapInitialized, setMapInitialized] = useState(false)
+  const [mapCoords, setMapCoords] = useState({})
 
-  const onRegionChange = region => {
-    getStringAddress(region)
-    setButtonDisabled(false)
-    setButtonStyle({})
+  const getLocationName = (components, key) =>
+    components.find(component => component.types.includes(key))?.long_name
+
+  const handleRegionChange = async region => {
+    const { latitude, longitude } = region
+    const { results } = await Geocoder.from(latitude, longitude)
+    const addressComponents = results[0].address_components || []
+    setAddressData({
+      ...addressData,
+      longitude,
+      latitude,
+      city: getLocationName(addressComponents, 'locality'),
+      province: getLocationName(
+        addressComponents,
+        'administrative_area_level_2'
+      ),
+      country: getLocationName(addressComponents, 'country'),
+      full_address: results[0].formatted_address,
+    })
   }
 
-  const getStringAddress = location => {
-    Geocoder.from(location.latitude, location.longitude)
-      .then(json => {
-        console.log(json)
-        const addressComponent = json.results[1].formatted_address
-        const arrayToExtract =
-          json.results.length < 8 ? 2 : json.results.length - 5
-        const splitAddress = json.results[
-          arrayToExtract
-        ].formatted_address.split(',')
+  const handleLocationSearchChange = async address => {
+    try {
+      const { results } = await Geocoder.from(address)
+      const { lat: latitude, lng: longitude } = results[0].geometry.location
 
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            city: splitAddress[0],
-            province: splitAddress[1],
-            country: splitAddress[2],
-            full_address: addressComponent,
-          },
-        })
-        setChangeMapAddress(addressComponent)
-        console.log(addressComponents)
+      setMapCoords({ lat: latitude, lng: longitude })
+      const addressComponents = results[0].address_components || []
+
+      setAddressData({
+        ...addressData,
+        longitude,
+        latitude,
+        city: getLocationName(addressComponents, 'locality'),
+        province: getLocationName(
+          addressComponents,
+          'administrative_area_level_2'
+        ),
+        country: getLocationName(addressComponents, 'country'),
+        full_address: results[0].formatted_address,
       })
-      .catch(error => console.warn(error))
-    console.log(addressComponents)
-  }
-
-  const getPositionFromString = address => {
-    Geocoder.from(address)
-      .then(json => {
-        var location = json.results[0].geometry.location
-        console.log('New Coords')
-        setNewCoords(location)
-        setButtonDisabled(false)
-        setButtonStyle({})
-      })
-      .catch(error => console.warn(error))
-  }
-
-  const onSearchLocationHandler = data => {
-    console.log(data)
-    setChangeMapAddress(data)
-    getStringAddress(data)
-    getPositionFromString(data)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const saveRefineLocation = async () => {
@@ -103,37 +88,21 @@ const AlmostThereMap = route => {
     const { uid } = user
     if (uid) {
       try {
-        const response = await SignUpService.saveLocation({
+        const saveLocationResponse = await SignUpService.saveLocation({
           uid,
-          ...addressComponents,
+          ...addressData,
         })
-        if (!response.success) throw new Error(response.message)
+        if (!saveLocationResponse.success)
+          throw new Error(saveLocationResponse.message)
         else await updateUserInfo()
         setIsScreenLoading(false)
       } catch (error) {
-        console.log(error.message)
+        console.log(error.message || error)
       }
     } else {
       setIsScreenLoading(false)
     }
   }
-
-  useEffect(() => {
-    // exit early when we reach 0
-    console.log(route?.route?.params?.latitude)
-    if (route?.route?.params?.country && route?.route?.params?.city) {
-      setAddressComponents({
-        ...addressComponents,
-        ...{
-          latitude: route?.route?.params?.latitude,
-          longitude: route?.route?.params?.longitude,
-          city: route?.route?.params?.city,
-          province: route?.route?.params?.province,
-          country: route?.route?.params?.country,
-        },
-      })
-    }
-  }, [])
 
   return (
     <>
@@ -150,48 +119,33 @@ const AlmostThereMap = route => {
           </View>
         </SafeAreaView>
         <View style={{ flex: 1, position: 'relative' }}>
-          {route?.route?.params.address ? (
-            <>
-              <View style={styles.textInputWrapper}>
-                <GooglePlacesInput
-                  onResultsClick={data => {
-                    onSearchLocationHandler(data)
-                    //alert(data);
-                  }}
-                  onClearInput={textValue => {
-                    console.log('setvalue')
-                  }}
-                  currentValue={
-                    changeMapAddress.length > 0
-                      ? changeMapAddress
-                      : route?.route?.params.address
-                  }
-                />
-              </View>
-
-              <MapComponent
-                latitude={route?.route?.params.latitude}
-                longitude={route?.route?.params.longitude}
-                reCenter={newCoords}
-                onRegionChange={region => {
-                  onRegionChange(region)
-                }}
-                withCurrentMarker={true}
+          <>
+            <View style={styles.textInputWrapper}>
+              <GooglePlacesInput
+                onResultsClick={handleLocationSearchChange}
+                onClearInput={() => {}}
+                currentValue={addressData.full_address}
               />
-              <View style={styles.buttonWrapper}>
-                <AppButton
-                  text="Confirm"
-                  type="primary"
-                  height="xl"
-                  customStyle={buttonStyle}
-                  disabled={buttonDisabled}
-                  onPress={() => {
-                    saveRefineLocation()
-                  }}
-                />
-              </View>
-            </>
-          ) : null}
+            </View>
+
+            <MapComponent
+              latitude={route?.route?.params.latitude}
+              longitude={route?.route?.params.longitude}
+              reCenter={mapCoords}
+              onRegionChange={handleRegionChange}
+              withCurrentMarker={true}
+            />
+            <View style={styles.buttonWrapper}>
+              <AppButton
+                text="Confirm"
+                type="primary"
+                height="xl"
+                onPress={() => {
+                  saveRefineLocation()
+                }}
+              />
+            </View>
+          </>
         </View>
       </View>
     </>

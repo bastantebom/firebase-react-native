@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import VF from '@/components/AppInput/ValidationFunctions'
 import AppColor from '@/globals/Colors'
 import { useNavigation } from '@react-navigation/native'
-
+import auth from '@react-native-firebase/auth'
 import { AppText, AppButton, AppInput, AppCheckbox } from '@/components'
 import { ScrollView } from 'react-native-gesture-handler'
 import {
@@ -131,11 +131,16 @@ const SignUp = props => {
       } else {
         clearForm()
         closeSlider()
-        navigation.navigate('VerifyAccount', {
-          ...formData,
-          uid: response.uid,
-          provider: signUpMethod,
-        })
+        const signInResponse = await auth().signInWithCustomToken(
+          response.custom_token
+        )
+
+        if (signInResponse)
+          navigation.navigate('VerifyAccount', {
+            ...formData,
+            uid: response.uid,
+            provider: signUpMethod,
+          })
       }
     } catch (error) {
       console.log(error?.message || error)

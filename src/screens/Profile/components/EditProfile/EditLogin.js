@@ -48,10 +48,14 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
       body: { password: password },
     })
     if (verifiedPasswordResponse.verified) {
-      const resendResponse = await Api.resendCode({
-        body: { uid: user.uid, provider: provider },
+      const newLoginToUpdate = isEmail
+        ? { email: newEmail }
+        : { phone_number: newMobile }
+      const changeLoginResponse = await Api.changeLogin({
+        body: newLoginToUpdate,
+        uid: user?.uid,
       })
-      if (resendResponse.success) setVerify(!verify)
+      if (changeLoginResponse.success) setVerify(!verify)
       else {
         triggerNotification('Code failed to sent', 'error')
         setEnabled(false)
@@ -128,7 +132,9 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
                     {isEmail ? 'Current Email' : 'Current Mobile Number'}
                   </AppText>
                   <AppText textStyle="body1">
-                    {isEmail ? userInfo.email : userInfo.phone_number}
+                    {isEmail
+                      ? userInfo.email.toLowerCase()
+                      : userInfo.phone_number}
                   </AppText>
 
                   <AppText
@@ -163,6 +169,8 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
                   value={newEmail}
                   label="New Email"
                   customStyle={{ marginBottom: normalize(16), marginTop: 40 }}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                   onChangeText={newEmail => {
                     emailChangeHandler(newEmail)
                   }}
@@ -171,6 +179,8 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
                 <FloatingAppInput
                   value={newMobile}
                   label="New Mobile Number"
+                  autoCapitalize="none"
+                  keyboardType="number-pad"
                   customStyle={{ marginBottom: normalize(16) }}
                   onChangeText={() => {
                     setNewMobile(newMobile)
@@ -241,6 +251,7 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
           provider={provider}
           login={isEmail ? userInfo.email : userInfo.phone_number}
           newLogin={isEmail ? newEmail : newMobile}
+          toggleEditLogin={toggleEditLogin}
         />
       </Modal>
     </>

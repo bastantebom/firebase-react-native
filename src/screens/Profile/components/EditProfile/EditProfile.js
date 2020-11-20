@@ -41,7 +41,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import moment from 'moment'
-import ProfileInfoService from '@/services/Profile/ProfileInfo'
+import Api from '@/services/Api'
 import CoverPhotoUpload from '@/components/ImageUpload/CoverPhotoUpload'
 import AddAddress from './AddAddress'
 import EditLogin from './EditLogin'
@@ -65,13 +65,10 @@ const EditProfile = ({
   const [imageSource, setImageSource] = useState(null)
   const [imageCoverSource, setImageCoverSource] = useState(null)
   const [transferred, setTransferred] = useState(0)
-  const [IS_UPDATING, setIS_UPDATING] = useState(false)
-  const [hasPassword, setHasPassword] = useState(false)
-
-  if (providerData.find(pd => pd.providerId === 'password')) {
-    setHasPassword(true)
-  }
-
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [hasPassword, setHasPassword] = useState(
+    providerData.some(pd => pd.providerId === 'password')
+  )
   const {
     cover_photo,
     profile_photo,
@@ -81,7 +78,6 @@ const EditProfile = ({
     description,
     addresses,
     email,
-    secondary_email,
     phone_number,
     birth_date,
     gender,
@@ -136,9 +132,6 @@ const EditProfile = ({
 
   const [verified, setVerified] = useState(false)
   const [desc, setDesc] = useState(description)
-  const [em, setEm] = useState(email)
-  const [sEm, setSEm] = useState(secondary_email)
-  const [mobile, setMobile] = useState(phone_number)
   const [bDate, setBDate] = useState(birth_date)
   const [g, setG] = useState(gender)
 
@@ -206,7 +199,6 @@ const EditProfile = ({
   const uploadImageHandler = async image => {
     if (image) {
       const { uri } = image
-      //console.log('Sa If');
       let filename = uri
       if (!Platform.OS === 'ios')
         filename = uri.substring(uri.lastIndexOf('/') + 1)
@@ -229,9 +221,8 @@ const EditProfile = ({
       full_name: name,
       username: uName,
       birth_date: bDate,
-      email: em,
-      secondary_email: sEm,
-      phone_number: mobile,
+      email,
+      phone_number,
       gender: g,
       addresses: userInfo.addresses,
     }
@@ -240,7 +231,7 @@ const EditProfile = ({
       key => dataToUpdate[key] === undefined && delete dataToUpdate[key]
     )
 
-    setIS_UPDATING(true)
+    setIsUpdating(true)
     const images = [imageCoverSource, imageSource]
 
     const uploadProfileImagesHandler = () =>
@@ -255,28 +246,24 @@ const EditProfile = ({
         })
       )
 
-    await uploadProfileImagesHandler().then(response => {
+    await uploadProfileImagesHandler().then(async response => {
       dataToUpdate.cover_photo = response[0] === 'empty' ? cPhoto : response[0]
       dataToUpdate.profile_photo =
         response[1] === 'empty' ? pPhoto : response[1]
 
-      ProfileInfoService.updateUser(dataToUpdate, uid)
-        .then(response => {
-          if (response.success) {
-            setIS_UPDATING(false)
-            setUserInfo({ ...userInfo, ...response.data })
-            setNeedsRefresh(true)
-            triggerNotify(true)
-            toggleEditProfile()
-            if (source === 'own-menu') toggleMenu()
-          } else {
-            setIS_UPDATING(false)
-          }
-        })
-        .catch(error => {
-          setIS_UPDATING(false)
-          console.log(error)
-        })
+      const updateUserResponse = await Api.updateUser({
+        body: dataToUpdate,
+        uid,
+      })
+      if (updateUserResponse.success) {
+        setIsUpdating(false)
+        setNeedsRefresh(true)
+        triggerNotify(true)
+        toggleEditProfile()
+        if (source === 'own-menu') toggleMenu()
+      } else {
+        setIsUpdating(false)
+      }
     })
   }
 
@@ -291,7 +278,7 @@ const EditProfile = ({
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        <TransitionIndicator loading={IS_UPDATING} />
+        <TransitionIndicator loading={isUpdating} />
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
             iconSize={16}
@@ -602,10 +589,10 @@ const EditProfile = ({
                 Personal Information
               </AppText>
 
-              {em ? (
+              {email ? (
                 <>
                   <AppText textStyle="body2">Email</AppText>
-                  <AppText textStyle="body1">{em}</AppText>
+                  <AppText textStyle="body1">{email}</AppText>
                   {hasPassword && (
                     <TouchableOpacity
                       style={{ marginTop: 8 }}
@@ -620,10 +607,10 @@ const EditProfile = ({
                 </>
               ) : null}
 
-              {mobile ? (
+              {phone_number ? (
                 <>
                   <AppText textStyle="body2">Mobile Number</AppText>
-                  <AppText textStyle="body1">{mobile}</AppText>
+                  <AppText textStyle="body1">{phone_number}</AppText>
                   {hasPassword && (
                     <TouchableOpacity
                       style={{ marginTop: 8 }}

@@ -25,113 +25,84 @@ import { UserContext } from '@/context/UserContext'
 // create a component
 const AlmostThere = ({ route }) => {
   const navigation = useNavigation()
-  const [initialLocation, setInitialLocation] = useState({})
-  const [isLocationReady, setIsLocationReady] = useState(false)
-  const [stringAddress, setStringAddress] = useState('')
-  const [isAllowed, setIsAllowed] = useState()
-  const [isScreenLoading, setIsScreenLoading] = useState(false)
-  const [addressComponents, setAddressComponents] = useState({
-    city: '',
-    province: '',
-    country: '',
-    full_address: '',
-    default: true,
-  })
-
   const { user, fetch: updateUserInfo } = useContext(UserContext)
+  Geocoder.init(Config.apiKey)
 
-  const getStringAddress = location => {
-    Geocoder.init(Config.apiKey)
-    Geocoder.from(JSON.parse(location).latitude, JSON.parse(location).longitude)
-      .then(json => {
-        const addressComponent = json.results[1].formatted_address
-        const arrayToExtract =
-          json.results.length < 8 ? 2 : json.results.length - 5
-        const splitAddress = json.results[
-          arrayToExtract
-        ].formatted_address.split(',')
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            city: splitAddress[0],
-            province: splitAddress[1],
-            country: splitAddress[2],
-            full_address: addressComponent,
-          },
-        })
+  const [addressData, setAddressData] = useState({})
+  const [mapInitialized, setMapInitialized] = useState(false)
+  const [isScreenLoading, setIsScreenLoading] = useState(false)
 
-        setStringAddress(addressComponent)
-        setIsLocationReady(true)
-      })
-      .catch(error => console.warn(error))
+  const [mapCoords, setMapCoords] = useState({})
+
+  const getLocationName = (components, key) =>
+    components.find(component => component.types.includes(key))?.long_name
+
+  const handleRegionChange = async region => {
+    const { latitude, longitude } = region
+    const { results } = await Geocoder.from(latitude, longitude)
+    const addressComponents = results[0].address_components || []
+
+    setAddressData({
+      ...addressData,
+      longitude,
+      latitude,
+      city: getLocationName(addressComponents, 'locality'),
+      province: getLocationName(
+        addressComponents,
+        'administrative_area_level_2'
+      ),
+      country: getLocationName(addressComponents, 'country'),
+      full_address: results[0].formatted_address,
+      default: true,
+    })
   }
 
-  const getLongLatFromString = () => {
-    if (stringAddress.trim().length > 0) {
-      console.log(stringAddress)
-      saveLocationHandler(addressComponents)
+  const getCurrentPosition = async () =>
+    new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 10000,
+      })
+    })
+
+  const initializeMap = async () => {
+    try {
+      const { latitude, longitude } = await getCurrentPosition()
+
+      setMapCoords({
+        lat: latitude,
+        lng: longitude,
+      })
+
+      handleRegionChange({ latitude, longitude })
+
+      setMapInitialized(true)
+    } catch (error) {
+      const { results } = await Geocoder.from('Manila')
+      const { lat, lng } = results[0].geometry.location
+
+      setMapCoords({
+        lat,
+        lng,
+      })
+      handleRegionChange({ latitude: lat, longitude: lng })
+      setMapInitialized(true)
     }
   }
 
-  const onCurrentLocationClick = () => {
-    const { uid } = user
-    if (isAllowed && isLocationReady) {
-      const toPassString = {
-        uid,
-        address: stringAddress,
-        latitude:
-          parseFloat(JSON.parse(initialLocation).latitude) +
-          parseFloat(0.00059),
-        longitude: JSON.parse(initialLocation).longitude,
-      }
-      navigation.navigate('AlmostThereMap', {
-        ...toPassString,
-        ...addressComponents,
-      })
-    }
-  }
-
-  function findCoordinates() {
-    Geolocation.getCurrentPosition(
-      position => {
-        const initialPosition = JSON.stringify(position.coords)
-        setInitialLocation(initialPosition)
-        setIsAllowed(true)
-        getStringAddress(initialPosition)
-      },
-      error => {
-        console.log('Error', JSON.stringify(error))
-
-        const initialPosition = JSON.stringify({
-          altitude: 0,
-          altitudeAccuracy: -1,
-          latitude: 14.582919,
-          accuracy: 5,
-          longitude: 120.979683,
-          heading: -1,
-          speed: -1,
-        })
-        setInitialLocation(initialPosition)
-        setIsAllowed(false)
-        getStringAddress(initialPosition)
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    )
-  }
-
-  const saveLocationHandler = async fullAddress => {
+  const saveLocation = async () => {
     setIsScreenLoading(true)
     const { uid } = user
 
     if (uid) {
       try {
-        const response = await SignUpService.saveLocation({
+        const saveLocationResponse = await SignUpService.saveLocation({
           uid,
-          latitude: JSON.parse(initialLocation).latitude,
-          longitude: JSON.parse(initialLocation).longitude,
-          ...fullAddress,
+          ...addressData,
         })
-        if (!response.success) throw new Error(response.message)
+        if (!saveLocationResponse.success)
+          throw new Error(saveLocationResponse.message)
         else await updateUserInfo()
         setIsScreenLoading(false)
       } catch (error) {
@@ -142,6 +113,15 @@ const AlmostThere = ({ route }) => {
     }
   }
 
+  const onCurrentLocationHandler = () => {
+    const { uid } = user
+    if (mapInitialized) {
+      navigation.navigate('AlmostThereMap', {
+        ...addressData,
+      })
+    }
+  }
+
   useEffect(() => {
     if (Platform.OS === 'ios') {
       Geolocation.requestAuthorization()
@@ -149,22 +129,9 @@ const AlmostThere = ({ route }) => {
         skipPermissionRequests: false,
         authorizationLevel: 'whenInUse',
       })
-    } else {
     }
-    findCoordinates()
+    initializeMap()
   }, [])
-
-  useEffect(() => {
-    if (
-      isAllowed !== undefined &&
-      isLocationReady &&
-      addressComponents.latitude !== 0
-    ) {
-      if (!isAllowed) {
-        saveLocationHandler(addressComponents)
-      }
-    }
-  }, [isAllowed, isLocationReady, addressComponents.latitude])
 
   return (
     <>
@@ -184,7 +151,7 @@ const AlmostThere = ({ route }) => {
           goods nearby. You may change this later on.
         </AppText>
 
-        {isLocationReady ? (
+        {mapInitialized ? (
           <>
             <View style={styles.bottomWrapper}>
               <View style={styles.currentLocationContainer}>
@@ -198,12 +165,12 @@ const AlmostThere = ({ route }) => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    onCurrentLocationClick()
+                    onCurrentLocationHandler()
                   }}>
                   <AppText
                     textStyle="body3"
                     customStyle={styles.currentAddress}>
-                    {stringAddress}
+                    {addressData.full_address}
                   </AppText>
                 </TouchableOpacity>
               </View>
@@ -223,7 +190,7 @@ const AlmostThere = ({ route }) => {
             height="xl"
             customStyle={styles.buttonStyle}
             onPress={() => {
-              getLongLatFromString()
+              saveLocation()
             }}
           />
         </View>

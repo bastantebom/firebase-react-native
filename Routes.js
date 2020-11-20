@@ -444,7 +444,7 @@ const TabStack = props => {
 }
 
 export default Routes = () => {
-  const { token, userInfo } = useContext(UserContext)
+  const { token, userInfo, userStatus } = useContext(UserContext)
   const { initNotifications } = useContext(Context)
   const { addresses } = userInfo
 
@@ -454,6 +454,11 @@ export default Routes = () => {
     opacity: containerOpacity,
     flex: 1,
   }
+
+  const userStatusCount = Object.values(userStatus).reduce(
+    (a, status) => a + (status === 'completed' ? 1 : 0),
+    0
+  )
 
   useEffect(() => {
     setTimeout(() => {
@@ -474,7 +479,11 @@ export default Routes = () => {
       <Animated.View style={fadingContainerStyle}>
         <NavigationContainer>
           {token && userInfo?.uid ? (
-            !addresses?.length ? (
+            !userStatusCount ? (
+              <Stack.Navigator headerMode="none">
+                <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
+              </Stack.Navigator>
+            ) : !addresses?.length ? (
               <Stack.Navigator headerMode="none">
                 <Stack.Screen name="AlmostThere" component={AlmostThere} />
                 <Stack.Screen

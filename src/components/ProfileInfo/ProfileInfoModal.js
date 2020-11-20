@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
   },
 
   tabTextStyle: {
-    fontFamily: 'RoundedMplus1c-Medium',
+    fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(14),
     textTransform: 'uppercase',
     textAlign: 'center',

@@ -14,11 +14,17 @@ import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import { AppText, TransitionIndicator, Notification } from '@/components'
 import Api from '@/services/Api'
-//import auth from '@react-native-firebase/auth'
+import auth from '@react-native-firebase/auth'
 
-const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
+const VerifyAccount = ({
+  login,
+  provider,
+  toggleVerify,
+  newLogin,
+  toggleEditLogin,
+}) => {
   const { openNotification, closeNotification } = useContext(Context)
-  const { user } = useContext(UserContext)
+  const { user, userInfo, setUserInfo } = useContext(UserContext)
   const { uid } = user
 
   const firstTextInput = useRef(null)
@@ -33,6 +39,8 @@ const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
   const [verifyArray, setVerifyArray] = useState(['', '', '', ''])
 
   const [isScreenLoading, setIsScreenLoading] = useState(false)
+
+  const isEmail = provider === 'email' ? true : false
 
   const onVerifyChange = index => {
     return value => {
@@ -96,16 +104,19 @@ const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
       try {
         const response = await Api.verifyCode({
           body: {
-            uid,
             provider,
-            verification_code: nCode,
+            code: nCode,
           },
+          uid,
         })
         const { custom_token, success } = response
         if (success) {
-          updateProfile()
+          const signInResponse = await auth().signInWithCustomToken(
+            custom_token
+          )
+          if (signInResponse) updateProfile()
         } else {
-          throw new Error(response.message)
+          console.log(response.message || response)
         }
       } catch (error) {
         console.log(error?.message || error)
@@ -116,14 +127,20 @@ const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
   }
 
   const updateProfile = async () => {
-    const dataToUpdate = {
-      email: newLogin,
-      phone_number: newLogin,
-      uid: uid,
+    const loginToUpdate = isEmail
+      ? { email: newLogin }
+      : { phone_number: newLogin }
+
+    const updateUserResponse = await Api.updateUser({
+      body: loginToUpdate,
+      uid,
+    })
+
+    if (updateUserResponse.success) {
+      setUserInfo({ ...userInfo, ...updateUserResponse.data })
+      toggleVerify()
+      toggleEditLogin('')
     }
-    Object.keys(dataToUpdate).forEach(
-      key => dataToUpdate[key] === undefined && delete dataToUpdate[key]
-    )
   }
 
   const closeNotificationTimer = () => {
@@ -190,7 +207,7 @@ const VerifyAccount = ({ login, provider, toggleVerify, newLogin }) => {
           <AppText textStyle="body2" customStyle={styles.bodyContent}>
             An email with the 4-digit code has been sent to{' '}
             <AppText textStyle="body3" customStyle={styles.bodyContent}>
-              {login.toLowerCase()}
+              {newLogin.toLowerCase()}
             </AppText>
           </AppText>
         </View>

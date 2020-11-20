@@ -15,7 +15,8 @@ import { Context } from '@/context'
 
 import { AppText, TransitionIndicator, Notification } from '@/components'
 import VerifyService from '@/services/VerifyService'
-import auth from '@react-native-firebase/auth'
+
+import Api from '@/services/Api'
 
 const VerifyAccount = route => {
   const { openNotification, closeNotification } = useContext(Context)
@@ -91,22 +92,15 @@ const VerifyAccount = route => {
     if (code.join('').length === 4) {
       const nCode = parseInt(code.join(''))
       setIsScreenLoading(true)
-
-      const { uid, provider } = route?.route.params || {}
-
+      const { uid, login, provider } = route?.route.params || {}
       try {
-        const response = await VerifyService.verifyCode({
+        await Api.verifyCode({
+          body: {
+            provider,
+            code: nCode,
+          },
           uid,
-          provider,
-          verification_code: nCode,
         })
-
-        const { custom_token, success } = response
-        if (success) {
-          await auth().signInWithCustomToken(custom_token)
-        } else {
-          throw new Error(response.message)
-        }
       } catch (error) {
         console.log(error?.message || error)
       }
@@ -126,7 +120,7 @@ const VerifyAccount = route => {
     const { uid, provider, login } = route?.route.params || {}
 
     try {
-      const response = await VerifyService.resendCode()
+      const response = await Api.resendCode({ body: { provider }, uid })
       if (response.success) {
         setNotificationType('success')
         setNotificationMessage(
@@ -168,8 +162,8 @@ const VerifyAccount = route => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Notification message={notificationMessage} type={notificationType} />
       <View style={styles.container}>
-        <Notification message={notificationMessage} type={notificationType} />
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.defaultStyle}>
           <VerifyIcon />

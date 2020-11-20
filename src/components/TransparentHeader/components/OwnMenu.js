@@ -55,6 +55,7 @@ import { UserContext } from '@/context/UserContext'
 
 const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const navigation = useNavigation()
+  const { providerData } = useContext(UserContext)
   const [editProfile, setEditProfile] = useState(false)
   const [about, setAbout] = useState(false)
   const [changePassword, setChangePassword] = useState(false)
@@ -65,12 +66,9 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const [inviteFriends, setInviteFriends] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
-  const [hasPassword, setHasPassword] = useState(false)
-  const { providerData } = useContext(UserContext)
-
-  if (providerData.some(pd => pd.providerId === 'password')) {
-    setHasPassword(true)
-  }
+  const [hasPassword, setHasPassword] = useState(
+    providerData.some(pd => pd.providerId === 'password')
+  )
 
   const toggleEditProfile = () => {
     setEditProfile(!editProfile)
