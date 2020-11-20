@@ -35,6 +35,7 @@ import {
   PostCash,
   PostNote,
   Note,
+  CircleTick,
 } from '@/assets/images/icons'
 import CancelOrder from './CancelOrder'
 import DeclineOrder from './DeclineOrder'
@@ -320,20 +321,19 @@ const TrackerModal = ({ closeModal, postType }) => {
         iconSize={normalize(16)}
       />
       <Notification
-        message={
-          <AppText
-            textStyle="body2"
-            customStyle={{ marginLeft: 14, paddingTop: 2 }}>
-            {postType === 'sell'
-              ? 'Order Sent!'
-              : postType === 'service'
-              ? 'Request Sent!'
-              : 'Offer Sent!'}
-          </AppText>
-        }
         type="success"
-        position="relative"
-      />
+        icon={<CircleTick />}
+        customStyle={{ position: 'relative' }}>
+        <AppText
+          textStyle="body2"
+          customStyle={{ marginLeft: 14, paddingTop: 2 }}>
+          {postType === 'sell'
+            ? 'Order Sent!'
+            : postType === 'service'
+            ? 'Request Sent!'
+            : 'Offer Sent!'}
+        </AppText>
+      </Notification>
       <TouchableOpacity
         style={{ position: 'relative', width: '100%' }}
         activeOpacity={0.7}>

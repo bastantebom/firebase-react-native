@@ -7,7 +7,7 @@ import FloatingAppInput from '@/components/AppInput/FloatingAppInput'
 import AppText from '@/components/AppText/AppText'
 import { AppViewContainer, PaddingView } from '@/components/AppViewContainer'
 import { HexagonBorder, ProfileImageUpload } from '@/components/ImageUpload'
-import Notification from '@/components/Notification'
+import { Notification } from '@/components/Notification'
 import {
   Post,
   Posts,

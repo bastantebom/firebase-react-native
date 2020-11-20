@@ -80,7 +80,7 @@ const EditProfile = ({
     email,
     phone_number,
     birth_date,
-    gender,
+    gender: _gender,
   } = userInfo
   const { uid } = user
 
@@ -133,7 +133,7 @@ const EditProfile = ({
   const [verified, setVerified] = useState(false)
   const [desc, setDesc] = useState(description)
   const [bDate, setBDate] = useState(birth_date)
-  const [g, setG] = useState(gender)
+  const [gender, setGender] = useState(_gender)
 
   const toggleAddAddress = () => {
     setAdditional(true)
@@ -177,16 +177,6 @@ const EditProfile = ({
     if (bDate) {
       setDate(moment(new Date(bDate)).toDate())
     }
-  }
-
-  const setGenderFromModal = data => {
-    const tempG =
-      data === 'notsay'
-        ? 'Rather not say'
-        : data === 'female'
-        ? 'Female'
-        : 'Male'
-    setG(tempG)
   }
 
   const setBirthday = (event, selectedDate) => {
@@ -656,7 +646,7 @@ const EditProfile = ({
               </View>
               <View style={{ position: 'relative' }}>
                 <FloatingAppInput
-                  value={g}
+                  value={gender}
                   label="Gender"
                   onFocus={toggleGender}
                   customStyle={{ marginBottom: normalize(16) }}
@@ -745,8 +735,11 @@ const EditProfile = ({
           }>
           <View>
             <GenderList
-              toggleGender={toggleGender}
-              setGenderValue={pGender => setGenderFromModal(pGender)}
+              value={gender}
+              onChange={gender => {
+                setGender(gender)
+                toggleGender()
+              }}
             />
           </View>
         </Modal>

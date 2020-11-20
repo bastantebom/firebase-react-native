@@ -14,13 +14,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Context } from '@/context'
 
 import { AppText, TransitionIndicator, Notification } from '@/components'
-import VerifyService from '@/services/VerifyService'
 
 import Api from '@/services/Api'
+import { CircleTick, Warning } from '@/assets/images/icons'
 
 const VerifyAccount = route => {
   const { openNotification, closeNotification } = useContext(Context)
-  const navigation = useNavigation()
   const firstTextInput = useRef(null)
   const secondTextInput = useRef(null)
   const thirdTextInput = useRef(null)
@@ -135,7 +134,7 @@ const VerifyAccount = route => {
         throw new Error(response.message)
       }
     } catch (error) {
-      setNotificationType('error')
+      setNotificationType('danger')
       setNotificationMessage(
         <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
           Failed resend verification code {provider} {login}
@@ -164,6 +163,11 @@ const VerifyAccount = route => {
     <SafeAreaView style={{ flex: 1 }}>
       <Notification message={notificationMessage} type={notificationType} />
       <View style={styles.container}>
+        <Notification
+          type={notificationType}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.defaultStyle}>
           <VerifyIcon />

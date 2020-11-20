@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
   Dimensions,
   StyleSheet,
   ScrollView,
-} from 'react-native';
+} from 'react-native'
 
-import { AppText, AppViewContainer, AppRadio, AppCheckbox } from '@/components';
-import { normalize, Colors } from '@/globals';
-
-import { PostService } from '@/services';
-
+import { AppText, AppViewContainer, AppRadio, AppCheckbox } from '@/components'
+import { normalize, Colors } from '@/globals'
 
 import {
   CloseDark,
@@ -22,21 +19,25 @@ import {
   SortPopular,
   SortLowHigh,
   SortHighLow,
-  SortNearest, SortCondition
-} from '@/assets/images/icons';
-import { Context } from '@/context';
+  SortNearest,
+  SortCondition,
+} from '@/assets/images/icons'
+import { Context } from '@/context'
 
-const FilterSlider = ({ modalToggler }) => {
-
+/**
+ * @param {object} param0
+ * @param {() => void} param0.close
+ */
+const FilterSlider = ({ close }) => {
   const { searchPosts, filters, setFilters } = useContext(Context)
 
-  const [checkboxServices, setCheckboxServices] = useState(false);
-  const [checkboxSeller, setCheckboxSeller] = useState(false);
-  const [checkboxNeeds, setCheckboxNeeds] = useState(false);
-  const [checkboxBrandNew, setCheckboxBrandNew] = useState(false);
-  const [checkboxUsed, setCheckboxUsed] = useState(false);
-  const [sortValue, setSortValue] = useState('recent');
-  const [filterValue, setFilterValue] = useState([]);
+  const [checkboxServices, setCheckboxServices] = useState(false)
+  const [checkboxSeller, setCheckboxSeller] = useState(false)
+  const [checkboxNeeds, setCheckboxNeeds] = useState(false)
+  const [checkboxBrandNew, setCheckboxBrandNew] = useState(false)
+  const [checkboxUsed, setCheckboxUsed] = useState(false)
+  const [sortValue, setSortValue] = useState('recent')
+  const [filterValue, setFilterValue] = useState([])
 
   const [radioButtons, setRadioButtons] = useState({
     Popular: false,
@@ -44,71 +45,66 @@ const FilterSlider = ({ modalToggler }) => {
     Nearest: false,
     Price_Desc: false,
     Price_Asc: false,
-  });
+  })
 
   // useEffect(() => {
 
   // }, [checkboxServices, checkboxSeller, checkboxNeeds, checkboxBrandNew, checkboxUsed, radioButtons]);
 
-  useEffect(() => {
-    console.log('filterValue');
-    console.log(filterValue);
-  }, [sortValue, filterValue])
-
   const checkboxServicesHandler = () => {
-    setCheckboxServices(!checkboxServices);
+    setCheckboxServices(!checkboxServices)
     if (!checkboxServices) {
       setFilterValue([...filterValue, 'service'])
     } else {
-      const newFilterValue = filterValue.filter((item) => item !== 'service');
-      setFilterValue(newFilterValue);
+      const newFilterValue = filterValue.filter(item => item !== 'service')
+      setFilterValue(newFilterValue)
     }
-  };
+  }
 
   const checkboxSellerHandler = () => {
-    setCheckboxSeller(!checkboxSeller);
+    setCheckboxSeller(!checkboxSeller)
     if (!checkboxSeller) {
       setFilterValue([...filterValue, 'sell'])
     } else {
-      const newFilterValue = filterValue.filter((item) => item !== 'sell');
-      setFilterValue(newFilterValue);
+      const newFilterValue = filterValue.filter(item => item !== 'sell')
+      setFilterValue(newFilterValue)
     }
-  };
+  }
 
   const checkboxNeedsHandler = () => {
-    setCheckboxNeeds(!checkboxNeeds);
+    setCheckboxNeeds(!checkboxNeeds)
     if (!checkboxNeeds) {
       setFilterValue([...filterValue, 'needs'])
     } else {
-      const newFilterValue = filterValue.filter((item) => item !== 'needs');
-      setFilterValue(newFilterValue);
+      const newFilterValue = filterValue.filter(item => item !== 'needs')
+      setFilterValue(newFilterValue)
     }
-  };
+  }
 
   const checkboxBrandNewHandler = () => {
-    setCheckboxBrandNew(!checkboxBrandNew);
-  };
+    setCheckboxBrandNew(!checkboxBrandNew)
+  }
 
   const checkboxUsedHandler = () => {
-    setCheckboxUsed(!checkboxUsed);
-  };
+    setCheckboxUsed(!checkboxUsed)
+  }
 
   const resetFilters = () => {
-    setCheckboxServices(false);
-    setCheckboxSeller(false);
-    setCheckboxNeeds(false);
-    setCheckboxBrandNew(false);
-    setCheckboxUsed(false);
+    setCheckboxServices(false)
+    setCheckboxSeller(false)
+    setCheckboxNeeds(false)
+    setCheckboxBrandNew(false)
+    setCheckboxUsed(false)
     setRadioButtons({
       Popular: false,
       Recent: false,
       Nearest: false,
       Price_Desc: false,
       Price_Asc: false,
-    });
-  };
+    })
+  }
 
-  const radioHandler = (label) => {
+  const radioHandler = label => {
     setSortValue(label.toLowerCase())
 
     switch (label) {
@@ -119,8 +115,8 @@ const FilterSlider = ({ modalToggler }) => {
           Nearest: false,
           Price_Desc: false,
           Price_Asc: false,
-        });
-        break;
+        })
+        break
       case 'Recent':
         setRadioButtons({
           Popular: false,
@@ -128,8 +124,8 @@ const FilterSlider = ({ modalToggler }) => {
           Nearest: false,
           Price_Desc: false,
           Price_Asc: false,
-        });
-        break;
+        })
+        break
       case 'Nearest':
         setRadioButtons({
           Popular: false,
@@ -137,8 +133,8 @@ const FilterSlider = ({ modalToggler }) => {
           Nearest: true,
           Price_Desc: false,
           Price_Asc: false,
-        });
-        break;
+        })
+        break
       case 'Price_Desc':
         setRadioButtons({
           Popular: false,
@@ -146,8 +142,8 @@ const FilterSlider = ({ modalToggler }) => {
           Nearest: false,
           Price_Desc: true,
           Price_Asc: false,
-        });
-        break;
+        })
+        break
       case 'Price_Asc':
         setRadioButtons({
           Popular: false,
@@ -155,21 +151,21 @@ const FilterSlider = ({ modalToggler }) => {
           Nearest: false,
           Price_Desc: false,
           Price_Asc: true,
-        });
-        break;
+        })
+        break
       default:
-        break;
+        break
     }
-  };
+  }
 
   const applyFilters = () => {
     setFilters({
       ...filters,
       sort: sortValue,
-      type: filterValue
+      type: filterValue,
     })
-    modalToggler();
-  };
+    close()
+  }
 
   return (
     <View
@@ -188,7 +184,7 @@ const FilterSlider = ({ modalToggler }) => {
             </View>
 
             <TouchableOpacity
-              onPress={() => modalToggler()}
+              onPress={() => close()}
               style={{ justifyContent: 'flex-start' }}>
               <CloseDark width={normalize(24)} height={normalize(24)} />
             </TouchableOpacity>
@@ -200,7 +196,7 @@ const FilterSlider = ({ modalToggler }) => {
             </AppText>
             <AppCheckbox
               Icon={() => {
-                return <FilterServices />;
+                return <FilterServices />
               }}
               label="Services"
               value={checkboxServices}
@@ -209,7 +205,7 @@ const FilterSlider = ({ modalToggler }) => {
             />
             <AppCheckbox
               Icon={() => {
-                return <FilterSeller />;
+                return <FilterSeller />
               }}
               label="Selling"
               value={checkboxSeller}
@@ -218,7 +214,7 @@ const FilterSlider = ({ modalToggler }) => {
             />
             <AppCheckbox
               Icon={() => {
-                return <FilterNeeds />;
+                return <FilterNeeds />
               }}
               label="Needs"
               value={checkboxNeeds}
@@ -233,7 +229,7 @@ const FilterSlider = ({ modalToggler }) => {
             </AppText>
             <AppRadio
               Icon={() => {
-                return <SortPopular />;
+                return <SortPopular />
               }}
               label="Popular"
               name="Popular"
@@ -243,7 +239,7 @@ const FilterSlider = ({ modalToggler }) => {
             />
             <AppRadio
               Icon={() => {
-                return <SortRecent />;
+                return <SortRecent />
               }}
               label="Recent"
               name="Recent"
@@ -253,7 +249,7 @@ const FilterSlider = ({ modalToggler }) => {
             />
             <AppRadio
               Icon={() => {
-                return <SortNearest />;
+                return <SortNearest />
               }}
               label="Nearest"
               name="Nearest"
@@ -266,7 +262,7 @@ const FilterSlider = ({ modalToggler }) => {
             </AppText>
             <AppRadio
               Icon={() => {
-                return <SortHighLow />;
+                return <SortHighLow />
               }}
               label="High to Low"
               name="Price_Desc"
@@ -276,7 +272,7 @@ const FilterSlider = ({ modalToggler }) => {
             />
             <AppRadio
               Icon={() => {
-                return <SortLowHigh />;
+                return <SortLowHigh />
               }}
               label="Low to High"
               name="Price_Asc"
@@ -289,7 +285,7 @@ const FilterSlider = ({ modalToggler }) => {
             </AppText>
             <AppCheckbox
               Icon={() => {
-                return <SortCondition />;
+                return <SortCondition />
               }}
               label="Brand New"
               value={checkboxBrandNew}
@@ -298,7 +294,7 @@ const FilterSlider = ({ modalToggler }) => {
             />
             <AppCheckbox
               Icon={() => {
-                return <SortCondition />;
+                return <SortCondition />
               }}
               label="Used"
               value={checkboxUsed}
@@ -331,8 +327,8 @@ const FilterSlider = ({ modalToggler }) => {
         </View>
       </ScrollView>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   buttonWhite: {
@@ -350,6 +346,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 4,
   },
-});
+})
 
-export default FilterSlider;
+export default FilterSlider

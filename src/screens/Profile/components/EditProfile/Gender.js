@@ -1,49 +1,32 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 
-import {BottomSheetHeader, PaddingView, AppRadio} from '@/components';
-import {normalize, Colors} from '@/globals';
+import { BottomSheetHeader, PaddingView, AppRadio } from '@/components'
+import { normalize } from '@/globals'
 
-const Gender = ({setGenderValue, toggleGender}) => {
-  const [radioButtons, setRadioButtons] = useState({
-    male: false,
-    female: false,
-    notsay: false,
-  });
+const Gender = ({ onChange, value: _value, choices: _choices = [] }) => {
+  const [value, setValue] = useState(_value)
+  const choices = _choices.length
+    ? _choices
+    : [
+        {
+          label: 'Male',
+          value: 'Male',
+        },
+        {
+          label: 'Female',
+          value: 'Female',
+        },
+        {
+          label: 'Rather not say',
+          value: 'Rather not say',
+        },
+      ]
 
-  const radioHandler = (label) => {
-    console.log(radioButtons);
-    console.log('label return: ', label);
-
-    switch (label) {
-      case 'male':
-        setRadioButtons({
-          male: true,
-          female: false,
-          notsay: false,
-        });
-        break;
-      case 'female':
-        setRadioButtons({
-          female: true,
-          male: false,
-          notsay: false,
-        });
-        break;
-      case 'notsay':
-        setRadioButtons({
-          notsay: true,
-          female: false,
-          male: false,
-        });
-        break;
-
-      default:
-        break;
-    }
-    setGenderValue(label);
-    toggleGender();
-  };
+  const handleChange = _value => {
+    setValue(_value)
+    onChange(_value)
+  }
 
   return (
     <View
@@ -55,47 +38,27 @@ const Gender = ({setGenderValue, toggleGender}) => {
       }}>
       <BottomSheetHeader />
       <PaddingView paddingSize={2}>
-        <View style={{justifyContent: 'space-between'}}>
-          <AppRadio
-            label="Male"
-            name="male"
-            value={radioButtons.male}
-            valueChangeHandler={radioHandler}
-            style={{marginBottom: 16}}
-          />
-          <AppRadio
-            label="Female"
-            name="female"
-            value={radioButtons.female}
-            valueChangeHandler={radioHandler}
-            style={{marginBottom: 16}}
-          />
-          <AppRadio
-            label="Rather not say"
-            name="notsay"
-            value={radioButtons.notsay}
-            valueChangeHandler={radioHandler}
-            style={{marginBottom: 16}}
-          />
+        <View style={{ justifyContent: 'space-between' }}>
+          {choices.map(option => (
+            <AppRadio
+              key={option.value}
+              label={option.label}
+              name={option.value}
+              value={value === option.value}
+              valueChangeHandler={handleChange}
+              style={styles.radio}
+            />
+          ))}
         </View>
       </PaddingView>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
-  userInfoImageContainer: {
-    height: normalize(44),
-    width: normalize(44),
-    borderRadius: normalize(44 / 2),
-    overflow: 'hidden',
+  radio: {
+    marginBottom: normalize(16),
   },
-  dividerStyle: {
-    backgroundColor: Colors.neutralsZircon,
-    width: '100%',
-    marginTop: 8,
-    marginBottom: 32,
-  },
-});
+})
 
-export default Gender;
+export default Gender

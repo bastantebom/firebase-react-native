@@ -33,9 +33,15 @@ import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
 import { GuestProfile } from './components/GuestProfile'
 import { VerificationStatus } from './components'
+import { CircleTick, Warning } from '@/assets/images/icons'
 import { PostService } from '@/services'
 
-function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
+const ProfileScreen = ({
+  profileViewType = 'own',
+  backFunction,
+  uid,
+  ...props
+}) => {
   const { user, signOut, userInfo, userStatus } = useContext(UserContext)
   const {
     openNotification,
@@ -142,12 +148,12 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
     if (notify) {
       triggerNotification('Profile has been updated successfully!', 'success')
     } else {
-      triggerNotification('Profile update Failed!', 'error')
+      triggerNotification('Profile update Failed!', 'danger')
     }
   }
 
   const statusPercentage =
-    Object.values(userStatus).reduce(
+    Object.values(userStatus?.verified || {}).reduce(
       (a, status) => a + (status === 'completed' ? 1 : 0),
       0
     ) * 0.25
@@ -223,11 +229,14 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
     return (
       <Animated.View>
         <Notification
-          message={notificationMessage}
           type={notificationType}
-          top={normalize(30)}
-          position="absolute"
-        />
+          containerStyle={{
+            position: 'absolute',
+            top: normalize(30),
+          }}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <View>
           <TransparentHeader
             type={headerState}
@@ -416,8 +425,6 @@ function Profile({ profileViewType = 'own', backFunction, uid, ...props }) {
   )
 }
 
-export default Profile
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -449,3 +456,5 @@ const styles = StyleSheet.create({
     width: '50%',
   },
 })
+
+export default ProfileScreen

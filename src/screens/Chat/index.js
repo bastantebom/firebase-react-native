@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
-import { View, StyleSheet, Image, Text, SafeAreaView } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native'
 import {
   GiftedChat,
   InputToolbar,
@@ -20,11 +27,27 @@ import {
 } from '@/assets/images/icons'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { UserContext } from '@/context/UserContext'
 import { TransitionIndicator } from '@/components'
 
-export const Chat = ({ route, navigation }) => {
+/**
+ * @typedef {Object} ChatChannel
+ * @property {string} id
+ * @property {string[]} members
+ */
+
+/**
+ * @typedef {Object} ChatProps
+ * @property {ChatChannel} channel
+ */
+
+/**
+ * @typedef {Object} RootProps
+ * @property {ChatProps} Chat
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'Chat'>} param0 */
+const ChatScreen = ({ route, navigation }) => {
   const { channel } = route.params
   const { userInfo } = useContext(UserContext)
   const [isLoading, setIsLoading] = useState(true)
@@ -122,7 +145,7 @@ export const Chat = ({ route, navigation }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <TransitionIndicator
         loading={isLoading}
-        backgroundStyle={{ backgroundColor: '#fff' }}
+        backdropStyle={{ backgroundColor: '#fff' }}
       />
       <ChatHeader user={messagingUser} navigation={navigation} />
       <GiftedChat
@@ -390,3 +413,5 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 })
+
+export default ChatScreen

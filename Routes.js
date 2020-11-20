@@ -15,11 +15,12 @@ import { PostService } from '@/services'
 
 //screens
 import { Onboarding } from '@/screens/Onboarding'
-import { Dashboard } from '@/screens/Dashboard'
-import { Profile } from '@/screens/Profile'
+import DashboardScreen from '@/screens/Dashboard/dashboard'
+import VerificationStack from '@/screens/Verification'
+import ProfileScreen from '@/screens/Profile/profile'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
-import { Chat } from '@/screens/Chat'
+import ChatScreen from '@/screens/Chat'
 
 import {
   Post,
@@ -84,7 +85,7 @@ function NoBottomTabScreens() {
         name="OthersProfile"
         component={ProfileInfoModal}
       />
-      <NoBottomTabScreenStack.Screen name="Chat" component={Chat} />
+      <NoBottomTabScreenStack.Screen name="Chat" component={ChatScreen} />
       <NoBottomTabScreenStack.Screen
         name="OthersPost"
         component={SinglePostView}
@@ -116,6 +117,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="NotVerified"
         component={NotVerifiedStackScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="Verification"
+        component={VerificationStack}
       />
     </NoBottomTabScreenStack.Navigator>
   )
@@ -156,7 +161,7 @@ function NotVerifiedStackScreen() {
 function DashboardStackScreen() {
   return (
     <DashboardStack.Navigator headerMode="none">
-      <DashboardStack.Screen name="Servbees" component={Dashboard} />
+      <DashboardStack.Screen name="Servbees" component={DashboardScreen} />
     </DashboardStack.Navigator>
   )
 }
@@ -228,7 +233,7 @@ function ProfileStackScreen() {
     return (
       <>
         <ProfileStack.Navigator headerMode="none">
-          <ProfileStack.Screen name="Profile" component={Profile} />
+          <ProfileStack.Screen name="Profile" component={ProfileScreen} />
         </ProfileStack.Navigator>
       </>
     )
@@ -302,23 +307,24 @@ const TabStack = props => {
     if (user) initNotifications(user?.uid)
   }, [])
 
+  const tabBarOptions = {
+    style: {
+      position: 'relative',
+    },
+    tabStyle: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    labelStyle: {
+      fontSize: normalize(13),
+      fontFamily: 'RoundedMplus1c-Regular',
+    },
+    inactiveTintColor: '#8C8B98',
+    activeTintColor: '#1F1A54',
+  }
+
   return (
-    <Tab.Navigator
-      tabBarOptions={{
-        style: {
-          position: 'relative',
-        },
-        tabStyle: {
-          flex: 1,
-          alignItems: 'center',
-        },
-        labelStyle: {
-          fontSize: normalize(13),
-          fontFamily: 'RoundedMplus1c-Regular',
-        },
-        inactiveTintColor: '#8C8B98',
-        activeTintColor: '#1F1A54',
-      }}>
+    <Tab.Navigator tabBarOptions={tabBarOptions}>
       <Tab.Screen
         name="Servbees"
         component={DashboardStackScreen}
@@ -455,7 +461,7 @@ export default Routes = () => {
     flex: 1,
   }
 
-  const userStatusCount = Object.values(userStatus).reduce(
+  const userStatusCount = Object.values(userStatus?.verified || {}).reduce(
     (a, status) => a + (status === 'completed' ? 1 : 0),
     0
   )

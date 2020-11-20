@@ -46,7 +46,10 @@ export const UserContextProvider = ({ children }) => {
           if (snap?.data()) {
             setUserInfo(snap?.data())
             const response = await Api.getUserStatus({ uid: user.uid })
-            setUserStatus({ ...userStatus, ...response.status.verified })
+            setUserStatus({
+              ...userStatus,
+              ...(response.status || {}),
+            })
           }
         })
     }
@@ -61,14 +64,6 @@ export const UserContextProvider = ({ children }) => {
         })
         .catch(error => {
           setUserDataAvailable(false)
-        })
-
-      ProfileInfoService.getStatus(user.uid)
-        .then(res => {
-          setUserStatus({ ...userStatus, ...res.status.verified })
-        })
-        .catch(error => {
-          console.log(error.message)
         })
     }
   }
@@ -94,7 +89,6 @@ export const UserContextProvider = ({ children }) => {
         userInfo,
         setUserInfo,
         userStatus,
-        setUserStatus,
         userDataAvailable,
         fetch,
         token,

@@ -1,149 +1,103 @@
-import React, { useContext, useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  SafeAreaView,
-  View,
-  Animated,
-} from 'react-native'
-
-import PaddingView from '@/components/AppViewContainer/PaddingView'
-
-// import CloseDark from '@/assets/images/icons/close-dark.svg';
-// import CircleTick from '@/assets/images/icons/circle-tick.svg';
-
-import {
-  CloseDark,
-  CloseLight,
-  CircleTick,
-  Warning,
-  VerifiedWhite,
-} from '@/assets/images/icons'
-import Colors from '@/globals/Colors'
-
-import { Context } from '@/context'
-import { normalize } from '@/globals'
+import { Colors, normalize } from '@/globals'
+import React, { useEffect, useState } from 'react'
+import { Easing, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Animated } from 'react-native'
+import { Icons } from '@/assets/images/icons'
 
 /**
- *
- * @param {
- *     message: <Text> string </Text>
- *     type: "error" | "success"
- * }
+ * @param {object} param0
+ * @param {{delay: number, duration: number, height: number}} param0.animationOptions
+ * @param {boolean} [param0.animate=true]
+ * @param {boolean} [param0.closeable=true]
+ * @param {'primary'|'success'|'danger'} param0.type
+ * @param {() => void} param0.onClose
  */
-
-const Notification = ({
-  message,
-  type,
-  position = 'absolute',
-  top,
-  verification,
+export const Notification = ({
+  children,
+  icon,
+  containerStyle = {},
+  onClose,
+  type = 'primary',
+  closeable = true,
+  animate = true,
+  animationOptions,
 }) => {
-  const { notificationState, closeNotification } = useContext(Context)
-
-  const [isDashboardVisible, setIsDashboardVisible] = useState('open')
-
-  const width = Dimensions.get('window').width
-
-  const styles = StyleSheet.create({
-    container: {
-      width: width,
-      position: position,
-      top: 0 + (top ? top : 0),
-      left: 0,
-      flexDirection: 'row',
-      zIndex: 5,
-      backgroundColor:
-        type === 'success'
-          ? Colors.yellow2
-          : type === 'verified'
-          ? Colors.contentOcean
-          : Colors.secondaryBrinkPink,
-    },
-  })
-
-  const closeDashboardVerification = () => {
-    closeAnimation()
-    setTimeout(() => {
-      setIsDashboardVisible('close')
-    }, 500)
-  }
-
   const [notificationHeight] = useState(new Animated.Value(0))
 
-  let notificationStyle = {
+  const animatedStyle = {
     height: notificationHeight,
   }
 
+  const handleClose = () => {
+    onClose?.()
+  }
+
   useEffect(() => {
-    if (verification && isDashboardVisible === 'open')
+    if (animate) {
       setTimeout(() => {
         Animated.timing(notificationHeight, {
           useNativeDriver: false,
-          toValue: 110,
-          duration: 500,
+          toValue: animationOptions?.height || 70,
+          easing: Easing.ease,
+          duration: animationOptions?.duration || 240,
         }).start()
-      }, 4000)
-    else {
-      Animated.timing(notificationHeight, {
-        useNativeDriver: false,
-        toValue: 70,
-        duration: 500,
-      }).start()
+      }, animationOptions?.delay || 2000)
+    } else {
+      notificationHeight.setValue(animationOptions?.height || 70)
     }
   }, [])
 
-  const closeAnimation = () => {
-    Animated.timing(notificationHeight, {
-      useNativeDriver: false,
-      toValue: 0,
-      duration: 500,
-    }).start()
-  }
+  return (
+    <Animated.View
+      style={[
+        styles.container,
+        styles[type],
+        containerStyle,
+        animatedStyle,
+        closeable && { paddingRight: 45 },
+        icon && { paddingLeft: 35 },
+      ]}>
+      <View style={styles.iconWrapper}>{icon}</View>
+      {children}
 
-  const closeHandler = () => {
-    closeAnimation()
-    setTimeout(() => {
-      closeNotification()
-    }, 500)
-  }
-
-  if (
-    verification ? isDashboardVisible === 'open' : notificationState === 'open'
-  ) {
-    return (
-      // <SafeAreaView style={{zIndex: 1}}>
-      <Animated.View style={notificationStyle}>
-        <PaddingView paddingSize={2} style={styles.container}>
-          {type === 'success' ? (
-            <CircleTick width={normalize(24)} height={normalize(24)} />
-          ) : type === 'verified' ? (
-            <VerifiedWhite width={normalize(24)} height={normalize(24)} />
-          ) : (
-            <Warning width={normalize(24)} height={normalize(24)} />
-          )}
-          <View style={{ flex: 1 }}>{message}</View>
-          <TouchableOpacity
-            onPress={() => {
-              verification ? closeDashboardVerification() : closeHandler()
-            }}
-            style={{ height: normalize(24) }}>
-            {type === 'success' ? (
-              <CloseDark width={normalize(24)} height={normalize(24)} />
-            ) : type === 'verified' ? (
-              <CloseLight width={normalize(24)} height={normalize(24)} />
-            ) : (
-              <CloseLight width={normalize(24)} height={normalize(24)} />
-            )}
-          </TouchableOpacity>
-        </PaddingView>
-      </Animated.View>
-      // </SafeAreaView>
-    )
-  }
-
-  return <></>
+      {closeable && (
+        <TouchableOpacity onPress={handleClose} style={styles.closeWrapper}>
+          <Icons.Close style={{ color: '#fff' }} />
+        </TouchableOpacity>
+      )}
+    </Animated.View>
+  )
 }
 
-export default Notification
+const styles = StyleSheet.create({
+  closeWrapper: {
+    height: normalize(24),
+    position: 'absolute',
+    top: normalize(16),
+    right: normalize(16),
+  },
+  container: {
+    position: 'relative',
+    flexDirection: 'row',
+    paddingHorizontal: normalize(16),
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  iconWrapper: {
+    position: 'absolute',
+    top: normalize(16),
+    left: normalize(16),
+  },
+  notification: {
+    backgroundColor: Colors.secondaryBrinkPink,
+  },
+  success: {
+    backgroundColor: Colors.yellow2,
+  },
+  primary: {
+    backgroundColor: Colors.contentOcean,
+  },
+  danger: {
+    backgroundColor: Colors.errorInput,
+  },
+})

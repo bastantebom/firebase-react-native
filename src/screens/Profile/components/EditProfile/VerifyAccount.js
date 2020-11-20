@@ -15,6 +15,7 @@ import { UserContext } from '@/context/UserContext'
 import { AppText, TransitionIndicator, Notification } from '@/components'
 import Api from '@/services/Api'
 import auth from '@react-native-firebase/auth'
+import { CircleTick, Warning } from '@/assets/images/icons'
 
 const VerifyAccount = ({
   login,
@@ -167,7 +168,7 @@ const VerifyAccount = ({
         throw new Error(response.message)
       }
     } catch (error) {
-      setNotificationType('error')
+      setNotificationType('danger')
       setNotificationMessage(
         <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
           Failed resend verification code {provider} {login}
@@ -195,7 +196,11 @@ const VerifyAccount = ({
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Notification message={notificationMessage} type={notificationType} />
+        <Notification
+          type={notificationType}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.defaultStyle}>
           <VerifyIcon />

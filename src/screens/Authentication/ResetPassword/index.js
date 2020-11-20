@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -8,7 +8,7 @@ import {
   Text,
   Platform,
   SafeAreaView,
-} from 'react-native';
+} from 'react-native'
 
 import {
   Notification,
@@ -16,68 +16,74 @@ import {
   AppButton,
   AppInput,
   AppText,
-} from '@/components';
+} from '@/components'
 
-import ResetPasswordLock from '@/assets/images/reset-password.svg';
+import ResetPasswordLock from '@/assets/images/reset-password.svg'
 
-import {Close, HeaderBackGray} from '@/assets/images/icons';
+import {
+  CircleTick,
+  Close,
+  HeaderBackGray,
+  Warning,
+} from '@/assets/images/icons'
 
-import ForgotPasswordService from '@/services/ForgotPassword';
+import ForgotPasswordService from '@/services/ForgotPassword'
 
-import styles from './resetPassword.scss';
+import styles from './resetPassword.scss'
 
-import {Context} from '@/context';
+import { Context } from '@/context'
+import { normalize } from '@/globals'
 
-const ResetPassword = ({navigation}) => {
-  const [email, setEmail] = useState('');
+const ResetPassword = ({ navigation }) => {
+  const [email, setEmail] = useState('')
 
-  const {openNotification, closeNotification} = useContext(Context);
+  const { openNotification, closeNotification } = useContext(Context)
 
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
 
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [buttonState, setButtonState] = useState('dark');
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const [buttonText, setButtonText] = useState('Send');
+  const [buttonDisabled, setButtonDisabled] = useState(true)
+  const [buttonState, setButtonState] = useState('dark')
+  const [buttonLoading, setButtonLoading] = useState(false)
+  const [buttonText, setButtonText] = useState('Send')
 
-  const onEmailChange = (text) => {
-    setEmail(text);
-    setButtonDisabled(false);
-    setButtonState('active');
+  const onEmailChange = text => {
+    setEmail(text)
+    setButtonDisabled(false)
+    setButtonState('active')
 
     if (text === '') {
-      setButtonDisabled(true);
-      setButtonState('dark');
+      setButtonDisabled(true)
+      setButtonState('dark')
     }
-  };
+  }
 
   const notificationErrorTextStyle = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     color: 'white',
-  };
+  }
 
   function sendResetPasswordEmail() {
     let payload = {
       login: email,
-    };
+    }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
-        ForgotPasswordService.forgotEmail(payload).then((res) => {
+        ForgotPasswordService.forgotEmail(payload).then(res => {
           if (res?.success) {
-            setNotificationType('success');
+            setNotificationType('success')
             resolve(
               <AppText textStyle="body2" customStyle={styles.notificationText}>
                 We sent an email to{' '}
                 <AppText customStyle={styles.email}>{email}.</AppText> Click the
                 link in the email to reset your password.
-              </AppText>,
-            );
+              </AppText>
+            )
           } else {
-            setNotificationType('error');
+            setNotificationType('danger')
             resolve(
               <AppText
                 textStyle="body2"
@@ -85,35 +91,39 @@ const ResetPassword = ({navigation}) => {
                 Verification code wasn’t sent. The email{' '}
                 <AppText customStyle={styles.email}>{email}</AppText> does not
                 exist in our database.
-              </AppText>,
-            );
+              </AppText>
+            )
           }
-        });
+        })
 
-        setButtonLoading(false);
-        setButtonDisabled(false);
-        setButtonText('Resend the link');
-        closeNotificationTimer();
-      }, 2000);
-    });
+        setButtonLoading(false)
+        setButtonDisabled(false)
+        setButtonText('Resend the link')
+        closeNotificationTimer()
+      }, 2000)
+    })
   }
 
   async function sendEmail() {
-    const msg = await sendResetPasswordEmail();
-    setNotificationMessage(msg);
-    openNotification();
+    const msg = await sendResetPasswordEmail()
+    setNotificationMessage(msg)
+    openNotification()
   }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      closeNotification();
-    }, 5000);
-  };
+      closeNotification()
+    }, 5000)
+  }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <SafeAreaView style={{zIndex: 2}}>
-        <Notification message={notificationMessage} type={notificationType} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ zIndex: 2 }}>
+        <Notification
+          type={notificationType}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
       </SafeAreaView>
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
         <View style={styles.closeIconContainer}>
@@ -138,7 +148,7 @@ const ResetPassword = ({navigation}) => {
           label="Email or Mobile Number"
           customStyle={styles.inputBox}
           value={email}
-          onChangeText={(text) => onEmailChange(text)}
+          onChangeText={text => onEmailChange(text)}
         />
 
         <AppButton
@@ -149,15 +159,15 @@ const ResetPassword = ({navigation}) => {
           loading={buttonLoading}
           disabled={buttonDisabled}
           onPress={() => {
-            setButtonLoading(true);
-            setButtonDisabled(true);
-            sendEmail();
-            Keyboard.dismiss();
+            setButtonLoading(true)
+            setButtonDisabled(true)
+            sendEmail()
+            Keyboard.dismiss()
           }}
         />
       </AppViewContainer>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default ResetPassword;
+export default ResetPassword

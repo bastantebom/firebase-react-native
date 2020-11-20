@@ -69,6 +69,7 @@ const signInWithProvider = async provider => {
     if (provider === 'apple')
       full_name = `${credential.fullName.givenName} ${credential.fullName.familyName}`
     delete credential.fullName
+
     const authResponse = await auth().signInWithCredential(credential)
     if (provider !== 'apple') full_name = authResponse.user.displayName
     const uid = authResponse.user.uid

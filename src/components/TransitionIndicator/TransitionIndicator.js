@@ -1,18 +1,12 @@
 import React from 'react'
 import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native'
 
-const TransitionIndicator = ({ loading, backgroundStyle }) => {
+const TransitionIndicator = ({ loading, backdropStyle }) => {
   return (
-    <Modal
-      transparent={true}
-      animationType={'none'}
-      visible={loading}
-      onRequestClose={() => {
-        console.log('close modal')
-      }}>
-      <View style={[styles.modalBackground, backgroundStyle]}>
+    <Modal transparent={true} animationType={'none'} visible={loading}>
+      <View style={[styles.modalBackground, backdropStyle]}>
         <View style={styles.activityIndicatorWrapper}>
-          <ActivityIndicator size="large" animating={loading} />
+          <ActivityIndicator color="#3781FC" size="large" animating={loading} />
         </View>
       </View>
     </Modal>

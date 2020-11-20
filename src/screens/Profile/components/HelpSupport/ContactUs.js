@@ -14,6 +14,7 @@ import {
   EmailContactUs,
   CallContactUs,
   LocationContactUs,
+  CircleTick,
 } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
@@ -87,10 +88,13 @@ const ContactUs = ({ toggleContactUs }) => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <Notification
-          message={notificationMessage}
           type={notificationType}
-          position="absolute"
-        />
+          customStyle={{
+            position: 'absolute',
+          }}
+          icon={<CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <View style={{ padding: 24 }}>
           <ScreenHeaderTitle
             iconSize={16}

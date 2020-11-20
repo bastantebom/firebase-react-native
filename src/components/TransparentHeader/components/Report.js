@@ -1,25 +1,26 @@
 //import liraries
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   TextInput,
   StyleSheet,
   SafeAreaView,
   ScrollView,
-} from 'react-native';
+} from 'react-native'
 import {
   TransitionIndicator,
   ScreenHeaderTitle,
   AppButton,
   Notification,
   AppText,
-} from '@/components';
-import {Colors, normalize} from '@/globals';
-import AdminFunctionService from '@/services/Admin/AdminFunctions';
-import PostService from '@/services/Post/PostService';
-import {Context} from '@/context';
-import {UserContext} from '@/context/UserContext';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+} from '@/components'
+import { Colors, normalize } from '@/globals'
+import AdminFunctionService from '@/services/Admin/AdminFunctions'
+import PostService from '@/services/Post/PostService'
+import { Context } from '@/context'
+import { UserContext } from '@/context/UserContext'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { CircleTick } from '@/assets/images/icons'
 
 // create a component
 const Report = ({
@@ -30,97 +31,97 @@ const Report = ({
   postTitle,
   type,
 }) => {
-  const {user} = useContext(UserContext);
-  const {openNotification, closeNotification} = useContext(Context);
-  const [reportMessage, setReportMessage] = useState('');
+  const { user } = useContext(UserContext)
+  const { openNotification, closeNotification } = useContext(Context)
+  const [reportMessage, setReportMessage] = useState('')
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
     borderColor: Colors.buttonDisable,
-  });
-  const [buttonDisable, setButtonDisable] = useState(true);
-  const [IS_UPDATING, setIS_UPDATING] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationType, setNotificationType] = useState();
+  })
+  const [buttonDisable, setButtonDisable] = useState(true)
+  const [IS_UPDATING, setIS_UPDATING] = useState(false)
+  const [notificationMessage, setNotificationMessage] = useState()
+  const [notificationType, setNotificationType] = useState()
 
-  const {uid, displayName} = user;
+  const { uid, displayName } = user
 
   //console.log(displayName);
 
-  const reportMessageHandler = (text) => {
+  const reportMessageHandler = text => {
     //console.log(text);
     if (text.length > 0) {
-      setButtonState(false);
+      setButtonState(false)
     } else {
-      setButtonState(true);
+      setButtonState(true)
     }
-    setReportMessage(text);
-  };
+    setReportMessage(text)
+  }
 
-  const setButtonState = (j) => {
-    setButtonStyle({});
+  const setButtonState = j => {
+    setButtonStyle({})
     if (j) {
       setButtonStyle({
         backgroundColor: Colors.buttonDisable,
         borderColor: Colors.buttonDisable,
-      });
+      })
     }
-    setButtonDisable(j);
-  };
+    setButtonDisable(j)
+  }
 
   const onSubmitReportHandler = () => {
-    setIS_UPDATING(true);
+    setIS_UPDATING(true)
     if (type === 'user') {
       AdminFunctionService.reportUser({
         reported_uid: userID,
         message: reportMessage,
         uid: uid,
       })
-        .then((response) => {
+        .then(response => {
           if (response.success) {
-            setIS_UPDATING(false);
+            setIS_UPDATING(false)
             triggerNotification(
               username +
                 ' has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
-              'success',
-            );
-            setReportMessage('');
+              'success'
+            )
+            setReportMessage('')
           } else {
-            setIS_UPDATING(false);
+            setIS_UPDATING(false)
 
-            console.log(response);
+            console.log(response)
           }
         })
-        .catch((error) => {
-          setIS_UPDATING(false);
+        .catch(error => {
+          setIS_UPDATING(false)
 
-          console.log(error);
-        });
+          console.log(error)
+        })
     } else {
-      console.log('report post');
+      console.log('report post')
       PostService.reportPost({
         pid: postId,
         message: reportMessage,
         uid: uid,
       })
-        .then((response) => {
+        .then(response => {
           if (response.success) {
-            setIS_UPDATING(false);
+            setIS_UPDATING(false)
             triggerNotification(
               'Post has been reported successfully. We will review it and validate it. Wait 24 to 48 hours for our feedback',
-              'success',
-            );
-            setReportMessage('');
+              'success'
+            )
+            setReportMessage('')
           } else {
-            setIS_UPDATING(false);
-            console.log(response);
+            setIS_UPDATING(false)
+            console.log(response)
           }
         })
-        .catch((error) => {
-          setIS_UPDATING(false);
-          console.log(error);
-        });
+        .catch(error => {
+          setIS_UPDATING(false)
+          console.log(error)
+        })
     }
-  };
+  }
 
   const notificationErrorTextStyle = {
     flex: 1,
@@ -128,17 +129,17 @@ const Report = ({
     marginRight: 12,
     color: 'white',
     flexWrap: 'wrap',
-  };
+  }
 
   const notificationText = {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
     flexWrap: 'wrap',
-  };
+  }
 
   const triggerNotification = (message, type) => {
-    setNotificationType(type);
+    setNotificationType(type)
     setNotificationMessage(
       <AppText
         textStyle="body2"
@@ -146,31 +147,33 @@ const Report = ({
           type === 'success' ? notificationText : notificationErrorTextStyle
         }>
         {message}
-      </AppText>,
-    );
-    openNotification();
+      </AppText>
+    )
+    openNotification()
     //setIsScreenLoading(false);
-    closeNotificationTimer();
-  };
+    closeNotificationTimer()
+  }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      setNotificationType();
-      setNotificationMessage();
-      closeNotification();
-    }, 5000);
-  };
+      setNotificationType()
+      setNotificationMessage()
+      closeNotification()
+    }, 5000)
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <TransitionIndicator loading={IS_UPDATING} />
         <View
           style={{
             flex: 1,
             padding: 24,
           }}>
-          <Notification message={notificationMessage} type={notificationType} />
+          <Notification type={notificationType} icon={<CircleTick />}>
+            {notificationMessage}
+          </Notification>
           <ScreenHeaderTitle
             title={
               username
@@ -185,7 +188,7 @@ const Report = ({
 
           <ScrollView
             keyboardShouldPersistTaps="handled"
-            style={{paddingTop: normalize(16)}}>
+            style={{ paddingTop: normalize(16) }}>
             <TextInput
               value={reportMessage}
               multiline={true}
@@ -210,7 +213,7 @@ const Report = ({
                 marginBottom: 16,
                 textAlign: 'left',
               }}
-              onChangeText={(text) => reportMessageHandler(text)}
+              onChangeText={text => reportMessageHandler(text)}
               underlineColorAndroid={'transparent'}
               textAlignVertical="top"
               scrollEnabled={false}
@@ -230,22 +233,22 @@ const Report = ({
               disabled={buttonDisable}
               customStyle={buttonStyle}
               onPress={() => {
-                onSubmitReportHandler();
+                onSubmitReportHandler()
               }}
             />
           </View>
         </View>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})
 
 //make this component available to the app
-export default Report;
+export default Report

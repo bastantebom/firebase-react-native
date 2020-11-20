@@ -23,6 +23,7 @@ import Modal from 'react-native-modal'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Api from '@/services/Api'
 import { Context } from '@/context'
+import { CircleTick, Warning } from '@/assets/images/icons'
 
 const UpdateTemp = ({ toggleUpdateTemp }) => {
   const { userInfo, user, setUserInfo } = useContext(UserContext)
@@ -95,12 +96,12 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
         )
       }
       if (!updateTempResponse.success) {
-        triggerNotification('Temperature update failed!', 'error')
+        triggerNotification('Temperature update failed!', 'danger')
       }
       setIsUpdating(false)
     } catch (error) {
       setIsUpdating(false)
-      triggerNotification('Temperature update failed!', 'error')
+      triggerNotification('Temperature update failed!', 'danger')
       console.log(error?.message || error)
     }
   }
@@ -146,7 +147,11 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        <Notification message={notificationMessage} type={notificationType} />
+        <Notification
+          type={notificationType}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
           <ScreenHeaderTitle
             iconSize={16}

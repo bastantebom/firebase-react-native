@@ -19,7 +19,7 @@ import {
 } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
-import { EyeDark, EyeLight } from '@/assets/images/icons'
+import { CircleTick, EyeDark, EyeLight, Warning } from '@/assets/images/icons'
 import { normalize, Colors } from '@/globals'
 import Verify from './VerifyAccount'
 import Modal from 'react-native-modal'
@@ -57,12 +57,12 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
       })
       if (changeLoginResponse.success) setVerify(!verify)
       else {
-        triggerNotification('Code failed to sent', 'error')
+        triggerNotification('Code failed to sent', 'danger')
         setEnabled(false)
       }
     }
     if (!verifiedPasswordResponse.verified) {
-      triggerNotification('Current Password is not correct', 'error')
+      triggerNotification('Current Password is not correct', 'danger')
       setEnabled(false)
     }
   }
@@ -109,11 +109,14 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <Notification
-          message={notificationMessage}
           type={notificationType}
-          top={normalize(30)}
-          position="absolute"
-        />
+          containerStyle={{
+            position: 'absolute',
+            top: normalize(30),
+          }}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
             iconSize={16}

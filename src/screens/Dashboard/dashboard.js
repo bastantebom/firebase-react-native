@@ -1,62 +1,125 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import Modal from 'react-native-modal'
 import {
   View,
   StyleSheet,
   TouchableWithoutFeedback,
   SafeAreaView,
-  Dimensions,
+  TouchableOpacity,
 } from 'react-native'
 
-import { Posts, WhiteOpacity, Notification } from '@/components'
+import { Posts, AppText, WhiteOpacity } from '@/components'
+import { Notification } from '@/components/Notification'
 import FilterSlider from './components/FilterSlider'
-import { GlobalStyle, Colors, normalize } from '@/globals'
 
-import Modal from 'react-native-modal'
+import { Icons } from '@/assets/images/icons'
+import { Colors, normalize } from '@/globals'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
-import { VerificationScreen } from '@/screens/Dashboard/Verification'
 
 import SearchBarWithFilter from './components/SearchBarWithFilter'
+import AsyncStorage from '@react-native-community/async-storage'
 
-function Dashboard(props) {
-  const { user } = useContext(UserContext)
+/**
+ * @param {object} param0
+ * @param {() => void} param0.onPress
+ * @param {() => void} param0.onClose
+ */
+const VerifyNotifictaion = ({ onPress, onClose }) => {
+  return (
+    <Notification
+      icon={<Icons.VerifiedWhite />}
+      onClose={onClose}
+      type="primary"
+      animationOptions={{ height: 110 }}>
+      <View
+        style={{
+          zIndex: 999,
+          position: 'relative',
+        }}>
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'space-evenly',
+            marginLeft: 15,
+          }}>
+          <TouchableOpacity onPress={onPress}>
+            <AppText
+              textStyle="body2"
+              color={Colors.neutralsWhite}
+              customStyle={{ marginBottom: 10 }}>
+              Safeguard your account and boost your credibility within the
+              community.
+            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText textStyle="body2" color={Colors.neutralsWhite}>
+                Get bee-rified
+              </AppText>
+              <Icons.ChevronRight
+                style={{ color: '#fff', marginLeft: normalize(4) }}
+                width={normalize(24)}
+                height={normalize(24)}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Notification>
+  )
+}
 
-  const [modalState, setModalState] = useState(false)
+/** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
+const DashboardScreen = ({ navigation }) => {
+  const { user, userStatus } = useContext(UserContext)
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false)
+  const [
+    shouldShowVerifyNotification,
+    setShouldShowVerifyNotification,
+  ] = useState(false)
+
+  const [
+    isVerifyNotificationVisible,
+    setIsVerifyNotificationVisible,
+  ] = useState(false)
+
   const [isLoading, setIsLoading] = useState(true)
-
   const { posts } = useContext(Context)
 
-  const toggleModal = () => {
-    setModalState(!modalState)
-  }
+  useEffect(() => {
+    if (!userStatus?.verified) return
+    const isVerified = Object.values(userStatus?.verified).every(
+      status => status === 'completed'
+    )
+    setIsVerifyNotificationVisible(
+      !!user && !isVerified && shouldShowVerifyNotification
+    )
+  }, [userStatus, shouldShowVerifyNotification])
 
-  const [menu, setMenu] = useState(false)
-
-  const toggleMenu = () => {
-    setMenu(!menu)
-  }
+  useEffect(() => {
+    AsyncStorage.getItem('hide-verify-notification').then(hidden => {
+      setShouldShowVerifyNotification(hidden !== 'true')
+    })
+  }, [])
 
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
-        {user && (
-          <Notification
-            message={
-              <VerificationScreen
-                onPress={() => toggleMenu()}
-                menu={menu}
-                toggleMenu={() => toggleMenu()}
-                modalBack={() => setMenu(false)}
-              />
-            }
-            type={'verified'}
-            position="relative"
-            verification
+        {isVerifyNotificationVisible && (
+          <VerifyNotifictaion
+            onPress={() => {
+              navigation.navigate('NBTScreen', {
+                screen: 'Verification',
+              })
+            }}
+            onClose={() => {
+              AsyncStorage.setItem('hide-verify-notification', 'true')
+              setIsVerifyNotificationVisible(false)
+            }}
           />
         )}
 
         <View style={styles.container}>
-          <SearchBarWithFilter toggleFilter={toggleModal} />
+          <SearchBarWithFilter show={() => setIsFiltersVisible(true)} />
           <Posts
             type="dashboard"
             data={posts}
@@ -67,12 +130,12 @@ function Dashboard(props) {
         <WhiteOpacity />
       </SafeAreaView>
       <Modal
-        isVisible={modalState}
+        isVisible={isFiltersVisible}
         animationIn="slideInRight"
         animationInTiming={1000}
         animationOut="slideOutRight"
         animationOutTiming={1000}
-        onSwipeComplete={toggleModal}
+        onSwipeComplete={() => setIsFiltersVisible(false)}
         swipeDirection="right"
         style={{
           justifyContent: 'flex-end',
@@ -80,11 +143,11 @@ function Dashboard(props) {
           marginLeft: normalize(32),
         }}
         customBackdrop={
-          <TouchableWithoutFeedback onPress={toggleModal}>
+          <TouchableWithoutFeedback onPress={() => setIsFiltersVisible(false)}>
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
-        <FilterSlider modalToggler={toggleModal} />
+        <FilterSlider close={() => setIsFiltersVisible(false)} />
       </Modal>
     </>
   )
@@ -99,4 +162,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Dashboard
+export default DashboardScreen

@@ -35,7 +35,7 @@ import LikedPost from '@/screens/Profile/components/Account/LikedPost'
 
 const { width } = Dimensions.get('window')
 
-const SearchBarWithFilter = ({ toggleFilter }) => {
+const SearchBarWithFilter = ({ show }) => {
   const scrollY = useRef(new Animated.Value(0))
 
   const { searchType, setPage } = useContext(Context)
@@ -137,7 +137,7 @@ const SearchBarWithFilter = ({ toggleFilter }) => {
                   flexDirection: 'row',
                   opacity: searchBarFocused ? 0 : 1,
                 }}>
-                <TouchableOpacity activeOpacity={0.7} onPress={toggleFilter}>
+                <TouchableOpacity activeOpacity={0.7} onPress={show}>
                   <View style={styles.circleButton}>
                     <FilterDark width={normalize(18)} height={normalize(18)} />
                   </View>

@@ -7,10 +7,13 @@ const baseURL =
   process.env.BASE_URL ||
   (() => {
     switch (process.env.NODE_ENV) {
+      case 'prod':
       case 'production':
         return 'https://api.servbees.com/'
       case 'local':
         return 'http://localhost:5000'
+      case 'dev':
+      case 'develop':
       case 'development':
       default:
         return 'https://servbees-api-dev.onrender.com'

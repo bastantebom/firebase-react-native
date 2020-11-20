@@ -18,7 +18,14 @@ import {
   FloatingAppInput,
   Notification,
 } from '@/components'
-import { EyeDark, EyeLight, VerifiedGreen, Close } from '@/assets/images/icons'
+import {
+  EyeDark,
+  EyeLight,
+  VerifiedGreen,
+  Close,
+  Warning,
+  CircleTick,
+} from '@/assets/images/icons'
 import { normalize, Colors } from '@/globals'
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo'
@@ -62,7 +69,7 @@ const ChangePassword = ({ toggleChangePassword }) => {
               )
             } else {
               setisUpdating(false)
-              triggerNotification(response.message, 'error')
+              triggerNotification(response.message, 'danger')
               console.log(response)
             }
           })
@@ -74,14 +81,14 @@ const ChangePassword = ({ toggleChangePassword }) => {
         setisUpdating(false)
         triggerNotification(
           "New Password and Confirm Password didn't match",
-          'error'
+          'danger'
         )
       }
     } else {
       setisUpdating(false)
       triggerNotification(
         'Please complete the form before you can update the your Password',
-        'error'
+        'danger'
       )
       //console.log('Please complete form');
     }
@@ -99,7 +106,7 @@ const ChangePassword = ({ toggleChangePassword }) => {
           hideIcon()
           setButtonState(false)
         } else {
-          triggerNotification('Current Password does not correct', 'error')
+          triggerNotification('Current Password does not correct', 'danger')
           setButtonState(true)
         }
       })
@@ -171,7 +178,11 @@ const ChangePassword = ({ toggleChangePassword }) => {
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        <Notification message={notificationMessage} type={notificationType} />
+        <Notification
+          type={notificationType}
+          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          {notificationMessage}
+        </Notification>
         <TransitionIndicator loading={isUpdating} />
 
         <View

@@ -1,8 +1,8 @@
 export default {
   //Not Env Specific
   apiKey: 'AIzaSyCu10vZtdRHmJ7bxnebSSj7u1LFeMV4GUs',
-  latitudeDelta: 0.00082,
-  longitudeDelta: 0.00082,
+  latitudeDelta: 0.0075,
+  longitudeDelta: 0.0075,
 
   local: {
     api: 'http://localhost:5000',

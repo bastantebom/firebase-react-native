@@ -2,10 +2,11 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { ProgressBar } from 'react-native-paper'
-import { VerificationScreen } from '@/screens/Dashboard/Verification'
 import { normalize, Colors } from '@/globals'
 import { Verified, ArrowRight } from '@/assets/images/icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { AppText } from '@/components'
+import { useNavigation } from '@react-navigation/native'
 
 // create a component
 const VerificationStatus = ({ statusPercentage }) => {
@@ -13,6 +14,9 @@ const VerificationStatus = ({ statusPercentage }) => {
   const toggleVerification = () => {
     setVerification(!verification)
   }
+
+  const navigation = useNavigation()
+
   return (
     <View
       style={{
@@ -35,13 +39,21 @@ const VerificationStatus = ({ statusPercentage }) => {
             }}>
             <Verified width={24} height={24} />
           </View>
-          <VerificationScreen
-            type="profile"
-            onPress={() => toggleVerification()}
-            menu={verification}
-            toggleMenu={() => toggleVerification()}
-            modalBack={() => setVerification(false)}
-          />
+          <View style={{ marginHorizontal: 16 }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('NBTScreen', {
+                  screen: 'Verification',
+                })
+              }}>
+              <AppText textStyle="body1" color={Colors.primaryMidnightBlue}>
+                Get the verified badge
+              </AppText>
+              <AppText textStyle="caption" color={Colors.primaryMidnightBlue}>
+                Short blurb here explaining why
+              </AppText>
+            </TouchableOpacity>
+          </View>
           <View style={{ flex: 2, alignItems: 'flex-end' }}>
             <ArrowRight width={24} height={24} />
           </View>

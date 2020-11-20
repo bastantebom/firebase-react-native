@@ -5,6 +5,8 @@
  * <Close />
  */
 
+import Back from './back.svg'
+
 //  notification
 import CircleTick from '@/assets/images/icons/circle-tick.svg'
 import Warning from '@/assets/images/icons/warning.svg'
@@ -148,6 +150,7 @@ import Lock from '@/assets/images/icons/lock.svg'
 import FolderAdd from '@/assets/images/icons/folder-add.svg'
 
 import Flash from '@/assets/images/icons/camera-flash.svg'
+import FlashOff from '@/assets/images/icons/camera-flash-off.svg'
 import Flip from '@/assets/images/icons/camera-flip.svg'
 import Temperature from './temperature.svg'
 import BeeJoinedTime from './bee-joined-time.svg'
@@ -211,7 +214,7 @@ import AngleDown from './AngleDown.svg'
 import FormArrowRight from './FormArrowRight.svg'
 import LoginApple from './login_Apple03.svg'
 
-import CircleAdd from './CircleAdd.svg'
+import CircleAdd from './circle-add.svg'
 import VerticalEllipsis from './VerticalEllipsis.svg'
 
 //Calendar
@@ -428,4 +431,25 @@ export {
   LikeColored,
   ChevronRightWhite,
   Search,
+}
+
+export const Icons = {
+  ArrowRight,
+  Back,
+  Card,
+  ChevronRight,
+  CircleAdd,
+  CircleTick,
+  Close,
+  Flash,
+  FlashOff,
+  Flip,
+  FolderAdd,
+  Id,
+  Lock,
+  Mobile,
+  Verified,
+  VerifiedWhite,
+  VerifyTick,
+  Warning
 }
