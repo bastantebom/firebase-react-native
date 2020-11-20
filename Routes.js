@@ -485,7 +485,7 @@ export default Routes = () => {
       <Animated.View style={fadingContainerStyle}>
         <NavigationContainer>
           {token && userInfo?.uid ? (
-            !userStatusCount ? (
+            userStatus?.verified && !userStatusCount ? (
               <Stack.Navigator headerMode="none">
                 <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
               </Stack.Navigator>
