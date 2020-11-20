@@ -213,7 +213,7 @@ const EditProfile = ({
       birth_date: bDate,
       email,
       phone_number,
-      gender: g,
+      gender,
       addresses: userInfo.addresses,
     }
 
