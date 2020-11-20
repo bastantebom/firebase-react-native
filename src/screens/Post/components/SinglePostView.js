@@ -413,9 +413,15 @@ const SinglePostView = props => {
                     customStyle={{ marginRight: 8 }}>
                     ₱ {price}
                   </AppText>
-                  <AppText customStyle={{ fontSize: normalize(10) }}>
-                    PRICE
-                  </AppText>
+                  {type !== 'need' ? (
+                    <AppText customStyle={{ fontSize: normalize(10) }}>
+                      PRICE
+                    </AppText>
+                  ) : (
+                    <AppText customStyle={{ fontSize: normalize(10) }}>
+                      BUDGET
+                    </AppText>
+                  )}
                 </>
               )}
             </View>
@@ -573,17 +579,13 @@ const SinglePostView = props => {
                           key={item.id}
                           onPress={() => showItemModalWithItem(item)}>
                           <View style={styles.itemWrapper}>
-                            {item.image ? (
+                            {item?.image?.substring(0, 8) === 'https://' && (
                               <View style={styles.imageWrapper}>
                                 <Image
                                   style={styles.image}
                                   source={{ uri: item.image }}
                                 />
                               </View>
-                            ) : (
-                              <>
-                                <AppText>No image</AppText>
-                              </>
                             )}
                             <View style={styles.detailWrapper}>
                               <View style={styles.titleDesc}>
@@ -631,6 +633,7 @@ const SinglePostView = props => {
           <ItemModal
             item={itemModalData}
             postType={type}
+            postID={post_id}
             closeModal={() => showItemModal(false)}
           />
         </Modal>
@@ -677,7 +680,13 @@ const SinglePostView = props => {
                 <TouchableOpacity
                   style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
                   activeOpacity={0.7}
-                  onPress={() => showBasketModal(true)}>
+                  onPress={() => {
+                    if (type === 'need') {
+                      showOfferModal(true)
+                    } else {
+                      showBasketModal(true)
+                    }
+                  }}>
                   <View style={styles.cartButtonContainer}>
                     <View
                       style={{
@@ -686,42 +695,54 @@ const SinglePostView = props => {
                         width: '100%',
                         paddingHorizontal: normalize(16),
                       }}>
-                      <View style={{ flexDirection: 'row' }}>
-                        <View style={{ position: 'relative' }}>
-                          <ShoppingCart
-                            width={normalize(24)}
-                            height={normalize(24)}
-                          />
-                          <View
-                            style={{
-                              position: 'absolute',
-                              right: normalize(-4),
-                              top: normalize(-3),
-                            }}>
-                            <CartDot
-                              width={normalize(10)}
-                              height={normalize(10)}
-                            />
-                          </View>
-                        </View>
+                      {type === 'need' ? (
                         <View
                           style={{
-                            backgroundColor: 'white',
-                            paddingVertical: normalize(2),
-                            paddingHorizontal: normalize(7),
-                            borderRadius: 11,
-                            marginLeft: normalize(5),
+                            flex: 1,
+                            alignItems: 'center',
                           }}>
-                          <AppText
-                            textStyle="body3"
-                            color={Colors.contentOcean}>
-                            {userCart?.length}
-                          </AppText>
+                          <AppText textStyle="body3">Make an offer</AppText>
                         </View>
-                      </View>
-                      <AppText textStyle="body1medium">
-                        ₱{totalCartPrice}
-                      </AppText>
+                      ) : (
+                        <>
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={{ position: 'relative' }}>
+                              <ShoppingCart
+                                width={normalize(24)}
+                                height={normalize(24)}
+                              />
+                              <View
+                                style={{
+                                  position: 'absolute',
+                                  right: normalize(-4),
+                                  top: normalize(-3),
+                                }}>
+                                <CartDot
+                                  width={normalize(10)}
+                                  height={normalize(10)}
+                                />
+                              </View>
+                            </View>
+                            <View
+                              style={{
+                                backgroundColor: 'white',
+                                paddingVertical: normalize(2),
+                                paddingHorizontal: normalize(7),
+                                borderRadius: 11,
+                                marginLeft: normalize(5),
+                              }}>
+                              <AppText
+                                textStyle="body3"
+                                color={Colors.contentOcean}>
+                                {userCart?.length}
+                              </AppText>
+                            </View>
+                          </View>
+                          <AppText textStyle="body1medium">
+                            ₱{totalCartPrice}
+                          </AppText>
+                        </>
+                      )}
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -827,6 +848,7 @@ const SinglePostView = props => {
         <BasketModal
           closeModal={() => showBasketModal(false)}
           postType={type}
+          postData={props.route?.params?.data}
         />
       </Modal>
       <Modal
@@ -841,7 +863,11 @@ const SinglePostView = props => {
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
-        <OfferModal closeModal={() => showOfferModal(false)} postType={type} />
+        <OfferModal
+          closeModal={() => showOfferModal(false)}
+          postType={type}
+          postData={props.route?.params?.data}
+        />
       </Modal>
     </>
   )

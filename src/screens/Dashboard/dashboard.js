@@ -132,9 +132,10 @@ const DashboardScreen = ({ navigation }) => {
       <Modal
         isVisible={isFiltersVisible}
         animationIn="slideInRight"
-        animationInTiming={1000}
+        animationInTiming={450}
         animationOut="slideOutRight"
-        animationOutTiming={1000}
+        onSwipeComplete={() => setIsFiltersVisible(false)}
+        animationOutTiming={450}
         onSwipeComplete={() => setIsFiltersVisible(false)}
         swipeDirection="right"
         style={{

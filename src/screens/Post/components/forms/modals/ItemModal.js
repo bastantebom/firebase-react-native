@@ -5,9 +5,13 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Animated,
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
+import Modal from 'react-native-modal'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { AppText, AppInput, ScreenHeaderTitle, AppButton } from '@/components'
@@ -16,8 +20,9 @@ import { normalize, Colors } from '@/globals'
 
 import { ChevronDown, MinusSign, PlusSign } from '@/assets/images/icons'
 import { Context } from '@/context'
+import { ImageModal } from '@/screens/Post/components/ImageModal'
 
-const ItemModal = ({ closeModal, postType, item }) => {
+const ItemModal = ({ closeModal, postType, item, postID }) => {
   const [notes, setNotes] = useState()
   const [qty, setQty] = useState(0)
   const [date, setDate] = useState(new Date())
@@ -28,8 +33,38 @@ const ItemModal = ({ closeModal, postType, item }) => {
   const [selectedTime, setSelectedTime] = useState()
   const [subtotal, setSubtotal] = useState(0)
   const [currentItem, setCurrentItem] = useState(item)
+  const [deleteCurrentCartPrompt, showDeleteCurrentCartPrompt] = useState(false)
+  const [imageModal, showImageModal] = useState(false)
 
-  const { userCart, setUserCart } = useContext(Context)
+  const { userCart, setUserCart, setCurrentPost } = useContext(Context)
+
+  const [animatedPadding] = useState(new Animated.Value(0))
+
+  function onKeyboardDidShow(e) {
+    const keyboardHeight = e.endCoordinates.height
+    keyboardToggleAnimation(keyboardHeight)
+  }
+
+  function onKeyboardDidHide() {
+    keyboardToggleAnimation(0)
+  }
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', onKeyboardDidShow)
+    Keyboard.addListener('keyboardDidHide', onKeyboardDidHide)
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', onKeyboardDidHide)
+    }
+  }, [])
+
+  let keyboardToggleAnimation = height => {
+    Animated.timing(animatedPadding, {
+      toValue: height,
+      duration: 500,
+      useNativeDriver: false,
+    }).start()
+  }
 
   const onChangeDate = selectedDate => {
     const currentDate = selectedDate || date
@@ -76,61 +111,99 @@ const ItemModal = ({ closeModal, postType, item }) => {
     setSubtotal(qty * item.price)
   }, [qty])
 
-  const addToCart = () => {
-    let currentCart = userCart
+  const addToCart = async () => {
+    let isNewPost = await setCurrentPost(postID)
 
-    const found = currentCart.find(item => item.id === currentItem.id)
+    if (!isNewPost) {
+      let currentCart = userCart
 
-    const data = {
-      id: currentItem.id,
-      quantity: qty,
-      name: currentItem.title,
-      price: currentItem.price,
-      note: notes,
+      const found = currentCart.find(item => item.id === currentItem.id)
+
+      const data = {
+        id: currentItem.id,
+        quantity: qty,
+        name: currentItem.title,
+        price: currentItem.price,
+        note: notes,
+      }
+
+      if (found) {
+        currentCart = currentCart.filter(item => {
+          if (item.id !== currentItem.id) {
+            return item
+          }
+        })
+
+        currentCart.push(data)
+      } else {
+        currentCart.push(data)
+      }
+
+      setUserCart(currentCart)
+      closeModal()
     }
 
-    if (found) {
-      currentCart = currentCart.filter(item => {
-        if (item.id !== currentItem.id) {
-          return item
-        }
-      })
+    if (isNewPost) {
+      let currentCart = []
+      const data = {
+        id: currentItem.id,
+        quantity: qty,
+        name: currentItem.title,
+        price: currentItem.price,
+        note: notes,
+      }
 
       currentCart.push(data)
-    } else {
-      currentCart.push(data)
+      setUserCart(currentCart)
+      showDeleteCurrentCartPrompt(true)
     }
+  }
 
-    setUserCart(currentCart)
+  let paddingAnimatedStyle = {
+    paddingBottom: animatedPadding,
   }
 
   return (
     <View>
-      <KeyboardAwareScrollView
-        keyboardOpeningTime={50}
-        style={{
-          backgroundColor: 'white',
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          paddingHorizontal: 20,
-          paddingTop: normalize(20),
-        }}>
+      <Animated.View
+        style={[
+          {
+            backgroundColor: 'white',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            paddingHorizontal: 20,
+            paddingTop: normalize(16),
+          },
+          paddingAnimatedStyle,
+        ]}>
         <ScreenHeaderTitle close={closeModal} iconSize={normalize(16)} />
-        <View style={{ paddingBottom: 30 }}>
+        <View style={{ paddingBottom: 32 }}>
           <View style={styles.itemWrapper}>
-            <View style={styles.imageWrapper}>
-              <Image style={styles.image} source={{ uri: currentItem.image }} />
-            </View>
+            {currentItem?.image?.substring(0, 8) === 'https://' && (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => showImageModal(true)}>
+                <View style={styles.imageWrapper}>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: currentItem.image }}
+                  />
+                </View>
+              </TouchableOpacity>
+            )}
             <View
               style={{
                 flex: 1,
                 flexDirection: 'row',
-                paddingVertical: normalize(10),
+                paddingTop: 16,
+                paddingBottom: 8,
                 justifyContent: 'space-between',
               }}>
               <View style={styles.titleDesc}>
                 <AppText textStyle="body1medium">{currentItem.title}</AppText>
-                <AppText textStyle="body2">{currentItem.description}</AppText>
+                {currentItem.description && (
+                  <AppText textStyle="body2">{currentItem.description}</AppText>
+                )}
               </View>
               <View style={styles.itemPrice}>
                 <AppText textStyle="subtitle1">₱{currentItem.price}</AppText>
@@ -178,7 +251,7 @@ const ItemModal = ({ closeModal, postType, item }) => {
               <AppInput
                 style={{ marginVertical: normalize(16) }}
                 label="Notes (Optional)"
-                placeholder="(ex. no onions)"
+                // placeholder="(ex. no onions)"
                 value={notes}
                 onChangeText={notes => setNotes(notes)}
               />
@@ -299,7 +372,73 @@ const ItemModal = ({ closeModal, postType, item }) => {
             <></>
           )}
         </View>
-      </KeyboardAwareScrollView>
+      </Animated.View>
+
+      <Modal
+        isVisible={imageModal}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ImageModal
+          close={() => showImageModal(false)}
+          data={[currentItem?.image]}
+        />
+        <View>
+          <AppText>Hello</AppText>
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={deleteCurrentCartPrompt}
+        animationIn="zoomIn"
+        animationInTiming={450}
+        animationOut="zoomOut"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showDeleteCurrentCartPrompt(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: normalize(300),
+            width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}>
+          <AppText>Are you sure?</AppText>
+          <AppText>Adding other items will clear your current basket.</AppText>
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.buttonDisable,
+              paddingHorizontal: 24,
+              paddingVertical: 8,
+            }}>
+            <AppText>Okay</AppText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.primaryYellow,
+              paddingHorizontal: 24,
+              paddingVertical: 8,
+            }}>
+            <AppText>Cancel</AppText>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   )
 }

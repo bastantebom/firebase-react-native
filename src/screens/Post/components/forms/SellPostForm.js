@@ -224,10 +224,33 @@ const SellPostForm = ({
   const checkFormContent = () => {
     let paymentListValues = Object.values(paymentMethods)
 
+    // Required fields for sell form
     if (
       title &&
-      price &&
-      (pickupState || (deliveryState && paymentListValues.includes(true)))
+      (price || listAsMultiple) &&
+      (pickupState || deliveryState) &&
+      paymentListValues.includes(true) &&
+      activeForm.type === 'sell'
+    )
+      return setButtonEnabled(false)
+
+    // Required fields for need form
+    if (
+      title &&
+      budgetMaximum &&
+      budgetMinimum &&
+      activeForm.type === 'need' &&
+      paymentListValues.includes(true)
+    )
+      return setButtonEnabled(false)
+
+    // Required fields for service form
+    if (
+      title &&
+      (price || listAsMultiple) &&
+      (pickupState || deliveryState) &&
+      paymentListValues.includes(true) &&
+      activeForm.type === 'service'
     )
       return setButtonEnabled(false)
 
@@ -247,6 +270,8 @@ const SellPostForm = ({
   ])
 
   const publish = async () => {
+    setLoadingSubmit(true)
+
     let paymentMethodsList = []
 
     for (const [key, value] of Object.entries(paymentMethods)) {
@@ -256,12 +281,17 @@ const SellPostForm = ({
     }
 
     let itemsToSave = listAsMultiple
-      ? await items.map(item => {
-          return {
-            ...item,
-            image: ImageUpload.upload(item.image, user.uid),
-          }
-        })
+      ? await Promise.all(
+          items.map(async item => {
+            return {
+              category: item.categoryName,
+              image: await ImageUpload.upload(item.itemImage?.uri, user.uid),
+              name: item.title,
+              description: item.description,
+              price: item.price,
+            }
+          })
+        )
       : [
           {
             price: price,
@@ -289,7 +319,9 @@ const SellPostForm = ({
       },
       expiry: postExpiry,
       availability: true,
-      allow_contact: allowContact,
+      // Backend error: Invalid property: allow_contact
+      // Waiting for fix.
+      // allow_contact: allowContact,
     }
 
     if (initialData.id) {
@@ -365,7 +397,7 @@ const SellPostForm = ({
   const showSingle = async () => {
     Animated.sequence([
       Animated.timing(singleActiveHeight, {
-        toValue: 110,
+        toValue: 60,
         duration: 200,
         useNativeDriver: false,
       }),
@@ -636,36 +668,6 @@ const SellPostForm = ({
               value={price}
               onChangeText={text => setPrice(text)}
             />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setFreeCheckbox(!freeCheckbox)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <PostInfo />
-                  <AppText
-                    customStyle={{ paddingLeft: 4 }}
-                    textStyle="caption"
-                    color={Colors.contentPlaceholder}>
-                    I'm offering this item for{' '}
-                    <AppText
-                      customStyle={{ fontWeight: 'bold' }}
-                      color={Colors.contentPlaceholder}>
-                      FREE.
-                    </AppText>
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <AppCheckbox
-                value={freeCheckbox}
-                valueChangeHandler={() => setFreeCheckbox(!freeCheckbox)}
-              />
-            </View>
           </Animated.View>
 
           <Divider style={[GlobalStyle.dividerStyle, { marginVertical: 16 }]} />
@@ -738,36 +740,6 @@ const SellPostForm = ({
               value={price}
               onChangeText={text => setPrice(text)}
             />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setFreeCheckbox(!freeCheckbox)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <PostInfo />
-                  <AppText
-                    customStyle={{ paddingLeft: 4 }}
-                    textStyle="caption"
-                    color={Colors.contentPlaceholder}>
-                    I'm offering this item for{' '}
-                    <AppText
-                      customStyle={{ fontWeight: 'bold' }}
-                      color={Colors.contentPlaceholder}>
-                      FREE.
-                    </AppText>
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <AppCheckbox
-                value={freeCheckbox}
-                valueChangeHandler={() => setFreeCheckbox(!freeCheckbox)}
-              />
-            </View>
           </Animated.View>
 
           <Divider style={[GlobalStyle.dividerStyle, { marginVertical: 16 }]} />
@@ -842,9 +814,9 @@ const SellPostForm = ({
 
           <PriceInput
             style={{ marginTop: 16 }}
-            value={budgetMinimum}
+            value={budgetMaximum}
             keyboardType="number-pad"
-            onChangeText={text => setBudgetMinimum(text)}
+            onChangeText={text => setBudgetMaximum(text)}
             placeholder="00"
             label="Maximum"
           />
@@ -1061,7 +1033,7 @@ const SellPostForm = ({
         <TouchableOpacity
           onPress={publish}
           activeOpacity={0.7}
-          // disabled={buttonEnabled || loadingSubmit}
+          disabled={buttonEnabled || loadingSubmit}
           style={{
             backgroundColor: buttonEnabled
               ? Colors.neutralsGainsboro

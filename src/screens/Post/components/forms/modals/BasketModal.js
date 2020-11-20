@@ -17,7 +17,7 @@ import { AppText, ScreenHeaderTitle, MapComponent } from '@/components'
 import Config from '@/services/Config'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
-
+import Api from '@/services/Api'
 import { normalize, Colors } from '@/globals'
 
 import {
@@ -34,11 +34,12 @@ import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
 import TrackerModal from './TrackerModal'
 
-const BasketModal = ({ closeModal, postType }) => {
+const BasketModal = ({ closeModal, postType, postData, offerData }) => {
   const [changeDeliveryModal, showChangeDeliveryModal] = useState(false)
   const [changePaymentModal, showChangePaymentModal] = useState(false)
   const [addNoteModal, showAddNoteModal] = useState(false)
   const [trackerModal, showTrackerModal] = useState(false)
+  const [orderID, setOrderID] = useState()
 
   const {
     deliveryMethod,
@@ -46,7 +47,7 @@ const BasketModal = ({ closeModal, postType }) => {
     userCart,
     setUserCart,
   } = useContext(Context)
-  const { userInfo } = useContext(UserContext)
+  const { userInfo, user } = useContext(UserContext)
   const { addresses } = userInfo
 
   // MAP
@@ -95,20 +96,6 @@ const BasketModal = ({ closeModal, postType }) => {
   }
   //MAP END
 
-  const orderList = [
-    {
-      quantity: '1',
-      name: 'Beef Burger',
-      price: '75.00',
-    },
-    {
-      quantity: '1',
-      name: 'Spicy Beef Burger',
-      price: '75.00',
-      note: 'No tomatoes and onions',
-    },
-  ]
-
   const computedTotal = () => {
     let computedPrice = 0
 
@@ -118,6 +105,27 @@ const BasketModal = ({ closeModal, postType }) => {
       })
 
     return computedPrice
+  }
+
+  const sendOfferHandler = async () => {
+    const parameters = {
+      uid: user.uid,
+      body: {
+        post_id: postData?.post_id,
+        price: offerData?.price,
+        message: offerData?.message,
+      },
+    }
+
+    const response = await Api.createOrder(parameters)
+
+    if (response.success) {
+      setOrderID(response.order_id)
+      showTrackerModal(true)
+    } else {
+      alert('Creating offer failed.')
+    }
+    showTrackerModal(true)
   }
 
   return (
@@ -151,9 +159,7 @@ const BasketModal = ({ closeModal, postType }) => {
                 marginVertical: normalize(20),
                 justifyContent: 'center',
               }}>
-              <AppText textStyle="body1medium">
-                Wayne’s Burgers and Smoothies
-              </AppText>
+              <AppText textStyle="body1medium">{postData.title}</AppText>
               <View style={{ flexDirection: 'row', marginLeft: normalize(10) }}>
                 <StarRating />
                 <AppText
@@ -183,7 +189,12 @@ const BasketModal = ({ closeModal, postType }) => {
                   </AppText>
                 </TouchableOpacity>
               ) : (
-                <AppText textStyle="body1">₱50,000</AppText>
+                <AppText textStyle="body1">
+                  ₱
+                  {postType === 'need' && offerData?.price
+                    ? offerData?.price
+                    : ''}
+                </AppText>
               )}
             </View>
             {userCart.map((item, k) => {
@@ -337,7 +348,7 @@ const BasketModal = ({ closeModal, postType }) => {
               </AppText>
             </TouchableOpacity>
           </View>
-          <View
+          {/* <View
             style={{
               paddingTop: normalize(20),
               paddingHorizontal: normalize(20),
@@ -362,7 +373,7 @@ const BasketModal = ({ closeModal, postType }) => {
               </View>
               <AppText textStyle="body1">₱75</AppText>
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               padding: normalize(20),
@@ -437,8 +448,9 @@ const BasketModal = ({ closeModal, postType }) => {
               </TouchableOpacity>
             </View>
             <AppText textStyle="body2">
-              I have 5 years experience in carpentry. I can also tag along my
-              colleague if you need more workers.
+              {postType === 'need' && offerData?.message
+                ? offerData?.message
+                : ''}
             </AppText>
           </View>
           <View
@@ -507,7 +519,12 @@ const BasketModal = ({ closeModal, postType }) => {
           paddingHorizontal: normalize(16),
           paddingVertical: normalize(24),
         }}>
-        <TouchableOpacity onPress={() => showTrackerModal(true)}>
+        <TouchableOpacity
+          onPress={() => {
+            if (postType === 'need') {
+              sendOfferHandler()
+            } else showTrackerModal(true)
+          }}>
           <View style={styles.buyButtonContainer}>
             <View
               style={{
@@ -516,8 +533,12 @@ const BasketModal = ({ closeModal, postType }) => {
                 width: '100%',
                 paddingHorizontal: normalize(16),
               }}>
-              <AppText textStyle="body1medium">Place order</AppText>
-              <AppText textStyle="body1">₱0.00</AppText>
+              <AppText textStyle="body1medium">
+                {postType === 'need' ? 'Send Offer' : 'Place order'}
+              </AppText>
+              <AppText textStyle="body1">
+                {postType === 'need' ? `₱${offerData?.price}` : '₱0.00'}
+              </AppText>
             </View>
           </View>
         </TouchableOpacity>
@@ -585,6 +606,8 @@ const BasketModal = ({ closeModal, postType }) => {
         <TrackerModal
           closeModal={() => showTrackerModal(false)}
           postType={postType}
+          postData={postData}
+          orderID={orderID}
         />
       </Modal>
     </SafeAreaView>

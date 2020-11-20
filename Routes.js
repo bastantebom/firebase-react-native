@@ -257,11 +257,13 @@ const TabStack = props => {
   useEffect(() => {
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then(url => {
-        navigate(url)
+        if (url) navigate(url)
+        else return
       })
     } else {
       Linking.getInitialURL().then(url => {
-        navigate(url)
+        if (url) navigate(url)
+        else return
       })
     }
 
@@ -270,7 +272,6 @@ const TabStack = props => {
     }
 
     const navigate = async url => {
-      if (!url) return
       const route = url.replace(/.*?:\/\//g, '')
       const id = route.split('/')[1]
       const token = route.split('/')[2]

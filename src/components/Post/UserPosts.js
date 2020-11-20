@@ -16,6 +16,7 @@ const UserPosts = ({
   setIsLoading,
   userID,
   isFetching,
+  selectNeedFunction,
 }) => {
   const { user, userInfo } = useContext(UserContext)
   const {
@@ -26,8 +27,14 @@ const UserPosts = ({
     needsRefresh,
     setNeedsRefresh,
   } = useContext(Context)
+
   const renderItem = ({ item }) => (
-    <Post data={item} type={type} isLoading={isLoading} />
+    <Post
+      data={item}
+      type={type}
+      isLoading={isLoading}
+      selectNeedFunction={selectNeedFunction ? selectNeedFunction : () => null}
+    />
   )
 
   const [refresh, setRefresh] = useState(false)
@@ -70,7 +77,6 @@ const UserPosts = ({
       setIsLoading(false)
 
       if (res.data.length > 0) {
-        //console.log(res);
         setUserPosts(res.data)
       }
 
@@ -88,7 +94,6 @@ const UserPosts = ({
 
       if (!thereIsMoreFlag) {
         setFetchMore(false)
-        // console.log('Stopping getting more post');
         return
       }
 
@@ -97,15 +102,9 @@ const UserPosts = ({
         limit: 5,
         page: lastPID,
       }
-      //console.log('GET MORE POST');
-      //console.log(lastPID);
-      // console.log(getPostsParams);
-
       await PostService.getUserPosts(getPostsParams)
         .then(res => {
-          //console.log('API CALL');
           if (res.success) {
-            //console.log(res);
             setLastPID(lastPID + 1)
             setUserPosts(
               res.data ? [...userPosts, ...res.data] : [...userPosts]

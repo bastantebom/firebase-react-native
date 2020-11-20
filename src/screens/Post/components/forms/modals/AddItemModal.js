@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, { useEffect, useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
@@ -7,8 +7,8 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Dimensions,
-} from 'react-native';
-import Modal from 'react-native-modal';
+} from 'react-native'
+import Modal from 'react-native-modal'
 
 import {
   AppText,
@@ -16,110 +16,67 @@ import {
   FloatingAppInput,
   AppCheckbox,
   BottomSheetHeader,
-} from '@/components';
-import {AngleDown, PostInfo} from '@/assets/images/icons';
-import {Colors, normalize} from '@/globals';
-import Section from '../../Section';
-import ItemImageUpload from '../../ItemImageUpload';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AppInput, PriceInput} from '@/components/AppInput';
+} from '@/components'
+import { AngleDown, PostInfo } from '@/assets/images/icons'
+import { Colors, normalize } from '@/globals'
+import Section from '../../Section'
+import ItemImageUpload from '../../ItemImageUpload'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { AppInput, PriceInput } from '@/components/AppInput'
 
-import AddCategoryModal from './AddCategoryModal';
-import AddedItemPreview from './AddedItemPreview';
-import {CategoryService} from '@/services';
+import AddCategoryModal from './AddCategoryModal'
+import AddedItemPreview from './AddedItemPreview'
+import { CategoryService } from '@/services'
 
-import {Context} from '@/context';
+import { Context } from '@/context'
 
-const AddItemModal = ({closeModal, ...props}) => {
-  // console.log('Add Item Screen');
-  // console.log(props);
+const AddItemModal = ({ closeModal, ...props }) => {
+  const { addItem } = useContext(Context)
 
-  const {addItem} = useContext(Context);
+  const { navigation } = props
 
-  const {navigation} = props;
-  // const {newItem} = props?.route?.params;
+  const [title, setTitle] = useState()
+  const [description, setDescription] = useState()
+  const [itemImage, setItemImage] = useState()
+  const [price, setPrice] = useState(0)
+  const [free, setFree] = useState(false)
+  const [categoryName, setCategoryName] = useState('uncategorized')
+  const [categoryList, setCategoryList] = useState([])
 
-  const [title, setTitle] = useState();
-  const [description, setDescription] = useState();
-  const [itemImage, setItemImage] = useState();
-  const [price, setPrice] = useState(0);
-  const [free, setFree] = useState(false);
-  const [categoryName, setCategoryName] = useState('uncategorized');
-  const [categoryList, setCategoryList] = useState([]);
+  const [categoryModal, setCategoryModal] = useState(false)
+  const [previewItemModal, setPreviewItemModal] = useState(false)
 
-  // const [choices, setChoices] = useState([
-  //   // {
-  //   //   name: 'items',
-  //   //   id: 0,
-  //   //   selected: true,
-  //   // },
-  //   // ...CategoryService.getCategories().map((category) => {
-  //   //   return {...category, selected: false};
-  //   // }),
-  // ]);
-
-  // useEffect(() => {
-  //   CategoryService.getCategories().then((res) => {
-  //     console.log('GET CATEGORY RESPONSE');
-  //     let tempChoice = res.data.map((ch) => {
-  //       return {
-  //         ...ch,
-  //         selected: false,
-  //       };
-  //     });
-  //     console.log(tempChoice);
-  //     setCategoryList(tempChoice);
-  //   });
-  // }, []);
-
-  const [categoryModal, setCategoryModal] = useState(false);
-  const [previewItemModal, setPreviewItemModal] = useState(false);
-
-  const [buttonEnabled, setButtonEnabled] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [buttonEnabled, setButtonEnabled] = useState(false)
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
 
   // If editing
-  const [index, setIndex] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
-
-  // const [data, setData] = useState([]);
+  const [index, setIndex] = useState(0)
+  const [isEditing, setIsEditing] = useState(false)
 
   const addItemHandler = () => {
-    // console.log('Data submitted: ');
-    // console.log(data);
     let newData = {
       title: title,
       description: description,
       itemImage: itemImage,
       price: price,
       categoryName: categoryName,
-    };
+    }
+    clearData()
 
-    // let itemArray = [...data];
-
-    // if (isEditing) {
-    //   itemArray[index] = newData;
-    // } else {
-    //   itemArray.push(newData);
-    // }
-
-    // setData(itemArray);
-    clearData();
-
-    addItem(newData);
+    addItem(newData)
 
     navigation.push('AddedItemPreviewScreen', {
       categoryName: categoryName,
-    });
-  };
+    })
+  }
 
   const clearData = () => {
-    setTitle('');
-    setDescription('');
-    setItemImage();
-    setPrice();
-    setFree(false);
-  };
+    setTitle('')
+    setDescription('')
+    setItemImage()
+    setPrice()
+    setFree(false)
+  }
 
   const setInitialData = {
     setTitle,
@@ -130,37 +87,36 @@ const AddItemModal = ({closeModal, ...props}) => {
     setFree,
     setIndex,
     setIsEditing,
-  };
+  }
 
   const freeItemHandler = () => {
-    setFree(!free);
-  };
+    setFree(!free)
+  }
 
   useEffect(() => {
     if (free) {
-      setPrice('Free');
+      setPrice('Free')
     } else {
       if (price === 'Free') {
-        setPrice('');
+        setPrice('')
       }
     }
-  }, [free, price]);
+  }, [free, price])
 
   // check if all required fields are not empty
   useEffect(() => {
     if (title && price) {
-      setButtonEnabled(true);
+      setButtonEnabled(true)
     } else {
-      setButtonEnabled(false);
+      setButtonEnabled(false)
     }
-  }, [title, price]);
+  }, [title, price])
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
-        // close={closeModal}
         close={() => {
-          navigation.goBack();
+          navigation.goBack()
         }}
         title="Add an Item"
         paddingSize={2}
@@ -169,7 +125,6 @@ const AddItemModal = ({closeModal, ...props}) => {
         <View
           style={{
             backgroundColor: Colors.neutralsZirconLight,
-            //   backgroundColor: 'red',
             flex: 1,
           }}>
           <Section
@@ -198,7 +153,7 @@ const AddItemModal = ({closeModal, ...props}) => {
                 alignItems: 'center',
                 marginTop: 24,
               }}>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 {categoryName === 'uncategorized' ? (
                   <AppText textStyle="body2">Select Category</AppText>
                 ) : (
@@ -206,7 +161,7 @@ const AddItemModal = ({closeModal, ...props}) => {
                 )}
                 <AppText
                   textStyle="body1"
-                  customStyle={{textTransform: 'capitalize'}}>
+                  customStyle={{ textTransform: 'capitalize' }}>
                   {categoryName}
                 </AppText>
               </View>
@@ -215,17 +170,16 @@ const AddItemModal = ({closeModal, ...props}) => {
           </Section>
 
           <Section>
-            <View style={{alignItems: 'center', marginBottom: 24}}>
+            <View style={{ alignItems: 'center', marginBottom: 24 }}>
               <View
                 style={{
-                  // backgroundColor: 'red',
                   width: normalize(114),
                   height: normalize(114),
                   borderRadius: 4,
                 }}>
                 <ItemImageUpload
-                  imgSourceHandler={(itemImage) => {
-                    setItemImage(itemImage);
+                  imgSourceHandler={itemImage => {
+                    setItemImage(itemImage)
                   }}
                   imgSrc={itemImage}
                 />
@@ -233,10 +187,10 @@ const AddItemModal = ({closeModal, ...props}) => {
             </View>
 
             <FloatingAppInput
-              customStyle={{marginBottom: 16}}
+              customStyle={{ marginBottom: 16 }}
               label="Item Name"
               value={title}
-              onChangeText={(text) => setTitle(text)}
+              onChangeText={text => setTitle(text)}
             />
 
             <TextInput
@@ -259,56 +213,20 @@ const AddItemModal = ({closeModal, ...props}) => {
                 marginBottom: 16,
                 textAlign: 'left',
               }}
-              onChangeText={(text) => setDescription(text)}
+              onChangeText={text => setDescription(text)}
               underlineColorAndroid={'transparent'}
               textAlignVertical="top"
               scrollEnabled={false}
             />
 
-            {/* <AppInput
-              style={{marginBottom: 16}}
-              label="Price"
-              value={title}
-              onChangeText={(text) => setTitle(text)}
-            /> */}
-
-            <View style={{marginBottom: 64}}>
-              {/* <FloatingAppInput
-                label="Price"
-                customStyle={{marginBottom: 8}}
-                value={title}
-                keyboardType="number-pad"
-                onChangeText={(text) => setTitle(text)}
-              /> */}
+            <View style={{ marginBottom: 64 }}>
               <PriceInput
                 value={price}
                 keyboardType="number-pad"
-                onChangeText={(text) => setPrice(text)}
+                onChangeText={text => setPrice(text)}
                 placeholder="00"
                 editable={!free}
               />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <TouchableOpacity
-                  onPress={freeItemHandler}
-                  activeOpacity={0.7}
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <PostInfo />
-                  <AppText customStyle={{marginLeft: 4}}>
-                    I'm offering this item for FREE
-                  </AppText>
-                </TouchableOpacity>
-                <AppCheckbox
-                  Icon=""
-                  label=""
-                  value={free}
-                  valueChangeHandler={() => setFree(!free)}
-                />
-              </View>
             </View>
 
             <TouchableOpacity
@@ -349,7 +267,7 @@ const AddItemModal = ({closeModal, ...props}) => {
         customBackdrop={
           <TouchableWithoutFeedback
             onPress={() => setCategoryModal(!categoryModal)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <AddCategoryModal
@@ -359,7 +277,7 @@ const AddItemModal = ({closeModal, ...props}) => {
         />
       </Modal>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default AddItemModal;
+export default AddItemModal

@@ -369,7 +369,6 @@ const ShippingMethodModal = ({
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={() => {
-          setParentPaymentMethods(paymentMethods)
           close()
         }}
         style={{

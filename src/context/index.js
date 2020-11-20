@@ -123,8 +123,14 @@ export const ContextProvider = ({ children }) => {
   const [userCart, setUserCart] = useState([])
   const [currentPostOrder, setCurrentPostOrder] = useState()
 
-  const replaceCurrentPost = postID => {
+  const setCurrentPost = postID => {
+    if (currentPostOrder === null) {
+      setCurrentPostOrder(postID)
+      return false
+    }
+
     if (postID === currentPostOrder) {
+      console.log({ currentPostOrder, postID })
       return false
     }
 
@@ -388,6 +394,7 @@ export const ContextProvider = ({ children }) => {
         setIsLoading,
         refresh,
         setRefresh,
+        setCurrentPost,
       }}>
       {children}
     </Context.Provider>

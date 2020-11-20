@@ -32,7 +32,6 @@ const EditItemModal = ({
   closeModal,
   setData,
   data,
-  // itemToEdit,
   indexOfItemToEdit,
   ...props
 }) => {
@@ -55,12 +54,6 @@ const EditItemModal = ({
   const [buttonEnabled, setButtonEnabled] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
 
-  // If editing
-  const [index, setIndex] = useState(0)
-  const [isEditing, setIsEditing] = useState(false)
-
-  // const [data, setData] = useState([]);
-
   const editItemHandler = () => {
     let newData = {
       ...itemToEdit,
@@ -70,10 +63,6 @@ const EditItemModal = ({
       price: price,
       categoryName: categoryName,
     }
-
-    // let itemArray = [...data];
-
-    // itemArray[indexOfItemToEdit] = newData;
 
     editItem(newData)
     clearData()
@@ -101,10 +90,9 @@ const EditItemModal = ({
   const [categoryList, setCategoryList] = useState([])
 
   useEffect(() => {
-    // CategoryService.deleteCategory('Cdn4bLyPq7RXKgMrXkJI');
-    CategoryService.getCategories().then(res => {
-      setCategoryList(res)
-    })
+    let response = CategoryService.getCategories()
+
+    setCategoryList(response)
   }, [])
 
   useEffect(() => {
@@ -186,7 +174,6 @@ const EditItemModal = ({
             <View style={{ alignItems: 'center', marginBottom: 24 }}>
               <View
                 style={{
-                  // backgroundColor: 'red',
                   width: normalize(114),
                   height: normalize(114),
                   borderRadius: 4,
@@ -233,21 +220,7 @@ const EditItemModal = ({
               scrollEnabled={false}
             />
 
-            {/* <AppInput
-              style={{marginBottom: 16}}
-              label="Price"
-              value={title}
-              onChangeText={(text) => setTitle(text)}
-            /> */}
-
             <View style={{ marginBottom: 64 }}>
-              {/* <FloatingAppInput
-                label="Price"
-                customStyle={{marginBottom: 8}}
-                value={title}
-                keyboardType="number-pad"
-                onChangeText={(text) => setTitle(text)}
-              /> */}
               <PriceInput
                 value={price}
                 keyboardType="number-pad"
@@ -255,28 +228,6 @@ const EditItemModal = ({
                 placeholder="00"
                 editable={!free}
               />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <TouchableOpacity
-                  onPress={freeItemHandler}
-                  activeOpacity={0.7}
-                  style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <PostInfo />
-                  <AppText customStyle={{ marginLeft: 4 }}>
-                    I'm offering this item for FREE
-                  </AppText>
-                </TouchableOpacity>
-                <AppCheckbox
-                  Icon=""
-                  label=""
-                  value={free}
-                  valueChangeHandler={() => setFree(!free)}
-                />
-              </View>
             </View>
 
             <TouchableOpacity

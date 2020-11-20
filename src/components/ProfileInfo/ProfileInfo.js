@@ -90,10 +90,6 @@ const ProfileInfo = ({
         screen: 'OthersProfile',
         params: { uid: uid },
       })
-      // navigation.navigate('Post', {
-      //   screen: 'SinglePostView',
-      //   params: computedData,
-      // });
     }
   }
 
@@ -109,14 +105,6 @@ const ProfileInfo = ({
               overflow: 'hidden',
               alignSelf: 'center',
             }}>
-            {/* <Image
-              style={GlobalStyle.image}
-              source={{
-                uri: profile_photo
-                  ? profile_photo
-                  : 'https://i.pinimg.com/originals/f9/0c/9e/f90c9e170d4b553a9d0a79735113365b.jpg',
-              }}
-            /> */}
             <ProfilePhoto size={32} />
           </View>
           <View style={styles.userInfoDetailsContainer}>
@@ -129,22 +117,6 @@ const ProfileInfo = ({
               <VerifiedBadge />
             </View>
             <View style={styles.userInfoDetailsUsernameContainer}>
-              {/* <AppText textStyle="eyebrow2" color={Colors.contentPlaceholder}>
-                @{username.toLowerCase()}
-              </AppText> */}
-
-              {/* <View style={styles.starRatingContainer}>
-                <View style={{ top: -1, marginRight: 4 }}>
-                  <StarRating width={normalize(13)} height={normalize(13)} />
-                </View>
-                <AppText
-                  textStyle="eyebrow2"
-                  color={Colors.contentPlaceholder}
-                >
-                  3.5  •
-                </AppText>
-              </View> */}
-
               <AppText
                 textStyle="eyebrow2"
                 color={Colors.contentPlaceholder}
@@ -176,25 +148,6 @@ const ProfileInfo = ({
             </View>
           </View>
         </View>
-
-        {/* FOR MODAL */}
-        {/* <Modal
-          isVisible={profileModal}
-          animationIn="slideInUp"
-          animationInTiming={500}
-          animationOut="slideOutDown"
-          animationOutTiming={300}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-            justifyContent: 'flex-start',
-          }}>
-          <ProfileInfoModal
-            backFunction={() => setProfileModal(false)}
-            uid={uid}
-          />
-        </Modal> */}
       </TouchableOpacity>
     )
 
@@ -305,31 +258,57 @@ const ProfileInfo = ({
             </AppText>
           </View>
         </View>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
-          {/* <TouchableOpacity
-            onPress={() => {
-              cancelModalToggle();
-            }}
-            style={{
-              paddingHorizontal: normalize(8),
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderColor: Colors.contentEbony,
-              borderWidth: 1,
-              borderRadius: 6,
-              height: normalize(30),
-              width: normalize(90),
-              marginVertical: normalize(8),
-              marginHorizontal: normalize(4),
-            }}>
-            <AppText textStyle="caption" color={Colors.contentEbony}>
-              Unblock
+        <View style={{ flex: 1, alignItems: 'flex-end' }}></View>
+      </View>
+    )
+
+  if (type === 'need') {
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <View style={styles.userInfoImageContainer}>
+          <ProfilePhoto size={42} />
+        </View>
+        <View style={{ marginLeft: 8, justifyContent: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <AppText textStyle="body2" customStyle={{ marginRight: 4 }}>
+              You
             </AppText>
-          </TouchableOpacity> */}
+            <VerifiedBadge />
+          </View>
+          <View style={styles.userInfoDetailsUsernameContainer}>
+            <AppText
+              textStyle="eyebrow2"
+              color={Colors.contentPlaceholder}
+              customStyle={{ paddingHorizontal: 4 }}>
+              {timeAgo(Date.now() / 1000 - date_posted._seconds)}
+            </AppText>
+            <AppText
+              textStyle="eyebrow2"
+              color={Colors.contentPlaceholder}
+              customStyle={{ paddingHorizontal: 4 }}>
+              • in
+            </AppText>
+            <AppText
+              textStyle="eyebrow2"
+              color={
+                post_type === 'service'
+                  ? Colors.secondaryBrinkPink
+                  : post_type === 'sell'
+                  ? Colors.contentOcean
+                  : Colors.secondaryMountainMeadow
+              }
+              customStyle={{ paddingHorizontal: 4 }}>
+              {post_type === 'sell'
+                ? 'Sell'
+                : post_type === 'service'
+                ? 'Services'
+                : 'Needs'}
+            </AppText>
+          </View>
         </View>
       </View>
     )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -341,7 +320,6 @@ const styles = StyleSheet.create({
   },
   userInfoDetailsContainer: {
     flex: 1,
-    // backgroundColor: "red",
     paddingLeft: 8,
   },
   userInfoDetailsNameContainer: {

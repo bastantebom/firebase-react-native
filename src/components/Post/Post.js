@@ -12,6 +12,7 @@ import Modal from 'react-native-modal'
 
 import { Colors, GlobalStyle, timePassed, normalize } from '@/globals'
 import OwnPost from './OwnPost'
+import NeedPost from './NeedPost'
 import ArchivePost from './ArchivePost'
 import { PaddingView, AppText, ProfileInfo, CacheableImage } from '@/components'
 import { UserContext } from '@/context/UserContext'
@@ -30,7 +31,14 @@ import LoadingScreen from './loading'
 import SinglePostOthersView from './SinglePostOthersView'
 import { PostService } from '@/services'
 
-const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
+const Post = ({
+  data,
+  type,
+  isLoading,
+  toggleLikePost,
+  toggleMenu,
+  selectNeedFunction,
+}) => {
   const { user } = useContext(UserContext)
   const [showPost, setShowPost] = useState(false)
 
@@ -58,6 +66,7 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     full_name,
     price,
     likers,
+    post_id,
   } = data
 
   const post_type = data?.type
@@ -323,6 +332,14 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
       </LoadingScreen.LoadingPublicPost>
     )
 
+  if (type === 'need')
+    return (
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => selectNeedFunction(post_id)}>
+        <NeedPost data={data} isLoading={isLoading} />
+      </TouchableOpacity>
+    )
   if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />
   if (type === 'archived')
     return (

@@ -58,22 +58,18 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
   }, [])
 
   const getCategories = async () => {
-    // Get list of categories from backend
     let categories = await CategoryService.getCategories().then(res => {
       return res
     })
 
-    // add "items" category if it does not exist yet
     const found = categories.some(el => el.category === 'items')
     if (!found) {
-      // if not found or existing, add a category with items as category name.
       CategoryService.createCategory('items')
       categories = await CategoryService.getCategories().then(res => {
         return res
       })
     }
 
-    // add property/properties to be used
     let categoryChoices = categories.map(category => {
       if (categoryName === category.category) {
         return {
@@ -96,10 +92,6 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
     })
     setCatChoices(categoryChoices)
   }
-
-  // useEffect(() => {
-  //   if (choices.newCategory) showNewCategory();
-  // }, []);
 
   const showNewCategory = async () => {
     Animated.sequence([
@@ -210,7 +202,6 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
                 radioGroupHandler(choice)
               }}
             />
-            // <AppText>asdas</AppText>
           )
         })}
 

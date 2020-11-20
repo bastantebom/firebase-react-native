@@ -18,11 +18,9 @@ const CategoryFormModal = ({ close, editing, categoryName }) => {
 
   const navigation = useNavigation()
 
-  const submitHandler = () => {
-    // console.log('save new category');
-    CategoryService.createCategory(newCategoryName).then(res => {
-      // console.log(res);
-    })
+  const submitHandler = async () => {
+    let response = await CategoryService.createCategory(newCategoryName)
+
     close()
   }
 
@@ -40,8 +38,6 @@ const CategoryFormModal = ({ close, editing, categoryName }) => {
       return
     })
 
-    // CategoryService.editCategory(id, newCategoryName)
-
     navigation.push('AddedItemPreviewScreen', {
       categoryName: newCategoryName,
     })
@@ -58,13 +54,10 @@ const CategoryFormModal = ({ close, editing, categoryName }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
-        // close={closeModal}
         close={close}
         title={editing ? 'Edit Category Name' : 'Create a New Category'}
         paddingSize={2}
       />
-
-      {/* <FloatingAppInput label="Category Name" /> */}
 
       <View
         style={{

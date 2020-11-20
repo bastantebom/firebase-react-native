@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   TouchableWithoutFeedback,
+  SafeAreaView,
 } from 'react-native'
 
 import Modal from 'react-native-modal'
@@ -42,12 +43,15 @@ import DeclineOrder from './DeclineOrder'
 import MoreActions from './MoreActions'
 import DeclineRequest from './DeclineRequest'
 import { Context } from '@/context'
+import { UserContext } from '@/context/UserContext'
+import firestore from '@react-native-firebase/firestore'
 
-const TrackerModal = ({ closeModal, postType }) => {
+const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   const { openNotification, closeNotification } = useContext(Context)
+  const { user } = useContext(UserContext)
 
-  const [buyer, setBuyer] = useState(false)
-  const [seller, setSeller] = useState(true)
+  const [buyer, setBuyer] = useState(true)
+  const [seller, setSeller] = useState(false)
   const [pickup, setPickup] = useState(true)
   const [delivery, setDelivery] = useState(false)
 
@@ -62,6 +66,21 @@ const TrackerModal = ({ closeModal, postType }) => {
   const [statusHeader, setStatusHeader] = useState('')
   const [messageHeader, setMessageHeader] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
+  const [orderDetails, setOrderDetails] = useState({})
+
+  useEffect(() => {
+    return firestore()
+      .doc(`orders/${orderID}`)
+      .onSnapshot(async snap => {
+        if (snap?.data() && user) {
+          const data = snap.data()
+          setOrderDetails(data)
+          setBuyer(user.uid === data.buyer_id)
+          setSeller(user.uid === data.seller_id)
+          setStatus(data.status)
+        }
+      })
+  }, [])
 
   const orderList = [
     {
@@ -313,7 +332,7 @@ const TrackerModal = ({ closeModal, postType }) => {
   }, [])
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         close={closeModal}
         title={title()}
@@ -347,7 +366,7 @@ const TrackerModal = ({ closeModal, postType }) => {
               <AppText
                 textStyle="body2medium"
                 customStyle={{ marginBottom: 5 }}>
-                Wayne’s Burgers and Smoothies
+                {postData.title}
               </AppText>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Chat width={normalize(18)} height={normalize(18)} />
@@ -358,7 +377,7 @@ const TrackerModal = ({ closeModal, postType }) => {
                     ? 'Message seller'
                     : postType === 'service'
                     ? 'Message service provider'
-                    : 'Message <name>'}
+                    : `Message ${postData?.user?.full_name}`}
                 </AppText>
               </View>
             </View>
@@ -406,7 +425,9 @@ const TrackerModal = ({ closeModal, postType }) => {
                     : 'flex',
               },
             ]}
-            onPress={() => showMessage(!message)}>
+            onPress={() => {
+              showMessage(!message)
+            }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -568,7 +589,7 @@ const TrackerModal = ({ closeModal, postType }) => {
                   <AppText
                     textStyle="body2"
                     customStyle={{ marginTop: normalize(7) }}>
-                    ₱200
+                    {orderDetails?.price}
                   </AppText>
                 )}
               </View>
@@ -666,8 +687,7 @@ const TrackerModal = ({ closeModal, postType }) => {
                 <AppText
                   textStyle="body2"
                   customStyle={{ marginTop: normalize(7) }}>
-                  Hi Alex! I have 5 years experience in carpentry. I can also
-                  tag along my colleague if you need more workers.
+                  {orderDetails?.message}
                 </AppText>
               </View>
             </View>
@@ -918,7 +938,7 @@ const TrackerModal = ({ closeModal, postType }) => {
           postType={postType}
         />
       </Modal>
-    </>
+    </SafeAreaView>
   )
 }
 

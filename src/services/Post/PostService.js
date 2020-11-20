@@ -122,8 +122,8 @@ const getPostsLocation = payload => {
   })
 }
 
-const createPost = payload => {
-  return BaseAPI({
+const createPost = async payload => {
+  let response = await BaseAPI({
     url: '/posts',
     method: 'POST',
     headers: {
@@ -131,6 +131,17 @@ const createPost = payload => {
     },
     data: payload,
   })
+
+  const { data, success, message } = response
+
+  return {
+    success,
+    message,
+    data: {
+      ...data,
+      user: (await ProfileInfoService.getUser(data.uid)).data,
+    },
+  }
 }
 
 const editPost = (PID, payload) => {
