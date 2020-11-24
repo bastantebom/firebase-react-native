@@ -88,23 +88,11 @@ function Login() {
           password,
         },
       })
-      const { custom_token, success, verified, uid } = response
-      if (success && verified && custom_token) {
+      const { custom_token, success } = response
+
+      if (success && custom_token) {
         await auth().signInWithCustomToken(custom_token)
         closeSlider()
-        navigation.push('TabStack')
-      } else if (success && !verified) {
-        closeSlider()
-        const extractProvider = emailAddress.substr(emailAddress.length - 4)
-        const provider =
-          !isNaN(extractProvider) && !isNaN(parseFloat(extractProvider))
-            ? 'number'
-            : 'email'
-        navigation.navigate('VerifyAccount', {
-          uid,
-          login: emailAddress,
-          provider,
-        })
       }
 
       if (!success) {

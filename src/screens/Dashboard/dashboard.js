@@ -31,7 +31,7 @@ const VerifyNotifictaion = ({ onPress, onClose }) => {
       icon={<Icons.VerifiedWhite />}
       onClose={onClose}
       type="primary"
-      animationOptions={{ height: 110 }}>
+      animationOptions={{ height: 110, delay: 2000 }}>
       <View
         style={{
           zIndex: 999,

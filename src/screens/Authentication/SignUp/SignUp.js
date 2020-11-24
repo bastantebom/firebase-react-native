@@ -129,18 +129,9 @@ const SignUp = props => {
         navigation.navigate('Onboarding')
         throw new Error(response.message)
       } else {
+        await auth().signInWithCustomToken(response.custom_token)
         clearForm()
         closeSlider()
-        const signInResponse = await auth().signInWithCustomToken(
-          response.custom_token
-        )
-
-        if (signInResponse)
-          navigation.navigate('VerifyAccount', {
-            ...formData,
-            uid: response.uid,
-            provider: signUpMethod,
-          })
       }
     } catch (error) {
       console.log(error?.message || error)

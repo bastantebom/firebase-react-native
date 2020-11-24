@@ -52,6 +52,9 @@ const PhoneVerificationScreen = ({ navigation }) => {
       navigation.navigate('verify-code', {
         login: phoneNumber,
         provider: 'number',
+        onSubmit: () => {
+          navigation.pop(2)
+        },
       })
     } catch (error) {
       console.log(error)

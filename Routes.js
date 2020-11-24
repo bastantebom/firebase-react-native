@@ -46,10 +46,11 @@ import { OngoingItem } from '@/screens/Activity'
 import {
   AlmostThere,
   AlmostThereMap,
-  VerifyAccount,
   ResetPassword,
   SetNewPassword,
 } from '@/screens/Authentication'
+
+import VerifyCodeScreen from '@/screens/Verification/verify-code'
 
 import { normalize } from '@/globals'
 import { Context } from '@/context'
@@ -462,11 +463,6 @@ export default Routes = () => {
     flex: 1,
   }
 
-  const userStatusCount = Object.values(userStatus?.verified || {}).reduce(
-    (a, status) => a + (status === 'completed' ? 1 : 0),
-    0
-  )
-
   useEffect(() => {
     setTimeout(() => {
       Animated.timing(containerOpacity, {
@@ -477,6 +473,51 @@ export default Routes = () => {
     }, 2500)
   }, [])
 
+  const renderAuthScreens = () => {
+    if (
+      userStatus.verified &&
+      ![userStatus.verified?.email, userStatus.verified?.phone_number].includes(
+        'completed'
+      )
+    ) {
+      const provider = userInfo.email?.length
+        ? 'email'
+        : userInfo.phone_number?.length
+        ? 'number'
+        : undefined
+      const login =
+        provider === 'email'
+          ? userInfo.email
+          : provider === 'number'
+          ? userInfo.phone_number
+          : undefined
+
+      return (
+        <Stack.Screen
+          name="verify-code"
+          component={VerifyCodeScreen}
+          initialParams={{
+            login,
+            provider,
+          }}
+        />
+      )
+    } else if (userInfo.uid && !addresses?.length)
+      return (
+        <>
+          <Stack.Screen name="AlmostThere" component={AlmostThere} />
+          <Stack.Screen name="AlmostThereMap" component={AlmostThereMap} />
+        </>
+      )
+
+    return (
+      <>
+        <Stack.Screen name="TabStack" component={TabStack} />
+        <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
+      </>
+    )
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Animated.View style={{ position: 'relative' }}>
@@ -485,29 +526,13 @@ export default Routes = () => {
 
       <Animated.View style={fadingContainerStyle}>
         <NavigationContainer>
-          {token && userInfo?.uid ? (
-            userStatus?.verified && !userStatusCount ? (
-              <Stack.Navigator headerMode="none">
-                <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
-              </Stack.Navigator>
-            ) : !addresses?.length ? (
-              <Stack.Navigator headerMode="none">
-                <Stack.Screen name="AlmostThere" component={AlmostThere} />
-                <Stack.Screen
-                  name="AlmostThereMap"
-                  component={AlmostThereMap}
-                />
-              </Stack.Navigator>
-            ) : (
-              <Stack.Navigator headerMode="none">
-                <Stack.Screen name="TabStack" component={TabStack} />
-                <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
-              </Stack.Navigator>
-            )
+          {token && userInfo?.uid && userStatus?.verified ? (
+            <Stack.Navigator headerMode="none">
+              {renderAuthScreens()}
+            </Stack.Navigator>
           ) : (
             <Stack.Navigator headerMode="none">
               <Stack.Screen name="Onboarding" component={Onboarding} />
-              <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
               <Stack.Screen name="ResetPassword" component={ResetPassword} />
               <Stack.Screen name="TabStack" component={TabStack} />
               <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />

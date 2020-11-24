@@ -73,6 +73,7 @@ export const UserContextProvider = ({ children }) => {
       await auth().signOut()
       setUser(null)
       setUserInfo({})
+      setUserStatus({})
       await AsyncStorage.removeItem('token')
       await AsyncStorage.removeItem('uid')
       setToken(null)

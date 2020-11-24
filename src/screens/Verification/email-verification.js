@@ -50,7 +50,13 @@ const EmailVerificationScreen = ({ navigation }) => {
       })
 
       if (!response.success) throw new Error(response.message)
-      navigation.navigate('verify-code', { login: email, provider: 'email' })
+      navigation.navigate('verify-code', {
+        login: email,
+        provider: 'email',
+        onSubmit: () => {
+          navigation.pop(2)
+        },
+      })
     } catch (error) {
       console.log(error)
     }

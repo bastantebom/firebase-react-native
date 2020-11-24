@@ -21,6 +21,7 @@ import { Icons } from '@/assets/images/icons'
  * @typedef {Object} VerifyCodeProps
  * @property {string} login
  * @property {string} provider
+ * @property {() => void} onSubmit
  */
 
 /**
@@ -32,7 +33,7 @@ import { Icons } from '@/assets/images/icons'
 const VerifyCodeScreen = ({ navigation, route, routes }) => {
   const { user } = useContext(UserContext)
 
-  const { provider, login } = route.params
+  const { provider, login, onSubmit } = route.params
   const textInputsRef = [useRef(null), useRef(null), useRef(null), useRef(null)]
   const [code, setCode] = useState(['', '', '', ''])
   const [isLoading, setIsLoading] = useState(false)
@@ -82,7 +83,7 @@ const VerifyCodeScreen = ({ navigation, route, routes }) => {
       })
 
       if (!response.success) throw new Error(response.message)
-      navigation.pop(2)
+      onSubmit?.()
     } catch (error) {
       console.log(error.message || error)
       setNotificationMessage(
@@ -148,7 +149,7 @@ const VerifyCodeScreen = ({ navigation, route, routes }) => {
               <Icons.CircleTick />
             )
           }>
-          {notificationMessage}
+          <View style={{ marginLeft: 15 }}>{notificationMessage}</View>
         </Notification>
       )}
       <View style={styles.container}>

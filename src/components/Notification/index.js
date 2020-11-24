@@ -41,7 +41,7 @@ export const Notification = ({
           easing: Easing.ease,
           duration: animationOptions?.duration || 240,
         }).start()
-      }, animationOptions?.delay || 2000)
+      }, animationOptions?.delay || 0)
     } else {
       notificationHeight.setValue(animationOptions?.height || 70)
     }
@@ -54,8 +54,8 @@ export const Notification = ({
         styles[type],
         containerStyle,
         animatedStyle,
-        closeable && { paddingRight: 45 },
-        icon && { paddingLeft: 35 },
+        closeable && { paddingRight: normalize(45) },
+        icon && { paddingLeft: normalize(36) },
       ]}>
       <View style={styles.iconWrapper}>{icon}</View>
       {children}
