@@ -85,7 +85,6 @@ target 'servbees' do
 
    # React Native Maps dependencies
 
-  pod 'react-native-image-editor', :path => '../node_modules/@react-native-community/image-editor'
 
   target 'servbeesTests' do
     inherit! :complete

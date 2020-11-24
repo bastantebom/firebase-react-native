@@ -60,6 +60,7 @@ export const ContextProvider = ({ children }) => {
     ;(async () => {
       // setIsLoading(true);
       const result = await PostService.getPosts(filters)
+
       if (filters.page) {
         setPosts(prev => [...prev, ...result.data])
       } else {
@@ -122,6 +123,7 @@ export const ContextProvider = ({ children }) => {
   const [activityNotification, setActivityNotification] = useState()
   const [userCart, setUserCart] = useState([])
   const [currentPostOrder, setCurrentPostOrder] = useState()
+  const [deleteCurrentOrderModal, showDeleteCurrentOrderModal] = useState(false)
 
   const setCurrentPost = postID => {
     if (currentPostOrder === null) {
@@ -130,7 +132,6 @@ export const ContextProvider = ({ children }) => {
     }
 
     if (postID === currentPostOrder) {
-      console.log({ currentPostOrder, postID })
       return false
     }
 
@@ -146,7 +147,7 @@ export const ContextProvider = ({ children }) => {
         .reduce(
           (
             r,
-            { categoryName, description, itemImage, price, title, itemId }
+            { categoryName, description, itemImage, price, title, itemId, name }
           ) => {
             r.has(categoryName) ||
               r.set(categoryName, {
@@ -161,6 +162,7 @@ export const ContextProvider = ({ children }) => {
               title,
               itemId,
               categoryName,
+              name,
             })
 
             return r
@@ -395,6 +397,8 @@ export const ContextProvider = ({ children }) => {
         refresh,
         setRefresh,
         setCurrentPost,
+        deleteCurrentOrderModal,
+        showDeleteCurrentOrderModal,
       }}>
       {children}
     </Context.Provider>

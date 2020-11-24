@@ -33,10 +33,16 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
   const [selectedTime, setSelectedTime] = useState()
   const [subtotal, setSubtotal] = useState(0)
   const [currentItem, setCurrentItem] = useState(item)
-  const [deleteCurrentCartPrompt, showDeleteCurrentCartPrompt] = useState(false)
+  // const [deleteCurrentCartPrompt, showDeleteCurrentCartPrompt] = useState(false)
   const [imageModal, showImageModal] = useState(false)
 
-  const { userCart, setUserCart, setCurrentPost } = useContext(Context)
+  const {
+    userCart,
+    setUserCart,
+    setCurrentPost,
+    deleteCurrentOrderModal,
+    showDeleteCurrentOrderModal,
+  } = useContext(Context)
 
   const [animatedPadding] = useState(new Animated.Value(0))
 
@@ -122,7 +128,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
       const data = {
         id: currentItem.id,
         quantity: qty,
-        name: currentItem.title,
+        name: currentItem.name,
         price: currentItem.price,
         note: notes,
       }
@@ -140,11 +146,12 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
       }
 
       setUserCart(currentCart)
-      closeModal()
     }
 
     if (isNewPost) {
       let currentCart = []
+
+      console.log({ currentItem })
       const data = {
         id: currentItem.id,
         quantity: qty,
@@ -155,8 +162,9 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
 
       currentCart.push(data)
       setUserCart(currentCart)
-      showDeleteCurrentCartPrompt(true)
     }
+
+    closeModal()
   }
 
   let paddingAnimatedStyle = {
@@ -200,7 +208,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
                 justifyContent: 'space-between',
               }}>
               <View style={styles.titleDesc}>
-                <AppText textStyle="body1medium">{currentItem.title}</AppText>
+                <AppText textStyle="body1medium">{currentItem.name}</AppText>
                 {currentItem.description && (
                   <AppText textStyle="body2">{currentItem.description}</AppText>
                 )}
@@ -387,57 +395,6 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
           close={() => showImageModal(false)}
           data={[currentItem?.image]}
         />
-        <View>
-          <AppText>Hello</AppText>
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={deleteCurrentCartPrompt}
-        animationIn="zoomIn"
-        animationInTiming={450}
-        animationOut="zoomOut"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => showDeleteCurrentCartPrompt(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <View
-          style={{
-            backgroundColor: 'white',
-            height: normalize(300),
-            width: normalize(300),
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
-          }}>
-          <AppText>Are you sure?</AppText>
-          <AppText>Adding other items will clear your current basket.</AppText>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: Colors.buttonDisable,
-              paddingHorizontal: 24,
-              paddingVertical: 8,
-            }}>
-            <AppText>Okay</AppText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: Colors.primaryYellow,
-              paddingHorizontal: 24,
-              paddingVertical: 8,
-            }}>
-            <AppText>Cancel</AppText>
-          </TouchableOpacity>
-        </View>
       </Modal>
     </View>
   )

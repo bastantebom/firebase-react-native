@@ -226,48 +226,36 @@ const SellPostForm = ({
 
     // Required fields for sell form
     if (
+      activeForm.type === 'sell' &&
       title &&
       (price || listAsMultiple) &&
       (pickupState || deliveryState) &&
-      paymentListValues.includes(true) &&
-      activeForm.type === 'sell'
+      paymentListValues.includes(true)
     )
       return setButtonEnabled(false)
 
     // Required fields for need form
     if (
+      activeForm.type === 'need' &&
       title &&
       budgetMaximum &&
       budgetMinimum &&
-      activeForm.type === 'need' &&
       paymentListValues.includes(true)
     )
       return setButtonEnabled(false)
 
     // Required fields for service form
     if (
+      activeForm.type === 'service' &&
       title &&
       (price || listAsMultiple) &&
       (pickupState || deliveryState) &&
-      paymentListValues.includes(true) &&
-      activeForm.type === 'service'
+      paymentListValues.includes(true)
     )
       return setButtonEnabled(false)
 
     return setButtonEnabled(true)
   }
-
-  useEffect(() => {
-    checkFormContent()
-  }, [
-    title,
-    price,
-    pickupState,
-    deliveryState,
-    storeLocation,
-    paymentMethod,
-    description,
-  ])
 
   const publish = async () => {
     setLoadingSubmit(true)

@@ -88,7 +88,7 @@ const SinglePostView = props => {
         (
           r,
           {
-            categoryName,
+            category,
             description,
             itemImage,
             image,
@@ -96,23 +96,25 @@ const SinglePostView = props => {
             title,
             itemId,
             id,
+            name,
           }
         ) => {
-          r.has(categoryName) ||
-            r.set(categoryName, {
-              categoryName,
+          r.has(category) ||
+            r.set(category, {
+              category,
               items: [],
             })
 
-          r.get(categoryName).items.push({
+          r.get(category).items.push({
             description,
             itemImage,
             image,
             price,
             title,
             itemId,
-            categoryName,
+            category,
             id,
+            name,
           })
 
           return r
@@ -133,7 +135,12 @@ const SinglePostView = props => {
 
   const [expired, setExpired] = useState(false)
   const { user, setUserInfo, userInfo } = useContext(UserContext)
-  const { userCart, setUserCart } = useContext(Context)
+  const {
+    userCart,
+    setUserCart,
+    deleteCurrentOrderModal,
+    showDeleteCurrentOrderModal,
+  } = useContext(Context)
   const [following, setFollowing] = useState(false)
   const [storeOpen, setStoreOpen] = useState(true)
   const [multipleItems, setMultipleItems] = useState(true)
@@ -570,7 +577,7 @@ const SinglePostView = props => {
                     <AppText
                       textStyle="subtitle1"
                       customStyle={{ marginBottom: normalize(15) }}>
-                      {category.categoryName}
+                      {category.category}
                     </AppText>
                     {category.items.map(item => {
                       return (
@@ -590,7 +597,7 @@ const SinglePostView = props => {
                             <View style={styles.detailWrapper}>
                               <View style={styles.titleDesc}>
                                 <AppText textStyle="body1medium">
-                                  {item.title}
+                                  {item.name}
                                 </AppText>
                                 {item.description ? (
                                   <AppText textStyle="body2">
@@ -792,6 +799,54 @@ const SinglePostView = props => {
         postId={post_id}
         postTitle={title}
       />
+
+      <Modal
+        isVisible={deleteCurrentOrderModal}
+        animationIn="zoomIn"
+        animationInTiming={450}
+        animationOut="zoomOut"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            onPress={() => showDeleteCurrentOrderModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: normalize(300),
+            width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}>
+          <AppText>Are you sure?</AppText>
+          <AppText>Adding other items will clear your current basket.</AppText>
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.buttonDisable,
+              paddingHorizontal: 24,
+              paddingVertical: 8,
+            }}>
+            <AppText>Okay</AppText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.primaryYellow,
+              paddingHorizontal: 24,
+              paddingVertical: 8,
+            }}>
+            <AppText>Cancel</AppText>
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       <Modal
         isVisible={editPost}
