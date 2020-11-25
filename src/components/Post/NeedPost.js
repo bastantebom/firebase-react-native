@@ -26,10 +26,8 @@ import { UserContext } from '@/context/UserContext'
 import LoadingScreen from './loading'
 import SinglePostOthersView from './SinglePostOthersView'
 
-const OwnPost = ({ data, isLoading }) => {
+const NeedPost = ({ data, isLoading }) => {
   const { user } = useContext(UserContext)
-  const [showPost, setShowPost] = useState(false)
-  const [likePost, setLikePost] = useState(false)
 
   const navigation = useNavigation()
 
@@ -53,8 +51,10 @@ const OwnPost = ({ data, isLoading }) => {
     account_verified,
     email,
     phone_number,
-    post_type,
+    type,
     full_name,
+    price_range,
+    items,
   } = data
 
   const userInfo = {
@@ -64,11 +64,7 @@ const OwnPost = ({ data, isLoading }) => {
     display_name: display_name ? display_name : full_name,
     date_posted: date_posted,
     uid: uid,
-    post_type: post_type,
-  }
-
-  const toggleLike = () => {
-    setLikePost(!likePost)
+    post_type: type,
   }
 
   const VerifiedBadge = () => {
@@ -80,23 +76,27 @@ const OwnPost = ({ data, isLoading }) => {
   }
 
   const navToPost = () => {
-    let computedData = {
-      data: data,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
+    return
+  }
 
-    if (user && user.uid === uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params: computedData,
-      })
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: { ...computedData, othersView: true },
-      })
+  const getPrice = () => {
+    const prices = items.map(item => {
+      return Number(item.price)
+    })
+
+    if (type !== 'need') {
+      if (prices.length === 1) return prices[0].toString()
+      else {
+        const min = Math.min(...prices)
+        const max = Math.max(...prices)
+
+        const finalPrices = [min, max]
+
+        return finalPrices.join(' - ')
+      }
+    } else {
+      return `${price_range?.min} - ${price_range?.max}`
+    }
   }
 
   return (
@@ -110,9 +110,9 @@ const OwnPost = ({ data, isLoading }) => {
                 style={GlobalStyle.image}
                 source={{ uri: cover_photos[0] }}
               />
-            ) : post_type === 'service' ? (
+            ) : type === 'service' ? (
               <DefaultService width={normalize(122)} height={normalize(126)} />
-            ) : post_type === 'need' || post_type === 'Need' ? (
+            ) : type === 'need' || type === 'Need' ? (
               <DefaultNeed width={normalize(122)} height={normalize(126)} />
             ) : (
               <DefaultSell width={normalize(122)} height={normalize(126)} />
@@ -131,7 +131,7 @@ const OwnPost = ({ data, isLoading }) => {
                   textStyle="price"
                   customStyle={styles.priceText}
                   color={Colors.secondaryMountainMeadow}>
-                  ₱{price}
+                  ₱{getPrice()}
                 </AppText>
               </View>
             </TouchableOpacity>
@@ -241,4 +241,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default OwnPost
+export default NeedPost

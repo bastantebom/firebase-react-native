@@ -50,7 +50,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   const { openNotification, closeNotification } = useContext(Context)
   const { user } = useContext(UserContext)
 
-  const [buyer, setBuyer] = useState(true)
+  const [buyer, setBuyer] = useState(false)
   const [seller, setSeller] = useState(false)
   const [pickup, setPickup] = useState(true)
   const [delivery, setDelivery] = useState(false)
@@ -960,7 +960,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     width: normalize(220),
     height: normalize(50),
-    paddingVertical: normalize(20),
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#E05454',

@@ -38,6 +38,7 @@ const Post = ({
   toggleLikePost,
   toggleMenu,
   selectNeedFunction,
+  activeOpacity,
 }) => {
   const { user } = useContext(UserContext)
   const [showPost, setShowPost] = useState(false)
@@ -67,6 +68,7 @@ const Post = ({
     price,
     likers,
     post_id,
+    price_range,
   } = data
 
   const post_type = data?.type
@@ -128,14 +130,18 @@ const Post = ({
       return Number(item.price)
     })
 
-    if (prices.length === 1) return prices[0].toString()
-    else {
-      const min = Math.min(...prices)
-      const max = Math.max(...prices)
+    if (post_type !== 'need') {
+      if (prices.length === 1) return prices[0].toString()
+      else {
+        const min = Math.min(...prices)
+        const max = Math.max(...prices)
 
-      const finalPrices = [min, max]
+        const finalPrices = [min, max]
 
-      return finalPrices.join(' - ')
+        return finalPrices.join(' - ')
+      }
+    } else {
+      return `${price_range?.min} - ${price_range?.max}`
     }
   }
 
@@ -335,9 +341,13 @@ const Post = ({
   if (type === 'need')
     return (
       <TouchableOpacity
-        activeOpacity={0.7}
+        activeOpacity={1}
         onPress={() => selectNeedFunction(post_id)}>
-        <NeedPost data={data} isLoading={isLoading} />
+        <NeedPost
+          data={data}
+          isLoading={isLoading}
+          activeOpacity={activeOpacity}
+        />
       </TouchableOpacity>
     )
   if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />

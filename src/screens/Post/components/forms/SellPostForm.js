@@ -221,8 +221,12 @@ const SellPostForm = ({
     setPaymentMethod('')
   }
 
+  useEffect(() => {
+    checkFormContent()
+  })
+
   const checkFormContent = () => {
-    let paymentListValues = Object.values(paymentMethods)
+    const paymentListValues = Object.values(paymentMethods)
 
     // Required fields for sell form
     if (
@@ -268,7 +272,17 @@ const SellPostForm = ({
       }
     }
 
-    let itemsToSave = listAsMultiple
+    const priceRange =
+      activeForm.type === 'need'
+        ? {
+            price_range: {
+              min: budgetMinimum,
+              max: budgetMaximum,
+            },
+          }
+        : {}
+
+    const itemsToSave = listAsMultiple
       ? await Promise.all(
           items.map(async item => {
             return {
@@ -307,9 +321,8 @@ const SellPostForm = ({
       },
       expiry: postExpiry,
       availability: true,
-      // Backend error: Invalid property: allow_contact
-      // Waiting for fix.
-      // allow_contact: allowContact,
+      allow_contact: allowContact,
+      ...priceRange,
     }
 
     if (initialData.id) {
@@ -456,7 +469,7 @@ const SellPostForm = ({
       }
     }
 
-    let display = paymentMethodList.join(', ')
+    const display = paymentMethodList.join(', ')
 
     if (display)
       return (

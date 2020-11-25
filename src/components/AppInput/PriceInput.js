@@ -7,7 +7,6 @@ const PriceInput = ({ style, label, ...props }) => {
   const inputRef = createRef()
 
   const handleClick = () => {
-    console.log('focus')
     inputRef.current.focus()
   }
 

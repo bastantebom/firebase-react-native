@@ -1,4 +1,3 @@
-//import liraries
 import React, { useState, useEffect, useCallback } from 'react'
 import { View, Text, TextInput, StyleSheet, Animated } from 'react-native'
 import { Colors, normalize } from '@/globals'
@@ -10,7 +9,6 @@ import _ from 'lodash'
 
 import { VerifiedGreen } from '@/assets/images/icons'
 
-// create a component
 const FloatingAppInput = props => {
   const {
     value,
@@ -44,24 +42,11 @@ const FloatingAppInput = props => {
     return index
   }
 
-  // //console.log('Validation rules');
-  // //console.log(validation);
-
   const onValueChange = value => {
     valueHandler(lowercase ? value.toLowerCase() : value)
-    // //console.log('************************************************');
     setShowValidationError(true)
-    // //console.log(value);
-    // validateInput(value);
-
-    // console.log(changingValidation);
-
-    // console.log(validation);
-    // console.log(validationError);
-
     inputDebounce(value)
 
-    // //console.log('err', error.length);
     if (error.length > 0) {
       setButtonState(true)
     } else {
@@ -106,7 +91,6 @@ const FloatingAppInput = props => {
         })
 
     if (validation.includes('email')) {
-      console.log('validating email?')
       ValidationFunctions.emailValidator(value)
         .then(res => {
           currentError = error
@@ -298,7 +282,6 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     paddingTop: normalize(12),
-    //paddingLeft: normalize(16),
   },
 
   passwordToggle: {
@@ -308,5 +291,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default FloatingAppInput

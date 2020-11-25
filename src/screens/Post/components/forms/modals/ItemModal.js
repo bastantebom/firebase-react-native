@@ -64,7 +64,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
     }
   }, [])
 
-  let keyboardToggleAnimation = height => {
+  const keyboardToggleAnimation = height => {
     Animated.timing(animatedPadding, {
       toValue: height,
       duration: 500,

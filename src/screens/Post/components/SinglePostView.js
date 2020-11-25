@@ -80,6 +80,7 @@ const SinglePostView = props => {
     is_multiple,
     type,
     items,
+    price_range,
   } = props.route?.params?.data
 
   const itemsByCategory = [
@@ -418,7 +419,10 @@ const SinglePostView = props => {
                     textStyle="subtitle1"
                     color={Colors.secondaryMountainMeadow}
                     customStyle={{ marginRight: 8 }}>
-                    ₱ {price}
+                    ₱{' '}
+                    {type !== 'need'
+                      ? price
+                      : `${price_range?.min} - ${price_range?.max}`}
                   </AppText>
                   {type !== 'need' ? (
                     <AppText customStyle={{ fontSize: normalize(10) }}>

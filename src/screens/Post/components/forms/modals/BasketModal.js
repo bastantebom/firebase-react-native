@@ -12,6 +12,8 @@ import {
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
 import Geolocation from '@react-native-community/geolocation'
+import Post from '@/components/Post/Post'
+import API from '@/services/Api'
 
 import { AppText, ScreenHeaderTitle, MapComponent } from '@/components'
 import Config from '@/services/Config'
@@ -34,12 +36,20 @@ import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
 import TrackerModal from './TrackerModal'
 
-const BasketModal = ({ closeModal, postType, postData, offerData }) => {
+const BasketModal = ({
+  closeModal,
+  postType,
+  postData,
+  offerData,
+  selectedPostDetails,
+}) => {
   const [changeDeliveryModal, showChangeDeliveryModal] = useState(false)
   const [changePaymentModal, showChangePaymentModal] = useState(false)
   const [addNoteModal, showAddNoteModal] = useState(false)
   const [trackerModal, showTrackerModal] = useState(false)
   const [orderID, setOrderID] = useState()
+  const [userData, setUserData] = useState({})
+  const [attachedPostData, setAttachedPostData] = useState()
 
   const {
     deliveryMethod,
@@ -112,7 +122,7 @@ const BasketModal = ({ closeModal, postType, postData, offerData }) => {
       uid: user.uid,
       body: {
         post_id: postData?.post_id,
-        price: offerData?.price,
+        price: Number(offerData?.price),
         message: offerData?.message,
       },
     }
@@ -126,6 +136,42 @@ const BasketModal = ({ closeModal, postType, postData, offerData }) => {
       alert('Creating offer failed.')
     }
     showTrackerModal(true)
+  }
+
+  useEffect(() => {
+    if (selectedPostDetails?.id) {
+      getUserData()
+    }
+  }, [])
+
+  const getUserData = async () => {
+    const response = await API.getUser({ uid: selectedPostDetails.uid })
+
+    const { data, success } = response
+
+    const userObject = { user: { ...data } }
+
+    if (success) {
+      return setAttachedPostData({
+        ...selectedPostDetails,
+        ...userObject,
+      })
+    }
+  }
+
+  const AttachedPost = () => {
+    if (selectedPostDetails?.id && attachedPostData) {
+      return (
+        <Post
+          data={attachedPostData}
+          type={'need'}
+          selectNeedFunction={() => null}
+          isLoading={false}
+        />
+      )
+    }
+
+    return <></>
   }
 
   return (
@@ -160,14 +206,14 @@ const BasketModal = ({ closeModal, postType, postData, offerData }) => {
                 justifyContent: 'center',
               }}>
               <AppText textStyle="body1medium">{postData.title}</AppText>
-              <View style={{ flexDirection: 'row', marginLeft: normalize(10) }}>
+              {/* <View style={{ flexDirection: 'row', marginLeft: normalize(10) }}>
                 <StarRating />
                 <AppText
                   textStyle="body1"
                   customStyle={{ marginLeft: normalize(5) }}>
                   4.5
                 </AppText>
-              </View>
+              </View> */}
             </View>
             <View style={styles.caption}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -450,7 +496,7 @@ const BasketModal = ({ closeModal, postType, postData, offerData }) => {
             <AppText textStyle="body2">
               {postType === 'need' && offerData?.message
                 ? offerData?.message
-                : ''}
+                : 'No message'}
             </AppText>
           </View>
           <View
@@ -481,37 +527,39 @@ const BasketModal = ({ closeModal, postType, postData, offerData }) => {
             </View>
             <AppText textStyle="body2">Extra gravy</AppText>
           </View>
-          <View
-            style={{
-              paddingHorizontal: normalize(20),
-              paddingTop: normalize(20),
-              paddingBottom: normalize(40),
-              backgroundColor: 'white',
-              borderTopRightRadius: 8,
-              borderTopLeftRadius: 8,
-              display: postType === 'need' ? 'flex' : 'none',
-            }}>
-            <View style={styles.caption}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {postType === 'need' ? (
-                  <Send width={normalize(24)} height={normalize(24)} />
-                ) : (
-                  <PostCash width={normalize(24)} height={normalize(24)} />
-                )}
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Attached Post
-                </AppText>
+          {attachedPostData && (
+            <View
+              style={{
+                paddingHorizontal: normalize(20),
+                paddingTop: normalize(20),
+                paddingBottom: normalize(40),
+                backgroundColor: 'white',
+                borderTopRightRadius: 8,
+                borderTopLeftRadius: 8,
+                display: postType === 'need' ? 'flex' : 'none',
+              }}>
+              <View style={styles.caption}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {postType === 'need' ? (
+                    <Send width={normalize(24)} height={normalize(24)} />
+                  ) : (
+                    <PostCash width={normalize(24)} height={normalize(24)} />
+                  )}
+                  <AppText
+                    textStyle="body1medium"
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    Attached Post
+                  </AppText>
+                </View>
+                <TouchableOpacity onPress={closeModal}>
+                  <AppText textStyle="button2" color={Colors.contentOcean}>
+                    Change
+                  </AppText>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity onPress={closeModal}>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  Change
-                </AppText>
-              </TouchableOpacity>
+              <AttachedPost />
             </View>
-            <AppText textStyle="body2">{'<Post component>'}</AppText>
-          </View>
+          )}
         </View>
       </ScrollView>
       <View

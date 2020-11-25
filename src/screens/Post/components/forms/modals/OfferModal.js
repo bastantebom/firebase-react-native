@@ -8,6 +8,7 @@ import {
   Keyboard,
   SafeAreaView,
   Animated,
+  Image,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -33,6 +34,7 @@ const OfferModal = ({ postType, postData }) => {
   const [selectPostModal, showSelectPostModal] = useState(false)
   const [basketModal, showBasketModal] = useState(false)
   const [animatedPadding] = useState(new Animated.Value(30))
+  const [continueState, setContinueState] = useState(false)
 
   function onKeyboardDidShow(e) {
     const keyboardHeight = e.endCoordinates.height
@@ -71,11 +73,15 @@ const OfferModal = ({ postType, postData }) => {
     setOfferData({
       price: offer,
       message,
+      post_id: selectedPostDetails?.id,
     })
+
+    setContinueState(!!offer)
   }, [offer, message, selectPostModal])
 
   const selectNeedFunction = post_id => {
     setSelectedPost(post_id)
+    showSelectPostModal(false)
   }
 
   const getPostDetail = async post_id => {
@@ -86,7 +92,6 @@ const OfferModal = ({ postType, postData }) => {
     if (success) {
       setSelectedPostDetails(data)
     }
-    console.log({ post })
   }
 
   useEffect(() => {
@@ -94,6 +99,32 @@ const OfferModal = ({ postType, postData }) => {
       getPostDetail(selectedPost)
     }
   }, [selectedPost])
+
+  const SelectedPost = () => {
+    return (
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        {selectedPostDetails?.cover_photos ? (
+          <View
+            style={{
+              height: normalize(48),
+              width: normalize(48),
+            }}>
+            <Image
+              source={{ uri: selectedPostDetails?.cover_photos[0] }}
+              style={styles.image}
+            />
+          </View>
+        ) : (
+          <></>
+        )}
+
+        <View style={{ paddingHorizontal: 16, justifyContent: 'center' }}>
+          <AppText textStyle="body2">Send a post</AppText>
+          <AppText textStyle="caption">{selectedPostDetails?.title}</AppText>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <>
@@ -168,22 +199,23 @@ const OfferModal = ({ postType, postData }) => {
                     <AppText textStyle="caption">Send one of your post</AppText>
                   </View>
                 ) : (
-                  <View
-                    style={{
-                      backgroundColor: 'red',
-                      height: normalize(48),
-                      width: normalize(48),
-                    }}>
-                    <AppText>{selectedPostDetails?.title}</AppText>
-                  </View>
+                  <SelectedPost />
                 )}
                 <ChevronRight />
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.btn}
+              disabled={!continueState}
+              style={[
+                styles.btn,
+                {
+                  backgroundColor: continueState
+                    ? Colors.primaryYellow
+                    : Colors.buttonDisable,
+                },
+              ]}
               onPress={() => showBasketModal(true)}>
-              <AppText textStyle="body3">View Summary</AppText>
+              <AppText textStyle="body3">Continue</AppText>
             </TouchableOpacity>
           </Animated.View>
         </KeyboardAwareScrollView>
@@ -205,6 +237,7 @@ const OfferModal = ({ postType, postData }) => {
           postType={postType}
           postData={postData}
           offerData={offerData}
+          selectedPostDetails={selectedPostDetails}
         />
       </Modal>
       <Modal
@@ -235,9 +268,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: '#FFD400',
     borderRadius: 3,
     marginTop: normalize(20),
+  },
+  image: {
+    width: normalize(48),
+    height: normalize(48),
+    borderRadius: 8,
+    backgroundColor: Colors.neutralGray,
   },
 })
 
