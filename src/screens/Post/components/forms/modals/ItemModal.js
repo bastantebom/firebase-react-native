@@ -67,7 +67,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
   const keyboardToggleAnimation = height => {
     Animated.timing(animatedPadding, {
       toValue: height,
-      duration: 500,
+      duration: 250,
       useNativeDriver: false,
     }).start()
   }
@@ -151,11 +151,10 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
     if (isNewPost) {
       let currentCart = []
 
-      console.log({ currentItem })
       const data = {
         id: currentItem.id,
         quantity: qty,
-        name: currentItem.title,
+        name: currentItem.name,
         price: currentItem.price,
         note: notes,
       }

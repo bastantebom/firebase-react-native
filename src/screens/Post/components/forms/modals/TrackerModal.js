@@ -280,6 +280,41 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
               null
           }
           break
+
+        case 'need':
+          switch (status) {
+            case 'ongoing':
+              setStatusHeader('In Progress')
+              setMessageHeader('Ongoing')
+              setStatusMessage('<Ongoing Confirmation copy>')
+              break
+            case 'pending':
+              setStatusHeader('Awaiting Confirmation')
+              setMessageHeader('Awaiting Confirmation')
+              setStatusMessage('<Awaiting Confirmation copy>')
+
+              break
+            case 'confirmed':
+              setStatusHeader('Offer Accepted')
+              setMessageHeader('Your offer is accepted')
+              setStatusMessage('<Offer accepted copy>')
+              break
+            case 'declined':
+              setStatusHeader('Offer declined')
+              setMessageHeader('Your offer is declined')
+              setStatusMessage('<Offer declined copy>')
+              break
+            case 'completed':
+              setStatusHeader('Completed!')
+              setMessageHeader('Completed!')
+              setStatusMessage('<Completed message here>')
+              break
+            default:
+              null
+          }
+          break
+        default:
+          null
       }
     }
   }

@@ -35,6 +35,7 @@ import ChangeDeliveryMethodModal from './ChangeDeliveryMethodModal'
 import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
 import TrackerModal from './TrackerModal'
+import OrderNotesModal from './OrderNotesModal'
 
 const BasketModal = ({
   closeModal,
@@ -47,18 +48,31 @@ const BasketModal = ({
   const [changePaymentModal, showChangePaymentModal] = useState(false)
   const [addNoteModal, showAddNoteModal] = useState(false)
   const [trackerModal, showTrackerModal] = useState(false)
+  const [orderNotes, showOrderNotes] = useState(false)
+
   const [orderID, setOrderID] = useState()
   const [userData, setUserData] = useState({})
   const [attachedPostData, setAttachedPostData] = useState()
 
-  const {
-    deliveryMethod,
-    setDeliveryMethod,
-    userCart,
-    setUserCart,
-  } = useContext(Context)
+  const [deliveryChoice, setDeliveryChoice] = useState()
+  const [paymentChoice, setPaymentChoice] = useState()
+  const [notes, setNotes] = useState()
+
+  const { userCart, setUserCart } = useContext(Context)
   const { userInfo, user } = useContext(UserContext)
   const { addresses } = userInfo
+
+  const {
+    is_multiple,
+    title,
+    price,
+    cover_photos,
+    items,
+    description,
+    payment,
+    delivery_methods,
+    user: { display_name },
+  } = postData
 
   // MAP
   Geocoder.init(Config.apiKey)
@@ -109,10 +123,14 @@ const BasketModal = ({
   const computedTotal = () => {
     let computedPrice = 0
 
-    if (userCart.length > 0)
+    if (userCart.length > 0 && is_multiple)
       userCart.map(item => {
         computedPrice += item.price * item.quantity
       })
+
+    if (!is_multiple) {
+      computedPrice = price
+    }
 
     return computedPrice
   }
@@ -135,7 +153,44 @@ const BasketModal = ({
     } else {
       alert('Creating offer failed.')
     }
-    showTrackerModal(true)
+    // showTrackerModal(true)
+  }
+
+  const placeOrderHandler = async () => {
+    const itemsToSave = !is_multiple
+      ? [
+          {
+            id: items[0].id,
+            title: title,
+            description: description,
+            quantity: 1,
+            price: items[0].id,
+            image: cover_photos ? cover_photos[0] : '',
+          },
+        ]
+      : userCart
+
+    const parameters = {
+      uid: user.uid,
+      body: {
+        items: itemsToSave,
+        post_id: postData?.post_id,
+        delivery_method: deliveryChoice,
+        payment_method: paymentChoice,
+        notes: notes,
+      },
+    }
+
+    const response = await Api.createOrder(parameters)
+
+    if (response.success) {
+      setOrderID(response.order_id)
+      showTrackerModal(true)
+    } else {
+      alert('Creating offer failed.')
+    }
+
+    // showTrackerModal(true)
   }
 
   useEffect(() => {
@@ -174,6 +229,41 @@ const BasketModal = ({
     return <></>
   }
 
+  const OrderSummary = () => {
+    if (is_multiple)
+      return userCart.map((item, k) => {
+        return (
+          <View
+            key={k}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingBottom: normalize(10),
+              display: postType !== 'need' ? 'flex' : 'none',
+            }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText textStyle="body1">{item.quantity}x</AppText>
+              <View
+                style={{
+                  flexDirection: 'column',
+                  marginLeft: normalize(10),
+                }}>
+                <AppText textStyle="body1medium">{item.name}</AppText>
+                {item.note && <AppText textStyle="body2">{item.note}</AppText>}
+              </View>
+            </View>
+            <AppText textStyle="body1">₱{item.price * item.quantity}</AppText>
+          </View>
+        )
+      })
+    else
+      return (
+        <View style={{ marginVertical: 12 }}>
+          <AppText textStyle="body3">{title}</AppText>
+        </View>
+      )
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
@@ -186,7 +276,13 @@ const BasketModal = ({
         <View style={{ paddingHorizontal: normalize(16) }}>
           <ScreenHeaderTitle
             close={closeModal}
-            title={postType === 'need' ? 'Offer Summary' : 'My Basket'}
+            title={
+              postType === 'need'
+                ? 'Offer Summary'
+                : is_multiple
+                ? 'My Basket'
+                : 'Order Summary'
+            }
             iconSize={normalize(16)}
           />
         </View>
@@ -205,7 +301,10 @@ const BasketModal = ({
                 marginVertical: normalize(20),
                 justifyContent: 'center',
               }}>
-              <AppText textStyle="body1medium">{postData.title}</AppText>
+              <AppText textStyle="body1medium">
+                {/* {is_multiple ? title : display_name} */}
+                {display_name}
+              </AppText>
               {/* <View style={{ flexDirection: 'row', marginLeft: normalize(10) }}>
                 <StarRating />
                 <AppText
@@ -243,35 +342,7 @@ const BasketModal = ({
                 </AppText>
               )}
             </View>
-            {userCart.map((item, k) => {
-              return (
-                <View
-                  key={k}
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingBottom: normalize(10),
-                    display: postType !== 'need' ? 'flex' : 'none',
-                  }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <AppText textStyle="body1">{item.quantity}x</AppText>
-                    <View
-                      style={{
-                        flexDirection: 'column',
-                        marginLeft: normalize(10),
-                      }}>
-                      <AppText textStyle="body1medium">{item.name}</AppText>
-                      {item.note && (
-                        <AppText textStyle="body2">{item.note}</AppText>
-                      )}
-                    </View>
-                  </View>
-                  <AppText textStyle="body1">
-                    ₱{item.price * item.quantity}
-                  </AppText>
-                </View>
-              )
-            })}
+            <OrderSummary />
             <View
               style={{
                 flexDirection: 'row',
@@ -303,7 +374,7 @@ const BasketModal = ({
                   {postType === 'service'
                     ? 'Service Location'
                     : postType === 'sell'
-                    ? deliveryMethod !== 'delivery'
+                    ? deliveryChoice !== 'delivery'
                       ? 'Pick-up'
                       : 'Delivery'
                     : null}
@@ -315,7 +386,7 @@ const BasketModal = ({
                 </AppText>
               </TouchableOpacity>
             </View>
-            {deliveryMethod === 'delivery' || deliveryMethod === 'service' ? (
+            {deliveryChoice === 'delivery' || deliveryChoice === 'service' ? (
               <>
                 <View
                   style={{
@@ -385,7 +456,7 @@ const BasketModal = ({
             <TouchableOpacity onPress={() => showAddNoteModal(true)}>
               <AppText textStyle="button2" color={Colors.contentOcean}>
                 {postType === 'sell'
-                  ? deliveryMethod === 'delivery'
+                  ? deliveryChoice === 'delivery'
                     ? 'Add delivery notes'
                     : 'Add pick-up notes'
                   : postType === 'service'
@@ -443,7 +514,11 @@ const BasketModal = ({
                 </AppText>
               </TouchableOpacity>
             </View>
-            <AppText textStyle="body2">Cash, change ₱500</AppText>
+            <AppText
+              textStyle="body2"
+              customStyle={{ textTransform: 'capitalize' }}>
+              {paymentChoice}
+            </AppText>
           </View>
           <View
             style={{
@@ -519,13 +594,13 @@ const BasketModal = ({
                   Notes
                 </AppText>
               </View>
-              <TouchableOpacity onPress={closeModal}>
+              <TouchableOpacity onPress={() => showOrderNotes(true)}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
                   Edit
                 </AppText>
               </TouchableOpacity>
             </View>
-            <AppText textStyle="body2">Extra gravy</AppText>
+            <AppText textStyle="body2">{notes}</AppText>
           </View>
           {attachedPostData && (
             <View
@@ -571,7 +646,9 @@ const BasketModal = ({
           onPress={() => {
             if (postType === 'need') {
               sendOfferHandler()
-            } else showTrackerModal(true)
+            } else {
+              placeOrderHandler()
+            }
           }}>
           <View style={styles.buyButtonContainer}>
             <View
@@ -585,7 +662,9 @@ const BasketModal = ({
                 {postType === 'need' ? 'Send Offer' : 'Place order'}
               </AppText>
               <AppText textStyle="body1">
-                {postType === 'need' ? `₱${offerData?.price}` : '₱0.00'}
+                {postType === 'need'
+                  ? `₱${offerData?.price}`
+                  : `₱${computedTotal()}`}
               </AppText>
             </View>
           </View>
@@ -605,6 +684,9 @@ const BasketModal = ({
           </TouchableWithoutFeedback>
         }>
         <ChangeDeliveryMethodModal
+          deliveryChoice={deliveryChoice}
+          setDeliveryChoice={choice => setDeliveryChoice(choice)}
+          availableDeliveryMethods={delivery_methods}
           closeModal={() => showChangeDeliveryModal(false)}
         />
       </Modal>
@@ -622,7 +704,10 @@ const BasketModal = ({
           </TouchableWithoutFeedback>
         }>
         <ChangePaymentMethodModal
+          availablePaymentMethods={payment}
           closeModal={() => showChangePaymentModal(false)}
+          setPaymentChoice={choice => setPaymentChoice(choice)}
+          paymentChoice={paymentChoice}
         />
       </Modal>
       <Modal
@@ -656,6 +741,25 @@ const BasketModal = ({
           postType={postType}
           postData={postData}
           orderID={orderID}
+        />
+      </Modal>
+
+      <Modal
+        isVisible={orderNotes}
+        animationIn="slideInUp"
+        animationInTiming={300}
+        animationOut="slideOutDown"
+        animationOutTiming={250}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showOrderNotes(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <OrderNotesModal
+          close={() => showOrderNotes(false)}
+          setNotes={notes => setNotes(notes)}
+          notes={notes}
         />
       </Modal>
     </SafeAreaView>

@@ -1,31 +1,53 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { AppText, AppRadio, ScreenHeaderTitle } from '@/components'
 
 import { normalize } from '@/globals'
 
-const ChangePaymentMethodModal = ({ closeModal }) => {
+const ChangePaymentMethodModal = ({
+  closeModal,
+  availablePaymentMethods,
+  setPaymentChoice,
+  paymentChoice,
+}) => {
   const [cod, setCod] = useState(true)
   const [gcash, setGcash] = useState(false)
   const [bankTransfer, setBankTransfer] = useState(false)
+  const [paymentMethods, setPaymentMethods] = useState([])
+  const [selectedPayment, setSelectedPayment] = useState(
+    paymentChoice ? paymentChoice : availablePaymentMethods[0]
+  )
 
-  const RadioStateHandler = val => {
-    if (val === 'cod') {
-      setCod(true)
-      setGcash(false)
-      setBankTransfer(false)
-    }
-    if (val === 'gcash') {
-      setGcash(true)
-      setCod(false)
-      setBankTransfer(false)
-    }
-    if (val === 'bankTransfer') {
-      setBankTransfer(true)
-      setCod(false)
-      setGcash(false)
-    }
+  useEffect(() => {
+    setPaymentChoice(selectedPayment)
+  }, [selectedPayment])
+
+  const PaymentMethodsList = () => {
+    return availablePaymentMethods.map((method, index) => {
+      return (
+        <View key={method}>
+          <AppRadio
+            label={
+              <>
+                <AppText textStyle="body1medium">{method}</AppText>
+              </>
+            }
+            value={method === selectedPayment}
+            style={{ paddingLeft: 0 }}
+            valueChangeHandler={() => setSelectedPayment(method)}
+          />
+          {index !== availablePaymentMethods.length - 1 && (
+            <View
+              style={{
+                borderBottomColor: '#f9f9f9',
+                borderBottomWidth: 1.5,
+              }}
+            />
+          )}
+        </View>
+      )
+    })
   }
 
   return (
@@ -37,7 +59,7 @@ const ChangePaymentMethodModal = ({ closeModal }) => {
         padding: normalize(20),
       }}>
       <ScreenHeaderTitle close={closeModal} iconSize={normalize(16)} />
-      <View>
+      <View style={{ paddingBottom: 16 }}>
         <AppText
           textStyle="subtitle1"
           customStyle={{
@@ -46,52 +68,7 @@ const ChangePaymentMethodModal = ({ closeModal }) => {
           }}>
           Change Payment Method
         </AppText>
-        <AppRadio
-          label={
-            <>
-              <AppText textStyle="body1medium">Cash on Delivery</AppText>
-            </>
-          }
-          value={cod}
-          style={{ paddingLeft: 0 }}
-          valueChangeHandler={() => RadioStateHandler('cod')}
-        />
-        <View
-          style={{
-            borderBottomColor: '#f9f9f9',
-            borderBottomWidth: 1.5,
-          }}></View>
-        <AppRadio
-          label={
-            <>
-              <AppText textStyle="body1medium">GCash</AppText>
-            </>
-          }
-          value={gcash}
-          style={{ paddingLeft: 0 }}
-          valueChangeHandler={() => RadioStateHandler('gcash')}
-        />
-        <View
-          style={{
-            borderBottomColor: '#f9f9f9',
-            borderBottomWidth: 1.5,
-          }}></View>
-        <AppRadio
-          label={
-            <>
-              <AppText textStyle="body1medium">Online Bank Transfer</AppText>
-              <AppText
-                textStyle="body1medium"
-                customStyle={{ textTransform: 'uppercase' }}>
-                {' '}
-                (BDO, BPI)
-              </AppText>
-            </>
-          }
-          value={bankTransfer}
-          style={{ paddingLeft: 0 }}
-          valueChangeHandler={() => RadioStateHandler('bankTransfer')}
-        />
+        <PaymentMethodsList paymentMethods={paymentMethods} />
       </View>
     </View>
   )

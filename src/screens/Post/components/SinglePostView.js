@@ -144,7 +144,7 @@ const SinglePostView = props => {
   } = useContext(Context)
   const [following, setFollowing] = useState(false)
   const [storeOpen, setStoreOpen] = useState(true)
-  const [multipleItems, setMultipleItems] = useState(true)
+  const [multipleItems] = useState(is_multiple)
   const [itemModal, showItemModal] = useState(false)
   const [itemModalData, setItemModalData] = useState({})
 
@@ -759,6 +759,13 @@ const SinglePostView = props => {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
+                  onPress={() => {
+                    if (type === 'need') {
+                      showOfferModal(true)
+                    } else {
+                      showBasketModal(true)
+                    }
+                  }}
                   style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
                   activeOpacity={0.7}
                   disabled={expired ? true : false}>

@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
 
   body3: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize),
+    fontSize: normalize(defaultFontSize + 2),
     letterSpacing: 0.25,
   },
   button1: {

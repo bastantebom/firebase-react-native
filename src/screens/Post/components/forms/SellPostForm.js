@@ -311,8 +311,8 @@ const SellPostForm = ({
       items: itemsToSave,
       is_multiple: listAsMultiple,
       delivery_methods: {
-        pickup: pickupState,
-        delivery: deliveryState,
+        pickup: { ...pickupState?.pickup },
+        delivery: { ...deliveryState?.delivery },
       },
       payment: paymentMethodsList,
       store_details: {
