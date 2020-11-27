@@ -20,6 +20,7 @@ import {
 } from '@/components'
 
 import { normalize, Colors } from '@/globals'
+import API from '@/services/Api'
 
 import {
   Chat,
@@ -825,7 +826,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                   : 'none',
               padding: normalize(16),
             }}>
-            <AppButton type="primary" text="Done" />
+            <AppButton onPress={closeModal} type="primary" text="Done" />
           </View>
         </>
       )}
@@ -962,7 +963,12 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
-        <CancelOrder goBack={() => setCancelOrder(false)} postType={postType} />
+        <CancelOrder
+          orderDetails={orderDetails}
+          userId={user.uid}
+          goBack={() => setCancelOrder(false)}
+          postType={postType}
+        />
       </Modal>
       <Modal
         isVisible={declineOrder}

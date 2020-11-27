@@ -57,6 +57,7 @@ import ShippingMethodModal from './modals/ShippingMethodModal'
 import PostExpiryModal from './modals/PostExpiryModal'
 import StoreLocationModal from './modals/StoreLocationModal'
 import ScheduleModal from './modals/ScheduleModal'
+import BookingMethodModal from './modals/BookingMethodModal'
 
 const SellPostForm = ({
   navToPost,
@@ -77,6 +78,7 @@ const SellPostForm = ({
     shipping: true,
     moreOptions: true,
     expiry: true,
+    booking: false,
   }
 
   const needForm = {
@@ -91,6 +93,7 @@ const SellPostForm = ({
     shipping: false,
     moreOptions: true,
     expiry: false,
+    booking: false,
   }
 
   const serviceForm = {
@@ -105,6 +108,7 @@ const SellPostForm = ({
     shipping: false,
     moreOptions: true,
     expiry: false,
+    booking: true,
   }
 
   useEffect(() => {
@@ -145,6 +149,7 @@ const SellPostForm = ({
   const [budgetRange, setBudgetRange] = useState(false)
   const [budgetMinimum, setBudgetMinimum] = useState()
   const [budgetMaximum, setBudgetMaximum] = useState()
+  const [bookingMethods, setBookingMethods] = useState(false)
 
   const [showLocation, setShowLocation] = useState(false)
   const [stringAddress, setStringAddress] = useState('')
@@ -154,6 +159,7 @@ const SellPostForm = ({
   const [shippingMethodModal, showShippingMethodModal] = useState(false)
   const [postExpiryModal, showPostExpiryModal] = useState(false)
   const [scheduleModal, showScheduleModal] = useState(false)
+  const [bookingMethodModal, showBookingMethodModal] = useState(false)
 
   const [data, setData] = useState([])
 
@@ -950,6 +956,42 @@ const SellPostForm = ({
         />
       </Modal>
 
+      {activeForm.booking && (
+        <Section>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            onPress={() => {
+              showBookingMethodModal(true)
+            }}>
+            <AppText textStyle="body3">Booking Methods*</AppText>
+            <FormArrowRight />
+          </TouchableOpacity>
+        </Section>
+      )}
+      <Modal
+        isVisible={bookingMethodModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <BookingMethodModal
+          close={() => showBookingMethodModal(false)}
+          setPickupState={setPickupState}
+          pickupState={pickupState}
+          deliveryState={deliveryState}
+          setDeliveryState={setDeliveryState}
+          pickupAddress={pickupAddress}
+          setPickupAddress={setPickupAddress}
+        />
+      </Modal>
+
       {/* POST EXPIRY SECTION */}
       {activeForm.expiry && (
         <Section>
@@ -958,7 +1000,6 @@ const SellPostForm = ({
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
             onPress={() => {
               showPostExpiryModal(true)
-              // navigation.navigate('PostExpiryScreen')
             }}>
             <AppText textStyle="body3">Post Expiry</AppText>
             <FormArrowRight />

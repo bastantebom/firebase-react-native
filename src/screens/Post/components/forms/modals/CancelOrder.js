@@ -15,11 +15,33 @@ import {
   AppButton,
   AppInput,
 } from '@/components'
+import Api from '@/services/Api'
 
 import { normalize, GlobalStyle, Colors } from '@/globals'
 
-const CancelOrder = ({ goBack, postType }) => {
+const CancelOrder = ({ goBack, postType, orderDetails, userId }) => {
   const [notes, setNotes] = useState('')
+
+  const cancelOrderHandler = async () => {
+    const parameters = {
+      uid: userId,
+      id: orderDetails.id,
+      body: {
+        items: orderDetails.items,
+        price: orderDetails.total_price,
+        message: 'UPDATE TEST',
+        status: 'cancelled',
+      },
+    }
+
+    const response = await Api.updateOrder(parameters)
+
+    if (response.success) {
+      goBack()
+    } else {
+      alert("Order can't be cancelled")
+    }
+  }
 
   return (
     <View
@@ -39,7 +61,7 @@ const CancelOrder = ({ goBack, postType }) => {
           }}
         />
       </View>
-      <PaddingView paddingSize={2}>
+      <PaddingView paddingSize={3}>
         <View
           style={{
             justifyContent: 'center',
@@ -79,11 +101,8 @@ const CancelOrder = ({ goBack, postType }) => {
             textAlignVertical="top"
           />
         </View>
-        <AppButton
-          text="Cancel"
-          type="primary"
-          // onPress={}
-        />
+        <AppButton text="Cancel" type="primary" onPress={cancelOrderHandler} />
+
         <AppButton text="Go Back" onPress={goBack} />
       </PaddingView>
     </View>

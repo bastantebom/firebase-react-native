@@ -70,7 +70,14 @@ const SinglePostView = props => {
   const { othersView = false } = props.route?.params
 
   const {
-    user: { display_name, profile_photo, email, phone_number },
+    user: {
+      display_name,
+      profile_photo,
+      email,
+      phone_number,
+      username,
+      full_name,
+    },
     cover_photos,
     title,
     description,
@@ -82,11 +89,9 @@ const SinglePostView = props => {
     },
     delivery_methods,
     available,
-    username,
     account_verified,
     date_posted,
     post_id,
-    full_name,
     uid,
     is_multiple,
     type,
@@ -577,7 +582,7 @@ const SinglePostView = props => {
                     textStyle="subtitle1"
                     color={Colors.secondaryMountainMeadow}
                     customStyle={{ marginRight: 8 }}>
-                    ₱{' '}
+                    ₱{items[0].price}
                     {type !== 'need'
                       ? price
                       : `${price_range?.min} - ${price_range?.max}`}

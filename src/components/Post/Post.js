@@ -222,11 +222,17 @@ const Post = ({
                     textStyle="eyebrow2"
                     customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
                     {delivery_methods?.pickup && delivery_methods?.delivery
-                      ? 'Pickup & Delivery'
+                      ? post_type === 'service'
+                        ? 'Appointment & Walk-in'
+                        : 'Pickup & Delivery'
                       : delivery_methods?.delivery
-                      ? 'Delivery'
+                      ? post_type === 'service'
+                        ? 'Walk-in'
+                        : 'Delivery'
                       : delivery_methods?.pickup
-                      ? 'Pickup'
+                      ? post_type === 'service'
+                        ? 'Appointment'
+                        : 'Pickup'
                       : 'Not set'}
                   </AppText>
                 </View>
