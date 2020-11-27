@@ -66,10 +66,6 @@ const BasketModal = ({
   const [userData, setUserData] = useState({})
   const [attachedPostData, setAttachedPostData] = useState()
 
-  const [deliveryChoice, setDeliveryChoice] = useState()
-  const [paymentChoice, setPaymentChoice] = useState()
-  const [notes, setNotes] = useState()
-
   const { userCart, setUserCart } = useContext(Context)
   const { userInfo, user } = useContext(UserContext)
   const { addresses } = userInfo
@@ -85,6 +81,12 @@ const BasketModal = ({
     delivery_methods,
     user: { display_name },
   } = postData
+
+  const [deliveryChoice, setDeliveryChoice] = useState(
+    delivery_methods.delivery ? 'delivery' : 'pickup'
+  )
+  const [paymentChoice, setPaymentChoice] = useState(payment[0])
+  const [notes, setNotes] = useState()
 
   // MAP
   Geocoder.init(Config.apiKey)
@@ -196,7 +198,7 @@ const BasketModal = ({
       uid: user.uid,
       body: {
         items: itemsToSave,
-        post_id: postData?.post_id,
+        post_id: postData?.id,
         delivery_method: deliveryChoice,
         payment_method: paymentChoice,
         notes: notes,
@@ -208,7 +210,10 @@ const BasketModal = ({
     if (response.success) {
       setOrderID(response.order_id)
       showTrackerModal(true)
+
+      setUserCart([])
     } else {
+      console.log(response)
       alert('Creating offer failed.')
     }
   }
@@ -622,7 +627,7 @@ const BasketModal = ({
               </View>
               <TouchableOpacity onPress={() => showOrderNotes(true)}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
-                  Edit
+                  {notes ? 'Edit' : 'Add Notes'}
                 </AppText>
               </TouchableOpacity>
             </View>
@@ -763,7 +768,10 @@ const BasketModal = ({
           height: Dimensions.get('window').height,
         }}>
         <TrackerModal
-          closeModal={() => showTrackerModal(false)}
+          closeModal={() => {
+            showTrackerModal(false)
+            closeModal()
+          }}
           postType={postType}
           postData={postData}
           orderID={orderID}

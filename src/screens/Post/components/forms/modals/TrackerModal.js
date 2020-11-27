@@ -45,15 +45,17 @@ import DeclineRequest from './DeclineRequest'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import firestore from '@react-native-firebase/firestore'
+import { useNavigation } from '@react-navigation/native'
 
 const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   const { openNotification, closeNotification } = useContext(Context)
-  const { user } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
+  const navigation = useNavigation()
 
   const [buyer, setBuyer] = useState(false)
   const [seller, setSeller] = useState(false)
-  const [pickup, setPickup] = useState(true)
-  const [delivery, setDelivery] = useState(false)
+  const [pickup, setPickup] = useState(false)
+  const [delivery, setDelivery] = useState(true)
 
   const [message, showMessage] = useState(false)
 
@@ -78,23 +80,48 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
           setBuyer(user.uid === data.buyer_id)
           setSeller(user.uid === data.seller_id)
           setStatus(data.status)
+          setDelivery(data.delivery_method === 'delivery')
+          setPickup(data.delivery_method === 'pickup')
         }
       })
   }, [])
 
-  const orderList = [
-    {
-      quantity: '1',
-      name: 'Beef Burger',
-      price: '75',
-    },
-    {
-      quantity: '1',
-      name: 'Spicy Beef Burger',
-      price: '75',
-      note: 'No tomatoes and onions',
-    },
-  ]
+  const [orderList, setOrderList] = useState([])
+
+  useEffect(() => {
+    if (!orderList.length) {
+      if (!postData?.is_multiple) {
+        setOrderList([
+          {
+            id: 'idsingle',
+            quantity: 1,
+            name: postData?.title,
+            price: postData?.items[0]?.price,
+          },
+        ])
+      } else if (Array.isArray(orderDetails.items)) {
+        setOrderList(orderDetails.items)
+      }
+    }
+  })
+
+  useEffect(() => {
+    computedTotalPrice()
+  }, [orderList])
+
+  const computedTotalPrice = () => {
+    // let total = 0
+
+    // orderList.forEach(item => {
+    //   total += Number(item.price * item.quantity)
+    // })
+
+    // return total
+    return orderList.reduce(
+      (total, item) => total + +(item.price * item.quantity),
+      0
+    )
+  }
 
   const orderStatus = (status, postType) => {
     if (buyer) {
@@ -359,10 +386,13 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
     orderStatus(status, postType)
   }, [postType, status])
 
+  const [notif, showNotif] = useState(true)
+
   useEffect(() => {
-    openNotification()
+    // openNotification()
     setTimeout(() => {
-      closeNotification()
+      // closeNotification()
+      showNotif(false)
     }, 5000)
   }, [])
 
@@ -374,20 +404,23 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
         paddingSize={2}
         iconSize={normalize(16)}
       />
-      <Notification
-        type="success"
-        icon={<CircleTick />}
-        customStyle={{ position: 'relative' }}>
-        <AppText
-          textStyle="body2"
-          customStyle={{ marginLeft: 14, paddingTop: 2 }}>
-          {postType === 'sell'
-            ? 'Order Sent!'
-            : postType === 'service'
-            ? 'Request Sent!'
-            : 'Offer Sent!'}
-        </AppText>
-      </Notification>
+      {notif && (
+        <Notification
+          onClose={() => showNotif(false)}
+          type="success"
+          icon={<CircleTick />}
+          customStyle={{ position: 'relative' }}>
+          <AppText
+            textStyle="body2"
+            customStyle={{ marginLeft: 14, paddingTop: 2 }}>
+            {postType === 'sell'
+              ? 'Order Sent!'
+              : postType === 'service'
+              ? 'Request Sent!'
+              : 'Offer Sent!'}
+          </AppText>
+        </Notification>
+      )}
       <TouchableOpacity
         style={{ position: 'relative', width: '100%' }}
         activeOpacity={0.7}>
@@ -528,7 +561,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                       </AppText>
                     ) : (
                       <AppText textStyle="body1">
-                        Pick up from &nbsp;
+                        Pick up from{' '}
                         <AppText textStyle="body1medium">
                           Wayne’s Burger and Smoothies
                         </AppText>
@@ -538,16 +571,16 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                 )}
                 {delivery && (
                   <AppText textStyle="body1">
-                    From &nbsp;
+                    From{' '}
                     <AppText textStyle="body1medium">
-                      Wayne’s Burger and Smoothies
+                      {postData?.user?.display_name}
                     </AppText>
                   </AppText>
                 )}
                 <AppText
                   textStyle="body2"
                   customStyle={{ marginTop: normalize(7) }}>
-                  13 Freddy Krugger St. Kapitolyo, Pasig City
+                  {postData?.store_details?.location?.full_address}
                 </AppText>
               </View>
             </View>
@@ -576,12 +609,16 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                     ? 'Servicing at'
                     : null}
                   &nbsp;
-                  <AppText textStyle="body1medium">Home</AppText>
+                  <AppText textStyle="body1medium">
+                    {userInfo.addresses[0].name
+                      ? userInfo.addresses[0].name
+                      : 'Home (default)'}
+                  </AppText>
                 </AppText>
                 <AppText
                   textStyle="body2"
                   customStyle={{ marginTop: normalize(7) }}>
-                  54-A Mahogany Ave, Kingsville Subdivision
+                  {userInfo.addresses[0].full_address}
                 </AppText>
               </View>
             </View>
@@ -617,7 +654,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                     <AppText
                       textStyle="body2"
                       customStyle={{ marginTop: normalize(7) }}>
-                      Cash on delivery, change ₱200
+                      {orderDetails.payment_method}
                     </AppText>
                   ))}
                 {postType === 'need' && (
@@ -682,7 +719,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                       <AppText
                         textStyle="body1"
                         color={Colors.contentPlaceholder}>
-                        ₱{item.price}
+                        ₱{item.price * item.quantity}
                       </AppText>
                     </View>
                   )
@@ -695,7 +732,9 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                   paddingTop: normalize(10),
                 }}>
                 <AppText textStyle="body1medium">Total</AppText>
-                <AppText textStyle="body1medium">₱75</AppText>
+                <AppText textStyle="body1medium">
+                  ₱{computedTotalPrice()}
+                </AppText>
               </View>
             </View>
           </View>

@@ -102,7 +102,7 @@ const SellPostForm = ({
     multipleService: true,
     budgetRange: false,
     payment: true,
-    shipping: true,
+    shipping: false,
     moreOptions: true,
     expiry: false,
   }

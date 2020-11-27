@@ -173,7 +173,7 @@ const SinglePostView = props => {
       })
 
     setTotalCartPrice(computedPrice)
-  }, [userCart])
+  })
 
   const toggleEditPost = () => {
     toggleEllipsisState()
