@@ -111,10 +111,6 @@ const ProfileScreen = ({
     closeNotificationTimer()
   }
 
-  if (!user) {
-    return <GuestProfile />
-  }
-
   const notificationErrorTextStyle = {
     flex: 1,
     marginLeft: 12,
@@ -306,8 +302,8 @@ const ProfileScreen = ({
   }
 
   const renderHeader = () => {
-    const MAX_OPACITY = normalize(200)
-    const MIN_OPACITY = normalize(250)
+    const MAX_OPACITY = normalize(250)
+    const MIN_OPACITY = normalize(255)
 
     const opacity = scroll.interpolate({
       inputRange: [0, MAX_OPACITY, MIN_OPACITY],
@@ -371,13 +367,21 @@ const ProfileScreen = ({
     setScrollPosition(position)
   }
 
+  if (!user) {
+    return <GuestProfile />
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
-        parallaxHeight={statusPercentage < 1 ? normalize(520) : normalize(435)}
-        headerHeight={scrollPosition < 350 ? 0 : normalize(60)}
+        parallaxHeight={
+          statusPercentage < 1
+            ? Dimensions.get('window').height - normalize(110)
+            : Dimensions.get('window').height - normalize(195)
+        }
+        headerHeight={scrollPosition < 100 ? 0 : normalize(60)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -387,7 +391,7 @@ const ProfileScreen = ({
           }
         )}
         snapToEdge={false}
-        transparentHeader={scrollPosition > 350 ? false : true}
+        transparentHeader={true}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl
@@ -454,6 +458,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: normalize(2),
     width: '50%',
+    flexGrow: 1,
   },
 })
 

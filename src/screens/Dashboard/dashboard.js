@@ -26,6 +26,7 @@ import AsyncStorage from '@react-native-community/async-storage'
  * @param {() => void} param0.onClose
  */
 const VerifyNotifictaion = ({ onPress, onClose }) => {
+  console.log('dasjboadt')
   return (
     <Notification
       icon={<Icons.VerifiedWhite />}

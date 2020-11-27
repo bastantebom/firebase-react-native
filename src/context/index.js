@@ -72,7 +72,7 @@ export const ContextProvider = ({ children }) => {
   }, [filters])
 
   const handleSearch = async value => {
-    const result = await PostService.searchPosts({
+    const result = await PostService.getPosts({
       limit: 10,
       page: 0,
       search: value,
@@ -92,7 +92,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   const handleOnEndReach = async value => {
-    const results = await PostService.searchPosts({
+    const results = await PostService.getPosts({
       limit: 10,
       page: page + 1,
       search: value,

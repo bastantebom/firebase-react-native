@@ -166,6 +166,9 @@ const LocationSearch = () => {
           </Animated.View>
           <ScrollView
             horizontal={true}
+            alwaysBounceHorizontal={false}
+            alwaysBounceVertical={false}
+            bounces={false}
             showsHorizontalScrollIndicator={false}
             onScroll={Animated.event(
               [

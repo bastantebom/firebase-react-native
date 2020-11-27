@@ -133,8 +133,8 @@ const MapComponent = ({
       setTimeout(() => {
         if (circleRef.current) {
           circleRef.current.setNativeProps({
-            strokeColor: 'rgba(255, 212, 0, 0.8)',
-            fillColor: 'rgba(255, 212, 0, 0.18)',
+            strokeColor: 'rgba(255,212,0,.1)',
+            fillColor: 'rgba(255,212,0,.1)',
           })
         }
       }, 100)
@@ -227,7 +227,7 @@ const MapComponent = ({
     if (withRadius) {
       if (radius && radius >= 100 && isMapReady) {
         let centralCoordinates = {
-          latitude: 12.879721,
+          latitude: 12.879721, //central point of ph
           longitude: 121.774017,
           latitudeDelta: 15,
           longitudeDelta: 15,
@@ -292,7 +292,7 @@ const MapComponent = ({
         ) : null}
         {withRadius && isMapReady && radius < 100 ? (
           <View>
-            {radius === 0.5 ? null : (
+            {radius === 1 ? null : (
               <>
                 <Circle
                   center={{
@@ -370,5 +370,4 @@ const styles = StyleSheet.create({
     marginTop: Platform.os === 'ios' ? normalize(-65) : normalize(-48),
   },
 })
-
 export default MapComponent

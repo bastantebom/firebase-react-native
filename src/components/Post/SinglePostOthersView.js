@@ -58,27 +58,27 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
   const { user, setUserInfo, userInfo } = useContext(UserContext)
 
   const {
-    user: { display_name, profile_photo },
-    date_posted,
-    available,
-    payment_method,
+    user: { display_name, profile_photo, email, phone_number },
+    cover_photos,
+    title,
+    description,
+    payment,
+    price,
     store_details: {
       schedule,
       location: { city, province, country },
     },
-    title,
-    username,
     delivery_methods,
-    description,
-    uid,
-    price,
-    post_id,
-    cover_photos,
+    available,
+    username,
     account_verified,
-    email,
-    phone_number,
-    post_type,
+    date_posted,
+    post_id,
     full_name,
+    uid,
+    is_multiple,
+    type,
+    items,
   } = data
 
   const defaultImage = [

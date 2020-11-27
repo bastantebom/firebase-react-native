@@ -39,6 +39,7 @@ import IllustThree from '@/assets/images/onboarding-img3.svg'
 import IllustFour from '@/assets/images/onboarding-img4.svg'
 
 import { Context } from '@/context'
+import { normalize } from '@/globals'
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
@@ -227,7 +228,9 @@ const styles = StyleSheet.create({
     height: 8,
     marginLeft: 3,
     marginRight: 3,
-    marginBottom: height > 700 ? height * 0.3 : height * 0.18,
+    // marginBottom: height > 700 ? height * 0.3 : height * 0.18,
+    bottom: normalize(130),
+    // marginBottom: normalize(130),
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },

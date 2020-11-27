@@ -1,18 +1,18 @@
 //import liraries
-import React, {useContext} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {Colors, normalize} from '@/globals';
+import React, { useContext } from 'react'
+import { View, StyleSheet, ScrollView } from 'react-native'
+import { Colors, normalize } from '@/globals'
 
-import {NoPost} from '@/assets/images';
-import {AppText} from '@/components';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Context} from '@/context/index';
-import {useNavigation} from '@react-navigation/native';
+import { NoPost } from '@/assets/images'
+import { AppText } from '@/components'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Context } from '@/context/index'
+import { useNavigation } from '@react-navigation/native'
 
 // create a component
-const PostOwnEmpty = ({isLoading}) => {
-  const {openPostButtons} = useContext(Context);
-  const navigation = useNavigation();
+const PostOwnEmpty = ({ isLoading }) => {
+  const { openPostButtons } = useContext(Context)
+  const navigation = useNavigation()
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -49,8 +49,8 @@ const PostOwnEmpty = ({isLoading}) => {
         </View>
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     marginLeft: normalize(8),
     marginRight: normalize(8),
   },
-});
+})
 
 //make this component available to the app
-export default PostOwnEmpty;
+export default PostOwnEmpty

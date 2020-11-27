@@ -258,8 +258,8 @@ function ProfileInfoModal(props) {
   }
 
   const renderHeader = () => {
-    const MAX_OPACITY = normalize(200)
-    const MIN_OPACITY = normalize(250)
+    const MAX_OPACITY = normalize(250)
+    const MIN_OPACITY = normalize(255)
 
     const opacity = scroll.interpolate({
       inputRange: [0, MAX_OPACITY, MIN_OPACITY],
@@ -330,8 +330,8 @@ function ProfileInfoModal(props) {
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
-        parallaxHeight={normalize(380)}
-        headerHeight={scrollPosition < 350 ? 0 : normalize(60)}
+        parallaxHeight={Dimensions.get('window').height - normalize(250)}
+        headerHeight={scrollPosition < 100 ? 0 : normalize(60)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -341,7 +341,7 @@ function ProfileInfoModal(props) {
           }
         )}
         snapToEdge={false}
-        transparentHeader={scrollPosition > 350 ? false : true}
+        transparentHeader={true}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl

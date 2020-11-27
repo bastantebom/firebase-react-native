@@ -103,8 +103,8 @@ const SearchBarWithFilter = ({ show }) => {
         <View
           style={{
             margin: 16,
-            height: searchType === 'posts' ? normalize(47.5) : normalize(107),
-            // backgroundColor: 'red'
+            // height: searchType === 'posts' ? normalize(47.5) : normalize(107),
+            // backgroundColor: 'red',
           }}>
           <View
             style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
@@ -118,17 +118,17 @@ const SearchBarWithFilter = ({ show }) => {
                 onBackPress={onBackPress}
                 valueHandler={onValueChange}
               />
-              <Animated.View
-                style={{
-                  opacity: opacity,
-                  display: searchBarFocused ? 'flex' : 'none',
-                  zIndex: searchBarFocused ? 1 : 0,
-                  flex: 1,
-                  position: 'absolute',
-                }}>
-                <SearchResults onValueChange={searchValue} />
-              </Animated.View>
             </View>
+            <Animated.View
+              style={{
+                opacity: opacity,
+                display: searchBarFocused ? 'flex' : 'none',
+                zIndex: searchBarFocused ? 1 : 0,
+                flex: 1,
+                position: 'absolute',
+              }}>
+              <SearchResults onValueChange={searchValue} />
+            </Animated.View>
             {searchBarFocused ? (
               <View style={{ marginTop: normalize(47.5) }} />
             ) : (
