@@ -173,6 +173,7 @@ import PostNote from './PostNote.svg'
 import PostParcel from './PostParcel.svg'
 import PostInfoRed from './PostInfoRed.svg'
 import PostCalendar from './post-calendar.svg'
+import PostParcelBlue from './post-parcel-blue.svg'
 
 import ProfileImageDefault from './profile-image-default.svg'
 
@@ -431,6 +432,7 @@ export {
   LikeColored,
   ChevronRightWhite,
   Search,
+  PostParcelBlue,
 }
 
 export const Icons = {
@@ -451,5 +453,5 @@ export const Icons = {
   Verified,
   VerifiedWhite,
   VerifyTick,
-  Warning
+  Warning,
 }

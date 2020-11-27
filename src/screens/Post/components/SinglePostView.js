@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useRef,
+} from 'react'
 import {
   View,
   ScrollView,
@@ -9,6 +15,8 @@ import {
   SafeAreaView,
   Linking,
   Dimensions,
+  Animated,
+  TextInput,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -43,6 +51,9 @@ import {
   PostCalendar,
   ShoppingCart,
   CartDot,
+  Like,
+  Search,
+  PostParcelBlue,
 } from '@/assets/images/icons'
 import { CoverNeed, CoverSell, CoverService } from '@/assets/images'
 
@@ -345,11 +356,158 @@ const SinglePostView = props => {
     setItemModalData(item)
   }
 
+  /************/
+
+  const [data, setData] = useState([])
+  const [dataCoords, setDataCoords] = useState([])
+  const [activeTab, setActiveTab] = useState(itemsByCategory[0].category)
+  const [stickyHeaderHeight, setStickyHeaderHeight] = useState([])
+  const [scrollPosition, setScrollPosition] = useState(0)
+
+  const ref = useRef(null)
+
+  const scrollHandler = (i, category) => {
+    if (dataCoords.length > i) {
+      ref.current.scrollTo({
+        x: 0,
+        y: dataCoords[i] - 60,
+        animated: true,
+      })
+    }
+  }
+
+  const [scrollY] = useState(new Animated.Value(0))
+
+  useEffect(() => {
+    setData(itemsByCategory)
+  }, [])
+
+  const HEADER_MAX_HEIGHT = normalize(248)
+  const HEADER_MIN_HEIGHT = normalize(80)
+  const HEADER_TOP = normalize(-50)
+  const HEADER_INITIAL_HEIGHT = normalize(50)
+  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_INITIAL_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: 'clamp',
+  })
+
+  const offsetHeight = scrollY.interpolate({
+    inputRange: [
+      HEADER_SCROLL_DISTANCE,
+      HEADER_MAX_HEIGHT,
+      HEADER_MAX_HEIGHT * 2,
+    ],
+    outputRange: [0, 0, HEADER_MIN_HEIGHT],
+    extrapolate: 'clamp',
+  })
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT / 1.5, HEADER_MAX_HEIGHT],
+    outputRange: [1, 1, 0],
+    extrapolate: 'clamp',
+  })
+
+  const headerTransform = scrollY.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT * 0.75, HEADER_MAX_HEIGHT],
+    outputRange: [1, 0, -50],
+    extrapolate: 'clamp',
+  })
+
+  const stickyHeaderOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT, HEADER_MAX_HEIGHT],
+    outputRange: [1, 1, 1],
+    extrapolate: 'clamp',
+  })
+
+  const stickyHeaderTransform = scrollY.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT * 0.75, HEADER_MAX_HEIGHT],
+    outputRange: [HEADER_MAX_HEIGHT, 0, HEADER_TOP],
+    extrapolate: 'clamp',
+  })
+
+  const ItemView = (category, i) => {
+    return (
+      <>
+        <View
+          key={i}
+          style={styles.categoryWrapper}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout
+            dataCoords[i] = layout.y
+            setDataCoords(dataCoords)
+          }}>
+          <AppText
+            textStyle="subtitle1"
+            customStyle={{ marginBottom: normalize(15) }}>
+            {category.category}
+          </AppText>
+          {category.items.map(item => {
+            return (
+              <TouchableOpacity
+                disabled={uid === user?.uid}
+                key={item.id}
+                onPress={() => showItemModalWithItem(item)}>
+                <View style={styles.itemWrapper}>
+                  {item?.image?.substring(0, 8) === 'https://' && (
+                    <View style={styles.imageWrapper}>
+                      <Image
+                        style={styles.image}
+                        source={{ uri: item.image }}
+                      />
+                    </View>
+                  )}
+                  <View style={styles.detailWrapper}>
+                    <View style={styles.titleDesc}>
+                      <AppText textStyle="body1medium">{item.name}</AppText>
+                      {item.description ? (
+                        <AppText textStyle="body2">{item.description}</AppText>
+                      ) : (
+                        <></>
+                      )}
+                    </View>
+                    <View style={styles.itemPrice}>
+                      <AppText textStyle="subtitle1">₱{item.price}</AppText>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )
+          })}
+        </View>
+      </>
+    )
+  }
+
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.postImageContainer}>
+        <Animated.View
+          style={{
+            height: offsetHeight,
+            opacity: stickyHeaderOpacity,
+            transform: [{ translateY: stickyHeaderTransform }],
+          }}
+        />
+        <ScrollView
+          ref={ref}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: { contentOffset: { y: scrollY } },
+              },
+            ],
+            {
+              useNativeDriver: false,
+            }
+          )}
+          stickyHeaderIndices={[2]}
+          contentContainerStyle={{ marginTop: 0 }}>
+          <View style={[styles.postImageContainer]}>
             {cover_photos === undefined || cover_photos.length == 0 ? (
               type === 'Need' || type === 'need' ? (
                 <Image
@@ -574,59 +732,99 @@ const SinglePostView = props => {
             )}
           </View>
           {is_multiple && (
-            <>
-              {itemsByCategory.map((category, i) => {
-                return (
-                  <View key={i} style={styles.categoryWrapper}>
-                    <AppText
-                      textStyle="subtitle1"
-                      customStyle={{ marginBottom: normalize(15) }}>
-                      {category.category}
-                    </AppText>
-                    {category.items.map(item => {
-                      return (
-                        <TouchableOpacity
-                          disabled={uid === user?.uid}
-                          key={item.id}
-                          onPress={() => showItemModalWithItem(item)}>
-                          <View style={styles.itemWrapper}>
-                            {item?.image?.substring(0, 8) === 'https://' && (
-                              <View style={styles.imageWrapper}>
-                                <Image
-                                  style={styles.image}
-                                  source={{ uri: item.image }}
-                                />
-                              </View>
-                            )}
-                            <View style={styles.detailWrapper}>
-                              <View style={styles.titleDesc}>
-                                <AppText textStyle="body1medium">
-                                  {item.name}
-                                </AppText>
-                                {item.description ? (
-                                  <AppText textStyle="body2">
-                                    {item.description}
-                                  </AppText>
-                                ) : (
-                                  <></>
-                                )}
-                              </View>
-                              <View style={styles.itemPrice}>
-                                <AppText textStyle="subtitle1">
-                                  ₱{item.price}
-                                </AppText>
-                              </View>
-                            </View>
-                          </View>
-                        </TouchableOpacity>
-                      )
-                    })}
-                  </View>
-                )
-              })}
-            </>
+            <View
+              style={{
+                backgroundColor: 'white',
+                width: '100%',
+                paddingHorizontal: 15,
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
+                borderBottomColor: Colors.neutralsZircon,
+                borderBottomWidth: 2,
+              }}>
+              <ScrollView
+                directionalLockEnabled={true}
+                bounces={false}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                scrollEventThrottle={16}>
+                {itemsByCategory.map((category, i) => {
+                  return (
+                    <TouchableOpacity
+                      key={i}
+                      style={{
+                        paddingRight: normalize(24),
+                        paddingVertical: normalize(12),
+                      }}
+                      onPress={() => {
+                        scrollHandler(i, category)
+                      }}>
+                      <AppText textStyle="body2">{category.category}</AppText>
+                    </TouchableOpacity>
+                  )
+                })}
+              </ScrollView>
+            </View>
           )}
+          {is_multiple && <>{data.map(ItemView)}</>}
         </ScrollView>
+        <Animated.View style={[styles.header, { height: headerHeight }]}>
+          <Animated.View
+            style={[
+              styles.bar,
+              {
+                opacity: headerOpacity,
+                transform: [{ translateY: headerTransform }],
+              },
+            ]}>
+            <TransparentHeader
+              type={uid === user?.uid ? 'post-own' : 'post-other'}
+              ellipsisState={ellipsisState}
+              toggleEllipsisState={toggleEllipsisState}
+              toggleFollowing={toggleFollowing}
+              following={following}
+              backFunction={() => navigation.goBack()}
+              editPostFunction={toggleEditPost}
+              deletePostFunction={deletePost}
+              hidePost={hidePost}
+              postId={post_id}
+              postTitle={title}
+            />
+          </Animated.View>
+          <Animated.View
+            style={[
+              {
+                opacity: stickyHeaderOpacity,
+                transform: [{ translateY: stickyHeaderTransform }],
+                backgroundColor: Colors.neutralsWhite,
+                padding: normalize(15),
+                borderBottomColor: Colors.neutralsZircon,
+                borderBottomWidth: 2,
+              },
+            ]}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                width: '100%',
+              }}>
+              <TouchableOpacity
+                onPress={() => {}}
+                style={{ marginRight: normalize(25) }}>
+                <Search width={normalize(20)} height={normalize(20)} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}}>
+                <Like width={normalize(20)} height={normalize(20)} />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <PostParcelBlue width={normalize(25)} height={normalize(25)} />
+              <AppText textStyle="subtitle1" customStyle={{ marginLeft: 8 }}>
+                {profileInfo.display_name}
+              </AppText>
+            </View>
+          </Animated.View>
+        </Animated.View>
 
         {/* ITEM MODAL */}
         <Modal
@@ -795,22 +993,8 @@ const SinglePostView = props => {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <SinglePostContent />
-      <TransparentHeader
-        type={uid === user?.uid ? 'post-own' : 'post-other'}
-        ellipsisState={ellipsisState}
-        toggleEllipsisState={toggleEllipsisState}
-        toggleFollowing={toggleFollowing}
-        following={following}
-        backFunction={() => navigation.goBack()}
-        editPostFunction={toggleEditPost}
-        deletePostFunction={deletePost}
-        hidePost={hidePost}
-        postId={post_id}
-        postTitle={title}
-      />
-
       <Modal
         isVisible={deleteCurrentOrderModal}
         animationIn="zoomIn"
@@ -935,7 +1119,7 @@ const SinglePostView = props => {
           postData={props.route?.params?.data}
         />
       </Modal>
-    </>
+    </SafeAreaView>
   )
 }
 
@@ -1055,6 +1239,24 @@ const styles = StyleSheet.create({
   itemPrice: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: 'hidden',
+  },
+  bar: {
+    height: normalize(50),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontSize: 18,
   },
 })
 
