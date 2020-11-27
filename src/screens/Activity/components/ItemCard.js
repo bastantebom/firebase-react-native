@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
-
-import { AppText, CacheableImage } from '@/components'
-
+import { AppText, CacheableImage, TransitionIndicator } from '@/components'
+import Api from '@/services/Api'
 import Modal from 'react-native-modal'
 import {
   GlobalStyle,
@@ -18,6 +17,8 @@ import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 
 const ItemCard = ({ item }) => {
   const [trackerModal, showTrackerModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [postData, setPostData] = useState({})
   const timeAgo = time => {
     if (time <= 60) {
       return 'Just now'
@@ -38,11 +39,25 @@ const ItemCard = ({ item }) => {
     )
   }
 
+  const getPostDetails = async () => {
+    try {
+      if (!item.postId) return
+      setIsLoading(true)
+      const getPostResponse = await Api.getPost({ pid: item.postId })
+      if (getPostResponse.success) {
+        setPostData(getPostResponse.data)
+        setIsLoading(false)
+        showTrackerModal(true)
+      }
+    } catch (error) {
+      setIsLoading(false)
+      console.log(error.message || error)
+    }
+  }
   return (
     <>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => showTrackerModal(true)}>
+      <TransitionIndicator loading={isLoading} />
+      <TouchableOpacity activeOpacity={0.7} onPress={() => getPostDetails()}>
         <View style={styles.card}>
           <View
             style={{
@@ -133,9 +148,9 @@ const ItemCard = ({ item }) => {
         }}>
         <TrackerModal
           closeModal={() => showTrackerModal(false)}
-          postType={item.type}
+          postType={postData.type}
           orderID={item.orderID}
-          postData={item.postData}
+          postData={postData}
         />
       </Modal>
     </>

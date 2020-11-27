@@ -294,13 +294,14 @@ export const ContextProvider = ({ children }) => {
           snap.docs.map(async doc => {
             let snapData = doc.data()
             if (snapData.type === 'order') {
-              const orderResponse = await firestore()
-                .doc(`orders/${snapData.order_id}`)
-                .get()
+              const orderResponse = (
+                await firestore().doc(`orders/${snapData.order_id}`).get()
+              ).data()
+
               snapData = {
                 ...snapData,
-                buyerId: orderResponse.data().buyer_id,
-                postId: orderResponse.data().post_id,
+                buyerId: orderResponse?.buyer_id,
+                postId: orderResponse?.post_id,
                 orderId: snapData.order_id,
               }
             }

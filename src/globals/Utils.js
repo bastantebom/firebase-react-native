@@ -172,10 +172,6 @@ export const tempHistory = completeDate => {
   }
 }
 
-export const numberWithComma = number => {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-}
-
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
 const scale = SCREEN_WIDTH / 375

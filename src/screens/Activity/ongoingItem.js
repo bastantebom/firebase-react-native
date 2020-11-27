@@ -57,7 +57,7 @@ const OngoingItem = ({ route }) => {
             paymentMode: 'Cash',
             orderID: order.id,
             numOfItems: order.items?.length ? order.items?.length : 0,
-            postData: { title },
+            postId: order.post_id,
             type,
           }
         } else return {}

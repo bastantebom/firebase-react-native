@@ -19,17 +19,8 @@ import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 
 const ActivitiesCard = ({ info }) => {
   const navigation = useNavigation()
-  const {
-    status,
-    time,
-    profilePhoto,
-    orders,
-    name,
-    cardType,
-    cover_photos,
-    type,
-    title,
-  } = info
+  const { status, time, profilePhoto, orders, name, cardType, postData } = info
+
   const [trackerModal, showTrackerModal] = useState(false)
 
   const statusBackground = () => {
@@ -86,14 +77,14 @@ const ActivitiesCard = ({ info }) => {
   }
 
   const CoverPhoto = () => {
-    return cover_photos?.length > 0 ? (
+    return postData?.cover_photos?.length > 0 ? (
       <CacheableImage
         style={GlobalStyle.image}
-        source={{ uri: cover_photos[0] }}
+        source={{ uri: postData?.cover_photos[0] }}
       />
-    ) : type === 'service' ? (
+    ) : postData.type === 'service' ? (
       <DefaultService width={normalize(64)} height={normalize(72)} />
-    ) : type === 'need' ? (
+    ) : postData.type === 'need' ? (
       <DefaultNeed width={normalize(64)} height={normalize(72)} />
     ) : (
       <DefaultSell width={normalize(64)} height={normalize(72)} />
@@ -185,11 +176,13 @@ const ActivitiesCard = ({ info }) => {
                       {info.date}
                     </AppText>
                   )}
-                  {info.price && (type === 'service' || type === 'sell') && (
-                    <AppText textStyle="metadata">
-                      • ₱{info.price.toLocaleString()}
-                    </AppText>
-                  )}
+                  {info.price &&
+                    (postData.type === 'service' ||
+                      postData.type === 'sell') && (
+                      <AppText textStyle="metadata">
+                        • ₱{info.price.toLocaleString()}
+                      </AppText>
+                    )}
                   {info.availed && (
                     <AppText
                       textStyle="metadata"
@@ -204,23 +197,25 @@ const ActivitiesCard = ({ info }) => {
                       • {info.pending} pending request
                     </AppText>
                   )}
-                  {type === 'need' && cardType === 'seller' && (
+                  {postData.type === 'need' && cardType === 'seller' && (
                     <AppText
                       textStyle="metadata"
                       customStyle={{ marginHorizontal: 2 }}>
                       {orders?.pending?.length} offers
                     </AppText>
                   )}
-                  {type === 'sell' && cardType === 'seller' && (
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={{ marginHorizontal: 2 }}>
-                      {orders?.pending?.length} pending request
-                    </AppText>
-                  )}
+                  {postData.type === 'sell' &&
+                    cardType === 'seller' &&
+                    orders?.pending && (
+                      <AppText
+                        textStyle="metadata"
+                        customStyle={{ marginHorizontal: 2 }}>
+                        {orders?.pending?.length} pending request
+                      </AppText>
+                    )}
                 </View>
                 <AppText textStyle="caption2" numberOfLines={1}>
-                  {info.title}
+                  {postData.title}
                 </AppText>
                 {info.reply && (
                   <AppText textStyle="caption" numberOfLines={1}>
@@ -246,9 +241,9 @@ const ActivitiesCard = ({ info }) => {
         }}>
         <TrackerModal
           closeModal={() => showTrackerModal(false)}
-          postType={type}
+          postType={postData.type}
           orderID={info.orderID}
-          postData={title}
+          postData={postData}
         />
       </Modal>
     </>

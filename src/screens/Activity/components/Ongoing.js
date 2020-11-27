@@ -126,9 +126,7 @@ const Ongoing = () => {
                 time: order.date._seconds,
                 orderID: order.id,
                 price: order.total_price,
-                title: getPostResponse.data.title,
-                cover_photos: getPostResponse.data.cover_photos,
-                type: getPostResponse.data.type,
+                postData: getPostResponse.data,
               }
             }
           })
@@ -165,11 +163,10 @@ const Ongoing = () => {
               profilePhoto: profile_photo,
               name: display_name ? display_name : full_name,
               cardType: 'seller',
-              title: post.title,
               time: latestTimeStampOrder,
               cover_photos: post.cover_photos,
               orders: responseOrders.data,
-              type: post.type,
+              postData: { type: post.type, title: post.title },
             }
           } else {
             setIsLoading(false)

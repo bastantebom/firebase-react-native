@@ -15,7 +15,7 @@ const Activity = () => {
     {
       key: 'ongoing',
       title: 'ONGOING',
-      numberBadge: '4',
+      numberBadge: '',
       renderPage: <Ongoing />,
     },
     {
