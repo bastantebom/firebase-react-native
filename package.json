@@ -48,6 +48,7 @@
     "react-instantsearch-dom": "^6.7.0",
     "react-instantsearch-native": "^6.7.0",
     "react-native": "0.62.2",
+    "react-native-android-location-enabler": "^1.2.1",
     "react-native-calendar-picker": "^7.0.1",
     "react-native-camera": "^3.35.0",
     "react-native-camera-roll-picker": "^2.0.0",

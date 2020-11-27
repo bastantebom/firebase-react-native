@@ -1,11 +1,23 @@
 //import liraries
-import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Platform, Image, TouchableOpacity, Text } from 'react-native';
-import MapView, { Circle, PROVIDER_GOOGLE, Marker, Geojson } from 'react-native-maps';
-import { MapMarker, PinBee } from '@/assets/images/icons';
-import { normalize } from '@/globals';
-import Config from '@/services/Config';
-import AppText from '../AppText/AppText';
+import React, { useEffect, useState, useRef } from 'react'
+import {
+  View,
+  StyleSheet,
+  Platform,
+  Image,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
+import MapView, {
+  Circle,
+  PROVIDER_GOOGLE,
+  Marker,
+  Geojson,
+} from 'react-native-maps'
+import { MapMarker, PinBee } from '@/assets/images/icons'
+import { normalize } from '@/globals'
+import Config from '@/services/Config'
+import AppText from '../AppText/AppText'
 
 // create a component
 const MapComponent = ({
@@ -18,11 +30,10 @@ const MapComponent = ({
   radius = 5,
   customMarker,
   radiusMarker,
-  customMapStyle
+  customMapStyle,
 }) => {
-
-  const circleRef = useRef(null);
-  const mapViewRef = useRef(null);
+  const circleRef = useRef(null)
+  const mapViewRef = useRef(null)
 
   const [newLat, setNewLat] = useState(latitude)
   const [newLng, setNewLng] = useState(longitude)
@@ -116,7 +127,7 @@ const MapComponent = ({
         },
       ],
     },
-  ];
+  ]
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
@@ -125,17 +136,13 @@ const MapComponent = ({
           circleRef.current.setNativeProps({
             strokeColor: 'rgba(255, 212, 0, 0.8)',
             fillColor: 'rgba(255, 212, 0, 0.18)',
-          });
+          })
         }
-      }, 100);
+      }, 100)
     }
-    //console.log('filled object');
-    //console.log(StyleSheet.absoluteFillObject);
-  }, []);
+  }, [])
 
   useEffect(() => {
-    //console.log(isNaN(reCenter.lat));
-    //console.log(reCenter);
     if (!isNaN(reCenter.lat)) {
       setTimeout(() => {
         let r = {
@@ -143,15 +150,14 @@ const MapComponent = ({
           longitude: parseFloat(reCenter.lng),
           latitudeDelta: Config.latitudeDelta,
           longitudeDelta: Config.longitudeDelta,
-        };
-        mapViewRef.current.animateToRegion(r, 2000);
-      }, 100);
+        }
+        mapViewRef.current.animateToRegion(r, 2000)
+      }, 100)
     }
-  }, [reCenter.lat]);
+  }, [reCenter.lat])
 
-  
-  const onRegionChangeComplete = (region) => {
-    onRegionChange(region);
+  const onRegionChangeComplete = region => {
+    onRegionChange(region)
     if (withRadius) {
       setNewLat(region.latitude)
       setNewLng(region.longitude)
@@ -159,7 +165,7 @@ const MapComponent = ({
   }
 
   /*********** DASHBOARD LOCATION ***************/
-  
+
   const onMarkPress = () => {
     setFixedLat(newLat)
     setFixedLng(newLng)
@@ -173,36 +179,46 @@ const MapComponent = ({
     const earthRadius = 6378.1 //Km
     const lat0 = newLat + (-radius / earthRadius) * (180 / Math.PI)
     const lat1 = newLat + (radius / earthRadius) * (180 / Math.PI)
-    const lng0 = newLng + (-radius / earthRadius) * (180 / Math.PI) / Math.cos(newLat * Math.PI / 180);
-    const lng1 = newLng + (radius / earthRadius) * (180 / Math.PI) / Math.cos(newLat * Math.PI / 180);
+    const lng0 =
+      newLng +
+      ((-radius / earthRadius) * (180 / Math.PI)) /
+        Math.cos((newLat * Math.PI) / 180)
+    const lng1 =
+      newLng +
+      ((radius / earthRadius) * (180 / Math.PI)) /
+        Math.cos((newLat * Math.PI) / 180)
 
     return [
       {
         latitude: lat0,
-        longitude: newLng
+        longitude: newLng,
       },
       {
         latitude: newLat,
-        longitude: lng0
+        longitude: lng0,
       },
       {
         latitude: lat1,
-        longitude: newLng
+        longitude: newLng,
       },
       {
         latitude: newLat,
-        longitude: lng1
-      }
+        longitude: lng1,
+      },
     ]
   }
 
-  const points = get4PointsAroundCircumference(newLat, newLng, (radius * 1000) * 0.001);
+  const points = get4PointsAroundCircumference(
+    newLat,
+    newLng,
+    radius * 1000 * 0.001
+  )
 
   useEffect(() => {
     if (withRadius) {
       if (isMapReady && radius >= 1) {
         mapViewRef.current.fitToCoordinates(points, {
-          animated: true
+          animated: true,
         })
       }
     }
@@ -216,8 +232,8 @@ const MapComponent = ({
           longitude: 121.774017,
           latitudeDelta: 15,
           longitudeDelta: 15,
-        };
-        mapViewRef.current.animateToRegion(centralCoordinates, 2000);
+        }
+        mapViewRef.current.animateToRegion(centralCoordinates, 2000)
       }
       if (radius < 1) {
         let centralCoordinates = {
@@ -225,21 +241,17 @@ const MapComponent = ({
           longitude: newLng,
           latitudeDelta: Config.latitudeDelta,
           longitudeDelta: Config.longitudeDelta,
-        };
-        mapViewRef.current.animateToRegion(centralCoordinates, 2000);
-        console.log('0 rad');
+        }
+        mapViewRef.current.animateToRegion(centralCoordinates, 2000)
       }
     }
-  }, [radius, isMapReady]);
-
-  // console.log(radius)
+  }, [radius, isMapReady])
 
   /*********** DASHBOARD LOCATION ***************/
 
   return (
     <View style={styles.mapContainer}>
       <MapView
-        // onPress={e => console.log(e.nativeEvent)}
         ref={mapViewRef}
         provider={PROVIDER_GOOGLE}
         style={styles.mapView}
@@ -251,8 +263,7 @@ const MapComponent = ({
         showsScale={true}
         showsBuildings={true}
         loadingEnabled={true}
-        onLayout={onMapLayout}
-      >
+        onLayout={onMapLayout}>
         {withCurrentMarker ? (
           <>
             <Marker
@@ -282,8 +293,7 @@ const MapComponent = ({
         ) : null}
         {withRadius && isMapReady && radius < 100 ? (
           <View>
-            { radius === .5 ? 
-              null :
+            {radius === 0.5 ? null : (
               <>
                 <Circle
                   center={{
@@ -308,7 +318,7 @@ const MapComponent = ({
                   ref={circleRef}
                 />
               </>
-            }
+            )}
             <Circle
               center={{
                 latitude: fixedLat,
@@ -320,35 +330,26 @@ const MapComponent = ({
               fillColor={'rgba(255,212,0,.18)'}
               ref={circleRef}
             />
-            {/* <Marker
-              coordinate={{
-                latitude: fixedLat,
-                longitude: fixedLng,
-              }}
-              style={{ marginTop: (radius * 1000) / 4  }}
-            >
-              <AppText customStyle={{ top: 0 }}>{radius / 4} KM</AppText>
-            </Marker> */}
-            {/* </Circle> */}
           </View>
         ) : null}
       </MapView>
       <View style={styles.markerFixed}>
-        { customMarker ? customMarker :
-          radiusMarker ? (
-            <TouchableOpacity 
-              onPress={onMarkPress} 
-              activeOpacity={.7}
-              style={{ marginTop: normalize(25), marginLeft: normalize(5) }}
-            >
-              <PinBee width={normalize(38)} height={normalize(38)} />
-            </TouchableOpacity>
-          ) : <MapMarker width={normalize(48)} height={normalize(48)} />
-        }
+        {customMarker ? (
+          customMarker
+        ) : radiusMarker ? (
+          <TouchableOpacity
+            onPress={onMarkPress}
+            activeOpacity={0.7}
+            style={{ marginTop: normalize(25), marginLeft: normalize(5) }}>
+            <PinBee width={normalize(38)} height={normalize(38)} />
+          </TouchableOpacity>
+        ) : (
+          <MapMarker width={normalize(48)} height={normalize(48)} />
+        )}
       </View>
     </View>
-  );
-};
+  )
+}
 
 // define your st
 const styles = StyleSheet.create({
@@ -368,8 +369,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     marginLeft: normalize(-24),
-    marginTop: Platform.os === 'ios' ? normalize(-65) : normalize(-48)
-  }
-});
+    marginTop: Platform.os === 'ios' ? normalize(-65) : normalize(-48),
+  },
+})
 //make this component available to the app
-export default MapComponent;
+export default MapComponent
