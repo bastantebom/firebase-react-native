@@ -245,6 +245,10 @@ import GreenTick from './green-tick.svg'
 import Send from './send.svg'
 import Note from './note.svg'
 import AudioVideo from './audio-video.svg'
+import Cash from './icon-cash.svg'
+import CreditCard from './icon-credit.svg'
+import GCash from './icon-gcash.svg'
+import GrabPay from './icon-grabpay.svg'
 
 export {
   AudioVideo,
@@ -433,6 +437,10 @@ export {
   ChevronRightWhite,
   Search,
   PostParcelBlue,
+  Cash,
+  CreditCard,
+  GCash,
+  GrabPay,
 }
 
 export const Icons = {

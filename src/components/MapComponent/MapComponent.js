@@ -19,7 +19,6 @@ import { normalize } from '@/globals'
 import Config from '@/services/Config'
 import AppText from '../AppText/AppText'
 
-// create a component
 const MapComponent = ({
   latitude,
   longitude,
@@ -283,7 +282,7 @@ const MapComponent = ({
                 latitude: latitude + parseFloat(0.00002),
                 longitude: longitude,
               }}
-              radius={20}
+              radius={500}
               strokeWidth={1}
               strokeColor={'rgba(255, 212, 0, 1)'}
               fillColor={'rgba(255, 212, 0, 0.18)'}
@@ -351,7 +350,6 @@ const MapComponent = ({
   )
 }
 
-// define your st
 const styles = StyleSheet.create({
   mapContainer: {
     flex: 1,
@@ -372,5 +370,5 @@ const styles = StyleSheet.create({
     marginTop: Platform.os === 'ios' ? normalize(-65) : normalize(-48),
   },
 })
-//make this component available to the app
+
 export default MapComponent

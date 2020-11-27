@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native'
 
 import Modal from 'react-native-modal'
@@ -29,6 +30,11 @@ import {
   StarRating,
   DeliveryVan,
   Send,
+  Cash,
+  CreditCard,
+  GCash,
+  GrabPay,
+  NavigationPinAlt,
 } from '@/assets/images/icons'
 
 import ChangeDeliveryMethodModal from './ChangeDeliveryMethodModal'
@@ -36,6 +42,9 @@ import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
 import TrackerModal from './TrackerModal'
 import OrderNotesModal from './OrderNotesModal'
+import CreditCardModal from './CreditCardModal'
+import GCashModal from './GCashModal'
+import GrabPayModal from './GrabPayModal'
 
 const BasketModal = ({
   closeModal,
@@ -50,6 +59,9 @@ const BasketModal = ({
   const [trackerModal, showTrackerModal] = useState(false)
   const [orderNotes, showOrderNotes] = useState(false)
 
+  const [creditCardModal, showCreditCardModal] = useState(false)
+  const [gCashModal, showGcashModal] = useState(false)
+  const [grabPayModal, showGrabPayModal] = useState(false)
   const [orderID, setOrderID] = useState()
   const [userData, setUserData] = useState({})
   const [attachedPostData, setAttachedPostData] = useState()
@@ -76,48 +88,59 @@ const BasketModal = ({
 
   // MAP
   Geocoder.init(Config.apiKey)
-  const [newCoords] = useState(
-    userInfo.addresses
-      ? {
-          latitude: addresses.find(address => address.default).latitude,
-          longitude: addresses.find(address => address.default).longitude,
-        }
-      : { latitude: 14.5831, longitude: 120.9794 }
-  )
-  const [changeMapAddress, setChangeMapAddress] = useState('')
-  const [addressComponents, setAddressComponents] = useState({
-    city: '',
-    province: '',
-    country: '',
-    longitude: 0,
-    latitude: 0,
-  })
 
-  const onRegionChange = region => {
-    getStringAddress(region, null)
+  const address = addresses.find(address => address.default)
+
+  const [addressData, setAddressData] = useState(address)
+  const [mapInitialized, setMapInitialized] = useState(false)
+
+  const [mapCoords, setMapCoords] = useState({})
+
+  const getLocationName = (components, key) =>
+    components.find(component => component.types.includes(key))?.long_name
+
+  const handleRegionChange = async region => {
+    const { latitude, longitude } = region
+    const { results } = await Geocoder.from(latitude, longitude)
+
+    const addressComponents = results[0].address_components || []
+
+    setAddressData({
+      ...addressData,
+      longitude,
+      latitude,
+      city: getLocationName(addressComponents, 'locality'),
+      province: getLocationName(
+        addressComponents,
+        'administrative_area_level_2'
+      ),
+      country: getLocationName(addressComponents, 'country'),
+      full_address: results[0].formatted_address,
+    })
   }
 
-  const getStringAddress = (location, strAddress) => {
-    Geocoder.from(location.latitude, location.longitude)
-      .then(json => {
-        const stringMapDrag = json.results[1].formatted_address
-        const arrayToExtract =
-          json.results.length < 8 ? 2 : json.results.length - 5
-        setChangeMapAddress(strAddress ? strAddress : stringMapDrag)
-        setAddressComponents({
-          ...addressComponents,
-          ...{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            city: json.results[arrayToExtract].address_components[0].long_name,
-            province:
-              json.results[arrayToExtract].address_components[1].long_name,
-            country: 'Philippines',
-          },
-        })
+  const initializeMap = async () => {
+    try {
+      setMapCoords({
+        lat: addresses.find(address => address.default).latitude,
+        lng: addresses.find(address => address.default).longitude,
       })
-      .catch(error => console.warn(error))
+      setMapInitialized(true)
+    } catch (error) {
+      const { results } = await Geocoder.from('Manila')
+      const { lat, lng } = results[0].geometry.location
+      setMapCoords({
+        lat,
+        lng,
+      })
+      setMapInitialized(true)
+    }
   }
+
+  useEffect(() => {
+    initializeMap()
+  }, [])
+
   //MAP END
 
   const computedTotal = () => {
@@ -153,7 +176,6 @@ const BasketModal = ({
     } else {
       alert('Creating offer failed.')
     }
-    // showTrackerModal(true)
   }
 
   const placeOrderHandler = async () => {
@@ -189,8 +211,6 @@ const BasketModal = ({
     } else {
       alert('Creating offer failed.')
     }
-
-    // showTrackerModal(true)
   }
 
   useEffect(() => {
@@ -301,18 +321,7 @@ const BasketModal = ({
                 marginVertical: normalize(20),
                 justifyContent: 'center',
               }}>
-              <AppText textStyle="body1medium">
-                {/* {is_multiple ? title : display_name} */}
-                {display_name}
-              </AppText>
-              {/* <View style={{ flexDirection: 'row', marginLeft: normalize(10) }}>
-                <StarRating />
-                <AppText
-                  textStyle="body1"
-                  customStyle={{ marginLeft: normalize(5) }}>
-                  4.5
-                </AppText>
-              </View> */}
+              <AppText textStyle="body1medium">{display_name}</AppText>
             </View>
             <View style={styles.caption}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -395,26 +404,42 @@ const BasketModal = ({
                     width: '100%',
                     marginBottom: 8,
                   }}>
-                  <MapComponent
-                    latitude={
-                      addresses.find(address => address.default).latitude
-                    }
-                    longitude={
-                      addresses.find(address => address.default).longitude
-                    }
-                    reCenter={newCoords}
-                    onRegionChange={region => {
-                      onRegionChange(region)
-                    }}
-                    withCurrentMarker={false}
-                  />
+                  {!mapInitialized ? (
+                    <View style={[styles.loader]}>
+                      <ActivityIndicator
+                        color="#3781FC"
+                        size="large"
+                        animating={true}
+                      />
+                    </View>
+                  ) : (
+                    <MapComponent
+                      latitude={mapCoords.lat}
+                      longitude={mapCoords.lng}
+                      reCenter={mapCoords}
+                      onRegionChange={handleRegionChange}
+                      withCurrentMarker
+                      customMarker={
+                        <View
+                          style={{
+                            marginTop: normalize(25),
+                            marginLeft: normalize(9),
+                          }}>
+                          <NavigationPinAlt
+                            width={normalize(30)}
+                            height={normalize(30)}
+                          />
+                        </View>
+                      }
+                    />
+                  )}
                 </View>
                 <View style={{ paddingTop: normalize(10) }}>
                   <AppText textStyle="body1medium">Home</AppText>
                   <AppText
                     textStyle="body2"
                     customStyle={{ marginVertical: normalize(10) }}>
-                    {addresses.find(address => address.default).full_address}
+                    {addressData.full_address}
                   </AppText>
                 </View>
               </>
@@ -426,21 +451,7 @@ const BasketModal = ({
                     height: normalize(125),
                     width: '100%',
                     marginBottom: 8,
-                  }}>
-                  <MapComponent
-                    latitude={
-                      addresses.find(address => address.default).latitude
-                    }
-                    longitude={
-                      addresses.find(address => address.default).longitude
-                    }
-                    reCenter={newCoords}
-                    onRegionChange={region => {
-                      onRegionChange(region)
-                    }}
-                    withCurrentMarker={false}
-                  />
-                </View>
+                  }}></View>
                 <View style={{ paddingTop: normalize(10) }}>
                   <AppText textStyle="body1medium">
                     Wayne’s Burgers and Smoothies
@@ -465,32 +476,6 @@ const BasketModal = ({
               </AppText>
             </TouchableOpacity>
           </View>
-          {/* <View
-            style={{
-              paddingTop: normalize(20),
-              paddingHorizontal: normalize(20),
-              backgroundColor: 'white',
-              borderRadius: 8,
-              marginBottom: normalize(10),
-              display:
-                postType === 'sell'
-                  ? deliveryMethod === 'delivery'
-                    ? 'flex'
-                    : 'none'
-                  : 'none',
-            }}>
-            <View style={styles.caption}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <DeliveryVan width={normalize(20)} height={normalize(20)} />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Delivery Fee
-                </AppText>
-              </View>
-              <AppText textStyle="body1">₱75</AppText>
-            </View>
-          </View> */}
           <View
             style={{
               padding: normalize(20),
@@ -505,20 +490,61 @@ const BasketModal = ({
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
-                  Payment Method
+                  Select Payment Method
                 </AppText>
               </View>
-              <TouchableOpacity onPress={() => showChangePaymentModal(true)}>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  Change
-                </AppText>
-              </TouchableOpacity>
             </View>
             <AppText
               textStyle="body2"
               customStyle={{ textTransform: 'capitalize' }}>
               {paymentChoice}
             </AppText>
+            <TouchableOpacity style={styles.paymentBtn}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Cash />
+                <AppText
+                  textStyle="body2"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Cash on Delivery / Pick up
+                </AppText>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => showCreditCardModal(true)}
+              style={styles.paymentBtn}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <CreditCard />
+                <AppText
+                  textStyle="body2"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Visa / Mastercard
+                </AppText>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => showGcashModal(true)}
+              style={styles.paymentBtn}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <GCash />
+                <AppText
+                  textStyle="body2"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  GCash
+                </AppText>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => showGrabPayModal(true)}
+              style={styles.paymentBtn}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <GrabPay />
+                <AppText
+                  textStyle="body2"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  GrabPay
+                </AppText>
+              </View>
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -659,7 +685,7 @@ const BasketModal = ({
                 paddingHorizontal: normalize(16),
               }}>
               <AppText textStyle="body1medium">
-                {postType === 'need' ? 'Send Offer' : 'Place order'}
+                {postType === 'need' ? 'Send Offer' : 'Continue'}
               </AppText>
               <AppText textStyle="body1">
                 {postType === 'need'
@@ -762,6 +788,49 @@ const BasketModal = ({
           notes={notes}
         />
       </Modal>
+
+      <Modal
+        isVisible={creditCardModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <CreditCardModal closeModal={() => showCreditCardModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={gCashModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <GCashModal closeModal={() => showGcashModal(false)} />
+      </Modal>
+      <Modal
+        isVisible={grabPayModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <GrabPayModal closeModal={() => showGrabPayModal(false)} />
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -788,6 +857,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.buttonDisable,
     borderRadius: 5,
+  },
+  paymentBtn: {
+    padding: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: Colors.neutralGray,
+    borderRadius: 4,
   },
 })
 

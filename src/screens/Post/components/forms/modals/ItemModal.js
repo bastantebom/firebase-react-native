@@ -178,13 +178,19 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
             backgroundColor: 'white',
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
-            paddingHorizontal: 20,
-            paddingTop: normalize(16),
           },
           paddingAnimatedStyle,
         ]}>
-        <ScreenHeaderTitle close={closeModal} iconSize={normalize(16)} />
-        <View style={{ paddingBottom: 32 }}>
+        <ScreenHeaderTitle
+          close={closeModal}
+          iconSize={normalize(16)}
+          paddingSize={2}
+        />
+        <View
+          style={{
+            paddingBottom: 32,
+            paddingHorizontal: 20,
+          }}>
           <View style={styles.itemWrapper}>
             {currentItem?.image?.substring(0, 8) === 'https://' && (
               <TouchableOpacity
