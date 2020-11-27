@@ -6,21 +6,23 @@ import { Icons } from '@/assets/images/icons'
 
 /**
  * @param {object} param0
- * @param {{delay: number, duration: number, height: number}} param0.animationOptions
  * @param {boolean} [param0.animate=true]
  * @param {boolean} [param0.closeable=true]
- * @param {'primary'|'success'|'danger'} param0.type
+ * @param {boolean} [param0.isVisible=true]
+ * @param {'primary'|'success'|'danger'} [param0.type='primary']
  * @param {() => void} param0.onClose
+ * @param {{delay: number, duration: number, height: number}} param0.animationOptions
  */
 export const Notification = ({
   children,
   icon,
-  containerStyle = {},
   onClose,
+  isVisible = true,
   type = 'primary',
   closeable = true,
   animate = true,
   animationOptions,
+  containerStyle = {},
 }) => {
   const [notificationHeight] = useState(new Animated.Value(0))
 
@@ -47,7 +49,7 @@ export const Notification = ({
     }
   }, [])
 
-  return (
+  return !isVisible ? null : (
     <Animated.View
       style={[
         styles.container,

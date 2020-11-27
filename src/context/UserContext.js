@@ -42,18 +42,29 @@ export const UserContextProvider = ({ children }) => {
       setInitUserInfo(true)
       firestore()
         .doc(`users/${user.uid}`)
-        .onSnapshot(async snap => {
+        .onSnapshot(snap => {
           if (snap?.data()) {
             setUserInfo(snap?.data())
-            const response = await Api.getUserStatus({ uid: user.uid })
-            setUserStatus({
-              ...userStatus,
-              ...(response.status || {}),
-            })
           }
         })
     }
+    if (userInfo?.uid && !userStatus?.verified) updateUserStatus()
   }, [user])
+
+  useEffect(() => {
+    updateUserStatus()
+  }, [userInfo])
+
+  const updateUserStatus = async () => {
+    try {
+      const response = await Api.getUserStatus({ uid: user.uid })
+      if (response.success)
+        setUserStatus({
+          ...userStatus,
+          ...(response.status || {}),
+        })
+    } catch {}
+  }
 
   const fetch = () => {
     if (user) {

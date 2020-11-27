@@ -33,7 +33,7 @@ const PostOwnEmpty = ({ isLoading }) => {
         </View>
 
         <View style={styles.linksWrapper}>
-          <TouchableOpacity onPress={() => navigation.navigate('Servbees')}>
+          <TouchableOpacity onPress={() => navigation.navigate('dashboard')}>
             <AppText textStyle="body1" color={Colors.contentOcean}>
               Discover
             </AppText>

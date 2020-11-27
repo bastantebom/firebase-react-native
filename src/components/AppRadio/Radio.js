@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import React from 'react'
+import { View, TouchableOpacity } from 'react-native'
 
-import {AppText} from '@/components';
-import {normalize, Colors} from '@/globals';
+import { AppText } from '@/components'
+import { normalize, Colors } from '@/globals'
 
-import {RadioDot} from '@/assets/images/icons';
+import { RadioDot } from '@/assets/images/icons'
 
-const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
+const Radio = ({ Icon, label, style, value, valueChangeHandler, name }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={() => {
-        valueChangeHandler(name);
+        valueChangeHandler(name)
       }}>
       <View
         style={{
@@ -24,9 +24,14 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
           ...style,
           justifyContent: 'space-between',
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           {Icon ? <Icon /> : <></>}
-          <AppText textStyle="body3" customStyle={{textTransform:"capitalize"}} >
+          <AppText
+            textStyle="body3"
+            customStyle={{
+              textTransform: 'capitalize',
+              marginLeft: Icon ? 8 : 0,
+            }}>
             {label}
           </AppText>
         </View>
@@ -62,7 +67,7 @@ const Radio = ({Icon, label, style, value, valueChangeHandler, name}) => {
         </View>
       </View>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
-export default Radio;
+export default Radio

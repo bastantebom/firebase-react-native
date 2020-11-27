@@ -250,6 +250,8 @@ import CreditCard from './icon-credit.svg'
 import GCash from './icon-gcash.svg'
 import GrabPay from './icon-grabpay.svg'
 
+import Direction from './direction.svg'
+
 export {
   AudioVideo,
   VerticalEllipsis,
@@ -445,19 +447,25 @@ export {
 
 export const Icons = {
   ArrowRight,
+  Avatar: ProfileImageDefault,
   Back,
   Card,
   ChevronRight,
   CircleAdd,
   CircleTick,
   Close,
+  Direction,
   Flash,
   FlashOff,
   Flip,
   FolderAdd,
   Id,
+  Like,
+  LikeColored,
   Lock,
   Mobile,
+  NavigationPin,
+  TransportationBox,
   Verified,
   VerifiedWhite,
   VerifyTick,

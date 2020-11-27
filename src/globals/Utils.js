@@ -191,3 +191,13 @@ export function normalize(size) {
 }
 
 export const scaleFont = size => size * PixelRatio.getFontScale()
+
+export const getColorByBackground = hex => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+
+  const red = parseInt(result[1], 16)
+  const green = parseInt(result[2], 16)
+  const blue = parseInt(result[3], 16)
+
+  return red * 0.299 + green * 0.587 + blue * 0.114 > 186 ? '#2E3034' : '#fff'
+}

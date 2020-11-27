@@ -24,14 +24,21 @@ import {
   FilterServices,
   FilterSeller,
   FilterNeeds,
+  SortHighLow,
 } from '@/assets/images/icons'
 
 import { GlobalStyle, Colors, normalize } from '@/globals'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import LocationMap from '@/screens/Dashboard/components/Location'
+import { getColorByBackground } from '@/globals/Utils'
 
-const LocationSearch = () => {
+const LocationSearch = ({
+  onValueChange,
+  filters,
+  onTypeFilterPress,
+  onSortFilterPress,
+}) => {
   const scrollX = useRef(new Animated.Value(0)).current
 
   const { setLocationFilter, locationFilter } = useContext(Context)
@@ -90,6 +97,131 @@ const LocationSearch = () => {
     setLocationFilter(fullAddress.city)
   }
 
+  const postTypes = [
+    {
+      label: 'Services',
+      value: 'service',
+      icon: <FilterServices width={normalize(20)} height={normalize(20)} />,
+      iconActive: (
+        <FilterServicesWhite width={normalize(20)} height={normalize(20)} />
+      ),
+      color: Colors.secondaryBrinkPink,
+    },
+    {
+      label: 'Selling',
+      value: 'sell',
+      icon: <FilterSeller width={normalize(20)} height={normalize(20)} />,
+      iconActive: (
+        <FilterSellerWhite width={normalize(20)} height={normalize(20)} />
+      ),
+      color: Colors.secondaryRoyalBlue,
+    },
+    {
+      label: 'Needs',
+      value: 'need',
+      icon: <FilterNeeds width={normalize(20)} height={normalize(20)} />,
+      iconActive: (
+        <FilterNeedsWhite width={normalize(20)} height={normalize(20)} />
+      ),
+      color: Colors.secondaryMountainMeadow,
+    },
+  ]
+
+  const sortValues = [
+    {
+      label: 'Recent',
+      value: 'recent',
+      icon: (
+        <SortRecent
+          color="#CACBCC"
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      iconActive: (
+        <SortRecent
+          color={
+            getColorByBackground(Colors.primarySalomie) === '#fff'
+              ? '#CACBCC'
+              : getColorByBackground(Colors.primarySalomie)
+          }
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      color: Colors.primarySalomie,
+    },
+    {
+      label: 'Nearest',
+      value: 'nearest',
+      icon: (
+        <SortNearest
+          color="#CACBCC"
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      iconActive: (
+        <SortNearest
+          color={
+            getColorByBackground(Colors.primarySalomie) === '#fff'
+              ? '#CACBCC'
+              : getColorByBackground(Colors.primarySalomie)
+          }
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      color: Colors.primarySalomie,
+    },
+    {
+      label: 'Price High to low',
+      value: 'price_desc',
+      icon: (
+        <SortHighLow
+          color="#CACBCC"
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      iconActive: (
+        <SortHighLow
+          color={
+            getColorByBackground(Colors.primarySalomie) === '#fff'
+              ? '#CACBCC'
+              : getColorByBackground(Colors.primarySalomie)
+          }
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      color: Colors.primarySalomie,
+    },
+    {
+      label: 'Price Low to High',
+      value: 'price_asc',
+      icon: (
+        <SortHighLow
+          color="#CACBCC"
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      iconActive: (
+        <SortHighLow
+          color={
+            getColorByBackground(Colors.primarySalomie) === '#fff'
+              ? '#CACBCC'
+              : getColorByBackground(Colors.primarySalomie)
+          }
+          width={normalize(20)}
+          height={normalize(20)}
+        />
+      ),
+      color: Colors.primarySalomie,
+    },
+  ]
+
   return (
     <>
       <View style={{ marginLeft: 16, marginBottom: 16 }}>
@@ -143,6 +275,7 @@ const LocationSearch = () => {
                 <TouchableOpacity
                   onPress={() => {
                     setLocationFilter(null)
+                    onValueChange({})
                   }}
                   style={{
                     paddingVertical: normalize(4),
@@ -182,7 +315,74 @@ const LocationSearch = () => {
             )}
             scrollEventThrottle={16}
             contentContainerStyle={{ paddingLeft: H_MAX_WIDTH }}>
-            <TouchableOpacity
+            {postTypes.map(postType => (
+              <TouchableOpacity
+                key={postType.value}
+                onPress={() => onTypeFilterPress(postType.value)}
+                activeOpacity={0.7}
+                style={[
+                  styles.locationOption,
+                  {
+                    backgroundColor: filters.type.includes(postType.value)
+                      ? postType.color
+                      : Colors.neutralsZircon,
+                  },
+                ]}>
+                {filters.type.includes(postType.value)
+                  ? postType.iconActive
+                  : postType.icon}
+
+                <AppText
+                  textStyle="eyebrow2"
+                  customStyle={{
+                    marginLeft: 5,
+                    fontFamily: 'RoundedMplus1c-Medium',
+                    color: getColorByBackground(
+                      filters.type.includes(postType.value)
+                        ? postType.color
+                        : Colors.neutralsZircon
+                    ),
+                  }}>
+                  {postType.label}
+                </AppText>
+              </TouchableOpacity>
+            ))}
+
+            {sortValues.map(sortValue => (
+              <TouchableOpacity
+                key={sortValue.value}
+                onPress={() => onSortFilterPress(sortValue.value)}
+                activeOpacity={0.7}
+                style={[
+                  styles.locationOption,
+                  {
+                    backgroundColor:
+                      filters.sort === sortValue.value
+                        ? sortValue.color
+                        : Colors.neutralsZircon,
+                  },
+                ]}>
+                {filters.sort === sortValue.value
+                  ? sortValue.iconActive
+                  : sortValue.icon}
+
+                <AppText
+                  textStyle="eyebrow2"
+                  customStyle={{
+                    marginLeft: 5,
+                    fontFamily: 'RoundedMplus1c-Medium',
+                    color: getColorByBackground(
+                      filters.sort === sortValue.value
+                        ? sortValue.color
+                        : Colors.neutralsZircon
+                    ),
+                  }}>
+                  {sortValue.label}
+                </AppText>
+              </TouchableOpacity>
+            ))}
+
+            {/* <TouchableOpacity
               onPress={onSelectNearest}
               activeOpacity={0.7}
               style={[
@@ -193,7 +393,7 @@ const LocationSearch = () => {
                     : Colors.neutralsZircon,
                 },
               ]}>
-              <SortNearest width={normalize(20)} height={normalize(20)} />
+              <SortNearest />
               <AppText
                 textStyle="eyebrow2"
                 customStyle={{
@@ -202,95 +402,8 @@ const LocationSearch = () => {
                 }}>
                 Nearest
               </AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onSelectServices}
-              activeOpacity={0.7}
-              style={[
-                styles.locationOption,
-                {
-                  backgroundColor: activeServices
-                    ? Colors.secondaryBrinkPink
-                    : Colors.neutralsZircon,
-                },
-              ]}>
-              {activeServices ? (
-                <FilterServicesWhite
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
-              ) : (
-                <FilterServices width={normalize(20)} height={normalize(20)} />
-              )}
-              <AppText
-                textStyle="eyebrow2"
-                color={activeServices ? Colors.neutralsWhite : ''}
-                customStyle={{
-                  marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium',
-                }}>
-                Services
-              </AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onSelectSellers}
-              activeOpacity={0.7}
-              style={[
-                styles.locationOption,
-                {
-                  backgroundColor: activeSellers
-                    ? Colors.secondaryRoyalBlue
-                    : Colors.neutralsZircon,
-                },
-              ]}>
-              {activeSellers ? (
-                <FilterSellerWhite
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
-              ) : (
-                <FilterSeller width={normalize(20)} height={normalize(20)} />
-              )}
-              <AppText
-                textStyle="eyebrow2"
-                color={activeSellers ? Colors.neutralsWhite : ''}
-                customStyle={{
-                  marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium',
-                }}>
-                Sellers
-              </AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onSelectNeeds}
-              activeOpacity={0.7}
-              style={[
-                styles.locationOption,
-                {
-                  backgroundColor: activeNeeds
-                    ? Colors.secondaryMountainMeadow
-                    : Colors.neutralsZircon,
-                },
-              ]}>
-              {activeNeeds ? (
-                <FilterNeedsWhite
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
-              ) : (
-                <FilterNeeds width={normalize(20)} height={normalize(20)} />
-              )}
-              <AppText
-                textStyle="eyebrow2"
-                color={activeNeeds ? Colors.neutralsWhite : ''}
-                customStyle={{
-                  marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium',
-                }}>
-                Needs
-              </AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </TouchableOpacity> */}
+            {/* <TouchableOpacity
               onPress={onSelectPopular}
               activeOpacity={0.7}
               style={[
@@ -301,7 +414,7 @@ const LocationSearch = () => {
                     : Colors.neutralsZircon,
                 },
               ]}>
-              <SortPopular width={normalize(20)} height={normalize(20)} />
+              <SortPopular />
               <AppText
                 textStyle="eyebrow2"
                 customStyle={{
@@ -310,8 +423,8 @@ const LocationSearch = () => {
                 }}>
                 Popular
               </AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </TouchableOpacity> */}
+            {/* <TouchableOpacity
               onPress={onSelectRecent}
               activeOpacity={0.7}
               style={[
@@ -322,7 +435,7 @@ const LocationSearch = () => {
                     : Colors.neutralsZircon,
                 },
               ]}>
-              <SortRecent width={normalize(20)} height={normalize(20)} />
+              <SortRecent />
               <AppText
                 textStyle="eyebrow2"
                 customStyle={{
@@ -331,7 +444,7 @@ const LocationSearch = () => {
                 }}>
                 Recent
               </AppText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* </View> */}
           </ScrollView>
         </View>
@@ -363,6 +476,7 @@ const LocationSearch = () => {
             changeFromMapHandler={fullAddress =>
               changeFromMapHandler(fullAddress)
             }
+            onValueChange={onValueChange}
           />
         </Modal>
       </View>

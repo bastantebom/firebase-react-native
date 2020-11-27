@@ -21,31 +21,35 @@ const baseURL =
   })()
 
 ;(async () => {
-  const swagger = (
-    await Converter.convert({
-      from: 'openapi_3',
-      to: 'swagger_2',
-      source: `${baseURL}/swagger.json`,
-    })
-  ).spec
+  try {
+    const swagger = (
+      await Converter.convert({
+        from: 'openapi_3',
+        to: 'swagger_2',
+        source: `${baseURL}/swagger.json`,
+      })
+    ).spec
 
-  const config = JSON.parse(fs.readFileSync('.vscode/.prettierrc', 'utf-8'))
-  let code = prettier.format(
-    CodeGen.getReactCode({ className: 'API', swagger })
-      .replace(
-        /exports\.API = API/g,
-        'const Api = new API(); \n export default Api'
-      )
-      .replace(
-        'API.prototype.request = function',
-        'API.prototype.request = async function'
-      )
-      .replace(
-        'fetch(',
-        "const token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
-      ),
-    { ...config, parser: 'babel' }
-  )
-  code = `import AsyncStorage from '@react-native-community/async-storage'\n${code}`
-  fs.writeFileSync('./src/services/Api.js', code)
+    const config = JSON.parse(fs.readFileSync('.vscode/.prettierrc', 'utf-8'))
+    let code = prettier.format(
+      CodeGen.getReactCode({ className: 'API', swagger })
+        .replace(
+          /exports\.API = API/g,
+          'const Api = new API(); \n export default Api'
+        )
+        .replace(
+          'API.prototype.request = function',
+          'API.prototype.request = async function'
+        )
+        .replace(
+          'fetch(',
+          "const token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
+        ),
+      { ...config, parser: 'babel' }
+    )
+    code = `import AsyncStorage from '@react-native-community/async-storage'\n${code}`
+    fs.writeFileSync('./src/services/Api.js', code)
+  } catch (error) {
+    console.error(error)
+  }
 })()

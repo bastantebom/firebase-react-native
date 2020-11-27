@@ -4,6 +4,8 @@ module.exports = {
   extends: ['@react-native-community', 'plugin:prettier/recommended'],
   rules: {
     'no-catch-shadow': 0,
+    'prefer-const': 'error',
+    'no-var': 'error',
     'prettier/prettier': [
       'error',
       {},

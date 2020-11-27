@@ -230,7 +230,7 @@ const Ongoing = () => {
                 backgroundColor: '#FFD400',
                 borderRadius: 3,
               }}
-              onPress={() => navigation.navigate('Servbees')}>
+              onPress={() => navigation.navigate('dashboard')}>
               <AppText textStyle="button3">Explore Postings Near You</AppText>
             </TouchableOpacity>
           </View>

@@ -15,7 +15,7 @@ import { PostService } from '@/services'
 
 //screens
 import { Onboarding } from '@/screens/Onboarding'
-import DashboardScreen from '@/screens/Dashboard/dashboard'
+import DashboardStack from '@/screens/Dashboard'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
 import { Hives } from '@/screens/Hive'
@@ -64,7 +64,6 @@ import {
   NotificationDot,
 } from '@/assets/images/icons'
 
-const DashboardStack = createStackNavigator()
 const HiveStack = createStackNavigator()
 const PostStack = createStackNavigator()
 const ActivityStack = createStackNavigator()
@@ -130,7 +129,7 @@ function NoBottomTabScreens() {
 function WelcomeStackScreen() {
   return (
     <WelcomeStack.Navigator headerMode="none">
-      <DashboardStack.Screen name="WelcomeScreen" component={Welcome} />
+      <WelcomeStack.Screen name="WelcomeScreen" component={Welcome} />
     </WelcomeStack.Navigator>
   )
 }
@@ -138,7 +137,7 @@ function WelcomeStackScreen() {
 function BadgeStackScreen() {
   return (
     <BadgeStack.Navigator headerMode="none">
-      <DashboardStack.Screen name="BadgeScreen" component={Badge} />
+      <BadgeStack.Screen name="BadgeScreen" component={Badge} />
     </BadgeStack.Navigator>
   )
 }
@@ -146,7 +145,7 @@ function BadgeStackScreen() {
 function VerifiedStackScreen() {
   return (
     <VerifiedStack.Navigator headerMode="none">
-      <DashboardStack.Screen name="VerifiedScreen" component={Verified} />
+      <VerifiedStack.Screen name="VerifiedScreen" component={Verified} />
     </VerifiedStack.Navigator>
   )
 }
@@ -154,16 +153,11 @@ function VerifiedStackScreen() {
 function NotVerifiedStackScreen() {
   return (
     <NotVerifiedStack.Navigator headerMode="none">
-      <DashboardStack.Screen name="NotVerifiedScreen" component={NotVerified} />
+      <NotVerifiedStack.Screen
+        name="NotVerifiedScreen"
+        component={NotVerified}
+      />
     </NotVerifiedStack.Navigator>
-  )
-}
-
-function DashboardStackScreen() {
-  return (
-    <DashboardStack.Navigator headerMode="none">
-      <DashboardStack.Screen name="Servbees" component={DashboardScreen} />
-    </DashboardStack.Navigator>
   )
 }
 
@@ -328,8 +322,8 @@ const TabStack = props => {
   return (
     <Tab.Navigator tabBarOptions={tabBarOptions}>
       <Tab.Screen
-        name="Servbees"
-        component={DashboardStackScreen}
+        name="dashboard"
+        component={DashboardStack}
         options={{
           tabBarIcon: ({ focused }) => {
             const icon = focused ? (

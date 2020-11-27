@@ -35,7 +35,12 @@ import LikedPost from '@/screens/Profile/components/Account/LikedPost'
 
 const { width } = Dimensions.get('window')
 
-const SearchBarWithFilter = ({ show }) => {
+const SearchBarWithFilter = ({
+  show,
+  onLocationChange,
+  filters,
+  onFiltersChange,
+}) => {
   const scrollY = useRef(new Animated.Value(0))
 
   const { searchType, setPage } = useContext(Context)
@@ -96,6 +101,22 @@ const SearchBarWithFilter = ({ show }) => {
     outputRange: [H_MAX_HEIGHT, H_MIN_HEIGHT],
     extrapolate: 'clamp',
   })
+
+  const handleTypeFilterPress = type => {
+    const newFilters = filters
+    const index = filters.type.indexOf(type)
+    if (~index) newFilters.type.splice(index)
+    else newFilters.type.push(type)
+
+    onFiltersChange(newFilters)
+  }
+
+  const handleSortFilterPress = sort => {
+    onFiltersChange({
+      ...filters,
+      sort,
+    })
+  }
 
   return (
     <View>
@@ -173,7 +194,12 @@ const SearchBarWithFilter = ({ show }) => {
               right: 0,
               top: 0,
             }}>
-            <LocationSearch />
+            <LocationSearch
+              onValueChange={onLocationChange}
+              onTypeFilterPress={handleTypeFilterPress}
+              onSortFilterPress={handleSortFilterPress}
+              filters={filters}
+            />
           </Animated.View>
         </View>
       </LinearGradient>

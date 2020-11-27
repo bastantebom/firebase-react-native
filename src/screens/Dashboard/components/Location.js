@@ -41,7 +41,10 @@ const DismissKeyboard = ({ children, isFocused }) => {
 }
 
 // create a component
-const Location = ({ back, address, changeFromMapHandler }, route) => {
+const Location = (
+  { back, address, changeFromMapHandler, onValueChange },
+  route
+) => {
   Geocoder.init(Config.apiKey)
   const [mapCoords, setMapCoords] = useState({})
   const [addressData, setAddressData] = useState({})
@@ -70,6 +73,8 @@ const Location = ({ back, address, changeFromMapHandler }, route) => {
   }, [rangeValue])
 
   const saveRefineLocation = () => {
+    const { latitude, longitude } = addressData
+    onValueChange({ latitude, longitude, radius: rangeValue * 1000 })
     changeFromMapHandler(addressData)
     back()
   }
@@ -149,7 +154,7 @@ const Location = ({ back, address, changeFromMapHandler }, route) => {
   const getCurrentPosition = async () =>
     new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 10000,
       })
@@ -258,7 +263,7 @@ const Location = ({ back, address, changeFromMapHandler }, route) => {
               </View>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => getCurrentLocation()}
+                onPress={() => currentLocation()}
                 style={styles.navigationArrow}>
                 <NavigationArrowAlt
                   width={normalize(20)}
