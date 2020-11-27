@@ -10,6 +10,7 @@ import { Context } from '@/context'
 
 const Activity = () => {
   const { notificationsList } = useContext(Context)
+
   const uploadTabs = [
     {
       key: 'ongoing',

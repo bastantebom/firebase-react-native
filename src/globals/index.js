@@ -1,5 +1,5 @@
-import Colors from '@/globals/Colors';
-import GlobalStyle from '@/globals/GlobalStyle';
+import Colors from '@/globals/Colors'
+import GlobalStyle from '@/globals/GlobalStyle'
 import {
   timePassed,
   scaleFont,
@@ -7,7 +7,9 @@ import {
   timePassedShort,
   joinedDate,
   tempHistory,
-} from '@/globals/Utils';
+  fullDateFormat,
+  timeOnly,
+} from '@/globals/Utils'
 
 export {
   Colors,
@@ -18,4 +20,6 @@ export {
   timePassedShort,
   joinedDate,
   tempHistory,
-};
+  fullDateFormat,
+  timeOnly,
+}

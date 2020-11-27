@@ -120,7 +120,6 @@ export const ContextProvider = ({ children }) => {
   const [deliveryMethod, setDeliveryMethod] = useState('delivery')
 
   const [notificationsList, setNotificationsList] = useState([])
-  const [activityNotification, setActivityNotification] = useState()
   const [userCart, setUserCart] = useState([])
   const [currentPostOrder, setCurrentPostOrder] = useState()
   const [deleteCurrentOrderModal, showDeleteCurrentOrderModal] = useState(false)
@@ -291,26 +290,33 @@ export const ContextProvider = ({ children }) => {
       .collection('notifications')
       .onSnapshot(async snap => {
         if (!snap) return
-        setNotificationsList([])
-        await Promise.all(
+        const allNotifications = await Promise.all(
           snap.docs.map(async doc => {
-            const data = doc.data()
-            const response = await Api.getUser({
-              uid: data.follower_uid || uid,
-            })
-            if (response.success) {
-              setNotificationsList(notificationsList => [
-                ...notificationsList,
-                {
-                  profilePhoto: response.data.profile_photo,
-                  name: response.data.full_name,
-                  isFollowing: response.data.is_following,
-                  ...data,
-                },
-              ])
+            let snapData = doc.data()
+            if (snapData.type === 'order') {
+              const orderResponse = await firestore()
+                .doc(`orders/${snapData.order_id}`)
+                .get()
+              snapData = {
+                ...snapData,
+                buyerId: orderResponse.data().buyer_id,
+                postId: orderResponse.data().post_id,
+                orderId: snapData.order_id,
+              }
             }
+            const response = await Api.getUser({
+              uid: snapData.follower_uid || snapData.buyerId || uid,
+            })
+            if (response.success)
+              return {
+                profilePhoto: response.data.profile_photo,
+                name: response.data.full_name,
+                isFollowing: response.data.is_following,
+                ...snapData,
+              }
           })
         )
+        setNotificationsList(allNotifications)
       })
   }
 

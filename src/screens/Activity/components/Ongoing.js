@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -10,13 +10,16 @@ import {
   Dimensions,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { UserContext } from '@/context/UserContext'
+import Api from '@/services/Api'
+import PostService from '@/services/Post/PostService'
 
 const { width } = Dimensions.get('window')
 const PADDING = 16
 const SEARCH_FULL_WIDTH = width - PADDING * 2
 const SEARCH_SHRINK_WIDTH = normalize(45)
 
-import { AppText } from '@/components'
+import { AppText, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
 import { Search, Calendar } from '@/assets/images/icons'
 import IllustActivity from '@/assets/images/activity-img1.svg'
@@ -24,48 +27,11 @@ import ActivitiesCard from './ActivitiesCard'
 
 const Ongoing = () => {
   const navigation = useNavigation()
+  const { user, userInfo } = useContext(UserContext)
+
   const [activeButton, setActive] = useState('All')
-  const [ongoing, setOngoing] = useState({
-    ongoingActivity: [''],
-  })
-
-  const newOngoingCards = [
-    {
-      unread: true,
-      status: 'Ongoing',
-      name: 'Wayne Tayco',
-      time: '2h',
-      availed: '1',
-      pending: '1',
-      title: '🍔 Wayne’s Burgers and Smoothies!',
-    },
-  ]
-
-  const oldOngoingCards = [
-    {
-      status: 'Confirmed',
-      name: 'Pia Samson',
-      time: '2h',
-      date: 'Fri, May 15',
-      price: '500.00',
-      title: 'Hello neighbors, any pasabuys to SM',
-      reply: 'Will start shopping now! Let me know if you need',
-    },
-    {
-      status: 'Declined',
-      name: 'Wayne Tayco',
-      time: '2h',
-      offers: '2',
-      title: 'Contact me for custom wood craft!!!',
-    },
-    {
-      status: 'Ready for Delivery',
-      name: 'Wayne Tayco',
-      time: '2h',
-      offers: '0',
-      title: 'Anyone selling leather?',
-    },
-  ]
+  const [onGoing, setOnGoing] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const filterBtns = [
     {
@@ -126,9 +92,115 @@ const Ongoing = () => {
     ]).start()
   }
 
+  const initOwnOrders = async () => {
+    setIsLoading(true)
+    const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
+    if (ownOrdersResponse.success) {
+      if (!ownOrdersResponse.data.length) {
+        setIsLoading(false)
+        return
+      } else {
+        const ownOrderData = await Promise.all(
+          ownOrdersResponse.data.map(async order => {
+            const getPostResponse = await Api.getPost({
+              pid: order.post_id,
+            })
+            const getUserReponse = await Api.getUser({
+              uid: order.seller_id || user?.uid,
+            })
+            if (!getPostResponse.success) {
+              setIsLoading(false)
+              return {}
+            }
+            if (getPostResponse.success) {
+              const {
+                full_name,
+                display_name,
+                profile_photo,
+              } = getUserReponse.data
+              return {
+                profilePhoto: profile_photo,
+                name: display_name ? display_name : full_name,
+                cardType: 'own',
+                status: order.status,
+                time: order.date._seconds,
+                orderID: order.id,
+                price: order.total_price,
+                title: getPostResponse.data.title,
+                cover_photos: getPostResponse.data.cover_photos,
+                type: getPostResponse.data.type,
+              }
+            }
+          })
+        )
+        setOnGoing(onGoing => [...onGoing, ...ownOrderData])
+      }
+    } else {
+      setIsLoading(false)
+    }
+  }
+
+  const initSellerOrders = async () => {
+    const getOwnPostResponse = await PostService.getUserPosts({
+      uid: user?.uid,
+    })
+    if (getOwnPostResponse.success) {
+      if (!getOwnPostResponse.data) {
+        setIsLoading(false)
+        return
+      }
+      const sellerOrderData = await Promise.all(
+        getOwnPostResponse.data.map(async post => {
+          const responseOrders = await Api.getOrders({
+            uid: user?.uid,
+            pid: post.id,
+          })
+          if (responseOrders.success) {
+            const { full_name, display_name, profile_photo } = userInfo
+            let latestTimeStampOrder = post.date_posted._seconds
+            if (Object.keys(responseOrders.data).length)
+              latestTimeStampOrder = await getLatest(responseOrders.data)
+
+            return {
+              profilePhoto: profile_photo,
+              name: display_name ? display_name : full_name,
+              cardType: 'seller',
+              title: post.title,
+              time: latestTimeStampOrder,
+              cover_photos: post.cover_photos,
+              orders: responseOrders.data,
+              type: post.type,
+            }
+          } else {
+            setIsLoading(false)
+            return {}
+          }
+        })
+      )
+      setOnGoing(onGoing => [...onGoing, ...sellerOrderData])
+      setIsLoading(false)
+    }
+  }
+
+  const getLatest = async orderData => {
+    const timeStampList = []
+    for (const [key, orders] of Object.entries(orderData)) {
+      orders.map(order => {
+        timeStampList.push(order.date._seconds)
+      })
+    }
+    return Math.max(...timeStampList)
+  }
+
+  useEffect(() => {
+    initOwnOrders()
+    initSellerOrders()
+  }, [])
+
   return (
     <SafeAreaView>
-      {ongoing.ongoingActivity.length == 0 ? (
+      <TransitionIndicator loading={isLoading} />
+      {!onGoing.length ? (
         <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <IllustActivity width={normalize(250)} height={normalize(200)} />
@@ -210,23 +282,7 @@ const Ongoing = () => {
                 NEW
               </AppText>
             </View>
-            {newOngoingCards.map((info, i) => {
-              return (
-                <View key={i}>
-                  <ActivitiesCard info={info} />
-                </View>
-              )
-            })}
-          </View>
-          <View>
-            <View style={{ paddingHorizontal: normalize(15) }}>
-              <AppText
-                textStyle="eyebrow1"
-                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
-                EARLIER
-              </AppText>
-            </View>
-            {oldOngoingCards.map((info, i) => {
+            {onGoing.map((info, i) => {
               return (
                 <View key={i}>
                   <ActivitiesCard info={info} />

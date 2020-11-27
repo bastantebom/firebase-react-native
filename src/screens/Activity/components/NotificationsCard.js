@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   View,
   SafeAreaView,
@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Text,
   Image,
+  Dimensions,
+  ActivityIndicator,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
@@ -13,6 +15,8 @@ import { AppText, CacheableImage } from '@/components'
 import { GlobalStyle, normalize, timePassedShort } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
+import Modal from 'react-native-modal'
+import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 
 import {
   RedBadge,
@@ -38,8 +42,14 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
     follower_uid,
     id,
     approved,
+    buyerId,
+    orderId,
+    postId,
   } = info
   const [following, setFollowing] = useState(isFollowing)
+  const [trackerModal, showTrackerModal] = useState(false)
+  const [postData, setPostData] = useState({})
+  const [isContentLoading, setIsContentLoading] = useState(false)
 
   const AvatarPhoto = ({ size }) => {
     return profilePhoto ? (
@@ -70,7 +80,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: follower_uid },
+        params: { uid: follower_uid || buyerId },
       })
     }
   }
@@ -88,6 +98,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
   }
 
   const viewNotVerifiedHandler = () => {
+    if (!read) openNotificationHandler(id)
     navigation.navigate('NBTScreen', {
       screen: 'NotVerified',
       params: {
@@ -97,79 +108,171 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
     })
   }
 
+  const getPostDetails = async () => {
+    try {
+      setIsContentLoading(true)
+      const getPostResponse = await Api.getPost({ pid: postId })
+      if (getPostResponse.success) setPostData(getPostResponse.data)
+      setIsContentLoading(false)
+    } catch (error) {
+      setIsContentLoading(false)
+      console.log(error.message || error)
+    }
+  }
+
+  const orderTrackerHandler = () => {
+    if (!read) openNotificationHandler(id)
+    showTrackerModal(true)
+  }
+
+  useEffect(() => {
+    if (postId) getPostDetails()
+  }, [postId])
+
   return (
-    <View>
-      <View
-        style={[
-          styles.notification,
-          { backgroundColor: !read ? '#F2F7FF' : '#FBFBFB' },
-        ]}>
-        <View style={styles.holder}>
-          <View>
-            <View style={styles.avatarHolder}>
-              {type === 'follow' && <AvatarPhoto size={35} />}
-              {type === 'verification' && <AvatarPhoto size={35} />}
-            </View>
-            {
-              <View style={styles.badgeHolder}>
-                {type === 'verification' && !approved ? (
-                  <NotVerified width={normalize(18)} height={normalize(18)} />
-                ) : type === 'verification' && approved ? (
-                  <Verified width={normalize(18)} height={normalize(18)} />
-                ) : null}
-              </View>
-            }
-          </View>
-
-          {type == 'verification' && !approved ? (
-            <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
-              <Text>
-                <AppText textStyle="caption">
-                  Your account verification has been unsuccessful. You may opt
-                  to try again.
-                </AppText>
-              </Text>
-            </View>
-          ) : null}
-
-          {type == 'follow' && (
-            <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
-              <Text>
-                <AppText textStyle="caption2">{name} </AppText>
-                <AppText textStyle="caption">followed you</AppText>
-              </Text>
-            </View>
-          )}
-        </View>
-        <View style={[styles.holder, styles.cta]}>
+    <>
+      <View>
+        <View
+          style={[
+            styles.notification,
+            { backgroundColor: !read ? '#F2F7FF' : '#FBFBFB' },
+          ]}>
           <View style={styles.holder}>
-            <PostClock width={normalize(16)} height={normalize(16)} />
-            <AppText
-              customStyle={{
-                marginLeft: 3,
-                color: '#8C8B98',
-                width: normalize(33),
-              }}>
-              {timeAgo(Date.now() / 1000 - date.seconds)}
-            </AppText>
+            <View>
+              <View style={styles.avatarHolder}>
+                {type === 'follow' && <AvatarPhoto size={35} />}
+                {type === 'verification' && <AvatarPhoto size={35} />}
+                {type === 'order' && <AvatarPhoto size={35} />}
+              </View>
+              {
+                <View style={styles.badgeHolder}>
+                  {type === 'verification' && !approved ? (
+                    <NotVerified width={normalize(18)} height={normalize(18)} />
+                  ) : type === 'verification' && approved ? (
+                    <Verified width={normalize(18)} height={normalize(18)} />
+                  ) : null}
+                </View>
+              }
+            </View>
+            {type == 'verification' && !approved ? (
+              <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                <Text>
+                  <AppText textStyle="caption">
+                    Your account verification has been unsuccessful. You may opt
+                    to try again.
+                  </AppText>
+                </Text>
+              </View>
+            ) : null}
+            {type == 'follow' && (
+              <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                <Text>
+                  <AppText textStyle="caption2">{name} </AppText>
+                  <AppText textStyle="caption">followed you</AppText>
+                </Text>
+              </View>
+            )}
+            {type == 'order' &&
+              (!isContentLoading ? (
+                <View
+                  style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                  <Text>
+                    <AppText textStyle="caption2">{name} </AppText>
+                    <AppText textStyle="caption">
+                      has made an {postData.type === 'need' ? 'offer' : 'order'}{' '}
+                      on your{' '}
+                      <AppText textStyle="caption2">({postData.title})</AppText>{' '}
+                      post
+                    </AppText>
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ActivityIndicator size="small" color="#3781FC" />
+                </View>
+              ))}
           </View>
+          <View style={[styles.holder, styles.cta]}>
+            <View style={styles.holder}>
+              <PostClock width={normalize(16)} height={normalize(16)} />
+              <AppText
+                customStyle={{
+                  marginLeft: 3,
+                  color: '#8C8B98',
+                  width: normalize(33),
+                }}>
+                {timeAgo(Date.now() / 1000 - date.seconds)}
+              </AppText>
+            </View>
 
-          {type === 'follow' && (
-            <>
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 6,
-                  marginRight: 10,
-                  width: 130,
-                  alignItems: 'center',
-                  backgroundColor: '#FFD400',
-                  borderRadius: 5,
-                }}
-                activeOpacity={0.7}
-                onPress={() => openProfileHandler()}>
-                <AppText textStyle="button3">View Profile</AppText>
-              </TouchableOpacity>
-              {!following && (
+            {type === 'follow' && (
+              <>
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 6,
+                    marginRight: 10,
+                    width: 130,
+                    alignItems: 'center',
+                    backgroundColor: '#FFD400',
+                    borderRadius: 5,
+                  }}
+                  activeOpacity={0.7}
+                  onPress={() => openProfileHandler()}>
+                  <AppText textStyle="button3">View Profile</AppText>
+                </TouchableOpacity>
+                {!following && (
+                  <TouchableOpacity
+                    style={{
+                      paddingVertical: 6,
+                      width: 130,
+                      alignItems: 'center',
+                      backgroundColor: 'transparent',
+                      borderRadius: 5,
+                      borderColor: '#1F1A54',
+                      borderWidth: 1.5,
+                    }}
+                    onPress={() => followBackHandler()}>
+                    <AppText textStyle="button3">Follow Back</AppText>
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+            {type === 'verification' && (
+              <>
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 6,
+                    marginRight: 10,
+                    width: 130,
+                    alignItems: 'center',
+                    backgroundColor: '#FFD400',
+                    borderRadius: 5,
+                  }}
+                  onPress={() => viewNotVerifiedHandler()}>
+                  <AppText textStyle="button3">View</AppText>
+                </TouchableOpacity>
+              </>
+            )}
+            {type === 'order' && (
+              <>
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 6,
+                    marginRight: 10,
+                    width: 130,
+                    alignItems: 'center',
+                    backgroundColor: '#FFD400',
+                    borderRadius: 5,
+                  }}
+                  activeOpacity={0.7}
+                  onPress={() => orderTrackerHandler()}>
+                  <AppText textStyle="button3">Track Order</AppText>
+                </TouchableOpacity>
                 <TouchableOpacity
                   style={{
                     paddingVertical: 6,
@@ -180,31 +283,34 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                     borderColor: '#1F1A54',
                     borderWidth: 1.5,
                   }}
-                  onPress={() => followBackHandler()}>
-                  <AppText textStyle="button3">Follow Back</AppText>
+                  onPress={() => openProfileHandler()}>
+                  <AppText textStyle="button3">View Profile</AppText>
                 </TouchableOpacity>
-              )}
-            </>
-          )}
-          {type === 'verification' && (
-            <>
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 6,
-                  marginRight: 10,
-                  width: 130,
-                  alignItems: 'center',
-                  backgroundColor: '#FFD400',
-                  borderRadius: 5,
-                }}
-                onPress={() => viewNotVerifiedHandler()}>
-                <AppText textStyle="button3">View</AppText>
-              </TouchableOpacity>
-            </>
-          )}
+              </>
+            )}
+          </View>
         </View>
       </View>
-    </View>
+      <Modal
+        isVisible={trackerModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <TrackerModal
+          closeModal={() => showTrackerModal(false)}
+          postType={postData.type}
+          orderID={orderId}
+          postData={postData}
+        />
+      </Modal>
+    </>
   )
 }
 

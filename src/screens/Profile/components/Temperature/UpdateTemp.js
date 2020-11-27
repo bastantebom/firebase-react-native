@@ -14,6 +14,7 @@ import {
   AppButton,
   FloatingAppInput,
   Notification,
+  TransitionIndicator,
 } from '@/components'
 import { TempHistory, TempAboutScreen } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
@@ -22,8 +23,7 @@ import { Colors, normalize } from '@/globals'
 import Modal from 'react-native-modal'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Api from '@/services/Api'
-import { Context } from '@/context'
-import { CircleTick, Warning } from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 
 const UpdateTemp = ({ toggleUpdateTemp }) => {
   const { userInfo, user, setUserInfo } = useContext(UserContext)
@@ -38,9 +38,9 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   const [buttonDisable, setButtonDisable] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
   const [copyGuide, setCopyGuide] = useState(false)
-  const { openNotification, closeNotification } = useContext(Context)
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
   const toggleHistory = () => {
     setHistory(!history)
@@ -73,6 +73,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   }
 
   const updateTempHandler = async () => {
+    setIsNotificationVisible(false)
     setIsUpdating(true)
     try {
       const updateTempResponse = await Api.updateTemperature({
@@ -101,9 +102,9 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
       setIsUpdating(false)
     } catch (error) {
       setIsUpdating(false)
-      triggerNotification('Temperature update failed!', 'danger')
-      console.log(error?.message || error)
+      triggerNotification(error?.message || error, 'danger')
     }
+    setIsNotificationVisible(true)
   }
 
   const notificationErrorTextStyle = {
@@ -132,26 +133,29 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
         {message}
       </AppText>
     )
-    openNotification()
-    closeNotificationTimer()
-  }
-
-  const closeNotificationTimer = () => {
-    setTimeout(() => {
-      setNotificationType()
-      setNotificationMessage()
-      closeNotification()
-    }, 5000)
   }
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        <Notification
-          type={notificationType}
-          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
-          {notificationMessage}
-        </Notification>
+        <TransitionIndicator loading={isUpdating} />
+        {isNotificationVisible && (
+          <Notification
+            type={notificationType}
+            onClose={() => setIsNotificationVisible(false)}
+            icon={
+              notificationType === 'danger' ? (
+                <Icons.Warning />
+              ) : (
+                <Icons.CircleTick />
+              )
+            }>
+            <View style={{ marginLeft: 15, marginTop: 10 }}>
+              {notificationMessage}
+            </View>
+          </Notification>
+        )}
+
         <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
           <ScreenHeaderTitle
             iconSize={16}

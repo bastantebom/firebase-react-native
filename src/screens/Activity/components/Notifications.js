@@ -19,11 +19,7 @@ import { Context } from '@/context'
 const Notifications = () => {
   const { user } = useContext(UserContext)
 
-  const {
-    notificationsList,
-    setNotificationsList,
-    initNotifications,
-  } = useContext(Context)
+  const { notificationsList } = useContext(Context)
   const [notifications, setNotifications] = useState({
     notificationsActivity: [1],
   })

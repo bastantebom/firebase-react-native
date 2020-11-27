@@ -1,172 +1,257 @@
-import React from 'react';
+import React, { useState } from 'react'
 import {
   View,
   ScrollView,
   Image,
   StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native'
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'
 
-import { Colors, GlobalStyle, normalize } from '@/globals';
-import { AppText, MarginView } from '@/components';
-import {
-  ProfileImageDefault
-} from '@/assets/images/icons';
+import { Colors, GlobalStyle, normalize, timePassedShort } from '@/globals'
+import { AppText, MarginView, CacheableImage } from '@/components'
+import { ProfileImageDefault } from '@/assets/images/icons'
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import Modal from 'react-native-modal'
+import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 
 const ActivitiesCard = ({ info }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
+  const {
+    status,
+    time,
+    profilePhoto,
+    orders,
+    name,
+    cardType,
+    cover_photos,
+    type,
+    title,
+  } = info
+  const [trackerModal, showTrackerModal] = useState(false)
 
   const statusBackground = () => {
-    if (info.status === 'Waiting for confirmation') return Colors.neutralsMischka;
+    if (cardType === 'own' && status === 'pending')
+      return Colors.neutralsMischka
 
-    if (info.status === 'Confirmed') return Colors.secondaryLavenderBlue;
+    if (info.status === 'Confirmed') return Colors.secondaryLavenderBlue
 
-    if (info.status === 'Ongoing') return Colors.secondaryDarkTangerine;
+    if (cardType === 'seller') return Colors.secondaryDarkTangerine
 
-    if (info.status === 'Completed') return Colors.secondaryShamrock;
+    if (info.status === 'Completed') return Colors.secondaryShamrock
 
-    if (info.status === 'Order Cancelled') return Colors.red;
+    if (info.status === 'Order Cancelled') return Colors.red
 
-    if (info.status === 'Declined') return Colors.red;
+    if (info.status === 'Declined') return Colors.red
 
-    if (info.status === 'Completed') return Colors.secondaryShamrock;
+    if (info.status === 'Completed') return Colors.secondaryShamrock
 
-    if (info.status === 'Processing') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Processing') return Colors.secondaryDarkTangerine
 
-    if (info.status === 'Ready for Pickup') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Ready for Pickup') return Colors.secondaryDarkTangerine
 
-    if (info.status === 'Ready for Delivery') return Colors.secondaryDarkTangerine;
+    if (info.status === 'Ready for Delivery')
+      return Colors.secondaryDarkTangerine
 
-    return 'red';
-  };
+    return 'red'
+  }
 
-  const ProfilePhoto = ({ size }) => {
-    return (
+  const getStatusLabel = () => {
+    if (cardType === 'own' && status === 'pending')
+      return 'Waiting for confirmation'
+
+    if (cardType === 'seller') return 'Ongoing'
+  }
+
+  const timeAgo = time => {
+    if (time <= 60) {
+      return 'Just now'
+    }
+    return timePassedShort(time)
+  }
+
+  const AvatarPhoto = ({ size }) => {
+    return profilePhoto ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{
+          uri: profilePhoto,
+        }}
+      />
+    ) : (
       <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
     )
-  };
+  }
+
+  const CoverPhoto = () => {
+    return cover_photos?.length > 0 ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{ uri: cover_photos[0] }}
+      />
+    ) : type === 'service' ? (
+      <DefaultService width={normalize(64)} height={normalize(72)} />
+    ) : type === 'need' ? (
+      <DefaultNeed width={normalize(64)} height={normalize(72)} />
+    ) : (
+      <DefaultSell width={normalize(64)} height={normalize(72)} />
+    )
+  }
 
   return (
-    <ScrollView>
-      <TouchableOpacity 
-        activeOpacity={0.7}
-        onPress={() => navigation.navigate('OngoingItem')}
-      >
-        <MarginView
-          marginSize={2}
-          style={{
-            padding: 12,
-            borderRadius: 8,
-            backgroundColor: info.unread ? '#F2F7FF' : 'white',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.06,
-            shadowRadius: 8,
-            elevation: 4,
-          }}>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={styles.postImageContainer}>
-              <Image style={GlobalStyle.image} source={require('@/assets/images/burger.jpg')} />
-            </View>
+    <>
+      <ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() =>
+            cardType === 'seller'
+              ? navigation.navigate('OngoingItem', { info })
+              : showTrackerModal(true)
+          }>
+          <MarginView
+            marginSize={2}
+            style={{
+              padding: 12,
+              borderRadius: 8,
+              backgroundColor: info.unread ? '#F2F7FF' : 'white',
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              elevation: 4,
+            }}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.postImageContainer}>
+                <CoverPhoto />
+              </View>
 
-
-            <View style={{ paddingLeft: 12, flex: 1 }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                }}>
-                <View style={styles.userInfoImageContainer}>
-                  <ProfilePhoto size={20} />
+              <View style={{ paddingLeft: 12, flex: 1 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                  }}>
+                  <View style={styles.userInfoImageContainer}>
+                    <AvatarPhoto size={20} />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flex: 1,
+                    }}>
+                    <AppText
+                      textStyle="body3"
+                      customStyle={{
+                        flex: 1,
+                        paddingLeft: 8,
+                        paddingRight: 4,
+                      }}>
+                      {info.name}
+                    </AppText>
+                    <AppText
+                      textStyle="captionConstant"
+                      color={Colors.contentPlaceholder}>
+                      {timeAgo(Date.now() / 1000 - info.time)}
+                    </AppText>
+                  </View>
                 </View>
                 <View
                   style={{
                     flexDirection: 'row',
-                    flex: 1,
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
                   }}>
-                  <AppText
-                    textStyle="body3"
-                    customStyle={{
-                      flex: 1,
-                      paddingLeft: 8,
-                      paddingRight: 4,
+                  <View
+                    style={{
+                      backgroundColor: statusBackground(),
+                      borderRadius: 20,
+                      paddingHorizontal: 8,
+                      alignSelf: 'flex-start',
+                      marginVertical: 8,
+                      marginRight: 3,
                     }}>
-                    {info.name}
-                  </AppText>
-                  <AppText
-                    textStyle="captionConstant"
-                    color={Colors.contentPlaceholder}>
-                    {info.time}
-                  </AppText>
+                    <AppText textStyle="metadata" color={'white'}>
+                      {getStatusLabel()}
+                    </AppText>
+                  </View>
+                  {info.date && (
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={{ marginHorizontal: 2 }}>
+                      {info.date}
+                    </AppText>
+                  )}
+                  {info.price && (type === 'service' || type === 'sell') && (
+                    <AppText textStyle="metadata">
+                      • ₱{info.price.toLocaleString()}
+                    </AppText>
+                  )}
+                  {info.availed && (
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={{ marginHorizontal: 2 }}>
+                      {info.availed} availed
+                    </AppText>
+                  )}
+                  {info.pending && (
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={{ marginHorizontal: 2 }}>
+                      • {info.pending} pending request
+                    </AppText>
+                  )}
+                  {type === 'need' && cardType === 'seller' && (
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={{ marginHorizontal: 2 }}>
+                      {orders?.pending?.length} offers
+                    </AppText>
+                  )}
+                  {type === 'sell' && cardType === 'seller' && (
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={{ marginHorizontal: 2 }}>
+                      {orders?.pending?.length} pending request
+                    </AppText>
+                  )}
                 </View>
-              </View>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-                <View
-                  style={{
-                    backgroundColor: statusBackground(),
-                    borderRadius: 20,
-                    paddingHorizontal: 8,
-                    alignSelf: 'flex-start',
-                    marginVertical: 8,
-                    marginRight: 3
-                  }}>
-                  <AppText
-                    textStyle="metadata"
-                    color={'white'}>
-                    {info.status}
-                  </AppText>
-                </View>
-                {info.date && (
-                  <AppText
-                    textStyle="metadata"
-                    customStyle={{ marginHorizontal: 2 }}
-                  >
-                    {info.date}
-                  </AppText>
-                )}
-                {info.price && (
-                  <AppText textStyle="metadata">
-                    • ₱{info.price}
-                  </AppText>
-                )}
-                {info.availed && (
-                  <AppText
-                    textStyle="metadata"
-                    customStyle={{ marginHorizontal: 2 }}
-                  >
-                    {info.availed} availed
-                  </AppText>
-                )}
-                {info.pending && (
-                  <AppText
-                    textStyle="metadata"
-                    customStyle={{ marginHorizontal: 2 }}
-                  >
-                    • {info.pending} pending request
-                  </AppText>
-                )}
-                {info.offers && (
-                  <AppText
-                    textStyle="metadata"
-                    customStyle={{ marginHorizontal: 2 }}
-                  >
-                    {info.offers} offers
+                <AppText textStyle="caption2" numberOfLines={1}>
+                  {info.title}
+                </AppText>
+                {info.reply && (
+                  <AppText textStyle="caption" numberOfLines={1}>
+                    {info.reply}
                   </AppText>
                 )}
               </View>
-              <AppText textStyle="caption2" numberOfLines={1}>{info.title}</AppText>
-              {info.reply && (
-                <AppText textStyle="caption" numberOfLines={1}>{info.reply}</AppText>
-              )}
             </View>
-          </View>
-        </MarginView>
-      </TouchableOpacity>
-    </ScrollView>
+          </MarginView>
+        </TouchableOpacity>
+      </ScrollView>
+      <Modal
+        isVisible={trackerModal}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <TrackerModal
+          closeModal={() => showTrackerModal(false)}
+          postType={type}
+          orderID={info.orderID}
+          postData={title}
+        />
+      </Modal>
+    </>
   )
 }
 
@@ -182,7 +267,7 @@ const styles = StyleSheet.create({
     width: normalize(20),
     borderRadius: normalize(20 / 2),
     overflow: 'hidden',
-  }
-});
+  },
+})
 
-export default ActivitiesCard;
+export default ActivitiesCard

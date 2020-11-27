@@ -1,316 +1,250 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   SafeAreaView,
   ScrollView,
   View,
   TouchableOpacity,
-  StyleSheet
-} from 'react-native';
+  StyleSheet,
+} from 'react-native'
 
-import { useNavigation } from '@react-navigation/native';
-import { AppText, ScreenHeaderTitle } from '@/components';
-import { normalize, Colors } from '@/globals';
-import { 
+import { useNavigation } from '@react-navigation/native'
+import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
+import { normalize, Colors } from '@/globals'
+import {
   Chat,
   PostCash,
   ChevronUp,
   ChevronDown,
-  GreenTick
-} from '@/assets/images/icons';
+  GreenTick,
+} from '@/assets/images/icons'
 
-import ActivitiesCard from './components/ActivitiesCard';
-import ItemCard from './components/ItemCard';
+import ActivitiesCard from './components/ActivitiesCard'
+import ItemCard from './components/ItemCard'
+import Api from '@/services/Api'
 
-const OngoingItem = () => {
-  const navigation = useNavigation();
-  const [readyForDelivery, showReadyForDelivery] = useState(false);
-  const [readyForPickup, showReadyForPickup] = useState(false);
+const OngoingItem = ({ route }) => {
+  const navigation = useNavigation()
+  const [readyForDelivery, showReadyForDelivery] = useState(false)
+  const [readyForPickup, showReadyForPickup] = useState(false)
 
-  const info = {
-    status: 'Ongoing',
-    name: 'Wayne Tayco',
-    time: '2h',
-    availed: '1',
-    pending: '1',
-    title: '🍔 Wayne’s Burgers and Smoothies!',
+  const { orders, name, title, type } = route?.params?.info
+  const [pending, setPending] = useState([])
+  const [ongoingDelivery, setOngoingDelivery] = useState([])
+  const [ongoingPickup, setOngoingPickup] = useState([])
+  const [completed, setCompleted] = useState([])
+
+  const [isPendingLoading, setIsPendingLoading] = useState(false)
+
+  const initPending = async orders => {
+    if (!orders?.length) return
+    setIsPendingLoading(true)
+    const done = await Promise.all(
+      orders.map(async (order, index) => {
+        const getUserResponse = await Api.getUser({ uid: order.buyer_id })
+        if (getUserResponse.success) {
+          if (orders.length === index + 1) setIsPendingLoading(false)
+          const {
+            profile_photo,
+            display_name,
+            full_name,
+          } = getUserResponse.data
+          return {
+            profilePhoto: profile_photo,
+            customer: display_name ? display_name : full_name,
+            cardType: 'pending',
+            amount: order.total_price,
+            timeStamp: order.date._seconds,
+            paymentMode: 'Cash',
+            orderID: order.id,
+            numOfItems: order.items?.length ? order.items?.length : 0,
+            postData: { title },
+            type,
+          }
+        } else return {}
+      })
+    )
+    setPending(done)
   }
 
-  const requestCards = [
-    {
-      category: 'Sell',
-      new: true,
-      customer: 'Pia Samson',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:01AM',
-      amount: '150',
-      paymentMode: 'Cash On Delivery',
-      numOfItems: '5'
-    },
-    {
-      category: 'Sell',
-      new: true,
-      customer: 'Trishia Paredes',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:04AM',
-      amount: '1,050,000',
-      paymentMode: 'Cash On Pick-Up',
-      numOfItems: '1'
-    },
-    {
-      category: 'Sell',
-      timeStamp: '1h',
-      customer: 'Raine',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:01AM',
-      amount: '150',
-      paymentMode: 'Cash On Delivery',
-      numOfItems: '1'
-    },
-    {
-      category: 'Sell',
-      timeStamp: '2h',
-      customer: 'Reynan',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '9:01AM',
-      amount: '950',
-      paymentMode: 'Credit Card',
-      numOfItems: '5,000'
-    }
-  ]
-
-  const ongoingDeliveryCards = [
-    {
-      category: 'Sell',
-      timeStamp: '1h',
-      customer: 'Raine',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:01AM',
-      amount: '150',
-      paymentMode: 'Cash On Delivery',
-      numOfItems: '5'
-    },
-    {
-      category: 'Sell',
-      timeStamp: '1h',
-      customer: 'Raine',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:04AM',
-      amount: '1,050,000',
-      paymentMode: 'Cash On Pick-Up',
-      numOfItems: '1'
-    }
-  ]
-
-  const ongoingPickupCards = [
-    {
-      category: 'Sell',
-      timeStamp: '1h',
-      customer: 'Raine',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:01AM',
-      amount: '150',
-      paymentMode: 'Cash On Delivery',
-      numOfItems: '5'
-    }
-  ]
-
-  const completedCards = [
-    {
-      category: 'Sell',
-      timeStamp: '2h',
-      customer: 'Pia Samson',
-      verified: true,
-      date: 'September 29, 2020',
-      time: '11:01AM',
-      amount: '150',
-      paymentMode: 'Cash On Delivery',
-      numOfItems: '5'
-    }
-  ]
+  useEffect(() => {
+    initPending(orders?.pending)
+  }, [orders])
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
       <ScrollView>
+        <TransitionIndicator loading={isPendingLoading} />
         <View
           style={{
             backgroundColor: 'white',
             borderBottomLeftRadius: 8,
             borderBottomRightRadius: 8,
-            paddingBottom: 8
-          }}
-        >
+            paddingBottom: 8,
+          }}>
           <ScreenHeaderTitle
             close={() => navigation.goBack()}
-            title="🍔 Wayne’s Burgers and Smoothies!"
+            title={title}
             paddingSize={2}
             iconSize={normalize(16)}
           />
-          <ActivitiesCard
-            info={info}
-          />
+          <ActivitiesCard info={route?.params?.info} />
         </View>
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderRadius: 8,
-            marginVertical: normalize(10),
-            paddingVertical: normalize(30),
-            paddingHorizontal: normalize(16)
-          }}
-        >
-          <View 
+        {pending.length > 0 && (
+          <View
             style={{
-              flexDirection: 'row', 
-              justifyContent: 'space-between'
+              backgroundColor: 'white',
+              borderRadius: 8,
+              marginVertical: normalize(10),
+              paddingVertical: normalize(30),
+              paddingHorizontal: normalize(16),
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View style={styles.iconText}>
+                <Chat />
+                <AppText
+                  textStyle="body1medium"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Requests
+                </AppText>
+              </View>
+              <TouchableOpacity>
+                <AppText textStyle="button2" color={Colors.contentOcean}>
+                  View All
+                </AppText>
+              </TouchableOpacity>
+            </View>
+            {pending.map((item, i) => {
+              return (
+                <View key={i}>
+                  <ItemCard item={item} />
+                </View>
+              )
+            })}
+          </View>
+        )}
+        {ongoingDelivery.length > 0 && (
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 8,
+              marginVertical: normalize(10),
+              paddingVertical: normalize(30),
+              paddingHorizontal: normalize(16),
             }}>
             <View style={styles.iconText}>
-              <Chat />
-              <AppText 
+              <PostCash />
+              <AppText
                 textStyle="body1medium"
-                customStyle={{ marginLeft: normalize(10) }}
-              >
-                Requests
+                customStyle={{ marginLeft: normalize(10) }}>
+                Ongoing
               </AppText>
             </View>
-            <TouchableOpacity>
-              <AppText
-                textStyle="button2"
-                color={Colors.contentOcean}
-              >
-                View All
-              </AppText>
-            </TouchableOpacity>
-          </View>
-          {requestCards.map((item, i) => {
-            return (
-              <View key={i}>
-                <ItemCard
-                  item={item}
-                />
-              </View>
-            )
-          })}
-        </View>
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderRadius: 8,
-            marginVertical: normalize(10),
-            paddingVertical: normalize(30),
-            paddingHorizontal: normalize(16)
-          }}
-        >
-          <View style={styles.iconText}>
-            <PostCash />
-            <AppText 
-              textStyle="body1medium"
-              customStyle={{ marginLeft: normalize(10) }}
-            >
-              Ongoing
-            </AppText>
-          </View>
-          <View style={{marginBottom: normalize(20)}}>
-            <TouchableOpacity onPress={() => showReadyForDelivery(!readyForDelivery)}  >
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                <AppText textStyle="body2medium">Ready for Delivery (2)</AppText>
-                {readyForDelivery ? 
-                
-                <ChevronUp width={normalize(16)} height={normalize(16)} />
-              : 
-                <ChevronDown width={normalize(16)} height={normalize(16)} />
-              }
-              </View>
-            </TouchableOpacity>
-            {readyForDelivery && (
+            <View style={{ marginBottom: normalize(20) }}>
+              <TouchableOpacity
+                onPress={() => showReadyForDelivery(!readyForDelivery)}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <AppText textStyle="body2medium">
+                    Ready for Delivery (2)
+                  </AppText>
+                  {readyForDelivery ? (
+                    <ChevronUp width={normalize(16)} height={normalize(16)} />
+                  ) : (
+                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                  )}
+                </View>
+              </TouchableOpacity>
+              {/* {readyForDelivery && (
               <>
                 {ongoingDeliveryCards.map((item, i) => {
                   return (
                     <View key={i}>
-                      <ItemCard
-                        item={item}
-                      />
+                      <ItemCard item={item} />
                     </View>
                   )
                 })}
               </>
-            )}
-          </View>
-          <View>
-            <TouchableOpacity onPress={() => showReadyForPickup(!readyForPickup)}  >
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                <AppText textStyle="body2medium">Ready for Pick up (1)</AppText>
-                {readyForPickup ? 
-                
-                <ChevronUp width={normalize(16)} height={normalize(16)} />
-              : 
-                <ChevronDown width={normalize(16)} height={normalize(16)} />
-              }
-              </View>
-            </TouchableOpacity>
-            {readyForPickup && (
+            )} */}
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => showReadyForPickup(!readyForPickup)}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <AppText textStyle="body2medium">
+                    Ready for Pick up (1)
+                  </AppText>
+                  {readyForPickup ? (
+                    <ChevronUp width={normalize(16)} height={normalize(16)} />
+                  ) : (
+                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                  )}
+                </View>
+              </TouchableOpacity>
+              {/* {readyForPickup && (
               <>
                 {ongoingPickupCards.map((item, i) => {
                   return (
                     <View key={i}>
-                      <ItemCard
-                        item={item}
-                      />
+                      <ItemCard item={item} />
                     </View>
                   )
                 })}
               </>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
-            paddingVertical: normalize(30),
-            paddingHorizontal: normalize(16)
-          }}
-        >
-        <View 
-          style={{
-            flexDirection: 'row', 
-            justifyContent: 'space-between'
-          }}>
-          <View style={styles.iconText}>
-            <GreenTick />
-            <AppText 
-              textStyle="body1medium"
-              customStyle={{ marginLeft: normalize(10) }}
-            >
-              Completed
-            </AppText>
-          </View>
-          <TouchableOpacity>
-            <AppText
-              textStyle="button2"
-              color={Colors.contentOcean}
-            >
-              View All
-            </AppText>
-          </TouchableOpacity>
-        </View>
-        {completedCards.map((item, i) => {
-            return (
-              <View key={i}>
-                <ItemCard
-                  item={item}
-                />
+        )}
+
+        {completed.length > 0 && (
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              paddingVertical: normalize(30),
+              paddingHorizontal: normalize(16),
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View style={styles.iconText}>
+                <GreenTick />
+                <AppText
+                  textStyle="body1medium"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Completed
+                </AppText>
               </View>
-            )
-          })}
-        </View>
+              <TouchableOpacity>
+                <AppText textStyle="button2" color={Colors.contentOcean}>
+                  View All
+                </AppText>
+              </TouchableOpacity>
+            </View>
+            {completed.map((item, i) => {
+              return (
+                <View key={i}>
+                  <ItemCard item={item} />
+                </View>
+              )
+            })}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   )
@@ -318,13 +252,13 @@ const OngoingItem = () => {
 
 const styles = StyleSheet.create({
   contentWrapper: {
-    flex: 1
+    flex: 1,
   },
   iconText: {
     flexDirection: 'row',
-    alignItems:'center',
-    paddingBottom: normalize(10)
-  }
-});
+    alignItems: 'center',
+    paddingBottom: normalize(10),
+  },
+})
 
 export default OngoingItem
