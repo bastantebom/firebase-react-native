@@ -66,6 +66,8 @@ function ProfileInfoModal(props) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [addFollowers, setAddFollowers] = useState(null)
 
+  const [offsetHeight, setOffsetHeight] = useState(0)
+
   const changeHeaderHandler = () => {
     headerState === 'own' ? setHeaderState('other') : setHeaderState('own')
   }
@@ -200,7 +202,12 @@ function ProfileInfoModal(props) {
 
   const renderForeground = () => {
     return (
-      <>
+      <View
+        style={{ display: 'flex' }}
+        onLayout={event => {
+          const layout = event.nativeEvent.layout
+          setOffsetHeight(layout.height)
+        }}>
         <TransparentHeader
           type={headerState}
           ellipsisState={ellipsisState}
@@ -253,7 +260,7 @@ function ProfileInfoModal(props) {
             <ProfileInfo profileData={otherUserInfo} />
           </LoadingUserInfo>
         </View>
-      </>
+      </View>
     )
   }
 
@@ -330,7 +337,7 @@ function ProfileInfoModal(props) {
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
-        parallaxHeight={Dimensions.get('window').height - normalize(250)}
+        parallaxHeight={offsetHeight ? offsetHeight : normalize(425.9)}
         headerHeight={scrollPosition < 100 ? 0 : normalize(60)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
@@ -341,7 +348,7 @@ function ProfileInfoModal(props) {
           }
         )}
         snapToEdge={false}
-        transparentHeader={true}
+        transparentHeader={scrollPosition < 300 ? true : false}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl
@@ -465,5 +472,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: normalize(2),
     width: '50%',
+    flexGrow: 1,
   },
 })

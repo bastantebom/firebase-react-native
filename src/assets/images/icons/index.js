@@ -249,6 +249,12 @@ import Cash from './icon-cash.svg'
 import CreditCard from './icon-credit.svg'
 import GCash from './icon-gcash.svg'
 import GrabPay from './icon-grabpay.svg'
+import Paypal from './icon-paypal.svg'
+import CashActive from './icon-cash-active.svg'
+import CreditCardActive from './icon-credit-active.svg'
+import GCashActive from './icon-gcash-active.svg'
+import GrabPayActive from './icon-grabpay-active.svg'
+import PaypalActive from './icon-paypal-active.svg'
 
 import Direction from './direction.svg'
 
@@ -443,6 +449,12 @@ export {
   CreditCard,
   GCash,
   GrabPay,
+  CashActive,
+  CreditCardActive,
+  GCashActive,
+  GrabPayActive,
+  Paypal,
+  PaypalActive,
 }
 
 export const Icons = {

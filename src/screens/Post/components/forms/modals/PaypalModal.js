@@ -9,9 +9,9 @@ import {
 } from '@/components'
 
 import { Colors, normalize } from '@/globals'
-import { LogoGCash } from '@/assets/images'
+import { LogoPaypal } from '@/assets/images'
 
-const GCashModal = ({ closeModal }) => {
+const PaypalModal = ({ closeModal }) => {
   const [terms, setTerms] = useState(false)
 
   const handleFormChange = () => {
@@ -25,7 +25,7 @@ const GCashModal = ({ closeModal }) => {
       }}>
       <ScreenHeaderTitle
         close={closeModal}
-        title="GCash"
+        title="GrabPay"
         iconSize={normalize(16)}
         paddingSize={3}
       />
@@ -43,7 +43,7 @@ const GCashModal = ({ closeModal }) => {
               alignItems: 'center',
               paddingBottom: 15,
             }}>
-            <LogoGCash width={normalize(150)} height={normalize(50)} />
+            <LogoPaypal />
           </View>
           <View style={styles.border}>
             <AppText customStyle={styles.textStyle}>Amount P155.00</AppText>
@@ -95,7 +95,7 @@ const GCashModal = ({ closeModal }) => {
     </SafeAreaView>
   )
 }
-export default GCashModal
+export default PaypalModal
 
 const styles = StyleSheet.create({
   border: {

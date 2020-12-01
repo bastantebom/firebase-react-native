@@ -64,7 +64,7 @@ const StickyHeader = ({
   postId,
   isFollowing,
 }) => {
-  const { display_name, is_verified } = userInfo
+  const { display_name, is_verified, full_name } = userInfo
 
   const navigation = useNavigation()
   const shareHandler = async () => {
@@ -273,7 +273,7 @@ const StickyHeader = ({
                 textStyle="subtitle2"
                 color={Colors.primaryMidnightBlue}
                 numberOfLines={1}>
-                {display_name}
+                {display_name ? display_name : full_name}
               </AppText>
             </View>
             <View

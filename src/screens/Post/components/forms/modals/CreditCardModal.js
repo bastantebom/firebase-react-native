@@ -19,7 +19,7 @@ import {
 import { normalize, Colors } from '@/globals'
 import { PostCalendar, ArrowDown } from '@/assets/images/icons'
 
-const CreditCardModal = ({ closeModal }) => {
+const CreditCardModal = ({ closeModal, placeOrder }) => {
   const [name, setName] = useState('')
   const [cardNum, setCardNum] = useState('')
   const [cvv, setCvv] = useState('')
@@ -226,7 +226,8 @@ const CreditCardModal = ({ closeModal }) => {
 
         <View style={{ marginTop: normalize(20), marginBottom: normalize(30) }}>
           <TouchableOpacity
-            onPress={closeModal}
+            // onPress={closeModal}
+            onPress={placeOrder}
             style={styles.buyButtonContainer}>
             <AppText textStyle="body1medium">Confirm and Pay</AppText>
           </TouchableOpacity>

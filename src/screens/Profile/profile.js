@@ -63,6 +63,8 @@ const ProfileScreen = ({
   const [isDataLoading, setIsDataLoading] = useState(true)
   const [profileList, setProfileList] = useState(false)
 
+  const [offsetHeight, setOffsetHeight] = useState(0)
+
   const [headerState, setHeaderState] = useState(profileViewType)
 
   const changeHeaderHandler = () => {
@@ -223,7 +225,12 @@ const ProfileScreen = ({
 
   const renderForeground = () => {
     return (
-      <Animated.View>
+      <View
+        style={{ display: 'flex' }}
+        onLayout={event => {
+          const layout = event.nativeEvent.layout
+          setOffsetHeight(layout.height)
+        }}>
         <Notification
           type={notificationType}
           containerStyle={{
@@ -297,7 +304,7 @@ const ProfileScreen = ({
             <ProfileButtons triggerNotify={triggerNotify} />
           </View>
         </View>
-      </Animated.View>
+      </View>
     )
   }
 
@@ -377,9 +384,11 @@ const ProfileScreen = ({
         foreground={renderForeground()}
         header={renderHeader()}
         parallaxHeight={
-          statusPercentage < 1
-            ? Dimensions.get('window').height - normalize(110)
-            : Dimensions.get('window').height - normalize(195)
+          offsetHeight
+            ? offsetHeight
+            : statusPercentage < 1
+            ? normalize(574.857)
+            : normalize(479.23)
         }
         headerHeight={scrollPosition < 100 ? 0 : normalize(60)}
         headerSize={() => {}}
@@ -391,7 +400,7 @@ const ProfileScreen = ({
           }
         )}
         snapToEdge={false}
-        transparentHeader={true}
+        transparentHeader={scrollPosition < 300 ? true : false}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl
