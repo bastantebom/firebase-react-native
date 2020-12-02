@@ -44,6 +44,12 @@ import {
   CircleTickWhite,
   ChevronRightGray,
   CashActive,
+  CreditCardActive,
+  GCashActive,
+  GrabPayActive,
+  PaypalActive,
+  VisaActive,
+  MasterCardActive,
 } from '@/assets/images/icons'
 import CancelOrder from './CancelOrder'
 import DeclineOrder from './DeclineOrder'
@@ -726,11 +732,83 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
               </View>
               {postType === 'service' ||
                 (postType === 'sell' && (
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginTop: normalize(7) }}>
-                    {orderDetails.payment_method}
-                  </AppText>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: 16,
+                    }}>
+                    {orderDetails.payment_method === 'cash' ? (
+                      <>
+                        <CashActive />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          Cash on Delivery / Pick up
+                        </AppText>
+                      </>
+                    ) : orderDetails.payment_method === 'card' ? (
+                      <>
+                        <CreditCardActive />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          Visa / Mastercard
+                        </AppText>
+                      </>
+                    ) : orderDetails.payment_method === 'gcash' ? (
+                      <>
+                        <GCashActive />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          GCash
+                        </AppText>
+                      </>
+                    ) : orderDetails.payment_method === 'grabpay' ? (
+                      <>
+                        <GrabPayActive />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          GrabPay
+                        </AppText>
+                      </>
+                    ) : orderDetails.payment_method === 'paypal' ? (
+                      <>
+                        <PaypalActive />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          PayPal
+                        </AppText>
+                      </>
+                    ) : orderDetails.payment_method === 'visa' ? (
+                      <>
+                        <VisaActive
+                          width={normalize(30)}
+                          height={normalize(30)}
+                        />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          •••• 2111
+                        </AppText>
+                      </>
+                    ) : orderDetails.payment_method === 'mastercard' ? (
+                      <>
+                        <MasterCardActive
+                          width={normalize(30)}
+                          height={normalize(30)}
+                        />
+                        <AppText
+                          textStyle={'body2medium'}
+                          customStyle={{ marginLeft: normalize(10) }}>
+                          •••• 2110
+                        </AppText>
+                      </>
+                    ) : null}
+                  </View>
                 ))}
               {postType === 'need' && (
                 <AppText
@@ -910,7 +988,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
               style={[
                 styles.btnPrimary,
                 {
-                  display: status === 'pending' ? 'flex' : 'none',
+                  display: status === 'confirmed' ? 'flex' : 'none',
                 },
               ]}
               onPress={() => handlePayment(paymentMethod)}>

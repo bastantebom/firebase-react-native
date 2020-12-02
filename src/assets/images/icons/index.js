@@ -261,6 +261,8 @@ import Direction from './direction.svg'
 
 import MasterCard from './mastercard.svg'
 import Visa from './visa.svg'
+import VisaActive from './visa-active.svg'
+import MasterCardActive from './mastercard-active.svg'
 
 export {
   AudioVideo,
@@ -462,6 +464,8 @@ export {
   PaypalActive,
   MasterCard,
   Visa,
+  VisaActive,
+  MasterCardActive,
 }
 
 export const Icons = {
