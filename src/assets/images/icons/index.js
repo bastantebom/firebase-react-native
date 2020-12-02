@@ -45,6 +45,7 @@ import JarHeartWhite from '@/assets/images/icons/jar-heart-white.svg'
 import Like from '@/assets/images/icons/like.svg'
 import LikeColored from '@/assets/images/icons/like-colored.svg'
 import ChevronRightWhite from '@/assets/images/icons/chevron-right-white.svg'
+import ChevronRightGray from '@/assets/images/icons/chevron-right-gray.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
@@ -258,6 +259,9 @@ import PaypalActive from './icon-paypal-active.svg'
 
 import Direction from './direction.svg'
 
+import MasterCard from './mastercard.svg'
+import Visa from './visa.svg'
+
 export {
   AudioVideo,
   VerticalEllipsis,
@@ -443,6 +447,7 @@ export {
   Like,
   LikeColored,
   ChevronRightWhite,
+  ChevronRightGray,
   Search,
   PostParcelBlue,
   Cash,
@@ -455,6 +460,8 @@ export {
   GrabPayActive,
   Paypal,
   PaypalActive,
+  MasterCard,
+  Visa,
 }
 
 export const Icons = {

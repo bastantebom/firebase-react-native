@@ -25,7 +25,7 @@ const PaypalModal = ({ closeModal }) => {
       }}>
       <ScreenHeaderTitle
         close={closeModal}
-        title="GrabPay"
+        title="PayPal"
         iconSize={normalize(16)}
         paddingSize={3}
       />

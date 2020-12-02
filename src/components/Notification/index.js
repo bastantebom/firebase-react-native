@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondaryBrinkPink,
   },
   success: {
-    backgroundColor: Colors.yellow2,
+    backgroundColor: Colors.primaryMidnightBlue,
   },
   primary: {
     backgroundColor: Colors.contentOcean,

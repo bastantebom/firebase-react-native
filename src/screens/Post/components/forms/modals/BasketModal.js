@@ -48,10 +48,6 @@ import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
 import TrackerModal from './TrackerModal'
 import OrderNotesModal from './OrderNotesModal'
-import CreditCardModal from './CreditCardModal'
-import GCashModal from './GCashModal'
-import GrabPayModal from './GrabPayModal'
-import PaypalModal from './PaypalModal'
 
 const BasketModal = ({
   closeModal,
@@ -66,10 +62,6 @@ const BasketModal = ({
   const [trackerModal, showTrackerModal] = useState(false)
   const [orderNotes, showOrderNotes] = useState(false)
 
-  const [creditCardModal, showCreditCardModal] = useState(false)
-  const [gCashModal, showGcashModal] = useState(false)
-  const [grabPayModal, showGrabPayModal] = useState(false)
-  const [paypalModal, showPaypalModal] = useState(false)
   const [orderID, setOrderID] = useState()
   const [userData, setUserData] = useState({})
   const [attachedPostData, setAttachedPostData] = useState()
@@ -96,28 +88,6 @@ const BasketModal = ({
   const [paymentChoice, setPaymentChoice] = useState(payment[0])
   const [notes, setNotes] = useState()
   const [paymentMethod, setPaymentMethod] = useState('')
-
-  const goToPayment = paymentMethod => {
-    switch (paymentMethod) {
-      case 'cash':
-        null
-        break
-      case 'credit':
-        showCreditCardModal(true)
-        break
-      case 'gcash':
-        showGcashModal(true)
-        break
-      case 'grabpay':
-        showGrabPayModal(true)
-        break
-      case 'paypal':
-        showPaypalModal(true)
-        break
-      default:
-        null
-    }
-  }
 
   // MAP
   Geocoder.init(Config.apiKey)
@@ -431,6 +401,30 @@ const BasketModal = ({
                 </AppText>
               </TouchableOpacity>
             </View>
+            <View
+              style={{
+                backgroundColor: Colors.secondarySolitude,
+                padding: 16.5,
+                borderRadius: 8,
+                marginBottom: 16,
+              }}>
+              <AppText
+                textStyle="body2medium"
+                color={Colors.primaryMidnightBlue}
+                customStyle={{ marginBottom: 4 }}>
+                A few things to note..
+              </AppText>
+              <AppText textStyle="caption" customStyle={{ paddingBottom: 16 }}>
+                Please note that we’re currently working on adding the delivery
+                fee/s in the order. For the meantime, delivery fees will be
+                arranged with the seller using chat or outside the Servbees app.
+              </AppText>
+              <TouchableOpacity onPress={() => {}}>
+                <AppText textStyle="body2medium" color={Colors.contentOcean}>
+                  Learn More
+                </AppText>
+              </TouchableOpacity>
+            </View>
             {deliveryChoice === 'delivery' || deliveryChoice === 'service' ? (
               <>
                 <View
@@ -537,7 +531,13 @@ const BasketModal = ({
             </AppText> */}
             <TouchableOpacity
               onPress={() => setPaymentMethod('cash')}
-              style={styles.paymentBtn}>
+              style={[
+                styles.paymentBtn,
+                {
+                  borderColor:
+                    paymentMethod === 'cash' ? '#000' : Colors.neutralGray,
+                },
+              ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {paymentMethod === 'cash' ? <CashActive /> : <Cash />}
                 <AppText
@@ -549,7 +549,13 @@ const BasketModal = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setPaymentMethod('credit')}
-              style={styles.paymentBtn}>
+              style={[
+                styles.paymentBtn,
+                {
+                  borderColor:
+                    paymentMethod === 'credit' ? '#000' : Colors.neutralGray,
+                },
+              ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {paymentMethod === 'credit' ? (
                   <CreditCardActive />
@@ -573,7 +579,13 @@ const BasketModal = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setPaymentMethod('gcash')}
-              style={styles.paymentBtn}>
+              style={[
+                styles.paymentBtn,
+                {
+                  borderColor:
+                    paymentMethod === 'gcash' ? '#000' : Colors.neutralGray,
+                },
+              ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {paymentMethod === 'gcash' ? <GCashActive /> : <GCash />}
                 <AppText
@@ -590,10 +602,32 @@ const BasketModal = ({
                   For orders ₱100 up
                 </AppText>
               </View>
+              {paymentMethod === 'gcash' && (
+                <View style={{ marginTop: 10 }}>
+                  <AppText
+                    textStyle="caption"
+                    customStyle={{ marginBottom: 8 }}>
+                    Choose this to pay with your available balance.
+                  </AppText>
+                  <TouchableOpacity onPress={() => {}}>
+                    <AppText
+                      textStyle="body2medium"
+                      color={Colors.contentOcean}>
+                      Learn More
+                    </AppText>
+                  </TouchableOpacity>
+                </View>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setPaymentMethod('grabpay')}
-              style={styles.paymentBtn}>
+              style={[
+                styles.paymentBtn,
+                {
+                  borderColor:
+                    paymentMethod === 'grabpay' ? '#000' : Colors.neutralGray,
+                },
+              ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {paymentMethod === 'grabpay' ? <GrabPayActive /> : <GrabPay />}
                 <AppText
@@ -610,10 +644,32 @@ const BasketModal = ({
                   For orders ₱100 up
                 </AppText>
               </View>
+              {paymentMethod === 'grabpay' && (
+                <View style={{ marginTop: 10 }}>
+                  <AppText
+                    textStyle="caption"
+                    customStyle={{ marginBottom: 8 }}>
+                    Choose this to pay with your GrabPay balance.
+                  </AppText>
+                  <TouchableOpacity onPress={() => {}}>
+                    <AppText
+                      textStyle="body2medium"
+                      color={Colors.contentOcean}>
+                      Learn More
+                    </AppText>
+                  </TouchableOpacity>
+                </View>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setPaymentMethod('paypal')}
-              style={styles.paymentBtn}>
+              style={[
+                styles.paymentBtn,
+                {
+                  borderColor:
+                    paymentMethod === 'paypal' ? '#000' : Colors.neutralGray,
+                },
+              ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {paymentMethod === 'paypal' ? <PaypalActive /> : <Paypal />}
                 <AppText
@@ -630,6 +686,22 @@ const BasketModal = ({
                   For orders ₱100 up
                 </AppText>
               </View>
+              {paymentMethod === 'paypal' && (
+                <View style={{ marginTop: 10 }}>
+                  <AppText
+                    textStyle="caption"
+                    customStyle={{ marginBottom: 8 }}>
+                    Choose this to pay with your PayPal balance.
+                  </AppText>
+                  <TouchableOpacity onPress={() => {}}>
+                    <AppText
+                      textStyle="body2medium"
+                      color={Colors.contentOcean}>
+                      Learn More
+                    </AppText>
+                  </TouchableOpacity>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
           <View
@@ -754,13 +826,20 @@ const BasketModal = ({
           paddingHorizontal: normalize(16),
           paddingVertical: normalize(24),
         }}>
+        {paymentMethod === 'cash' || paymentMethod === '' ? null : (
+          <AppText
+            textStyle="caption"
+            customStyle={{ marginBottom: 10, textAlign: 'center' }}>
+            Please wait for the seller to confirm your order before proceeding
+            with the payment.
+          </AppText>
+        )}
         <TouchableOpacity
           onPress={() => {
             if (postType === 'need') {
               sendOfferHandler()
             } else {
-              goToPayment(paymentMethod)
-              // placeOrderHandler()
+              placeOrderHandler()
             }
           }}>
           <View style={styles.buyButtonContainer}>
@@ -772,7 +851,7 @@ const BasketModal = ({
                 paddingHorizontal: normalize(16),
               }}>
               <AppText textStyle="body1medium">
-                {postType === 'need' ? 'Send Offer' : 'Continue'}
+                {postType === 'need' ? 'Send Offer' : 'Place Order'}
               </AppText>
               <AppText textStyle="body1">
                 {postType === 'need'
@@ -859,7 +938,6 @@ const BasketModal = ({
           orderID={orderID}
         />
       </Modal>
-
       <Modal
         isVisible={orderNotes}
         animationIn="slideInUp"
@@ -877,66 +955,6 @@ const BasketModal = ({
           setNotes={notes => setNotes(notes)}
           notes={notes}
         />
-      </Modal>
-
-      <Modal
-        isVisible={creditCardModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <CreditCardModal
-          closeModal={() => showCreditCardModal(false)}
-          placeOrder={() => placeOrderHandler()}
-        />
-      </Modal>
-      <Modal
-        isVisible={gCashModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <GCashModal closeModal={() => showGcashModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={grabPayModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <GrabPayModal closeModal={() => showGrabPayModal(false)} />
-      </Modal>
-      <Modal
-        isVisible={paypalModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <PaypalModal closeModal={() => showPaypalModal(false)} />
       </Modal>
     </SafeAreaView>
   )
@@ -969,7 +987,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: Colors.neutralGray,
     borderRadius: 4,
   },
 })

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   ScrollView,
@@ -17,7 +17,13 @@ import {
 } from '@/components'
 
 import { normalize, Colors } from '@/globals'
-import { PostCalendar, ArrowDown } from '@/assets/images/icons'
+import {
+  PostCalendar,
+  ArrowDown,
+  MasterCard,
+  Visa,
+} from '@/assets/images/icons'
+import { cardValidator } from '@/globals/Utils'
 
 const CreditCardModal = ({ closeModal, placeOrder }) => {
   const [name, setName] = useState('')
@@ -32,6 +38,7 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
   const [showAddressOptions, setShowAddressOptions] = useState(false)
+  const [cardIcon, setCardIcon] = useState()
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date
@@ -80,7 +87,7 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
           <AppInput
             label="Card Holder Name"
             value={name}
-            onChangeText={text => setName(text)}
+            onChangeText={name => setName(name)}
           />
         </View>
 
@@ -88,15 +95,28 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
           <AppInput
             label="Card Number"
             value={cardNum}
-            onChangeText={text => setCardNum(text)}
+            onChangeText={cardNum => setCardNum(cardNum)}
+            keyboardType="numeric"
           />
+          <View
+            style={{
+              position: 'absolute',
+              top: normalize(15),
+              right: normalize(16),
+            }}>
+            {cardValidator(cardNum) === 'visa' ? (
+              <Visa width={normalize(25)} height={normalize(25)} />
+            ) : cardValidator(cardNum) === 'mastercard' ? (
+              <MasterCard width={normalize(25)} height={normalize(25)} />
+            ) : null}
+          </View>
         </View>
 
         <View style={{ marginBottom: normalize(16) }}>
           <AppInput
             label="CVV / CVC"
             value={cvv}
-            onChangeText={text => setCvv(text)}
+            onChangeText={cvv => setCvv(cvv)}
             secureTextEntry={true}
           />
           <AppText

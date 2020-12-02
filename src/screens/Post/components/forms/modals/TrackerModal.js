@@ -7,9 +7,12 @@ import {
   Image,
   TouchableWithoutFeedback,
   SafeAreaView,
+  Dimensions,
 } from 'react-native'
 
 import Modal from 'react-native-modal'
+import firestore from '@react-native-firebase/firestore'
+import { useNavigation } from '@react-navigation/native'
 
 import {
   AppText,
@@ -38,15 +41,21 @@ import {
   PostNote,
   Note,
   CircleTick,
+  CircleTickWhite,
+  ChevronRightGray,
+  CashActive,
 } from '@/assets/images/icons'
 import CancelOrder from './CancelOrder'
 import DeclineOrder from './DeclineOrder'
 import MoreActions from './MoreActions'
 import DeclineRequest from './DeclineRequest'
+import CreditCardModal from './CreditCardModal'
+import GCashModal from './GCashModal'
+import GrabPayModal from './GrabPayModal'
+import PaypalModal from './PaypalModal'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
-import firestore from '@react-native-firebase/firestore'
-import { useNavigation } from '@react-navigation/native'
+import { Delivering } from '@/assets/images'
 
 const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   const { openNotification, closeNotification } = useContext(Context)
@@ -64,12 +73,18 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   const [declineOrder, setDeclineOrder] = useState(false)
   const [moreActions, setMoreActions] = useState(false)
   const [declineRequest, setDeclineRequest] = useState(false)
+  const [creditCardModal, showCreditCardModal] = useState(false)
+  const [gCashModal, showGcashModal] = useState(false)
+  const [grabPayModal, showGrabPayModal] = useState(false)
+  const [paypalModal, showPaypalModal] = useState(false)
 
   const [status, setStatus] = useState('pending')
   const [statusHeader, setStatusHeader] = useState('')
   const [messageHeader, setMessageHeader] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
   const [orderDetails, setOrderDetails] = useState({})
+
+  const [paymentMethod, setPaymentMethod] = useState('credit')
 
   useEffect(() => {
     return firestore()
@@ -131,38 +146,40 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
           switch (status) {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
+              setMessageHeader('Your order request is sent for confirmation.')
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
-              setStatusHeader('Confirmed')
-              setMessageHeader('Order Confirmed')
+              setStatusHeader('Order Confirmed')
+              setMessageHeader('Yay! Your order is confirmed by the seller.')
               setStatusMessage('<Confirmed copy>')
               break
             case 'delivering':
               setStatusHeader('Delivering')
-              setMessageHeader('Delivering')
+              setMessageHeader('Your order is on the way.')
               setStatusMessage('<Delivering message here>')
               break
             case 'processing':
-              setStatusHeader('Processing')
-              setMessageHeader('Order Confirmed')
+              setStatusHeader('Order Processing')
+              setMessageHeader('Your order is now being prepared by <seller>.')
               setStatusMessage('<Processing message here>')
               break
             case 'ready':
-              setStatusHeader('Ready for Pick up')
-              setMessageHeader('Pick up')
+              setStatusHeader('Pick up')
+              setMessageHeader(
+                'Your order is ready! You can now pickup your order.'
+              )
               setStatusMessage('<Ready for pick up message here>')
               break
             case 'completed':
-              setStatusHeader('Completed!')
-              setMessageHeader('Completed!')
+              setStatusHeader('Completed')
+              setMessageHeader('Transaction complete. Time to enjoy!')
               setStatusMessage('<Completed message here>')
               break
             case 'cancelled':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
-              setStatusMessage('<Awaiting Confirmation copy>')
+              setStatusHeader('Order Cancelled')
+              setMessageHeader('Order Cancelled')
+              setStatusMessage('<Order cancelled copy>')
               break
             default:
               null
@@ -241,7 +258,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
               setMessageHeader('Awaiting Confirmation')
-              setStatusMessage('<Cancelled message here>')
+              setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'processing':
               setStatusHeader('Processing')
@@ -383,6 +400,28 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
     }
   }
 
+  const handlePayment = paymentMethod => {
+    switch (paymentMethod) {
+      case 'cash':
+        null
+        break
+      case 'credit':
+        showCreditCardModal(true)
+        break
+      case 'gcash':
+        showGcashModal(true)
+        break
+      case 'grabpay':
+        showGrabPayModal(true)
+        break
+      case 'paypal':
+        showPaypalModal(true)
+        break
+      default:
+        null
+    }
+  }
+
   useEffect(() => {
     orderStatus(status, postType)
   }, [postType, status])
@@ -398,636 +437,750 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScreenHeaderTitle
-        close={closeModal}
-        title={title()}
-        paddingSize={2}
-        iconSize={normalize(16)}
+    <>
+      <View
+        style={{
+          backgroundColor: '#EDF0F8',
+          height: normalize(170),
+          width: '100%',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          opacity: 1,
+          zIndex: -1,
+        }}
       />
-      {notif && (
-        <Notification
-          onClose={() => showNotif(false)}
-          type="success"
-          icon={<CircleTick />}
-          customStyle={{ position: 'relative' }}>
-          <AppText
-            textStyle="body2"
-            customStyle={{ marginLeft: 14, paddingTop: 2 }}>
-            {postType === 'sell'
-              ? 'Order Sent!'
-              : postType === 'service'
-              ? 'Request Sent!'
-              : 'Offer Sent!'}
-          </AppText>
-        </Notification>
-      )}
-      <TouchableOpacity
-        style={{ position: 'relative', width: '100%' }}
-        activeOpacity={0.7}>
-        <View style={styles.button}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image
-              style={styles.image}
-              source={require('@/assets/images/burger.jpg')}
-            />
-            <View>
-              <AppText
-                textStyle="body2medium"
-                customStyle={{ marginBottom: 5 }}>
-                {postData.title}
-              </AppText>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Chat width={normalize(18)} height={normalize(18)} />
-                <AppText
-                  textStyle="caption"
-                  customStyle={{ marginLeft: normalize(5) }}>
-                  {postType === 'sell'
-                    ? 'Message seller'
-                    : postType === 'service'
-                    ? 'Message service provider'
-                    : `Message ${postData?.user?.full_name}`}
-                </AppText>
-              </View>
-            </View>
-          </View>
-          <View style={{ position: 'absolute', right: 10 }}>
-            <ChevronRight width={normalize(16)} height={normalize(16)} />
-          </View>
-        </View>
-      </TouchableOpacity>
-      <ScrollView>
-        <PaddingView paddingSize={2}>
-          <View
-            style={{
-              position: 'relative',
-              zIndex: -1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <TrackerIllustration
-              width={normalize(250)}
-              height={normalize(200)}
-            />
-            <View style={styles.status}>
-              <AppText
-                color={Colors.neutralsWhite}
-                textStyle="body2medium"
-                customStyle={{ textAlign: 'center' }}>
-                {statusHeader}
-              </AppText>
-            </View>
-          </View>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[
-              styles.section,
-              {
-                display:
-                  (buyer && postType === 'service' && status === 'completed') ||
-                  (buyer && postType === 'service' && status === 'cancelled') ||
-                  (seller &&
-                    postType === 'service' &&
-                    status === 'completed') ||
-                  status === 'declined'
-                    ? 'none'
-                    : 'flex',
-              },
-            ]}
-            onPress={() => {
-              showMessage(!message)
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScreenHeaderTitle
+          close={closeModal}
+          title={title()}
+          paddingSize={3}
+          iconSize={normalize(16)}
+        />
+        {notif && (
+          <Notification
+            onClose={() => showNotif(false)}
+            type="success"
+            icon={<CircleTickWhite />}>
+            <AppText
+              textStyle="body2"
+              customStyle={{ marginLeft: 14 }}
+              color={Colors.neutralsWhite}>
+              {postType === 'sell'
+                ? 'Order Sent!'
+                : postType === 'service'
+                ? 'Request Sent!'
+                : 'Offer Sent!'}
+            </AppText>
+          </Notification>
+        )}
+        <ScrollView>
+          <PaddingView paddingSize={2}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[
+                styles.section,
+                {
+                  display:
+                    (buyer &&
+                      postType === 'service' &&
+                      status === 'completed') ||
+                    (buyer &&
+                      postType === 'service' &&
+                      status === 'cancelled') ||
+                    (seller &&
+                      postType === 'service' &&
+                      status === 'completed') ||
+                    status === 'declined'
+                      ? 'none'
+                      : 'flex',
+                  paddingVertical: normalize(20),
+                },
+              ]}
+              onPress={() => {
+                showMessage(!message)
               }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {status === 'pending' ||
-                (buyer && status === 'cancelled') ||
-                (status === 'ongoing' && postType === 'need') ? (
-                  <OrangeDot />
-                ) : [
-                    'confirmed',
-                    'delivering',
-                    'processing',
-                    'read',
-                    'ongoing',
-                  ].includes(status) ? (
-                  <GreenDot />
-                ) : status === 'cancelled' ? (
-                  <RedDot />
-                ) : (
-                  <BlueDot />
-                )}
-                <AppText
-                  textStyle="body2medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  {messageHeader}
-                </AppText>
-              </View>
-              {message ? <ChevronUp /> : <ChevronDown />}
-            </View>
-            {message && (
-              <AppText
-                textStyle="caption"
-                customStyle={{ marginTop: normalize(8) }}>
-                {statusMessage}
-              </AppText>
-            )}
-          </TouchableOpacity>
-
-          <View
-            style={[
-              styles.section,
-              { display: postType !== 'need' ? 'flex' : 'none' },
-            ]}>
-            <View
-              style={{
-                flexDirection: 'row',
-                paddingBottom: normalize(10),
-                display: postType !== 'sell' ? 'none' : 'flex',
-              }}>
-              <LocationContactUs width={normalize(20)} height={normalize(20)} />
-              <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
-                {pickup && (
-                  <>
-                    {status === 'completed' ? (
-                      <AppText textStyle="body1">
-                        Picked up from &nbsp;
-                        <AppText textStyle="body1medium">
-                          Wayne’s Burger and Smoothies
-                        </AppText>
-                      </AppText>
-                    ) : (
-                      <AppText textStyle="body1">
-                        Pick up from{' '}
-                        <AppText textStyle="body1medium">
-                          Wayne’s Burger and Smoothies
-                        </AppText>
-                      </AppText>
-                    )}
-                  </>
-                )}
-                {delivery && (
-                  <AppText textStyle="body1">
-                    From{' '}
-                    <AppText textStyle="body1medium">
-                      {postData?.user?.display_name}
-                    </AppText>
-                  </AppText>
-                )}
-                <AppText
-                  textStyle="body2"
-                  customStyle={{ marginTop: normalize(7) }}>
-                  {postData?.store_details?.location?.full_address}
-                </AppText>
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                paddingTop: postType !== 'sell' ? 0 : normalize(10),
-                display: pickup && postType === 'sell' ? 'none' : 'flex',
-                borderTopWidth: postType === 'service' ? 0 : 1,
-                borderTopColor: '#E5E5E5',
-              }}>
-              <PostBox width={normalize(20)} height={normalize(20)} />
-              <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginRight: normalize(5) }}>
-                  {postType === 'sell'
-                    ? 'Deliver to'
-                    : (postType === 'service' && status === 'confirmed') ||
-                      (postType === 'service' && status === 'completed') ||
-                      (postType === 'service' && status === 'cancelled') ||
-                      (postType === 'service' && status === 'pending') ||
-                      (postType === 'service' && status === 'declined')
-                    ? 'Service at'
-                    : postType === 'service' && status === 'ongoing'
-                    ? 'Servicing at'
-                    : null}
-                  &nbsp;
-                  <AppText textStyle="body1medium">
-                    {userInfo.addresses[0].name
-                      ? userInfo.addresses[0].name
-                      : 'Home (default)'}
-                  </AppText>
-                </AppText>
-                <AppText
-                  textStyle="body2"
-                  customStyle={{ marginTop: normalize(7) }}>
-                  {userInfo.addresses[0].full_address}
-                </AppText>
-              </View>
-            </View>
-          </View>
-          <View
-            style={[
-              styles.section,
-              { display: postType === 'service' ? 'flex' : 'none' },
-            ]}>
-            <View style={{ flexDirection: 'row' }}>
-              <PostCash width={normalize(20)} height={normalize(20)} />
-              <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
-                <AppText textStyle="body1medium">
-                  Service requested on Sep 29, 2020
-                </AppText>
-                <AppText
-                  textStyle="body2"
-                  customStyle={{ marginTop: normalize(7) }}>
-                  at 10:00 AM (Local time)
-                </AppText>
-              </View>
-            </View>
-          </View>
-          <View style={styles.section}>
-            <View style={{ flexDirection: 'row' }}>
-              <PostCash width={normalize(20)} height={normalize(20)} />
-              <View style={{ marginLeft: normalize(10) }}>
-                <AppText textStyle="body1medium">
-                  {postType !== 'need' ? 'Payment Method' : 'Your offer'}
-                </AppText>
-                {postType === 'need' ||
-                  (postType === 'sell' && (
-                    <AppText
-                      textStyle="body2"
-                      customStyle={{ marginTop: normalize(7) }}>
-                      {orderDetails.payment_method}
-                    </AppText>
-                  ))}
-                {postType === 'need' && (
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginTop: normalize(7) }}>
-                    {orderDetails?.price}
-                  </AppText>
-                )}
-              </View>
-            </View>
-          </View>
-          <View
-            style={[
-              styles.section,
-              { display: postType !== 'need' ? 'flex' : 'none' },
-            ]}>
-            <View>
-              <View style={{ position: 'absolute', top: normalize(3) }}>
-                <PostNote width={normalize(20)} height={normalize(20)} />
-              </View>
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#E5E5E5',
-                  paddingBottom: normalize(10),
-                }}>
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{
-                    marginLeft: normalize(30),
-                    marginBottom: normalize(7),
-                  }}>
-                  {postType === 'sell'
-                    ? 'Order Summary'
-                    : postType === 'service'
-                    ? 'Service Summary'
-                    : null}
-                </AppText>
-                {orderList.map((item, k) => {
-                  return (
-                    <View
-                      key={k}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingBottom: normalize(10),
-                      }}>
-                      <View style={{ flexDirection: 'row' }}>
-                        <AppText
-                          textStyle="body1"
-                          color={Colors.secondaryLavenderBlue}>
-                          {item.quantity}x
-                        </AppText>
-                        <View style={{ marginLeft: normalize(10) }}>
-                          <AppText textStyle="body1medium">{item.name}</AppText>
-                          {item.note && (
-                            <AppText textStyle="caption">{item.note}</AppText>
-                          )}
-                        </View>
-                      </View>
-                      <AppText
-                        textStyle="body1"
-                        color={Colors.contentPlaceholder}>
-                        ₱{item.price * item.quantity}
-                      </AppText>
-                    </View>
-                  )
-                })}
-              </View>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                  paddingTop: normalize(10),
+                  alignItems: 'center',
                 }}>
-                <AppText textStyle="body1medium">Total</AppText>
-                <AppText textStyle="body1medium">
-                  ₱{computedTotalPrice()}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    maxWidth: '60%',
+                  }}>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: normalize(6),
+                    }}>
+                    {status === 'pending' ||
+                    (buyer && status === 'cancelled') ||
+                    (status === 'ongoing' && postType === 'need') ? (
+                      <OrangeDot />
+                    ) : [
+                        'confirmed',
+                        'delivering',
+                        'processing',
+                        'read',
+                        'ongoing',
+                      ].includes(status) ? (
+                      <GreenDot />
+                    ) : status === 'cancelled' ? (
+                      <RedDot />
+                    ) : (
+                      <BlueDot />
+                    )}
+                  </View>
+                  <View>
+                    <AppText
+                      textStyle="body2medium"
+                      customStyle={{
+                        marginLeft: normalize(15),
+                        marginBottom: 5,
+                      }}
+                      color={Colors.primaryMidnightBlue}>
+                      {statusHeader}
+                    </AppText>
+                    <AppText textStyle="caption">{messageHeader}</AppText>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    position: 'absolute',
+                    right: normalize(20),
+                  }}>
+                  <Delivering width={normalize(100)} height={normalize(80)} />
+                </View>
+                {message ? (
+                  <ChevronUp width={normalize(13)} height={normalize(12)} />
+                ) : (
+                  <ChevronDown width={normalize(13)} height={normalize(12)} />
+                )}
+              </View>
+              {message && (
+                <AppText
+                  textStyle="caption"
+                  customStyle={{ marginTop: normalize(8) }}>
+                  {statusMessage}
                 </AppText>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ position: 'relative', width: '100%' }}
+              activeOpacity={0.7}>
+              <View style={[styles.section, styles.messageContainer]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Image
+                    style={styles.image}
+                    source={require('@/assets/images/burger.jpg')}
+                  />
+                  <View>
+                    <AppText
+                      textStyle="body2medium"
+                      customStyle={{ marginBottom: 5 }}>
+                      {postData.title}
+                    </AppText>
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Chat width={normalize(18)} height={normalize(18)} />
+                      <AppText
+                        textStyle="caption"
+                        customStyle={{ marginLeft: normalize(5) }}>
+                        {postType === 'sell'
+                          ? 'Message seller'
+                          : postType === 'service'
+                          ? 'Message service provider'
+                          : `Message ${postData?.user?.full_name}`}
+                      </AppText>
+                    </View>
+                  </View>
+                </View>
+                <View style={{ position: 'absolute', right: 10 }}>
+                  <ChevronRightGray
+                    width={normalize(13)}
+                    height={normalize(12)}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View
+              style={[
+                styles.section,
+                { display: postType !== 'need' ? 'flex' : 'none' },
+              ]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingBottom: normalize(10),
+                  display: postType !== 'sell' ? 'none' : 'flex',
+                }}>
+                <LocationContactUs
+                  width={normalize(20)}
+                  height={normalize(20)}
+                />
+                <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
+                  {pickup && (
+                    <>
+                      {status === 'completed' ? (
+                        <AppText textStyle="body1">
+                          Picked up from &nbsp;
+                          <AppText textStyle="body1medium">
+                            Wayne’s Burger and Smoothies
+                          </AppText>
+                        </AppText>
+                      ) : (
+                        <AppText textStyle="body1">
+                          Pick up from{' '}
+                          <AppText textStyle="body1medium">
+                            Wayne’s Burger and Smoothies
+                          </AppText>
+                        </AppText>
+                      )}
+                    </>
+                  )}
+                  {delivery && (
+                    <AppText textStyle="body1">
+                      From{' '}
+                      <AppText textStyle="body1medium">
+                        {postData?.user?.display_name}
+                      </AppText>
+                    </AppText>
+                  )}
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(7) }}>
+                    {postData?.store_details?.location?.full_address}
+                  </AppText>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingTop: postType !== 'sell' ? 0 : normalize(10),
+                  display: pickup && postType === 'sell' ? 'none' : 'flex',
+                  borderTopWidth: postType === 'service' ? 0 : 1,
+                  borderTopColor: '#E5E5E5',
+                }}>
+                <PostBox width={normalize(20)} height={normalize(20)} />
+                <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
+                  <AppText
+                    textStyle="body1medium"
+                    customStyle={{ marginRight: normalize(5) }}>
+                    {postType === 'sell'
+                      ? 'Deliver to'
+                      : (postType === 'service' && status === 'confirmed') ||
+                        (postType === 'service' && status === 'completed') ||
+                        (postType === 'service' && status === 'cancelled') ||
+                        (postType === 'service' && status === 'pending') ||
+                        (postType === 'service' && status === 'declined')
+                      ? 'Service at'
+                      : postType === 'service' && status === 'ongoing'
+                      ? 'Servicing at'
+                      : null}
+                    &nbsp;
+                    <AppText textStyle="body1medium">
+                      {userInfo.addresses[0].name
+                        ? userInfo.addresses[0].name
+                        : 'Home (default)'}
+                    </AppText>
+                  </AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(7) }}>
+                    {userInfo.addresses[0].full_address}
+                  </AppText>
+                </View>
               </View>
             </View>
-          </View>
-          <View
-            style={[
-              styles.section,
-              {
-                display:
-                  postType === 'need'
-                    ? 'flex'
-                    : postType === 'service' && status === 'cancelled'
-                    ? 'flex'
-                    : 'none',
-              },
-            ]}>
-            <View style={{ flexDirection: 'row' }}>
-              {postType === 'need' ? (
-                <Note width={normalize(18)} height={normalize(18)} />
-              ) : (
-                <PostCash width={normalize(24)} height={normalize(24)} />
-              )}
-              <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
-                <AppText textStyle="body1medium">Notes</AppText>
+            <View
+              style={[
+                styles.section,
+                { display: postType === 'service' ? 'flex' : 'none' },
+              ]}>
+              <View style={{ flexDirection: 'row' }}>
+                <PostCash width={normalize(20)} height={normalize(20)} />
+                <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
+                  <AppText textStyle="body1medium">
+                    Service requested on Sep 29, 2020
+                  </AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(7) }}>
+                    at 10:00 AM (Local time)
+                  </AppText>
+                </View>
+              </View>
+            </View>
+            <View style={styles.section}>
+              <View style={{ flexDirection: 'row' }}>
+                <PostCash width={normalize(20)} height={normalize(20)} />
+                <View style={{ marginLeft: normalize(10) }}>
+                  <AppText textStyle="body1medium">
+                    {postType !== 'need' ? 'Payment Method' : 'Your offer'}
+                  </AppText>
+                </View>
+              </View>
+              {postType === 'service' ||
+                (postType === 'sell' && (
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(7) }}>
+                    {orderDetails.payment_method}
+                  </AppText>
+                ))}
+              {postType === 'need' && (
                 <AppText
                   textStyle="body2"
                   customStyle={{ marginTop: normalize(7) }}>
-                  {orderDetails?.message}
+                  {orderDetails?.price}
                 </AppText>
-              </View>
-            </View>
-          </View>
-        </PaddingView>
-      </ScrollView>
-
-      {buyer && (
-        <>
-          <View
-            style={{
-              display:
-                status === 'pending' ||
-                status === 'ongoing' ||
-                (postType === 'service' && status === 'confirmed')
-                  ? 'flex'
-                  : 'none',
-            }}>
-            <View
-              style={{
-                backgroundColor: 'rgba(164, 167, 175, 0.1)',
-                height: 5,
-              }}
-            />
-            <View
-              style={{
-                flexDirection: 'row',
-                paddingVertical: normalize(25),
-                paddingHorizontal: normalize(35),
-                justifyContent:
-                  postType !== 'need' ? 'space-between' : 'center',
-              }}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => setCancelOrder(true)}>
-                <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
-                  {postType === 'sell'
-                    ? 'Cancel Order'
-                    : postType === 'service'
-                    ? 'Cancel Request'
-                    : null}
-                </AppText>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.7} onPress={closeModal}>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  {postType === 'sell'
-                    ? 'Edit Order'
-                    : postType === 'service'
-                    ? 'Edit'
-                    : 'Edit Offer'}
-                </AppText>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View
-            style={{
-              display:
-                status === 'cancelled' || status === 'completed'
-                  ? 'flex'
-                  : 'none',
-              padding: normalize(16),
-            }}>
-            <AppButton onPress={closeModal} type="primary" text="Done" />
-          </View>
-        </>
-      )}
-
-      {seller && (
-        <>
-          <View
-            style={{
-              display:
-                status === 'pending' ||
-                (postType === 'service' && status === 'ongoing')
-                  ? 'flex'
-                  : 'none',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: normalize(15),
-              }}>
-              <View style={{ width: '40%' }}>
-                {postType === 'sell' && (
-                  <AppButton
-                    type="secondary"
-                    text="Decline"
-                    onPress={() => setDeclineOrder(true)}
-                  />
-                )}
-                {postType === 'service' && (
-                  <AppButton
-                    type="secondary"
-                    text="Decline"
-                    onPress={() => setDeclineRequest(true)}
-                  />
-                )}
-              </View>
-              <View style={{ width: '55%' }}>
-                <AppButton type="primary" text="Confirm Order" />
-              </View>
-            </View>
-          </View>
-          <View
-            style={{
-              display: status === 'processing' ? 'flex' : 'none',
-            }}>
-            <View
-              style={{
-                padding: normalize(15),
-              }}>
-              {delivery && (
-                <AppButton type="primary" text="Confirm for Delivery" />
-              )}
-              {pickup && (
-                <AppButton type="primary" text="Confirm for Pick Up" />
               )}
             </View>
-          </View>
-          <View
-            style={{
-              display: status === 'delivering' ? 'flex' : 'none',
-            }}>
             <View
-              style={{
-                padding: normalize(15),
-              }}>
-              <AppButton type="primary" text="Order Completed" />
+              style={[
+                styles.section,
+                { display: postType !== 'need' ? 'flex' : 'none' },
+              ]}>
+              <View>
+                <View style={{ position: 'absolute', top: normalize(3) }}>
+                  <PostNote width={normalize(20)} height={normalize(20)} />
+                </View>
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#E5E5E5',
+                    paddingBottom: normalize(10),
+                  }}>
+                  <AppText
+                    textStyle="body1medium"
+                    customStyle={{
+                      marginLeft: normalize(30),
+                      marginBottom: normalize(7),
+                    }}>
+                    {postType === 'sell'
+                      ? 'Order Summary'
+                      : postType === 'service'
+                      ? 'Service Summary'
+                      : null}
+                  </AppText>
+                  {orderList.map((item, k) => {
+                    return (
+                      <View
+                        key={k}
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          paddingBottom: normalize(10),
+                        }}>
+                        <View style={{ flexDirection: 'row' }}>
+                          <AppText
+                            textStyle="body1"
+                            color={Colors.secondaryLavenderBlue}>
+                            {item.quantity}x
+                          </AppText>
+                          <View style={{ marginLeft: normalize(10) }}>
+                            <AppText textStyle="body1medium">
+                              {item.name}
+                            </AppText>
+                            {item.note && (
+                              <AppText textStyle="caption">{item.note}</AppText>
+                            )}
+                          </View>
+                        </View>
+                        <AppText
+                          textStyle="body1"
+                          color={Colors.contentPlaceholder}>
+                          ₱{item.price * item.quantity}
+                        </AppText>
+                      </View>
+                    )
+                  })}
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: normalize(10),
+                  }}>
+                  <AppText textStyle="body1medium">Total</AppText>
+                  <AppText textStyle="body1medium">
+                    ₱{computedTotalPrice()}
+                  </AppText>
+                </View>
+              </View>
             </View>
-          </View>
-          <View
-            style={{
-              display:
-                status === 'completed' ||
-                status === 'cancelled' ||
-                status === 'declined'
-                  ? 'flex'
-                  : 'none',
-            }}>
             <View
-              style={{
-                padding: normalize(15),
-              }}>
-              <AppButton type="primary" text="Done" />
+              style={[
+                styles.section,
+                {
+                  display:
+                    postType === 'need'
+                      ? 'flex'
+                      : postType === 'service' && status === 'cancelled'
+                      ? 'flex'
+                      : 'none',
+                },
+              ]}>
+              <View style={{ flexDirection: 'row' }}>
+                {postType === 'need' ? (
+                  <Note width={normalize(18)} height={normalize(18)} />
+                ) : (
+                  <PostCash width={normalize(24)} height={normalize(24)} />
+                )}
+                <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
+                  <AppText textStyle="body1medium">Notes</AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(7) }}>
+                    {orderDetails?.message}
+                  </AppText>
+                </View>
+              </View>
             </View>
-          </View>
-          <View
-            style={{
-              display:
-                (buyer && status === 'ongoing') || status === 'confirmed'
-                  ? 'flex'
-                  : 'none',
-            }}>
+          </PaddingView>
+        </ScrollView>
+
+        {buyer && (
+          <>
             <View
               style={{
-                flexDirection: 'row',
-                paddingVertical: normalize(25),
-                paddingHorizontal: normalize(35),
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                display:
+                  status === 'pending' ||
+                  status === 'ongoing' ||
+                  (postType === 'service' && status === 'confirmed')
+                    ? 'flex'
+                    : 'none',
               }}>
-              <View style={{ width: '50%' }}>
+              <View
+                style={{
+                  backgroundColor: 'rgba(164, 167, 175, 0.1)',
+                  height: 5,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: normalize(25),
+                  paddingHorizontal: normalize(35),
+                  justifyContent:
+                    postType !== 'need' ? 'space-between' : 'center',
+                }}>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => setMoreActions(true)}>
+                  onPress={() => setCancelOrder(true)}>
+                  <AppText
+                    textStyle="button2"
+                    color={Colors.secondaryBrinkPink}>
+                    {postType === 'sell'
+                      ? 'Cancel Order'
+                      : postType === 'service'
+                      ? 'Cancel Request'
+                      : null}
+                  </AppText>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} onPress={closeModal}>
                   <AppText textStyle="button2" color={Colors.contentOcean}>
-                    More Actions
+                    {postType === 'sell'
+                      ? 'Edit Order'
+                      : postType === 'service'
+                      ? 'Edit'
+                      : 'Edit Offer'}
                   </AppText>
                 </TouchableOpacity>
               </View>
-              <View style={{ width: '50%' }}>
-                <AppButton
-                  type="primary"
-                  text="Complete"
-                  disabled
-                  customStyle={{
-                    backgroundColor: '#E9EDF1',
-                    borderColor: '#E9EDF1',
-                  }}
-                />
+            </View>
+
+            <View
+              style={{
+                display:
+                  status === 'cancelled' || status === 'completed'
+                    ? 'flex'
+                    : 'none',
+                padding: normalize(16),
+              }}>
+              <AppButton onPress={closeModal} type="primary" text="Done" />
+            </View>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[
+                styles.btnPrimary,
+                {
+                  display: status === 'pending' ? 'flex' : 'none',
+                },
+              ]}
+              onPress={() => handlePayment(paymentMethod)}>
+              <AppText textStyle="body2medium">Continue to Payment</AppText>
+              <AppText textStyle="body2">₱{computedTotalPrice()}</AppText>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {seller && (
+          <>
+            <View
+              style={{
+                display:
+                  status === 'pending' ||
+                  (postType === 'service' && status === 'ongoing')
+                    ? 'flex'
+                    : 'none',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  padding: normalize(15),
+                }}>
+                <View style={{ width: '40%' }}>
+                  {postType === 'sell' && (
+                    <AppButton
+                      type="secondary"
+                      text="Decline"
+                      onPress={() => setDeclineOrder(true)}
+                    />
+                  )}
+                  {postType === 'service' && (
+                    <AppButton
+                      type="secondary"
+                      text="Decline"
+                      onPress={() => setDeclineRequest(true)}
+                    />
+                  )}
+                </View>
+                <View style={{ width: '55%' }}>
+                  <AppButton type="primary" text="Confirm Order" />
+                </View>
               </View>
             </View>
-          </View>
-        </>
-      )}
+            <View
+              style={{
+                display: status === 'processing' ? 'flex' : 'none',
+              }}>
+              <View
+                style={{
+                  padding: normalize(15),
+                }}>
+                {delivery && (
+                  <AppButton type="primary" text="Confirm for Delivery" />
+                )}
+                {pickup && (
+                  <AppButton type="primary" text="Confirm for Pick Up" />
+                )}
+              </View>
+            </View>
+            <View
+              style={{
+                display: status === 'delivering' ? 'flex' : 'none',
+              }}>
+              <View
+                style={{
+                  padding: normalize(15),
+                }}>
+                <AppButton type="primary" text="Order Completed" />
+              </View>
+            </View>
+            <View
+              style={{
+                display:
+                  status === 'completed' ||
+                  status === 'cancelled' ||
+                  status === 'declined'
+                    ? 'flex'
+                    : 'none',
+              }}>
+              <View
+                style={{
+                  padding: normalize(15),
+                }}>
+                <AppButton type="primary" text="Done" />
+              </View>
+            </View>
+            <View
+              style={{
+                display:
+                  (buyer && status === 'ongoing') || status === 'confirmed'
+                    ? 'flex'
+                    : 'none',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: normalize(25),
+                  paddingHorizontal: normalize(35),
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View style={{ width: '50%' }}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => setMoreActions(true)}>
+                    <AppText textStyle="button2" color={Colors.contentOcean}>
+                      More Actions
+                    </AppText>
+                  </TouchableOpacity>
+                </View>
+                <View style={{ width: '50%' }}>
+                  <AppButton
+                    type="primary"
+                    text="Complete"
+                    disabled
+                    customStyle={{
+                      backgroundColor: '#E9EDF1',
+                      borderColor: '#E9EDF1',
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+          </>
+        )}
 
-      <Modal
-        isVisible={cancelOrder}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => setCancelOrder(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <CancelOrder
-          orderDetails={orderDetails}
-          userId={user.uid}
-          goBack={() => setCancelOrder(false)}
-          postType={postType}
-        />
-      </Modal>
-      <Modal
-        isVisible={declineOrder}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => setDeclineOrder(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <DeclineOrder
-          goBack={() => setDeclineOrder(false)}
-          postType={postType}
-        />
-      </Modal>
-      <Modal
-        isVisible={moreActions}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => setMoreActions(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <MoreActions goBack={() => setMoreActions(false)} postType={postType} />
-      </Modal>
-      <Modal
-        isVisible={declineRequest}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => setDeclineRequest(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <DeclineRequest
-          goBack={() => setDeclineRequest(false)}
-          postType={postType}
-        />
-      </Modal>
-    </SafeAreaView>
+        <Modal
+          isVisible={cancelOrder}
+          animationIn="slideInUp"
+          animationInTiming={450}
+          animationOut="slideOutDown"
+          animationOutTiming={450}
+          style={{ margin: 0, justifyContent: 'flex-end' }}
+          customBackdrop={
+            <TouchableWithoutFeedback onPress={() => setCancelOrder(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <CancelOrder
+            orderDetails={orderDetails}
+            userId={user.uid}
+            goBack={() => setCancelOrder(false)}
+            postType={postType}
+          />
+        </Modal>
+        <Modal
+          isVisible={declineOrder}
+          animationIn="slideInUp"
+          animationInTiming={450}
+          animationOut="slideOutDown"
+          animationOutTiming={450}
+          style={{ margin: 0, justifyContent: 'flex-end' }}
+          customBackdrop={
+            <TouchableWithoutFeedback onPress={() => setDeclineOrder(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <DeclineOrder
+            goBack={() => setDeclineOrder(false)}
+            postType={postType}
+          />
+        </Modal>
+        <Modal
+          isVisible={moreActions}
+          animationIn="slideInUp"
+          animationInTiming={450}
+          animationOut="slideOutDown"
+          animationOutTiming={450}
+          style={{ margin: 0, justifyContent: 'flex-end' }}
+          customBackdrop={
+            <TouchableWithoutFeedback onPress={() => setMoreActions(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <MoreActions
+            goBack={() => setMoreActions(false)}
+            postType={postType}
+          />
+        </Modal>
+        <Modal
+          isVisible={declineRequest}
+          animationIn="slideInUp"
+          animationInTiming={450}
+          animationOut="slideOutDown"
+          animationOutTiming={450}
+          style={{ margin: 0, justifyContent: 'flex-end' }}
+          customBackdrop={
+            <TouchableWithoutFeedback onPress={() => setDeclineRequest(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <DeclineRequest
+            goBack={() => setDeclineRequest(false)}
+            postType={postType}
+          />
+        </Modal>
+        <Modal
+          isVisible={creditCardModal}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            justifyContent: 'flex-start',
+            height: Dimensions.get('window').height,
+          }}>
+          <CreditCardModal
+            closeModal={() => showCreditCardModal(false)}
+            // placeOrder={() => placeOrderHandler()}
+            placeOrder={() => showCreditCardModal(false)}
+          />
+        </Modal>
+        <Modal
+          isVisible={gCashModal}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            justifyContent: 'flex-start',
+            height: Dimensions.get('window').height,
+          }}>
+          <GCashModal closeModal={() => showGcashModal(false)} />
+        </Modal>
+        <Modal
+          isVisible={grabPayModal}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            justifyContent: 'flex-start',
+            height: Dimensions.get('window').height,
+          }}>
+          <GrabPayModal closeModal={() => showGrabPayModal(false)} />
+        </Modal>
+        <Modal
+          isVisible={paypalModal}
+          animationIn="slideInRight"
+          animationInTiming={750}
+          animationOut="slideOutRight"
+          animationOutTiming={750}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            justifyContent: 'flex-start',
+            height: Dimensions.get('window').height,
+          }}>
+          <PaypalModal closeModal={() => showPaypalModal(false)} />
+        </Modal>
+      </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    padding: normalize(15),
+  messageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F2F7FF',
+    borderColor: '#F2F7FF',
   },
   image: {
     width: normalize(40),
@@ -1050,6 +1203,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     marginBottom: normalize(10),
+    backgroundColor: Colors.neutralsWhite,
+  },
+  btnPrimary: {
+    padding: normalize(16),
+    justifyContent: 'space-between',
+    backgroundColor: Colors.primaryYellow,
+    borderRadius: 5,
+    flexDirection: 'row',
+    marginTop: 15,
+    marginBottom: 24,
+    marginHorizontal: 16,
   },
 })
 
