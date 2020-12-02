@@ -24,7 +24,7 @@ import { ImageModal } from '@/screens/Post/components/ImageModal'
 
 const ItemModal = ({ closeModal, postType, item, postID }) => {
   const [notes, setNotes] = useState()
-  const [qty, setQty] = useState(0)
+  const [qty, setQty] = useState(1)
   const [date, setDate] = useState(new Date())
   const [time, setTime] = useState(new Date())
   const [showDate, setShowDate] = useState(false)
@@ -144,6 +144,8 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
       } else {
         currentCart.push(data)
       }
+
+      currentCart = currentCart.filter(item => item.quantity)
 
       setUserCart(currentCart)
     }
@@ -350,9 +352,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
           )}
 
           {postType === 'sell' ? (
-            <TouchableOpacity
-              disabled={qty == 0 ? true : false}
-              onPress={addToCart}>
+            <TouchableOpacity onPress={addToCart}>
               <View
                 style={
                   qty == 0
@@ -360,7 +360,9 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
                     : styles.buyButtonContainer
                 }>
                 {qty == 0 ? (
-                  <AppText textStyle="body1medium">Add to order</AppText>
+                  <AppText textStyle="body1medium" color={Colors.neutralsWhite}>
+                    Remove
+                  </AppText>
                 ) : (
                   <View
                     style={{
@@ -468,7 +470,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 14,
     alignItems: 'center',
-    backgroundColor: Colors.buttonDisable,
+    backgroundColor: Colors.secondaryBrinkPink,
     borderRadius: 5,
   },
 })

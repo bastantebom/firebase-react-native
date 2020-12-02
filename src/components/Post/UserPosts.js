@@ -137,11 +137,7 @@ const UserPosts = ({
         ListFooterComponent={
           <View
             style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
-            {isFetching ? (
-              <ActivityIndicator />
-            ) : (
-              <AppText>No more posts available</AppText>
-            )}
+            {isFetching ? <ActivityIndicator /> : <AppText></AppText>}
           </View>
         }
       />

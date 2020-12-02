@@ -14,7 +14,6 @@ import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
 import Geolocation from '@react-native-community/geolocation'
 import Post from '@/components/Post/Post'
-import API from '@/services/Api'
 
 import { AppText, ScreenHeaderTitle, MapComponent } from '@/components'
 import Config from '@/services/Config'
@@ -61,6 +60,9 @@ const BasketModal = ({
   const [addNoteModal, showAddNoteModal] = useState(false)
   const [trackerModal, showTrackerModal] = useState(false)
   const [orderNotes, showOrderNotes] = useState(false)
+  const [fromEdit, setFromEdit] = useState(false)
+  const [editOrderId, setEditOrderId] = useState()
+  const [orderedCart, setOrderedCart] = useState()
 
   const [orderID, setOrderID] = useState()
   const [userData, setUserData] = useState({})
@@ -147,18 +149,22 @@ const BasketModal = ({
   //MAP END
 
   const computedTotal = () => {
-    let computedPrice = 0
+    if (!fromEdit) {
+      if (userCart.length > 0 && is_multiple)
+        return userCart.reduce(
+          (total, item) => total + +(item.price * item.quantity),
+          0
+        )
 
-    if (userCart.length > 0 && is_multiple)
-      userCart.map(item => {
-        computedPrice += item.price * item.quantity
-      })
-
-    if (!is_multiple) {
-      computedPrice = price
+      if (!is_multiple) {
+        return items[0].price
+      }
+    } else {
+      return orderedCart.reduce(
+        (total, item) => total + +(item.price * item.quantity),
+        0
+      )
     }
-
-    return computedPrice
   }
 
   const sendOfferHandler = async () => {
@@ -171,14 +177,32 @@ const BasketModal = ({
       },
     }
 
-    const response = await Api.createOrder(parameters)
+    const editParameters = {
+      id: editOrderId,
+      uid: user.uid,
+      body: {
+        price: Number(offerData?.price),
+        message: offerData?.message,
+        status: 'pending',
+      },
+    }
+
+    const response = await (!fromEdit
+      ? Api.createOrder(parameters)
+      : Api.updateOrder(editParameters))
 
     if (response.success) {
-      setOrderID(response.order_id)
+      setOrderId(!fromEdit ? response.order_id : editOrderId)
       showTrackerModal(true)
     } else {
       alert('Creating offer failed.')
     }
+  }
+
+  const editOrder = id => {
+    showTrackerModal(false)
+    setFromEdit(true)
+    setEditOrderId(id)
   }
 
   const placeOrderHandler = async () => {
@@ -189,10 +213,12 @@ const BasketModal = ({
             title: title,
             description: description,
             quantity: 1,
-            price: items[0].id,
+            price: items[0].price,
             image: cover_photos ? cover_photos[0] : '',
           },
         ]
+      : fromEdit
+      ? orderedCart
       : userCart
 
     const parameters = {
@@ -206,15 +232,26 @@ const BasketModal = ({
       },
     }
 
-    const response = await Api.createOrder(parameters)
+    const editParameters = {
+      id: editOrderId,
+      uid: user.uid,
+      body: {
+        items: itemsToSave,
+        notes: notes,
+        status: 'pending',
+      },
+    }
+
+    const response = await (!fromEdit
+      ? Api.createOrder(parameters)
+      : Api.updateOrder(editParameters))
 
     if (response.success) {
-      setOrderID(response.order_id)
+      setOrderId(!fromEdit ? response.order_id : editOrderId)
       showTrackerModal(true)
-
+      setOrderedCart(userCart)
       setUserCart([])
     } else {
-      console.log(response)
       alert('Creating offer failed.')
     }
   }
@@ -226,7 +263,7 @@ const BasketModal = ({
   }, [])
 
   const getUserData = async () => {
-    const response = await API.getUser({ uid: selectedPostDetails.uid })
+    const response = await Api.getUser({ uid: selectedPostDetails.uid })
 
     const { data, success } = response
 
@@ -256,33 +293,65 @@ const BasketModal = ({
   }
 
   const OrderSummary = () => {
-    if (is_multiple)
-      return userCart.map((item, k) => {
-        return (
-          <View
-            key={k}
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingBottom: normalize(10),
-              display: postType !== 'need' ? 'flex' : 'none',
-            }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <AppText textStyle="body1">{item.quantity}x</AppText>
-              <View
-                style={{
-                  flexDirection: 'column',
-                  marginLeft: normalize(10),
-                }}>
-                <AppText textStyle="body1medium">{item.name}</AppText>
-                {item.note && <AppText textStyle="body2">{item.note}</AppText>}
+    if (is_multiple) {
+      if (!fromEdit)
+        return userCart.map((item, k) => {
+          return (
+            <View
+              key={k}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingBottom: normalize(10),
+                display: postType !== 'need' ? 'flex' : 'none',
+              }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <AppText textStyle="body1">{item.quantity}x</AppText>
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    marginLeft: normalize(10),
+                  }}>
+                  <AppText textStyle="body1medium">{item.name}</AppText>
+                  {item.note && (
+                    <AppText textStyle="body2">{item.note}</AppText>
+                  )}
+                </View>
               </View>
+              <AppText textStyle="body1">₱{item.price * item.quantity}</AppText>
             </View>
-            <AppText textStyle="body1">₱{item.price * item.quantity}</AppText>
-          </View>
-        )
-      })
-    else
+          )
+        })
+      else {
+        return orderedCart.map((item, k) => {
+          return (
+            <View
+              key={k}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingBottom: normalize(10),
+                display: postType !== 'need' ? 'flex' : 'none',
+              }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <AppText textStyle="body1">{item.quantity}x</AppText>
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    marginLeft: normalize(10),
+                  }}>
+                  <AppText textStyle="body1medium">{item.name}</AppText>
+                  {item.note && (
+                    <AppText textStyle="body2">{item.note}</AppText>
+                  )}
+                </View>
+              </View>
+              <AppText textStyle="body1">₱{item.price * item.quantity}</AppText>
+            </View>
+          )
+        })
+      }
+    } else
       return (
         <View style={{ marginVertical: 12 }}>
           <AppText textStyle="body3">{title}</AppText>
@@ -850,9 +919,15 @@ const BasketModal = ({
                 width: '100%',
                 paddingHorizontal: normalize(16),
               }}>
-              <AppText textStyle="body1medium">
-                {postType === 'need' ? 'Send Offer' : 'Place Order'}
-              </AppText>
+              {fromEdit ? (
+                <AppText textStyle="body1medium">
+                  {postType === 'need' ? 'Update Offer' : 'Update'}
+                </AppText>
+              ) : (
+                <AppText textStyle="body1medium">
+                  {postType === 'need' ? 'Send Offer' : 'Continue'}
+                </AppText>
+              )}
               <AppText textStyle="body1">
                 {postType === 'need'
                   ? `₱${offerData?.price}`
@@ -936,6 +1011,7 @@ const BasketModal = ({
           postType={postType}
           postData={postData}
           orderID={orderID}
+          editOrder={id => editOrder(id)}
         />
       </Modal>
       <Modal

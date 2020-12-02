@@ -18,7 +18,7 @@ import {
 
 import { normalize, GlobalStyle, Colors } from '@/globals'
 
-const DeclineOrder = ({ goBack, postType }) => {
+const DeclineOrder = ({ goBack, postType, declineOrderFunction }) => {
   const [notes, setNotes] = useState('')
 
   return (
@@ -73,7 +73,11 @@ const DeclineOrder = ({ goBack, postType }) => {
             textAlignVertical="top"
           />
         </View>
-        <AppButton text="Decline" type="primary" />
+        <AppButton
+          text="Decline"
+          type="primary"
+          onPress={declineOrderFunction}
+        />
         <AppButton text="Go Back" onPress={goBack} />
       </PaddingView>
     </View>

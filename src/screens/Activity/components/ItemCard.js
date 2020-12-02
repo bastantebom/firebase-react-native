@@ -19,6 +19,7 @@ const ItemCard = ({ item }) => {
   const [trackerModal, showTrackerModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [postData, setPostData] = useState({})
+
   const timeAgo = time => {
     if (time <= 60) {
       return 'Just now'
@@ -114,13 +115,20 @@ const ItemCard = ({ item }) => {
               marginVertical: normalize(10),
             }}>
             <AppText textStyle="body2medium">
-              ₱{item.amount.toLocaleString()}
+              ₱
+              {isNaN(item.amount.toLocaleString())
+                ? '0'
+                : item.amount.toLocaleString()}
             </AppText>
             <AppText textStyle="caption" color={Colors.contentPlaceholder}>
               {' '}
               — via{' '}
             </AppText>
-            <AppText textStyle="caption2">{item.paymentMode}</AppText>
+            <AppText
+              textStyle="caption2"
+              customStyle={{ textTransform: 'capitalize' }}>
+              {item.paymentMode}
+            </AppText>
           </View>
           {item.type === 'sell' && (
             <AppText textStyle="caption">

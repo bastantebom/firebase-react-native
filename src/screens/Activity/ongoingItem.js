@@ -41,6 +41,7 @@ const OngoingItem = ({ route }) => {
     const done = await Promise.all(
       orders.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })
+
         if (getUserResponse.success) {
           if (orders.length === index + 1) setIsPendingLoading(false)
           const {
@@ -51,10 +52,12 @@ const OngoingItem = ({ route }) => {
           return {
             profilePhoto: profile_photo,
             customer: display_name ? display_name : full_name,
-            cardType: 'pending',
-            amount: order.total_price,
+            cardType: order.status,
+            amount: order.total_price
+              ? order.total_price
+              : order.items[0].price,
             timeStamp: order.date._seconds,
-            paymentMode: 'Cash',
+            paymentMode: order.payment_method,
             orderID: order.id,
             numOfItems: order.items?.length ? order.items?.length : 0,
             postId: order.post_id,

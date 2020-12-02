@@ -62,8 +62,15 @@ import PaypalModal from './PaypalModal'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import { Delivering } from '@/assets/images'
+import Api from '@/services/Api'
 
-const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
+const TrackerModal = ({
+  closeModal,
+  postType,
+  postData,
+  orderID,
+  editOrder,
+}) => {
   const { openNotification, closeNotification } = useContext(Context)
   const { user, userInfo } = useContext(UserContext)
   const navigation = useNavigation()
@@ -132,13 +139,6 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   }, [orderList])
 
   const computedTotalPrice = () => {
-    // let total = 0
-
-    // orderList.forEach(item => {
-    //   total += Number(item.price * item.quantity)
-    // })
-
-    // return total
     return orderList.reduce(
       (total, item) => total + +(item.price * item.quantity),
       0
@@ -183,9 +183,9 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
               setStatusMessage('<Completed message here>')
               break
             case 'cancelled':
-              setStatusHeader('Order Cancelled')
+              setStatusHeader('Cancelled')
               setMessageHeader('Order Cancelled')
-              setStatusMessage('<Order cancelled copy>')
+              setStatusMessage('<Order Cancelled copy>')
               break
             default:
               null
@@ -275,6 +275,11 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
               setStatusHeader('Processing')
               setMessageHeader('Delivering')
               setStatusMessage('<Delivering message here>')
+              break
+            case 'pickup':
+              setStatusHeader('Processing')
+              setMessageHeader('Pick Up')
+              setStatusMessage('<Pick Up message here>')
               break
             case 'completed':
               setStatusHeader('Order Completed')
@@ -428,6 +433,10 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
     }
   }
 
+  const editOrderHandler = id => {
+    editOrder(id)
+  }
+
   useEffect(() => {
     orderStatus(status, postType)
   }, [postType, status])
@@ -437,10 +446,33 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
   useEffect(() => {
     // openNotification()
     setTimeout(() => {
-      // closeNotification()
       showNotif(false)
     }, 5000)
   }, [])
+
+  const confirmOrderHandler = async () => {
+    const parameters = {
+      id: orderID,
+      uid: user.uid,
+      body: {
+        status: 'confirmed',
+      },
+    }
+
+    const response = await Api.updateOrder(parameters)
+  }
+
+  const declineOrderHandler = async () => {
+    const parameters = {
+      id: orderID,
+      uid: user.uid,
+      body: {
+        status: 'declined',
+      },
+    }
+
+    const response = await Api.updateOrder(parameters)
+  }
 
   return (
     <>
@@ -980,7 +1012,28 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                     : 'none',
                 padding: normalize(16),
               }}>
-              <AppButton onPress={closeModal} type="primary" text="Done" />
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setCancelOrder(true)}>
+                <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
+                  {postType === 'sell'
+                    ? 'Cancel Order'
+                    : postType === 'service'
+                    ? 'Cancel Request'
+                    : null}
+                </AppText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => editOrderHandler(orderDetails.id)}>
+                <AppText textStyle="button2" color={Colors.contentOcean}>
+                  {postType === 'sell'
+                    ? 'Edit Order'
+                    : postType === 'service'
+                    ? 'Edit'
+                    : 'Edit Offer'}
+                </AppText>
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
@@ -1031,7 +1084,11 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
                   )}
                 </View>
                 <View style={{ width: '55%' }}>
-                  <AppButton type="primary" text="Confirm Order" />
+                  <AppButton
+                    type="primary"
+                    onPress={confirmOrderHandler}
+                    text="Confirm Order"
+                  />
                 </View>
               </View>
             </View>
@@ -1152,6 +1209,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
           <DeclineOrder
             goBack={() => setDeclineOrder(false)}
             postType={postType}
+            declineOrderFunction={() => declineOrderHandler()}
           />
         </Modal>
         <Modal
@@ -1186,6 +1244,7 @@ const TrackerModal = ({ closeModal, postType, postData, orderID }) => {
           <DeclineRequest
             goBack={() => setDeclineRequest(false)}
             postType={postType}
+            declineOrderFunction={() => declineOrderHandler()}
           />
         </Modal>
         <Modal

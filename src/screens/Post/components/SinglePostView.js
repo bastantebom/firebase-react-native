@@ -486,6 +486,14 @@ const SinglePostView = props => {
     )
   }
 
+  const [disableCartButton, setDisableCartButton] = useState(false)
+
+  useEffect(() => {
+    setDisableCartButton(
+      (!Array.isArray(userCart) || !userCart.length) && is_multiple
+    )
+  })
+
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
@@ -892,8 +900,12 @@ const SinglePostView = props => {
               </TouchableOpacity>
               {multipleItems ? (
                 <TouchableOpacity
-                  style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
+                  style={{
+                    flex: 1,
+                    marginLeft: phone_number ? 8 : 0,
+                  }}
                   activeOpacity={0.7}
+                  disabled={disableCartButton}
                   onPress={() => {
                     if (type === 'need') {
                       showOfferModal(true)
@@ -901,7 +913,15 @@ const SinglePostView = props => {
                       showBasketModal(true)
                     }
                   }}>
-                  <View style={styles.cartButtonContainer}>
+                  <View
+                    style={[
+                      styles.cartButtonContainer,
+                      {
+                        backgroundColor: disableCartButton
+                          ? Colors.neutralGray
+                          : Colors.primaryYellow,
+                      },
+                    ]}>
                     <View
                       style={{
                         justifyContent: 'space-between',

@@ -27,9 +27,6 @@ const CancelOrder = ({ goBack, postType, orderDetails, userId }) => {
       uid: userId,
       id: orderDetails.id,
       body: {
-        items: orderDetails.items,
-        price: orderDetails.total_price,
-        message: 'UPDATE TEST',
         status: 'cancelled',
       },
     }
