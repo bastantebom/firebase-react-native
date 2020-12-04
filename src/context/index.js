@@ -288,6 +288,7 @@ export const ContextProvider = ({ children }) => {
       .collection('activities')
       .doc(uid)
       .collection('notifications')
+      .orderBy('date', 'desc')
       .onSnapshot(async snap => {
         if (!snap) return
         const allNotifications = await Promise.all(
@@ -300,7 +301,10 @@ export const ContextProvider = ({ children }) => {
 
               snapData = {
                 ...snapData,
-                buyerId: orderResponse?.buyer_id,
+                buyerId:
+                  orderResponse?.seller_id === uid
+                    ? orderResponse?.buyer_id
+                    : orderResponse?.seller_id,
                 postId: orderResponse?.post_id,
                 orderId: snapData.order_id,
               }
@@ -317,6 +321,7 @@ export const ContextProvider = ({ children }) => {
               }
           })
         )
+
         setNotificationsList(allNotifications)
       })
   }

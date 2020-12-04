@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   SafeAreaView,
   View,
@@ -7,16 +7,26 @@ import {
   ScrollView,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { AppText, ScreenHeaderTitle } from '@/components'
+import {
+  AppText,
+  ScreenHeaderTitle,
+  PaddingView,
+  TransitionIndicator,
+} from '@/components'
 import { normalize } from '@/globals'
 import { Calendar, ArrowLeft } from '@/assets/images/icons'
-import NotificationsCard from '../Activity/components/NotificationsCard'
+import ActivitiesCard from '../Activity/components/ActivitiesCard'
+import { UserContext } from '@/context/UserContext'
 import IllustActivity from '@/assets/images/activity-img1.svg'
+import Api from '@/services/Api'
 
 const Past = () => {
   const [pastActivity, setPastActivity] = useState({
     activities: [],
   })
+  const [past, setPast] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const { user, userInfo } = useContext(UserContext)
 
   const oldNotificationsCards = [
     {
@@ -40,21 +50,83 @@ const Past = () => {
     },
   ]
 
+  const initOwnPast = async () => {
+    const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
+    if (ownOrdersResponse.success) {
+      if (!ownOrdersResponse.data.length) {
+        setIsLoading(false)
+        return
+      } else {
+        const ownOrderData = await Promise.all(
+          ownOrdersResponse.data.map(async order => {
+            if (
+              order.status === 'cancelled' ||
+              order.status === 'declined' ||
+              order.status === 'completed'
+            ) {
+              const getPostResponse = await Api.getPost({
+                pid: order.post_id,
+              })
+              const getUserReponse = await Api.getUser({
+                uid: order.seller_id,
+              })
+              if (!getPostResponse.success) {
+                setIsLoading(false)
+                return
+              }
+              if (getPostResponse.success) {
+                const {
+                  full_name,
+                  display_name,
+                  profile_photo,
+                } = getUserReponse.data
+                return {
+                  profilePhoto: profile_photo,
+                  name: display_name ? display_name : full_name,
+                  cardType: 'own',
+                  status: order.status,
+                  time: order.date._seconds,
+                  orderID: order.id,
+                  price: order.total_price,
+                  postData: getPostResponse.data,
+                }
+              }
+            } else return
+          })
+        )
+        const filtered = ownOrderData.filter(el => el)
+        setPast(past => [...past, ...filtered])
+        setIsLoading(false)
+      }
+    } else {
+      setIsLoading(false)
+    }
+  }
+
   const navigation = useNavigation()
+
+  useEffect(() => {
+    setIsLoading(true)
+    initOwnPast()
+  }, [])
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      <ScreenHeaderTitle
-        close={() => navigation.goBack()}
-        title="Past Activities"
-      />
-      {pastActivity.activities.length == 0 ? (
+      <TransitionIndicator loading={isLoading} />
+      <PaddingView paddingSize={3}>
+        <ScreenHeaderTitle
+          close={() => navigation.goBack()}
+          title="Past Activities"
+        />
+      </PaddingView>
+      {past.length == 0 ? (
         <View
           style={{
             paddingHorizontal: normalize(12),
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
+            padding: 24,
           }}>
           <IllustActivity width={normalize(250)} height={normalize(200)} />
           <AppText
@@ -85,7 +157,12 @@ const Past = () => {
       ) : (
         <ScrollView
           style={{ paddingTop: normalize(20), paddingTop: normalize(30) }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 24,
+            }}>
             <Calendar
               height={normalize(20)}
               width={normalize(20)}
@@ -94,13 +171,10 @@ const Past = () => {
             <AppText textStyle="caption2">Last 6 Months</AppText>
           </View>
           <View style={{ paddingTop: 15 }}>
-            <View>
-              <AppText customStyle={{ color: '#91919C' }}>2020</AppText>
-            </View>
-            {oldNotificationsCards.map((info, i) => {
+            {past.map((info, i) => {
               return (
                 <View key={i}>
-                  <NotificationsCard info={info} />
+                  <ActivitiesCard info={info} />
                 </View>
               )
             })}

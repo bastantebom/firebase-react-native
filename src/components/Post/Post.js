@@ -113,7 +113,7 @@ const Post = ({
       toggleMenu()
     }
 
-    if (user && user.uid === uid)
+    if (user && user?.uid === uid)
       navigation.navigate('Post', {
         screen: 'SinglePostView',
         params: computedData,

@@ -12,7 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native'
 
 import { AppText, CacheableImage } from '@/components'
-import { GlobalStyle, normalize, timePassedShort } from '@/globals'
+import { GlobalStyle, normalize, timePassedShort, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
 import Modal from 'react-native-modal'
@@ -45,18 +45,20 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
     buyerId,
     orderId,
     postId,
-  } = info
+    status,
+  } = info[0]
+
   const [following, setFollowing] = useState(isFollowing)
   const [trackerModal, showTrackerModal] = useState(false)
   const [postData, setPostData] = useState({})
   const [isContentLoading, setIsContentLoading] = useState(false)
 
-  const AvatarPhoto = ({ size }) => {
-    return profilePhoto ? (
+  const AvatarPhoto = ({ size, url }) => {
+    return url ? (
       <CacheableImage
         style={GlobalStyle.image}
         source={{
-          uri: profilePhoto,
+          uri: url,
         }}
       />
     ) : (
@@ -139,11 +141,29 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
           ]}>
           <View style={styles.holder}>
             <View>
-              <View style={styles.avatarHolder}>
-                {type === 'follow' && <AvatarPhoto size={35} />}
-                {type === 'verification' && <AvatarPhoto size={35} />}
-                {type === 'order' && <AvatarPhoto size={35} />}
-              </View>
+              {info.length === 1 && (
+                <View style={styles.avatarHolder}>
+                  {type === 'follow' && (
+                    <AvatarPhoto size={35} url={profilePhoto} />
+                  )}
+                  {type === 'verification' && (
+                    <AvatarPhoto size={35} url={profilePhoto} />
+                  )}
+                  {type === 'order' && (
+                    <AvatarPhoto size={35} url={profilePhoto} />
+                  )}
+                </View>
+              )}
+              {info.length > 1 && (
+                <View style={{ width: normalize(60), flexDirection: 'row' }}>
+                  <View style={styles.multiAvatarHolder}>
+                    <AvatarPhoto size={35} url={profilePhoto} />
+                  </View>
+                  <View style={styles.multiAvatarHolder}>
+                    <AvatarPhoto size={35} url={info[1].profilePhoto} />
+                  </View>
+                </View>
+              )}
               {
                 <View style={styles.badgeHolder}>
                   {type === 'verification' && !approved ? (
@@ -173,11 +193,89 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
               </View>
             )}
             {type == 'order' &&
+              status === 'pending' &&
+              info.length === 1 &&
               (!isContentLoading ? (
                 <View
                   style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
                   <Text>
-                    <AppText textStyle="caption2">{name} </AppText>
+                    <AppText textStyle="caption2">{`${name} `}</AppText>
+                    <AppText textStyle="caption">
+                      has made an{' '}
+                      {postData.type === 'need'
+                        ? 'offer'
+                        : postData.type === 'sell'
+                        ? 'order'
+                        : 'booking'}{' '}
+                      on your{' '}
+                      <AppText textStyle="caption2">({postData.title})</AppText>{' '}
+                      post
+                    </AppText>
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ActivityIndicator size="small" color="#3781FC" />
+                </View>
+              ))}
+            {type == 'order' &&
+              status !== 'pending' &&
+              info.length === 1 &&
+              (!isContentLoading ? (
+                <View
+                  style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                  <Text>
+                    <AppText textStyle="caption">
+                      Your{' '}
+                      {postData.type === 'need'
+                        ? 'offer'
+                        : postData.type === 'sell'
+                        ? 'order'
+                        : 'booking'}{' '}
+                      from{' '}
+                      <AppText textStyle="caption2">{postData.title}</AppText>{' '}
+                      {status === 'delivering'
+                        ? `is for delivery`
+                        : status === 'pickup'
+                        ? `is ready for pick up`
+                        : `has been ${status}`}
+                    </AppText>
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ActivityIndicator size="small" color="#3781FC" />
+                </View>
+              ))}
+
+            {type == 'order' &&
+              info.length > 1 &&
+              (!isContentLoading ? (
+                <View
+                  style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                  <Text>
+                    {info.length === 2 && (
+                      <AppText textStyle="caption2">
+                        {`${name}, ${info[1].name}`}{' '}
+                      </AppText>
+                    )}
+                    {info.length > 2 && (
+                      <AppText textStyle="caption2">
+                        {`${name}, ${info[1].name} and ${
+                          info.length - 2
+                        } others`}{' '}
+                      </AppText>
+                    )}
                     <AppText textStyle="caption">
                       has made an {postData.type === 'need' ? 'offer' : 'order'}{' '}
                       on your{' '}
@@ -258,7 +356,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 </TouchableOpacity>
               </>
             )}
-            {type === 'order' && (
+            {type === 'order' && info.length === 1 && (
               <>
                 <TouchableOpacity
                   style={{
@@ -288,6 +386,8 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 </TouchableOpacity>
               </>
             )}
+
+            {type === 'order' && info.length > 1 && <></>}
           </View>
         </View>
       </View>
@@ -336,6 +436,15 @@ const styles = StyleSheet.create({
     borderRadius: normalize(35 / 2),
     overflow: 'hidden',
   },
+
+  multiAvatarHolder: {
+    marginRight: normalize(-20),
+    width: normalize(35),
+    height: normalize(35),
+    borderRadius: normalize(35 / 2),
+    overflow: 'hidden',
+  },
+
   badgeHolder: {
     position: 'absolute',
     bottom: -4,

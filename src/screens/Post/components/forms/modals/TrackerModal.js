@@ -20,10 +20,11 @@ import {
   ScreenHeaderTitle,
   Notification,
   AppButton,
+  CacheableImage,
+  TransitionIndicator,
 } from '@/components'
 
-import { normalize, Colors } from '@/globals'
-import API from '@/services/Api'
+import { normalize, Colors, GlobalStyle } from '@/globals'
 
 import {
   Chat,
@@ -50,6 +51,7 @@ import {
   PaypalActive,
   VisaActive,
   MasterCardActive,
+  ProfileImageDefault,
 } from '@/assets/images/icons'
 import CancelOrder from './CancelOrder'
 import DeclineOrder from './DeclineOrder'
@@ -63,6 +65,7 @@ import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import { Delivering } from '@/assets/images'
 import Api from '@/services/Api'
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
 const TrackerModal = ({
   closeModal,
@@ -98,19 +101,28 @@ const TrackerModal = ({
   const [orderDetails, setOrderDetails] = useState({})
 
   const [paymentMethod, setPaymentMethod] = useState('credit')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    setIsLoading(true)
     return firestore()
       .doc(`orders/${orderID}`)
       .onSnapshot(async snap => {
         if (snap?.data() && user) {
-          const data = snap.data()
+          let data = snap.data()
+          data = {
+            ...data,
+            otherUserData: await getOtherUserData(data.buyer_id),
+            sellerData: await getOtherUserData(data.seller_id),
+          }
           setOrderDetails(data)
           setBuyer(user.uid === data.buyer_id)
           setSeller(user.uid === data.seller_id)
           setStatus(data.status)
           setDelivery(data.delivery_method === 'delivery')
           setPickup(data.delivery_method === 'pickup')
+          setPaymentMethod(data.payment_method)
+          setIsLoading(false)
         }
       })
   }, [])
@@ -138,6 +150,40 @@ const TrackerModal = ({
     computedTotalPrice()
   }, [orderList])
 
+  const getOtherUserData = async userUID => {
+    const userData = await Api.getUser({
+      uid: userUID,
+    })
+    if (userData.success) return userData.data
+  }
+
+  const CoverPhoto = () => {
+    return postData?.cover_photos?.length > 0 ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{ uri: postData?.cover_photos[0] }}
+      />
+    ) : postData.type === 'service' ? (
+      <DefaultService width={normalize(64)} height={normalize(72)} />
+    ) : postData.type === 'need' ? (
+      <DefaultNeed width={normalize(64)} height={normalize(72)} />
+    ) : (
+      <DefaultSell width={normalize(64)} height={normalize(72)} />
+    )
+  }
+
+  const AvatarPhoto = ({ size }) => {
+    return orderDetails?.otherUserData?.profile_photo ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{
+          uri: orderDetails?.otherUserData?.profile_photo,
+        }}
+      />
+    ) : (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    )
+  }
   const computedTotalPrice = () => {
     return orderList.reduce(
       (total, item) => total + +(item.price * item.quantity),
@@ -152,7 +198,7 @@ const TrackerModal = ({
           switch (status) {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Your order request is sent for confirmation.')
+              setMessageHeader('Your order is now being prepared...')
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
@@ -162,12 +208,12 @@ const TrackerModal = ({
               break
             case 'delivering':
               setStatusHeader('Delivering')
-              setMessageHeader('Your order is on the way.')
+              setMessageHeader('Your order is ready for delivery...')
               setStatusMessage('<Delivering message here>')
               break
-            case 'processing':
-              setStatusHeader('Order Processing')
-              setMessageHeader('Your order is now being prepared by <seller>.')
+            case 'pickup':
+              setStatusHeader('Pick up')
+              setMessageHeader('Your order is ready for pickup...')
               setStatusMessage('<Processing message here>')
               break
             case 'ready':
@@ -179,7 +225,7 @@ const TrackerModal = ({
               break
             case 'completed':
               setStatusHeader('Completed')
-              setMessageHeader('Transaction complete. Time to enjoy!')
+              setMessageHeader('Order completed!')
               setStatusMessage('<Completed message here>')
               break
             case 'cancelled':
@@ -262,28 +308,28 @@ const TrackerModal = ({
         case 'sell':
           switch (status) {
             case 'pending':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
+              setStatusHeader('Requesting...')
+              setMessageHeader('Confirm or decline an order...')
               setStatusMessage('<Awaiting Confirmation copy>')
               break
-            case 'processing':
+            case 'confirmed':
               setStatusHeader('Processing')
-              setMessageHeader('Processing')
+              setMessageHeader('Preparing the order...')
               setStatusMessage('<Processing message here>')
               break
             case 'delivering':
-              setStatusHeader('Processing')
-              setMessageHeader('Delivering')
+              setStatusHeader('Delivering')
+              setMessageHeader('Order is ready for delivery...')
               setStatusMessage('<Delivering message here>')
               break
             case 'pickup':
-              setStatusHeader('Processing')
-              setMessageHeader('Pick Up')
+              setStatusHeader('Pick up')
+              setMessageHeader('Order is ready for pickup...')
               setStatusMessage('<Pick Up message here>')
               break
             case 'completed':
-              setStatusHeader('Order Completed')
-              setMessageHeader('Completed!')
+              setStatusHeader('Completed')
+              setMessageHeader('Order completed!')
               setStatusMessage('<Completed message here>')
               break
             case 'cancelled':
@@ -308,8 +354,8 @@ const TrackerModal = ({
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
-              setStatusHeader('Your booking is scheduled')
-              setMessageHeader('Scheduled')
+              setStatusHeader('Schedule Confirmed')
+              setMessageHeader('Your schedule is confirmed...')
               setStatusMessage('<Schedule confirmed copy>')
               break
             case 'ongoing':
@@ -444,7 +490,6 @@ const TrackerModal = ({
   const [notif, showNotif] = useState(true)
 
   useEffect(() => {
-    // openNotification()
     setTimeout(() => {
       showNotif(false)
     }, 5000)
@@ -474,6 +519,54 @@ const TrackerModal = ({
     const response = await Api.updateOrder(parameters)
   }
 
+  const handleChatPress = async () => {
+    let channel
+    try {
+      if (!user?.uid) return
+      const otherUID = seller ? orderDetails.buyer_id : orderDetails.seller_id
+      const snapshot = await firestore()
+        .collection('chat_rooms')
+        .where('members', '==', {
+          [user.uid]: true,
+          [otherUID]: true,
+        })
+        .get()
+
+      if (!snapshot.docs.length) {
+        const ref = firestore().collection('chat_rooms')
+        const { id } = await ref.add({
+          members: {
+            [user.uid]: true,
+            [otherUID]: true,
+          },
+        })
+
+        await ref.doc(id).update({ id })
+        channel = (await ref.doc(id).get()).data()
+      } else {
+        channel = snapshot.docs[0].data()
+      }
+      closeModal()
+      navigation.navigate('Chat', { user, channel })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleDelivery = async () => {
+    setIsLoading(true)
+    const parameters = {
+      id: orderID,
+      uid: user.uid,
+      body: {
+        status: 'delivering',
+      },
+    }
+
+    const response = await Api.updateOrder(parameters)
+    if (response.success) setIsLoading(false)
+  }
+
   return (
     <>
       <View
@@ -490,6 +583,7 @@ const TrackerModal = ({
         }}
       />
       <SafeAreaView style={{ flex: 1 }}>
+        <TransitionIndicator loading={isLoading} />
         <ScreenHeaderTitle
           close={closeModal}
           title={title()}
@@ -609,31 +703,59 @@ const TrackerModal = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={{ position: 'relative', width: '100%' }}
-              activeOpacity={0.7}>
+              activeOpacity={0.7}
+              onPress={handleChatPress}>
               <View style={[styles.section, styles.messageContainer]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image
-                    style={styles.image}
-                    source={require('@/assets/images/burger.jpg')}
-                  />
+                  {buyer && (
+                    <View style={styles.postImageContainer}>
+                      <CoverPhoto />
+                    </View>
+                  )}
+                  {seller && (
+                    <View style={styles.userInfoImageContainer}>
+                      <AvatarPhoto size={35} />
+                    </View>
+                  )}
                   <View>
                     <AppText
                       textStyle="body2medium"
                       customStyle={{ marginBottom: 5 }}>
-                      {postData.title}
+                      {buyer &&
+                        (orderDetails?.sellerData?.display_name
+                          ? orderDetails?.sellerData?.display_name
+                          : orderDetails?.sellerData?.full_name)}
+
+                      {seller &&
+                        (orderDetails?.otherUserData?.display_name
+                          ? orderDetails?.otherUserData?.display_name
+                          : orderDetails?.otherUserData?.full_name)}
                     </AppText>
                     <View
                       style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Chat width={normalize(18)} height={normalize(18)} />
-                      <AppText
-                        textStyle="caption"
-                        customStyle={{ marginLeft: normalize(5) }}>
-                        {postType === 'sell'
-                          ? 'Message seller'
-                          : postType === 'service'
-                          ? 'Message service provider'
-                          : `Message ${postData?.user?.full_name}`}
-                      </AppText>
+                      {buyer && (
+                        <AppText
+                          textStyle="caption"
+                          customStyle={{ marginLeft: normalize(5) }}>
+                          {postType === 'sell'
+                            ? 'Message seller'
+                            : postType === 'service'
+                            ? 'Message service provider'
+                            : `Message ${postData?.user?.full_name}`}
+                        </AppText>
+                      )}
+                      {seller && (
+                        <AppText
+                          textStyle="caption"
+                          customStyle={{ marginLeft: normalize(5) }}>
+                          {postType === 'sell'
+                            ? 'Message customer'
+                            : postType === 'service'
+                            ? 'Message customer'
+                            : `Message ${postData?.user?.full_name}`}
+                        </AppText>
+                      )}
                     </View>
                   </View>
                 </View>
@@ -661,33 +783,18 @@ const TrackerModal = ({
                   height={normalize(20)}
                 />
                 <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
-                  {pickup && (
-                    <>
-                      {status === 'completed' ? (
-                        <AppText textStyle="body1">
-                          Picked up from &nbsp;
-                          <AppText textStyle="body1medium">
-                            Wayne’s Burger and Smoothies
-                          </AppText>
+                  {pickup ||
+                    (delivery && (
+                      <AppText textStyle="body1">
+                        From{' '}
+                        <AppText textStyle="body1medium">
+                          {orderDetails?.sellerData?.display_name
+                            ? orderDetails?.sellerData?.display_name
+                            : orderDetails?.sellerData?.full_name}
                         </AppText>
-                      ) : (
-                        <AppText textStyle="body1">
-                          Pick up from{' '}
-                          <AppText textStyle="body1medium">
-                            Wayne’s Burger and Smoothies
-                          </AppText>
-                        </AppText>
-                      )}
-                    </>
-                  )}
-                  {delivery && (
-                    <AppText textStyle="body1">
-                      From{' '}
-                      <AppText textStyle="body1medium">
-                        {postData?.user?.display_name}
                       </AppText>
-                    </AppText>
-                  )}
+                    ))}
+
                   <AppText
                     textStyle="body2"
                     customStyle={{ marginTop: normalize(7) }}>
@@ -708,28 +815,34 @@ const TrackerModal = ({
                   <AppText
                     textStyle="body1medium"
                     customStyle={{ marginRight: normalize(5) }}>
-                    {postType === 'sell'
+                    {delivery && postType === 'sell'
                       ? 'Deliver to'
-                      : (postType === 'service' && status === 'confirmed') ||
-                        (postType === 'service' && status === 'completed') ||
-                        (postType === 'service' && status === 'cancelled') ||
-                        (postType === 'service' && status === 'pending') ||
-                        (postType === 'service' && status === 'declined')
+                      : pickup && postType === 'sell'
+                      ? 'Pickup at'
+                      : postType === 'service' && status !== 'ongoing'
                       ? 'Service at'
                       : postType === 'service' && status === 'ongoing'
                       ? 'Servicing at'
                       : null}
                     &nbsp;
                     <AppText textStyle="body1medium">
-                      {userInfo.addresses[0].name
-                        ? userInfo.addresses[0].name
+                      {orderDetails?.otherUserData?.addresses.find(
+                        address => address.default
+                      ).name
+                        ? orderDetails?.otherUserData?.addresses.find(
+                            address => address.default
+                          ).name
                         : 'Home (default)'}
                     </AppText>
                   </AppText>
                   <AppText
                     textStyle="body2"
                     customStyle={{ marginTop: normalize(7) }}>
-                    {userInfo.addresses[0].full_address}
+                    {
+                      orderDetails?.otherUserData?.addresses.find(
+                        address => address.default
+                      ).full_address
+                    }
                   </AppText>
                 </View>
               </View>
@@ -1041,7 +1154,10 @@ const TrackerModal = ({
               style={[
                 styles.btnPrimary,
                 {
-                  display: status === 'confirmed' ? 'flex' : 'none',
+                  display:
+                    status === 'confirmed' && paymentMethod !== 'cash'
+                      ? 'flex'
+                      : 'none',
                 },
               ]}
               onPress={() => handlePayment(paymentMethod)}>
@@ -1094,23 +1210,37 @@ const TrackerModal = ({
             </View>
             <View
               style={{
-                display: status === 'processing' ? 'flex' : 'none',
+                display:
+                  status === 'confirmed' && paymentMethod === 'cash'
+                    ? 'flex'
+                    : 'none',
               }}>
               <View
                 style={{
                   padding: normalize(15),
                 }}>
                 {delivery && (
-                  <AppButton type="primary" text="Confirm for Delivery" />
+                  <AppButton
+                    type="primary"
+                    onPress={handleDelivery}
+                    text="Confirm for Delivery"
+                  />
                 )}
                 {pickup && (
-                  <AppButton type="primary" text="Confirm for Pick Up" />
+                  <AppButton
+                    type="primary"
+                    onPress={handlePickUp}
+                    text="Confirm for Pick Up"
+                  />
                 )}
               </View>
             </View>
             <View
               style={{
-                display: status === 'delivering' ? 'flex' : 'none',
+                display:
+                  status === 'delivering' || status === 'pickup'
+                    ? 'flex'
+                    : 'none',
               }}>
               <View
                 style={{
@@ -1137,10 +1267,7 @@ const TrackerModal = ({
             </View>
             <View
               style={{
-                display:
-                  (buyer && status === 'ongoing') || status === 'confirmed'
-                    ? 'flex'
-                    : 'none',
+                display: buyer && status === 'ongoing' ? 'flex' : 'none',
               }}>
               <View
                 style={{
@@ -1351,6 +1478,21 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 24,
     marginHorizontal: 16,
+  },
+  userInfoImageContainer: {
+    height: normalize(35),
+    width: normalize(35),
+    borderRadius: normalize(35 / 2),
+    overflow: 'hidden',
+    marginRight: normalize(10),
+  },
+
+  postImageContainer: {
+    width: normalize(36),
+    height: normalize(36),
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginRight: normalize(10),
   },
 })
 

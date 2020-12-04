@@ -38,8 +38,9 @@ const OngoingItem = ({ route }) => {
   const initPending = async orders => {
     if (!orders?.length) return
     setIsPendingLoading(true)
+    const orderedList = orders.sort((a, b) => b.date._seconds - a.date._seconds)
     const done = await Promise.all(
-      orders.map(async (order, index) => {
+      orderedList.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })
 
         if (getUserResponse.success) {
@@ -49,6 +50,7 @@ const OngoingItem = ({ route }) => {
             display_name,
             full_name,
           } = getUserResponse.data
+
           return {
             profilePhoto: profile_photo,
             customer: display_name ? display_name : full_name,
@@ -66,11 +68,15 @@ const OngoingItem = ({ route }) => {
         } else return {}
       })
     )
-    setPending(done)
+    setPending(pending => [...pending, ...done])
   }
 
   useEffect(() => {
     initPending(orders?.pending)
+    initPending(orders?.confirmed)
+    initPending(orders?.delivering)
+    initPending(orders?.pickup)
+    initPending(orders?.completed)
   }, [orders])
 
   return (
@@ -92,7 +98,7 @@ const OngoingItem = ({ route }) => {
           />
           <ActivitiesCard info={route?.params?.info} />
         </View>
-        {pending.length > 0 && (
+        {pending?.filter(order => order.cardType === 'pending').length > 0 && (
           <View
             style={{
               backgroundColor: 'white',
@@ -120,16 +126,60 @@ const OngoingItem = ({ route }) => {
                 </AppText>
               </TouchableOpacity>
             </View>
-            {pending.map((item, i) => {
-              return (
-                <View key={i}>
-                  <ItemCard item={item} />
-                </View>
-              )
-            })}
+            {pending
+              ?.filter(order => order.cardType === 'pending')
+              .map((item, i) => {
+                return (
+                  <View key={i}>
+                    <ItemCard item={item} />
+                  </View>
+                )
+              })}
           </View>
         )}
-        {ongoingDelivery.length > 0 && (
+        {pending?.filter(order => order.cardType === 'confirmed').length >
+          0 && (
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 8,
+              marginVertical: normalize(10),
+              paddingVertical: normalize(30),
+              paddingHorizontal: normalize(16),
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View style={styles.iconText}>
+                <Chat />
+                <AppText
+                  textStyle="body1medium"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Confirmed
+                </AppText>
+              </View>
+              <TouchableOpacity>
+                <AppText textStyle="button2" color={Colors.contentOcean}>
+                  View All
+                </AppText>
+              </TouchableOpacity>
+            </View>
+            {pending
+              ?.filter(order => order.cardType === 'confirmed')
+              .map((item, i) => {
+                return (
+                  <View key={i}>
+                    <ItemCard item={item} />
+                  </View>
+                )
+              })}
+          </View>
+        )}
+
+        {pending?.filter(order => order.cardType === 'delivering').length >
+          0 && (
           <View
             style={{
               backgroundColor: 'white',
@@ -156,7 +206,12 @@ const OngoingItem = ({ route }) => {
                     alignItems: 'center',
                   }}>
                   <AppText textStyle="body2medium">
-                    Ready for Delivery (2)
+                    Ready for Delivery (
+                    {
+                      pending?.filter(order => order.cardType === 'delivering')
+                        .length
+                    }
+                    )
                   </AppText>
                   {readyForDelivery ? (
                     <ChevronUp width={normalize(16)} height={normalize(16)} />
@@ -165,17 +220,19 @@ const OngoingItem = ({ route }) => {
                   )}
                 </View>
               </TouchableOpacity>
-              {/* {readyForDelivery && (
-              <>
-                {ongoingDeliveryCards.map((item, i) => {
-                  return (
-                    <View key={i}>
-                      <ItemCard item={item} />
-                    </View>
-                  )
-                })}
-              </>
-            )} */}
+              {readyForDelivery && (
+                <>
+                  {pending
+                    ?.filter(order => order.cardType === 'delivering')
+                    .map((item, i) => {
+                      return (
+                        <View key={i}>
+                          <ItemCard item={item} />
+                        </View>
+                      )
+                    })}
+                </>
+              )}
             </View>
             <View>
               <TouchableOpacity

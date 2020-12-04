@@ -117,7 +117,7 @@ const ChatScreen = ({ route, navigation }) => {
       .collection('messages')
       .orderBy('createdAt', 'desc')
       .onSnapshot(snap => {
-        const messages = snap.docs.map(doc => {
+        const messages = snap?.docs.map(doc => {
           const data = doc.data()
           return {
             id: doc.id,
@@ -131,7 +131,9 @@ const ChatScreen = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    init()
+    let isSubscribed = true
+    if (isSubscribed) init()
+    return () => (isSubscribed = false)
   }, [])
 
   useEffect(() => {

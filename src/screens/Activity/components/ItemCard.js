@@ -115,10 +115,7 @@ const ItemCard = ({ item }) => {
               marginVertical: normalize(10),
             }}>
             <AppText textStyle="body2medium">
-              ₱
-              {isNaN(item.amount.toLocaleString())
-                ? '0'
-                : item.amount.toLocaleString()}
+              ₱{item.amount.toLocaleString()}
             </AppText>
             <AppText textStyle="caption" color={Colors.contentPlaceholder}>
               {' '}

@@ -192,7 +192,7 @@ const BasketModal = ({
       : Api.updateOrder(editParameters))
 
     if (response.success) {
-      setOrderId(!fromEdit ? response.order_id : editOrderId)
+      setOrderID(!fromEdit ? response.order_id : editOrderId)
       showTrackerModal(true)
     } else {
       alert('Creating offer failed.')
@@ -247,7 +247,7 @@ const BasketModal = ({
       : Api.updateOrder(editParameters))
 
     if (response.success) {
-      setOrderId(!fromEdit ? response.order_id : editOrderId)
+      setOrderID(!fromEdit ? response.order_id : editOrderId)
       showTrackerModal(true)
       setOrderedCart(userCart)
       setUserCart([])

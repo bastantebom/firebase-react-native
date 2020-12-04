@@ -27,15 +27,24 @@ const ActivitiesCard = ({ info }) => {
     if (cardType === 'own' && status === 'pending')
       return Colors.neutralsMischka
 
+    if (cardType === 'own' && status === 'confirmed')
+      return Colors.secondaryDarkTangerine
+
+    if (cardType === 'own' && status === 'delivering')
+      return Colors.secondaryDarkTangerine
+
     if (info.status === 'Confirmed') return Colors.secondaryLavenderBlue
 
-    if (cardType === 'seller') return Colors.secondaryDarkTangerine
+    if (cardType === 'seller' && status !== 'completed')
+      return Colors.secondaryDarkTangerine
 
     if (info.status === 'Completed') return Colors.secondaryShamrock
 
     if (info.status === 'Order Cancelled') return Colors.red
 
-    if (info.status === 'Declined') return Colors.red
+    if (cardType === 'own' && status === 'declined') return Colors.red
+
+    if (cardType === 'own' && status === 'cancelled') return Colors.red
 
     if (info.status === 'Completed') return Colors.secondaryShamrock
 
@@ -53,7 +62,16 @@ const ActivitiesCard = ({ info }) => {
     if (cardType === 'own' && status === 'pending')
       return 'Waiting for confirmation'
 
-    if (cardType === 'seller') return 'Ongoing'
+    if (cardType === 'own' && status === 'declined') return 'Declined'
+
+    if (cardType === 'own' && status === 'cancelled') return 'Cancelled'
+
+    if (cardType === 'own' && status === 'confirmed') return 'Processing'
+
+    if (cardType === 'own' && status === 'delivering')
+      return 'Ready for Delivery'
+
+    if (cardType === 'seller' && status !== 'completed') return 'Ongoing'
   }
 
   const timeAgo = time => {
@@ -74,6 +92,15 @@ const ActivitiesCard = ({ info }) => {
     ) : (
       <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
     )
+  }
+
+  const getTotalAvailed = () => {
+    const confirmed = orders?.confirmed ? orders?.confirmed?.length : 0
+    const delivering = orders?.delivering ? orders?.delivering?.length : 0
+    const pickup = orders?.pickup ? orders?.pickup?.length : 0
+    const completed = orders?.completed ? orders?.completed?.length : 0
+
+    return confirmed + delivering + pickup + completed
   }
 
   const CoverPhoto = () => {
@@ -183,20 +210,19 @@ const ActivitiesCard = ({ info }) => {
                         • ₱{info.price.toLocaleString()}
                       </AppText>
                     )}
-                  {info.availed && (
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={{ marginHorizontal: 2 }}>
-                      {info.availed} availed
-                    </AppText>
-                  )}
-                  {info.pending && (
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={{ marginHorizontal: 2 }}>
-                      • {info.pending} pending request
-                    </AppText>
-                  )}
+                  {postData.type === 'sell' &&
+                    cardType === 'seller' &&
+                    (orders?.confirmed ||
+                      orders?.delivering ||
+                      orders?.pickup ||
+                      orders?.completed) && (
+                      <AppText
+                        textStyle="metadata"
+                        customStyle={{ marginHorizontal: 2 }}>
+                        {getTotalAvailed()} availed
+                      </AppText>
+                    )}
+
                   {postData.type === 'need' && cardType === 'seller' && (
                     <AppText
                       textStyle="metadata"

@@ -186,6 +186,7 @@ function CreatePostStackScreen() {
         name="PaymentMethodScreen"
         component={PaymentMethodScreen}
       />
+      <CreatePostStack.Screen name="Chat" component={ChatScreen} />
     </CreatePostStack.Navigator>
   )
 }
@@ -204,6 +205,7 @@ function PostStackScreen({ navigation }) {
       <PostStack.Navigator headerMode="none">
         <PostStack.Screen name="PostScreen" component={PostScreen} />
         <PostStack.Screen name="SinglePostView" component={SinglePostView} />
+        <PostStack.Screen name="Chat" component={ChatScreen} />
       </PostStack.Navigator>
     </>
   )
@@ -215,6 +217,7 @@ function ActivityStackScreen() {
       <ActivityStack.Screen name="Activity" component={Activity} />
       <ActivityStack.Screen name="Past" component={Past} />
       <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
+      <ActivityStack.Screen name="Chat" component={ChatScreen} />
       {/* <ActivityStack.Screen name="Badge" component={Badge} />
       <ActivityStack.Screen name="Welcome" component={Welcome} />
       <ActivityStack.Screen name="Verified" component={Verified} /> */}

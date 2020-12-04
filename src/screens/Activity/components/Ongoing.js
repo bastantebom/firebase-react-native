@@ -93,48 +93,52 @@ const Ongoing = () => {
   }
 
   const initOwnOrders = async () => {
-    setIsLoading(true)
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
       if (!ownOrdersResponse.data.length) {
-        setIsLoading(false)
         return
       } else {
         const ownOrderData = await Promise.all(
           ownOrdersResponse.data.map(async order => {
-            const getPostResponse = await Api.getPost({
-              pid: order.post_id,
-            })
-            const getUserReponse = await Api.getUser({
-              uid: order.seller_id || user?.uid,
-            })
-            if (!getPostResponse.success) {
-              setIsLoading(false)
-              return {}
-            }
-            if (getPostResponse.success) {
-              const {
-                full_name,
-                display_name,
-                profile_photo,
-              } = getUserReponse.data
-              return {
-                profilePhoto: profile_photo,
-                name: display_name ? display_name : full_name,
-                cardType: 'own',
-                status: order.status,
-                time: order.date._seconds,
-                orderID: order.id,
-                price: order.total_price,
-                postData: getPostResponse.data,
+            if (
+              order.status !== 'completed' &&
+              order.status !== 'cancelled' &&
+              order.status !== 'declined'
+            ) {
+              const getPostResponse = await Api.getPost({
+                pid: order.post_id,
+              })
+              const getUserReponse = await Api.getUser({
+                uid: order.seller_id || user?.uid,
+              })
+              if (!getPostResponse.success) {
+                return
               }
-            }
+              if (getPostResponse.success) {
+                const {
+                  full_name,
+                  display_name,
+                  profile_photo,
+                } = getUserReponse.data
+
+                return {
+                  profilePhoto: profile_photo,
+                  name: display_name ? display_name : full_name,
+                  cardType: 'own',
+                  status: order.status,
+                  time: order.date._seconds,
+                  orderID: order.id,
+                  price: order.total_price,
+                  postData: getPostResponse.data,
+                }
+              }
+            } else return
           })
         )
-        setOnGoing(onGoing => [...onGoing, ...ownOrderData])
+        const filtered = ownOrderData.filter(el => el)
+        setOnGoing(onGoing => [...onGoing, ...filtered])
+        setIsLoading(false)
       }
-    } else {
-      setIsLoading(false)
     }
   }
 
@@ -144,7 +148,6 @@ const Ongoing = () => {
     })
     if (getOwnPostResponse.success) {
       if (!getOwnPostResponse.data) {
-        setIsLoading(false)
         return
       }
       const sellerOrderData = await Promise.all(
@@ -166,12 +169,9 @@ const Ongoing = () => {
               time: latestTimeStampOrder,
               cover_photos: post.cover_photos,
               orders: responseOrders.data,
-              postData: { type: post.type, title: post.title },
+              postData: post,
             }
-          } else {
-            setIsLoading(false)
-            return {}
-          }
+          } else return
         })
       )
       setOnGoing(onGoing => [...onGoing, ...sellerOrderData])
@@ -190,6 +190,7 @@ const Ongoing = () => {
   }
 
   useEffect(() => {
+    setIsLoading(true)
     initOwnOrders()
     initSellerOrders()
   }, [])

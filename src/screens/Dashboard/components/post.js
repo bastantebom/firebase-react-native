@@ -176,7 +176,7 @@ const Post = ({ data: post, isLoading, onPress, onUserPress, onLikePress }) => {
     return post?.user ? (
       <PostHeader
         post={post}
-        liked={post.likes?.includes(user.uid)}
+        liked={post.likes?.includes(user?.uid)}
         onAvatarPress={() => onUserPress?.(post.user)}
         onNamePress={() => onUserPress?.(post.user)}
         onLikePress={() => onLikePress?.(post)}
