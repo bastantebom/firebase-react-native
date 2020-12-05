@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import {
   View,
   StyleSheet,
@@ -12,14 +12,12 @@ import Modal from 'react-native-modal'
 import { AppText } from '@/components'
 
 import {
-  NavigationArrow,
   SortNearest,
   CloseDark,
   FilterServicesWhite,
   FilterSellerWhite,
   FilterNeedsWhite,
   NavigationPinAlt,
-  SortPopular,
   SortRecent,
   FilterServices,
   FilterSeller,
@@ -27,56 +25,28 @@ import {
   SortHighLow,
 } from '@/assets/images/icons'
 
+import Config from '@/services/Config'
 import { GlobalStyle, Colors, normalize } from '@/globals'
-import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import LocationMap from '@/screens/Dashboard/components/Location'
 import { getColorByBackground } from '@/globals/Utils'
+import Geocoder from 'react-native-geocoding'
+import { Context } from '@/context'
 
+Geocoder.init(Config.apiKey)
 const LocationSearch = ({
   onValueChange,
   filters,
   onTypeFilterPress,
   onSortFilterPress,
+  location,
 }) => {
   const scrollX = useRef(new Animated.Value(0)).current
 
-  const { setLocationFilter, locationFilter } = useContext(Context)
   const { userInfo } = useContext(UserContext)
   const { addresses } = userInfo
 
-  const [showLocation, setShowLocation] = useState(false)
-
-  const [activeNearest, setActiveNearest] = useState(true)
-  const [activeServices, setActiveServices] = useState(false)
-  const [activeSellers, setActiveSellers] = useState(false)
-  const [activeNeeds, setActiveNeeds] = useState(false)
-  const [activePopular, setActivePopular] = useState(false)
-  const [activeRecent, setActiveRecent] = useState(false)
-
-  const onSelectNearest = () => {
-    setActiveNearest(!activeNearest)
-  }
-
-  const onSelectServices = () => {
-    setActiveServices(!activeServices)
-  }
-
-  const onSelectSellers = () => {
-    setActiveSellers(!activeSellers)
-  }
-
-  const onSelectNeeds = () => {
-    setActiveNeeds(!activeNeeds)
-  }
-
-  const onSelectRecent = () => {
-    setActiveRecent(!activeRecent)
-  }
-
-  const onSelectPopular = () => {
-    setActivePopular(!activePopular)
-  }
+  const [locationModalVisible, setLocationModalVisible] = useState(false)
 
   const barOpacity = scrollX.interpolate({
     inputRange: [0, 50, 80],
@@ -92,10 +62,6 @@ const LocationSearch = ({
     outputRange: [H_MAX_WIDTH, H_MIN_WIDTH],
     extrapolate: 'clamp',
   })
-
-  changeFromMapHandler = async fullAddress => {
-    setLocationFilter(fullAddress.city)
-  }
 
   const postTypes = [
     {
@@ -228,8 +194,7 @@ const LocationSearch = ({
         <View style={GlobalStyle.rowCenter}>
           <Animated.View
             style={{
-              paddingLeft: normalize(40),
-              paddingRight: normalize(15),
+              paddingRight: normalize(16),
               opacity: barOpacity,
               position: 'absolute',
               left: 0,
@@ -238,64 +203,38 @@ const LocationSearch = ({
               width: headerScrollWidth,
               overflow: 'hidden',
               zIndex: 999,
+              height: `100%`,
             }}>
             <TouchableOpacity
-              onPress={() => {
-                setShowLocation(true)
+              onPress={() => setLocationModalVisible(true)}
+              style={{
+                height: '100%',
+                flex: 1,
+                flexDirection: 'row',
               }}>
-              <View>
+              <NavigationPinAlt
+                style={{ marginRight: normalize(12) }}
+                width={normalize(24)}
+                height={normalize(24)}
+              />
+              <View
+                style={{
+                  borderBottomColor: Colors.primaryAliceBlue,
+                  borderBottomWidth: 1,
+                  height: '100%',
+                  flex: 1,
+                }}>
                 <AppText textStyle="caption" color={Colors.contentPlaceholder}>
                   Your location
                 </AppText>
+                <AppText
+                  textStyle="body3"
+                  color={Colors.primaryMidnightBlue}
+                  numberOfLines={1}>
+                  {location?.city}
+                </AppText>
               </View>
             </TouchableOpacity>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: Colors.primaryAliceBlue,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '100%',
-              }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowLocation(true)
-                }}
-                style={{ marginRight: normalize(25) }}>
-                <View style={{ paddingVertical: normalize(1) }}>
-                  <AppText
-                    textStyle="body3"
-                    color={Colors.primaryMidnightBlue}
-                    numberOfLines={1}>
-                    {locationFilter}
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-              {locationFilter ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    setLocationFilter(null)
-                    onValueChange({})
-                  }}
-                  style={{
-                    paddingVertical: normalize(4),
-                    right: normalize(0),
-                    position: 'absolute',
-                    zIndex: 999,
-                  }}>
-                  <CloseDark height={normalize(16)} />
-                </TouchableOpacity>
-              ) : null}
-            </View>
-            <View
-              style={{
-                position: 'absolute',
-                top: '50%',
-                marginTop: normalize(-12),
-                left: 4,
-              }}>
-              <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
-            </View>
           </Animated.View>
           <ScrollView
             horizontal={true}
@@ -315,147 +254,157 @@ const LocationSearch = ({
             )}
             scrollEventThrottle={16}
             contentContainerStyle={{ paddingLeft: H_MAX_WIDTH }}>
-            {postTypes.map(postType => (
-              <TouchableOpacity
-                key={postType.value}
-                onPress={() => onTypeFilterPress(postType.value)}
-                activeOpacity={0.7}
-                style={[
-                  styles.locationOption,
-                  {
-                    backgroundColor: filters.type.includes(postType.value)
-                      ? postType.color
-                      : Colors.neutralsZircon,
-                  },
-                ]}>
-                {filters.type.includes(postType.value)
-                  ? postType.iconActive
-                  : postType.icon}
+            {sortValues
+              .filter(sortValue => filters.sort === sortValue.value)
+              .map(sortValue => (
+                <TouchableOpacity
+                  key={sortValue.value}
+                  onPress={() => onSortFilterPress(sortValue.value)}
+                  activeOpacity={0.7}
+                  style={[
+                    styles.locationOption,
+                    {
+                      backgroundColor:
+                        filters.sort === sortValue.value
+                          ? sortValue.color
+                          : Colors.neutralsZircon,
+                    },
+                  ]}>
+                  {filters.sort === sortValue.value
+                    ? sortValue.iconActive
+                    : sortValue.icon}
 
-                <AppText
-                  textStyle="eyebrow2"
-                  customStyle={{
-                    marginLeft: 5,
-                    fontFamily: 'RoundedMplus1c-Medium',
-                    color: getColorByBackground(
-                      filters.type.includes(postType.value)
+                  <AppText
+                    textStyle="eyebrow2"
+                    customStyle={{
+                      marginLeft: 5,
+                      fontFamily: 'RoundedMplus1c-Medium',
+                      color: getColorByBackground(
+                        filters.sort === sortValue.value
+                          ? sortValue.color
+                          : Colors.neutralsZircon
+                      ),
+                    }}>
+                    {sortValue.label}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
+
+            {postTypes
+              .filter(postType => filters.type.includes(postType.value))
+              .map(postType => (
+                <TouchableOpacity
+                  key={postType.value}
+                  onPress={() => onTypeFilterPress(postType.value)}
+                  activeOpacity={0.7}
+                  style={[
+                    styles.locationOption,
+                    {
+                      backgroundColor: filters.type.includes(postType.value)
                         ? postType.color
-                        : Colors.neutralsZircon
-                    ),
-                  }}>
-                  {postType.label}
-                </AppText>
-              </TouchableOpacity>
-            ))}
-
-            {sortValues.map(sortValue => (
-              <TouchableOpacity
-                key={sortValue.value}
-                onPress={() => onSortFilterPress(sortValue.value)}
-                activeOpacity={0.7}
-                style={[
-                  styles.locationOption,
-                  {
-                    backgroundColor:
-                      filters.sort === sortValue.value
-                        ? sortValue.color
                         : Colors.neutralsZircon,
-                  },
-                ]}>
-                {filters.sort === sortValue.value
-                  ? sortValue.iconActive
-                  : sortValue.icon}
+                    },
+                  ]}>
+                  {filters.type.includes(postType.value)
+                    ? postType.iconActive
+                    : postType.icon}
 
-                <AppText
-                  textStyle="eyebrow2"
-                  customStyle={{
-                    marginLeft: 5,
-                    fontFamily: 'RoundedMplus1c-Medium',
-                    color: getColorByBackground(
-                      filters.sort === sortValue.value
-                        ? sortValue.color
-                        : Colors.neutralsZircon
-                    ),
-                  }}>
-                  {sortValue.label}
-                </AppText>
-              </TouchableOpacity>
-            ))}
+                  <AppText
+                    textStyle="eyebrow2"
+                    customStyle={{
+                      marginLeft: 5,
+                      fontFamily: 'RoundedMplus1c-Medium',
+                      color: getColorByBackground(
+                        filters.type.includes(postType.value)
+                          ? postType.color
+                          : Colors.neutralsZircon
+                      ),
+                    }}>
+                    {postType.label}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
 
-            {/* <TouchableOpacity
-              onPress={onSelectNearest}
-              activeOpacity={0.7}
-              style={[
-                styles.locationOption,
-                {
-                  backgroundColor: activeNearest
-                    ? Colors.primarySalomie
-                    : Colors.neutralsZircon,
-                },
-              ]}>
-              <SortNearest />
-              <AppText
-                textStyle="eyebrow2"
-                customStyle={{
-                  marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium',
-                }}>
-                Nearest
-              </AppText>
-            </TouchableOpacity> */}
-            {/* <TouchableOpacity
-              onPress={onSelectPopular}
-              activeOpacity={0.7}
-              style={[
-                styles.locationOption,
-                {
-                  backgroundColor: activePopular
-                    ? Colors.primarySalomie
-                    : Colors.neutralsZircon,
-                },
-              ]}>
-              <SortPopular />
-              <AppText
-                textStyle="eyebrow2"
-                customStyle={{
-                  marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium',
-                }}>
-                Popular
-              </AppText>
-            </TouchableOpacity> */}
-            {/* <TouchableOpacity
-              onPress={onSelectRecent}
-              activeOpacity={0.7}
-              style={[
-                styles.locationOption,
-                {
-                  backgroundColor: activeRecent
-                    ? Colors.primarySalomie
-                    : Colors.neutralsZircon,
-                },
-              ]}>
-              <SortRecent />
-              <AppText
-                textStyle="eyebrow2"
-                customStyle={{
-                  marginLeft: 5,
-                  fontFamily: 'RoundedMplus1c-Medium',
-                }}>
-                Recent
-              </AppText>
-            </TouchableOpacity> */}
-            {/* </View> */}
+            {sortValues
+              .filter(sortValue => filters.sort !== sortValue.value)
+              .map(sortValue => (
+                <TouchableOpacity
+                  key={sortValue.value}
+                  onPress={() => onSortFilterPress(sortValue.value)}
+                  activeOpacity={0.7}
+                  style={[
+                    styles.locationOption,
+                    {
+                      backgroundColor:
+                        filters.sort === sortValue.value
+                          ? sortValue.color
+                          : Colors.neutralsZircon,
+                    },
+                  ]}>
+                  {filters.sort === sortValue.value
+                    ? sortValue.iconActive
+                    : sortValue.icon}
+
+                  <AppText
+                    textStyle="eyebrow2"
+                    customStyle={{
+                      marginLeft: 5,
+                      fontFamily: 'RoundedMplus1c-Medium',
+                      color: getColorByBackground(
+                        filters.sort === sortValue.value
+                          ? sortValue.color
+                          : Colors.neutralsZircon
+                      ),
+                    }}>
+                    {sortValue.label}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
+
+            {postTypes
+              .filter(postType => !filters.type.includes(postType.value))
+              .map(postType => (
+                <TouchableOpacity
+                  key={postType.value}
+                  onPress={() => onTypeFilterPress(postType.value)}
+                  activeOpacity={0.7}
+                  style={[
+                    styles.locationOption,
+                    {
+                      backgroundColor: filters.type.includes(postType.value)
+                        ? postType.color
+                        : Colors.neutralsZircon,
+                    },
+                  ]}>
+                  {filters.type.includes(postType.value)
+                    ? postType.iconActive
+                    : postType.icon}
+
+                  <AppText
+                    textStyle="eyebrow2"
+                    customStyle={{
+                      marginLeft: 5,
+                      fontFamily: 'RoundedMplus1c-Medium',
+                      color: getColorByBackground(
+                        filters.type.includes(postType.value)
+                          ? postType.color
+                          : Colors.neutralsZircon
+                      ),
+                    }}>
+                    {postType.label}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
 
         <Modal
-          isVisible={showLocation}
+          isVisible={locationModalVisible}
           animationIn="slideInRight"
-          animationInTiming={750}
+          animationInTiming={300}
           animationOut="slideOutRight"
-          animationOutTiming={750}
-          onBackButtonPress={() => setShowLocation(false)}
+          animationOutTiming={250}
+          onBackButtonPress={() => setLocationModalVisible(false)}
           style={{
             margin: 0,
             backgroundColor: 'white',
@@ -472,10 +421,7 @@ const LocationSearch = ({
                   }
                 : { latitude: 14.5831, longitude: 120.9794 }
             }
-            back={() => setShowLocation(false)}
-            changeFromMapHandler={fullAddress =>
-              changeFromMapHandler(fullAddress)
-            }
+            back={() => setLocationModalVisible(false)}
             onValueChange={onValueChange}
           />
         </Modal>

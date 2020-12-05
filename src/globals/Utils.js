@@ -1,4 +1,15 @@
-import { Dimensions, PixelRatio, Platform } from 'react-native'
+import {
+  Dimensions,
+  PermissionsAndroid,
+  PixelRatio,
+  Platform,
+} from 'react-native'
+import Geolocation from 'react-native-geolocation-service'
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
+import Geocoder from 'react-native-geocoding'
+import Config from '@/services/Config'
+
+Geocoder.init(Config.apiKey)
 
 export const timePassed = seconds => {
   seconds = Number(seconds)
@@ -207,5 +218,59 @@ export const cardValidator = cardNumber => {
   }
   if (mastercard.test(cardNumber)) {
     return 'mastercard'
+  }
+}
+
+export const getCurrentPosition = async () => {
+  try {
+    await requestLocation()
+    const { latitude, longitude } = await new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 5000,
+      })
+    })
+
+    return { latitude, longitude }
+  } catch (error) {
+    return {}
+  }
+}
+
+export const requestLocation = async () => {
+  if (Platform.OS === 'android') {
+    await RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+      interval: 10000,
+      fastInterval: 5000,
+    })
+    await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    )
+
+    return true
+  } else if ((Platform.OS = 'ios')) {
+    Geolocation.requestAuthorization()
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: false,
+      authorizationLevel: 'whenInUse',
+    })
+  }
+}
+
+export const getLocationName = (components, key) =>
+  components.find(component => component.types.includes(key))?.long_name
+
+export const getLocationData = async ({ latitude, longitude }) => {
+  const { results } = await Geocoder.from(latitude, longitude)
+  const addressComponents = results[0].address_components || []
+
+  return {
+    longitude,
+    latitude,
+    city: getLocationName(addressComponents, 'locality'),
+    province: getLocationName(addressComponents, 'administrative_area_level_2'),
+    country: getLocationName(addressComponents, 'country'),
+    full_address: results[0].formatted_address,
   }
 }

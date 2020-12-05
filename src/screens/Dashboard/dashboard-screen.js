@@ -5,72 +5,32 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   SafeAreaView,
-  TouchableOpacity,
+  Animated,
 } from 'react-native'
 
-import { AppText, WhiteOpacity } from '@/components'
-import { Notification } from '@/components/Notification'
+import { WhiteOpacity } from '@/components'
 import Filters from './components/filters'
 
-import { Icons } from '@/assets/images/icons'
-import { Colors, normalize } from '@/globals'
+import { normalize } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 
 import SearchBarWithFilter from './components/SearchBarWithFilter'
+import LocationSearch from './components/LocationSearch'
 
 import AsyncStorage from '@react-native-community/async-storage'
 import Api from '@/services/Api'
 import Posts from './components/posts'
-import Geolocation from '@react-native-community/geolocation'
-import { cloneDeep } from 'lodash'
 
-/**
- * @param {object} param0
- * @param {() => void} param0.onPress
- * @param {() => void} param0.onClose
- */
-const VerifyNotifictaion = ({ onPress, onClose }) => {
-  return (
-    <Notification
-      icon={<Icons.VerifiedWhite />}
-      onClose={onClose}
-      type="primary"
-      animationOptions={{ height: 110, delay: 2000 }}>
-      <View
-        style={{
-          zIndex: 999,
-          position: 'relative',
-        }}>
-        <View
-          style={{
-            width: '100%',
-            justifyContent: 'space-evenly',
-            marginLeft: 15,
-          }}>
-          <TouchableOpacity onPress={onPress}>
-            <AppText
-              textStyle="body2"
-              color={Colors.neutralsWhite}
-              customStyle={{ marginBottom: 10 }}>
-              Safeguard your account and boost your credibility within the
-              community.
-            </AppText>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <AppText textStyle="body2" color={Colors.neutralsWhite}>
-                Get bee-rified
-              </AppText>
-              <Icons.ChevronRight
-                style={{ color: '#fff', marginLeft: normalize(4) }}
-                width={normalize(24)}
-                height={normalize(24)}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Notification>
-  )
-}
+import { cloneDeep } from 'lodash'
+import { getCurrentPosition, getLocationData } from '@/globals/Utils'
+import VerifyNotifictaion from './components/verify-account-notification'
+import { Context } from '@/context'
+import LinearGradient from 'react-native-linear-gradient'
+
+const SEARCH_TOOLBAR_HEIGHT = 70
+const FILTER_TOOLBAR_HEIGHT = 65
+
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
 const DashboardScreen = ({ navigation }) => {
@@ -84,6 +44,7 @@ const DashboardScreen = ({ navigation }) => {
     isVerifyNotificationVisible,
     setIsVerifyNotificationVisible,
   ] = useState(false)
+
   const [filters, setFilters] = useState({
     sort: 'recent',
     type: [],
@@ -91,39 +52,23 @@ const DashboardScreen = ({ navigation }) => {
     limit: 5,
   })
 
+  const [locationData, setLocationData] = useState({
+    latitude: null,
+    longitude: null,
+  })
+
   const [totalPages, setTotalPages] = useState(Infinity)
 
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoadingMoreItems, setIsLoadingMoreItems] = useState(false)
   const [posts, setPosts] = useState({})
-  const listRef = useRef(null)
-
-  const getCurrentPosition = async () =>
-    new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 10000,
-      })
-    })
 
   const loadPosts = async filters => {
     setIsRefreshing(true)
     try {
-      // if (!!Object.keys(posts).length && !page && listRef?.current)
-      //   listRef.current.scrollToIndex({ animated: false, index: 0 })
-
       const { sort } = filters
-
       const params = filters
 
-      if (sort === 'nearest' && !params.lat && !params.lon) {
-        const { latitude: lat, longitude: lon } = await getCurrentPosition()
-        params.lat = lat
-        params.lon = lon
-      }
-
-      console.log(params)
       const response = await Api.getPosts(params)
       if (!response.success) throw new Error(response.message)
 
@@ -236,13 +181,16 @@ const DashboardScreen = ({ navigation }) => {
     }))
   }
 
-  const handleLocationChange = ({ latitude, longitude, radius }) => {
-    setFilters(filters => ({
-      ...filters,
-      lat: latitude,
-      lon: longitude,
-      radius,
-    }))
+  const handleLocationChange = async ({ latitude, longitude, radius }) => {
+    try {
+      const addressData = await getLocationData({ latitude, longitude })
+      setLocationData({
+        ...addressData,
+        radius,
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleButtonFiltersChange = newFilters => {
@@ -250,6 +198,19 @@ const DashboardScreen = ({ navigation }) => {
       ...filters,
       ...newFilters,
     }))
+  }
+
+  const handleTypeFilterPress = type => {
+    const newFilters = filters
+    const index = filters.type.indexOf(type)
+    if (~index) newFilters.type.splice(index, 1)
+    else newFilters.type.push(type)
+
+    setFilters(filters => ({ ...filters, ...newFilters }))
+  }
+
+  const handleSortFilterPress = sort => {
+    setFilters(filters => ({ ...filters, sort }))
   }
 
   const getDeferredData = post => {
@@ -308,14 +269,35 @@ const DashboardScreen = ({ navigation }) => {
   }, [posts])
 
   useEffect(() => {
-    console.log({ filters })
     loadPosts(filters)
   }, [filters])
+
+  useEffect(() => {
+    const { latitude, longitude, radius } = locationData
+    console.log(locationData)
+    if (latitude === null || longitude === null || !radius) return
+    setIsRefreshing(true)
+    setFilters(filters => ({
+      ...filters,
+      lat: latitude,
+      lon: longitude,
+      radius,
+    }))
+  }, [locationData])
 
   useEffect(() => {
     AsyncStorage.getItem('hide-verify-notification').then(hidden => {
       setShouldShowVerifyNotification(hidden !== 'true')
     })
+    ;(async () => {
+      if (!locationData?.latitude || !locationData?.longitude) {
+        const { latitude, longitude } = await getCurrentPosition()
+        const addressData = await getLocationData({ latitude, longitude })
+        setLocationData({
+          ...addressData,
+        })
+      }
+    })()
   }, [])
 
   useEffect(() => {
@@ -327,6 +309,16 @@ const DashboardScreen = ({ navigation }) => {
       !!user && !isVerified && shouldShowVerifyNotification
     )
   }, [userStatus, shouldShowVerifyNotification])
+
+  const scrollY = new Animated.Value(0)
+
+  const onScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false }
+  )
+
+  const diffClampNode = Animated.diffClamp(scrollY, 0, SEARCH_TOOLBAR_HEIGHT)
+  const translateY = Animated.multiply(diffClampNode, -1)
 
   return (
     <>
@@ -346,15 +338,49 @@ const DashboardScreen = ({ navigation }) => {
         )}
 
         <View style={styles.container}>
-          <SearchBarWithFilter
-            show={() => setIsFiltersVisible(true)}
-            onLocationChange={handleLocationChange}
-            filters={filters}
-            onFiltersChange={handleButtonFiltersChange}
-          />
+          <AnimatedLinearGradient
+            colors={['#ECEFF8', '#F8F9FC']}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: Animated.add(
+                translateY,
+                SEARCH_TOOLBAR_HEIGHT + FILTER_TOOLBAR_HEIGHT
+              ),
+              zIndex: 4,
+              elevation: 4,
+            }}>
+            <Animated.View
+              style={{
+                height: SEARCH_TOOLBAR_HEIGHT,
+                transform: [{ translateY }],
+              }}>
+              <SearchBarWithFilter
+                show={() => setIsFiltersVisible(true)}
+                filters={filters}
+                onFiltersChange={handleButtonFiltersChange}
+              />
+            </Animated.View>
+            <Animated.View
+              style={{
+                height: FILTER_TOOLBAR_HEIGHT,
+                transform: [{ translateY }],
+                paddingTop: 8,
+              }}>
+              <LocationSearch
+                onValueChange={handleLocationChange}
+                onTypeFilterPress={handleTypeFilterPress}
+                onSortFilterPress={handleSortFilterPress}
+                filters={filters}
+                location={locationData}
+              />
+            </Animated.View>
+          </AnimatedLinearGradient>
           <Posts
+            currentLocation={locationData}
             posts={posts}
-            listRef={listRef}
             onPostPress={handlePostPress}
             onUserPress={handleUserPress}
             onLikePress={handleLikePress}
@@ -362,6 +388,14 @@ const DashboardScreen = ({ navigation }) => {
             refreshing={isRefreshing}
             onEndReached={handleOnEndReached}
             isLoadingMoreItems={isLoadingMoreItems}
+            contentContainerStyle={{
+              paddingTop: SEARCH_TOOLBAR_HEIGHT + FILTER_TOOLBAR_HEIGHT,
+            }}
+            bounces={false}
+            // disabled autohiding of search toolbar for now
+            // onScroll={onScroll}
+            progressViewOffset={SEARCH_TOOLBAR_HEIGHT + FILTER_TOOLBAR_HEIGHT}
+            showsVerticalScrollIndicator={false}
           />
         </View>
         <WhiteOpacity />
@@ -383,7 +417,8 @@ const DashboardScreen = ({ navigation }) => {
           <TouchableWithoutFeedback onPress={() => setIsFiltersVisible(false)}>
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
-        }>
+        }
+        onDrag>
         <Filters
           close={() => setIsFiltersVisible(false)}
           onApply={handleApplyFilters}

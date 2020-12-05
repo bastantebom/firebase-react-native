@@ -1,12 +1,12 @@
-import React from 'react';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import React from 'react'
+import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 
-import {normalize, Colors} from '@/globals';
+import { normalize, Colors } from '@/globals'
 
-const LoadingPublicPost = ({children, isLoading}) => {
+const LoadingPublicPost = ({ children, isLoading }) => {
   return (
     <SkeletonContent
-      containerStyle={{flexDirection: 'column'}}
+      containerStyle={{ flexDirection: 'column' }}
       isLoading={isLoading}
       layout={[
         {
@@ -85,13 +85,13 @@ const LoadingPublicPost = ({children, isLoading}) => {
       ]}>
       {children}
     </SkeletonContent>
-  );
-};
+  )
+}
 
-const LoadingOwnPost = ({children, isLoading}) => {
+const LoadingOwnPost = ({ children, isLoading }) => {
   return (
     <SkeletonContent
-      containerStyle={{flexDirection: 'column'}}
+      containerStyle={{ flexDirection: 'column' }}
       isLoading={isLoading}
       layout={[
         {
@@ -156,12 +156,12 @@ const LoadingOwnPost = ({children, isLoading}) => {
       ]}>
       {children}
     </SkeletonContent>
-  );
-};
+  )
+}
 
 const LoadingScreen = {
   LoadingPublicPost,
   LoadingOwnPost,
-};
+}
 
-export default LoadingScreen;
+export default LoadingScreen

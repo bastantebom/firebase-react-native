@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  useMemo,
-  useLayoutEffect,
-} from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import {
   View,
   StyleSheet,
@@ -14,53 +7,29 @@ import {
   Dimensions,
   Keyboard,
 } from 'react-native'
-import Modal from 'react-native-modal'
-import LinearGradient from 'react-native-linear-gradient'
 
-import {
-  FilterDark,
-  JarHeartDark,
-  JarHeartColored,
-  LikeColored,
-  Like,
-} from '@/assets/images/icons'
+import { FilterDark, Like } from '@/assets/images/icons'
 
 import { Colors, normalize } from '@/globals'
 import { Context } from '@/context'
 
 import SearchBox from './Search/Searchbox'
 import SearchResults from './Search/SearchResults'
-import LocationSearch from './LocationSearch'
-import LikedPost from '@/screens/Profile/components/Account/LikedPost'
+import { useNavigation } from '@react-navigation/native'
 
-const { width } = Dimensions.get('window')
-
-const SearchBarWithFilter = ({
-  show,
-  onLocationChange,
-  filters,
-  onFiltersChange,
-}) => {
+const SearchBarWithFilter = ({ show }) => {
   const scrollY = useRef(new Animated.Value(0))
+  const navigation = useNavigation()
 
   const { searchType, setPage } = useContext(Context)
 
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
-  const [likedPosts, setLikedPosts] = useState(false)
 
   const [searchValue, setSearchValue] = useState()
 
   const onValueChange = value => {
     setSearchValue(value)
-  }
-
-  const toggleLike = () => {
-    setLikedPosts(!likedPosts)
-  }
-
-  const toggleLikePost = () => {
-    setLikedPosts(!likedPosts)
   }
 
   const onFocus = () => {
@@ -102,120 +71,55 @@ const SearchBarWithFilter = ({
     extrapolate: 'clamp',
   })
 
-  const handleTypeFilterPress = type => {
-    const newFilters = filters
-    const index = filters.type.indexOf(type)
-    if (~index) newFilters.type.splice(index)
-    else newFilters.type.push(type)
-
-    onFiltersChange(newFilters)
-  }
-
-  const handleSortFilterPress = sort => {
-    onFiltersChange({
-      ...filters,
-      sort,
-    })
-  }
-
   return (
-    <View>
-      <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
+    <View style={{ margin: 16, marginBottom: 0 }}>
+      <View style={{ flexDirection: 'row', width: '100%' }}>
         <View
           style={{
-            margin: 16,
-            // height: searchType === 'posts' ? normalize(47.5) : normalize(107),
-            // backgroundColor: 'red',
+            flex: 1,
+            height: searchType !== 'posts' ? normalize(100) : '100%',
           }}>
-          <View
-            style={{ flexDirection: 'row', width: '100%', marginBottom: 12 }}>
-            <View
-              style={{
-                flex: 1,
-                height: searchType !== 'posts' ? normalize(100) : '100%',
-              }}>
-              <SearchBox
-                onSearchFocus={onFocus}
-                onBackPress={onBackPress}
-                valueHandler={onValueChange}
-              />
-            </View>
-            <Animated.View
-              style={{
-                opacity: opacity,
-                display: searchBarFocused ? 'flex' : 'none',
-                zIndex: searchBarFocused ? 1 : 0,
-                flex: 1,
-                position: 'absolute',
-              }}>
-              <SearchResults onValueChange={searchValue} />
-            </Animated.View>
-            {searchBarFocused ? (
-              <View style={{ marginTop: normalize(47.5) }} />
-            ) : (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  opacity: searchBarFocused ? 0 : 1,
-                }}>
-                <TouchableOpacity activeOpacity={0.7} onPress={show}>
-                  <View style={styles.circleButton}>
-                    <FilterDark width={normalize(18)} height={normalize(18)} />
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} onPress={toggleLike}>
-                  <View style={styles.circleButton}>
-                    {likedPosts ? (
-                      <LikeColored
-                        width={normalize(20)}
-                        height={normalize(20)}
-                      />
-                    ) : (
-                      <Like width={normalize(20)} height={normalize(20)} />
-                    )}
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          <SearchBox
+            onSearchFocus={onFocus}
+            onBackPress={onBackPress}
+            valueHandler={onValueChange}
+          />
         </View>
-        <View
+        <Animated.View
           style={{
-            paddingTop: H_MAX_HEIGHT,
+            opacity: opacity,
+            display: searchBarFocused ? 'flex' : 'none',
+            zIndex: searchBarFocused ? 1 : 0,
+            flex: 1,
+            position: 'absolute',
           }}>
-          <Animated.View
-            style={{
-              width: width,
-              opacity: barOpacity,
-              height: headerScrollHeight,
+          <SearchResults onValueChange={searchValue} />
+        </Animated.View>
 
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
+        {searchBarFocused ? (
+          <View style={{ marginTop: normalize(47.5) }} />
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              opacity: searchBarFocused ? 0 : 1,
             }}>
-            <LocationSearch
-              onValueChange={onLocationChange}
-              onTypeFilterPress={handleTypeFilterPress}
-              onSortFilterPress={handleSortFilterPress}
-              filters={filters}
-            />
-          </Animated.View>
-        </View>
-      </LinearGradient>
-      <Modal
-        isVisible={likedPosts}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <LikedPost toggleMenu={() => {}} toggleLikePost={toggleLikePost} />
-      </Modal>
+            <TouchableOpacity activeOpacity={0.7} onPress={show}>
+              <View style={styles.circleButton}>
+                <FilterDark width={normalize(18)} height={normalize(18)} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('liked-posts')}>
+              <View style={styles.circleButton}>
+                <Like width={normalize(20)} height={normalize(20)} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </View>
   )
 }

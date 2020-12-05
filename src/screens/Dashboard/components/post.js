@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { Icons } from '@/assets/images/icons'
 import { AppText, CacheableImage } from '@/components'
-import { Colors, GlobalStyle, normalize } from '@/globals'
+import { Colors, GlobalStyle, normalize, timePassedShort } from '@/globals'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
-import { formatDistanceToNowStrict } from 'date-fns/esm'
 import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
 import { Divider } from 'react-native-paper'
 import { UserContext } from '@/context/UserContext'
 import { getDistance } from 'geolib'
-import Geolocation from '@react-native-community/geolocation'
+
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
+import { Context } from '@/context'
 
 /**
  * @param {object} param0
@@ -18,9 +18,15 @@ import SkeletonContent from 'react-native-skeleton-content-nonexpo'
  * @param {() => void} param0.onUserPress
  * @param {() => void} param0.onLikePress
  */
-const Post = ({ data: post, isLoading, onPress, onUserPress, onLikePress }) => {
+const Post = ({
+  data: post,
+  isLoading,
+  onPress,
+  onUserPress,
+  onLikePress,
+  currentLocation,
+}) => {
   const { user } = useContext(UserContext)
-  const [currentPosition, setCurrentPosition] = useState(null)
 
   const renderPostImage = () => {
     const postImageProps = {
@@ -98,29 +104,30 @@ const Post = ({ data: post, isLoading, onPress, onUserPress, onLikePress }) => {
     )
   }
 
-  const getCurrentPosition = async () =>
-    new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 10000,
-      })
-    })
-
   const renderLocation = () => {
     const city = post.store_details?.location?.city
 
-    const distanceInMeters = currentPosition
-      ? getDistance(currentPosition, post._geoloc)
-      : 0
+    const { latitude, longitude } = post.store_details?.location || {}
+    const distanceInMeters =
+      currentLocation?.latitude &&
+      currentLocation?.longitude &&
+      latitude &&
+      longitude
+        ? getDistance(currentLocation, { latitude, longitude })
+        : null
 
     const distance =
       distanceInMeters > 1100
-        ? (distanceInMeters / 1000).toFixed(2) + 'km'
+        ? (distanceInMeters / 1000).toFixed(0) + 'km'
         : distanceInMeters + 'm'
 
     return (
-      <View style={[GlobalStyle.rowCenter, GlobalStyle.marginBottom1]}>
+      <View
+        style={[
+          GlobalStyle.rowCenter,
+          GlobalStyle.marginBottom1,
+          { flexWrap: 'wrap' },
+        ]}>
         <View style={[GlobalStyle.rowCenter, { marginRight: normalize(18) }]}>
           <Icons.NavigationPin
             style={{ color: '#F56770' }}
@@ -134,7 +141,7 @@ const Post = ({ data: post, isLoading, onPress, onUserPress, onLikePress }) => {
             {city}
           </AppText>
         </View>
-        {distanceInMeters ? (
+        {distanceInMeters !== null ? (
           <View style={GlobalStyle.rowCenter}>
             <Icons.Direction
               style={{ color: '#F56770' }}
@@ -184,12 +191,6 @@ const Post = ({ data: post, isLoading, onPress, onUserPress, onLikePress }) => {
     ) : null
   }
 
-  useEffect(() => {
-    getCurrentPosition().then(({ latitude, longitude }) =>
-      setCurrentPosition({ latitude, longitude })
-    )
-  }, [currentPosition])
-
   return (
     <PostSkeleton isLoading={!!isLoading}>
       <View style={styles.container}>
@@ -220,8 +221,7 @@ const PostHeader = ({
   const { full_name, display_name, profile_photo, account_verified } = post.user
 
   const name = display_name || full_name
-  const timePassed = seconds =>
-    seconds ? `${formatDistanceToNowStrict(seconds * 1000)} ago` : ''
+  const timePassed = time => timePassedShort(Date.now() / 1000 - time) + ' ago'
 
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

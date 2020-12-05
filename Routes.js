@@ -328,6 +328,7 @@ const TabStack = props => {
         name="dashboard"
         component={DashboardStack}
         options={{
+          tabBarLabel: 'Dashboard',
           tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <ServbeesAltActive width={normalize(25)} height={normalize(25)} />
@@ -450,7 +451,6 @@ const TabStack = props => {
 
 export default Routes = () => {
   const { token, userInfo, userStatus } = useContext(UserContext)
-  const { initNotifications } = useContext(Context)
   const { addresses } = userInfo
 
   const [containerOpacity] = useState(new Animated.Value(0))
@@ -482,6 +482,7 @@ export default Routes = () => {
         : userInfo.phone_number?.length
         ? 'number'
         : undefined
+
       const login =
         provider === 'email'
           ? userInfo.email

@@ -12,7 +12,7 @@ import Config from '@/services/Config'
 import GooglePlacesInput from '@/components/LocationSearchInput'
 import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
 import { normalize } from '@/globals'
-import Geolocation from '@react-native-community/geolocation'
+import { getCurrentPosition } from '@/globals/Utils'
 
 const MapLocation = ({ back, address, onChange = () => {} }) => {
   Geocoder.init(Config.apiKey)
@@ -69,15 +69,6 @@ const MapLocation = ({ back, address, onChange = () => {} }) => {
       console.log(error)
     }
   }
-
-  const getCurrentPosition = async () =>
-    new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 10000,
-      })
-    })
 
   const initializeMap = async () => {
     try {

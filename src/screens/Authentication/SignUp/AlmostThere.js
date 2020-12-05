@@ -21,6 +21,7 @@ import { useNavigation } from '@react-navigation/native'
 import Config from '@/services/Config'
 import SignUpService from '@/services/SignUpService'
 import { UserContext } from '@/context/UserContext'
+import { getCurrentPosition } from '@/globals/Utils'
 
 // create a component
 const AlmostThere = ({ route }) => {
@@ -56,15 +57,6 @@ const AlmostThere = ({ route }) => {
       default: true,
     })
   }
-
-  const getCurrentPosition = async () =>
-    new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 10000,
-      })
-    })
 
   const initializeMap = async () => {
     try {

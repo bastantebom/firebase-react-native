@@ -26,6 +26,7 @@ import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
 import { Colors, normalize } from '@/globals'
 import { RangeSlider } from '@/components/Slider/RangeSlider'
 import LinearGradient from 'react-native-linear-gradient'
+import { getCurrentPosition } from '@/globals/Utils'
 
 const DismissKeyboard = ({ children, isFocused }) => {
   const onDismissPress = () => {
@@ -41,10 +42,7 @@ const DismissKeyboard = ({ children, isFocused }) => {
 }
 
 // create a component
-const Location = (
-  { back, address, changeFromMapHandler, onValueChange },
-  route
-) => {
+const Location = ({ back, address, onValueChange }) => {
   Geocoder.init(Config.apiKey)
   const [mapCoords, setMapCoords] = useState({})
   const [addressData, setAddressData] = useState({})
@@ -75,7 +73,6 @@ const Location = (
   const saveRefineLocation = () => {
     const { latitude, longitude } = addressData
     onValueChange({ latitude, longitude, radius: rangeValue * 1000 })
-    changeFromMapHandler(addressData)
     back()
   }
 
@@ -150,15 +147,6 @@ const Location = (
         })
     }
   }
-
-  const getCurrentPosition = async () =>
-    new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 10000,
-      })
-    })
 
   const initializeMap = async () => {
     try {
