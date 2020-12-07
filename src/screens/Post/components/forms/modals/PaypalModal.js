@@ -1,5 +1,12 @@
-import React, { useState } from 'react'
-import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, SafeAreaView, StyleSheet } from 'react-native'
+import {
+  openInAppBrowser,
+  closeInAppBrowser,
+  thousandsSeparators,
+} from '@/globals/Utils'
+import firestore from '@react-native-firebase/firestore'
+import Api from '@/services/Api'
 
 import {
   AppButton,
@@ -11,12 +18,32 @@ import {
 import { Colors, normalize } from '@/globals'
 import { LogoPaypal } from '@/assets/images'
 
-const PaypalModal = ({ closeModal }) => {
+const PaypalModal = ({ closeModal, orderDetails }) => {
   const [terms, setTerms] = useState(false)
 
-  const handleFormChange = () => {
-    setTerms(!terms)
+  const handleFormChange = () => setTerms(!terms)
+
+  const handleSubmit = async () => {
+    const response = await Api.createPaypalPayment({
+      body: {
+        amount: orderDetails.totalPrice,
+        currency: 'PHP',
+        order_id: orderDetails.id,
+      },
+    })
+
+    openInAppBrowser(response.links[1].href)
   }
+
+  useEffect(() => {
+    return firestore()
+      .doc(`orders/${orderDetails.id}`)
+      .onSnapshot(snap => {
+        if (snap.data().status === 'paid') closeModal()
+
+        closeInAppBrowser()
+      })
+  }, [])
 
   return (
     <SafeAreaView
@@ -46,11 +73,13 @@ const PaypalModal = ({ closeModal }) => {
             <LogoPaypal />
           </View>
           <View style={styles.border}>
-            <AppText customStyle={styles.textStyle}>Amount P155.00</AppText>
+            <AppText customStyle={styles.textStyle}>
+              Amount P{thousandsSeparators(orderDetails.totalPrice.toFixed(2))}
+            </AppText>
           </View>
           <View style={[styles.border, { marginBottom: 25 }]}>
             <AppText customStyle={styles.textStyle}>
-              Reference No. /Payment ID LAHVBLFDHB
+              Ref No. / Payment ID: {orderDetails.id}
             </AppText>
           </View>
           <AppText customStyle={styles.textStyle}>
@@ -86,6 +115,7 @@ const PaypalModal = ({ closeModal }) => {
             </AppText>
           </View>
           <AppButton
+            onPress={handleSubmit}
             text="Proceed"
             type="tertiary"
             customStyle={{ backgroundColor: '#353B50' }}

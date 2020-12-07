@@ -3,7 +3,9 @@ import {
   PermissionsAndroid,
   PixelRatio,
   Platform,
+  Linking,
 } from 'react-native'
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Geolocation from 'react-native-geolocation-service'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
 import Geocoder from 'react-native-geocoding'
@@ -216,11 +218,13 @@ export const cardValidator = cardNumber => {
   if (visa.test(cardNumber)) {
     return 'visa'
   }
+
   if (mastercard.test(cardNumber)) {
     return 'mastercard'
   }
-}
 
+  return false
+}
 export const getCurrentPosition = async () => {
   try {
     await requestLocation()
@@ -273,4 +277,60 @@ export const getLocationData = async ({ latitude, longitude }) => {
     country: getLocationName(addressComponents, 'country'),
     full_address: results[0].formatted_address,
   }
+}
+
+export const openInAppBrowser = async url => {
+  try {
+    if (await InAppBrowser.isAvailable()) {
+      const result = await InAppBrowser.open(url, {
+        // iOS Properties
+        dismissButtonStyle: 'cancel',
+        preferredBarTintColor: '#453AA4',
+        preferredControlTintColor: 'white',
+        readerMode: false,
+        animated: true,
+        modalPresentationStyle: 'fullScreen',
+        modalTransitionStyle: 'coverVertical',
+        modalEnabled: true,
+        enableBarCollapsing: false,
+        // Android Properties
+        showTitle: true,
+        toolbarColor: '#6200EE',
+        secondaryToolbarColor: 'black',
+        enableUrlBarHiding: true,
+        enableDefaultShare: true,
+        forceCloseOnRedirection: false,
+        // Specify full animation resource identifier(package:anim/name)
+        // or only resource name(in case of animation bundled with app).
+        animations: {
+          startEnter: 'slide_in_right',
+          startExit: 'slide_out_left',
+          endEnter: 'slide_in_left',
+          endExit: 'slide_out_right',
+        },
+        headers: {
+          'my-custom-header': 'my custom header value',
+        },
+      })
+      console.log(JSON.stringify(result))
+    } else Linking.openURL(url)
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+export const closeInAppBrowser = async () => {
+  try {
+    if (await InAppBrowser.isAvailable()) {
+      InAppBrowser.close()
+    } else Linking.openURL(url)
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+export const thousandsSeparators = num => {
+  const num_parts = num.toString().split('.')
+  num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return num_parts.join('.')
 }

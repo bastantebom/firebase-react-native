@@ -1,5 +1,12 @@
-import React, { useState } from 'react'
-import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, SafeAreaView, StyleSheet } from 'react-native'
+import {
+  openInAppBrowser,
+  closeInAppBrowser,
+  thousandsSeparators,
+} from '@/globals/Utils'
+import firestore from '@react-native-firebase/firestore'
+import Api from '@/services/Api'
 
 import {
   AppButton,
@@ -7,16 +14,36 @@ import {
   AppText,
   ScreenHeaderTitle,
 } from '@/components'
-
 import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
 
-const GCashModal = ({ closeModal }) => {
+const GCashModal = ({ closeModal, orderDetails }) => {
   const [terms, setTerms] = useState(false)
 
-  const handleFormChange = () => {
-    setTerms(!terms)
+  const handleFormChange = () => setTerms(!terms)
+
+  const handleSubmit = async () => {
+    const response = await Api.createSourcePayment({
+      body: {
+        amount: orderDetails.totalPrice * 100,
+        type: 'gcash',
+        currency: 'PHP',
+        order_id: orderDetails.id,
+      },
+    })
+
+    if (response.success) openInAppBrowser(response.data.redirect.checkout_url)
   }
+
+  useEffect(() => {
+    return firestore()
+      .doc(`orders/${orderDetails.id}`)
+      .onSnapshot(snap => {
+        if (snap.data().status === 'paid') closeModal()
+
+        closeInAppBrowser()
+      })
+  }, [])
 
   return (
     <SafeAreaView
@@ -33,7 +60,7 @@ const GCashModal = ({ closeModal }) => {
         style={{
           height: '89%',
           paddingHorizontal: normalize(25),
-          justifyContent: 'space-between',
+          justifyent: 'space-between',
         }}>
         <View>
           <View
@@ -46,11 +73,13 @@ const GCashModal = ({ closeModal }) => {
             <LogoGCash width={normalize(150)} height={normalize(50)} />
           </View>
           <View style={styles.border}>
-            <AppText customStyle={styles.textStyle}>Amount P155.00</AppText>
+            <AppText customStyle={styles.textStyle}>
+              Amount P{thousandsSeparators(orderDetails.totalPrice.toFixed(2))}
+            </AppText>
           </View>
           <View style={[styles.border, { marginBottom: 25 }]}>
             <AppText customStyle={styles.textStyle}>
-              Reference No. /Payment ID LAHVBLFDHB
+              Ref No. / Payment ID: {orderDetails.id}
             </AppText>
           </View>
           <AppText customStyle={styles.textStyle}>
@@ -88,7 +117,9 @@ const GCashModal = ({ closeModal }) => {
           <AppButton
             text="Proceed"
             type="tertiary"
+            disabled={!terms}
             customStyle={{ backgroundColor: '#353B50' }}
+            onPress={handleSubmit}
           />
         </View>
       </View>

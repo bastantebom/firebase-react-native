@@ -227,7 +227,7 @@ const BasketModal = ({
         items: itemsToSave,
         post_id: postData?.id,
         delivery_method: deliveryChoice,
-        payment_method: paymentChoice,
+        payment_method: paymentMethod,
         notes: notes,
       },
     }
@@ -617,24 +617,22 @@ const BasketModal = ({
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setPaymentMethod('credit')}
+              onPress={() => setPaymentMethod('card')}
               style={[
                 styles.paymentBtn,
                 {
                   borderColor:
-                    paymentMethod === 'credit' ? '#000' : Colors.neutralGray,
+                    paymentMethod === 'card' ? '#000' : Colors.neutralGray,
                 },
               ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {paymentMethod === 'credit' ? (
+                {paymentMethod === 'card' ? (
                   <CreditCardActive />
                 ) : (
                   <CreditCard />
                 )}
                 <AppText
-                  textStyle={
-                    paymentMethod === 'credit' ? 'body2medium' : 'body2'
-                  }
+                  textStyle={paymentMethod === 'card' ? 'body2medium' : 'body2'}
                   customStyle={{ marginLeft: normalize(10) }}>
                   Visa / Mastercard
                 </AppText>

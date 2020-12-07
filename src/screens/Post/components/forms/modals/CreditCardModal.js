@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   ScrollView,
@@ -8,6 +8,10 @@ import {
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
+import axios from 'axios'
+import base64 from 'react-native-base64'
+import { cardValidator } from '@/globals/Utils'
+import Api from '@/services/Api'
 
 import {
   AppText,
@@ -23,9 +27,8 @@ import {
   MasterCard,
   Visa,
 } from '@/assets/images/icons'
-import { cardValidator } from '@/globals/Utils'
 
-const CreditCardModal = ({ closeModal, placeOrder }) => {
+const CreditCardModal = ({ closeModal, orderDetails }) => {
   const [name, setName] = useState('')
   const [cardNum, setCardNum] = useState('')
   const [cvv, setCvv] = useState('')
@@ -37,10 +40,10 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
   const [province, setProvince] = useState('')
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
+  const [zipCode, setZipCode] = useState('')
   const [showAddressOptions, setShowAddressOptions] = useState(false)
-  const [cardIcon, setCardIcon] = useState()
 
-  const onChangeDate = (event, selectedDate) => {
+  const onChangeDate = (_, selectedDate) => {
     const currentDate = selectedDate || date
     setShowDate(Platform.OS === 'ios')
     setDate(currentDate)
@@ -54,6 +57,56 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
 
   const showDatepicker = () => {
     setShowDate(true)
+  }
+
+  const createPaymentMethod = async () => {
+    try {
+      const paymongoSK = base64.encode('sk_test_Hf4GQS4e8sBEzUe6a3rwyfGx')
+      const paymentMethodResponse = await axios({
+        method: 'POST',
+        url: 'https://api.paymongo.com/v1/payment_methods',
+        data: JSON.stringify({
+          data: {
+            attributes: {
+              details: {
+                card_number: cardNum,
+                exp_month: parseInt(selectedDate.split(' / ')[0]),
+                exp_year: parseInt(selectedDate.split(' / ')[1]),
+                cvc: cvv,
+              },
+              type: 'card',
+              billing: null,
+              metadata: null,
+            },
+          },
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${paymongoSK}`,
+        },
+      })
+
+      return paymentMethodResponse.data.data.id
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const submitPayment = async () => {
+    const paymentMethodId = await createPaymentMethod()
+
+    const response = await Api.createCardPayment({
+      body: {
+        amount: orderDetails.totalPrice * 100,
+        currency: 'PHP',
+        order_id: orderDetails.id,
+        payment_method_id: paymentMethodId,
+      },
+    })
+
+    if (response.success) {
+      //successful payment goes here...
+    }
   }
 
   return (
@@ -118,6 +171,8 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
             value={cvv}
             onChangeText={cvv => setCvv(cvv)}
             secureTextEntry={true}
+            maxLength={3}
+            keyboardType="numeric"
           />
           <AppText
             textStyle="caption"
@@ -244,12 +299,23 @@ const CreditCardModal = ({ closeModal, placeOrder }) => {
           </TouchableOpacity>
         </View>
 
+        <View style={{ marginBottom: normalize(16) }}>
+          <AppInput
+            label="Zip Code"
+            value={zipCode}
+            onChangeText={zipCode => setZipCode(zipCode)}
+            keyboardType="numeric"
+            maxLength={4}
+          />
+        </View>
+
         <View style={{ marginTop: normalize(20), marginBottom: normalize(30) }}>
           <TouchableOpacity
-            // onPress={closeModal}
-            onPress={placeOrder}
+            onPress={submitPayment}
             style={styles.buyButtonContainer}>
-            <AppText textStyle="body1medium">Confirm and Pay</AppText>
+            <AppText textStyle="body1medium" maxLength={4}>
+              Confirm and Pay
+            </AppText>
           </TouchableOpacity>
         </View>
       </ScrollView>

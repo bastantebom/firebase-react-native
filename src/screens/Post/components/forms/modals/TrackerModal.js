@@ -100,8 +100,9 @@ const TrackerModal = ({
   const [statusMessage, setStatusMessage] = useState('')
   const [orderDetails, setOrderDetails] = useState({})
 
-  const [paymentMethod, setPaymentMethod] = useState('credit')
   const [isLoading, setIsLoading] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState('')
+  const [orderId, setOrderId] = useState('')
 
   useEffect(() => {
     setIsLoading(true)
@@ -123,6 +124,7 @@ const TrackerModal = ({
           setPickup(data.delivery_method === 'pickup')
           setPaymentMethod(data.payment_method)
           setIsLoading(false)
+          setOrderId(data.id)
         }
       })
   }, [])
@@ -202,6 +204,11 @@ const TrackerModal = ({
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
+              setStatusHeader('Awaiting for payment')
+              setMessageHeader('Your order request is ready for payment.')
+              setStatusMessage('<Awaiting Confirmation copy>')
+              break
+            case 'paid':
               setStatusHeader('Order Confirmed')
               setMessageHeader('Yay! Your order is confirmed by the seller.')
               setStatusMessage('<Confirmed copy>')
@@ -462,7 +469,7 @@ const TrackerModal = ({
       case 'cash':
         null
         break
-      case 'credit':
+      case 'card':
         showCreditCardModal(true)
         break
       case 'gcash':
@@ -1387,9 +1394,8 @@ const TrackerModal = ({
             height: Dimensions.get('window').height,
           }}>
           <CreditCardModal
+            orderDetails={{ id: orderId, totalPrice: computedTotalPrice() }}
             closeModal={() => showCreditCardModal(false)}
-            // placeOrder={() => placeOrderHandler()}
-            placeOrder={() => showCreditCardModal(false)}
           />
         </Modal>
         <Modal
@@ -1404,7 +1410,10 @@ const TrackerModal = ({
             justifyContent: 'flex-start',
             height: Dimensions.get('window').height,
           }}>
-          <GCashModal closeModal={() => showGcashModal(false)} />
+          <GCashModal
+            orderDetails={{ id: orderId, totalPrice: computedTotalPrice() }}
+            closeModal={() => showGcashModal(false)}
+          />
         </Modal>
         <Modal
           isVisible={grabPayModal}
@@ -1418,7 +1427,10 @@ const TrackerModal = ({
             justifyContent: 'flex-start',
             height: Dimensions.get('window').height,
           }}>
-          <GrabPayModal closeModal={() => showGrabPayModal(false)} />
+          <GrabPayModal
+            orderDetails={{ id: orderId, totalPrice: computedTotalPrice() }}
+            closeModal={() => showGrabPayModal(false)}
+          />
         </Modal>
         <Modal
           isVisible={paypalModal}
@@ -1432,7 +1444,10 @@ const TrackerModal = ({
             justifyContent: 'flex-start',
             height: Dimensions.get('window').height,
           }}>
-          <PaypalModal closeModal={() => showPaypalModal(false)} />
+          <PaypalModal
+            orderDetails={{ id: orderId, totalPrice: computedTotalPrice() }}
+            closeModal={() => showPaypalModal(false)}
+          />
         </Modal>
       </SafeAreaView>
     </>

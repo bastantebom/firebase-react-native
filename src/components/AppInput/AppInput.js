@@ -110,6 +110,7 @@ const FloatingAppInput = ({ value, style, label, ...props }) => {
         </Animated.Text>
         <DebounceInput
           minLength={0}
+          maxLength={props.maxLength}
           delayTimeout={500}
           autoCapitalize="none"
           {...props}
