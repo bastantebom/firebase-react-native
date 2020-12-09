@@ -66,7 +66,6 @@ const DashboardScreen = ({ navigation }) => {
   const loadPosts = async filters => {
     setIsRefreshing(true)
     try {
-      const { sort } = filters
       const params = filters
 
       const response = await Api.getPosts(params)
@@ -356,6 +355,7 @@ const DashboardScreen = ({ navigation }) => {
               style={{
                 height: SEARCH_TOOLBAR_HEIGHT,
                 transform: [{ translateY }],
+                zIndex: 5,
               }}>
               <SearchBarWithFilter
                 show={() => setIsFiltersVisible(true)}
