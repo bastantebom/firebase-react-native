@@ -28,28 +28,7 @@ import {
   ProfileInfo,
   CacheableImage,
 } from '@/components'
-import {
-  PostClock,
-  PostNavigation,
-  PostInfo,
-  PostCash,
-  CircleTick,
-  CloseDark,
-  CircleTickWhite,
-  CloseLight,
-  ContactTelephone,
-  Chat,
-  PostNote,
-  PostParcel,
-  PostInfoRed,
-  PostTool,
-  PostCalendar,
-  ShoppingCart,
-  CartDot,
-  Like,
-  Search,
-  PostParcelBlue,
-} from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 
 import EditPostScreen from './EditPostScreen'
 import { ImageModal } from './ImageModal'
@@ -130,7 +109,7 @@ const SinglePostView = props => {
       .values(),
   ]
 
-  const { user, setUserInfo, userInfo } = useContext(UserContext)
+  const { user } = useContext(UserContext)
   const {
     userCart,
     deleteCurrentOrderModal,
@@ -151,6 +130,18 @@ const SinglePostView = props => {
   const [itemModal, showItemModal] = useState(false)
   const [basketModal, showBasketModal] = useState(false)
   const [offerModal, showOfferModal] = useState(false)
+  const [liked, setLiked] = useState(false)
+
+  useEffect(() => {
+    const { likes } = props.route?.params?.data
+    setLiked(likes.includes(user.uid))
+    ;(async () => {
+      const { data } = await Api.getFollowers({
+        uid: props.route?.params?.data.uid,
+      })
+      setFollowing(data.some(resData => resData.uid === user.uid))
+    })()
+  }, [])
 
   useEffect(() => {
     let computedPrice = 0
@@ -161,36 +152,26 @@ const SinglePostView = props => {
     setTotalCartPrice(computedPrice)
   }, [])
 
+  useEffect(() => {
+    setShowNotification(setNotification())
+
+    const timeout = setTimeout(() => {
+      setShowNotification(false)
+    }, 3000)
+
+    return () => clearTimeout(timeout)
+  }, [props])
+
   const toggleEditPost = () => {
     toggleEllipsisState()
+
     setTimeout(() => {
       showEditPost(!editPost)
     }, 500)
   }
 
-  const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState)
-  }
-
-  const closeNotification = () => {
-    setShowNotification(false)
-  }
-
-  const togglePostImageModal = () => {
-    setPostImageModal(!postImageModal)
-  }
-
-  const toggleFollowing = () => {
-    setFollowing(!following)
-  }
-
-  useEffect(() => {
-    setShowNotification(setNotification())
-
-    setTimeout(() => {
-      setShowNotification(false)
-    }, 3000)
-  }, [props])
+  const toggleEllipsisState = () => setEllipsisState(!ellipsisState)
+  const togglePostImageModal = () => setPostImageModal(!postImageModal)
 
   const setNotification = () => {
     return props.route.params?.created
@@ -205,7 +186,7 @@ const SinglePostView = props => {
     profile_photo: profile_photo,
     account_verified: account_verified,
     display_name: display_name ? display_name : full_name,
-    uid: uid,
+    uid,
   }
 
   const defaultImage = [
@@ -214,6 +195,7 @@ const SinglePostView = props => {
       image: require('@/assets/images/logo.png'),
     },
   ]
+
   const deletePost = async () => {
     const { success } = await Api.deletePost({ pid: id })
 
@@ -230,27 +212,34 @@ const SinglePostView = props => {
       toggleEllipsisState()
       navigation.goBack()
     }
-
-    console.log(userInfo)
   }
 
-  let timeAgo = time => {
-    if (time <= 60) {
-      return 'Just now'
-    }
+  const handleLikedPost = async () => {
+    const { id } = props.route?.params?.data
+    const { likes } = await Api.getPostLikes({ pid: id })
 
-    return timePassed(time) + ' ago'
+    const isLiked = likes.includes(user.uid)
+    await Api[isLiked ? 'unlikePost' : 'likePost']({ pid: id })
+
+    setLiked(!isLiked)
   }
 
-  let makeCall = () => {
-    let phoneNumber = ''
-    if (Platform.OS === 'android') {
-      phoneNumber = `tel:${phone_number}`
-    } else {
-      phoneNumber = `telprompt:${phone_number}`
-    }
-    Linking.openURL(phoneNumber)
+  const handleFollowing = async () => {
+    const { uid } = props.route?.params?.data
+    const response = await Api[following ? 'unfollowUser' : 'followUser']({ uid })
+    setFollowing(!following)
   }
+
+  const timeAgo = time => {
+    if (time <= 60) return 'Just now'
+
+    return ` ${timePassed(time)} ago`
+  }
+
+  const makeCall = () =>
+    Linking.openURL(
+      `${Platform.OS === 'android' ? 'tel' : 'telprompt'}:${phone_number}`
+    )
 
   const CustomNotification = () => {
     const backgroundColor = props.route.params?.created
@@ -267,17 +256,17 @@ const SinglePostView = props => {
 
     const NotificationCheckbox = () => {
       return props.route.params?.created ? (
-        <CircleTick width={normalize(24)} height={normalize(24)} />
+        <Icons.CircleTick width={normalize(24)} height={normalize(24)} />
       ) : (
-        <CircleTickWhite width={normalize(24)} height={normalize(24)} />
+        <Icons.CircleTickWhite width={normalize(24)} height={normalize(24)} />
       )
     }
 
     const NotificationClose = () => {
       return props.route.params?.created ? (
-        <CloseDark width={normalize(24)} height={normalize(24)} />
+        <Icons.CloseDark width={normalize(24)} height={normalize(24)} />
       ) : (
-        <CloseLight width={normalize(24)} height={normalize(24)} />
+        <Icons.CloseLight width={normalize(24)} height={normalize(24)} />
       )
     }
 
@@ -305,7 +294,9 @@ const SinglePostView = props => {
             textStyle="body2">
             {notificationMessage}
           </AppText>
-          <TouchableOpacity onPress={closeNotification} activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={() => setShowNotification(false)}
+            activeOpacity={0.7}>
             <NotificationClose />
           </TouchableOpacity>
         </View>
@@ -344,17 +335,12 @@ const SinglePostView = props => {
     setItemModalData(item)
   }
 
-  /************/
-
   const [data, setData] = useState([])
   const [dataCoords, setDataCoords] = useState([])
-  const [activeTab, setActiveTab] = useState(itemsByCategory[0].category)
-  const [stickyHeaderHeight, setStickyHeaderHeight] = useState([])
-  const [scrollPosition, setScrollPosition] = useState(0)
 
   const ref = useRef(null)
 
-  const scrollHandler = (i, category) => {
+  const scrollHandler = i => {
     if (dataCoords.length > i) {
       ref.current.scrollTo({
         x: 0,
@@ -418,54 +404,49 @@ const SinglePostView = props => {
 
   const ItemView = (category, i) => {
     return (
-      <>
-        <View
-          key={i}
-          style={styles.categoryWrapper}
-          onLayout={event => {
-            const layout = event.nativeEvent.layout
-            dataCoords[i] = layout.y
-            setDataCoords(dataCoords)
-          }}>
-          <AppText
-            textStyle="subtitle1"
-            customStyle={{ marginBottom: normalize(15) }}>
-            {category.category}
-          </AppText>
-          {category.items.map(item => {
-            return (
-              <TouchableOpacity
-                disabled={uid === user?.uid}
-                key={item.id}
-                onPress={() => showItemModalWithItem(item)}>
-                <View style={styles.itemWrapper}>
-                  {item?.image?.substring(0, 8) === 'https://' && (
-                    <View style={styles.imageWrapper}>
-                      <Image
-                        style={styles.image}
-                        source={{ uri: item.image }}
-                      />
-                    </View>
-                  )}
-                  <View style={styles.detailWrapper}>
-                    <View style={styles.titleDesc}>
-                      <AppText textStyle="body1medium">{item.name}</AppText>
-                      {item.description ? (
-                        <AppText textStyle="body2">{item.description}</AppText>
-                      ) : (
-                        <></>
-                      )}
-                    </View>
-                    <View style={styles.itemPrice}>
-                      <AppText textStyle="subtitle1">₱{item.price}</AppText>
-                    </View>
+      <View
+        key={i}
+        style={styles.categoryWrapper}
+        onLayout={event => {
+          const layout = event.nativeEvent.layout
+          dataCoords[i] = layout.y
+          setDataCoords(dataCoords)
+        }}>
+        <AppText
+          textStyle="subtitle1"
+          customStyle={{ marginBottom: normalize(15) }}>
+          {category.category}
+        </AppText>
+        {category.items.map(item => {
+          return (
+            <TouchableOpacity
+              disabled={uid === user?.uid}
+              key={item.id}
+              onPress={() => showItemModalWithItem(item)}>
+              <View style={styles.itemWrapper}>
+                {item?.image?.substring(0, 8) === 'https://' && (
+                  <View style={styles.imageWrapper}>
+                    <Image style={styles.image} source={{ uri: item.image }} />
+                  </View>
+                )}
+                <View style={styles.detailWrapper}>
+                  <View style={styles.titleDesc}>
+                    <AppText textStyle="body1medium">{item.name}</AppText>
+                    {item.description ? (
+                      <AppText textStyle="body2">{item.description}</AppText>
+                    ) : (
+                      <></>
+                    )}
+                  </View>
+                  <View style={styles.itemPrice}>
+                    <AppText textStyle="subtitle1">₱{item.price}</AppText>
                   </View>
                 </View>
-              </TouchableOpacity>
-            )
-          })}
-        </View>
-      </>
+              </View>
+            </TouchableOpacity>
+          )
+        })}
+      </View>
     )
   }
 
@@ -475,7 +456,7 @@ const SinglePostView = props => {
     setDisableCartButton(
       (!Array.isArray(userCart) || !userCart.length) && is_multiple
     )
-  })
+  }, [])
 
   const SinglePostContent = () => {
     return (
@@ -591,14 +572,14 @@ const SinglePostView = props => {
               )}
             </View>
             <View style={styles.iconText}>
-              <PostClock width={normalize(24)} height={normalize(24)} />
+              <Icons.PostClock width={normalize(24)} height={normalize(24)} />
               <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                 {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
             </View>
 
             <View style={styles.iconText}>
-              <PostParcel width={normalize(24)} height={normalize(24)} />
+              <Icons.PostParcel width={normalize(24)} height={normalize(24)} />
               <AppText
                 textStyle="body2"
                 customStyle={{ marginLeft: 8, marginRight: 4 }}>
@@ -621,7 +602,10 @@ const SinglePostView = props => {
               )}
             </View>
             <View style={styles.iconText}>
-              <PostNavigation width={normalize(24)} height={normalize(24)} />
+              <Icons.PostNavigation
+                width={normalize(24)}
+                height={normalize(24)}
+              />
               <AppText
                 textStyle="body2"
                 customStyle={{ marginLeft: 8, marginRight: 20 }}>
@@ -631,7 +615,10 @@ const SinglePostView = props => {
             {expired ? (
               <View
                 style={[{ paddingBottom: normalize(100) }, styles.iconText]}>
-                <PostInfoRed width={normalize(24)} height={normalize(24)} />
+                <Icons.PostInfoRed
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
                 <AppText
                   textStyle="body2"
                   customStyle={{ marginLeft: 8 }}
@@ -649,7 +636,7 @@ const SinglePostView = props => {
                         alignItems: 'center',
                         marginBottom: 0,
                       }}>
-                      <PostCalendar
+                      <Icons.PostCalendar
                         width={normalize(18)}
                         height={normalize(18)}
                       />
@@ -679,7 +666,10 @@ const SinglePostView = props => {
                   </View>
                 )}
                 <View style={styles.iconText}>
-                  <PostInfo width={normalize(24)} height={normalize(24)} />
+                  <Icons.PostInfo
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
                   <View
                     style={{
                       marginLeft: normalize(8),
@@ -698,7 +688,10 @@ const SinglePostView = props => {
                 />
                 {payment?.length > 0 && (
                   <View style={styles.iconText}>
-                    <PostCash width={normalize(24)} height={normalize(24)} />
+                    <Icons.PostCash
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
 
                     <AppText
                       textStyle="body2"
@@ -712,14 +705,20 @@ const SinglePostView = props => {
                 )}
                 {type == 'service' && (
                   <View style={styles.iconText}>
-                    <PostTool width={normalize(20)} height={normalize(20)} />
+                    <Icons.PostTool
+                      width={normalize(20)}
+                      height={normalize(20)}
+                    />
                     <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                       Serviceable area within 50KM
                     </AppText>
                   </View>
                 )}
                 <View style={styles.iconText}>
-                  <PostNote width={normalize(22)} height={normalize(22)} />
+                  <Icons.PostNote
+                    width={normalize(22)}
+                    height={normalize(22)}
+                  />
                   <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                     You can see the product in person
                   </AppText>
@@ -777,14 +776,16 @@ const SinglePostView = props => {
               type={uid === user?.uid ? 'post-own' : 'post-other'}
               ellipsisState={ellipsisState}
               toggleEllipsisState={toggleEllipsisState}
-              toggleFollowing={toggleFollowing}
               following={following}
               backFunction={() => navigation.goBack()}
               editPostFunction={toggleEditPost}
               deletePostFunction={deletePost}
+              handleLikedPost={handleLikedPost}
+              handleFollowing={handleFollowing}
               hidePost={hidePost}
               postId={id}
               postTitle={title}
+              liked={liked}
             />
           </Animated.View>
           <Animated.View
@@ -804,17 +805,18 @@ const SinglePostView = props => {
                 justifyContent: 'flex-end',
                 width: '100%',
               }}>
-              <TouchableOpacity
-                onPress={() => {}}
-                style={{ marginRight: normalize(25) }}>
-                <Search width={normalize(20)} height={normalize(20)} />
+              <TouchableOpacity style={{ marginRight: normalize(25) }}>
+                <Icons.Search width={normalize(20)} height={normalize(20)} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
-                <Like width={normalize(20)} height={normalize(20)} />
+              <TouchableOpacity>
+                <Icons.Like width={normalize(20)} height={normalize(20)} />
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <PostParcelBlue width={normalize(25)} height={normalize(25)} />
+              <Icons.PostParcelBlue
+                width={normalize(25)}
+                height={normalize(25)}
+              />
               <AppText textStyle="subtitle1" customStyle={{ marginLeft: 8 }}>
                 {profileInfo.display_name}
               </AppText>
@@ -822,7 +824,6 @@ const SinglePostView = props => {
           </Animated.View>
         </Animated.View>
 
-        {/* ITEM MODAL */}
         <Modal
           isVisible={itemModal}
           animationIn="slideInUp"
@@ -842,7 +843,6 @@ const SinglePostView = props => {
             closeModal={() => showItemModal(false)}
           />
         </Modal>
-        {/* ITEM MODAL */}
 
         {othersView && (
           <SafeAreaView
@@ -865,7 +865,7 @@ const SinglePostView = props => {
                   activeOpacity={0.7}
                   onPress={makeCall}>
                   <View style={styles.contactButtonContainer}>
-                    <ContactTelephone
+                    <Icons.ContactTelephone
                       width={normalize(24)}
                       height={normalize(24)}
                     />
@@ -878,7 +878,7 @@ const SinglePostView = props => {
                 style={{ marginRight: email ? 8 : 0 }}
                 activeOpacity={0.7}>
                 <View style={styles.contactButtonContainer}>
-                  <Chat width={normalize(24)} height={normalize(24)} />
+                  <Icons.Chat width={normalize(24)} height={normalize(24)} />
                 </View>
               </TouchableOpacity>
               {multipleItems ? (
@@ -924,7 +924,7 @@ const SinglePostView = props => {
                         <>
                           <View style={{ flexDirection: 'row' }}>
                             <View style={{ position: 'relative' }}>
-                              <ShoppingCart
+                              <Icons.ShoppingCart
                                 width={normalize(24)}
                                 height={normalize(24)}
                               />
@@ -934,7 +934,7 @@ const SinglePostView = props => {
                                   right: normalize(-4),
                                   top: normalize(-3),
                                 }}>
-                                <CartDot
+                                <Icons.CartDot
                                   width={normalize(10)}
                                   height={normalize(10)}
                                 />
