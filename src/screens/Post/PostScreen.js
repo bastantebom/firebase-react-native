@@ -51,10 +51,6 @@ const PostScreen = ({ togglePostModal, ...props }) => {
     cancelModalToggle()
   }
 
-  if (!user) {
-    return <GuestPost />
-  }
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.neutralsZircon }}>
       <View style={styles.container}>

@@ -1,26 +1,38 @@
-import React, {useRef, createRef, useState, useEffect, useContext} from 'react';
-import Modal from 'react-native-modal';
+import React, {
+  useRef,
+  createRef,
+  useState,
+  useEffect,
+  useContext,
+} from 'react'
+import Modal from 'react-native-modal'
 import {
   View,
   SafeAreaView,
   StyleSheet,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
-import {AppText, AppButton, PaddingView, BottomSheetHeader} from '@/components';
+  TouchableOpacity,
+} from 'react-native'
+import {
+  AppText,
+  AppButton,
+  PaddingView,
+  BottomSheetHeader,
+} from '@/components'
 import {
   OnboardingIllustration4,
   OnboardingIllustration3,
-} from '@/assets/images';
-import SignUp from '@/screens/Authentication/SignUp/SignUp';
-import Login from '@/screens/Authentication/Login/login';
-import BottomSheet from 'reanimated-bottom-sheet';
+} from '@/assets/images'
+import SignUp from '@/screens/Authentication/SignUp/SignUp'
+import Login from '@/screens/Authentication/Login/login'
+import BottomSheet from 'reanimated-bottom-sheet'
 
-import {Colors} from '@/globals';
-import {Context} from '@/context';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Colors, normalize } from '@/globals'
+import { Context } from '@/context'
+import { ScrollView } from 'react-native-gesture-handler'
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window')
 
 export const GuestProfile = () => {
   const {
@@ -31,53 +43,55 @@ export const GuestProfile = () => {
     setAuthType,
     authenticationSheet,
     showAuthenticationSheet,
-  } = useContext(Context);
+  } = useContext(Context)
 
   const RenderContent = () => {
     if (authType === 'signup') {
-      return <SignUp />;
+      return <SignUp />
     }
     if (authType === 'login') {
-      return <Login />;
+      return <Login />
     }
-  };
+  }
 
   const clickHandler = () => {
-    openSlider();
-  };
+    openSlider()
+  }
 
   const closeHandler = () => {
-    openSlider();
-  };
+    openSlider()
+  }
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <PaddingView paddingSize={3}>
-          <OnboardingIllustration4 width={width} height={width * 0.8} />
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <AppText
-              textStyle="display5"
-              customStyle={styles.textStyle}
-              color={Colors.primaryMidnightBlue}>
-              Bee part of the Servbees community today!
-            </AppText>
-            <AppText textStyle="caption" customStyle={styles.textStyle}>
-              Connect, post, and sell with other Buzzybees instantly.{' '}
-            </AppText>
-            <AppButton
-              text="Join Now"
-              type="primary"
-              size="sm"
-              customStyle={{marginTop: 18}}
-              onPress={() => {
-                clickHandler();
-                setAuthType('signup');
-                // bottomSheetRef.current.snapTo(0);
-                // console.log('hasjjhjh');
-              }}
-            />
-          </View>
-        </PaddingView>
+      <SafeAreaView style={{ flexGrow: 1 }}>
+        <ScrollView contentContainerStyle={styles.contentWrapper}>
+          <OnboardingIllustration4 />
+          <AppText
+            textStyle="display5"
+            customStyle={styles.textStyle}
+            color={Colors.primaryMidnightBlue}>
+            Join the bustling Servbees community
+          </AppText>
+          <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+            Be a Buzzybee and connect, hustle, and earn—all on your own terms.
+          </AppText>
+          <TouchableOpacity
+            style={{
+              marginTop: normalize(24),
+              paddingVertical: 12,
+              width: '100%',
+              alignItems: 'center',
+              backgroundColor: Colors.primaryYellow,
+              borderRadius: 3,
+              maxWidth: normalize(250),
+            }}
+            onPress={() => {
+              clickHandler()
+              setAuthType('signup')
+            }}>
+            <AppText textStyle="body1medium">Join Now</AppText>
+          </TouchableOpacity>
+        </ScrollView>
       </SafeAreaView>
       <Modal
         isVisible={authenticationSheet}
@@ -85,11 +99,11 @@ export const GuestProfile = () => {
         animationInTiming={450}
         animationOut="slideOutDown"
         animationOutTiming={450}
-        style={{margin: 0, justifyContent: 'flex-end'}}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
         customBackdrop={
           <TouchableWithoutFeedback
             onPress={() => showAuthenticationSheet(false)}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -104,12 +118,21 @@ export const GuestProfile = () => {
         </View>
       </Modal>
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
+  contentWrapper: {
+    flexGrow: 1,
+    alignItems: 'center',
+    padding: normalize(16),
+    textAlign: 'center',
+    backgroundColor: 'white',
+  },
   textStyle: {
     textAlign: 'center',
-    marginBottom: 8,
+    marginTop: normalize(10),
+    marginBottom: normalize(8),
+    maxWidth: normalize(250),
   },
-});
+})

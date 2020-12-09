@@ -656,7 +656,9 @@ const RenderActiveForm = ({
   const [paymentMethods, setPaymentMethods] = useState({
     cash: false,
     gcash: false,
-    paymaya: false,
+    card: false,
+    paypal: false,
+    grabpay: false,
     onlineBanking: false,
     bank: '',
     others: false,

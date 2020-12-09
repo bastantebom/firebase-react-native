@@ -43,6 +43,7 @@ import LogoGrabPay from './logo-grabpay.svg'
 import LogoPaypal from './logo-paypal.svg'
 
 import Delivering from './delivering-default.svg'
+import Clipboard from './clipboard-info.svg'
 
 export {
   DefaultNeed,
@@ -75,4 +76,5 @@ export {
   LogoGCash,
   LogoGrabPay,
   Delivering,
+  Clipboard,
 }

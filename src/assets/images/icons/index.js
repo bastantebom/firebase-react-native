@@ -256,6 +256,8 @@ import CreditCardActive from './icon-credit-active.svg'
 import GCashActive from './icon-gcash-active.svg'
 import GrabPayActive from './icon-grabpay-active.svg'
 import PaypalActive from './icon-paypal-active.svg'
+import Bank from './icon-bank.svg'
+import BankActive from './icon-bank-active.svg'
 
 import Direction from './direction.svg'
 
@@ -466,6 +468,8 @@ export {
   Visa,
   VisaActive,
   MasterCardActive,
+  Bank,
+  BankActive,
 }
 
 export const Icons = {

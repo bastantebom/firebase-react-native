@@ -18,6 +18,7 @@ import { Onboarding } from '@/screens/Onboarding'
 import DashboardStack from '@/screens/Dashboard'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
+import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
@@ -34,14 +35,16 @@ import {
   PaymentMethodScreen,
 } from '@/screens/Post'
 import { PostScreen } from '@/screens/Post'
+import { GuestPost } from '@/screens/Post/components/GuestPost'
 
-import { ProfileInfoModal, SinglePostOthersView } from '@/components'
+import { ProfileInfoModal, SinglePostOthersView, AppText } from '@/components'
 import { Past } from '@/screens/Activity'
 import { Badge } from '@/screens/Activity'
 import { Welcome } from '@/screens/Activity'
 import { Verified } from '@/screens/Activity'
 import { NotVerified } from '@/screens/Activity'
 import { OngoingItem } from '@/screens/Activity'
+import GuestActivity from '@/screens/Activity/components/GuestActivity'
 
 import {
   AlmostThere,
@@ -52,7 +55,7 @@ import {
 
 import VerifyCodeScreen from '@/screens/Verification/verify-code'
 
-import { normalize } from '@/globals'
+import { normalize, Colors } from '@/globals'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 
@@ -200,43 +203,58 @@ function HiveStackScreen() {
 }
 
 function PostStackScreen({ navigation }) {
-  return (
-    <>
+  const { user } = useContext(UserContext)
+  if (user) {
+    return (
       <PostStack.Navigator headerMode="none">
         <PostStack.Screen name="PostScreen" component={PostScreen} />
         <PostStack.Screen name="SinglePostView" component={SinglePostView} />
         <PostStack.Screen name="Chat" component={ChatScreen} />
       </PostStack.Navigator>
-    </>
-  )
+    )
+  } else {
+    return (
+      <PostStack.Navigator headerMode="none">
+        <PostStack.Screen name="PostScreen" component={GuestPost} />
+      </PostStack.Navigator>
+    )
+  }
 }
 
 function ActivityStackScreen() {
-  return (
-    <ActivityStack.Navigator headerMode="none">
-      <ActivityStack.Screen name="Activity" component={Activity} />
-      <ActivityStack.Screen name="Past" component={Past} />
-      <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
-      <ActivityStack.Screen name="Chat" component={ChatScreen} />
-      {/* <ActivityStack.Screen name="Badge" component={Badge} />
-      <ActivityStack.Screen name="Welcome" component={Welcome} />
-      <ActivityStack.Screen name="Verified" component={Verified} /> */}
-    </ActivityStack.Navigator>
-  )
+  const { user } = useContext(UserContext)
+  if (user) {
+    return (
+      <ActivityStack.Navigator headerMode="none">
+        <ActivityStack.Screen name="Activity" component={Activity} />
+        <ActivityStack.Screen name="Past" component={Past} />
+        <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
+        <ActivityStack.Screen name="Chat" component={ChatScreen} />
+      </ActivityStack.Navigator>
+    )
+  } else {
+    return (
+      <ActivityStack.Navigator headerMode="none">
+        <ActivityStack.Screen name="Activity" component={GuestActivity} />
+      </ActivityStack.Navigator>
+    )
+  }
 }
 
 function ProfileStackScreen() {
   const { user } = useContext(UserContext)
   if (user) {
     return (
-      <>
-        <ProfileStack.Navigator headerMode="none">
-          <ProfileStack.Screen name="Profile" component={ProfileScreen} />
-        </ProfileStack.Navigator>
-      </>
+      <ProfileStack.Navigator headerMode="none">
+        <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+      </ProfileStack.Navigator>
     )
   } else {
-    return null
+    return (
+      <ProfileStack.Navigator headerMode="none">
+        <ProfileStack.Screen name="Profile" component={GuestProfile} />
+      </ProfileStack.Navigator>
+    )
   }
 }
 
@@ -309,23 +327,19 @@ const TabStack = props => {
   const tabBarOptions = {
     style: {
       position: 'relative',
+      height: normalize(55),
     },
     tabStyle: {
       flex: 1,
       alignItems: 'center',
+      paddingVertical: 4,
     },
-    labelStyle: {
-      fontSize: normalize(13),
-      fontFamily: 'RoundedMplus1c-Regular',
-    },
-    inactiveTintColor: '#8C8B98',
-    activeTintColor: '#1F1A54',
   }
 
   return (
     <Tab.Navigator tabBarOptions={tabBarOptions}>
       <Tab.Screen
-        name="dashboard"
+        name="Servbees"
         component={DashboardStack}
         options={{
           tabBarLabel: 'Dashboard',
@@ -338,6 +352,18 @@ const TabStack = props => {
             return <>{icon}</>
           },
           tabBarOnPress: closePostButtons,
+          tabBarLabel: ({ focused }) => {
+            const label = focused ? (
+              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
+                Servbees
+              </AppText>
+            ) : (
+              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
+                Servbees
+              </AppText>
+            )
+            return <>{label}</>
+          },
         }}
       />
       <Tab.Screen
@@ -351,6 +377,18 @@ const TabStack = props => {
               <Hive width={normalize(25)} height={normalize(25)} />
             )
             return <>{icon}</>
+          },
+          tabBarLabel: ({ focused }) => {
+            const label = focused ? (
+              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
+                Hive
+              </AppText>
+            ) : (
+              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
+                Hive
+              </AppText>
+            )
+            return <>{label}</>
           },
         }}
       />
@@ -401,10 +439,22 @@ const TabStack = props => {
               </View>
             )
           },
+          tabBarLabel: ({ focused }) => {
+            const label = focused ? (
+              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
+                Activity
+              </AppText>
+            ) : (
+              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
+                Activity
+              </AppText>
+            )
+            return <>{label}</>
+          },
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="You"
         component={ProfileStackScreen}
         options={{
           tabBarIcon: ({ focused }) => {
@@ -442,6 +492,18 @@ const TabStack = props => {
                 </View>
               </View>
             )
+          },
+          tabBarLabel: ({ focused }) => {
+            const label = focused ? (
+              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
+                You
+              </AppText>
+            ) : (
+              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
+                You
+              </AppText>
+            )
+            return <>{label}</>
           },
         }}
       />

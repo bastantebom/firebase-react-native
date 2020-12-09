@@ -614,57 +614,55 @@ const EditProfile = ({
                   )}
                 </>
               ) : null}
-
-              <View style={{ position: 'relative', marginTop: 16 }}>
-                <FloatingAppInput
-                  value={bDate}
-                  label="Birthday"
-                  customStyle={{ marginBottom: normalize(16) }}
-                  onFocus={showDatepicker}
-                  editable={false}
-                />
-                <TouchableOpacity
-                  style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: 12,
-                    right: 12,
-                  }}
-                  onPress={showDatepicker}>
-                  <View>
+              <TouchableOpacity onPress={showDatepicker}>
+                <View
+                  style={{ position: 'relative', marginTop: 16 }}
+                  pointerEvents="none">
+                  <FloatingAppInput
+                    value={bDate}
+                    label="Birthday"
+                    customStyle={{ marginBottom: normalize(16) }}
+                    onFocus={showDatepicker}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 12,
+                      right: 12,
+                    }}>
                     <Calendar height={normalize(24)} width={normalize(24)} />
                   </View>
-                </TouchableOpacity>
-                {show && (
-                  <DateTimePicker
-                    value={date}
-                    mode={mode}
-                    display="default"
-                    onChange={setBirthday}
+                  {show && (
+                    <DateTimePicker
+                      value={date}
+                      mode={mode}
+                      display="default"
+                      onChange={setBirthday}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={toggleGender}>
+                <View style={{ position: 'relative' }} pointerEvents="none">
+                  <FloatingAppInput
+                    value={gender}
+                    label="Gender"
+                    onFocus={toggleGender}
+                    customStyle={{ marginBottom: normalize(16) }}
                   />
-                )}
-              </View>
-              <View style={{ position: 'relative' }}>
-                <FloatingAppInput
-                  value={gender}
-                  label="Gender"
-                  onFocus={toggleGender}
-                  customStyle={{ marginBottom: normalize(16) }}
-                  editable={false}
-                />
-                <TouchableOpacity
-                  style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: 12,
-                    right: 12,
-                  }}
-                  onPress={toggleGender}>
-                  <View>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 12,
+                      right: 12,
+                    }}>
                     <ArrowDown height={normalize(24)} width={normalize(24)} />
                   </View>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             </PaddingView>
           </View>
           <View

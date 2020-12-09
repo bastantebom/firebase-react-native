@@ -479,7 +479,9 @@ const SellPostForm = ({
 
     if (display)
       return (
-        <AppText customStyle={{ textTransform: 'capitalize' }}>
+        <AppText
+          textStyle="body2"
+          customStyle={{ textTransform: 'capitalize' }}>
           {display}
         </AppText>
       )
@@ -547,31 +549,38 @@ const SellPostForm = ({
           value={title}
           onChangeText={text => setTitle(text)}
         />
-        <TextInput
-          value={description}
-          multiline={true}
-          placeholder="Description"
-          placeholderTextColor={Colors.neutralGray}
-          numberOfLines={Platform.OS === 'ios' ? null : 6}
-          minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
-          style={{
-            color: Colors.contentEbony,
-            fontFamily: 'RoundedMplus1c-Regular',
-            fontSize: normalize(16),
-            letterSpacing: 0.5,
-            borderColor: Colors.neutralGray,
-            borderWidth: 1,
-            borderRadius: 4,
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-            marginBottom: 16,
-            textAlign: 'left',
-          }}
-          onChangeText={text => setDescription(text)}
-          underlineColorAndroid={'transparent'}
-          textAlignVertical="top"
-          scrollEnabled={false}
-        />
+        <View>
+          <AppText
+            textStyle="body2"
+            customStyle={{ position: 'absolute', left: 16, top: 8 }}>
+            Description
+          </AppText>
+          <TextInput
+            value={description}
+            multiline={true}
+            placeholder="Let your customers know what you offer. Make your post attractive and easier to find by adding descriptions and hashtags. e.g. #Food #Dessert (Optional)"
+            numberOfLines={Platform.OS === 'ios' ? null : 6}
+            minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
+            style={{
+              color: Colors.contentEbony,
+              fontFamily: 'RoundedMplus1c-Regular',
+              fontSize: normalize(16),
+              letterSpacing: 0.5,
+              borderColor: Colors.neutralGray,
+              borderWidth: 1,
+              borderRadius: 4,
+              paddingHorizontal: 16,
+              paddingTop: 32,
+              paddingBottom: 8,
+              marginBottom: 16,
+              textAlign: 'left',
+            }}
+            onChangeText={text => setDescription(text)}
+            underlineColorAndroid={'transparent'}
+            textAlignVertical="top"
+            scrollEnabled={false}
+          />
+        </View>
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => setAllowContact(!allowContact)}
@@ -579,9 +588,11 @@ const SellPostForm = ({
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            width: '100%',
           }}>
-          <AppText textStyle="body2">
-            Allow buyers to SMS/call me on this post
+          <AppText textStyle="body2" customStyle={{ maxWidth: '87%' }}>
+            Display my mobile number and allow customers to contact me via call
+            or text.
           </AppText>
           <AppCheckbox
             value={allowContact}
@@ -800,7 +811,7 @@ const SellPostForm = ({
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-            <AppText textStyle="body3">Have a budget in mind?</AppText>
+            <AppText textStyle="body3">What is your budget?</AppText>
             <Switch
               value={budgetRange}
               onValueChange={() => {
@@ -808,7 +819,9 @@ const SellPostForm = ({
               }}
             />
           </View>
-          <AppText>Something, Something</AppText>
+          <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+            Attract Buzzybees by adding a price range.
+          </AppText>
 
           <PriceInput
             style={{ marginTop: 16 }}
@@ -840,7 +853,7 @@ const SellPostForm = ({
             <FormArrowRight />
           </TouchableOpacity>
 
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', marginTop: 8 }}>
             <SelectedPaymentMethods />
           </View>
         </Section>

@@ -87,7 +87,7 @@ const BasketModal = ({
   const [deliveryChoice, setDeliveryChoice] = useState(
     delivery_methods.delivery ? 'delivery' : 'pickup'
   )
-  const [paymentChoice, setPaymentChoice] = useState(payment[0])
+  const [paymentChoice, setPaymentChoice] = useState(payment)
   const [notes, setNotes] = useState()
   const [paymentMethod, setPaymentMethod] = useState('')
 
@@ -593,183 +593,175 @@ const BasketModal = ({
                 </AppText>
               </View>
             </View>
-            {/* <AppText
-              textStyle="body2"
-              customStyle={{ textTransform: 'capitalize' }}>
-              {paymentChoice}
-            </AppText> */}
-            <TouchableOpacity
-              onPress={() => setPaymentMethod('cash')}
-              style={[
-                styles.paymentBtn,
-                {
-                  borderColor:
-                    paymentMethod === 'cash' ? '#000' : Colors.neutralGray,
-                },
-              ]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {paymentMethod === 'cash' ? <CashActive /> : <Cash />}
-                <AppText
-                  textStyle={paymentMethod === 'cash' ? 'body2medium' : 'body2'}
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Cash on Delivery / Pick up
-                </AppText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setPaymentMethod('card')}
-              style={[
-                styles.paymentBtn,
-                {
-                  borderColor:
-                    paymentMethod === 'card' ? '#000' : Colors.neutralGray,
-                },
-              ]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {paymentMethod === 'card' ? (
-                  <CreditCardActive />
-                ) : (
-                  <CreditCard />
+            {payment.includes('cash') && (
+              <TouchableOpacity
+                onPress={() => setPaymentMethod('cash')}
+                style={[
+                  styles.paymentBtn,
+                  {
+                    borderColor:
+                      paymentMethod === 'cash' ? '#000' : Colors.neutralGray,
+                  },
+                ]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {paymentMethod === 'cash' ? <CashActive /> : <Cash />}
+                  <AppText
+                    textStyle={
+                      paymentMethod === 'cash' ? 'body2medium' : 'body2'
+                    }
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    Cash on Delivery / Pick up
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+            )}
+            {payment.includes('card') && (
+              <TouchableOpacity
+                onPress={() => setPaymentMethod('card')}
+                style={[
+                  styles.paymentBtn,
+                  {
+                    borderColor:
+                      paymentMethod === 'card' ? '#000' : Colors.neutralGray,
+                  },
+                ]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {paymentMethod === 'card' ? (
+                    <CreditCardActive />
+                  ) : (
+                    <CreditCard />
+                  )}
+                  <AppText
+                    textStyle={
+                      paymentMethod === 'card' ? 'body2medium' : 'body2'
+                    }
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    Visa / Mastercard
+                  </AppText>
+                  <AppText
+                    textStyle="caption"
+                    color={'#91919C'}
+                    customStyle={{ marginLeft: 10 }}>
+                    For orders ₱100 up
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+            )}
+            {payment.includes('gcash') && (
+              <TouchableOpacity
+                onPress={() => setPaymentMethod('gcash')}
+                style={[
+                  styles.paymentBtn,
+                  {
+                    borderColor:
+                      paymentMethod === 'gcash' ? '#000' : Colors.neutralGray,
+                  },
+                ]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {paymentMethod === 'gcash' ? <GCashActive /> : <GCash />}
+                  <AppText
+                    textStyle={
+                      paymentMethod === 'gcash' ? 'body2medium' : 'body2'
+                    }
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    GCash
+                  </AppText>
+                  <AppText
+                    textStyle="caption"
+                    color={'#91919C'}
+                    customStyle={{ marginLeft: 10 }}>
+                    For orders ₱100 up
+                  </AppText>
+                </View>
+                {paymentMethod === 'gcash' && (
+                  <View style={{ marginTop: 10 }}>
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 8 }}>
+                      Choose this to pay with your available balance.
+                    </AppText>
+                  </View>
                 )}
-                <AppText
-                  textStyle={paymentMethod === 'card' ? 'body2medium' : 'body2'}
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Visa / Mastercard
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  color={'#91919C'}
-                  customStyle={{ marginLeft: 10 }}>
-                  For orders ₱100 up
-                </AppText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setPaymentMethod('gcash')}
-              style={[
-                styles.paymentBtn,
-                {
-                  borderColor:
-                    paymentMethod === 'gcash' ? '#000' : Colors.neutralGray,
-                },
-              ]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {paymentMethod === 'gcash' ? <GCashActive /> : <GCash />}
-                <AppText
-                  textStyle={
-                    paymentMethod === 'gcash' ? 'body2medium' : 'body2'
-                  }
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  GCash
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  color={'#91919C'}
-                  customStyle={{ marginLeft: 10 }}>
-                  For orders ₱100 up
-                </AppText>
-              </View>
-              {paymentMethod === 'gcash' && (
-                <View style={{ marginTop: 10 }}>
+              </TouchableOpacity>
+            )}
+            {payment.includes('grabpay') && (
+              <TouchableOpacity
+                onPress={() => setPaymentMethod('grabpay')}
+                style={[
+                  styles.paymentBtn,
+                  {
+                    borderColor:
+                      paymentMethod === 'grabpay' ? '#000' : Colors.neutralGray,
+                  },
+                ]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {paymentMethod === 'grabpay' ? (
+                    <GrabPayActive />
+                  ) : (
+                    <GrabPay />
+                  )}
+                  <AppText
+                    textStyle={
+                      paymentMethod === 'grabpay' ? 'body2medium' : 'body2'
+                    }
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    GrabPay
+                  </AppText>
                   <AppText
                     textStyle="caption"
-                    customStyle={{ marginBottom: 8 }}>
-                    Choose this to pay with your available balance.
+                    color={'#91919C'}
+                    customStyle={{ marginLeft: 10 }}>
+                    For orders ₱100 up
                   </AppText>
-                  <TouchableOpacity onPress={() => {}}>
-                    <AppText
-                      textStyle="body2medium"
-                      color={Colors.contentOcean}>
-                      Learn More
-                    </AppText>
-                  </TouchableOpacity>
                 </View>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setPaymentMethod('grabpay')}
-              style={[
-                styles.paymentBtn,
-                {
-                  borderColor:
-                    paymentMethod === 'grabpay' ? '#000' : Colors.neutralGray,
-                },
-              ]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {paymentMethod === 'grabpay' ? <GrabPayActive /> : <GrabPay />}
-                <AppText
-                  textStyle={
-                    paymentMethod === 'grabpay' ? 'body2medium' : 'body2'
-                  }
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  GrabPay
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  color={'#91919C'}
-                  customStyle={{ marginLeft: 10 }}>
-                  For orders ₱100 up
-                </AppText>
-              </View>
-              {paymentMethod === 'grabpay' && (
-                <View style={{ marginTop: 10 }}>
+                {paymentMethod === 'grabpay' && (
+                  <View style={{ marginTop: 10 }}>
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 8 }}>
+                      Choose this to pay with your GrabPay balance.
+                    </AppText>
+                  </View>
+                )}
+              </TouchableOpacity>
+            )}
+            {payment.includes('paypal') && (
+              <TouchableOpacity
+                onPress={() => setPaymentMethod('paypal')}
+                style={[
+                  styles.paymentBtn,
+                  {
+                    borderColor:
+                      paymentMethod === 'paypal' ? '#000' : Colors.neutralGray,
+                  },
+                ]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {paymentMethod === 'paypal' ? <PaypalActive /> : <Paypal />}
+                  <AppText
+                    textStyle={
+                      paymentMethod === 'paypal' ? 'body2medium' : 'body2'
+                    }
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    Paypal
+                  </AppText>
                   <AppText
                     textStyle="caption"
-                    customStyle={{ marginBottom: 8 }}>
-                    Choose this to pay with your GrabPay balance.
+                    color={'#91919C'}
+                    customStyle={{ marginLeft: 10 }}>
+                    For orders ₱100 up
                   </AppText>
-                  <TouchableOpacity onPress={() => {}}>
-                    <AppText
-                      textStyle="body2medium"
-                      color={Colors.contentOcean}>
-                      Learn More
-                    </AppText>
-                  </TouchableOpacity>
                 </View>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setPaymentMethod('paypal')}
-              style={[
-                styles.paymentBtn,
-                {
-                  borderColor:
-                    paymentMethod === 'paypal' ? '#000' : Colors.neutralGray,
-                },
-              ]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {paymentMethod === 'paypal' ? <PaypalActive /> : <Paypal />}
-                <AppText
-                  textStyle={
-                    paymentMethod === 'paypal' ? 'body2medium' : 'body2'
-                  }
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Paypal
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  color={'#91919C'}
-                  customStyle={{ marginLeft: 10 }}>
-                  For orders ₱100 up
-                </AppText>
-              </View>
-              {paymentMethod === 'paypal' && (
-                <View style={{ marginTop: 10 }}>
-                  <AppText
-                    textStyle="caption"
-                    customStyle={{ marginBottom: 8 }}>
-                    Choose this to pay with your PayPal balance.
-                  </AppText>
-                  <TouchableOpacity onPress={() => {}}>
+                {paymentMethod === 'paypal' && (
+                  <View style={{ marginTop: 10 }}>
                     <AppText
-                      textStyle="body2medium"
-                      color={Colors.contentOcean}>
-                      Learn More
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 8 }}>
+                      Choose this to pay with your PayPal balance.
                     </AppText>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </TouchableOpacity>
+                  </View>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
           <View
             style={{
@@ -1062,6 +1054,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderRadius: 4,
+  },
+  paymentBtnDisabled: {
+    backgroundColor: '#fbfbfb',
+    borderWidth: 0,
   },
 })
 

@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -7,127 +7,125 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
-} from 'react-native';
-import {UserContext} from '@/context/UserContext';
-import Modal from 'react-native-modal';
-import {normalize, Colors} from '@/globals';
+} from 'react-native'
+import { UserContext } from '@/context/UserContext'
+import Modal from 'react-native-modal'
+import { normalize, Colors } from '@/globals'
 import {
   ScreenHeaderTitle,
   TransitionIndicator,
   FloatingAppInput,
   AppButton,
   AppText,
-} from '@/components';
+} from '@/components'
 
-import {ArrowRight} from '@/assets/images/icons';
-import MapAddress from './MapAddress';
-import ProfileInfoService from '@/services/Profile/ProfileInfo';
+import { ArrowRight } from '@/assets/images/icons'
+import MapAddress from './MapAddress'
+import ProfileInfoService from '@/services/Profile/ProfileInfo'
 
-const AddAddress = ({toggleAddAddress, address, additional}) => {
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
-  const [currentAddress, setCurrentAddress] = useState(address);
-  const {addresses} = userInfo;
-  const [IS_LOADING, setIS_LOADING] = useState(false);
+const AddAddress = ({ toggleAddAddress, address, additional }) => {
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const [currentAddress, setCurrentAddress] = useState(address)
+  const { addresses } = userInfo
+  const [isLoading, setIsLoading] = useState(false)
   const [addName, setAddName] = useState(
-    additional === true ? '' : currentAddress.name ? currentAddress.name : '',
-  );
+    additional === true ? '' : currentAddress.name ? currentAddress.name : ''
+  )
   const [stringAddress, setStringAddress] = useState(
-    currentAddress.full_address,
-  );
+    currentAddress.full_address
+  )
   const [addDet, setAddDet] = useState(
     additional === true
       ? ''
       : currentAddress.details
       ? currentAddress.details
-      : '',
-  );
+      : ''
+  )
   const [addNote, setAddNote] = useState(
-    additional === true ? '' : currentAddress.note ? currentAddress.note : '',
-  );
-  const [map, setMap] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
+    additional === true ? '' : currentAddress.note ? currentAddress.note : ''
+  )
+  const [map, setMap] = useState(false)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
+    setShowCancelModal(!showCancelModal)
+  }
 
-  const closeHandler = (value) => {
-    setShowCancelModal(!showCancelModal);
-  };
+  const toggleMap = () => setMap(!map)
 
-  const toggleMap = () => {
-    setMap(!map);
-  };
-
-  const changeFromMapHandler = (newAddress) => {
-    setStringAddress(newAddress.full_address);
-    setCurrentAddress(newAddress);
-  };
+  const changeFromMapHandler = newAddress => {
+    setStringAddress(newAddress.full_address)
+    setCurrentAddress(newAddress)
+  }
 
   const onSaveHandler = () => {
-    setIS_LOADING(true);
-    const nAdd = [...addresses];
+    setIsLoading(true)
+    const nAdd = [...addresses]
     const addressToUpdate = {
       ...currentAddress,
       details: addDet,
       note: addNote,
       name: addName,
-    };
+    }
     if (additional === true) {
-      nAdd[addresses.length] = {...addressToUpdate, ...{default: false}};
+      nAdd[addresses.length] = { ...addressToUpdate, ...{ default: false } }
     } else {
       nAdd[additional] = {
         ...addressToUpdate,
-        ...{default: address.default},
-      };
+        ...{ default: address.default },
+      }
     }
 
-    ProfileInfoService.updateUser({addresses: [...nAdd]}, user.uid)
-      .then((response) => {
+    ProfileInfoService.updateUser({ addresses: [...nAdd] }, user.uid)
+      .then(response => {
         if (response.success) {
-          setIS_LOADING(false);
-          setUserInfo({...userInfo, ...response.data});
-          toggleAddAddress();
+          setIsLoading(false)
+          setUserInfo({ ...userInfo, ...response.data })
+          toggleAddAddress()
         } else {
-          setIS_LOADING(false);
-          toggleAddAddress();
+          setIsLoading(false)
+          toggleAddAddress()
         }
       })
-      .catch((error) => {
-        setIS_LOADING(false);
-        console.log(error);
-      });
-  };
+      .catch(error => {
+        setIsLoading(false)
+        console.log(error)
+      })
+  }
 
   const deleteAddress = async () => {
-    setIS_LOADING(true);
-    const nAdd = [...addresses];
+    setIsLoading(true)
+    const nAdd = [...addresses]
     const cleanListAddress = nAdd
       .slice(0, additional)
-      .concat(nAdd.slice(additional + 1, nAdd.length));
-    ProfileInfoService.updateUser({addresses: [...cleanListAddress]}, user.uid)
-      .then((response) => {
+      .concat(nAdd.slice(additional + 1, nAdd.length))
+    ProfileInfoService.updateUser(
+      { addresses: [...cleanListAddress] },
+      user.uid
+    )
+      .then(response => {
         if (response.success) {
-          setIS_LOADING(false);
-          setUserInfo({...userInfo, ...response.data});
-          closeHandler();
-          toggleAddAddress();
+          setIsLoading(false)
+          setUserInfo({ ...userInfo, ...response.data })
+          cancelModalToggle
+          toggleAddAddress()
         } else {
-          setIS_LOADING(false);
-          closeHandler();
-          toggleAddAddress();
+          setIsLoading(false)
+          cancelModalToggle
+          toggleAddAddress()
         }
       })
-      .catch((error) => {
-        setIS_LOADING(false);
-        console.log(error);
-      });
-  };
+      .catch(error => {
+        setIsLoading(false)
+        console.log(error)
+      })
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         {/* <Notification message={notificationMessage} type={notificationType} /> */}
-        <TransitionIndicator loading={IS_LOADING} />
+        <TransitionIndicator loading={isLoading} />
 
         <View
           style={{
@@ -142,8 +140,8 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
 
           <FloatingAppInput
             value={addName}
-            onChangeText={(addName) => {
-              setAddName(addName);
+            onChangeText={addName => {
+              setAddName(addName)
             }}
             label="Name"
             customStyle={{
@@ -152,8 +150,8 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
             }}
             placeholder="ex. Work, School, Other"
           />
-          <View style={{position: 'relative'}}>
-            <TouchableOpacity onPress={() => toggleMap()}>
+          <TouchableOpacity onPress={() => toggleMap()}>
+            <View style={{ position: 'relative' }} pointerEvents="none">
               <FloatingAppInput
                 value={
                   stringAddress.length > 32
@@ -161,8 +159,8 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
                     : stringAddress
                 }
                 label="Address"
-                customStyle={{marginBottom: normalize(16)}}
-                onFocus={() => toggleMap()}
+                customStyle={{ marginBottom: normalize(16) }}
+                // onFocus={() => toggleMap()}
               />
               <View
                 style={{
@@ -173,23 +171,23 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
                 }}>
                 <ArrowRight height={normalize(24)} width={normalize(24)} />
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
           <FloatingAppInput
             value={addDet}
             label="Address Details"
-            customStyle={{marginBottom: normalize(16)}}
-            onChangeText={(addDet) => {
-              setAddDet(addDet);
+            customStyle={{ marginBottom: normalize(16) }}
+            onChangeText={addDet => {
+              setAddDet(addDet)
             }}
           />
           <FloatingAppInput
             value={addNote}
             label="Notes"
             placeholder="ex. Yellow Gate"
-            customStyle={{marginBottom: normalize(16)}}
-            onChangeText={(addNote) => {
-              setAddNote(addNote);
+            customStyle={{ marginBottom: normalize(16) }}
+            onChangeText={addNote => {
+              setAddNote(addNote)
             }}
           />
           {additional === true || currentAddress.default ? null : (
@@ -210,7 +208,7 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
               type="primary"
               height="xl"
               onPress={() => {
-                onSaveHandler();
+                onSaveHandler()
               }}
             />
           </View>
@@ -231,9 +229,7 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
         <MapAddress
           toggleMap={toggleMap}
           address={currentAddress}
-          changeFromMapHandler={(newAddress) =>
-            changeFromMapHandler(newAddress)
-          }
+          changeFromMapHandler={newAddress => changeFromMapHandler(newAddress)}
         />
       </Modal>
 
@@ -250,7 +246,7 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -262,20 +258,20 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
             justifyContent: 'center',
             padding: 16,
           }}>
-          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
             Remove this Address?
           </AppText>
 
           <AppText
             textStyle="caption"
-            customStyle={{textAlign: 'center'}}
-            customStyle={{marginBottom: 16}}>
+            customStyle={{ textAlign: 'center' }}
+            customStyle={{ marginBottom: 16 }}>
             Are you sure you want to remove this address?
           </AppText>
 
           <TouchableOpacity
             onPress={() => {
-              deleteAddress();
+              deleteAddress()
             }}
             style={{
               backgroundColor: Colors.yellow2,
@@ -289,8 +285,12 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => closeHandler('cancel')}
-            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            onPress={cancelModalToggle}
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
             <AppText textStyle="button2" color={Colors.contentOcean}>
               Cancel
             </AppText>
@@ -298,8 +298,8 @@ const AddAddress = ({toggleAddAddress, address, additional}) => {
         </View>
       </Modal>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#2c3e50',
   },
-});
+})
 
 //make this component available to the app
-export default AddAddress;
+export default AddAddress

@@ -59,6 +59,10 @@ const ShippingMethodModal = ({
   const [withinNotes, setWithinNotes] = useState(
     deliveryState?.radius?.notes || ''
   )
+
+  const [showNationwideNotes, setShowNationwideNotes] = useState(false)
+  const [showWithinNotes, setShowWithinNotes] = useState(false)
+
   // const [activeSwitch, setActiveSwitch] = useState(null);
   const [rangeValue, setRangeValue] = useState(
     deliveryState?.radius?.distance || 0
@@ -89,15 +93,19 @@ const ShippingMethodModal = ({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white', paddingTop: 8 }}>
       <ScreenHeaderTitle
         close={close}
         title="Shipping Methods"
         paddingSize={2}
+        iconSize={normalize(20)}
       />
-      <ScrollView style={{ paddingHorizontal: 24 }}>
-        <AppText textStyle="body1">How do you deliver your products?</AppText>
-        <AppText textStyle="captionDashboard">
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16 }}>
+        <AppText textStyle="body1" color={Colors.primaryMidnightBlue}>
+          How do you deliver your products?
+        </AppText>
+        <AppText textStyle="caption" customStyle={{ marginTop: 4 }}>
           Select the shipping options that you want to offer.
         </AppText>
         <View style={styles.withBorder}>
@@ -122,9 +130,7 @@ const ShippingMethodModal = ({
               }}
             />
           </View>
-          <AppText
-            textStyle="captionDashboard"
-            color={Colors.contentPlaceholder}>
+          <AppText textStyle="body2" color={Colors.contentPlaceholder}>
             Orders can be picked up at your specified address.
           </AppText>
           {pickUp && (
@@ -195,7 +201,7 @@ const ShippingMethodModal = ({
             />
           </View>
           <AppText
-            textStyle="captionDashboard"
+            textStyle="body2"
             customStyle={{ marginTop: 4 }}
             color={Colors.contentPlaceholder}>
             Orders can be shipped nationwide or within your specified area.
@@ -217,23 +223,47 @@ const ShippingMethodModal = ({
                 />
                 <View style={{ flex: 1 }}>
                   <AppText textStyle="caption">
-                    Ship your products via local courier or third party couriers
-                    (e.g. Lalamovem LBC, Grab Delivery)
+                    Ship via local or third party couriers
                   </AppText>
                 </View>
+              </View>
+              <View style={styles.shippingNotes}>
+                <AppText textStyle="caption" customStyle={{ marginBottom: 8 }}>
+                  You or your customer may book third party couriers such as
+                  Lalamove, LBC, Grab Delivery, or HappyMove to pick-up the
+                  confirmed order and deliver it to your customer. This way,
+                  both of you will be able to track the order in real-time.
+                </AppText>
+                {showNationwideNotes && (
+                  <AppText
+                    textStyle="caption"
+                    customStyle={{ marginBottom: 16 }}>
+                    Please note that we’re currently working on adding the
+                    delivery fee/s in the order. For the meantime, delivery fees
+                    will be arranged with the seller using chat or outside the
+                    Servbees app.
+                  </AppText>
+                )}
+                <TouchableOpacity
+                  style={{ paddingBottom: 4 }}
+                  onPress={() => setShowNationwideNotes(!showNationwideNotes)}>
+                  <AppText textStyle="body2medium" color={Colors.contentOcean}>
+                    {showNationwideNotes ? 'Show Less' : 'Read More'}
+                  </AppText>
+                </TouchableOpacity>
               </View>
               {nationwide && (
                 <TextInput
                   value={nationwideNotes}
                   multiline={true}
                   placeholder="Are there additional delivery fees and options? (Optional)"
-                  placeholderTextColor={Colors.neutralGray}
+                  placeholderTextColor={Colors.contentPlaceholder}
                   numberOfLines={Platform.OS === 'ios' ? null : 6}
                   minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
                   style={{
                     color: Colors.contentEbony,
                     fontFamily: 'RoundedMplus1c-Regular',
-                    fontSize: normalize(16),
+                    fontSize: normalize(14),
                     letterSpacing: 0.5,
                     borderColor: Colors.neutralGray,
                     borderWidth: 1,
@@ -270,70 +300,43 @@ const ShippingMethodModal = ({
                   value={within}
                   valueChangeHandler={() => CheckboxStateHandler('within')}
                 />
-                <AppText textStyle="caption">
-                  Deliver your products in person via your own vehicle or your
-                  delivery employees
+                <AppText textStyle="caption">Deliver your products</AppText>
+              </View>
+              <View style={styles.shippingNotes}>
+                <AppText textStyle="caption" customStyle={{ marginBottom: 8 }}>
+                  You may deliver your products if you have your own vehicle or
+                  delivery service
                 </AppText>
+                {showWithinNotes && (
+                  <AppText
+                    textStyle="caption"
+                    customStyle={{ marginBottom: 16 }}>
+                    Currently working on adding the delivery fee/s in the
+                    orders. For the meantime, delivery fees will be arranged
+                    using chat or outside the Servbees app.
+                  </AppText>
+                )}
+                <TouchableOpacity
+                  style={{ paddingBottom: 4 }}
+                  onPress={() => setShowWithinNotes(!showWithinNotes)}>
+                  <AppText textStyle="body2medium" color={Colors.contentOcean}>
+                    {showWithinNotes ? 'Show Less' : 'Read More'}
+                  </AppText>
+                </TouchableOpacity>
               </View>
               {within && (
                 <>
-                  {/* <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginTop: normalize(20),
-                        marginBottom: normalize(10),
-                      }}>
-                      <AppText textStyle="promo">Ship Within</AppText>
-                      <AppText textStyle="caption" color="#999">
-                        {rangeValue} KM
-                      </AppText>
-                    </View> */}
-                  {/* <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <AppText textStyle="caption" color="#999">
-                        0
-                      </AppText>
-                      <Slider
-                        style={{ width: '90%' }}
-                        minimumValue={0}
-                        maximumValue={200}
-                        step={5}
-                        value={rangeValue}
-                        onValueChange={rangeValue => {
-                          setRangeValue(rangeValue)
-                          setDeliveryState({
-                            delivery: {
-                              ...deliveryState.delivery,
-                              radius: {
-                                ...deliveryState.radius,
-                                distance: rangeValue,
-                              },
-                            },
-                          })
-                        }}
-                        minimumTrackTintColor={Colors.primaryYellow}
-                        maximumTrackTintColor={Colors.neutralGray}
-                        thumbTintColor={Colors.primaryYellow}
-                      />
-                      <AppText textStyle="caption" color="#999">
-                        200
-                      </AppText>
-                    </View> */}
                   <TextInput
                     value={withinNotes}
                     multiline={true}
-                    placeholder="Are there additional delivery fees and options? (Optional)"
-                    placeholderTextColor={Colors.neutralGray}
+                    placeholder="Which areas will you offer delivery? e.g. Marikina City, Quezon City. Also add if there are additional delivery fees. (Optional)"
+                    placeholderTextColor={Colors.contentPlaceholder}
                     numberOfLines={Platform.OS === 'ios' ? null : 6}
                     minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
                     style={{
                       color: Colors.contentEbony,
                       fontFamily: 'RoundedMplus1c-Regular',
-                      fontSize: normalize(16),
+                      fontSize: normalize(14),
                       letterSpacing: 0.5,
                       borderColor: Colors.neutralGray,
                       borderWidth: 1,
@@ -391,7 +394,7 @@ const ShippingMethodModal = ({
         animationOutTiming={500}
         style={{
           margin: 0,
-          backgroundColor: 'white',
+          backgroundColor: '#E5E5E5',
           height: Dimensions.get('window').height,
           justifyContent: 'flex-start',
         }}>
@@ -422,6 +425,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'space-between',
     flexDirection: 'row',
+  },
+  shippingNotes: {
+    backgroundColor: Colors.secondarySolitude,
+    padding: 16.5,
+    marginTop: 8,
+    marginBottom: 25,
   },
 })
 

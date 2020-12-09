@@ -148,7 +148,7 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
         borderTopStartRadius: 8,
         flex: catChoices.length >= 5 ? 1 : 0,
       }}>
-      <View style={{ paddingHorizontal: 24 }}>
+      <View style={{ paddingHorizontal: 24, paddingBottom: 24 }}>
         {catChoices.length >= 5 ? <></> : <BottomSheetHeader />}
         <AppText
           textStyle="body2"
@@ -264,6 +264,7 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
             customStyle={{ marginBottom: normalize(16) }}
           />
         </Animated.View>
+
         <TouchableOpacity
           onPress={submitHandler}
           activeOpacity={0.7}

@@ -198,6 +198,10 @@ const styles = StyleSheet.create({
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(13),
   },
+  navMedium: {
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(13),
+  },
 })
 
 export default AppText

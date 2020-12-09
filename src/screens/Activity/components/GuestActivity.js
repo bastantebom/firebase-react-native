@@ -7,14 +7,17 @@ import { Colors, normalize } from '@/globals'
 
 import IllustHive from '@/assets/images/hive-img1.svg'
 import { ScrollView } from 'react-native-gesture-handler'
+import { OnboardingIllustration2 } from '@/assets/images'
 
-const Hive = () => {
+const GuestActivity = () => {
   const navigation = useNavigation()
 
   return (
     <SafeAreaView style={{ flexGrow: 1 }}>
-      <ScrollView contentContainerStyle={styles.contentWrapper}>
-        <IllustHive />
+      <ScrollView
+        contentContainerStyle={styles.contentWrapper}
+        showsVerticalScrollIndicator={false}>
+        <OnboardingIllustration2 />
         <AppText
           textStyle="display5"
           customStyle={{
@@ -24,11 +27,11 @@ const Hive = () => {
             maxWidth: normalize(250),
           }}
           color={Colors.primaryMidnightBlue}>
-          Create your own Hive, coming soon!
+          Easily track all your activity
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          Hives are groups with your customers and friends for easier
-          communication. Exciting!
+          Notifications, receipts, transaction records, and updates—organized in
+          one place.
         </AppText>
         <TouchableOpacity
           style={{
@@ -40,8 +43,8 @@ const Hive = () => {
             borderRadius: 3,
             maxWidth: normalize(250),
           }}
-          onPress={() => navigation.navigate('dashboard')}>
-          <AppText textStyle="body1medium">Go to Dashboard</AppText>
+          onPress={() => {}}>
+          <AppText textStyle="body1medium">Join Now</AppText>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -58,4 +61,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Hive
+export default GuestActivity

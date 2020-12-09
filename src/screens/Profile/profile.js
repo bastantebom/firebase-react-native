@@ -374,10 +374,6 @@ const ProfileScreen = ({
     setScrollPosition(position)
   }
 
-  if (!user) {
-    return <GuestProfile />
-  }
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StickyParallaxHeader
