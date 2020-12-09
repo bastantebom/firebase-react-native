@@ -512,7 +512,9 @@ const TabStack = props => {
 }
 
 export default Routes = () => {
-  const { token, userInfo, userStatus } = useContext(UserContext)
+  const { token, userInfo, userStatus, updateUserStatus } = useContext(
+    UserContext
+  )
   const { addresses } = userInfo
 
   const [containerOpacity] = useState(new Animated.Value(0))
@@ -559,6 +561,7 @@ export default Routes = () => {
           initialParams={{
             login,
             provider,
+            onSubmit: updateUserStatus,
           }}
         />
       )

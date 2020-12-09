@@ -105,6 +105,7 @@ export const UserContextProvider = ({ children }) => {
         fetch,
         token,
         providerData,
+        updateUserStatus,
       }}>
       {children}
     </UserContext.Provider>

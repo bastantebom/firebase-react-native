@@ -12,14 +12,20 @@ import { Colors, normalize } from '@/globals'
 import AppText from '../AppText/AppText'
 import ValidationList from './Validation'
 import ValidationFunctions from './ValidationFunctions'
-import { debounce } from 'lodash'
 import _ from 'lodash'
 
 import { VerifiedGreen } from '@/assets/images/icons'
 import DebounceInput from 'react-native-debounce-input'
 
 // create a component
-const FloatingAppInput = ({ value, style, label, ...props }) => {
+const FloatingAppInput = ({
+  value,
+  style,
+  label,
+  wrapperStyle,
+  debounce = true,
+  ...props
+}) => {
   const [labelPosition] = useState(new Animated.Value(0))
   const [isActive, setIsActive] = useState(false)
 
@@ -92,14 +98,17 @@ const FloatingAppInput = ({ value, style, label, ...props }) => {
   return (
     <View style={style}>
       <View
-        style={{
-          paddingVertical: normalize(4),
-          paddingHorizontal: normalize(16),
-          borderColor: activeBorderColor,
-          borderWidth: 1,
-          borderRadius: 4,
-          height: normalize(50),
-        }}>
+        style={[
+          {
+            paddingVertical: normalize(4),
+            paddingHorizontal: normalize(16),
+            borderColor: activeBorderColor,
+            borderWidth: 1,
+            borderRadius: 4,
+            height: normalize(50),
+          },
+          wrapperStyle,
+        ]}>
         <Animated.Text style={[styles.label, paddingLeftCustom, labelStyle]}>
           <AppText
             textStyle="body1"
@@ -108,24 +117,39 @@ const FloatingAppInput = ({ value, style, label, ...props }) => {
             {label}
           </AppText>
         </Animated.Text>
-        <DebounceInput
-          minLength={0}
-          maxLength={props.maxLength}
-          delayTimeout={500}
-          autoCapitalize="none"
-          {...props}
-          value={value}
-          style={styles.floatingInput}
-          underlineColorAndroid="transparent"
-          onFocus={onFocusInput}
-          onBlur={() => {
-            onBlurInput()
-          }}
-          onEndEditing={onBlurInput}
-          blurOnSubmit
-          selectTextOnFocus={false}
-          clearTextOnFocus={false}
-        />
+        {debounce ? (
+          <DebounceInput
+            minLength={0}
+            delayTimeout={500}
+            autoCapitalize="none"
+            {...props}
+            value={value}
+            style={styles.floatingInput}
+            underlineColorAndroid="transparent"
+            onFocus={onFocusInput}
+            onBlur={() => {
+              onBlurInput()
+            }}
+            onEndEditing={onBlurInput}
+            blurOnSubmit
+            selectTextOnFocus={false}
+            clearTextOnFocus={false}
+          />
+        ) : (
+          <TextInput
+            minLength={0}
+            value={value}
+            style={styles.floatingInput}
+            underlineColorAndroid="transparent"
+            onFocus={onFocusInput}
+            onBlur={onBlurInput}
+            onEndEditing={onBlurInput}
+            blurOnSubmit
+            selectTextOnFocus={false}
+            clearTextOnFocus={false}
+            {...props}
+          />
+        )}
       </View>
     </View>
   )

@@ -210,9 +210,9 @@ export const getColorByBackground = hex => {
   return red * 0.299 + green * 0.587 + blue * 0.114 > 186 ? '#2E3034' : '#fff'
 }
 
-export const cardValidator = cardNumber => {
-  const visa = /^4[0-9]{12}(?:[0-9]{3})?$/
-  const mastercard = /^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/
+export const validateCardNumber = cardNumber => {
+  const visa = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/
+  const mastercard = /^(?:5[1-5][0-9]{14})$/
 
   if (visa.test(cardNumber)) {
     return 'visa'
@@ -252,7 +252,7 @@ export const requestLocation = async () => {
     )
 
     return true
-  } else if ((Platform.OS = 'ios')) {
+  } else if (Platform.OS === 'ios') {
     Geolocation.requestAuthorization()
     Geolocation.setRNConfiguration({
       skipPermissionRequests: false,

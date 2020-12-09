@@ -139,7 +139,7 @@ const TrackerModal = ({
             id: 'idsingle',
             quantity: 1,
             name: postData?.title,
-            price: postData?.items[0]?.price,
+            price: postData?.items?.[0]?.price,
           },
         ])
       } else if (Array.isArray(orderDetails.items)) {
@@ -1384,9 +1384,9 @@ const TrackerModal = ({
         <Modal
           isVisible={creditCardModal}
           animationIn="slideInRight"
-          animationInTiming={750}
+          animationInTiming={300}
           animationOut="slideOutRight"
-          animationOutTiming={750}
+          animationOutTiming={250}
           style={{
             margin: 0,
             backgroundColor: 'white',
@@ -1401,9 +1401,9 @@ const TrackerModal = ({
         <Modal
           isVisible={gCashModal}
           animationIn="slideInRight"
-          animationInTiming={750}
+          animationInTiming={300}
           animationOut="slideOutRight"
-          animationOutTiming={750}
+          animationOutTiming={250}
           style={{
             margin: 0,
             backgroundColor: 'white',
@@ -1418,9 +1418,9 @@ const TrackerModal = ({
         <Modal
           isVisible={grabPayModal}
           animationIn="slideInRight"
-          animationInTiming={750}
+          animationInTiming={300}
           animationOut="slideOutRight"
-          animationOutTiming={750}
+          animationOutTiming={250}
           style={{
             margin: 0,
             backgroundColor: 'white',
@@ -1435,9 +1435,9 @@ const TrackerModal = ({
         <Modal
           isVisible={paypalModal}
           animationIn="slideInRight"
-          animationInTiming={750}
+          animationInTiming={300}
           animationOut="slideOutRight"
-          animationOutTiming={750}
+          animationOutTiming={250}
           style={{
             margin: 0,
             backgroundColor: 'white',

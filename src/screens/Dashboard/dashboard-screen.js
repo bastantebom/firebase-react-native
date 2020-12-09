@@ -274,7 +274,7 @@ const DashboardScreen = ({ navigation }) => {
 
   useEffect(() => {
     const { latitude, longitude, radius } = locationData
-    console.log(locationData)
+
     if (latitude === null || longitude === null || !radius) return
     setIsRefreshing(true)
     setFilters(filters => ({
