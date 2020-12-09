@@ -95,50 +95,48 @@ const Ongoing = () => {
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
-      if (!ownOrdersResponse.data.length) {
-        return
-      } else {
-        const ownOrderData = await Promise.all(
-          ownOrdersResponse.data.map(async order => {
-            if (
-              order.status !== 'completed' &&
-              order.status !== 'cancelled' &&
-              order.status !== 'declined'
-            ) {
-              const getPostResponse = await Api.getPost({
-                pid: order.post_id,
-              })
-              const getUserReponse = await Api.getUser({
-                uid: order.seller_id || user?.uid,
-              })
-              if (!getPostResponse.success) {
-                return
-              }
-              if (getPostResponse.success) {
-                const {
-                  full_name,
-                  display_name,
-                  profile_photo,
-                } = getUserReponse.data
+      if (!ownOrdersResponse.data.length) return true
+      const ownOrderData = await Promise.all(
+        ownOrdersResponse.data.map(async order => {
+          if (
+            order.status !== 'completed' &&
+            order.status !== 'cancelled' &&
+            order.status !== 'declined'
+          ) {
+            const getPostResponse = await Api.getPost({
+              pid: order.post_id,
+            })
+            const getUserReponse = await Api.getUser({
+              uid: order.seller_id || user?.uid,
+            })
+            if (!getPostResponse.success) {
+              return true
+            }
+            if (getPostResponse.success) {
+              const {
+                full_name,
+                display_name,
+                profile_photo,
+              } = getUserReponse.data
 
-                return {
-                  profilePhoto: profile_photo,
-                  name: display_name ? display_name : full_name,
-                  cardType: 'own',
-                  status: order.status,
-                  time: order.date._seconds,
-                  orderID: order.id,
-                  price: order.total_price,
-                  postData: getPostResponse.data,
-                }
+              return {
+                profilePhoto: profile_photo,
+                name: display_name ? display_name : full_name,
+                cardType: 'own',
+                status: order.status,
+                time: order.date._seconds,
+                orderID: order.id,
+                price: order.total_price,
+                postData: getPostResponse.data,
               }
-            } else return
-          })
-        )
-        const filtered = ownOrderData.filter(el => el)
-        setOnGoing(onGoing => [...onGoing, ...filtered])
-        setIsLoading(false)
-      }
+            }
+          } else return
+        })
+      )
+      const filtered = ownOrderData.filter(el => el)
+
+      setOnGoing(onGoing => [...onGoing, ...filtered])
+      return true
     }
   }
 
@@ -147,9 +145,7 @@ const Ongoing = () => {
       uid: user?.uid,
     })
     if (getOwnPostResponse.success) {
-      if (!getOwnPostResponse.data) {
-        return
-      }
+      if (!getOwnPostResponse.data) return true
       const sellerOrderData = await Promise.all(
         getOwnPostResponse.data.map(async post => {
           const responseOrders = await Api.getOrders({
@@ -161,7 +157,6 @@ const Ongoing = () => {
             let latestTimeStampOrder = post.date_posted._seconds
             if (Object.keys(responseOrders.data).length)
               latestTimeStampOrder = await getLatest(responseOrders.data)
-
             return {
               profilePhoto: profile_photo,
               name: display_name ? display_name : full_name,
@@ -171,11 +166,11 @@ const Ongoing = () => {
               orders: responseOrders.data,
               postData: post,
             }
-          } else return
+          } else return true
         })
       )
       setOnGoing(onGoing => [...onGoing, ...sellerOrderData])
-      setIsLoading(false)
+      return true
     }
   }
 
@@ -189,10 +184,14 @@ const Ongoing = () => {
     return Math.max(...timeStampList)
   }
 
+  const callAllOrders = async () => {
+    await Promise.all([initOwnOrders(), initSellerOrders()])
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     setIsLoading(true)
-    initOwnOrders()
-    initSellerOrders()
+    callAllOrders()
   }, [])
 
   return (

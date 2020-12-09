@@ -20,58 +20,93 @@ import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 const ActivitiesCard = ({ info }) => {
   const navigation = useNavigation()
   const { status, time, profilePhoto, orders, name, cardType, postData } = info
-
   const [trackerModal, showTrackerModal] = useState(false)
 
   const statusBackground = () => {
     if (cardType === 'own' && status === 'pending')
       return Colors.neutralsMischka
-
-    if (cardType === 'own' && status === 'confirmed')
+    if (
+      cardType === 'own' &&
+      status === 'confirmed' &&
+      postData.type === 'sell'
+    )
       return Colors.secondaryDarkTangerine
-
+    if (
+      cardType === 'own' &&
+      status === 'confirmed' &&
+      postData.type === 'service'
+    )
+      return Colors.secondaryLavenderBlue
     if (cardType === 'own' && status === 'delivering')
       return Colors.secondaryDarkTangerine
-
-    if (info.status === 'Confirmed') return Colors.secondaryLavenderBlue
-
-    if (cardType === 'seller' && status !== 'completed')
+    if (
+      cardType === 'seller' &&
+      (orders?.confirmed?.length ||
+        orders?.pending?.length ||
+        orders?.paid?.length ||
+        orders?.delivering?.length ||
+        orders?.pickup?.length ||
+        !orders?.completed?.length)
+    )
       return Colors.secondaryDarkTangerine
-
-    if (info.status === 'Completed') return Colors.secondaryShamrock
-
-    if (info.status === 'Order Cancelled') return Colors.red
-
+    if (cardType === 'own' && status === 'completed')
+      return Colors.secondaryShamrock
+    if (
+      cardType === 'seller' &&
+      !orders?.confirmed?.length &&
+      !orders?.pending?.length &&
+      !orders?.paid?.length &&
+      !orders?.delivering?.length &&
+      !orders?.pickup?.length &&
+      orders?.completed?.length
+    )
+      return Colors.secondaryShamrock
     if (cardType === 'own' && status === 'declined') return Colors.red
-
     if (cardType === 'own' && status === 'cancelled') return Colors.red
-
-    if (info.status === 'Completed') return Colors.secondaryShamrock
-
-    if (info.status === 'Processing') return Colors.secondaryDarkTangerine
-
-    if (info.status === 'Ready for Pickup') return Colors.secondaryDarkTangerine
-
-    if (info.status === 'Ready for Delivery')
-      return Colors.secondaryDarkTangerine
-
     return 'red'
   }
 
   const getStatusLabel = () => {
     if (cardType === 'own' && status === 'pending')
       return 'Waiting for confirmation'
-
     if (cardType === 'own' && status === 'declined') return 'Declined'
-
     if (cardType === 'own' && status === 'cancelled') return 'Cancelled'
-
-    if (cardType === 'own' && status === 'confirmed') return 'Processing'
-
+    if (
+      cardType === 'own' &&
+      status === 'confirmed' &&
+      postData.type === 'sell'
+    )
+      return 'Processing'
+    if (
+      cardType === 'own' &&
+      status === 'confirmed' &&
+      postData.type === 'service'
+    )
+      return 'Confirmed'
     if (cardType === 'own' && status === 'delivering')
       return 'Ready for Delivery'
+    if (
+      cardType === 'seller' &&
+      (orders?.confirmed?.length ||
+        orders?.pending?.length ||
+        orders?.paid?.length ||
+        orders?.delivering?.length ||
+        orders?.pickup?.length ||
+        !orders?.completed?.length)
+    )
+      return 'Ongoing'
 
-    if (cardType === 'seller' && status !== 'completed') return 'Ongoing'
+    if (
+      cardType === 'seller' &&
+      !orders?.confirmed?.length &&
+      !orders?.pending?.length &&
+      !orders?.paid?.length &&
+      !orders?.delivering?.length &&
+      !orders?.pickup?.length &&
+      orders?.completed?.length
+    )
+      return 'Completed'
+    if (cardType === 'own' && status === 'completed') return 'Completed'
   }
 
   const timeAgo = time => {
@@ -99,8 +134,9 @@ const ActivitiesCard = ({ info }) => {
     const delivering = orders?.delivering ? orders?.delivering?.length : 0
     const pickup = orders?.pickup ? orders?.pickup?.length : 0
     const completed = orders?.completed ? orders?.completed?.length : 0
+    const paid = orders?.paid ? orders?.paid?.length : 0
 
-    return confirmed + delivering + pickup + completed
+    return confirmed + delivering + pickup + completed + paid
   }
 
   const CoverPhoto = () => {
@@ -109,9 +145,9 @@ const ActivitiesCard = ({ info }) => {
         style={GlobalStyle.image}
         source={{ uri: postData?.cover_photos[0] }}
       />
-    ) : postData.type === 'service' ? (
+    ) : postData?.type === 'service' ? (
       <DefaultService width={normalize(64)} height={normalize(72)} />
-    ) : postData.type === 'need' ? (
+    ) : postData?.type === 'need' ? (
       <DefaultNeed width={normalize(64)} height={normalize(72)} />
     ) : (
       <DefaultSell width={normalize(64)} height={normalize(72)} />
@@ -204,14 +240,13 @@ const ActivitiesCard = ({ info }) => {
                     </AppText>
                   )}
                   {info.price &&
-                    (postData.type === 'service' ||
-                      postData.type === 'sell') && (
+                    (postData?.type === 'service' ||
+                      postData?.type === 'sell') && (
                       <AppText textStyle="metadata">
                         • ₱{info.price.toLocaleString()}
                       </AppText>
                     )}
-                  {postData.type === 'sell' &&
-                    cardType === 'seller' &&
+                  {cardType === 'seller' &&
                     (orders?.confirmed ||
                       orders?.delivering ||
                       orders?.pickup ||
@@ -223,25 +258,23 @@ const ActivitiesCard = ({ info }) => {
                       </AppText>
                     )}
 
-                  {postData.type === 'need' && cardType === 'seller' && (
+                  {postData?.type === 'need' && cardType === 'seller' && (
                     <AppText
                       textStyle="metadata"
                       customStyle={{ marginHorizontal: 2 }}>
                       {orders?.pending?.length} offers
                     </AppText>
                   )}
-                  {postData.type === 'sell' &&
-                    cardType === 'seller' &&
-                    orders?.pending && (
-                      <AppText
-                        textStyle="metadata"
-                        customStyle={{ marginHorizontal: 2 }}>
-                        {orders?.pending?.length} pending request
-                      </AppText>
-                    )}
+                  {cardType === 'seller' && orders?.pending && (
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={{ marginHorizontal: 2 }}>
+                      {orders?.pending?.length} pending request
+                    </AppText>
+                  )}
                 </View>
                 <AppText textStyle="caption2" numberOfLines={1}>
-                  {postData.title}
+                  {postData?.title}
                 </AppText>
                 {info.reply && (
                   <AppText textStyle="caption" numberOfLines={1}>
@@ -267,7 +300,7 @@ const ActivitiesCard = ({ info }) => {
         }}>
         <TrackerModal
           closeModal={() => showTrackerModal(false)}
-          postType={postData.type}
+          postType={postData?.type}
           orderID={info.orderID}
           postData={postData}
         />

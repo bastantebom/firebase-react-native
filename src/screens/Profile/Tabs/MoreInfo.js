@@ -98,11 +98,11 @@ const MoreInfo = ({ profileInfo }) => {
               <NoInfo width={normalize(140)} height={normalize(140)} />
             </View>
             <View style={styles.copyWrapper}>
-              <AppText textStyle="display6" customStyle={styles.centerCopy}>
+              <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
                 Complete your profile
               </AppText>
               <AppText
-                textStyle="body3"
+                textStyle="body2"
                 color={Colors.profileLink}
                 customStyle={styles.centerCopy}>
                 Additional information about you will be posted here. Complete

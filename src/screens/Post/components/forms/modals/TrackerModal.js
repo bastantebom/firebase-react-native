@@ -99,17 +99,16 @@ const TrackerModal = ({
   const [messageHeader, setMessageHeader] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
   const [orderDetails, setOrderDetails] = useState({})
-
   const [isLoading, setIsLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('')
   const [orderId, setOrderId] = useState('')
 
   useEffect(() => {
-    setIsLoading(true)
     return firestore()
       .doc(`orders/${orderID}`)
       .onSnapshot(async snap => {
         if (snap?.data() && user) {
+          setIsLoading(true)
           let data = snap.data()
           data = {
             ...data,
@@ -123,8 +122,8 @@ const TrackerModal = ({
           setDelivery(data.delivery_method === 'delivery')
           setPickup(data.delivery_method === 'pickup')
           setPaymentMethod(data.payment_method)
-          setIsLoading(false)
           setOrderId(data.id)
+          setIsLoading(false)
         }
       })
   }, [])
@@ -204,13 +203,19 @@ const TrackerModal = ({
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
-              setStatusHeader('Awaiting for payment')
-              setMessageHeader('Your order request is ready for payment.')
-              setStatusMessage('<Awaiting Confirmation copy>')
+              if (orderDetails.payment_method === 'cash') {
+                setStatusHeader('Order Confirmed')
+                setMessageHeader('Yay! Your order is confirmed by the seller.')
+                setStatusMessage('<Confirmed copy>')
+              } else {
+                setStatusHeader('Order Confirmed')
+                setMessageHeader('Order confirmed! Continue to payment...')
+                setStatusMessage('<Processing message here>')
+              }
               break
             case 'paid':
-              setStatusHeader('Order Confirmed')
-              setMessageHeader('Yay! Your order is confirmed by the seller.')
+              setStatusHeader('Processing')
+              setMessageHeader('Preparing the Order')
               setStatusMessage('<Confirmed copy>')
               break
             case 'delivering':
@@ -252,7 +257,7 @@ const TrackerModal = ({
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
-              setStatusHeader('Your booking is scheduled')
+              setStatusHeader('Scheduled confirmed')
               setMessageHeader('Scheduled')
               setStatusMessage('<Schedule confirmed copy>')
               break
@@ -320,6 +325,17 @@ const TrackerModal = ({
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
+              if (orderDetails.payment_method === 'cash') {
+                setStatusHeader('Processing')
+                setMessageHeader('Preparing the order...')
+                setStatusMessage('<Processing message here>')
+              } else {
+                setStatusHeader('Awaiting Payment')
+                setMessageHeader('Waiting for Payment...')
+                setStatusMessage('<Processing message here>')
+              }
+              break
+            case 'paid':
               setStatusHeader('Processing')
               setMessageHeader('Preparing the order...')
               setStatusMessage('<Processing message here>')
@@ -361,6 +377,17 @@ const TrackerModal = ({
               setStatusMessage('<Awaiting Confirmation copy>')
               break
             case 'confirmed':
+              if (orderDetails.payment_method === 'cash') {
+                setStatusHeader('Schedule Confirmed')
+                setMessageHeader('Your schedule is confirmed...')
+                setStatusMessage('<Schedule confirmed copy>')
+              } else {
+                setStatusHeader('Awaiting Payment')
+                setMessageHeader('Waiting for payment...')
+                setStatusMessage('<Schedule confirmed copy>')
+              }
+              break
+            case 'paid':
               setStatusHeader('Schedule Confirmed')
               setMessageHeader('Your schedule is confirmed...')
               setStatusMessage('<Schedule confirmed copy>')
@@ -502,30 +529,6 @@ const TrackerModal = ({
     }, 5000)
   }, [])
 
-  const confirmOrderHandler = async () => {
-    const parameters = {
-      id: orderID,
-      uid: user.uid,
-      body: {
-        status: 'confirmed',
-      },
-    }
-
-    const response = await Api.updateOrder(parameters)
-  }
-
-  const declineOrderHandler = async () => {
-    const parameters = {
-      id: orderID,
-      uid: user.uid,
-      body: {
-        status: 'declined',
-      },
-    }
-
-    const response = await Api.updateOrder(parameters)
-  }
-
   const handleChatPress = async () => {
     let channel
     try {
@@ -560,18 +563,20 @@ const TrackerModal = ({
     }
   }
 
-  const handleDelivery = async () => {
-    setIsLoading(true)
+  const statusChangedHandler = async status => {
     const parameters = {
       id: orderID,
       uid: user.uid,
       body: {
-        status: 'delivering',
+        status,
       },
     }
-
-    const response = await Api.updateOrder(parameters)
-    if (response.success) setIsLoading(false)
+    try {
+      const response = await Api.updateOrder(parameters)
+      if (!response.success) throw new Error(response.message)
+    } catch (error) {
+      console.log(error || error.message)
+    }
   }
 
   return (
@@ -628,9 +633,6 @@ const TrackerModal = ({
                     (buyer &&
                       postType === 'service' &&
                       status === 'cancelled') ||
-                    (seller &&
-                      postType === 'service' &&
-                      status === 'completed') ||
                     status === 'declined'
                       ? 'none'
                       : 'flex',
@@ -666,9 +668,10 @@ const TrackerModal = ({
                         'processing',
                         'read',
                         'ongoing',
+                        'paid',
                       ].includes(status) ? (
                       <GreenDot />
-                    ) : status === 'cancelled' ? (
+                    ) : status === 'cancelled' || status === 'declined' ? (
                       <RedDot />
                     ) : (
                       <BlueDot />
@@ -882,86 +885,85 @@ const TrackerModal = ({
                   </AppText>
                 </View>
               </View>
-              {postType === 'service' ||
-                (postType === 'sell' && (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: 16,
-                    }}>
-                    {orderDetails.payment_method === 'cash' ? (
-                      <>
-                        <CashActive />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          Cash on Delivery / Pick up
-                        </AppText>
-                      </>
-                    ) : orderDetails.payment_method === 'card' ? (
-                      <>
-                        <CreditCardActive />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          Visa / Mastercard
-                        </AppText>
-                      </>
-                    ) : orderDetails.payment_method === 'gcash' ? (
-                      <>
-                        <GCashActive />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          GCash
-                        </AppText>
-                      </>
-                    ) : orderDetails.payment_method === 'grabpay' ? (
-                      <>
-                        <GrabPayActive />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          GrabPay
-                        </AppText>
-                      </>
-                    ) : orderDetails.payment_method === 'paypal' ? (
-                      <>
-                        <PaypalActive />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          PayPal
-                        </AppText>
-                      </>
-                    ) : orderDetails.payment_method === 'visa' ? (
-                      <>
-                        <VisaActive
-                          width={normalize(30)}
-                          height={normalize(30)}
-                        />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          •••• 2111
-                        </AppText>
-                      </>
-                    ) : orderDetails.payment_method === 'mastercard' ? (
-                      <>
-                        <MasterCardActive
-                          width={normalize(30)}
-                          height={normalize(30)}
-                        />
-                        <AppText
-                          textStyle={'body2medium'}
-                          customStyle={{ marginLeft: normalize(10) }}>
-                          •••• 2110
-                        </AppText>
-                      </>
-                    ) : null}
-                  </View>
-                ))}
+              {(postType === 'service' || postType === 'sell') && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 16,
+                  }}>
+                  {orderDetails.payment_method === 'cash' ? (
+                    <>
+                      <CashActive />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        Cash on Delivery / Pick up
+                      </AppText>
+                    </>
+                  ) : orderDetails.payment_method === 'card' ? (
+                    <>
+                      <CreditCardActive />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        Visa / Mastercard
+                      </AppText>
+                    </>
+                  ) : orderDetails.payment_method === 'gcash' ? (
+                    <>
+                      <GCashActive />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        GCash
+                      </AppText>
+                    </>
+                  ) : orderDetails.payment_method === 'grabpay' ? (
+                    <>
+                      <GrabPayActive />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        GrabPay
+                      </AppText>
+                    </>
+                  ) : orderDetails.payment_method === 'paypal' ? (
+                    <>
+                      <PaypalActive />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        PayPal
+                      </AppText>
+                    </>
+                  ) : orderDetails.payment_method === 'visa' ? (
+                    <>
+                      <VisaActive
+                        width={normalize(30)}
+                        height={normalize(30)}
+                      />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        •••• 2111
+                      </AppText>
+                    </>
+                  ) : orderDetails.payment_method === 'mastercard' ? (
+                    <>
+                      <MasterCardActive
+                        width={normalize(30)}
+                        height={normalize(30)}
+                      />
+                      <AppText
+                        textStyle={'body2medium'}
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        •••• 2110
+                      </AppText>
+                    </>
+                  ) : null}
+                </View>
+              )}
               {postType === 'need' && (
                 <AppText
                   textStyle="body2"
@@ -1078,12 +1080,7 @@ const TrackerModal = ({
           <>
             <View
               style={{
-                display:
-                  status === 'pending' ||
-                  status === 'ongoing' ||
-                  (postType === 'service' && status === 'confirmed')
-                    ? 'flex'
-                    : 'none',
+                display: status === 'pending' ? 'flex' : 'none',
               }}>
               <View
                 style={{
@@ -1097,11 +1094,15 @@ const TrackerModal = ({
                   paddingVertical: normalize(25),
                   paddingHorizontal: normalize(35),
                   justifyContent:
-                    postType !== 'need' ? 'space-between' : 'center',
+                    postType === 'sell' ||
+                    (postType === 'service' && status === 'pending')
+                      ? 'space-between'
+                      : 'center',
                 }}>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => setCancelOrder(true)}>
+                  onPress={() => setCancelOrder(true)}
+                  style={{ width: '50%' }}>
                   <AppText
                     textStyle="button2"
                     color={Colors.secondaryBrinkPink}>
@@ -1109,15 +1110,18 @@ const TrackerModal = ({
                       ? 'Cancel Order'
                       : postType === 'service'
                       ? 'Cancel Request'
-                      : null}
+                      : 'Cancel Offer'}
                   </AppText>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} onPress={closeModal}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => editOrderHandler(orderDetails.id)}
+                  style={{ width: '50%', alignItems: 'flex-end' }}>
                   <AppText textStyle="button2" color={Colors.contentOcean}>
                     {postType === 'sell'
                       ? 'Edit Order'
                       : postType === 'service'
-                      ? 'Edit'
+                      ? 'Edit Request'
                       : 'Edit Offer'}
                   </AppText>
                 </TouchableOpacity>
@@ -1126,32 +1130,27 @@ const TrackerModal = ({
 
             <View
               style={{
-                display:
-                  status === 'cancelled' || status === 'completed'
-                    ? 'flex'
-                    : 'none',
+                display: status === 'cancelled' ? 'flex' : 'none',
                 padding: normalize(16),
               }}>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => setCancelOrder(true)}>
+                onPress={() => setCancelOrder(true)}
+                style={{ width: '50%' }}>
                 <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
-                  {postType === 'sell'
-                    ? 'Cancel Order'
-                    : postType === 'service'
-                    ? 'Cancel Request'
-                    : null}
+                  {postType === 'sell' ? 'Cancel Order' : null}
                 </AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => editOrderHandler(orderDetails.id)}>
+                onPress={() => editOrderHandler(orderDetails.id)}
+                style={{ width: '50%' }}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
                   {postType === 'sell'
                     ? 'Edit Order'
-                    : postType === 'service'
-                    ? 'Edit'
-                    : 'Edit Offer'}
+                    : postType === 'need'
+                    ? 'Edit Offer'
+                    : null}
                 </AppText>
               </TouchableOpacity>
             </View>
@@ -1162,15 +1161,37 @@ const TrackerModal = ({
                 styles.btnPrimary,
                 {
                   display:
-                    status === 'confirmed' && paymentMethod !== 'cash'
+                    (postType === 'service' || postType === 'sell') &&
+                    status === 'confirmed' &&
+                    orderDetails.payment_method !== 'cash'
                       ? 'flex'
                       : 'none',
                 },
               ]}
-              onPress={() => handlePayment(paymentMethod)}>
+              onPress={() => handlePayment(orderDetails.payment_method)}>
               <AppText textStyle="body2medium">Continue to Payment</AppText>
               <AppText textStyle="body2">₱{computedTotalPrice()}</AppText>
             </TouchableOpacity>
+
+            <View
+              style={{
+                display:
+                  status === 'confirmed' &&
+                  postType === 'service' &&
+                  orderDetails.payment_method === 'cash'
+                    ? 'flex'
+                    : 'none',
+                padding: normalize(16),
+              }}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setCancelOrder(true)}
+                style={{ width: '100%', alignItems: 'center' }}>
+                <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
+                  Cancel Request
+                </AppText>
+              </TouchableOpacity>
+            </View>
           </>
         )}
 
@@ -1179,8 +1200,8 @@ const TrackerModal = ({
             <View
               style={{
                 display:
-                  status === 'pending' ||
-                  (postType === 'service' && status === 'ongoing')
+                  (postType === 'sell' || postType === 'service') &&
+                  status === 'pending'
                     ? 'flex'
                     : 'none',
               }}>
@@ -1191,34 +1212,123 @@ const TrackerModal = ({
                   padding: normalize(15),
                 }}>
                 <View style={{ width: '40%' }}>
-                  {postType === 'sell' && (
+                  {(postType === 'sell' || postType === 'service') && (
                     <AppButton
                       type="secondary"
                       text="Decline"
                       onPress={() => setDeclineOrder(true)}
                     />
                   )}
-                  {postType === 'service' && (
-                    <AppButton
-                      type="secondary"
-                      text="Decline"
-                      onPress={() => setDeclineRequest(true)}
-                    />
-                  )}
                 </View>
                 <View style={{ width: '55%' }}>
                   <AppButton
                     type="primary"
-                    onPress={confirmOrderHandler}
-                    text="Confirm Order"
+                    onPress={() => statusChangedHandler('confirmed')}
+                    text={
+                      postType === 'sell' ? 'Confirm Order' : 'Confirm Request'
+                    }
                   />
                 </View>
               </View>
             </View>
+
             <View
               style={{
                 display:
-                  status === 'confirmed' && paymentMethod === 'cash'
+                  postType === 'sell' &&
+                  status === 'confirmed' &&
+                  orderDetails.payment_method !== 'cash'
+                    ? 'flex'
+                    : 'none',
+                padding: normalize(16),
+              }}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setCancelOrder(true)}
+                style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
+                  {postType === 'sell'
+                    ? 'Cancel Order'
+                    : postType === 'service'
+                    ? 'Cancel Request'
+                    : null}
+                </AppText>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                display: postType === 'sell' ? 'flex' : 'none',
+              }}>
+              <View
+                style={{
+                  padding: normalize(15),
+                }}>
+                {delivery &&
+                  ((status === 'confirmed' &&
+                    orderDetails.payment_method === 'cash') ||
+                    (status === 'paid' &&
+                      orderDetails.payment_method !== 'cash')) && (
+                    <AppButton
+                      type="primary"
+                      onPress={() => statusChangedHandler('delivering')}
+                      text="Confirm for Delivery"
+                    />
+                  )}
+                {pickup &&
+                  ((status === 'confirmed' &&
+                    orderDetails.payment_method === 'cash') ||
+                    (status === 'paid' &&
+                      orderDetails.payment_method !== 'cash')) && (
+                    <AppButton
+                      type="primary"
+                      onPress={() => statusChangedHandler('pickup')}
+                      text="Confirm for Pick Up"
+                    />
+                  )}
+              </View>
+            </View>
+
+            <View
+              style={{
+                display: postType === 'service' ? 'flex' : 'none',
+                padding: normalize(16),
+              }}>
+              {(status === 'confirmed' &&
+                orderDetails.payment_method === 'cash') ||
+              (status === 'paid' && orderDetails.payment_method !== 'cash') ? (
+                <AppButton
+                  type="primary"
+                  onPress={() => statusChangedHandler('completed')}
+                  text="Request Completed"
+                  customStyle={{ marginBottom: 16 }}
+                />
+              ) : null}
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setCancelOrder(true)}
+                style={{
+                  width: '100%',
+                  alignItems: 'center',
+                  display:
+                    status !== 'completed' &&
+                    status !== 'cancelled' &&
+                    status !== 'declined' &&
+                    status !== 'pending'
+                      ? 'flex'
+                      : 'none',
+                }}>
+                <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
+                  Cancel Request
+                </AppText>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                display:
+                  postType === 'sell' &&
+                  (status === 'delivering' || status === 'pickup')
                     ? 'flex'
                     : 'none',
               }}>
@@ -1226,36 +1336,14 @@ const TrackerModal = ({
                 style={{
                   padding: normalize(15),
                 }}>
-                {delivery && (
-                  <AppButton
-                    type="primary"
-                    onPress={handleDelivery}
-                    text="Confirm for Delivery"
-                  />
-                )}
-                {pickup && (
-                  <AppButton
-                    type="primary"
-                    onPress={handlePickUp}
-                    text="Confirm for Pick Up"
-                  />
-                )}
+                <AppButton
+                  type="primary"
+                  onPress={() => statusChangedHandler('completed')}
+                  text="Order Completed"
+                />
               </View>
             </View>
-            <View
-              style={{
-                display:
-                  status === 'delivering' || status === 'pickup'
-                    ? 'flex'
-                    : 'none',
-              }}>
-              <View
-                style={{
-                  padding: normalize(15),
-                }}>
-                <AppButton type="primary" text="Order Completed" />
-              </View>
-            </View>
+
             <View
               style={{
                 display:
@@ -1269,9 +1357,14 @@ const TrackerModal = ({
                 style={{
                   padding: normalize(15),
                 }}>
-                <AppButton type="primary" text="Done" />
+                <AppButton
+                  type="primary"
+                  onPress={() => closeModal()}
+                  text="Done"
+                />
               </View>
             </View>
+
             <View
               style={{
                 display: buyer && status === 'ongoing' ? 'flex' : 'none',
@@ -1343,7 +1436,7 @@ const TrackerModal = ({
           <DeclineOrder
             goBack={() => setDeclineOrder(false)}
             postType={postType}
-            declineOrderFunction={() => declineOrderHandler()}
+            declineOrderFunction={() => statusChangedHandler('declined')}
           />
         </Modal>
         <Modal
@@ -1378,7 +1471,7 @@ const TrackerModal = ({
           <DeclineRequest
             goBack={() => setDeclineRequest(false)}
             postType={postType}
-            declineOrderFunction={() => declineOrderHandler()}
+            declineOrderFunction={() => statusChangedHandler('declined')}
           />
         </Modal>
         <Modal

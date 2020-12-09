@@ -143,15 +143,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
             <View>
               {info.length === 1 && (
                 <View style={styles.avatarHolder}>
-                  {type === 'follow' && (
-                    <AvatarPhoto size={35} url={profilePhoto} />
-                  )}
-                  {type === 'verification' && (
-                    <AvatarPhoto size={35} url={profilePhoto} />
-                  )}
-                  {type === 'order' && (
-                    <AvatarPhoto size={35} url={profilePhoto} />
-                  )}
+                  <AvatarPhoto size={35} url={profilePhoto} />
                 </View>
               )}
               {info.length > 1 && (
@@ -159,7 +151,11 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                   <View style={styles.multiAvatarHolder}>
                     <AvatarPhoto size={35} url={profilePhoto} />
                   </View>
-                  <View style={styles.multiAvatarHolder}>
+                  <View
+                    style={[
+                      styles.multiAvatarHolder,
+                      { marginTop: normalize(10) },
+                    ]}>
                     <AvatarPhoto size={35} url={info[1].profilePhoto} />
                   </View>
                 </View>
@@ -258,6 +254,37 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 </View>
               ))}
 
+            {type == 'payment' &&
+              status === 'paid' &&
+              info.length === 1 &&
+              (!isContentLoading ? (
+                <View
+                  style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                  <Text>
+                    <AppText textStyle="caption">
+                      <AppText textStyle="caption2">{name} </AppText>
+                      successfully paid the{' '}
+                      {postData.type === 'need'
+                        ? 'offer'
+                        : postData.type === 'sell'
+                        ? 'order'
+                        : 'booking'}{' '}
+                      on your post{' '}
+                      <AppText textStyle="caption2">{postData.title}</AppText>
+                    </AppText>
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ActivityIndicator size="small" color="#3781FC" />
+                </View>
+              ))}
+
             {type == 'order' &&
               info.length > 1 &&
               (!isContentLoading ? (
@@ -299,6 +326,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
             <View style={styles.holder}>
               <PostClock width={normalize(16)} height={normalize(16)} />
               <AppText
+                textStyle="caption"
                 customStyle={{
                   marginLeft: 3,
                   color: '#8C8B98',
@@ -356,7 +384,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 </TouchableOpacity>
               </>
             )}
-            {type === 'order' && info.length === 1 && (
+            {['order', 'payment'].includes(type) && info.length === 1 && (
               <>
                 <TouchableOpacity
                   style={{
@@ -369,7 +397,11 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                   }}
                   activeOpacity={0.7}
                   onPress={() => orderTrackerHandler()}>
-                  <AppText textStyle="button3">Track Order</AppText>
+                  <AppText textStyle="button3">
+                    {['cancelled', 'completed', 'declined'].includes(status)
+                      ? 'View Order'
+                      : 'Track Order'}
+                  </AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{

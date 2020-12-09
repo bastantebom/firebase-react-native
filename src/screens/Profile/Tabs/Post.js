@@ -20,11 +20,11 @@ const PostOwnEmpty = ({ isLoading }) => {
           <NoPost width={normalize(140)} height={normalize(140)} />
         </View>
         <View style={styles.copyWrapper}>
-          <AppText textStyle="display6" customStyle={styles.centerCopy}>
+          <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
             You have no post yet
           </AppText>
           <AppText
-            textStyle="body3"
+            textStyle="body2"
             color={Colors.profileLink}
             customStyle={styles.centerCopy}>
             Browse through and discover nearby services and products. Or, you

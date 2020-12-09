@@ -294,7 +294,7 @@ export const ContextProvider = ({ children }) => {
         const allNotifications = await Promise.all(
           snap.docs.map(async doc => {
             let snapData = doc.data()
-            if (snapData.type === 'order') {
+            if (['order', 'payment'].includes(snapData.type)) {
               const orderResponse = (
                 await firestore().doc(`orders/${snapData.order_id}`).get()
               ).data()

@@ -216,7 +216,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
               }}>
               <View style={styles.titleDesc}>
                 <AppText textStyle="body1medium">{currentItem.name}</AppText>
-                {currentItem.description && (
+                {currentItem?.description?.length > 0 && (
                   <AppText textStyle="body2">{currentItem.description}</AppText>
                 )}
               </View>

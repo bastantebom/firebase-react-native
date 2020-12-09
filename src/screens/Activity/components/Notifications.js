@@ -19,7 +19,7 @@ import _ from 'lodash'
 
 const Notifications = () => {
   const { user } = useContext(UserContext)
-  const { notificationsList } = useContext(Context)
+  const { notificationsList, initNotifications } = useContext(Context)
   const [notifications, setNotifications] = useState({
     notificationsActivity: [1],
   })
@@ -50,6 +50,10 @@ const Notifications = () => {
   useEffect(() => {
     if (notificationsList) assembleNotification()
   }, [notificationsList])
+
+  useEffect(() => {
+    initNotifications(user?.uid)
+  }, [])
 
   const openNotificationHandler = async readDocId => {
     if (!readDocId && !user?.uid) return
