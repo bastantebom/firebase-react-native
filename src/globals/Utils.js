@@ -253,11 +253,7 @@ export const requestLocation = async () => {
 
     return true
   } else if (Platform.OS === 'ios') {
-    Geolocation.requestAuthorization()
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: false,
-      authorizationLevel: 'whenInUse',
-    })
+    await Geolocation.requestAuthorization('whenInUse')
   }
 }
 
