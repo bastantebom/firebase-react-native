@@ -21,6 +21,7 @@ import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import Api from '@/services/Api'
 import { normalize, Colors } from '@/globals'
+import moment from 'moment'
 
 import {
   PostNote,
@@ -47,6 +48,7 @@ import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
 import TrackerModal from './TrackerModal'
 import OrderNotesModal from './OrderNotesModal'
+import ServiceSchedule from './ServiceSchedule'
 
 const BasketModal = ({
   closeModal,
@@ -55,6 +57,7 @@ const BasketModal = ({
   offerData,
   selectedPostDetails,
 }) => {
+  const [scheduleModal, showScheduleModal] = useState(false)
   const [changeDeliveryModal, showChangeDeliveryModal] = useState(false)
   const [changePaymentModal, showChangePaymentModal] = useState(false)
   const [addNoteModal, showAddNoteModal] = useState(false)
@@ -63,6 +66,7 @@ const BasketModal = ({
   const [fromEdit, setFromEdit] = useState(false)
   const [editOrderId, setEditOrderId] = useState()
   const [orderedCart, setOrderedCart] = useState()
+  const [serviceSchedule, setServiceSchedule] = useState('')
 
   const [orderID, setOrderID] = useState()
   const [userData, setUserData] = useState({})
@@ -229,6 +233,10 @@ const BasketModal = ({
         delivery_method: deliveryChoice,
         payment_method: paymentMethod,
         notes: notes,
+        schedule:
+          postType === 'service'
+            ? moment(serviceSchedule, 'MMMM D, YYYY @h:mm a').toDate()
+            : '',
       },
     }
 
@@ -780,13 +788,13 @@ const BasketModal = ({
                   Service Schedule
                 </AppText>
               </View>
-              <TouchableOpacity onPress={() => showChangePaymentModal(true)}>
+              <TouchableOpacity onPress={() => showScheduleModal(true)}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
                   Change
                 </AppText>
               </TouchableOpacity>
             </View>
-            <AppText textStyle="body2">September 29, 2020 at 10:00AM</AppText>
+            <AppText textStyle="body2">{serviceSchedule}</AppText>
           </View>
           <View
             style={{
@@ -981,6 +989,25 @@ const BasketModal = ({
         }}>
         <AddNoteModal closeModal={() => showAddNoteModal(false)} />
       </Modal>
+
+      <Modal
+        isVisible={scheduleModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showScheduleModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <ServiceSchedule
+          close={() => showScheduleModal(false)}
+          setServiceSchedule={text => setServiceSchedule(text)}
+        />
+      </Modal>
+
       <Modal
         isVisible={trackerModal}
         animationIn="slideInRight"

@@ -25,6 +25,7 @@ import {
 } from '@/components'
 
 import { normalize, Colors, GlobalStyle } from '@/globals'
+import moment from 'moment'
 
 import {
   Chat,
@@ -866,12 +867,13 @@ const TrackerModal = ({
                 <PostCash width={normalize(20)} height={normalize(20)} />
                 <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
                   <AppText textStyle="body1medium">
-                    Service requested on Sep 29, 2020
+                    Service requested on{' '}
+                    {moment(orderDetails?.schedule).format('MMMM D, YYYY')}
                   </AppText>
                   <AppText
                     textStyle="body2"
                     customStyle={{ marginTop: normalize(7) }}>
-                    at 10:00 AM (Local time)
+                    at {moment(orderDetails?.schedule).format('h:mm a')}
                   </AppText>
                 </View>
               </View>
