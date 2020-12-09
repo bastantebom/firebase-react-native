@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, SafeAreaView, StyleSheet } from 'react-native'
-import {
-  openInAppBrowser,
-  closeInAppBrowser,
-  thousandsSeparators,
-} from '@/globals/Utils'
+import Modal from 'react-native-modal'
+import WebViewModal from '@/screens/Post/components/forms/modals/WebViewModal'
+
+import { thousandsSeparators } from '@/globals/Utils'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 
@@ -18,6 +17,7 @@ import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
 
 const GCashModal = ({ closeModal, orderDetails }) => {
+  const [webViewLink, setWebViewLink] = useState('')
   const [terms, setTerms] = useState(false)
 
   const handleFormChange = () => setTerms(!terms)
@@ -32,7 +32,7 @@ const GCashModal = ({ closeModal, orderDetails }) => {
       },
     })
 
-    if (response.success) openInAppBrowser(response.data.redirect.checkout_url)
+    if (response.success) setWebViewLink(response.data.redirect.checkout_url)
   }
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const GCashModal = ({ closeModal, orderDetails }) => {
       .onSnapshot(snap => {
         if (snap.data().status === 'paid') closeModal()
 
-        closeInAppBrowser()
+        setWebViewLink('')
       })
   }, [])
 
@@ -118,11 +118,28 @@ const GCashModal = ({ closeModal, orderDetails }) => {
             text="Proceed"
             type="tertiary"
             disabled={!terms}
-            customStyle={{ backgroundColor: '#353B50' }}
             onPress={handleSubmit}
+            customStyle={{ backgroundColor: '#353B50' }}
           />
         </View>
       </View>
+
+      <Modal
+        isVisible={!!webViewLink.length}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={styles.webViewModal}>
+        <WebViewModal link={webViewLink}>
+          <ScreenHeaderTitle
+            close={() => setWebViewLink('')}
+            title="GCash"
+            iconSize={normalize(16)}
+            paddingSize={3}
+          />
+        </WebViewModal>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -140,5 +157,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
     textAlign: 'center',
+  },
+  webViewModal: {
+    margin: 0,
+    backgroundColor: 'white',
+    justifyContent: 'flex-start',
   },
 })

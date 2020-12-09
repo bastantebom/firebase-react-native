@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, SafeAreaView, StyleSheet } from 'react-native'
-import {
-  openInAppBrowser,
-  closeInAppBrowser,
-  thousandsSeparators,
-} from '@/globals/Utils'
+import Modal from 'react-native-modal'
+import WebViewModal from '@/screens/Post/components/forms/modals/WebViewModal'
+
+import { thousandsSeparators } from '@/globals/Utils'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 
@@ -19,9 +18,8 @@ import { Colors, normalize } from '@/globals'
 import { LogoPaypal } from '@/assets/images'
 
 const PaypalModal = ({ closeModal, orderDetails }) => {
+  const [webViewLink, setWebViewLink] = useState('')
   const [terms, setTerms] = useState(false)
-
-  const handleFormChange = () => setTerms(!terms)
 
   const handleSubmit = async () => {
     const response = await Api.createPaypalPayment({
@@ -32,7 +30,7 @@ const PaypalModal = ({ closeModal, orderDetails }) => {
       },
     })
 
-    openInAppBrowser(response.links[1].href)
+    setWebViewLink(response.links[1].href)
   }
 
   useEffect(() => {
@@ -41,7 +39,7 @@ const PaypalModal = ({ closeModal, orderDetails }) => {
       .onSnapshot(snap => {
         if (snap.data().status === 'paid') closeModal()
 
-        closeInAppBrowser()
+        setWebViewLink('')
       })
   }, [])
 
@@ -96,7 +94,7 @@ const PaypalModal = ({ closeModal, orderDetails }) => {
               Icon=""
               label=""
               value={terms}
-              valueChangeHandler={value => handleFormChange(value)}
+              valueChangeHandler={() => setTerms(!terms)}
               style={{
                 paddingLeft: 0,
                 marginRight: 5,
@@ -116,12 +114,30 @@ const PaypalModal = ({ closeModal, orderDetails }) => {
           </View>
           <AppButton
             onPress={handleSubmit}
+            disabled={!terms}
             text="Proceed"
             type="tertiary"
             customStyle={{ backgroundColor: '#353B50' }}
           />
         </View>
       </View>
+
+      <Modal
+        isVisible={!!webViewLink.length}
+        animationIn="slideInRight"
+        animationInTiming={750}
+        animationOut="slideOutRight"
+        animationOutTiming={750}
+        style={styles.webViewModal}>
+        <WebViewModal link={webViewLink}>
+          <ScreenHeaderTitle
+            close={() => setWebViewLink('')}
+            title="PayPal"
+            iconSize={normalize(16)}
+            paddingSize={3}
+          />
+        </WebViewModal>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -139,5 +155,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
     textAlign: 'center',
+  },
+  webViewModal: {
+    margin: 0,
+    backgroundColor: 'white',
+    justifyContent: 'flex-start',
   },
 })
