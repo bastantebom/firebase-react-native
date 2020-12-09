@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useRef,
-} from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import {
   View,
   ScrollView,
@@ -16,32 +10,33 @@ import {
   Linking,
   Dimensions,
   Animated,
-  TextInput,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import Swiper from 'react-native-swiper'
 import ReadMore from 'react-native-read-more-text'
+import Api from '@/services/Api'
 
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
+
+import { normalize, GlobalStyle, Colors, timePassed } from '@/globals'
 import {
   AppText,
   TransparentHeader,
   ProfileInfo,
   CacheableImage,
 } from '@/components'
-import { normalize, GlobalStyle, Colors, timePassed } from '@/globals'
 import {
   PostClock,
   PostNavigation,
   PostInfo,
   PostCash,
-  PostBox,
   CircleTick,
   CloseDark,
   CircleTickWhite,
   CloseLight,
-  ContactEmail,
   ContactTelephone,
   Chat,
   PostNote,
@@ -55,11 +50,7 @@ import {
   Search,
   PostParcelBlue,
 } from '@/assets/images/icons'
-import { CoverNeed, CoverSell, CoverService } from '@/assets/images'
 
-import { PostService } from '@/services'
-import { UserContext } from '@/context/UserContext'
-import { Context } from '@/context'
 import EditPostScreen from './EditPostScreen'
 import { ImageModal } from './ImageModal'
 import ItemModal from './forms/modals/ItemModal'
@@ -67,7 +58,7 @@ import BasketModal from './forms/modals/BasketModal'
 import OfferModal from './forms/modals/OfferModal'
 
 const SinglePostView = props => {
-  const { othersView = false } = props.route?.params
+  const navigation = useNavigation()
 
   const {
     user: {
@@ -84,20 +75,18 @@ const SinglePostView = props => {
     payment,
     price,
     store_details: {
-      schedule,
-      location: { city, province, country },
+      location: { city, province },
     },
-    delivery_methods,
-    available,
     account_verified,
     date_posted,
-    post_id,
+    id,
     uid,
     is_multiple,
     type,
     items,
     price_range,
   } = props.route?.params?.data
+  const { othersView = false } = props.route?.params
 
   const itemsByCategory = [
     ...items
@@ -141,44 +130,36 @@ const SinglePostView = props => {
       .values(),
   ]
 
-  const navigation = useNavigation()
-
-  const [showNotification, setShowNotification] = useState(false)
-  const [ellipsisState, setEllipsisState] = useState(false)
-  const [otherPostModal, setOtherPostModal] = useState(false)
-
-  const [editPost, showEditPost] = useState(false)
-  const [postImageModal, setPostImageModal] = useState(false)
-
-  const [expired, setExpired] = useState(false)
   const { user, setUserInfo, userInfo } = useContext(UserContext)
   const {
     userCart,
-    setUserCart,
     deleteCurrentOrderModal,
     showDeleteCurrentOrderModal,
   } = useContext(Context)
-  const [following, setFollowing] = useState(false)
-  const [storeOpen, setStoreOpen] = useState(true)
-  const [multipleItems] = useState(is_multiple)
-  const [itemModal, showItemModal] = useState(false)
-  const [itemModalData, setItemModalData] = useState({})
 
+  const [ellipsisState, setEllipsisState] = useState(false)
+  const [expired] = useState(false)
+  const [following, setFollowing] = useState(false)
+  const [storeOpen] = useState(true)
+  const [multipleItems] = useState(is_multiple)
+  const [itemModalData, setItemModalData] = useState({})
+  const [totalCartPrice, setTotalCartPrice] = useState('0.00')
+
+  const [showNotification, setShowNotification] = useState(false)
+  const [editPost, showEditPost] = useState(false)
+  const [postImageModal, setPostImageModal] = useState(false)
+  const [itemModal, showItemModal] = useState(false)
   const [basketModal, showBasketModal] = useState(false)
   const [offerModal, showOfferModal] = useState(false)
-
-  const [totalCartPrice, setTotalCartPrice] = useState('0.00')
 
   useEffect(() => {
     let computedPrice = 0
 
-    if (userCart.length > 0)
-      userCart.map(item => {
-        computedPrice += item.price * item.quantity
-      })
+    if (userCart.length)
+      userCart.map(item => (computedPrice += item.price * item.quantity))
 
     setTotalCartPrice(computedPrice)
-  })
+  }, [])
 
   const toggleEditPost = () => {
     toggleEllipsisState()
@@ -234,21 +215,23 @@ const SinglePostView = props => {
     },
   ]
   const deletePost = async () => {
-    return await PostService.deletePost(post_id).then(() => {
+    const { success } = await Api.deletePost({ pid: id })
+
+    if (success) {
       toggleEllipsisState()
-      setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
       navigation.goBack()
-    })
+    }
   }
 
   const hidePost = async () => {
-    return await PostService.hidePost({ uid: user?.uid, pid: post_id }).then(
-      res => {
-        toggleEllipsisState()
-        setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
-        navigation.goBack()
-      }
-    )
+    const { success } = await Api.hidePost({ pid: id })
+
+    if (success) {
+      toggleEllipsisState()
+      navigation.goBack()
+    }
+
+    console.log(userInfo)
   }
 
   let timeAgo = time => {
@@ -800,7 +783,7 @@ const SinglePostView = props => {
               editPostFunction={toggleEditPost}
               deletePostFunction={deletePost}
               hidePost={hidePost}
-              postId={post_id}
+              postId={id}
               postTitle={title}
             />
           </Animated.View>
@@ -855,7 +838,7 @@ const SinglePostView = props => {
           <ItemModal
             item={itemModalData}
             postType={type}
-            postID={post_id}
+            postID={id}
             closeModal={() => showItemModal(false)}
           />
         </Modal>
