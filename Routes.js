@@ -342,7 +342,6 @@ const TabStack = props => {
         name="Servbees"
         component={DashboardStack}
         options={{
-          tabBarLabel: 'Dashboard',
           tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <ServbeesAltActive width={normalize(25)} height={normalize(25)} />

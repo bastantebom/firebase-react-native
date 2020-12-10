@@ -54,7 +54,9 @@ const VerifyCodeScreen = ({ navigation, route, routes }) => {
       if (!response.success) throw new Error(response.message)
       setNotificationMessage(
         <View>
-          <Text>Verification code has been sent to {login}</Text>
+          <AppText textStyle="body2" customStyle={{ color: '#fff' }}>
+            Verification code has been sent to {login}
+          </AppText>
         </View>
       )
       setNotificationType('success')

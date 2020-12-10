@@ -31,8 +31,8 @@ const VerificationScreen = ({ navigation }) => {
     {
       key: 'profile',
       label: 'Complete profile information',
-      doneLabel: 'Completed profile information',
-      icon: <Icons.Card />,
+      completedLabel: 'Profile information',
+      icon: <Icons.FillUp />,
       status: 'pending',
       screen: 'ProfileInformation',
       action: () => {
@@ -42,8 +42,8 @@ const VerificationScreen = ({ navigation }) => {
     {
       key: 'phone_number',
       label: 'Add and verify mobile number',
-      doneLabel: 'Mobile number verified',
-      icon: <Icons.Mobile />,
+      completedLabel: 'Mobile number verified',
+      icon: <Icons.VerifyNumber />,
       status: 'pending',
       action: () => {
         navigation.navigate('phone-verification')
@@ -52,8 +52,8 @@ const VerificationScreen = ({ navigation }) => {
     {
       key: 'account',
       label: 'Upload a government ID',
-      doneLabel: 'Government ID verified',
-      icon: <Icons.Id />,
+      completedLabel: 'Government ID verified',
+      icon: <Icons.UploadId />,
       status: 'pending',
       action: () => {
         navigation.navigate('id-verification', { screen: 'id-verification' })
@@ -62,8 +62,8 @@ const VerificationScreen = ({ navigation }) => {
     {
       key: 'email',
       label: 'Add and verify email address',
-      doneLabel: 'Email address verified',
-      icon: <Icons.Id />,
+      completedLabel: 'Email address verified',
+      icon: <Icons.VerifyEmail />,
       status: 'pending',
       action: () => {
         navigation.navigate('email-verification')
@@ -83,6 +83,35 @@ const VerificationScreen = ({ navigation }) => {
     setIsLoading(false)
   }
 
+  const renderItem = item => {
+    return (
+      <TouchableOpacity
+        key={item.key}
+        style={[styles.listItem]}
+        onPress={item.action}
+        disabled={item.status !== 'pending'}>
+        <View style={{ marginRight: 8 }}>{item.icon}</View>
+        <AppText textStyle="body1">{item.label}</AppText>
+        <Icons.ChevronRight
+          color={
+            item.status === 'pending'
+              ? Colors.checkboxBorderDefault
+              : 'transparent'
+          }
+        />
+      </TouchableOpacity>
+    )
+  }
+
+  const renderCompletedItem = item => {
+    return (
+      <View key={item.key} style={styles.listItemCompleted}>
+        <AppText textStyle="body1">{item.completedLabel}</AppText>
+        <Icons.CheckActive />
+      </View>
+    )
+  }
+
   useEffect(() => {
     navigation.addListener('focus', getStatus)
     return () => {
@@ -96,20 +125,20 @@ const VerificationScreen = ({ navigation }) => {
         loading={isLoading}
         backdropStyle={{ backgroundColor: '#fff' }}
       />
+      <View style={{ padding: 24 }}>
+        <TouchableOpacity onPress={navigation.goBack}>
+          <Icons.Back
+            style={styles.backButton}
+            height={normalize(16)}
+            width={normalize(16)}
+          />
+        </TouchableOpacity>
+      </View>
       <ScrollView>
         <View style={{ padding: 24 }}>
-          <View style={{ marginBottom: 45 }}>
-            <TouchableOpacity onPress={navigation.goBack}>
-              <Icons.Back
-                style={styles.backButton}
-                height={normalize(16)}
-                width={normalize(16)}
-              />
-            </TouchableOpacity>
-          </View>
-          <Icons.Verified height={normalize(32)} width={normalize(32)} />
+          <Icons.VerifiedProfile height={normalize(80)} width={normalize(80)} />
           <View style={styles.headingWrapper}>
-            <AppText textStyle="display6">Get the verified badge</AppText>
+            <AppText textStyle="display6">Get bee-rified!</AppText>
             <AppText
               textStyle="price"
               color={Colors.neutralsWhitesmoke}
@@ -121,33 +150,39 @@ const VerificationScreen = ({ navigation }) => {
           <AppText
             textStyle="body2"
             color={Colors.contentPlaceholder}
-            customStyle={{ marginBottom: 24 }}>
-            Complete your profile and verify youridentity for a better Servbees
-            experience!
+            customStyle={{ marginBottom: normalize(24) }}>
+            Complete your profile and verification to validate your account and
+            ensure that only you can access your account. It will also make your
+            customer feel more secure during transactions.
           </AppText>
 
-          {verifications.some(item => item.status === 'pending') && (
-            <AppText textStyle="subtitle1" customStyle={styles.listHeader}>
-              Pending
-            </AppText>
+          {verifications.filter(
+            verification => verification.status === 'pending'
+          ).length >= 3 ? (
+            <View>
+              <AppText
+                textStyle="body1medium"
+                customStyle={{ marginBottom: normalize(4) }}>
+                Start the verification process now
+              </AppText>
+              <AppText
+                textStyle="body2"
+                color={Colors.contentPlaceholder}
+                customStyle={{ marginBottom: normalize(24) }}>
+                Provide all the necessary info and requirements.
+              </AppText>
+            </View>
+          ) : (
+            verifications.some(item => item.status === 'pending') && (
+              <AppText textStyle="subtitle1" customStyle={styles.listHeader}>
+                Pending
+              </AppText>
+            )
           )}
+
           {verifications
             .filter(item => item.status === 'pending')
-            .map((item, i) => {
-              return (
-                <View key={item.key}>
-                  <TouchableOpacity
-                    style={[styles.listItem, { marginBottom: 28 }]}
-                    onPress={item.action}>
-                    <View style={styles.listItem}>
-                      <View style={{ marginRight: 8 }}>{item.icon}</View>
-                      <AppText textStyle="body1">{item.label}</AppText>
-                    </View>
-                    <Icons.ArrowRight />
-                  </TouchableOpacity>
-                </View>
-              )
-            })}
+            .map(renderItem)}
 
           {verifications.some(item =>
             ['review', 'submitted'].includes(item.status)
@@ -159,40 +194,18 @@ const VerificationScreen = ({ navigation }) => {
 
           {verifications
             .filter(item => ['review', 'submitted'].includes(item.status))
-            .map((item, i) => {
-              return (
-                <View key={item.key}>
-                  <View style={[styles.listItem, { marginBottom: 28 }]}>
-                    <View style={styles.listItem}>
-                      <View style={{ marginRight: 8 }}>{item.icon}</View>
-                      <AppText textStyle="body1">{item.label}</AppText>
-                    </View>
-                  </View>
-                </View>
-              )
-            })}
+            .map(renderItem)}
 
           {verifications.some(item => item.status === 'completed') && (
-            <AppText textStyle="subtitle1" customStyle={styles.listHeader}>
-              Completed
+            <AppText
+              textStyle="subtitle1"
+              customStyle={{ marginVertical: normalize(8) }}>
+              Already Completed
             </AppText>
           )}
-
           {verifications
             .filter(item => item.status === 'completed')
-            .map(item => {
-              return (
-                <View key={item.key}>
-                  <View style={[styles.listItem, { marginBottom: 28 }]}>
-                    <View style={styles.listItem}>
-                      <View style={{ marginRight: 8 }}>{item.icon}</View>
-                      <AppText textStyle="body1">{item.doneLabel}</AppText>
-                    </View>
-                    <Icons.VerifyTick />
-                  </View>
-                </View>
-              )
-            })}
+            .map(renderCompletedItem)}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -215,13 +228,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-    marginTop: 15,
+    marginTop: 8,
     alignItems: 'center',
   },
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.neutralsZircon,
+    padding: normalize(12),
+    borderRadius: 8,
+    marginBottom: normalize(16),
+    backgroundColor: '#fff',
+  },
+  listItemCompleted: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: normalize(16),
   },
   listHeader: {
     marginBottom: 15,

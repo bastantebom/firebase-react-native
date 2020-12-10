@@ -78,13 +78,6 @@ const styles = StyleSheet.create({
     fontSize: normalize(defaultFontSize - 2),
     letterSpacing: 0.4,
   },
-
-  caption2: {
-    fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize - 2),
-    letterSpacing: 0.4,
-  },
-
   body3: {
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(defaultFontSize + 2),

@@ -153,7 +153,7 @@ const CaptureIdCameraFooter = ({ idType, onTakePicture }) => {
           fontSize: normalize(16),
           lineHeight: normalize(24),
         }}>
-        Take a photo of your {idType.toLowerCase()}
+        Take a photo of your {idType}
       </AppText>
       <AppText
         textStyle="body2"

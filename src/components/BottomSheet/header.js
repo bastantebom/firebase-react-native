@@ -1,7 +1,8 @@
-import React from 'react';
-import {View} from 'react-native';
+import React from 'react'
+import { Dimensions, View } from 'react-native'
 
-import {normalize} from '@/globals';
+import { normalize } from '@/globals'
+const width = Dimensions.get('window').width
 
 const bottomSheetHeader = () => {
   return (
@@ -15,14 +16,14 @@ const bottomSheetHeader = () => {
       <View
         style={{
           backgroundColor: '#EAEAEA',
-          width: normalize(40),
+          width: normalize(width * 0.35),
           height: 5,
           marginVertical: 8,
-          borderRadius: 100
+          borderRadius: 100,
         }}
       />
     </View>
-  );
-};
+  )
+}
 
-export default bottomSheetHeader;
+export default bottomSheetHeader

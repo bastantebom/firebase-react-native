@@ -266,6 +266,13 @@ import MasterCard from './mastercard.svg'
 import Visa from './visa.svg'
 import VisaActive from './visa-active.svg'
 import MasterCardActive from './mastercard-active.svg'
+import FillUp from './fill-up.svg'
+import VerifiedProfile from './verified-profile.svg'
+import VerifyNumber from './verify-number.svg'
+import VerifyEmail from './verify-email.svg'
+import UploadId from './upload-id.svg'
+import CheckActive from './check-active.svg'
+import More from './more.svg'
 
 import RoundEllipsisBlue from './round-ellipsis.svg'
 
@@ -484,10 +491,10 @@ export const Icons = {
   Card,
   CartDot,
   Chat,
+  CheckActive,
   ChevronRight,
   ChevronRightGray,
   CircleAdd,
-  CircleTick,
   CircleTick,
   CircleTickWhite,
   Close,
@@ -495,6 +502,7 @@ export const Icons = {
   CloseLight,
   ContactTelephone,
   Direction,
+  FillUp,
   Flash,
   FlashOff,
   Flip,
@@ -512,6 +520,7 @@ export const Icons = {
   LikeColored,
   Lock,
   Mobile,
+  More,
   NavigationPin,
   PostCalendar,
   PostCash,
@@ -526,8 +535,12 @@ export const Icons = {
   Search,
   ShoppingCart,
   TransportationBox,
+  UploadId,
   Verified,
+  VerifiedProfile,
   VerifiedWhite,
+  VerifyEmail,
+  VerifyNumber,
   VerifyTick,
   Warning,
   RoundEllipsisBlue,

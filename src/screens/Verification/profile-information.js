@@ -471,9 +471,9 @@ const ProfileInformationScreen = ({ navigation }) => {
       <Modal
         isVisible={isGenderModalVisible}
         animationIn="slideInUp"
-        animationInTiming={500}
         animationOut="slideOutDown"
-        animationOutTiming={500}
+        animationInTiming={250}
+        animationOutTiming={200}
         onSwipeComplete={() => setIsGenderModalVisible(false)}
         swipeDirection="down"
         style={{
