@@ -27,11 +27,8 @@ const OngoingItem = ({ route }) => {
   const [readyForDelivery, showReadyForDelivery] = useState(false)
   const [readyForPickup, showReadyForPickup] = useState(false)
 
-  const { orders, name, title, type } = route?.params?.info
+  const { orders, name, title, type, postData } = route?.params?.info
   const [pending, setPending] = useState([])
-  const [ongoingDelivery, setOngoingDelivery] = useState([])
-  const [ongoingPickup, setOngoingPickup] = useState([])
-  const [completed, setCompleted] = useState([])
 
   const [isPendingLoading, setIsPendingLoading] = useState(false)
 
@@ -63,7 +60,7 @@ const OngoingItem = ({ route }) => {
             orderID: order.id,
             numOfItems: order.items?.length ? order.items?.length : 0,
             postId: order.post_id,
-            type,
+            type: postData.type,
           }
         } else return {}
       })

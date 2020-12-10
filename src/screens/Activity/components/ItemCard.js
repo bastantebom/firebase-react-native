@@ -117,22 +117,26 @@ const ItemCard = ({ item }) => {
             <AppText textStyle="body2medium">
               ₱{item.amount.toLocaleString()}
             </AppText>
-            <AppText textStyle="caption" color={Colors.contentPlaceholder}>
-              {' '}
-              — via{' '}
-            </AppText>
-            <AppText
-              textStyle="caption2"
-              customStyle={{ textTransform: 'capitalize' }}>
-              {item.paymentMode}
-            </AppText>
+            {item.type !== 'need' && (
+              <>
+                <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+                  {' '}
+                  — via{' '}
+                </AppText>
+                <AppText
+                  textStyle="caption2"
+                  customStyle={{ textTransform: 'capitalize' }}>
+                  {item.paymentMode}
+                </AppText>
+              </>
+            )}
           </View>
           {item.type === 'sell' && (
             <AppText textStyle="caption">
               No. of items: {item.numOfItems}
             </AppText>
           )}
-          {item.type == 'service' && (
+          {item.type === 'service' && (
             <AppText textStyle="caption">
               No. of services: {item.numOfItems}
             </AppText>

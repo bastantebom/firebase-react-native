@@ -753,7 +753,7 @@ const TrackerModal = ({
                             ? 'Message seller'
                             : postType === 'service'
                             ? 'Message service provider'
-                            : `Message ${postData?.user?.full_name}`}
+                            : `Message`}
                         </AppText>
                       )}
                       {seller && (
@@ -764,7 +764,7 @@ const TrackerModal = ({
                             ? 'Message customer'
                             : postType === 'service'
                             ? 'Message customer'
-                            : `Message ${postData?.user?.full_name}`}
+                            : `Message`}
                         </AppText>
                       )}
                     </View>
@@ -1201,11 +1201,7 @@ const TrackerModal = ({
           <>
             <View
               style={{
-                display:
-                  (postType === 'sell' || postType === 'service') &&
-                  status === 'pending'
-                    ? 'flex'
-                    : 'none',
+                display: status === 'pending' ? 'flex' : 'none',
               }}>
               <View
                 style={{
@@ -1214,13 +1210,11 @@ const TrackerModal = ({
                   padding: normalize(15),
                 }}>
                 <View style={{ width: '40%' }}>
-                  {(postType === 'sell' || postType === 'service') && (
-                    <AppButton
-                      type="secondary"
-                      text="Decline"
-                      onPress={() => setDeclineOrder(true)}
-                    />
-                  )}
+                  <AppButton
+                    type="secondary"
+                    text="Decline"
+                    onPress={() => setDeclineOrder(true)}
+                  />
                 </View>
                 <View style={{ width: '55%' }}>
                   <AppButton
@@ -1331,6 +1325,25 @@ const TrackerModal = ({
                 display:
                   postType === 'sell' &&
                   (status === 'delivering' || status === 'pickup')
+                    ? 'flex'
+                    : 'none',
+              }}>
+              <View
+                style={{
+                  padding: normalize(15),
+                }}>
+                <AppButton
+                  type="primary"
+                  onPress={() => statusChangedHandler('completed')}
+                  text="Order Completed"
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                display:
+                  postType === 'need' && status === 'confirmed'
                     ? 'flex'
                     : 'none',
               }}>

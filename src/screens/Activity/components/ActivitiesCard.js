@@ -34,7 +34,7 @@ const ActivitiesCard = ({ info }) => {
     if (
       cardType === 'own' &&
       status === 'confirmed' &&
-      postData.type === 'service'
+      ['service', 'need'].includes(postData.type)
     )
       return Colors.secondaryLavenderBlue
     if (cardType === 'own' && status === 'delivering')
@@ -80,7 +80,7 @@ const ActivitiesCard = ({ info }) => {
     if (
       cardType === 'own' &&
       status === 'confirmed' &&
-      postData.type === 'service'
+      ['service', 'need'].includes(postData.type)
     )
       return 'Confirmed'
     if (cardType === 'own' && status === 'delivering')
@@ -247,6 +247,7 @@ const ActivitiesCard = ({ info }) => {
                       </AppText>
                     )}
                   {cardType === 'seller' &&
+                    postData?.type !== 'need' &&
                     (orders?.confirmed ||
                       orders?.delivering ||
                       orders?.pickup ||
@@ -262,7 +263,7 @@ const ActivitiesCard = ({ info }) => {
                     <AppText
                       textStyle="metadata"
                       customStyle={{ marginHorizontal: 2 }}>
-                      {orders?.pending?.length} offers
+                      {getTotalAvailed()} offers
                     </AppText>
                   )}
                   {cardType === 'seller' && orders?.pending && (

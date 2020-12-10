@@ -175,7 +175,7 @@ const BasketModal = ({
     const parameters = {
       uid: user.uid,
       body: {
-        post_id: postData?.post_id,
+        post_id: postData?.id,
         price: Number(offerData?.price),
         message: offerData?.message,
       },
@@ -902,7 +902,7 @@ const BasketModal = ({
           </AppText>
         )}
         <TouchableOpacity
-          disabled={!paymentMethod}
+          disabled={!paymentMethod && postType !== 'need'}
           onPress={() => {
             if (postType === 'need') {
               sendOfferHandler()
@@ -913,7 +913,7 @@ const BasketModal = ({
           <View
             style={
               styles[
-                !!paymentMethod
+                !!paymentMethod || postType === 'need'
                   ? 'buyButtonContainer'
                   : 'disabledBuyButtonContainer'
               ]
