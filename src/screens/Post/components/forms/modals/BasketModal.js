@@ -902,6 +902,7 @@ const BasketModal = ({
           </AppText>
         )}
         <TouchableOpacity
+          disabled={!!paymentMethod}
           onPress={() => {
             if (postType === 'need') {
               sendOfferHandler()
@@ -909,7 +910,14 @@ const BasketModal = ({
               placeOrderHandler()
             }
           }}>
-          <View style={styles.buyButtonContainer}>
+          <View
+            style={
+              styles[
+                !!paymentMethod
+                  ? 'buyButtonContainer'
+                  : 'disabledBuyButtonContainer'
+              ]
+            }>
             <View
               style={{
                 justifyContent: 'space-between',

@@ -131,17 +131,7 @@ const SinglePostView = props => {
   const [basketModal, showBasketModal] = useState(false)
   const [offerModal, showOfferModal] = useState(false)
   const [liked, setLiked] = useState(false)
-
-  useEffect(() => {
-    const { likes } = props.route?.params?.data
-    setLiked(likes.includes(user.uid))
-    ;(async () => {
-      const { data } = await Api.getFollowers({
-        uid: props.route?.params?.data.uid,
-      })
-      setFollowing(data.some(resData => resData.uid === user.uid))
-    })()
-  }, [])
+  const [disableCartButton, setDisableCartButton] = useState(false)
 
   useEffect(() => {
     let computedPrice = 0
@@ -150,6 +140,31 @@ const SinglePostView = props => {
       userCart.map(item => (computedPrice += item.price * item.quantity))
 
     setTotalCartPrice(computedPrice)
+
+    setDisableCartButton(
+      (!Array.isArray(userCart) || !userCart.length) && is_multiple
+    )
+  }, [userCart])
+
+  useEffect(() => {
+    const promises = [
+      (async () => {
+        const { data } = await Api.getFollowers({
+          uid: props.route?.params?.data.uid,
+        })
+        setFollowing(data.some(resData => resData.uid === user.uid))
+      })(),
+      (async () => {
+        const { likes } = await Api.getPostLikes({
+          pid: props.route?.params?.data.id,
+        })
+        setLiked(likes?.includes(user.uid))
+      })(),
+    ]
+
+    ;(async () => {
+      await Promise.all(promises)
+    })()
   }, [])
 
   useEffect(() => {
@@ -226,7 +241,9 @@ const SinglePostView = props => {
 
   const handleFollowing = async () => {
     const { uid } = props.route?.params?.data
-    const response = await Api[following ? 'unfollowUser' : 'followUser']({ uid })
+    await Api[following ? 'unfollowUser' : 'followUser']({
+      uid,
+    })
     setFollowing(!following)
   }
 
@@ -449,14 +466,6 @@ const SinglePostView = props => {
       </View>
     )
   }
-
-  const [disableCartButton, setDisableCartButton] = useState(false)
-
-  useEffect(() => {
-    setDisableCartButton(
-      (!Array.isArray(userCart) || !userCart.length) && is_multiple
-    )
-  }, [])
 
   const SinglePostContent = () => {
     return (

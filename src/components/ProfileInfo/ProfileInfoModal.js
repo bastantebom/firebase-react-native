@@ -213,7 +213,7 @@ function ProfileInfoModal(props) {
           ellipsisState={ellipsisState}
           toggleEllipsisState={toggleEllipsisState}
           toggleFollowing={toggleFollowing}
-          isFollowing={isFollowing}
+          following={isFollowing}
           toggleMenu={toggleMenu}
           menu={menu}
           signOut={signOut}
