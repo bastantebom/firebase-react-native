@@ -315,7 +315,9 @@ export const ContextProvider = ({ children }) => {
             if (response.success)
               return {
                 profilePhoto: response.data.profile_photo,
-                name: response.data.full_name,
+                name: response.data.display_name
+                  ? response.data.display_name
+                  : response.data.full_name,
                 isFollowing: response.data.is_following,
                 ...snapData,
               }

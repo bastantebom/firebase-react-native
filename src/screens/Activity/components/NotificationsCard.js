@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-
 import { AppText, CacheableImage } from '@/components'
 import { GlobalStyle, normalize, timePassedShort, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
@@ -29,7 +28,7 @@ import {
 } from '@/assets/images/icons'
 
 const NotificationsCard = ({ info, openNotificationHandler }) => {
-  const { user } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
   const navigation = useNavigation()
 
   const {
@@ -125,6 +124,42 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
   const orderTrackerHandler = () => {
     if (!read) openNotificationHandler(id)
     showTrackerModal(true)
+  }
+
+  const getLatest = async orderData => {
+    const timeStampList = []
+    for (const [key, orders] of Object.entries(orderData)) {
+      orders.map(order => {
+        timeStampList.push(order.date._seconds)
+      })
+    }
+    return Math.max(...timeStampList)
+  }
+
+  const multipleTrackerHandler = async () => {
+    let info = {}
+    if (!read) openNotificationHandler(id)
+    const responseOrders = await Api.getOrders({
+      uid: user?.uid,
+      pid: postId,
+    })
+    if (responseOrders.success) {
+      const { full_name, display_name, profile_photo } = userInfo
+      let latestTimeStampOrder = postData.date_posted._seconds
+      if (Object.keys(responseOrders.data).length)
+        latestTimeStampOrder = await getLatest(responseOrders.data)
+      info = {
+        profilePhoto: profile_photo,
+        name: display_name ? display_name : full_name,
+        cardType: 'seller',
+        time: latestTimeStampOrder,
+        cover_photos: postData.cover_photos,
+        orders: responseOrders.data,
+        postData,
+      }
+    }
+
+    if (info.orders) navigation.navigate('OngoingItem', { info })
   }
 
   useEffect(() => {
@@ -419,7 +454,27 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
               </>
             )}
 
-            {type === 'order' && info.length > 1 && <></>}
+            {type === 'order' && info.length > 1 && (
+              <>
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 6,
+                    marginRight: 10,
+                    width: 130,
+                    alignItems: 'center',
+                    backgroundColor: '#FFD400',
+                    borderRadius: 5,
+                  }}
+                  activeOpacity={0.7}
+                  onPress={multipleTrackerHandler}>
+                  <AppText textStyle="button3">
+                    {['cancelled', 'completed', 'declined'].includes(status)
+                      ? 'View Orders'
+                      : 'Track Orders'}
+                  </AppText>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </View>
       </View>
