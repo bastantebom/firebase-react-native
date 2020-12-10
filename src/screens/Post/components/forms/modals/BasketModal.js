@@ -902,7 +902,7 @@ const BasketModal = ({
           </AppText>
         )}
         <TouchableOpacity
-          disabled={!!paymentMethod}
+          disabled={!paymentMethod}
           onPress={() => {
             if (postType === 'need') {
               sendOfferHandler()
