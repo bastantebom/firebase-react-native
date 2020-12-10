@@ -215,6 +215,7 @@ import LocationContactUs from './location-contactus.svg'
 import AngleDown from './AngleDown.svg'
 import FormArrowRight from './FormArrowRight.svg'
 import LoginApple from './login_Apple03.svg'
+import PayoutWallet from './payout-wallet.svg'
 
 import CircleAdd from './circle-add.svg'
 import VerticalEllipsis from './VerticalEllipsis.svg'
@@ -265,6 +266,8 @@ import MasterCard from './mastercard.svg'
 import Visa from './visa.svg'
 import VisaActive from './visa-active.svg'
 import MasterCardActive from './mastercard-active.svg'
+
+import RoundEllipsisBlue from './round-ellipsis.svg'
 
 export {
   AudioVideo,
@@ -470,6 +473,8 @@ export {
   MasterCardActive,
   Bank,
   BankActive,
+  PayoutWallet,
+  RoundEllipsisBlue,
 }
 
 export const Icons = {
@@ -480,6 +485,7 @@ export const Icons = {
   CartDot,
   Chat,
   ChevronRight,
+  ChevronRightGray,
   CircleAdd,
   CircleTick,
   CircleTick,
@@ -524,4 +530,5 @@ export const Icons = {
   VerifiedWhite,
   VerifyTick,
   Warning,
+  RoundEllipsisBlue,
 }

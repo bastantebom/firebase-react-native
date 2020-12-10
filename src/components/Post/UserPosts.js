@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { FlatList, View, ActivityIndicator, Platform } from 'react-native'
+import { FlatList, View, ActivityIndicator } from 'react-native'
 
 import Post from '@/components/Post/Post'
 import { UserContext } from '@/context/UserContext'
@@ -19,14 +19,7 @@ const UserPosts = ({
   selectNeedFunction,
 }) => {
   const { user, userInfo } = useContext(UserContext)
-  const {
-    setUserPosts,
-    userPosts,
-    setOtherUserPosts,
-    otherUserPosts,
-    needsRefresh,
-    setNeedsRefresh,
-  } = useContext(Context)
+  const { setUserPosts, needsRefresh, setNeedsRefresh } = useContext(Context)
 
   const renderItem = ({ item }) => (
     <Post
@@ -38,8 +31,6 @@ const UserPosts = ({
   )
 
   const [refresh, setRefresh] = useState(false)
-  const [lastPID, setLastPID] = useState(0)
-  const [fetchMore, setFetchMore] = useState(false)
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
   const [
     onEndReachedCalledDuringMomentum,
@@ -87,40 +78,6 @@ const UserPosts = ({
     }
   }
 
-  const getMorePost = async () => {
-    if (!onEndReachedCalledDuringMomentum) {
-      setOnEndReachedCalledDuringMomentum(true)
-      setFetchMore(true)
-
-      if (!thereIsMoreFlag) {
-        setFetchMore(false)
-        return
-      }
-
-      let getPostsParams = {
-        uid: userID,
-        limit: 5,
-        page: lastPID,
-      }
-      await PostService.getUserPosts(getPostsParams)
-        .then(res => {
-          if (res.success) {
-            setLastPID(lastPID + 1)
-            setUserPosts(
-              res.data ? [...userPosts, ...res.data] : [...userPosts]
-            )
-            setFetchMore(false)
-          } else {
-            setThereIsMoreFlag(false)
-            setFetchMore(false)
-          }
-        })
-        .catch(err => {
-          setFetchMore(false)
-        })
-    }
-  }
-
   const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(false)
 
   if (data.length > 0) {
@@ -129,9 +86,6 @@ const UserPosts = ({
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        onRefresh={refreshPosts}
-        refreshing={refresh}
-        onEndReached={getMorePost}
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
         ListFooterComponent={

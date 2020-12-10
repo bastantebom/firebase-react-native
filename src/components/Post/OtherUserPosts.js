@@ -77,77 +77,6 @@ const UserPosts = ({
     }
   }
 
-  const getMorePost = async () => {
-    if (!onEndReachedCalledDuringMomentum) {
-      setOnEndReachedCalledDuringMomentum(true)
-      setFetchMore(true)
-
-      if (!thereIsMoreFlag) {
-        setFetchMore(false)
-        // console.log('Stopping getting more post');
-        return
-      }
-
-      let getPostsParams = {
-        uid: userID,
-        limit: 5,
-        page: lastPID,
-      }
-
-      await PostService.getUserPosts(getPostsParams)
-        .then(res => {
-          if (res.success) {
-            setLastPID(lastPID + 1)
-            setOtherUserPosts(prev => [...prev, ...res.data])
-            setFetchMore(false)
-          } else {
-            setThereIsMoreFlag(false)
-            setFetchMore(false)
-          }
-        })
-        .catch(err => {
-          setFetchMore(false)
-        })
-    }
-    // if (!onEndReachedCalledDuringMomentum) {
-    //   setOnEndReachedCalledDuringMomentum(true);
-    //   setFetchMore(true);
-
-    //   if (!thereIsMoreFlag) {
-    //     setFetchMore(false);
-    //     // console.log('Stopping getting more post');
-    //     return;
-    //   }
-
-    //   let getPostsParams = {
-    //     uid: userID,
-    //     limit: 5,
-    //     last_pid: lastPID,
-    //   };
-    //   //console.log('GET MORE POST');
-    //   //console.log(lastPID);
-    //   // console.log(getPostsParams);
-
-    //   await PostService.getUserPosts(getPostsParams)
-    //     .then((res) => {
-    //       //console.log('API CALL');
-    //       if (res.success) {
-    //         setLastPID(res.last_pid);
-    //         setOtherUserPosts(
-    //           res.data ? [...otherUserPosts, ...res.data] : [...otherUserPosts],
-    //         );
-    //         setFetchMore(false);
-    //       } else {
-    //         setThereIsMoreFlag(false);
-    //         setFetchMore(false);
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       setFetchMore(false);
-    //     });
-    // }
-  }
-
   const onMomentumScrollBegin = () => setOnEndReachedCalledDuringMomentum(false)
 
   if (data.length > 0) {
@@ -156,19 +85,12 @@ const UserPosts = ({
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.post_id}
-        onRefresh={refreshPosts}
-        refreshing={refresh}
-        onEndReached={getMorePost}
         onEndReachedThreshold={0.1}
         onMomentumScrollBegin={onMomentumScrollBegin}
         ListFooterComponent={
           <View
             style={{ alignItems: 'center', marginTop: 8, marginBottom: 24 }}>
-            {isFetching ? (
-              <ActivityIndicator />
-            ) : (
-              <AppText>No more userPosts available</AppText>
-            )}
+            {isFetching ? <ActivityIndicator /> : <AppText></AppText>}
           </View>
         }
       />

@@ -49,6 +49,7 @@ const ProfileScreen = ({
     posts,
     userPosts,
     setUserPosts,
+    needsRefresh,
   } = useContext(Context)
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
@@ -137,9 +138,11 @@ const ProfileScreen = ({
   }
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setIsLoading(false)
     }, 1000)
+
+    return () => clearTimeout(timeout)
   }, [])
 
   const triggerNotify = notify => {
@@ -157,6 +160,16 @@ const ProfileScreen = ({
     ) * 0.25
 
   // fetch posts from userposts
+
+  useEffect(() => {
+    let isMounted = true
+
+    if (isMounted && needsRefresh) {
+      refreshPosts()
+    }
+
+    return () => (isMounted = false)
+  }, [needsRefresh])
 
   const [lastPID, setLastPID] = useState(0)
   const [fetchMore, setFetchMore] = useState(false)
@@ -365,6 +378,7 @@ const ProfileScreen = ({
 
   useEffect(() => {
     scroll.addListener(({ value }) => value)
+    return () => scroll.removeListener(({ value }) => value)
   }, [scroll])
 
   const [scrollPosition, setScrollPosition] = useState(0)

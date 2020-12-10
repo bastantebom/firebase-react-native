@@ -50,7 +50,8 @@ const VerificationStatus = ({ statusPercentage }) => {
                 Get the verified badge
               </AppText>
               <AppText textStyle="caption" color={Colors.primaryMidnightBlue}>
-                Complete your profile and verify your identity
+                Safeguard your account and boost your credibility within the
+                community.
               </AppText>
             </TouchableOpacity>
           </View>

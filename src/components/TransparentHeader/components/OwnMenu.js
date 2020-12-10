@@ -37,6 +37,7 @@ import {
   Faq,
   ContactUs,
   Notifications,
+  PayoutWallet,
 } from '@/assets/images/icons'
 
 import {
@@ -50,6 +51,7 @@ import {
   InviteFriends,
   ContactServbees,
   FaqScreen,
+  PayoutMethod,
 } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
 
@@ -66,49 +68,32 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const [inviteFriends, setInviteFriends] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
+  const [payoutMethod, setPayoutMethod] = useState(false)
   const [hasPassword, setHasPassword] = useState(
     providerData.some(pd => pd.providerId === 'password')
   )
 
-  const toggleEditProfile = () => {
-    setEditProfile(!editProfile)
-  }
+  const toggleEditProfile = () => setEditProfile(!editProfile)
 
-  const toggleAbout = () => {
-    setAbout(!about)
-  }
+  const toggleAbout = () => setAbout(!about)
 
-  const toggleChangePassword = () => {
-    setChangePassword(!changePassword)
-  }
+  const toggleChangePassword = () => setChangePassword(!changePassword)
 
-  const toggleBlockedUser = () => {
-    setBlockUser(!blockUser)
-  }
+  const toggleBlockedUser = () => setBlockUser(!blockUser)
 
-  const toggleHiddenPost = () => {
-    setHiddenPost(!hiddenPost)
-  }
+  const toggleHiddenPost = () => setHiddenPost(!hiddenPost)
 
-  const toggleLikePost = () => {
-    setLikePost(!likePost)
-  }
+  const toggleLikePost = () => setLikePost(!likePost)
 
-  const toggleArchivedPost = () => {
-    setArchivedPost(!archivedPost)
-  }
+  const toggleArchivedPost = () => setArchivedPost(!archivedPost)
 
-  const toggleInviteFriends = () => {
-    setInviteFriends(!inviteFriends)
-  }
+  const toggleInviteFriends = () => setInviteFriends(!inviteFriends)
 
-  const toggleContactUs = () => {
-    setContactServbees(!contactServbees)
-  }
+  const toggleContactUs = () => setContactServbees(!contactServbees)
 
-  const toggleFaq = () => {
-    setQuestions(!questions)
-  }
+  const toggleFaq = () => setQuestions(!questions)
+
+  const togglePayoutMethod = () => setPayoutMethod(!payoutMethod)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -211,6 +196,30 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
 
             <View>
               <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
+                Payout Method
+              </AppText>
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={togglePayoutMethod}>
+                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                  <PayoutWallet width={normalize(24)} height={normalize(24)} />
+                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                    Payout Method
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <Divider
+              style={{
+                backgroundColor: Colors.neutralGray,
+                marginVertical: 24,
+              }}
+            />
+
+            <View>
+              <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
                 Help and Support
               </AppText>
 
@@ -241,9 +250,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
             />
 
             <View>
-              {/* <AppText textStyle="body3" customStyle={{marginBottom: 16}}>
-                Settings and Privacy
-              </AppText> */}
               <AppText customStyle={{ marginLeft: 8 }} textStyle="body3">
                 Settings and Privacy
               </AppText>
@@ -319,7 +325,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <EditProfile
           toggleMenu={toggleMenu}
           toggleEditProfile={toggleEditProfile}
@@ -339,7 +344,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <BlockList toggleBlockedUser={toggleBlockedUser} />
       </Modal>
 
@@ -368,7 +372,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <LikedPost toggleMenu={toggleMenu} toggleLikePost={toggleLikePost} />
       </Modal>
 
@@ -383,7 +386,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <ArchivedPost toggleArchivedPost={toggleArchivedPost} />
       </Modal>
 
@@ -398,7 +400,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <InviteFriends toggleInviteFriends={toggleInviteFriends} />
       </Modal>
 
@@ -413,7 +414,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <About toggleAbout={toggleAbout} />
       </Modal>
 
@@ -428,7 +428,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <ChangePassword toggleChangePassword={toggleChangePassword} />
       </Modal>
 
@@ -443,7 +442,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <ContactServbees toggleContactUs={toggleContactUs} />
       </Modal>
 
@@ -458,8 +456,22 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <FaqScreen toggleFaq={toggleFaq} />
+      </Modal>
+
+      <Modal
+        isVisible={payoutMethod}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        onBackButtonPress={togglePayoutMethod}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <PayoutMethod close={togglePayoutMethod} />
       </Modal>
     </SafeAreaView>
   )

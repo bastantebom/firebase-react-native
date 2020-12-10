@@ -25,6 +25,8 @@ import TempAboutScreen from './Temperature/TempAbout'
 
 import VerificationStatus from './VerificationStatus'
 
+import PayoutMethod from './PayoutMethod/PayoutMethod'
+
 export {
   About,
   AboutServbees,
@@ -46,4 +48,5 @@ export {
   TempHistory,
   TempAboutScreen,
   VerificationStatus,
+  PayoutMethod,
 }

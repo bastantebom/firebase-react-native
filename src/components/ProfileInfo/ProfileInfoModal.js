@@ -50,7 +50,12 @@ function ProfileInfoModal(props) {
 
   const navigation = useNavigation()
   const { user, signOut, userInfo, setUserInfo } = useContext(UserContext)
-  const { userPosts, otherUserPosts, setOtherUserPosts } = useContext(Context)
+  const {
+    userPosts,
+    otherUserPosts,
+    setOtherUserPosts,
+    needsRefresh,
+  } = useContext(Context)
   const [otherUserInfo, setOtherUserInfo] = useState({})
 
   const [ellipsisState, setEllipsisState] = useState(false)
@@ -134,6 +139,14 @@ function ProfileInfoModal(props) {
   }, [])
 
   // fetch posts
+
+  useEffect(() => {
+    let isMounted = true
+
+    if (isMounted && needsRefresh) refreshPosts()
+
+    return () => (isMounted = false)
+  }, [needsRefresh])
 
   const [lastPID, setLastPID] = useState(0)
   const [fetchMore, setFetchMore] = useState(false)
@@ -323,6 +336,7 @@ function ProfileInfoModal(props) {
 
   useEffect(() => {
     scroll.addListener(({ value }) => value)
+    return () => scroll.removeListener(({ value }) => value)
   }, [scroll])
 
   const [scrollPosition, setScrollPosition] = useState(0)

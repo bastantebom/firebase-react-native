@@ -247,7 +247,7 @@ const PaymentMethodModal = ({
                 </AppText>
               )}
             </View>
-            <View style={styles.withBorder}>
+            <View>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
@@ -289,116 +289,6 @@ const PaymentMethodModal = ({
                 <AppText textStyle="caption" customStyle={{ marginBottom: 16 }}>
                   2.9% fee will be deducted from your entire bill
                 </AppText>
-              )}
-            </View>
-            <View style={styles.withBorder}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {
-                  setPaymentMethods({
-                    ...paymentMethods,
-                    onlineBanking: !paymentMethods?.onlineBanking,
-                  })
-                }}>
-                <View style={styles.methodContainer}>
-                  <View style={styles.iconContainer}>
-                    {paymentMethods?.onlineBanking ? (
-                      <BankActive
-                        width={normalize(36)}
-                        height={normalize(24)}
-                      />
-                    ) : (
-                      <Bank width={normalize(36)} height={normalize(24)} />
-                    )}
-                    <AppText
-                      textStyle={
-                        paymentMethods?.onlineBanking ? 'body1medium' : 'body1'
-                      }
-                      customStyle={styles.methodText}>
-                      Online Banking
-                    </AppText>
-                  </View>
-                  <AppCheckbox
-                    value={paymentMethods?.onlineBanking}
-                    valueChangeHandler={() => {
-                      setPaymentMethods({
-                        ...paymentMethods,
-                        onlineBanking: !paymentMethods?.onlineBanking,
-                      })
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-              {paymentMethods?.onlineBanking && (
-                <>
-                  <AppText
-                    textStyle="caption"
-                    customStyle={{ paddingBottom: 16 }}>
-                    Send the payment instructions and reminders directly to the
-                    customer using chat.
-                  </AppText>
-                  <FloatingAppInput
-                    style={{ marginBottom: 16 }}
-                    label="Banks Preferred"
-                    // placeholder="BDO, BPI"
-                    value={paymentMethods?.bank}
-                    onChangeText={text =>
-                      setPaymentMethods({
-                        ...paymentMethods,
-                        bank: text,
-                      })
-                    }
-                  />
-                </>
-              )}
-            </View>
-            <View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {
-                  setPaymentMethods({
-                    ...paymentMethods,
-                    others: !paymentMethods?.others,
-                  })
-                }}>
-                <View style={styles.methodContainer}>
-                  <AppText
-                    textStyle={
-                      paymentMethods?.others ? 'body1medium' : 'body1'
-                    }>
-                    Others
-                  </AppText>
-                  <AppCheckbox
-                    value={paymentMethods?.others}
-                    valueChangeHandler={() => {
-                      setPaymentMethods({
-                        ...paymentMethods,
-                        others: !paymentMethods?.others,
-                      })
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-              {paymentMethods?.others && (
-                <>
-                  <AppText
-                    textStyle="caption"
-                    customStyle={{ paddingBottom: 16 }}>
-                    Send the payment instructions and reminders directly to the
-                    customer using chat.
-                  </AppText>
-                  <FloatingAppInput
-                    style={{ marginBottom: 16 }}
-                    label="Other payment methods"
-                    value={paymentMethods?.otherMethods}
-                    onChangeText={text =>
-                      setPaymentMethods({
-                        ...paymentMethods,
-                        otherMethods: text,
-                      })
-                    }
-                  />
-                </>
               )}
             </View>
           </ScrollView>
