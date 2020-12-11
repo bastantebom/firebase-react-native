@@ -57,6 +57,14 @@ const CreditCardModal = ({ closeModal, orderDetails }) => {
     provinces.find(province)?.municipalities.sort() || []
 
   const createPaymentMethod = async () => {
+    const {
+      line1,
+      line2,
+      province: state,
+      city,
+      country,
+      zipCode: postal_code,
+    } = address
     const paymongoSK = base64.encode('sk_test_Hf4GQS4e8sBEzUe6a3rwyfGx')
     const paymentMethodResponse = await axios({
       method: 'POST',
@@ -71,7 +79,16 @@ const CreditCardModal = ({ closeModal, orderDetails }) => {
               cvc: formData.cvv,
             },
             type: 'card',
-            billing: null,
+            billing: {
+              address: {
+                line1,
+                line2,
+                city,
+                state,
+                postal_code,
+                country,
+              },
+            },
             metadata: null,
           },
         },
