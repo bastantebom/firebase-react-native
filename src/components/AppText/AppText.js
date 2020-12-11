@@ -189,11 +189,11 @@ const styles = StyleSheet.create({
   },
   nav: {
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(13),
+    fontSize: normalize(12),
   },
   navMedium: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(13),
+    fontSize: normalize(12),
   },
 })
 

@@ -111,7 +111,7 @@ const PostPopup = ({}) => {
               : () => navigation.navigate('Post')
           }>
           <AppText
-            textStyle={showButtons ? 'navMedium' : 'nav'}
+            textStyle="nav"
             color={
               showButtons
                 ? Colors.primaryMidnightBlue

@@ -46,6 +46,21 @@ import Delivering from './delivering-default.svg'
 import Clipboard from './clipboard-info.svg'
 
 import EmptyPayout from './empty-payout.svg'
+import SuccessPayout from './success-payout.svg'
+
+//Post status
+import Cancelled from './post-status/cancelled.svg'
+import ServiceCompleted from './post-status/completed1.svg'
+import OrderCompleted from './post-status/completed2.svg'
+import ServiceDeclined from './post-status/declined1.svg'
+import OrderDeclined from './post-status/declined2.svg'
+import OrderDelivering from './post-status/delivering.svg'
+import Ongoing from './post-status/ongoing.svg'
+import OrderConfirmed from './post-status/order-confirmed.svg'
+import Pending from './post-status/pending.svg'
+import ReadyForDelivery from './post-status/ready-delivery.svg'
+import ReadyForPickup from './post-status/ready-pickup.svg'
+import ServiceScheduled from './post-status/scheduled.svg'
 
 export {
   DefaultNeed,
@@ -80,4 +95,20 @@ export {
   Delivering,
   Clipboard,
   EmptyPayout,
+  SuccessPayout,
+}
+
+export const Status = {
+  Cancelled,
+  ServiceCompleted,
+  OrderCompleted,
+  ServiceDeclined,
+  OrderDeclined,
+  OrderDelivering,
+  Ongoing,
+  OrderConfirmed,
+  Pending,
+  ReadyForDelivery,
+  ReadyForPickup,
+  ServiceScheduled,
 }

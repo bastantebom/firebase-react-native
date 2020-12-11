@@ -35,6 +35,7 @@ import { ImageModal } from './ImageModal'
 import ItemModal from './forms/modals/ItemModal'
 import BasketModal from './forms/modals/BasketModal'
 import OfferModal from './forms/modals/OfferModal'
+import { PostService } from '@/services'
 
 const SinglePostView = props => {
   const navigation = useNavigation()
@@ -64,6 +65,7 @@ const SinglePostView = props => {
     type,
     items,
     price_range,
+    likers,
   } = props.route?.params?.data
   const { othersView = false } = props.route?.params
 
@@ -115,6 +117,9 @@ const SinglePostView = props => {
     deleteCurrentOrderModal,
     showDeleteCurrentOrderModal,
   } = useContext(Context)
+
+  const isLiked = ~likers?.indexOf(user?.uid)
+  const [likePost, setLikePost] = useState(isLiked)
 
   const [ellipsisState, setEllipsisState] = useState(false)
   const [expired] = useState(false)
@@ -258,6 +263,11 @@ const SinglePostView = props => {
       `${Platform.OS === 'android' ? 'tel' : 'telprompt'}:${phone_number}`
     )
 
+  const toggleLike = async () => {
+    const res = await PostService.likeUnlike(id, isLiked)
+    setLikePost(!likePost)
+  }
+
   const CustomNotification = () => {
     const backgroundColor = props.route.params?.created
       ? Colors.primaryYellow
@@ -375,7 +385,6 @@ const SinglePostView = props => {
 
   const HEADER_MAX_HEIGHT = normalize(248)
   const HEADER_MIN_HEIGHT = normalize(80)
-  const HEADER_TOP = normalize(-50)
   const HEADER_INITIAL_HEIGHT = normalize(50)
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
 
@@ -404,18 +413,6 @@ const SinglePostView = props => {
   const headerTransform = scrollY.interpolate({
     inputRange: [0, HEADER_MAX_HEIGHT * 0.75, HEADER_MAX_HEIGHT],
     outputRange: [1, 0, -50],
-    extrapolate: 'clamp',
-  })
-
-  const stickyHeaderOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT, HEADER_MAX_HEIGHT],
-    outputRange: [1, 1, 1],
-    extrapolate: 'clamp',
-  })
-
-  const stickyHeaderTransform = scrollY.interpolate({
-    inputRange: [0, HEADER_MAX_HEIGHT * 0.75, HEADER_MAX_HEIGHT],
-    outputRange: [HEADER_MAX_HEIGHT, 0, HEADER_TOP],
     extrapolate: 'clamp',
   })
 
@@ -470,13 +467,51 @@ const SinglePostView = props => {
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
-        <Animated.View
-          style={{
-            height: offsetHeight,
-            opacity: stickyHeaderOpacity,
-            transform: [{ translateY: stickyHeaderTransform }],
-          }}
-        />
+        <Animated.View style={{ height: offsetHeight, zIndex: offsetHeight }}>
+          <View
+            style={{
+              position: 'absolute',
+              backgroundColor: Colors.neutralsWhite,
+              borderColor: Colors.neutralsZircon,
+              borderWidth: 1,
+              width: '100%',
+            }}>
+            <View
+              style={{
+                paddingHorizontal: normalize(15),
+                paddingVertical: normalize(25),
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Icons.PostParcelBlue
+                    width={normalize(25)}
+                    height={normalize(25)}
+                  />
+                  <AppText
+                    textStyle="subtitle1"
+                    customStyle={{ marginLeft: 8 }}>
+                    {profileInfo.display_name}
+                  </AppText>
+                </View>
+                <TouchableOpacity onPress={toggleLike}>
+                  {likePost ? (
+                    <Icons.LikeColored
+                      width={normalize(20)}
+                      height={normalize(20)}
+                    />
+                  ) : (
+                    <Icons.Like width={normalize(20)} height={normalize(20)} />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Animated.View>
         <ScrollView
           ref={ref}
           showsVerticalScrollIndicator={false}
@@ -796,40 +831,6 @@ const SinglePostView = props => {
               postTitle={title}
               liked={liked}
             />
-          </Animated.View>
-          <Animated.View
-            style={[
-              {
-                opacity: stickyHeaderOpacity,
-                transform: [{ translateY: stickyHeaderTransform }],
-                backgroundColor: Colors.neutralsWhite,
-                padding: normalize(15),
-                borderBottomColor: Colors.neutralsZircon,
-                borderBottomWidth: 2,
-              },
-            ]}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                width: '100%',
-              }}>
-              <TouchableOpacity style={{ marginRight: normalize(25) }}>
-                <Icons.Search width={normalize(20)} height={normalize(20)} />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Icons.Like width={normalize(20)} height={normalize(20)} />
-              </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              <Icons.PostParcelBlue
-                width={normalize(25)}
-                height={normalize(25)}
-              />
-              <AppText textStyle="subtitle1" customStyle={{ marginLeft: 8 }}>
-                {profileInfo.display_name}
-              </AppText>
-            </View>
           </Animated.View>
         </Animated.View>
 

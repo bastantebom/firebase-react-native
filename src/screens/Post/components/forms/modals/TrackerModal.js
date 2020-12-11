@@ -64,7 +64,7 @@ import GrabPayModal from './GrabPayModal'
 import PaypalModal from './PaypalModal'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
-import { Delivering } from '@/assets/images'
+import { Delivering, Status } from '@/assets/images'
 import Api from '@/services/Api'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
@@ -84,7 +84,10 @@ const TrackerModal = ({
   const [pickup, setPickup] = useState(false)
   const [delivery, setDelivery] = useState(true)
 
-  const [message, showMessage] = useState(false)
+  const [statusDetails, showstatusDetails] = useState(false)
+  const [statusIcon, setStatusIcon] = useState(
+    <Status.Pending width={normalize(100)} height={normalize(80)} />
+  )
 
   const [cancelOrder, setCancelOrder] = useState(false)
   const [declineOrder, setDeclineOrder] = useState(false)
@@ -200,34 +203,67 @@ const TrackerModal = ({
           switch (status) {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Your order is now being prepared...')
+              setMessageHeader('Confirming your order request...')
               setStatusMessage('<Awaiting Confirmation copy>')
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'confirmed':
               if (orderDetails.payment_method === 'cash') {
                 setStatusHeader('Order Confirmed')
                 setMessageHeader('Yay! Your order is confirmed by the seller.')
                 setStatusMessage('<Confirmed copy>')
+                setStatusIcon(
+                  <Status.OrderConfirmed
+                    width={normalize(100)}
+                    height={normalize(80)}
+                  />
+                )
               } else {
                 setStatusHeader('Order Confirmed')
                 setMessageHeader('Order confirmed! Continue to payment...')
                 setStatusMessage('<Processing message here>')
+                setStatusIcon(
+                  <Status.OrderConfirmed
+                    width={normalize(100)}
+                    height={normalize(80)}
+                  />
+                )
               }
               break
             case 'paid':
               setStatusHeader('Processing')
-              setMessageHeader('Preparing the Order')
+              setMessageHeader('Your order is now being prepared...')
               setStatusMessage('<Confirmed copy>')
+              setStatusIcon(
+                <Status.OrderConfirmed
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'delivering':
               setStatusHeader('Delivering')
               setMessageHeader('Your order is ready for delivery...')
               setStatusMessage('<Delivering message here>')
+              setStatusIcon(
+                <Status.ReadyForDelivery
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'pickup':
               setStatusHeader('Pick up')
               setMessageHeader('Your order is ready for pickup...')
               setStatusMessage('<Processing message here>')
+              setStatusIcon(
+                <Status.ReadyForPickup
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'ready':
               setStatusHeader('Pick up')
@@ -235,16 +271,34 @@ const TrackerModal = ({
                 'Your order is ready! You can now pickup your order.'
               )
               setStatusMessage('<Ready for pick up message here>')
+              setStatusIcon(
+                <Status.ReadyForPickup
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'completed':
               setStatusHeader('Completed')
               setMessageHeader('Order completed!')
               setStatusMessage('<Completed message here>')
+              setStatusIcon(
+                <Status.OrderCompleted
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'cancelled':
               setStatusHeader('Cancelled')
-              setMessageHeader('Order Cancelled')
+              setMessageHeader('Your order was cancelled')
               setStatusMessage('<Order Cancelled copy>')
+              setStatusIcon(
+                <Status.Cancelled
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             default:
               null
@@ -254,28 +308,52 @@ const TrackerModal = ({
           switch (status) {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
+              setMessageHeader('Confirming your request...')
               setStatusMessage('<Awaiting Confirmation copy>')
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'confirmed':
-              setStatusHeader('Scheduled confirmed')
-              setMessageHeader('Scheduled')
+              setStatusHeader('Scheduled Confirmed')
+              setMessageHeader('Your booking is confirmed')
               setStatusMessage('<Schedule confirmed copy>')
+              setStatusIcon(
+                <Status.ServiceScheduled
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'cancelled':
-              setStatusHeader('Service Cancelled')
-              setMessageHeader(null)
+              setStatusHeader('Cancelled')
+              setMessageHeader('Your schedule was cancelled')
               setStatusMessage(null)
+              setStatusIcon(
+                <Status.ServiceDeclined
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'ongoing':
               setStatusHeader('Ongoing')
-              setMessageHeader('Ongoing')
+              setMessageHeader('Service is ongoing')
               setStatusMessage('<Ongoing copy>')
+              setStatusIcon(
+                <Status.Ongoing width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'completed':
               setStatusHeader('Completed')
-              setMessageHeader(null)
+              setMessageHeader('Service complete!')
               setStatusMessage(null)
+              setStatusIcon(
+                <Status.ServiceCompleted
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             default:
               null
@@ -287,27 +365,50 @@ const TrackerModal = ({
               setStatusHeader('In Progress')
               setMessageHeader('Ongoing')
               setStatusMessage('<Ongoing Confirmation copy>')
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
               setMessageHeader('Awaiting Confirmation')
               setStatusMessage('<Awaiting Confirmation copy>')
-
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'confirmed':
               setStatusHeader('Offer Accepted')
               setMessageHeader('Your offer is accepted')
               setStatusMessage('<Offer accepted copy>')
+              setStatusIcon(
+                <Status.OrderConfirmed
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'declined':
               setStatusHeader('Offer declined')
               setMessageHeader('Your offer is declined')
               setStatusMessage('<Offer declined copy>')
+              setStatusIcon(
+                <Status.OrderDeclined
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'completed':
               setStatusHeader('Completed!')
               setMessageHeader('Completed!')
               setStatusMessage('<Completed message here>')
+              setStatusIcon(
+                <Status.OrderCompleted
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             default:
               null
@@ -324,47 +425,95 @@ const TrackerModal = ({
               setStatusHeader('Requesting...')
               setMessageHeader('Confirm or decline an order...')
               setStatusMessage('<Awaiting Confirmation copy>')
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'confirmed':
               if (orderDetails.payment_method === 'cash') {
                 setStatusHeader('Processing')
                 setMessageHeader('Preparing the order...')
                 setStatusMessage('<Processing message here>')
+                setStatusIcon(
+                  <Status.Ongoing
+                    width={normalize(100)}
+                    height={normalize(80)}
+                  />
+                )
               } else {
                 setStatusHeader('Awaiting Payment')
                 setMessageHeader('Waiting for Payment...')
                 setStatusMessage('<Processing message here>')
+                setStatusIcon(
+                  <Status.Pending
+                    width={normalize(100)}
+                    height={normalize(80)}
+                  />
+                )
               }
               break
             case 'paid':
               setStatusHeader('Processing')
               setMessageHeader('Preparing the order...')
               setStatusMessage('<Processing message here>')
+              setStatusIcon(
+                <Status.Ongoing width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'delivering':
               setStatusHeader('Delivering')
               setMessageHeader('Order is ready for delivery...')
               setStatusMessage('<Delivering message here>')
+              setStatusIcon(
+                <Status.ReadyForDelivery
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'pickup':
               setStatusHeader('Pick up')
               setMessageHeader('Order is ready for pickup...')
               setStatusMessage('<Pick Up message here>')
+              setStatusIcon(
+                <Status.ReadyForPickup
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'completed':
               setStatusHeader('Completed')
               setMessageHeader('Order completed!')
               setStatusMessage('<Completed message here>')
+              setStatusIcon(
+                <Status.OrderCompleted
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'cancelled':
               setStatusHeader('Cancelled')
-              setMessageHeader('Cancelled by Customer')
+              setMessageHeader('Your order was cancelled')
               setStatusMessage('<Cancelled message here>')
+              setStatusIcon(
+                <Status.Cancelled
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'declined':
               setStatusHeader('Order Declined')
-              setMessageHeader('Declined by Customer')
+              setMessageHeader('Your order was declined')
               setStatusMessage('<Declined message here>')
+              setStatusIcon(
+                <Status.OrderDeclined
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             default:
               null
@@ -376,75 +525,139 @@ const TrackerModal = ({
               setStatusHeader('Awaiting Confirmation')
               setMessageHeader('Awaiting Confirmation')
               setStatusMessage('<Awaiting Confirmation copy>')
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'confirmed':
               if (orderDetails.payment_method === 'cash') {
                 setStatusHeader('Schedule Confirmed')
                 setMessageHeader('Your schedule is confirmed...')
                 setStatusMessage('<Schedule confirmed copy>')
+                setStatusIcon(
+                  <Status.ServiceScheduled
+                    width={normalize(100)}
+                    height={normalize(80)}
+                  />
+                )
               } else {
                 setStatusHeader('Awaiting Payment')
                 setMessageHeader('Waiting for payment...')
                 setStatusMessage('<Schedule confirmed copy>')
+                setStatusIcon(
+                  <Status.Pending
+                    width={normalize(100)}
+                    height={normalize(80)}
+                  />
+                )
               }
               break
             case 'paid':
               setStatusHeader('Schedule Confirmed')
               setMessageHeader('Your schedule is confirmed...')
               setStatusMessage('<Schedule confirmed copy>')
+              setStatusIcon(
+                <Status.ServiceScheduled
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'ongoing':
               setStatusHeader('Ongoing')
-              setMessageHeader('Ongoing')
+              setMessageHeader('Service ongoing')
               setStatusMessage('<Ongoing copy>')
+              setStatusIcon(
+                <Status.Ongoing width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'declined':
               setStatusHeader('Declined')
               setMessageHeader('Declined')
               setStatusMessage('<Declined copy>')
+              setStatusIcon(
+                <Status.ServiceDeclined
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'completed':
               setStatusHeader('Completed')
               setMessageHeader('Completed')
               setStatusMessage('<Completed copy>')
+              setStatusIcon(
+                <Status.ServiceCompleted
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'cancelled':
               setStatusHeader('Cancelled')
               setMessageHeader('Cancelled by customer')
               setStatusMessage('<Cancelled copy>')
+              setStatusIcon(
+                <Status.ServiceDeclined
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             default:
               null
           }
           break
-
         case 'need':
           switch (status) {
             case 'ongoing':
               setStatusHeader('In Progress')
               setMessageHeader('Ongoing')
               setStatusMessage('<Ongoing Confirmation copy>')
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
               setMessageHeader('Awaiting Confirmation')
               setStatusMessage('<Awaiting Confirmation copy>')
-
+              setStatusIcon(
+                <Status.Pending width={normalize(100)} height={normalize(80)} />
+              )
               break
             case 'confirmed':
               setStatusHeader('Offer Accepted')
               setMessageHeader('Your offer is accepted')
               setStatusMessage('<Offer accepted copy>')
+              setStatusIcon(
+                <Status.OrderConfirmed
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'declined':
               setStatusHeader('Offer declined')
               setMessageHeader('Your offer is declined')
               setStatusMessage('<Offer declined copy>')
+              setStatusIcon(
+                <Status.OrderDeclined
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             case 'completed':
               setStatusHeader('Completed!')
               setMessageHeader('Completed!')
               setStatusMessage('<Completed message here>')
+              setStatusIcon(
+                <Status.OrderCompleted
+                  width={normalize(100)}
+                  height={normalize(80)}
+                />
+              )
               break
             default:
               null
@@ -627,32 +840,19 @@ const TrackerModal = ({
               style={[
                 styles.section,
                 {
-                  display:
-                    (buyer &&
-                      postType === 'service' &&
-                      status === 'completed') ||
-                    (buyer &&
-                      postType === 'service' &&
-                      status === 'cancelled') ||
-                    status === 'declined'
-                      ? 'none'
-                      : 'flex',
                   paddingVertical: normalize(20),
                 },
               ]}
-              onPress={() => {
-                showMessage(!message)
-              }}>
+              onPress={() => showstatusDetails(!statusDetails)}>
               <View
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
                 }}>
                 <View
                   style={{
                     flexDirection: 'row',
-                    maxWidth: '60%',
+                    width: '100%',
+                    justifyContent: 'space-between',
                   }}>
                   <View
                     style={{
@@ -678,7 +878,7 @@ const TrackerModal = ({
                       <BlueDot />
                     )}
                   </View>
-                  <View>
+                  <View style={{ maxWidth: '65%' }}>
                     <AppText
                       textStyle="body2medium"
                       customStyle={{
@@ -690,21 +890,10 @@ const TrackerModal = ({
                     </AppText>
                     <AppText textStyle="caption">{messageHeader}</AppText>
                   </View>
+                  {statusIcon}
                 </View>
-                <View
-                  style={{
-                    position: 'absolute',
-                    right: normalize(20),
-                  }}>
-                  <Delivering width={normalize(100)} height={normalize(80)} />
-                </View>
-                {message ? (
-                  <ChevronUp width={normalize(13)} height={normalize(12)} />
-                ) : (
-                  <ChevronDown width={normalize(13)} height={normalize(12)} />
-                )}
               </View>
-              {message && (
+              {statusDetails && (
                 <AppText
                   textStyle="caption"
                   customStyle={{ marginTop: normalize(8) }}>

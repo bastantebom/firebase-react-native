@@ -471,7 +471,7 @@ const EditProfile = ({
           <View style={styles.contentWrapper}>
             <PaddingView paddingSize={3}>
               <AppText
-                textStyle="body1"
+                textStyle="body1medium"
                 customStyle={{ marginBottom: normalize(8) }}>
                 Address
               </AppText>
@@ -574,14 +574,21 @@ const EditProfile = ({
             ]}>
             <PaddingView paddingSize={3}>
               <AppText
-                textStyle="body1"
+                textStyle="body1medium"
                 customStyle={{ marginBottom: normalize(8) }}>
                 Personal Information
+              </AppText>
+              <AppText textStyle="body2">
+                This won’t be part of your public profile.
               </AppText>
 
               {email ? (
                 <>
-                  <AppText textStyle="body2">Email</AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(16) }}>
+                    Email
+                  </AppText>
                   <AppText textStyle="body1">{email}</AppText>
                   {hasPassword && (
                     <TouchableOpacity
@@ -599,7 +606,11 @@ const EditProfile = ({
 
               {phone_number ? (
                 <>
-                  <AppText textStyle="body2">Mobile Number</AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(16) }}>
+                    Mobile Number
+                  </AppText>
                   <AppText textStyle="body1">{phone_number}</AppText>
                   {hasPassword && (
                     <TouchableOpacity

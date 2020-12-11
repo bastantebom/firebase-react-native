@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, SafeAreaView, TouchableOpacity, Dimensions } from 'react-native'
 
 import Modal from 'react-native-modal'
@@ -12,6 +12,7 @@ import {
 
 import { Colors, normalize } from '@/globals'
 import { ArrowDown } from '@/assets/images/icons'
+import { SuccessPayout } from '@/assets/images'
 import FloatingAppInput from '@/components/AppInput/AppInput'
 import BankList from './BankList'
 
@@ -27,6 +28,12 @@ const PayoutDetails = ({ close, selectedPayout }) => {
   const toggleBankList = () => setShowBankList(!showBankList)
 
   const bankSelect = item => setSelectedBank(item)
+
+  const onSave = () => {
+    if (selectedBank) {
+      return <Success />
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -88,8 +95,20 @@ const PayoutDetails = ({ close, selectedPayout }) => {
                     <FloatingAppInput
                       label="Select bank"
                       value={selectedBank}
-                      style={{ marginBottom: normalize(16) }}
+                      style={{
+                        marginBottom: normalize(16),
+                        color: 'transparent',
+                      }}
                     />
+                    <AppText
+                      textStyle="body1"
+                      customStyle={{
+                        position: 'absolute',
+                        left: normalize(16),
+                        top: normalize(20),
+                      }}>
+                      {selectedBank}
+                    </AppText>
                     <View
                       style={{
                         position: 'absolute',
@@ -149,7 +168,7 @@ const PayoutDetails = ({ close, selectedPayout }) => {
               />
             </View>
           ) : null}
-          <AppButton type="primary" text="Save" />
+          <AppButton type="primary" text="Save" onPress={() => onSave()} />
         </View>
       </PaddingView>
 
@@ -166,6 +185,40 @@ const PayoutDetails = ({ close, selectedPayout }) => {
         }}>
         <BankList close={toggleBankList} bankChoice={bankSelect} />
       </Modal>
+    </SafeAreaView>
+  )
+}
+
+const Success = () => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <ScreenHeaderTitle iconSize={normalize(20)} paddingSize={3} />
+        <View
+          style={{
+            paddingHorizontal: normalize(24),
+            height: '85%',
+            justifyContent: 'space-between',
+            paddingTop: normalize(24),
+          }}>
+          <View style={{ alignItems: 'center' }}>
+            <SuccessPayout />
+            <AppText
+              textStyle="body1medium"
+              customStyle={{
+                marginTop: normalize(32),
+                marginBottom: normalize(8),
+              }}>
+              Payout Method Successfully Saved
+            </AppText>
+            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+              Your future payouts will be deposited to your preferred payout
+              method.
+            </AppText>
+          </View>
+          <AppButton text="Okay" type="primary" />
+        </View>
+      </View>
     </SafeAreaView>
   )
 }

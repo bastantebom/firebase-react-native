@@ -86,6 +86,9 @@ const BasketModal = ({
     payment,
     delivery_methods,
     user: { display_name },
+    store_details: {
+      location: { latitude, longitude, full_address },
+    },
   } = postData
 
   const [deliveryChoice, setDeliveryChoice] = useState(
@@ -130,10 +133,21 @@ const BasketModal = ({
 
   const initializeMap = async () => {
     try {
-      setMapCoords({
-        lat: addresses.find(address => address.default).latitude,
-        lng: addresses.find(address => address.default).longitude,
-      })
+      setMapCoords(
+        deliveryChoice === 'delivery'
+          ? {
+              lat: addresses.find(address => address.default).latitude,
+              lng: addresses.find(address => address.default).longitude,
+              latitudeDelta: 0.0045,
+              longitudeDelta: 0.0045,
+            }
+          : {
+              lat: latitude,
+              lng: longitude,
+              latitudeDelta: 0.0045,
+              longitudeDelta: 0.0045,
+            }
+      )
       setMapInitialized(true)
     } catch (error) {
       const { results } = await Geocoder.from('Manila')
@@ -148,7 +162,7 @@ const BasketModal = ({
 
   useEffect(() => {
     initializeMap()
-  }, [])
+  }, [deliveryChoice])
 
   //MAP END
 
@@ -502,75 +516,56 @@ const BasketModal = ({
                 </AppText>
               </TouchableOpacity>
             </View>
-            {deliveryChoice === 'delivery' || deliveryChoice === 'service' ? (
-              <>
-                <View
-                  style={{
-                    top: 0,
-                    height: normalize(125),
-                    width: '100%',
-                    marginBottom: 8,
-                  }}>
-                  {!mapInitialized ? (
-                    <View style={[styles.loader]}>
-                      <ActivityIndicator
-                        color="#3781FC"
-                        size="large"
-                        animating={true}
-                      />
-                    </View>
-                  ) : (
-                    <MapComponent
-                      latitude={mapCoords.lat}
-                      longitude={mapCoords.lng}
-                      reCenter={mapCoords}
-                      onRegionChange={handleRegionChange}
-                      withCurrentMarker
-                      customMarker={
-                        <View
-                          style={{
-                            marginTop: normalize(25),
-                            marginLeft: normalize(9),
-                          }}>
-                          <NavigationPinAlt
-                            width={normalize(30)}
-                            height={normalize(30)}
-                          />
-                        </View>
-                      }
+            <>
+              <View
+                pointerEvents="none"
+                style={{
+                  top: 0,
+                  height: normalize(125),
+                  width: '100%',
+                  marginBottom: 8,
+                }}>
+                {!mapInitialized ? (
+                  <View style={[styles.loader]}>
+                    <ActivityIndicator
+                      color="#3781FC"
+                      size="large"
+                      animating={true}
                     />
-                  )}
-                </View>
-                <View style={{ paddingTop: normalize(10) }}>
-                  <AppText textStyle="body1medium">Home</AppText>
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginVertical: normalize(10) }}>
-                    {addressData.full_address}
-                  </AppText>
-                </View>
-              </>
-            ) : (
-              <>
-                <View
-                  style={{
-                    top: 0,
-                    height: normalize(125),
-                    width: '100%',
-                    marginBottom: 8,
-                  }}></View>
-                <View style={{ paddingTop: normalize(10) }}>
-                  <AppText textStyle="body1medium">
-                    Wayne’s Burgers and Smoothies
-                  </AppText>
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginVertical: normalize(10) }}>
-                    Hon. B. Solivena Avenue corner 32nd St Pasig City
-                  </AppText>
-                </View>
-              </>
-            )}
+                  </View>
+                ) : (
+                  <MapComponent
+                    latitude={mapCoords.lat}
+                    longitude={mapCoords.lng}
+                    reCenter={mapCoords}
+                    onRegionChange={handleRegionChange}
+                    withCurrentMarker
+                    customDelta={0.002}
+                    customMarker={
+                      <View
+                        style={{
+                          marginTop: normalize(25),
+                          marginLeft: normalize(9),
+                        }}>
+                        <NavigationPinAlt
+                          width={normalize(30)}
+                          height={normalize(30)}
+                        />
+                      </View>
+                    }
+                  />
+                )}
+              </View>
+              <View style={{ paddingTop: normalize(10) }}>
+                <AppText
+                  textStyle="body2"
+                  customStyle={{ marginVertical: normalize(10) }}>
+                  {deliveryChoice === 'delivery' || deliveryChoice === 'service'
+                    ? addressData.full_address
+                    : full_address}
+                </AppText>
+              </View>
+            </>
             <TouchableOpacity onPress={() => showAddNoteModal(true)}>
               <AppText textStyle="button2" color={Colors.contentOcean}>
                 {postType === 'sell'

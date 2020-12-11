@@ -1,4 +1,3 @@
-//import liraries
 import React, { useState, useContext } from 'react'
 import {
   View,
@@ -19,7 +18,13 @@ import {
 } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
-import { CircleTick, EyeDark, EyeLight, Warning } from '@/assets/images/icons'
+import {
+  CircleTick,
+  EyeDark,
+  EyeLight,
+  Warning,
+  VerifiedGreen,
+} from '@/assets/images/icons'
 import { normalize, Colors } from '@/globals'
 import Verify from './VerifyAccount'
 import Modal from 'react-native-modal'
@@ -117,39 +122,36 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
           icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
           {notificationMessage}
         </Notification>
-        <PaddingView paddingSize={3}>
-          <ScreenHeaderTitle
-            iconSize={16}
-            title={isEmail ? 'Change Email Address' : 'Change Mobile Number'}
-            close={() => {
-              toggleEditLogin('')
-            }}
-          />
-        </PaddingView>
+        <ScreenHeaderTitle
+          iconSize={16}
+          title={isEmail ? 'Change Email Address' : 'Change Mobile Number'}
+          close={() => {
+            toggleEditLogin('')
+          }}
+          paddingSize={3}
+        />
         <View style={{ flex: 1, backgroundColor: Colors.neutralsZircon }}>
-          <View style={[styles.contentWrapper]}>
-            <PaddingView paddingSize={3}>
-              <View>
-                <View style={{ paddingVertical: 32 }}>
-                  <AppText textStyle="body2">
-                    {isEmail ? 'Current Email' : 'Current Mobile Number'}
-                  </AppText>
-                  <AppText textStyle="body1">
-                    {isEmail
-                      ? userInfo.email.toLowerCase()
-                      : userInfo.phone_number}
-                  </AppText>
-
-                  <AppText
-                    textStyle="captionConstant"
-                    customStyle={{ marginTop: normalize(18) }}>
-                    {isEmail
-                      ? 'You signed up using Something. Something copy here. Something, something.'
-                      : 'You signed up using Something. Something copy here. Something, something.'}
-                  </AppText>
-                </View>
-              </View>
-            </PaddingView>
+          <View
+            style={[
+              styles.contentWrapper,
+              {
+                paddingTop: normalize(12),
+                paddingBottom: normalize(32),
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+              },
+            ]}>
+            <AppText
+              textStyle="body1medium"
+              customStyle={{ marginBottom: normalize(8) }}>
+              {isEmail ? 'Current Email' : 'Current Mobile Number'}
+            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <AppText textStyle="body2" customStyle={{ marginRight: 12 }}>
+                {isEmail ? userInfo.email.toLowerCase() : userInfo.phone_number}
+              </AppText>
+              <VerifiedGreen width={normalize(18)} height={normalize(18)} />
+            </View>
           </View>
           <View
             style={[
@@ -160,54 +162,60 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
                 marginBottom: 0,
               },
             ]}>
-            <PaddingView paddingSize={3}>
-              <AppText textStyle="body2">
-                {isEmail ? 'Change Email Address' : 'Change Mobile Number'}
-              </AppText>
-              <AppText textStyle="captionConstant">
-                {isEmail ? 'Something, Something' : 'Something, Something'}
-              </AppText>
-              {isEmail ? (
-                <FloatingAppInput
-                  value={newEmail}
-                  label="New Email"
-                  customStyle={{ marginBottom: normalize(16), marginTop: 40 }}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  onChangeText={newEmail => {
-                    emailChangeHandler(newEmail)
-                  }}
-                />
-              ) : (
-                <FloatingAppInput
-                  value={newMobile}
-                  label="New Mobile Number"
-                  autoCapitalize="none"
-                  keyboardType="number-pad"
-                  customStyle={{ marginBottom: normalize(16) }}
-                  onChangeText={() => {
-                    setNewMobile(newMobile)
-                  }}
-                />
-              )}
-              <View style={{ position: 'relative' }}>
-                <FloatingAppInput
-                  value={password}
-                  label="Password"
-                  customStyle={{ marginBottom: normalize(16) }}
-                  onChangeText={password => {
-                    setPassword(password)
-                    setEnabled(true)
-                  }}
-                  secureTextEntry={!isVisible ? true : false}
-                />
-                <View style={styles.passwordToggle}>
-                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
-                    {!isVisible ? <EyeDark /> : <EyeLight />}
-                  </TouchableOpacity>
-                </View>
+            <AppText textStyle="body1medium">
+              {isEmail ? 'Enter new email address' : 'Change Mobile Number'}
+            </AppText>
+            <AppText
+              textStyle="body2"
+              customStyle={{
+                marginTop: normalize(8),
+                marginBottom: normalize(18),
+              }}>
+              For security reasons, enter your current password then complete
+              the one-step verification.
+            </AppText>
+            {isEmail ? (
+              <FloatingAppInput
+                value={newEmail}
+                label="New Email"
+                customStyle={{
+                  marginBottom: normalize(16),
+                }}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={newEmail => {
+                  emailChangeHandler(newEmail)
+                }}
+              />
+            ) : (
+              <FloatingAppInput
+                value={newMobile}
+                label="New Mobile Number"
+                autoCapitalize="none"
+                keyboardType="number-pad"
+                customStyle={{ marginBottom: normalize(16) }}
+                onChangeText={() => {
+                  setNewMobile(newMobile)
+                }}
+              />
+            )}
+            <View style={{ position: 'relative' }}>
+              <FloatingAppInput
+                value={password}
+                label="Password"
+                customStyle={{ marginBottom: normalize(16) }}
+                onChangeText={password => {
+                  setPassword(password)
+                  setEnabled(true)
+                }}
+                secureTextEntry={!isVisible ? true : false}
+              />
+              <View style={styles.passwordToggle}>
+                <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                  {!isVisible ? <EyeDark /> : <EyeLight />}
+                </TouchableOpacity>
               </View>
-            </PaddingView>
+            </View>
           </View>
           <View
             style={{
@@ -261,12 +269,12 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   contentWrapper: {
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 8,
-    marginBottom: 6,
+    marginBottom: normalize(8),
+    padding: normalize(24),
   },
   copyWrapper: {
     justifyContent: 'center',
@@ -297,5 +305,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default EditLogin

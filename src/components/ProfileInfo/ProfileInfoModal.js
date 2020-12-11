@@ -15,25 +15,15 @@ import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 import { useNavigation } from '@react-navigation/native'
 
 import {
-  AppText,
-  AppButton,
-  ProfileImageUpload,
   HexagonBorder,
   TransparentHeader,
-  TabNavigation,
   ProfileLinks,
-  WhiteOpacity,
   UserPosts,
   OtherUserPosts,
   CacheableImage,
 } from '@/components'
-import PostFilter from '@/components/Post/PostFilter'
-import { TabView, SceneMap } from 'react-native-tab-view'
 
 import StickyParallaxHeader from 'react-native-sticky-parallax-header'
-import ScrollableTabView, {
-  ScrollableTabBar,
-} from 'react-native-scrollable-tab-view'
 
 import { ProfileHeaderDefault } from '@/assets/images'
 import { normalize, Colors } from '@/globals'
@@ -77,30 +67,17 @@ function ProfileInfoModal(props) {
     headerState === 'own' ? setHeaderState('other') : setHeaderState('own')
   }
 
-  const toggleQR = () => {
-    setQR(!QR)
-  }
+  const toggleQR = () => setQR(!QR)
 
-  const toggleEllipsisState = () => {
-    setEllipsisState(!ellipsisState)
-  }
+  const toggleEllipsisState = () => setEllipsisState(!ellipsisState)
 
-  const toggleMenu = () => {
-    setMenu(!menu)
-  }
+  const toggleMenu = () => setMenu(!menu)
 
-  const toggleHives = () => {
-    setVisibleHives(!visibleHives)
-  }
-  const toggleProfileList = () => {
-    setProfileList(!profileList)
-  }
+  const toggleHives = () => setVisibleHives(!visibleHives)
+
+  const toggleProfileList = () => setProfileList(!profileList)
 
   const toggleFollowing = () => {
-    connectUser()
-  }
-
-  const connectUser = () => {
     ProfileInfoService.follow(uid, isFollowing)
       .then(response => {
         setIsFollowing(response.data.is_following)
@@ -110,10 +87,6 @@ function ProfileInfoModal(props) {
         console.log(err)
       })
   }
-
-  const [profileImageUrl, setProfileImageUrl] = useState('')
-
-  const width = Dimensions.get('window').width
 
   useEffect(() => {
     let mounted = true

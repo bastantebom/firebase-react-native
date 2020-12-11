@@ -1,4 +1,3 @@
-//import liraries
 import React, { useState, useContext } from 'react'
 import { View, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
 
@@ -14,14 +13,12 @@ import { normalize, Colors } from '@/globals'
 import NewPassword from './NewPassword'
 import Modal from 'react-native-modal'
 
-// create a component
 const SetPassword = ({ toggleEditLogin, provider }) => {
   const { userInfo } = useContext(UserContext)
   const [password, setPassword] = useState(false)
   const isEmail = provider === 'email' ? true : false
 
   const toggleSetPassword = () => {
-    //console.log('CLOSE SET PASSWORD')
     setPassword(!password)
   }
 
@@ -49,13 +46,6 @@ const SetPassword = ({ toggleEditLogin, provider }) => {
                     {isEmail ? userInfo.email : userInfo.phone_number}
                   </AppText>
 
-                  <AppText
-                    textStyle="captionConstant"
-                    customStyle={{ marginTop: normalize(18) }}>
-                    {isEmail
-                      ? 'You signed up using Something. Something copy here. Something, something.'
-                      : 'You signed up using Something. Something copy here. Something, something.'}
-                  </AppText>
                   <AppButton
                     text="Set Password"
                     type="primary"
@@ -90,7 +80,6 @@ const SetPassword = ({ toggleEditLogin, provider }) => {
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   contentWrapper: {
     backgroundColor: Colors.neutralsWhite,
@@ -121,5 +110,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default SetPassword

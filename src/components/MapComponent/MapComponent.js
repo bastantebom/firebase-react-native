@@ -30,6 +30,7 @@ const MapComponent = ({
   customMarker,
   radiusMarker,
   customMapStyle,
+  customDelta,
 }) => {
   const circleRef = useRef(null)
   const mapViewRef = useRef(null)
@@ -147,8 +148,8 @@ const MapComponent = ({
         let r = {
           latitude: parseFloat(reCenter.lat),
           longitude: parseFloat(reCenter.lng),
-          latitudeDelta: Config.latitudeDelta,
-          longitudeDelta: Config.longitudeDelta,
+          latitudeDelta: customDelta ? customDelta : Config.latitudeDelta,
+          longitudeDelta: customDelta ? customDelta : Config.longitudeDelta,
         }
         mapViewRef.current.animateToRegion(r, 2000)
       }, 100)
@@ -282,7 +283,7 @@ const MapComponent = ({
                 latitude: latitude + parseFloat(0.00002),
                 longitude: longitude,
               }}
-              radius={500}
+              radius={customDelta ? 200 : 500}
               strokeWidth={1}
               strokeColor={'rgba(255, 212, 0, 1)'}
               fillColor={'rgba(255, 212, 0, 0.18)'}

@@ -279,8 +279,7 @@ const Post = ({
                     style={GlobalStyle.image}
                     source={{ uri: cover_photos[0] }}
                   />
-                ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
-                post_type === 'service' ? (
+                ) : post_type === 'service' ? (
                   <DefaultService
                     width={normalize(122)}
                     height={normalize(126)}
@@ -376,8 +375,7 @@ const Post = ({
                     style={GlobalStyle.image}
                     source={{ uri: cover_photos[0] }}
                   />
-                ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
-                post_type === 'service' ? (
+                ) : post_type === 'service' ? (
                   <DefaultService
                     width={normalize(122)}
                     height={normalize(126)}
@@ -417,33 +415,7 @@ const Post = ({
                     {city}, {province}
                   </AppText>
                 </View>
-                {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
-                <NavigationArrow width={12} height={12} />
-                <AppText
-                  textStyle="eyebrow2"
-                  color={Colors.contentPlaceholder}
-                  customStyle={{marginLeft: 4}}>
-                  {postServiceRadius}
-                </AppText>
-              </View> */}
               </View>
-              {/* {pickup || delivery ? (
-              <View style={GlobalStyle.rowCenter}>
-                <TransportationBox width={16} height={16} />
-
-                <AppText
-                  textStyle="eyebrow2"
-                  customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
-                  {pickup && delivery
-                    ? 'Pickup & Delivery'
-                    : delivery
-                    ? 'Delivery'
-                    : pickup
-                    ? 'Pickup'
-                    : 'Not set'}
-                </AppText>
-              </View>
-            ) : null} */}
             </View>
           </View>
         </PaddingView>

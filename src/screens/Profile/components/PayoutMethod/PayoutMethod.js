@@ -38,7 +38,7 @@ const PayoutMethod = ({ close }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}>
         <PaddingView paddingSize={3}>
-          {!!payoutMethod ? (
+          {!payoutMethod ? (
             <View
               style={{
                 justifyContent: 'space-between',

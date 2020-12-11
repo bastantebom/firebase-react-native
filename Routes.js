@@ -334,6 +334,13 @@ const TabStack = props => {
       alignItems: 'center',
       paddingVertical: 4,
     },
+    activeTintColor: Colors.primaryMidnightBlue,
+    inactiveTintColor: Colors.contentPlaceholder,
+    labelStyle: {
+      fontFamily: 'RoundedMplus1c-Medium',
+      fontSize: normalize(12),
+    },
+    labelPosition: 'below-icon',
   }
 
   return (
@@ -351,18 +358,6 @@ const TabStack = props => {
             return <>{icon}</>
           },
           tabBarOnPress: closePostButtons,
-          tabBarLabel: ({ focused }) => {
-            const label = focused ? (
-              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
-                Servbees
-              </AppText>
-            ) : (
-              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
-                Servbees
-              </AppText>
-            )
-            return <>{label}</>
-          },
         }}
       />
       <Tab.Screen
@@ -376,18 +371,6 @@ const TabStack = props => {
               <Hive width={normalize(25)} height={normalize(25)} />
             )
             return <>{icon}</>
-          },
-          tabBarLabel: ({ focused }) => {
-            const label = focused ? (
-              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
-                Hive
-              </AppText>
-            ) : (
-              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
-                Hive
-              </AppText>
-            )
-            return <>{label}</>
           },
         }}
       />
@@ -438,18 +421,6 @@ const TabStack = props => {
               </View>
             )
           },
-          tabBarLabel: ({ focused }) => {
-            const label = focused ? (
-              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
-                Activity
-              </AppText>
-            ) : (
-              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
-                Activity
-              </AppText>
-            )
-            return <>{label}</>
-          },
         }}
       />
       <Tab.Screen
@@ -491,18 +462,6 @@ const TabStack = props => {
                 </View>
               </View>
             )
-          },
-          tabBarLabel: ({ focused }) => {
-            const label = focused ? (
-              <AppText textStyle="navMedium" color={Colors.primaryMidnightBlue}>
-                You
-              </AppText>
-            ) : (
-              <AppText textStyle="nav" color={Colors.contentPlaceholder}>
-                You
-              </AppText>
-            )
-            return <>{label}</>
           },
         }}
       />
