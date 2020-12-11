@@ -16,6 +16,7 @@ import Colors from '@/globals/Colors'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import { Icons } from '@/assets/images/icons'
+import { normalize } from '@/globals'
 
 /**
  * @typedef {Object} VerifyCodeProps
@@ -182,6 +183,7 @@ const VerifyCodeScreen = ({ navigation, route, routes }) => {
               onChangeText={value => handleInputChange(value, index)}
               onKeyPress={event => handelInputKeyPress(event, index)}
               maxLength={1}
+              fontFamily={'RoundedMplus1c-Regular'}
               theme={{
                 colors: {
                   primary: AppColor.contentOcean,
@@ -243,11 +245,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: 'center',
     borderRadius: 4,
-    fontSize: 40,
+    fontSize: normalize(40),
     lineHeight: 59,
     paddingVertical: 14,
-    paddingHorizontal: 22,
-    marginHorizontal: 8,
+    paddingHorizontal: normalize(22),
+    marginHorizontal: normalize(8),
     borderColor: AppColor.contentEbony,
     backgroundColor: '#fff',
     fontFamily: 'RoundedMplus1c-Regular',

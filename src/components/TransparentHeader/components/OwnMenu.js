@@ -196,30 +196,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
 
             <View>
               <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
-                Payout Method
-              </AppText>
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={togglePayoutMethod}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <PayoutWallet width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
-                    Payout Method
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <Divider
-              style={{
-                backgroundColor: Colors.neutralGray,
-                marginVertical: 24,
-              }}
-            />
-
-            <View>
-              <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
                 Help and Support
               </AppText>
 

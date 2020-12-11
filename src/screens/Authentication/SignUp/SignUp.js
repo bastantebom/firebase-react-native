@@ -253,7 +253,9 @@ const SignUp = props => {
                   shown: errors.login.length,
                 }}>
                 <AppInput
-                  label={signUpMethod === 'email' ? 'Email' : 'Mobile Number'}
+                  label={
+                    signUpMethod === 'email' ? 'Email Address' : 'Mobile Number'
+                  }
                   value={formData.login}
                   onFocusInput={() => {
                     setIsToggleVisible(true)
@@ -269,27 +271,26 @@ const SignUp = props => {
                     setDirtyStates([...new Set([...dirtyStates, 'login'])])
                     handleFormChange({ key: 'login', value })
                   }}
+                  maxLength={signUpMethod === 'email' ? null : 13}
                 />
               </Validator>
 
-              <View style={{ display: isToggleVisible ? 'flex' : 'none' }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSignUpMethod(
-                      signUpMethod === 'number' ? 'email' : 'number'
-                    )
-                    validate()
-                  }}>
-                  <AppText
-                    textStyle="button3"
-                    color={AppColor.contentOcean}
-                    customStyle={{ marginBottom: 16 }}>
-                    {signUpMethod === 'email'
-                      ? 'Use mobile number instead'
-                      : 'Use email instead'}
-                  </AppText>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setSignUpMethod(
+                    signUpMethod === 'number' ? 'email' : 'number'
+                  )
+                  validate()
+                }}>
+                <AppText
+                  textStyle="button3"
+                  color={AppColor.contentOcean}
+                  customStyle={{ marginBottom: 16 }}>
+                  {signUpMethod === 'email'
+                    ? 'Use mobile number instead'
+                    : 'Use email address instead'}
+                </AppText>
+              </TouchableOpacity>
               <Validator
                 style={{ marginBottom: normalize(16) }}
                 errorState={{
