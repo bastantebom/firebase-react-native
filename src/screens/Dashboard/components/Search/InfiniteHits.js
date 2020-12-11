@@ -1,17 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react'
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native'
-import Modal from 'react-native-modal'
+import { StyleSheet, View, FlatList, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { Colors, normalize } from '@/globals'
-import { AppButton, AppText, SinglePostOthersView } from '@/components'
+import { AppButton, AppText } from '@/components'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import Tags from './Tags'
@@ -29,13 +21,17 @@ const InfiniteHits = ({ value }) => {
 
   const navigation = useNavigation()
 
-  const [showPost, setShowPost] = useState(false)
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  const goToPost = item => {
-    setData(item)
-    setShowPost(!showPost)
+  const goToPost = post => {
+    const params = {
+      data: post,
+      viewing: true,
+      created: false,
+      edited: false,
+    }
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: { ...params, othersView: true },
+    })
   }
 
   const openProfile = item => {
@@ -53,12 +49,13 @@ const InfiniteHits = ({ value }) => {
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {results.length !== 0 ? (
         <FlatList
           data={results}
           keyExtractor={item => item.objectID}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
+          showsVerticalScrollIndicator={false}
           onEndReached={() => {
             searchType === 'posts'
               ? handleOnEndReach(value)
@@ -97,23 +94,6 @@ const InfiniteHits = ({ value }) => {
           <Tags />
         </View>
       )}
-      <Modal
-        isVisible={showPost}
-        animationIn="slideInRight"
-        animationInTiming={200}
-        animationOut="slideOutRight"
-        animationOutTiming={200}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-          justifyContent: 'flex-start',
-        }}>
-        <SinglePostOthersView
-          data={data}
-          closePostModal={() => setShowPost(false)}
-        />
-      </Modal>
     </View>
   )
 }

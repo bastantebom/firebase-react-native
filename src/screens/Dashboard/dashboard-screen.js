@@ -26,8 +26,10 @@ import { getCurrentPosition, getLocationData } from '@/globals/Utils'
 import VerifyNotifictaion from './components/verify-account-notification'
 import { Context } from '@/context'
 import LinearGradient from 'react-native-linear-gradient'
+import SearchResults from './components/Search/SearchResults'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
+const SEARCH_USER_TOOLBAR_HEIGHT = 120
 const FILTER_TOOLBAR_HEIGHT = 65
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
@@ -35,6 +37,8 @@ const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
 const DashboardScreen = ({ navigation }) => {
   const { user, userStatus } = useContext(UserContext)
+  const { searchType } = useContext(Context)
+  const [searchValue, setSearchValue] = useState('')
   const [isFiltersVisible, setIsFiltersVisible] = useState(false)
   const [
     shouldShowVerifyNotification,
@@ -57,6 +61,7 @@ const DashboardScreen = ({ navigation }) => {
     longitude: null,
   })
 
+  const [searchBarFocused, setSearchBarFocused] = useState(false)
   const [totalPages, setTotalPages] = useState(Infinity)
 
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -319,6 +324,12 @@ const DashboardScreen = ({ navigation }) => {
   const diffClampNode = Animated.diffClamp(scrollY, 0, SEARCH_TOOLBAR_HEIGHT)
   const translateY = Animated.multiply(diffClampNode, -1)
 
+  const getSearchToolbarHeight = () => {
+    return searchType === 'user'
+      ? SEARCH_USER_TOOLBAR_HEIGHT
+      : SEARCH_TOOLBAR_HEIGHT
+  }
+
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
@@ -346,21 +357,26 @@ const DashboardScreen = ({ navigation }) => {
               right: 0,
               height: Animated.add(
                 translateY,
-                SEARCH_TOOLBAR_HEIGHT + FILTER_TOOLBAR_HEIGHT
+                getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
               ),
               zIndex: 4,
-              elevation: 4,
             }}>
             <Animated.View
               style={{
-                height: SEARCH_TOOLBAR_HEIGHT,
+                height: getSearchToolbarHeight(),
                 transform: [{ translateY }],
                 zIndex: 5,
               }}>
               <SearchBarWithFilter
-                show={() => setIsFiltersVisible(true)}
+                onFiltersPress={() => setIsFiltersVisible(true)}
                 filters={filters}
                 onFiltersChange={handleButtonFiltersChange}
+                onValueChange={setSearchValue}
+                value={searchValue}
+                onFocus={() => setSearchBarFocused(true)}
+                onBackPress={() => {
+                  setSearchBarFocused(false)
+                }}
               />
             </Animated.View>
             <Animated.View
@@ -378,25 +394,38 @@ const DashboardScreen = ({ navigation }) => {
               />
             </Animated.View>
           </AnimatedLinearGradient>
-          <Posts
-            currentLocation={locationData}
-            posts={posts}
-            onPostPress={handlePostPress}
-            onUserPress={handleUserPress}
-            onLikePress={handleLikePress}
-            onRefresh={handleRefresh}
-            refreshing={isRefreshing}
-            onEndReached={handleOnEndReached}
-            isLoadingMoreItems={isLoadingMoreItems}
-            contentContainerStyle={{
-              paddingTop: SEARCH_TOOLBAR_HEIGHT + FILTER_TOOLBAR_HEIGHT,
-            }}
-            bounces={false}
-            // disabled autohiding of search toolbar for now
-            // onScroll={onScroll}
-            progressViewOffset={SEARCH_TOOLBAR_HEIGHT + FILTER_TOOLBAR_HEIGHT}
-            showsVerticalScrollIndicator={false}
-          />
+
+          <View>
+            {searchBarFocused && (
+              <SearchResults
+                containerStyle={{
+                  position: 'absolute',
+                  top: getSearchToolbarHeight() + 8,
+                }}
+                searchValue={searchValue}
+              />
+            )}
+
+            <Posts
+              currentLocation={locationData}
+              posts={posts}
+              onPostPress={handlePostPress}
+              onUserPress={handleUserPress}
+              onLikePress={handleLikePress}
+              onRefresh={handleRefresh}
+              refreshing={isRefreshing}
+              onEndReached={handleOnEndReached}
+              isLoadingMoreItems={isLoadingMoreItems}
+              contentContainerStyle={{
+                paddingTop: getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT,
+              }}
+              bounces={false}
+              progressViewOffset={
+                getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
+              }
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
         </View>
         <WhiteOpacity />
       </SafeAreaView>

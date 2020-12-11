@@ -19,7 +19,6 @@ import { HeaderBackGray, Search } from '@/assets/images/icons'
 import { AppText } from '@/components'
 import { Context } from '@/context'
 import { debounce } from 'lodash'
-import _ from 'lodash'
 
 const { width } = Dimensions.get('window')
 const PADDING = 16
@@ -29,37 +28,27 @@ const FULL_WIDTH = width - PADDING * 2
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity)
 
-const SearchBox = ({
-  onSearchFocus,
-  onBackPress,
-  valueHandler,
-  customStyle,
-  props,
-}) => {
+const SearchBox = ({ onFocus, onBlur, onBackPress, onValueChange }) => {
   const {
     searchType,
     setSearchType,
-    results,
-    setResults,
-    page,
-    setPage,
     handleSearch,
     handleSearchUser,
   } = useContext(Context)
 
-  const searchbarRef = useRef(null)
-  const [value, setValue] = useState()
+  const inputRef = useRef(null)
+  const [value, setValue] = useState('')
+
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
   const [cancelPosition] = useState(new Animated.Value(0))
   const [barPosition] = useState(new Animated.Value(0))
-  const [barPositionFull, setBarPositionFull] = useState(75)
   const [barOpacity] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
   const [titleOpacity] = useState(new Animated.Value(0))
   const [titlePosition] = useState(new Animated.Value(45))
-  const [searchBarFocused, setSearchBarFocused] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
 
-  const onFocus = () => {
+  const handleFocus = event => {
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_FULL_WIDTH,
@@ -69,7 +58,7 @@ const SearchBox = ({
       Animated.timing(cancelPosition, {
         toValue: -16,
         duration: 400,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(barPosition, {
         toValue: 45,
@@ -82,11 +71,11 @@ const SearchBox = ({
         useNativeDriver: true,
       }),
     ]).start()
-    setSearchBarFocused(true)
-    onSearchFocus()
+    setIsFocused(true)
+    onFocus(event)
   }
 
-  const onBlur = () => {
+  const handleBlur = event => {
     Animated.parallel([
       Animated.timing(inputLength, {
         toValue: SEARCH_SHRINK_WIDTH,
@@ -96,7 +85,7 @@ const SearchBox = ({
       Animated.timing(cancelPosition, {
         toValue: 0,
         duration: 250,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(barPosition, {
         toValue: 0,
@@ -109,22 +98,13 @@ const SearchBox = ({
         useNativeDriver: true,
       }),
     ]).start()
-    valueHandler()
-    searchbarRef.current.clear()
-    searchbarRef.current.blur()
+    inputRef.current.clear()
+    setValue('')
+    onValueChange('')
+    setIsFocused(false)
+    onBlur(event)
+
     setSearchType('posts')
-    setSearchBarFocused(false)
-  }
-
-  const debounceHandler = useCallback(
-    debounce(value => {
-      valueHandler(value)
-    }, 2000),
-    []
-  )
-
-  const handleValue = value => {
-    debounceHandler(value)
   }
 
   const backToPostSearch = () => {
@@ -133,7 +113,7 @@ const SearchBox = ({
         Animated.timing(titleOpacity, {
           toValue: 0,
           duration: 100,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(titlePosition, {
           toValue: 45,
@@ -143,38 +123,64 @@ const SearchBox = ({
         Animated.timing(barOpacity, {
           toValue: 0,
           duration: 100,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]).start()
-      valueHandler()
-      searchbarRef.current.clear()
-      searchbarRef.current.blur()
+
+      onValueChange('')
+      setValue('')
+      inputRef.current.clear()
+      inputRef.current.blur()
       setSearchType('posts')
-    }, 500)
+    }, 250)
+  }
+
+  const debouncedHandler = debounce(value => {
+    onValueChange(value)
+  }, 1000)
+
+  const handleChange = value => {
+    setValue(value)
+    debouncedHandler(value)
+    searchType === 'posts' ? handleSearch(value) : handleSearchUser(value)
+  }
+
+  const searchBarTheme = {
+    colors: { primary: AppColor.contentOcean },
+    fonts: { regular: '' },
   }
 
   useEffect(() => {
     if (searchType !== 'posts') {
-      setBarPositionFull(0)
       setTimeout(() => {
         Animated.parallel([
           Animated.timing(titleOpacity, {
             toValue: 1,
             duration: 100,
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
           Animated.timing(titlePosition, {
             toValue: 0,
             duration: 100,
             useNativeDriver: false,
           }),
+          Animated.timing(inputLength, {
+            toValue: FULL_WIDTH,
+            duration: 100,
+            useNativeDriver: false,
+          }),
           Animated.timing(barOpacity, {
             toValue: 1,
             duration: 100,
-            useNativeDriver: true,
+            useNativeDriver: false,
+          }),
+          Animated.timing(barPosition, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: false,
           }),
         ]).start()
-      }, 500)
+      }, 250)
     }
   }, [searchType])
 
@@ -182,64 +188,55 @@ const SearchBox = ({
     <View style={styles.container}>
       <Animated.View
         style={{
-          width: searchType === 'posts' ? inputLength : FULL_WIDTH,
+          width: inputLength,
           position: 'absolute',
           zIndex: 1,
-          left: searchType === 'posts' ? barPosition : 0,
           top: searchType === 'posts' ? 0 : normalize(50),
           opacity: searchType !== 'posts' ? barOpacity : 1,
+          left: 0,
+          transform: [{ translateX: barPosition }],
         }}>
         <Searchbar
           placeholder="Search..."
-          onChangeText={value => {
-            setValue(value)
-            handleValue(value)
-            searchType === 'posts'
-              ? handleSearch(value)
-              : handleSearchUser(value)
-          }}
+          onChangeText={handleChange}
           value={value}
-          onIconPress={onFocus}
+          onIconPress={() => inputRef.current.focus()}
           fontFamily={'RoundedMplus1c-Regular'}
-          theme={{
-            colors: {
-              primary: AppColor.contentOcean,
+          theme={searchBarTheme}
+          inputStyle={styles.input}
+          style={[
+            styles.search,
+            {
+              borderColor: Colors[isFocused ? 'contentOcean' : 'neutralGray'],
             },
-            fonts: {
-              regular: '',
-            },
-          }}
-          inputStyle={{ paddingLeft: 0, paddingRight: 0 }}
-          style={{
-            marginTop: normalize(0),
-            borderColor: searchBarFocused
-              ? Colors.contentOcean
-              : Colors.neutralGray,
-            elevation: 0,
-            borderRadius: 40,
-            height: normalize(50),
-          }}
-          ref={searchbarRef}
-          onFocus={onFocus}
-          {...props}
+          ]}
+          ref={inputRef}
+          onFocus={handleFocus}
         />
       </Animated.View>
+
       {searchType === 'posts' ? (
         <AnimatedTouchable
-          style={[styles.cancelSearch, { left: cancelPosition }]}
+          style={[
+            styles.cancelSearch,
+            { left: 0, transform: [{ translateX: cancelPosition }] },
+          ]}
           onPress={() => {
-            onBlur(), onBackPress()
+            handleBlur(), onBackPress()
           }}>
-          <Animated.View style={{ opacity: opacity }}>
+          <Animated.View style={{ opacity }}>
             <HeaderBackGray width={normalize(24)} height={normalize(24)} />
           </Animated.View>
         </AnimatedTouchable>
       ) : (
         <View style={styles.modalHeader}>
           <AnimatedTouchable
-            style={[styles.cancelSearch, { left: cancelPosition }]}
+            style={[
+              styles.cancelSearch,
+              { left: 0, transform: [{ translateX: cancelPosition }] },
+            ]}
             onPress={() => backToPostSearch()}>
-            <Animated.View style={{ opacity: opacity }}>
+            <Animated.View style={{ opacity }}>
               <HeaderBackGray width={normalize(25)} height={normalize(25)} />
             </Animated.View>
           </AnimatedTouchable>
@@ -279,5 +276,14 @@ const styles = StyleSheet.create({
     marginTop: 13,
     width: '100%',
     top: 0,
+  },
+  input: {
+    paddingHorizontal: 0,
+  },
+  search: {
+    marginTop: normalize(0),
+    elevation: 0,
+    borderRadius: 40,
+    height: normalize(50),
   },
 })

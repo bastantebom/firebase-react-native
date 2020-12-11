@@ -14,11 +14,16 @@ import { Colors, normalize } from '@/globals'
 import { Context } from '@/context'
 
 import SearchBox from './Search/Searchbox'
-import SearchResults from './Search/SearchResults'
 import { useNavigation } from '@react-navigation/native'
 
-const SearchBarWithFilter = ({ show }) => {
-  const scrollY = useRef(new Animated.Value(0))
+const SearchBarWithFilter = ({
+  onFiltersPress,
+  value,
+  onValueChange,
+  onFocus,
+  onBlur,
+  onBackPress,
+}) => {
   const navigation = useNavigation()
 
   const { searchType, setPage } = useContext(Context)
@@ -26,13 +31,11 @@ const SearchBarWithFilter = ({ show }) => {
   const [opacity] = useState(new Animated.Value(0))
   const [searchBarFocused, setSearchBarFocused] = useState(false)
 
-  const [searchValue, setSearchValue] = useState()
-
-  const onValueChange = value => {
-    setSearchValue(value)
+  const handleValueChange = value => {
+    onValueChange(value)
   }
 
-  const onFocus = () => {
+  const handleFocus = () => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
@@ -40,10 +43,16 @@ const SearchBarWithFilter = ({ show }) => {
         useNativeDriver: true,
       }),
     ]).start()
+    onFocus?.()
     setSearchBarFocused(true)
   }
 
-  const onBackPress = () => {
+  const handleBlur = () => {
+    onBlur?.()
+    setSearchBarFocused(false)
+  }
+
+  const handleBackPress = () => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0,
@@ -51,25 +60,10 @@ const SearchBarWithFilter = ({ show }) => {
         useNativeDriver: true,
       }),
     ]).start()
-    setSearchBarFocused(false)
+    onBackPress()
     Keyboard.dismiss()
     setPage(0)
   }
-
-  const barOpacity = scrollY.current.interpolate({
-    inputRange: [0, 1, 5],
-    outputRange: [5, 1, 0],
-  })
-
-  const H_MAX_HEIGHT = normalize(55)
-  const H_MIN_HEIGHT = normalize(40)
-  const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT
-
-  const headerScrollHeight = scrollY.current.interpolate({
-    inputRange: [0, H_SCROLL_DISTANCE],
-    outputRange: [H_MAX_HEIGHT, H_MIN_HEIGHT],
-    extrapolate: 'clamp',
-  })
 
   return (
     <View style={{ margin: 16, marginBottom: 0 }}>
@@ -80,21 +74,13 @@ const SearchBarWithFilter = ({ show }) => {
             height: searchType !== 'posts' ? normalize(100) : '100%',
           }}>
           <SearchBox
-            onSearchFocus={onFocus}
-            onBackPress={onBackPress}
-            valueHandler={onValueChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onBackPress={handleBackPress}
+            onValueChange={handleValueChange}
+            value={value}
           />
         </View>
-        <Animated.View
-          style={{
-            opacity: opacity,
-            display: searchBarFocused ? 'flex' : 'none',
-            zIndex: searchBarFocused ? 1 : 0,
-            flex: 1,
-            position: 'absolute',
-          }}>
-          <SearchResults onValueChange={searchValue} />
-        </Animated.View>
 
         {searchBarFocused ? (
           <View style={{ marginTop: normalize(47.5) }} />
@@ -104,7 +90,7 @@ const SearchBarWithFilter = ({ show }) => {
               flexDirection: 'row',
               opacity: searchBarFocused ? 0 : 1,
             }}>
-            <TouchableOpacity activeOpacity={0.7} onPress={show}>
+            <TouchableOpacity activeOpacity={0.7} onPress={onFiltersPress}>
               <View style={styles.circleButton}>
                 <FilterDark width={normalize(18)} height={normalize(18)} />
               </View>

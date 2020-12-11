@@ -15,9 +15,8 @@ import { Context } from '@/context'
 import InfiniteHits from './InfiniteHits'
 
 const { width, height } = Dimensions.get('window')
-const SEARCH_FULL_WIDTH = width - normalize(25)
 
-const SearchResults = ({ onValueChange }) => {
+const SearchResults = ({ searchValue, containerStyle }) => {
   const { searchType, setSearchType } = useContext(Context)
 
   const [opacity] = useState(new Animated.Value(1))
@@ -36,19 +35,19 @@ const SearchResults = ({ onValueChange }) => {
         }),
       ]).start()
     }
-  }, [searchType, onValueChange])
+  }, [searchType, searchValue])
 
   return (
     <View
       style={[
         styles.parent,
         {
-          zIndex: 9999,
           paddingBottom: searchType === 'posts' ? normalize(15) : normalize(70),
           top: searchType === 'posts' ? normalize(60) : normalize(120),
         },
+        containerStyle,
       ]}>
-      {onValueChange === undefined || onValueChange === '' ? (
+      {!searchValue?.length ? (
         <Animated.View
           style={{
             opacity: opacity,
@@ -69,9 +68,12 @@ const SearchResults = ({ onValueChange }) => {
               </View>
             </TouchableOpacity>
             {/* <TouchableOpacity onPress={() => null} activeOpacity={.7}>
-              <View style={styles.searchContainer}>  
+              <View style={styles.searchContainer}>
                 <View style={{ flexDirection: 'row' }}>
-                  <CircleTickGray width={normalize(25)} height={normalize(25)} />
+                  <CircleTickGray
+                    width={normalize(25)}
+                    height={normalize(25)}
+                  />
                   <AppText textStyle="body2" customStyle={{ marginLeft: 11 }}>
                     Search in following
                   </AppText>
@@ -83,9 +85,9 @@ const SearchResults = ({ onValueChange }) => {
           </PaddingView>
         </Animated.View>
       ) : (
-        <PaddingView paddingSize={2}>
-          <InfiniteHits value={onValueChange} />
-        </PaddingView>
+        <View style={{ flex: 1, padding: normalize(16) }}>
+          <InfiniteHits value={searchValue} />
+        </View>
       )}
     </View>
   )
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
     maxHeight: height - normalize(130),
-    left: -16,
+    zIndex: 9999,
     backgroundColor: 'white',
   },
   searchContainer: {
