@@ -37,8 +37,6 @@ import { normalize } from '@/globals'
 const ResetPassword = ({ navigation }) => {
   const [email, setEmail] = useState('')
 
-  const { openNotification, closeNotification } = useContext(Context)
-
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
 
@@ -46,6 +44,7 @@ const ResetPassword = ({ navigation }) => {
   const [buttonState, setButtonState] = useState('dark')
   const [buttonLoading, setButtonLoading] = useState(false)
   const [buttonText, setButtonText] = useState('Send')
+  const [notif, showNotif] = useState(false)
 
   const onEmailChange = text => {
     setEmail(text)
@@ -107,24 +106,28 @@ const ResetPassword = ({ navigation }) => {
   async function sendEmail() {
     const msg = await sendResetPasswordEmail()
     setNotificationMessage(msg)
-    openNotification()
+    showNotif(true)
   }
 
   const closeNotificationTimer = () => {
-    setTimeout(() => {
-      closeNotification()
+    const timeout = setTimeout(() => {
+      showNotif(false)
     }, 5000)
+
+    return () => clearTimeout(timeout)
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <SafeAreaView style={{ zIndex: 2 }}>
-        <Notification
-          type={notificationType}
-          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
-          {notificationMessage}
-        </Notification>
-      </SafeAreaView>
+      {notif && (
+        <SafeAreaView style={{ zIndex: 2 }}>
+          <Notification
+            type={notificationType}
+            icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+            {notificationMessage}
+          </Notification>
+        </SafeAreaView>
+      )}
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
         <View style={styles.closeIconContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>

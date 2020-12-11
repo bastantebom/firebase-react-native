@@ -1,25 +1,27 @@
-import React, {useState, useContext} from 'react';
-import {View, TouchableOpacity, SafeAreaView, Dimensions} from 'react-native';
+import React, { useState, useContext } from 'react'
+import { View, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native'
 
-import {AppText, BottomSheetHeader} from '@/components';
-import CategoryFormModal from './CategoryFormModal';
-import DeleteCategoryModal from './DeleteCategoryModal';
+import { AppText, BottomSheetHeader } from '@/components'
+import CategoryFormModal from './CategoryFormModal'
+import DeleteCategoryModal from './DeleteCategoryModal'
 
-import Modal from 'react-native-modal';
-import {CategoryService} from '@/services';
-import {Context} from '@/context';
-import {useNavigation} from '@react-navigation/native';
+import Modal from 'react-native-modal'
+import { CategoryService } from '@/services'
+import { Context } from '@/context'
+import { useNavigation } from '@react-navigation/native'
+import { Draft, Trash } from '@/assets/images/icons'
+import { Colors } from '@/globals'
 
-const CategoryOptions = ({close, categoryName}) => {
-  const [categoryFormModal, showCategoryFormModal] = useState(false);
-  const [deleteCategoryModal, showDeleteCategoryModal] = useState(false);
-  const {editCategory} = useContext(Context);
+const CategoryOptions = ({ close, categoryName }) => {
+  const [categoryFormModal, showCategoryFormModal] = useState(false)
+  const [deleteCategoryModal, showDeleteCategoryModal] = useState(false)
+  const { editCategory } = useContext(Context)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const deleteCategoryHandler = () => {
     showDeleteCategoryModal(true)
-  };
+  }
 
   return (
     <SafeAreaView
@@ -28,28 +30,37 @@ const CategoryOptions = ({close, categoryName}) => {
         borderTopEndRadius: 8,
         borderTopStartRadius: 8,
       }}>
-      <View style={{paddingHorizontal: 24}}>
+      <View style={{ paddingHorizontal: 24 }}>
         <BottomSheetHeader />
-        <AppText textStyle="display6" customStyle={{paddingBottom: 24}}>
+        <AppText textStyle="display6" customStyle={{ paddingBottom: 24 }}>
           Edit Category
         </AppText>
 
         {/* Change category name of all items && edit category name then redirect to sell post form */}
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{paddingBottom: 24}}
+          style={{ paddingBottom: 24, flexDirection: 'row' }}
           onPress={() => {
-            showCategoryFormModal(true);
+            showCategoryFormModal(true)
           }}>
-          <AppText textStyle="body2">Change Category Name</AppText>
+          <Draft />
+          <AppText textStyle="body2" customStyle={{ paddingLeft: 8 }}>
+            Edit Category Name
+          </AppText>
         </TouchableOpacity>
 
         {/* Prompt if the user wants to delete the items under this category OR delete the category and move the items to uncategorized then redirect to sell post form*/}
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{paddingBottom: 24}}
+          style={{ paddingBottom: 24, flexDirection: 'row' }}
           onPress={() => deleteCategoryHandler()}>
-          <AppText textStyle="body2">Delete Category</AppText>
+          <Trash />
+          <AppText
+            textStyle="body2"
+            customStyle={{ paddingLeft: 8 }}
+            color={Colors.red}>
+            Delete Category
+          </AppText>
         </TouchableOpacity>
       </View>
 
@@ -67,8 +78,8 @@ const CategoryOptions = ({close, categoryName}) => {
         }}>
         <DeleteCategoryModal
           close={() => {
-            showDeleteCategoryModal(false);
-            close();
+            showDeleteCategoryModal(false)
+            close()
           }}
           categoryName={categoryName}
         />
@@ -88,15 +99,15 @@ const CategoryOptions = ({close, categoryName}) => {
         }}>
         <CategoryFormModal
           close={() => {
-            showCategoryFormModal(false);
-            close();
+            showCategoryFormModal(false)
+            close()
           }}
           editing={true}
           categoryName={categoryName}
         />
       </Modal>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default CategoryOptions;
+export default CategoryOptions

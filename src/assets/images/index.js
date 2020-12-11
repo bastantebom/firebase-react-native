@@ -44,6 +44,8 @@ import LogoPaypal from './logo-paypal.svg'
 
 import Delivering from './delivering-default.svg'
 import Clipboard from './clipboard-info.svg'
+import Category from './Category.svg'
+import Guide from './Guide.svg'
 
 import EmptyPayout from './empty-payout.svg'
 import SuccessPayout from './success-payout.svg'
@@ -63,6 +65,8 @@ import ReadyForPickup from './post-status/ready-pickup.svg'
 import ServiceScheduled from './post-status/scheduled.svg'
 
 export {
+  Guide,
+  Category,
   DefaultNeed,
   DefaultSell,
   DefaultService,

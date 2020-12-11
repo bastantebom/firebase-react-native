@@ -594,15 +594,6 @@ const SinglePostView = props => {
               }}>
               {!is_multiple && (
                 <>
-                  <AppText
-                    textStyle="subtitle1"
-                    color={Colors.secondaryMountainMeadow}
-                    customStyle={{ marginRight: 8 }}>
-                    ₱{items[0].price}
-                    {type !== 'need'
-                      ? price
-                      : `${price_range?.min} - ${price_range?.max}`}
-                  </AppText>
                   {type !== 'need' ? (
                     <AppText customStyle={{ fontSize: normalize(10) }}>
                       PRICE
@@ -612,6 +603,19 @@ const SinglePostView = props => {
                       BUDGET
                     </AppText>
                   )}
+                  <AppText
+                    textStyle="subtitle1"
+                    color={Colors.secondaryMountainMeadow}
+                    customStyle={{ marginLeft: 8 }}>
+                    ₱
+                    {type !== 'need'
+                      ? Number(items[0].price).toLocaleString()
+                      : `${Number(
+                          price_range?.min
+                        ).toLocaleString()} - ${Number(
+                          price_range?.max
+                        ).toLocaleString()}`}
+                  </AppText>
                 </>
               )}
             </View>

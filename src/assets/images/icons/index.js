@@ -273,10 +273,23 @@ import VerifyEmail from './verify-email.svg'
 import UploadId from './upload-id.svg'
 import CheckActive from './check-active.svg'
 import More from './more.svg'
+import MoreOptions from './more-options.svg'
+
+import Draft from './Draft.svg'
+import Notes from './Notes.svg'
+import Clock from './Clock.svg'
+import MOCalendar from './MO-Calendar.svg'
+import Trash from './Trash.svg'
 
 import RoundEllipsisBlue from './round-ellipsis.svg'
 
 export {
+  Trash,
+  MOCalendar,
+  Draft,
+  Notes,
+  Clock,
+  MoreOptions,
   AudioVideo,
   VerticalEllipsis,
   CircleAdd,

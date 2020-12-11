@@ -33,6 +33,7 @@ import {
   PostInfo,
   PostAdd,
   FormArrowRight,
+  MoreOptions,
 } from '@/assets/images/icons'
 import {
   AppText,
@@ -58,6 +59,8 @@ import PostExpiryModal from './modals/PostExpiryModal'
 import StoreLocationModal from './modals/StoreLocationModal'
 import ScheduleModal from './modals/ScheduleModal'
 import BookingMethodModal from './modals/BookingMethodModal'
+import MoreOptionsModal from './modals/MoreOptions'
+import CoverPhotoGuidelinesModal from './modals/CoverPhotoGuidelines'
 
 const SellPostForm = ({
   navToPost,
@@ -70,14 +73,14 @@ const SellPostForm = ({
     type: 'sell',
     privacy: false,
     location: true,
-    schedule: true,
+    schedule: false,
     multipleItems: true,
     multipleService: false,
     budgetRange: false,
     payment: true,
     shipping: true,
     moreOptions: true,
-    expiry: true,
+    expiry: false,
     booking: false,
   }
 
@@ -100,7 +103,7 @@ const SellPostForm = ({
     type: 'service',
     privacy: false,
     location: true,
-    schedule: true,
+    schedule: false,
     multipleItems: false,
     multipleService: true,
     budgetRange: false,
@@ -153,6 +156,7 @@ const SellPostForm = ({
 
   const [showLocation, setShowLocation] = useState(false)
   const [stringAddress, setStringAddress] = useState('')
+  const [moreOptions, showMoreOptions] = useState(false)
   const [addItemModal, showAddItemModal] = useState(false)
   const [privacyModal, showPrivacyModal] = useState(false)
   const [paymentMethodModal, showPaymentMethodModal] = useState(false)
@@ -160,6 +164,7 @@ const SellPostForm = ({
   const [postExpiryModal, showPostExpiryModal] = useState(false)
   const [scheduleModal, showScheduleModal] = useState(false)
   const [bookingMethodModal, showBookingMethodModal] = useState(false)
+  const [coverPhotoGuidelines, showCoverPhotoGuidelines] = useState(false)
 
   const [data, setData] = useState([])
 
@@ -490,6 +495,13 @@ const SellPostForm = ({
     }
   }
 
+  const setMoreOptions = opt => {
+    setActiveForm({
+      ...activeForm,
+      [opt]: true,
+    })
+  }
+
   return (
     <>
       <View
@@ -541,6 +553,30 @@ const SellPostForm = ({
         )}
 
         <PostImageUpload />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => showCoverPhotoGuidelines(true)}
+          style={{ marginBottom: 16 }}>
+          <AppText textStyle="caption" color={Colors.contentOcean}>
+            Cover Photo Guidelines
+          </AppText>
+        </TouchableOpacity>
+        <Modal
+          isVisible={coverPhotoGuidelines}
+          animationIn="slideInRight"
+          animationInTiming={300}
+          animationOut="slideOutRight"
+          animationOutTiming={250}
+          onBackButtonPress={() => setMap(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <CoverPhotoGuidelinesModal
+            close={() => showCoverPhotoGuidelines(false)}
+          />
+        </Modal>
 
         <AppInput
           style={{ marginBottom: 16 }}
@@ -620,9 +656,9 @@ const SellPostForm = ({
       <Modal
         isVisible={map}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutRight"
-        animationOutTiming={750}
+        animationOutTiming={250}
         onBackButtonPress={() => setMap(false)}
         style={{
           margin: 0,
@@ -649,9 +685,9 @@ const SellPostForm = ({
       <Modal
         isVisible={scheduleModal}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutRight"
-        animationOutTiming={750}
+        animationOutTiming={250}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -862,9 +898,9 @@ const SellPostForm = ({
       <Modal
         isVisible={paymentMethodModal}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutRight"
-        animationOutTiming={750}
+        animationOutTiming={250}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -949,9 +985,9 @@ const SellPostForm = ({
       <Modal
         isVisible={shippingMethodModal}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutRight"
-        animationOutTiming={750}
+        animationOutTiming={250}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -985,9 +1021,9 @@ const SellPostForm = ({
       <Modal
         isVisible={bookingMethodModal}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutRight"
-        animationOutTiming={750}
+        animationOutTiming={250}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -1014,7 +1050,7 @@ const SellPostForm = ({
             onPress={() => {
               showPostExpiryModal(true)
             }}>
-            <AppText textStyle="body3">Post Expiry</AppText>
+            <AppText textStyle="body3">Cut-off Time</AppText>
             <FormArrowRight />
           </TouchableOpacity>
         </Section>
@@ -1023,9 +1059,9 @@ const SellPostForm = ({
       <Modal
         isVisible={postExpiryModal}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutRight"
-        animationOutTiming={750}
+        animationOutTiming={250}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -1086,6 +1122,23 @@ const SellPostForm = ({
 
       <Section>
         <TouchableOpacity
+          onPress={() => showMoreOptions(true)}
+          activeOpacity={0.7}
+          style={{
+            marginBottom: 40,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <MoreOptions />
+          <AppText
+            customStyle={{ marginLeft: 8 }}
+            textStyle="body2medium"
+            color={Colors.contentOcean}>
+            More Options
+          </AppText>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={publish}
           activeOpacity={0.7}
           disabled={buttonEnabled || loadingSubmit}
@@ -1108,14 +1161,32 @@ const SellPostForm = ({
         </TouchableOpacity>
       </Section>
 
+      <Modal
+        isVisible={moreOptions}
+        animationIn="slideInUp"
+        animationInTiming={300}
+        animationOut="slideOutDown"
+        animationOutTiming={250}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showMoreOptions(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <MoreOptionsModal
+          close={() => showMoreOptions(false)}
+          setMoreOptions={setMoreOptions}
+        />
+      </Modal>
+
       <TransitionIndicator loading={loadingSubmit} />
 
       <Modal
         isVisible={addItemModal}
         animationIn="slideInRight"
-        animationInTiming={750}
+        animationInTiming={300}
         animationOut="slideOutLeft"
-        animationOutTiming={750}
+        animationOutTiming={250}
         style={{
           margin: 0,
           backgroundColor: 'white',
@@ -1132,9 +1203,9 @@ const SellPostForm = ({
       <Modal
         isVisible={privacyModal}
         animationIn="slideInUp"
-        animationInTiming={450}
+        animationInTiming={300}
         animationOut="slideOutDown"
-        animationOutTiming={450}
+        animationOutTiming={250}
         style={{ margin: 0, justifyContent: 'flex-end' }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => showPrivacyModal(false)}>
