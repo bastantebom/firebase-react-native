@@ -7,7 +7,7 @@ import {
   Keyboard,
   Text,
 } from 'react-native'
-import { AppText, TransitionIndicator } from '@/components'
+import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { Notification } from '@/components/Notification'
 import AppColor from '@/globals/Colors'
 import { VerifySms } from '@/assets/images'
@@ -23,6 +23,7 @@ import { normalize } from '@/globals'
  * @property {string} login
  * @property {string} provider
  * @property {() => void} onSubmit
+ * @property {() => void} onBackPress
  */
 
 /**
@@ -31,10 +32,10 @@ import { normalize } from '@/globals'
  **/
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'VerifyCode'>} param0 */
-const VerifyCodeScreen = ({ navigation, route, routes }) => {
+const VerifyCodeScreen = ({ navigation, route }) => {
   const { user } = useContext(UserContext)
 
-  const { provider, login, onSubmit } = route.params
+  const { provider, login, onSubmit, onBackPress } = route.params
   const textInputsRef = [useRef(null), useRef(null), useRef(null), useRef(null)]
   const [code, setCode] = useState(['', '', '', ''])
   const [isLoading, setIsLoading] = useState(false)
@@ -140,7 +141,7 @@ const VerifyCodeScreen = ({ navigation, route, routes }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       {isNotificationVisible && (
         <Notification
           type={notificationType}
@@ -155,6 +156,9 @@ const VerifyCodeScreen = ({ navigation, route, routes }) => {
           <View style={{ marginLeft: 15 }}>{notificationMessage}</View>
         </Notification>
       )}
+      <View style={{ padding: normalize(24) }}>
+        <ScreenHeaderTitle iconSize={16} close={() => onBackPress?.()} />
+      </View>
       <View style={styles.container}>
         <TransitionIndicator loading={isLoading} />
         <View style={styles.alignCenter}>

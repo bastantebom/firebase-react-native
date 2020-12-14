@@ -125,14 +125,12 @@ const SignUp = props => {
         receive_updates,
       })
 
-      if (!response.success) {
-        navigation.navigate('Onboarding')
-        throw new Error(response.message)
-      } else {
-        await auth().signInWithCustomToken(response.custom_token)
-        clearForm()
-        closeSlider()
-      }
+      if (!response.success) throw new Error(response.message)
+
+      await auth().signInWithCustomToken(response.custom_token)
+      clearForm()
+      closeSlider()
+      navigation.navigate('Onboarding')
     } catch (error) {
       console.log(error?.message || error)
     }

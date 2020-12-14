@@ -470,7 +470,7 @@ const TabStack = props => {
 }
 
 export default Routes = () => {
-  const { token, userInfo, userStatus, updateUserStatus } = useContext(
+  const { signOut, token, userInfo, userStatus, updateUserStatus } = useContext(
     UserContext
   )
   const { addresses } = userInfo
@@ -520,6 +520,7 @@ export default Routes = () => {
             login,
             provider,
             onSubmit: updateUserStatus,
+            onBackPress: signOut,
           }}
         />
       )
