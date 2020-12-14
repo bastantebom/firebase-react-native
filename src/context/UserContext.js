@@ -44,10 +44,11 @@ export const UserContextProvider = ({ children }) => {
         .doc(`users/${user.uid}`)
         .onSnapshot(snap => {
           if (snap?.data()) {
-            setUserInfo(snap?.data())
+            setUserInfo(snap.data())
           }
         })
     }
+
     if (userInfo?.uid && !userStatus?.verified) updateUserStatus()
   }, [user])
 
@@ -85,9 +86,9 @@ export const UserContextProvider = ({ children }) => {
       setUser(null)
       setUserInfo({})
       setUserStatus({})
+      setToken(null)
       await AsyncStorage.removeItem('token')
       await AsyncStorage.removeItem('uid')
-      setToken(null)
     } catch (error) {
       console.log(error.message)
     }

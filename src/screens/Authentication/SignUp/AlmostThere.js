@@ -29,11 +29,9 @@ const AlmostThere = ({ route }) => {
   const { user, fetch: updateUserInfo } = useContext(UserContext)
   Geocoder.init(Config.apiKey)
 
-  const [addressData, setAddressData] = useState({})
+  const [addressData, setAddressData] = useState(null)
   const [mapInitialized, setMapInitialized] = useState(false)
   const [isScreenLoading, setIsScreenLoading] = useState(false)
-
-  const [mapCoords, setMapCoords] = useState({})
 
   const getLocationName = (components, key) =>
     components.find(component => component.types.includes(key))?.long_name
@@ -44,7 +42,7 @@ const AlmostThere = ({ route }) => {
     const addressComponents = results[0].address_components || []
 
     setAddressData({
-      ...addressData,
+      ...(addressData || {}),
       longitude,
       latitude,
       city: getLocationName(addressComponents, 'locality'),
@@ -61,52 +59,36 @@ const AlmostThere = ({ route }) => {
   const initializeMap = async () => {
     try {
       const { latitude, longitude } = await getCurrentPosition()
-
-      setMapCoords({
-        lat: latitude,
-        lng: longitude,
-      })
-
       handleRegionChange({ latitude, longitude })
-
       setMapInitialized(true)
     } catch (error) {
       const { results } = await Geocoder.from('Manila')
       const { lat, lng } = results[0].geometry.location
-
-      setMapCoords({
-        lat,
-        lng,
-      })
       handleRegionChange({ latitude: lat, longitude: lng })
       setMapInitialized(true)
     }
   }
 
   const saveLocation = async () => {
-    setIsScreenLoading(true)
     const { uid } = user
+    if (!uid || !addressData) return
 
-    if (uid) {
-      try {
-        const saveLocationResponse = await SignUpService.saveLocation({
-          uid,
-          ...addressData,
-        })
-        if (!saveLocationResponse.success)
-          throw new Error(saveLocationResponse.message)
-        else await updateUserInfo()
-        setIsScreenLoading(false)
-      } catch (error) {
-        console.log(error.message || error)
-      }
-    } else {
-      setIsScreenLoading(false)
+    setIsScreenLoading(true)
+    try {
+      const response = await SignUpService.saveLocation({
+        ...addressData,
+        uid,
+      })
+      if (!response.success) throw new Error(response.message)
+
+      await updateUserInfo()
+    } catch (error) {
+      console.log(error.message || error)
     }
+    setIsScreenLoading(false)
   }
 
   const onCurrentLocationHandler = () => {
-    const { uid } = user
     if (mapInitialized) {
       navigation.navigate('AlmostThereMap', {
         ...addressData,
@@ -155,14 +137,11 @@ const AlmostThere = ({ route }) => {
                 </AppText>
               </View>
               <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    onCurrentLocationHandler()
-                  }}>
+                <TouchableOpacity onPress={onCurrentLocationHandler}>
                   <AppText
                     textStyle="body3"
                     customStyle={styles.currentAddress}>
-                    {addressData.full_address}
+                    {addressData?.full_address || ''}
                   </AppText>
                 </TouchableOpacity>
               </View>
@@ -181,9 +160,7 @@ const AlmostThere = ({ route }) => {
             type="primary"
             height="xl"
             customStyle={styles.buttonStyle}
-            onPress={() => {
-              saveLocation()
-            }}
+            onPress={saveLocation}
           />
         </View>
       </View>

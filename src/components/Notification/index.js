@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   },
   success: {
     backgroundColor: Colors.primaryMidnightBlue,
+    color: '#fff',
   },
   primary: {
     backgroundColor: Colors.contentOcean,
