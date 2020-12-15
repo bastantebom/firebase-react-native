@@ -9,12 +9,13 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
+  StatusBar,
 } from 'react-native'
 import ImageEditor from '@react-native-community/image-editor'
 import { RNCamera } from 'react-native-camera'
 
-const { height, width } = Dimensions.get('window')
-
+const { width } = Dimensions.get('screen')
+const height = Dimensions.get('window').height - StatusBar.currentHeight
 /**
  * @typedef {Object} CaptureIdProps
  * @property {string} type
@@ -54,31 +55,25 @@ const CaptureIdScreen = ({ navigation, route }) => {
 
     try {
       const result = await cameraRef.current.takePictureAsync({
-        quality: 1,
         pauseAfterCapture: true,
+        forceUpOrientation: true,
+        orientation: 'portrait',
       })
 
-      const imageSize = await new Promise(resolve => {
-        Image.getSize(result.uri, (width, height) => resolve({ width, height }))
-      })
+      const heightScale = result.height / (height / 1.75)
+      const widthScale = result.width / width
 
-      const heightScale = imageSize.width / height / 1.75
-      const widthScale = imageSize.height / width
-      const size = {
-        height: imageSize.width - 20 * widthScale,
-        width: imageSize.height / 2,
-      }
       const cropResult = await ImageEditor.cropImage(result.uri, {
-        offset: { x: imageSize.height * 0.25, y: 10 * widthScale },
-        size,
+        offset: { x: result.height * 0.33, y: 9 * widthScale },
+        size: {
+          width: result.width * 0.5 + 6 * heightScale,
+          height: result.height - 18 * widthScale,
+        },
       })
-
       setCroppedImage({
         uri: cropResult,
-        size: {
-          width: size.width / heightScale,
-          height: size.height / widthScale,
-        },
+        height: height / 1.75 - height / 4.375,
+        width: width - 20,
       })
     } catch (error) {
       console.log(error)
@@ -94,14 +89,15 @@ const CaptureIdScreen = ({ navigation, route }) => {
         <View
           style={{
             height: height / 1.75,
+            width,
             backgroundColor: '#F6F6F6',
             justifyContent: 'center',
             overflow: 'hidden',
-            paddingVertical: height / 1.75 / 5 - 10,
           }}>
           <Image
             source={{ uri: croppedImage.uri }}
-            style={{ height: '100%', width }}
+            style={{ height: croppedImage.height }}
+            resizeMode="contain"
           />
         </View>
       ) : (
@@ -225,7 +221,6 @@ const ConfirmCapturedIdFooter = ({ onRetake, onConfirm }) => {
 
 const CameraOverlay = () => {
   const maskRowHeight = height / 1.75 / 5
-
   return (
     <View style={styles.maskOutter}>
       <View
@@ -234,41 +229,13 @@ const CameraOverlay = () => {
       <View style={[{ flex: height / 8 }, styles.maskCenter]}>
         <View style={[{ width: 10 }, styles.maskFrame]} />
         <View style={styles.maskInner}>
+          <View style={[styles.maskBorder, styles.overlayBorderTopLeft]}></View>
           <View
-            style={[
-              styles.maskBorder,
-              { top: 0, left: 0, borderBottomWidth: 0, borderRightWidth: 0 },
-            ]}></View>
+            style={[styles.maskBorder, styles.overlayBorderTopRight]}></View>
           <View
-            style={[
-              styles.maskBorder,
-              {
-                top: 0,
-                right: 0,
-                borderLeftWidth: 0,
-                borderBottomWidth: 0,
-              },
-            ]}></View>
+            style={[styles.maskBorder, styles.overlayBorderBottomLeft]}></View>
           <View
-            style={[
-              styles.maskBorder,
-              {
-                bottom: 0,
-                left: 0,
-                borderRightWidth: 0,
-                borderTopWidth: 0,
-              },
-            ]}></View>
-          <View
-            style={[
-              styles.maskBorder,
-              {
-                bottom: 0,
-                right: 0,
-                borderLeftWidth: 0,
-                borderTopWidth: 0,
-              },
-            ]}></View>
+            style={[styles.maskBorder, styles.overlayBorderBottomRight]}></View>
         </View>
         <View style={[{ width: 10 }, styles.maskFrame]} />
       </View>
@@ -280,11 +247,34 @@ const CameraOverlay = () => {
 }
 
 const styles = StyleSheet.create({
+  overlayBorderTopLeft: {
+    top: 0,
+    left: 0,
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+  },
+  overlayBorderTopRight: {
+    top: 0,
+    right: 0,
+    borderLeftWidth: 0,
+    borderBottomWidth: 0,
+  },
+  overlayBorderBottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderRightWidth: 0,
+    borderTopWidth: 0,
+  },
+  overlayBorderBottomRight: {
+    bottom: 0,
+    right: 0,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+  },
   camera: {
     justifyContent: 'center',
     position: 'relative',
     height: height / 1.75,
-
     overflow: 'hidden',
   },
   capture: {
