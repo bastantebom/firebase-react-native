@@ -1,5 +1,11 @@
 import { Context } from '@/context'
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import VF from '@/components/AppInput/ValidationFunctions'
 import AppColor from '@/globals/Colors'
@@ -132,7 +138,10 @@ const SignUp = props => {
       closeSlider()
       navigation.navigate('Onboarding')
     } catch (error) {
-      console.log(error?.message || error)
+      if (error.message === 'Account already exist')
+        Alert.alert('Oops', `This ${signUpMethod} is already registered`)
+
+      console.log(error.message || error)
     }
     setIsLoading(false)
   }
@@ -140,6 +149,7 @@ const SignUp = props => {
   useEffect(() => {
     validate()
   }, [formData])
+
   useEffect(() => {
     setCanSubmit(
       Object.values(errors).every(value => !value.length) &&

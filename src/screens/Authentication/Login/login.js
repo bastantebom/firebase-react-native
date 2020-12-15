@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
+  Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
@@ -79,7 +80,6 @@ function Login() {
   }, [errors])
 
   const handleLogin = async () => {
-    let mounted = true
     setIsLoading(true)
     try {
       const response = await Api.login({
@@ -88,24 +88,20 @@ function Login() {
           password,
         },
       })
-      const { custom_token, success } = response
 
-      if (success && custom_token) {
+      if (!response.success) throw new Error(response.message)
+      if (response.custom_token) {
         await auth().signInWithCustomToken(custom_token)
         closeSlider()
       }
-
-      if (!success) {
-        alert('Invalid login credentials')
-        setPassword('')
-      }
     } catch (error) {
-      console.log(error)
+      if (error.message === 'Invalid credentials')
+        Alert.alert('Error', error.message)
+
+      console.log(error.message || error)
     }
+    setPassword('')
     setIsLoading(false)
-    return () => {
-      mounted = false
-    }
   }
 
   return (
