@@ -197,24 +197,17 @@ const DashboardScreen = ({ navigation }) => {
     }
   }
 
-  const handleButtonFiltersChange = newFilters => {
-    setFilters(filters => ({
-      ...filters,
-      ...newFilters,
-    }))
-  }
-
   const handleTypeFilterPress = type => {
     const newFilters = filters
     const index = filters.type.indexOf(type)
     if (~index) newFilters.type.splice(index, 1)
     else newFilters.type.push(type)
 
-    setFilters(filters => ({ ...filters, ...newFilters }))
+    setFilters(filters => ({ ...filters, ...newFilters, page: 0 }))
   }
 
   const handleSortFilterPress = sort => {
-    setFilters(filters => ({ ...filters, sort }))
+    setFilters(filters => ({ ...filters, sort, page: 0 }))
   }
 
   const getDeferredData = post => {
@@ -370,7 +363,6 @@ const DashboardScreen = ({ navigation }) => {
               <SearchBarWithFilter
                 onFiltersPress={() => setIsFiltersVisible(true)}
                 filters={filters}
-                onFiltersChange={handleButtonFiltersChange}
                 onValueChange={setSearchValue}
                 value={searchValue}
                 onFocus={() => setSearchBarFocused(true)}
