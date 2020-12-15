@@ -50,6 +50,7 @@ const ProfileScreen = ({
     userPosts,
     setUserPosts,
     needsRefresh,
+    setNeedsRefresh,
   } = useContext(Context)
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
@@ -159,15 +160,11 @@ const ProfileScreen = ({
       0
     ) * 0.25
 
-  // fetch posts from userposts
-
   useEffect(() => {
     let isMounted = true
-
     if (isMounted && needsRefresh) {
       refreshPosts()
     }
-
     return () => (isMounted = false)
   }, [needsRefresh])
 
@@ -216,23 +213,19 @@ const ProfileScreen = ({
         limit: 5,
         page: 0,
       }
-
       const res = await PostService.getUserPosts(params)
       setLastPID(1)
       setIsLoading(false)
 
-      if (!res.data.length) {
+      if (res.data.length) {
         setUserPosts(res.data)
+        setNeedsRefresh(false)
       }
-
-      setNeedsRefresh(false)
       setRefresh(false)
     } catch (err) {
       setRefresh(false)
     }
   }
-
-  // sticky header
 
   const [scroll] = useState(new Animated.Value(0))
 

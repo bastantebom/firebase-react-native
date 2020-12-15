@@ -53,10 +53,10 @@ const OwnPost = ({ data, isLoading }) => {
     account_verified,
     email,
     phone_number,
-    post_type,
+
     full_name,
   } = data
-
+  const post_type = data?.type
   const userInfo = {
     username: username,
     profile_photo: profile_photo,
@@ -92,7 +92,6 @@ const OwnPost = ({ data, isLoading }) => {
         screen: 'SinglePostView',
         params: computedData,
       })
-    // change navigation.push to navigate
     else
       navigation.navigate('NBTScreen', {
         screen: 'OthersPost',
@@ -127,8 +126,7 @@ const OwnPost = ({ data, isLoading }) => {
                   style={GlobalStyle.image}
                   source={{ uri: cover_photos[0] }}
                 />
-              ) : // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
-              post_type === 'service' ? (
+              ) : post_type === 'service' ? (
                 <DefaultService
                   width={normalize(122)}
                   height={normalize(126)}
@@ -152,27 +150,9 @@ const OwnPost = ({ data, isLoading }) => {
                 <AppText
                   textStyle="price"
                   customStyle={styles.priceText}
-                  color={
-                    Colors.secondaryMountainMeadow
-                    // Colors.neutralsMischka
-                  }>
+                  color={Colors.secondaryMountainMeadow}>
                   ₱{price}
                 </AppText>
-                {/* <AppText
-                    textStyle="eyebrow2"
-                    customStyle={{ 
-                      // backgroundColor: Colors.neutralsMischka, 
-                      // minWidth: normalize(45), 
-                      fontSize: normalize(10),
-                      textAlign: 'center', 
-                      paddingHorizontal: 8, 
-                      paddingVertical: 3, 
-                      // borderRadius: 20, 
-                    }}
-                    color={Colors.neutralsMischka}
-                  >
-                    SOLD
-                  </AppText> */}
               </View>
             </TouchableOpacity>
 
@@ -188,15 +168,6 @@ const OwnPost = ({ data, isLoading }) => {
                   {city}, {province}
                 </AppText>
               </View>
-              {/* <View style={[GlobalStyle.rowCenter, GlobalStyle.marginLeft2]}>
-                  <NavigationArrow width={12} height={12} />
-                  <AppText
-                    textStyle="eyebrow2"
-                    color={Colors.contentPlaceholder}
-                    customStyle={{marginLeft: 4}}>
-                    {postServiceRadius}
-                  </AppText>
-                </View> */}
             </View>
             {delivery_methods?.pickup || delivery_methods?.delivery ? (
               <View style={GlobalStyle.rowCenter}>
@@ -241,15 +212,12 @@ const OwnPost = ({ data, isLoading }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "red"
-    // backgroundColor: 'red',
     borderStyle: 'solid',
     borderColor: Colors.neutralsZircon,
     borderBottomWidth: 1,
     paddingBottom: 0,
   },
   userInfoContainer: {
-    // backgroundColor: "blue",
     flexDirection: 'row',
   },
   userInfoImageContainer: {
@@ -265,7 +233,7 @@ const styles = StyleSheet.create({
   },
   userInfoDetailsContainer: {
     flex: 1,
-    // backgroundColor: "red",
+
     paddingLeft: 8,
   },
   userInfoDetailsNameContainer: {
@@ -307,7 +275,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   priceText: {
-    // marginBottom: 8,
     marginRight: 8,
   },
 })
