@@ -6,14 +6,14 @@ import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 export const UserContext = createContext(null)
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(null)
   const [userInfo, setUserInfo] = useState({})
   const [userDataAvailable, setUserDataAvailable] = useState(false)
   const [providerData, setProviderData] = useState({})
   const [token, setToken] = useState(null)
   const [userStatus, setUserStatus] = useState({})
-  const [initUserInfo, setInitUserInfo] = useState(false)
 
+  let unsubscribe
   async function onAuthStateChanged(user) {
     if (user) {
       const { uid, displayName, email, providerData } = user
@@ -23,8 +23,8 @@ export const UserContextProvider = ({ children }) => {
         displayName: displayName,
         email: email,
       })
-    }
-    if (user && AsyncStorage.getItem('uid') !== user.uid) {
+
+      unsubscribe = unsubscribe?.()
       const idToken = await auth().currentUser.getIdToken(true)
       await AsyncStorage.setItem('token', idToken)
       await AsyncStorage.setItem('uid', user.uid)
@@ -38,14 +38,11 @@ export const UserContextProvider = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    if (user && !initUserInfo) {
-      setInitUserInfo(true)
-      firestore()
+    if (user && !unsubscribe) {
+      unsubscribe = firestore()
         .doc(`users/${user.uid}`)
         .onSnapshot(snap => {
-          if (snap?.data()) {
-            setUserInfo(snap.data())
-          }
+          if (snap?.data()) setUserInfo(snap.data())
         })
     }
 
@@ -53,12 +50,12 @@ export const UserContextProvider = ({ children }) => {
   }, [user])
 
   useEffect(() => {
-    updateUserStatus()
+    if (userInfo.uid) updateUserStatus()
   }, [userInfo])
 
   const updateUserStatus = async () => {
     try {
-      const response = await Api.getUserStatus({ uid: user.uid })
+      const response = await Api.getUserStatus({ uid: userInfo.uid })
       if (response.success)
         setUserStatus({
           ...userStatus,
@@ -89,6 +86,7 @@ export const UserContextProvider = ({ children }) => {
       setToken(null)
       await AsyncStorage.removeItem('token')
       await AsyncStorage.removeItem('uid')
+      unsubscribe?.()
     } catch (error) {
       console.log(error.message)
     }

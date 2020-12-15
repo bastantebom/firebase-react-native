@@ -56,6 +56,7 @@ const EmailVerificationScreen = ({ navigation }) => {
         onSubmit: () => {
           navigation.pop(2)
         },
+        onBackPress: navigation.goBack,
       })
     } catch (error) {
       console.log(error)
