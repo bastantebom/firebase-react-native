@@ -75,16 +75,10 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
 
   const openProfileHandler = () => {
     if (!read) openNotificationHandler(id)
-    if (user && user.uid === follower_uid) {
-      navigation.navigate('Profile', {
-        screen: 'Profile',
-      })
-    } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: follower_uid || buyerId },
-      })
-    }
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersProfile',
+      params: { uid: follower_uid || buyerId },
+    })
   }
 
   const followBackHandler = async () => {
@@ -105,6 +99,17 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
       screen: 'NotVerified',
       params: {
         screen: 'NotVerifiedScreen',
+        params: { info },
+      },
+    })
+  }
+
+  const viewVerifiedHandler = () => {
+    if (!read) openNotificationHandler(id)
+    navigation.navigate('NBTScreen', {
+      screen: 'Verified',
+      params: {
+        screen: 'VerifiedScreen',
         params: { info },
       },
     })
@@ -217,6 +222,16 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                   <AppText textStyle="caption">
                     Your account verification has been unsuccessful. You may opt
                     to try again.
+                  </AppText>
+                </Text>
+              </View>
+            )}
+            {type === 'verification' && approved && (
+              <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                <Text>
+                  <AppText textStyle="caption">
+                    Congratulations, {name}! Your account has been successfully
+                    verified! You may now enjoy the full features of Servbees!
                   </AppText>
                 </Text>
               </View>
@@ -430,7 +445,9 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                     backgroundColor: '#FFD400',
                     borderRadius: 5,
                   }}
-                  onPress={() => viewNotVerifiedHandler()}>
+                  onPress={
+                    !approved ? viewNotVerifiedHandler : viewVerifiedHandler
+                  }>
                   <AppText textStyle="button3">View</AppText>
                 </TouchableOpacity>
               </>
