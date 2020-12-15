@@ -1,4 +1,3 @@
-//import liraries
 import React, { useEffect, useState, useRef } from 'react'
 import {
   View,
@@ -17,7 +16,6 @@ import MapView, {
 import { MapMarker, PinBee } from '@/assets/images/icons'
 import { normalize } from '@/globals'
 import Config from '@/services/Config'
-import AppText from '../AppText/AppText'
 
 const MapComponent = ({
   latitude,
@@ -297,8 +295,8 @@ const MapComponent = ({
               <>
                 <Circle
                   center={{
-                    latitude: fixedLat,
-                    longitude: fixedLng,
+                    latitude: newLat,
+                    longitude: newLng,
                   }}
                   radius={radius * 1000} // in meters
                   strokeWidth={1}
@@ -308,8 +306,8 @@ const MapComponent = ({
                 />
                 <Circle
                   center={{
-                    latitude: fixedLat,
-                    longitude: fixedLng,
+                    latitude: newLat,
+                    longitude: newLng,
                   }}
                   radius={(radius * 1000) / 2}
                   strokeWidth={1}
@@ -321,8 +319,8 @@ const MapComponent = ({
             )}
             <Circle
               center={{
-                latitude: fixedLat,
-                longitude: fixedLng,
+                latitude: newLat,
+                longitude: newLng,
               }}
               radius={(radius * 1000) / 4}
               strokeWidth={1}
