@@ -8,11 +8,12 @@ import { normalize } from '@/globals'
 import { VerifiedIllustration } from '@/assets/images/icons'
 
 const NotVerified = props => {
-  const { date } = props.route?.params
+  const { date, reasons } = props.route?.params?.info[0]
+
   const navigation = useNavigation()
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'white' }}>
+    <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
       <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={2} />
       <View style={styles.contentWrapper}>
         <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
@@ -22,17 +23,24 @@ const NotVerified = props => {
           {new Date(date.seconds * 1000).toString()}
         </AppText>
         <AppText textStyle="body2">Reason/s</AppText>
-        <AppText textStyle="body2">Blurry Gov't ID</AppText>
+        {reasons.reject_reasons.map(reason => {
+          if (reason) return <AppText textStyle="body2">{reason}</AppText>
+        })}
+      </View>
+      <View style={{ flex: 1, justifyContent: 'flex-end', padding: 24 }}>
         <TouchableOpacity
           style={{
             marginTop: normalize(20),
             paddingVertical: normalize(10),
             paddingHorizontal: normalize(60),
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-
+            alignItems: 'center',
             backgroundColor: '#FFD400',
             borderRadius: 3,
+          }}
+          onPress={() => {
+            navigation.navigate('NBTScreen', {
+              screen: 'Verification',
+            })
           }}>
           <AppText textStyle="button2">Verify Again</AppText>
         </TouchableOpacity>
@@ -44,8 +52,6 @@ const NotVerified = props => {
 const styles = StyleSheet.create({
   contentWrapper: {
     paddingTop: normalize(70),
-    alignItems: 'flex-start',
-    height: '100%',
     padding: 24,
   },
 })

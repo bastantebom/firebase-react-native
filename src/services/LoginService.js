@@ -6,8 +6,7 @@ import { AccessToken, LoginManager } from 'react-native-fbsdk'
 import { GoogleSignin } from '@react-native-community/google-signin'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
 
-import SignUpService from '@/services/SignUpService'
-import AsyncStorage from '@react-native-community/async-storage'
+import Api from '@/services/Api'
 
 GoogleSignin.configure({
   webClientId: Config.dev.googleSignIn,
@@ -74,11 +73,13 @@ const signInWithProvider = async provider => {
     if (provider !== 'apple') full_name = authResponse.user.displayName
     const uid = authResponse.user.uid
     const { email } = authResponse.user
-    const response = await SignUpService.saveSocials({
-      uid,
-      full_name,
-      email,
-      provider,
+    const response = await Api.saveSocials({
+      body: {
+        uid,
+        full_name,
+        email,
+        provider,
+      },
     })
 
     if (!response.success && response.message !== 'Account already exist')

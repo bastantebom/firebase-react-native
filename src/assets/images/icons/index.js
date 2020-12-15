@@ -282,6 +282,7 @@ import MOCalendar from './MO-Calendar.svg'
 import Trash from './Trash.svg'
 
 import RoundEllipsisBlue from './round-ellipsis.svg'
+import WelcomeNotif from './WelcomeNotif.svg'
 
 export {
   Trash,
@@ -495,6 +496,7 @@ export {
   BankActive,
   PayoutWallet,
   RoundEllipsisBlue,
+  WelcomeNotif,
 }
 
 export const Icons = {
@@ -557,4 +559,5 @@ export const Icons = {
   VerifyTick,
   Warning,
   RoundEllipsisBlue,
+  WelcomeNotif,
 }

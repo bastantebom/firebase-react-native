@@ -82,13 +82,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
       })
 
       if (updateTempResponse.success) {
-        const nTemp = [...temperature_history]
-        nTemp[temperature_history.length] = updateTempResponse.data
-        setUserInfo({
-          ...userInfo,
-          temperature_history: [...nTemp],
-          temperature: updateTempResponse.data,
-        })
         setTemp('')
         setButtonState(true)
         triggerNotification(
@@ -120,6 +113,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
     marginLeft: 12,
     marginRight: 12,
     flexWrap: 'wrap',
+    color: 'white',
   }
 
   const triggerNotification = (message, type) => {
@@ -215,7 +209,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 height="xl"
                 disabled={buttonDisable}
                 customStyle={{ ...buttonStyle }}
-                onPress={() => updateTempHandler()}
+                onPress={updateTempHandler}
               />
             </View>
           </TouchableWithoutFeedback>

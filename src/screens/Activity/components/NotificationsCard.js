@@ -25,6 +25,7 @@ import {
   Bee,
   Verified,
   NotVerified,
+  WelcomeNotif,
 } from '@/assets/images/icons'
 
 const NotificationsCard = ({ info, openNotificationHandler }) => {
@@ -104,7 +105,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
       screen: 'NotVerified',
       params: {
         screen: 'NotVerifiedScreen',
-        params: { date },
+        params: { info },
       },
     })
   }
@@ -178,7 +179,12 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
             <View>
               {info.length === 1 && (
                 <View style={styles.avatarHolder}>
-                  <AvatarPhoto size={35} url={profilePhoto} />
+                  {type !== 'welcome' && (
+                    <AvatarPhoto size={35} url={profilePhoto} />
+                  )}
+                  {type === 'welcome' && (
+                    <WelcomeNotif width={35} height={35} />
+                  )}
                 </View>
               )}
               {info.length > 1 && (
@@ -205,7 +211,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 </View>
               }
             </View>
-            {type == 'verification' && !approved ? (
+            {type === 'verification' && !approved && (
               <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
                 <Text>
                   <AppText textStyle="caption">
@@ -214,7 +220,17 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                   </AppText>
                 </Text>
               </View>
-            ) : null}
+            )}
+            {type === 'welcome' && (
+              <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
+                <Text>
+                  <AppText textStyle="caption">
+                    Welcome to Servbees, Buzzybee! Explore what you can do on
+                    Servbees and create your first post today.
+                  </AppText>
+                </Text>
+              </View>
+            )}
             {type == 'follow' && (
               <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
                 <Text>
