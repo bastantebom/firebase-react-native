@@ -262,7 +262,7 @@ const renderSend = props => {
   )
 }
 
-const ChatHeader = ({ navigation, user }) => {
+const ChatHeader = ({ navigation, user, showActiveStatus }) => {
   return (
     <View style={styles.chatWrapper}>
       <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
@@ -279,13 +279,15 @@ const ChatHeader = ({ navigation, user }) => {
           />
           <View>
             <Text style={styles.headerContentName}>@{user.username}</Text>
-            <Text
-              style={[
-                styles.headerContentStatus,
-                { color: user.active ? '#369683' : '#aaa' },
-              ]}>
-              {user.active ? 'Active now' : 'Not active'}
-            </Text>
+            {showActiveStatus ? (
+              <Text
+                style={[
+                  styles.headerContentStatus,
+                  { color: user.active ? '#369683' : '#aaa' },
+                ]}>
+                {user.active ? 'Active now' : 'Not active'}
+              </Text>
+            ) : null}
           </View>
         </TouchableOpacity>
       </View>
