@@ -18,20 +18,13 @@ import {
 } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
-import {
-  CircleTick,
-  EyeDark,
-  EyeLight,
-  Warning,
-  VerifiedGreen,
-} from '@/assets/images/icons'
+import { EyeDark, EyeLight, Icons, VerifiedGreen } from '@/assets/images/icons'
 import { normalize, Colors } from '@/globals'
 import Verify from './VerifyAccount'
 import Modal from 'react-native-modal'
 
 const EditLogin = ({ toggleEditLogin, provider }) => {
-  const { openNotification, closeNotification } = useContext(Context)
-  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const { userInfo, user } = useContext(UserContext)
   const [newEmail, setNewEmail] = useState('')
   const [newMobile, setNewMobile] = useState('')
   const [password, setPassword] = useState('')
@@ -41,6 +34,7 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
   const [isVisible, setIsVisible] = useState(false)
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
   const emailChangeHandler = newEmail => {
     const email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -52,17 +46,24 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
     const verifiedPasswordResponse = await Api.verifyPassword({
       body: { password: password },
     })
+
     if (verifiedPasswordResponse.verified) {
       const newLoginToUpdate = isEmail
         ? { email: newEmail }
         : { phone_number: newMobile }
-      const changeLoginResponse = await Api.changeLogin({
-        body: newLoginToUpdate,
-        uid: user?.uid,
-      })
-      if (changeLoginResponse.success) setVerify(!verify)
-      else {
-        triggerNotification('Code failed to sent', 'danger')
+      try {
+        const changeLoginResponse = await Api.changeLogin({
+          body: newLoginToUpdate,
+          uid: user?.uid,
+        })
+
+        if (changeLoginResponse.success) setVerify(true)
+        else {
+          triggerNotification('Sending verification code failed', 'danger')
+          setEnabled(false)
+        }
+      } catch (error) {
+        triggerNotification(error || error.message, 'danger')
         setEnabled(false)
       }
     }
@@ -70,6 +71,8 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
       triggerNotification('Current Password is not correct', 'danger')
       setEnabled(false)
     }
+    setIsNotificationVisible(true)
+    closeNotificationTimer()
   }
 
   const triggerNotification = (message, type) => {
@@ -83,8 +86,6 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
         {message}
       </AppText>
     )
-    openNotification()
-    closeNotificationTimer()
   }
 
   const notificationErrorTextStyle = {
@@ -99,6 +100,7 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
+    color: 'white',
     flexWrap: 'wrap',
   }
 
@@ -106,22 +108,29 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
     setTimeout(() => {
       setNotificationType()
       setNotificationMessage()
-      closeNotification()
+      setIsNotificationVisible(false)
     }, 5000)
   }
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        <Notification
-          type={notificationType}
-          containerStyle={{
-            position: 'absolute',
-            top: normalize(30),
-          }}
-          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
-          {notificationMessage}
-        </Notification>
+        {isNotificationVisible && (
+          <Notification
+            type={notificationType}
+            onClose={() => setIsNotificationVisible(false)}
+            icon={
+              notificationType === 'danger' ? (
+                <Icons.Warning />
+              ) : (
+                <Icons.CircleTick />
+              )
+            }>
+            <View style={{ marginLeft: 15, marginTop: 10 }}>
+              {notificationMessage}
+            </View>
+          </Notification>
+        )}
         <ScreenHeaderTitle
           iconSize={16}
           title={isEmail ? 'Change Email Address' : 'Change Mobile Number'}
@@ -202,7 +211,7 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
             <View style={{ position: 'relative' }}>
               <FloatingAppInput
                 value={password}
-                label="Password"
+                label="Current password"
                 customStyle={{ marginBottom: normalize(16) }}
                 onChangeText={password => {
                   setPassword(password)

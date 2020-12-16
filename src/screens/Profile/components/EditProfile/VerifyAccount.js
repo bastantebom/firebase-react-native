@@ -14,7 +14,6 @@ import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import { AppText, TransitionIndicator, Notification } from '@/components'
 import Api from '@/services/Api'
-import auth from '@react-native-firebase/auth'
 import { CircleTick, Warning } from '@/assets/images/icons'
 
 const VerifyAccount = ({
@@ -24,8 +23,8 @@ const VerifyAccount = ({
   newLogin,
   toggleEditLogin,
 }) => {
-  const { openNotification, closeNotification } = useContext(Context)
-  const { user, userInfo, setUserInfo } = useContext(UserContext)
+  const { user } = useContext(UserContext)
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false)
   const { uid } = user
 
   const firstTextInput = useRef(null)
@@ -110,63 +109,70 @@ const VerifyAccount = ({
           },
           uid,
         })
-        const { custom_token, success } = response
-        if (success) {
-          const signInResponse = await auth().signInWithCustomToken(
-            custom_token
+        if (response.success) updateProfile()
+        else {
+          setNotificationType('danger')
+          setNotificationMessage(
+            <AppText textStyle="body2" customStyle={notificationText}>
+              Verification code didn’t match
+            </AppText>
           )
-          if (signInResponse) updateProfile()
-        } else {
-          console.log(response.message || response)
         }
       } catch (error) {
-        console.log(error?.message || error)
+        setNotificationType('danger')
+        setNotificationMessage(
+          <AppText textStyle="body2" customStyle={notificationText}>
+            {error?.message || error}
+          </AppText>
+        )
       }
       setIsScreenLoading(false)
+      setIsNotificationVisible(true)
+      closeNotificationTimer()
     }
-    return
   }
 
   const updateProfile = async () => {
     const loginToUpdate = isEmail
       ? { email: newLogin }
       : { phone_number: newLogin }
-
-    const updateUserResponse = await Api.updateUser({
-      body: loginToUpdate,
-      uid,
-    })
-
-    if (updateUserResponse.success) {
-      setUserInfo({ ...userInfo, ...updateUserResponse.data })
-      toggleVerify()
-      toggleEditLogin('')
+    try {
+      const updateUserResponse = await Api.updateUser({
+        body: loginToUpdate,
+        uid,
+      })
+      if (updateUserResponse.success) {
+        toggleVerify()
+        toggleEditLogin('')
+      }
+    } catch (error) {
+      console.log(error.message || error)
     }
   }
 
   const closeNotificationTimer = () => {
     setTimeout(() => {
-      closeNotification()
+      setIsNotificationVisible(false)
     }, 5000)
   }
 
   const resendCodeHandler = async () => {
     setIsScreenLoading(true)
     try {
-      const response = await VerifyService.resendCode()
+      const response = await Api.resendCode({
+        body: {
+          provider,
+        },
+        uid: user.uid,
+      })
       if (response.success) {
         setNotificationType('success')
         setNotificationMessage(
-          <AppText textStyle="body2" customStyle={notificationText}>
+          <AppText textStyle="body2" customStyle={{ color: '#fff' }}>
             Verification code has been sent to your {provider} {login}
           </AppText>
         )
-        openNotification()
-        setIsScreenLoading(false)
-        closeNotificationTimer()
-      } else {
-        throw new Error(response.message)
-      }
+      } else throw new Error(response.message)
     } catch (error) {
       setNotificationType('danger')
       setNotificationMessage(
@@ -174,10 +180,10 @@ const VerifyAccount = ({
           Failed resend verification code {provider} {login}
         </AppText>
       )
-      openNotification()
-      setIsScreenLoading(false)
-      closeNotificationTimer()
     }
+    setIsScreenLoading(false)
+    isNotificationVisible(true)
+    closeNotificationTimer()
   }
 
   const notificationErrorTextStyle = {
@@ -191,16 +197,22 @@ const VerifyAccount = ({
     flex: 1,
     marginLeft: 12,
     marginRight: 12,
+    color: 'white',
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+      {isNotificationVisible && (
         <Notification
           type={notificationType}
+          onClose={() => setIsNotificationVisible(false)}
           icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
-          {notificationMessage}
+          <View style={{ marginLeft: 15, marginTop: 10 }}>
+            {notificationMessage}
+          </View>
         </Notification>
+      )}
+      <View style={styles.container}>
         <TransitionIndicator loading={isScreenLoading} />
         <View style={styles.defaultStyle}>
           <VerifyIcon />
