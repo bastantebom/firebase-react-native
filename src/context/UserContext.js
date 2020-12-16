@@ -53,8 +53,15 @@ export const UserContextProvider = ({ children }) => {
     if (userInfo.uid) updateUserStatus()
   }, [userInfo])
 
+  useEffect(() => {
+    if (token && !userStatus.verified) updateUserStatus()
+  }, [token])
+
   const updateUserStatus = async () => {
     try {
+      if (token && !(await AsyncStorage.getItem('token')))
+        await AsyncStorage.setItem('token', token)
+
       const response = await Api.getUserStatus({ uid: userInfo.uid })
       if (response.success)
         setUserStatus({

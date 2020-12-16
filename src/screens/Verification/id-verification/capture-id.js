@@ -59,22 +59,7 @@ const CaptureIdScreen = ({ navigation, route }) => {
         forceUpOrientation: true,
         orientation: 'portrait',
       })
-
-      const heightScale = result.height / (height / 1.75)
-      const widthScale = result.width / width
-
-      const cropResult = await ImageEditor.cropImage(result.uri, {
-        offset: { x: result.height * 0.33, y: 9 * widthScale },
-        size: {
-          width: result.width * 0.5 + 6 * heightScale,
-          height: result.height - 18 * widthScale,
-        },
-      })
-      setCroppedImage({
-        uri: cropResult,
-        height: height / 1.75 - height / 4.375,
-        width: width - 20,
-      })
+      setCroppedImage({ uri: result.uri })
     } catch (error) {
       console.log(error)
     }
@@ -93,11 +78,11 @@ const CaptureIdScreen = ({ navigation, route }) => {
             backgroundColor: '#F6F6F6',
             justifyContent: 'center',
             overflow: 'hidden',
+            paddingVertical: height / 8.75,
           }}>
           <Image
             source={{ uri: croppedImage.uri }}
-            style={{ height: croppedImage.height }}
-            resizeMode="contain"
+            style={{ height: '100%', width }}
           />
         </View>
       ) : (
