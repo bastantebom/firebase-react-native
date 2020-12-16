@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Animated,
+  RefreshControl,
 } from 'react-native'
 
 import { WhiteOpacity } from '@/components'
@@ -404,14 +405,18 @@ const DashboardScreen = ({ navigation }) => {
               onPostPress={handlePostPress}
               onUserPress={handleUserPress}
               onLikePress={handleLikePress}
-              onRefresh={handleRefresh}
-              refreshing={isRefreshing}
+              refreshControl={
+                <RefreshControl
+                  enabled={true}
+                  refreshing={isRefreshing}
+                  onRefresh={handleRefresh}
+                />
+              }
               onEndReached={handleOnEndReached}
               isLoadingMoreItems={isLoadingMoreItems}
               contentContainerStyle={{
                 paddingTop: getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT,
               }}
-              bounces={false}
               progressViewOffset={
                 getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
               }

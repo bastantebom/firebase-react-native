@@ -56,7 +56,6 @@ const Posts = ({
 
   return (
     <AnimatedFlatList
-      bounces={false}
       scrollEventThrottle={16}
       data={Object.values(posts)}
       renderItem={renderPost}
@@ -65,7 +64,6 @@ const Posts = ({
       onEndReachedThreshold={0.25}
       onMomentumScrollBegin={() => setScrolled(true)}
       initialNumToRender={5}
-      scrollEventThrottle={16}
       ListFooterComponent={renderFooter}
       {...props}
     />
