@@ -115,9 +115,7 @@ function ProfileInfoModal(props) {
 
   useEffect(() => {
     let isMounted = true
-
     if (isMounted && needsRefresh) refreshPosts()
-
     return () => (isMounted = false)
   }, [needsRefresh])
 
@@ -166,13 +164,11 @@ function ProfileInfoModal(props) {
         limit: 5,
         page: 0,
       }
-
       const res = await PostService.getUserPosts(params)
-      setLastPID(1)
-      setIsLoading(false)
-
-      if (res.data.length > 0) {
+      if (res.data.length) {
         setOtherUserPosts(res.data)
+        setLastPID(1)
+        setIsLoading(false)
       }
 
       setNeedsRefresh(false)
@@ -182,10 +178,7 @@ function ProfileInfoModal(props) {
     }
   }
 
-  // sticky header
-
   const [scroll] = useState(new Animated.Value(0))
-
   const renderForeground = () => {
     return (
       <View
@@ -341,8 +334,8 @@ function ProfileInfoModal(props) {
           <RefreshControl
             style={{ zIndex: 1 }}
             refreshing={refresh}
-            titleColor="white"
-            tintColor="white"
+            titleColor="#2E3034"
+            tintColor="#2E3034"
             title="Refreshing"
             onRefresh={refreshPosts}
           />

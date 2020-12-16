@@ -1,4 +1,3 @@
-//import liraries
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { normalize, Colors } from '@/globals'
@@ -8,10 +7,9 @@ import { ProfileList } from '@/components'
 import Hives from './components/hives'
 import Modal from 'react-native-modal'
 
-import ProfileInfoService from '@/services/Profile/ProfileInfo'
-
+import Api from '@/services/Api'
 import { AppText } from '@/components'
-// create a component
+
 const ProfileLinks = ({
   visibleHives,
   profileList,
@@ -23,20 +21,22 @@ const ProfileLinks = ({
 }) => {
   const { uid } = userInfo
   const [followers, setFollowers] = useState(0)
+  const [postCount, setPostCount] = useState(0)
 
-  //console.log(uid);
+  const getProfileCounters = async () => {
+    try {
+      const followersResponse = await Api.getFollowers({ uid })
+      if (followersResponse.success) setFollowers(followersResponse.data.length)
+      const postCountResponse = await Api.getUserPostsCount({ uid })
+      if (postCountResponse.success) setPostCount(postCountResponse.count)
+    } catch (error) {
+      console.log(error.message || error)
+    }
+  }
+
   useEffect(() => {
     let mounted = true
-    if (uid && mounted)
-      ProfileInfoService.getFollowers(uid)
-        .then(response => {
-          setFollowers(response.data.length)
-          //console.log(response.data);
-          //if (mounted) setOtherUserInfo(response.data);
-        })
-        .catch(err => {
-          console.log('Err: ' + err)
-        })
+    if (uid && mounted) getProfileCounters()
     return () => {
       mounted = false
     }
@@ -44,54 +44,35 @@ const ProfileLinks = ({
 
   useEffect(() => {
     let mounted = true
-    if (addFollowers !== null) {
-      if (addFollowers) {
-        setFollowers(followers + 1)
-      } else {
-        setFollowers(followers - 1)
-      }
-      //console.log('nag follow');
+    if (addFollowers && mounted) {
+      if (addFollowers) setFollowers(followers + 1)
+      else setFollowers(followers - 1)
     }
     return () => {
       mounted = false
     }
   }, [addFollowers])
 
-  const { post_count } = userInfo
-  //const [followers, setFollowers] = useState(0);
-  //console.log(userInfo);
   return (
     <>
       <View style={styles.profileLinksWrapper}>
         <View style={styles.firstLink}>
-          <AppText textStyle="subtitle1">
-            {post_count > 0 ? post_count : 0}
-          </AppText>
+          <AppText textStyle="subtitle1">{postCount}</AppText>
           <AppText
             textStyle="captionDashboard"
             color={Colors.profileLink}
             customStyle={{ paddingLeft: normalize(8) }}>
-            {post_count == 1 ? 'Post' : 'Posts'}
+            {postCount < 2 ? 'Post' : 'Posts'}
           </AppText>
         </View>
         <TouchableOpacity onPress={toggleProfileList}>
           <View style={styles.individualLink}>
-            <AppText textStyle="subtitle1">
-              {followers > 0 ? followers : 0}
-            </AppText>
+            <AppText textStyle="subtitle1">{followers}</AppText>
             <AppText textStyle="captionDashboard" color={Colors.profileLink}>
-              {followers > 1 ? 'Followers' : 'Follower'}
+              {followers < 2 ? 'Follower' : 'Followers'}
             </AppText>
           </View>
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={toggleHives}>
-          <View style={styles.individualLink}>
-            <AppText textStyle="subtitle1">4</AppText>
-            <AppText textStyle="caption" color={Colors.profileLink}>
-              Hives
-            </AppText>
-          </View>
-        </TouchableOpacity> */}
       </View>
 
       <Modal
@@ -107,7 +88,6 @@ const ProfileLinks = ({
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <ProfileList
           viewType={viewType}
           toggleProfileList={toggleProfileList}
@@ -128,14 +108,12 @@ const ProfileLinks = ({
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
         <Hives toggleHives={toggleHives} />
       </Modal>
     </>
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   profileLinksWrapper: {
     width: '60%',
@@ -143,7 +121,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: normalize(14),
     height: normalize(48),
-    //backgroundColor: 'blue',
   },
 
   firstLink: {
@@ -156,5 +133,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default ProfileLinks

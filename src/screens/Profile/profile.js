@@ -409,8 +409,8 @@ const ProfileScreen = ({
           <RefreshControl
             style={{ zIndex: 1 }}
             refreshing={refresh}
-            titleColor="white"
-            tintColor="white"
+            titleColor="#2E3034"
+            tintColor="#2E3034"
             title="Refreshing"
             onRefresh={refreshPosts}
           />
