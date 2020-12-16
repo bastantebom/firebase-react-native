@@ -91,7 +91,7 @@ function Login() {
 
       if (!response.success) throw new Error(response.message)
       if (response.custom_token) {
-        await auth().signInWithCustomToken(custom_token)
+        await auth().signInWithCustomToken(response.custom_token)
         closeSlider()
       }
     } catch (error) {
