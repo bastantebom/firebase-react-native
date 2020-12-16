@@ -33,7 +33,7 @@ const DeleteCategoryModal = ({ close, categoryName }) => {
 
   const [deleteItems, setDeleteItems] = useState(false)
   const [moveItems, setMoveItems] = useState(false)
-  const [NewCategoryName, setNewCategoryName] = useState('uncategorized')
+  const [NewCategoryName, setNewCategoryName] = useState('Others')
   const [categoryModal, setCategoryModal] = useState(false)
 
   const navigation = useNavigation()
@@ -165,7 +165,7 @@ const DeleteCategoryModal = ({ close, categoryName }) => {
                   marginTop: 24,
                 }}>
                 <View style={{ flex: 1 }}>
-                  {NewCategoryName === 'uncategorized' ? (
+                  {NewCategoryName === 'others' ? (
                     <AppText textStyle="body2">Select Category</AppText>
                   ) : (
                     <></>

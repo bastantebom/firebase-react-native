@@ -1,49 +1,44 @@
-import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, useEffect } from 'react'
+import { View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
-import {AppText} from '@/components';
-import {PostService} from '@/services';
+import { AppText } from '@/components'
+import { PostService } from '@/services'
 
-const SinglePostViewExternal = (props) => {
-  const [isDataLoading, setIsDataLoading] = useState(false);
-  const [postInfo, setPostInfo] = useState({});
-  const navigation = useNavigation();
+const SinglePostViewExternal = props => {
+  const [isDataLoading, setIsDataLoading] = useState(false)
+  const [postInfo, setPostInfo] = useState({})
+  const navigation = useNavigation()
 
-  const {pid} = props.route?.params;
-  
-
-  console.log('POST INFORMATION');
-  console.log(postInfo);
+  const { pid } = props.route?.params
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
 
     PostService.getPost(pid)
-      .then((res) => {
+      .then(res => {
         if (mounted) {
           navigation.navigate('NBTScreen', {
             screen: 'OthersPost',
-            params: {...res, othersView: true},
-          });
+            params: { ...res, othersView: true },
+          })
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(err => {
+        console.log(err)
       })
       .finally(() => {
         if (mounted) {
-          setIsDataLoading(false);
-          
+          setIsDataLoading(false)
         }
-      });
-  }, []);
+      })
+  }, [])
 
   return (
     <View>
       <AppText>EXTERNAL VIEW</AppText>
     </View>
-  );
-};
+  )
+}
 
-export default SinglePostViewExternal;
+export default SinglePostViewExternal

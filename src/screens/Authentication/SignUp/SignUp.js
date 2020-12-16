@@ -151,9 +151,14 @@ const SignUp = props => {
   }, [formData])
 
   useEffect(() => {
+    const { login, password, full_name } = formData
+
+    let filled = false
+    if (login && password && full_name) filled = true
     setCanSubmit(
       Object.values(errors).every(value => !value.length) &&
-        formData.terms_conditions
+        formData.terms_conditions &&
+        filled
     )
   }, [errors])
 
@@ -205,7 +210,7 @@ const SignUp = props => {
             </AppText>
             <TouchableOpacity
               onPress={() => {
-                setIsPromoVisible(true)
+                setIsPrivacyVisible(true)
               }}>
               <AppText
                 textStyle="promo"

@@ -18,9 +18,6 @@ import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 
 const PostScreen = ({ togglePostModal, ...props }) => {
-  // console.log('Post Screen Props')
-  // console.log(props.route.params)
-
   const { card } = props?.route?.params
 
   const [showCancelModal, setShowCancelModal] = useState(false)

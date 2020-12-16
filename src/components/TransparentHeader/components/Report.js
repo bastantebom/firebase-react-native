@@ -87,17 +87,12 @@ const Report = ({
             setReportMessage('')
           } else {
             setIS_UPDATING(false)
-
-            console.log(response)
           }
         })
         .catch(error => {
           setIS_UPDATING(false)
-
-          console.log(error)
         })
     } else {
-      console.log('report post')
       PostService.reportPost({
         pid: postId,
         message: reportMessage,
@@ -113,7 +108,6 @@ const Report = ({
             setReportMessage('')
           } else {
             setIS_UPDATING(false)
-            console.log(response)
           }
         })
         .catch(error => {

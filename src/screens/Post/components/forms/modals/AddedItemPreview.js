@@ -24,7 +24,6 @@ const AddedItemPreview = ({
   setData,
   ...props
 }) => {
-  // console.log(data);
   const { getItemsByCategory, editItem } = useContext(Context)
 
   const { navigation } = props
@@ -38,23 +37,16 @@ const AddedItemPreview = ({
   const [options, showOptions] = useState(false)
 
   const AddAnotherItemHandler = () => {
-    // console.log(navigation)
-    navigation.navigate('AddItemScreen')
+    navigation.replace('AddItemScreen')
   }
 
   const submitAddedItems = () => {
-    // closeModal();
-    // closeAddItemModal();
     navigation.navigate('CreatePostScreen')
   }
 
   const editItemHandler = (item, index) => {
-    // console.log('Edit this:');
-    // console.log(item);
     setItemToEdit(item)
     setIndexOfItemToEdit(index)
-
-    // console.log(editItem(item));
 
     navigation.navigate('EditItemScreen', { itemToEdit: item })
   }

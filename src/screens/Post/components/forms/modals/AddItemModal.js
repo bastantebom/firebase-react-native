@@ -40,7 +40,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
   const [itemImage, setItemImage] = useState()
   const [price, setPrice] = useState(0)
   const [free, setFree] = useState(false)
-  const [categoryName, setCategoryName] = useState('uncategorized')
+  const [categoryName, setCategoryName] = useState('others')
   const [categoryList, setCategoryList] = useState([])
 
   const [categoryModal, setCategoryModal] = useState(false)
@@ -48,6 +48,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
 
   const [buttonEnabled, setButtonEnabled] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [clearPhoto, setClearPhoto] = useState(false)
 
   // If editing
   const [index, setIndex] = useState(0)
@@ -61,9 +62,11 @@ const AddItemModal = ({ closeModal, ...props }) => {
       price: price,
       categoryName: categoryName,
     }
+
     clearData()
 
     addItem(newData)
+    setClearPhoto(true)
 
     navigation.push('AddedItemPreviewScreen', {
       categoryName: categoryName,
@@ -73,10 +76,14 @@ const AddItemModal = ({ closeModal, ...props }) => {
   const clearData = () => {
     setTitle('')
     setDescription('')
-    setItemImage()
+    setItemImage('')
     setPrice()
     setFree(false)
   }
+
+  useEffect(() => {
+    clearData()
+  }, [])
 
   const setInitialData = {
     setTitle,
@@ -116,7 +123,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         close={() => {
-          navigation.goBack()
+          navigation.navigate('CreatePostScreen')
         }}
         title="Add an Item"
         paddingSize={2}
@@ -136,8 +143,8 @@ const AddItemModal = ({ closeModal, ...props }) => {
             }}>
             <AppText textStyle="body1">Categories</AppText>
             <AppText textStyle="caption" color={Colors.contentPlaceholder}>
-              If you don't have categories added, items will be automatically
-              displayed under 'Items'.
+              No specific category? The item will be automatically categorized
+              under "Others”.
             </AppText>
 
             <TouchableOpacity
@@ -154,7 +161,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
                 marginTop: 24,
               }}>
               <View style={{ flex: 1 }}>
-                {categoryName === 'uncategorized' ? (
+                {categoryName === 'others' ? (
                   <AppText textStyle="body2">Select Category</AppText>
                 ) : (
                   <></>
@@ -182,6 +189,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
                     setItemImage(itemImage)
                   }}
                   imgSrc={itemImage}
+                  clear={clearPhoto}
                 />
               </View>
             </View>
@@ -191,6 +199,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
               label="Item Name"
               value={title}
               onChangeText={text => setTitle(text)}
+              placeholder="e.g Laptops, Tea, Coffee"
             />
 
             <TextInput

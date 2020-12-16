@@ -73,14 +73,10 @@ const ReportUser = ({ toggleReportUser, username, userID }) => {
           setReportMessage('')
         } else {
           setIS_UPDATING(false)
-
-          console.log(response)
         }
       })
       .catch(error => {
         setIS_UPDATING(false)
-
-        console.log(error)
       })
   }
 

@@ -85,7 +85,6 @@ const ProfileInfo = ({
       })
     } else {
       isModal && cancelModalToggle()
-      console.log('Going to NBTS')
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
         params: { uid: uid },

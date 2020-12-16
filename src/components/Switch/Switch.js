@@ -1,12 +1,12 @@
-import React from 'react';
-import {Switch} from 'react-native-switch';
-import {Colors, normalize} from '@/globals';
+import React from 'react'
+import { Switch } from 'react-native-switch'
+import { Colors, normalize } from '@/globals'
 
 /**
  * List of available props
  * <Switch
     value={true}
-    onValueChange={(val) => console.log(val)}
+    onValueChange={(val) => (val)}
     disabled={false}
     activeText={'On'}
     inActiveText={'Off'}
@@ -31,7 +31,7 @@ import {Colors, normalize} from '@/globals';
   /> 
  */
 
-const SwitchComponent = (props) => {
+const SwitchComponent = props => {
   return (
     <Switch
       // Default props for switch component
@@ -45,11 +45,10 @@ const SwitchComponent = (props) => {
       backgroundInactive={Colors.switchDisable}
       switchWidthMultiplier={2.5}
       switchBorderRadius={normalize(12)}
-
       // *custom props use value and onValueChange
       {...props}
     />
-  );
-};
+  )
+}
 
-export default SwitchComponent;
+export default SwitchComponent

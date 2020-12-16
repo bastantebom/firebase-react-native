@@ -17,6 +17,7 @@ import Geocoder from 'react-native-geocoding'
 import Config from '@/services/Config'
 import Modal from 'react-native-modal'
 import StoreLocation from '../StoreLocation'
+import moment from 'moment'
 /*Map Essentials*/
 
 import {
@@ -61,6 +62,7 @@ import ScheduleModal from './modals/ScheduleModal'
 import BookingMethodModal from './modals/BookingMethodModal'
 import MoreOptionsModal from './modals/MoreOptions'
 import CoverPhotoGuidelinesModal from './modals/CoverPhotoGuidelines'
+import AdditionalNotesModal from './modals/AdditionalNotesModal'
 
 const SellPostForm = ({
   navToPost,
@@ -82,6 +84,7 @@ const SellPostForm = ({
     moreOptions: true,
     expiry: false,
     booking: false,
+    additionalNotes: false,
   }
 
   const needForm = {
@@ -97,6 +100,7 @@ const SellPostForm = ({
     moreOptions: true,
     expiry: false,
     booking: false,
+    additionalNotes: false,
   }
 
   const serviceForm = {
@@ -112,6 +116,7 @@ const SellPostForm = ({
     moreOptions: true,
     expiry: false,
     booking: true,
+    additionalNotes: false,
   }
 
   useEffect(() => {
@@ -165,6 +170,7 @@ const SellPostForm = ({
   const [scheduleModal, showScheduleModal] = useState(false)
   const [bookingMethodModal, showBookingMethodModal] = useState(false)
   const [coverPhotoGuidelines, showCoverPhotoGuidelines] = useState(false)
+  const [additionalNotes, showAdditionalNotes] = useState(false)
 
   const [data, setData] = useState([])
 
@@ -385,9 +391,6 @@ const SellPostForm = ({
     if (val === 'public') {
       setPublicPost(true)
     }
-    // if (val === 'postToHive') {
-    //   setHivePost(true);
-    // }
   }
 
   /**FOR ANIMATION */
@@ -502,6 +505,21 @@ const SellPostForm = ({
     })
   }
 
+  const postDescriptionPlaceholder = {
+    sell:
+      'Let your customers know what you offer. Make your post attractive and easier to find by adding descriptions and hashtags. e.g. #Food #Dessert (Optional)',
+    need:
+      'Attract people that can supply your specific needs by adding descriptions and hashtags here. e.g. #electrician #plumber (Optional)',
+    service:
+      'Let your customers know more about your service. Add details that will help them understand what you offer. You can also add hashtags to make it easier for others to find your post. e.g. #pasabuy (Optional)',
+  }
+
+  const postTitlePlaceholder = {
+    sell: 'e.g. iPhone, Macbook',
+    need: 'e.g. Looking for an electrician',
+    service: 'e.g. Online Tutor, Maintenance',
+  }
+
   return (
     <>
       <View
@@ -581,7 +599,7 @@ const SellPostForm = ({
         <AppInput
           style={{ marginBottom: 16 }}
           label="Title"
-          placeholder="Eg. Iphone, Macbook"
+          placeholder={postTitlePlaceholder[activeForm.type]}
           value={title}
           onChangeText={text => setTitle(text)}
         />
@@ -594,7 +612,7 @@ const SellPostForm = ({
           <TextInput
             value={description}
             multiline={true}
-            placeholder="Let your customers know what you offer. Make your post attractive and easier to find by adding descriptions and hashtags. e.g. #Food #Dessert (Optional)"
+            placeholder={postDescriptionPlaceholder[activeForm.type]}
             numberOfLines={Platform.OS === 'ios' ? null : 6}
             minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
             style={{
@@ -617,7 +635,8 @@ const SellPostForm = ({
             scrollEnabled={false}
           />
         </View>
-        <TouchableOpacity
+        {/* Hide for the meantime */}
+        {/* <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => setAllowContact(!allowContact)}
           style={{
@@ -634,7 +653,7 @@ const SellPostForm = ({
             value={allowContact}
             valueChangeHandler={() => setAllowContact(!allowContact)}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* LOCATION SECTION */}
@@ -739,7 +758,6 @@ const SellPostForm = ({
           {/* IF statement here where we show the added items */}
 
           {items.length > 0 ? (
-            // && listAsMultiple
             <View>
               <ItemCategory items={items} />
             </View>
@@ -750,7 +768,6 @@ const SellPostForm = ({
           <Animated.View style={[multipleActiveStyle]}>
             <TouchableOpacity
               onPress={() => {
-                // showAddItemModal(true)
                 navigation.navigate('AddItemScreen')
               }}
               activeOpacity={0.7}
@@ -811,7 +828,6 @@ const SellPostForm = ({
           {/* IF statement here where we show the added items */}
 
           {items.length > 0 ? (
-            // && listAsMultiple
             <View>
               <ItemCategory items={items} />
             </View>
@@ -848,34 +864,30 @@ const SellPostForm = ({
               justifyContent: 'space-between',
             }}>
             <AppText textStyle="body3">What is your budget?</AppText>
-            <Switch
-              value={budgetRange}
-              onValueChange={() => {
-                setBudgetRange(!budgetRange)
-              }}
-            />
           </View>
           <AppText textStyle="body2" color={Colors.contentPlaceholder}>
             Attract Buzzybees by adding a price range.
           </AppText>
 
-          <PriceInput
-            style={{ marginTop: 16 }}
-            value={budgetMinimum}
-            keyboardType="number-pad"
-            onChangeText={text => setBudgetMinimum(text)}
-            placeholder="00"
-            label="Minimum"
-          />
+          <>
+            <PriceInput
+              style={{ marginTop: 16 }}
+              value={budgetMinimum}
+              keyboardType="number-pad"
+              onChangeText={text => setBudgetMinimum(text)}
+              placeholder="00"
+              label="Minimum"
+            />
 
-          <PriceInput
-            style={{ marginTop: 16 }}
-            value={budgetMaximum}
-            keyboardType="number-pad"
-            onChangeText={text => setBudgetMaximum(text)}
-            placeholder="00"
-            label="Maximum"
-          />
+            <PriceInput
+              style={{ marginTop: 16 }}
+              value={budgetMaximum}
+              keyboardType="number-pad"
+              onChangeText={text => setBudgetMaximum(text)}
+              placeholder="00"
+              label="Maximum"
+            />
+          </>
         </Section>
       )}
 
@@ -1014,8 +1026,25 @@ const SellPostForm = ({
               showBookingMethodModal(true)
             }}>
             <AppText textStyle="body3">Booking Methods*</AppText>
+            {console.log(deliveryState)}
             <FormArrowRight />
           </TouchableOpacity>
+          {pickupState ? (
+            <AppText textStyle="body2">By Appointment</AppText>
+          ) : (
+            <></>
+          )}
+          {deliveryState ? (
+            Object.keys(deliveryState).length === 0 ? (
+              <></>
+            ) : (
+              <AppText textStyle="body2" customStyle={{ marginTop: 4 }}>
+                Walk-In
+              </AppText>
+            )
+          ) : (
+            <></>
+          )}
         </Section>
       )}
       <Modal
@@ -1044,15 +1073,23 @@ const SellPostForm = ({
       {/* POST EXPIRY SECTION */}
       {activeForm.expiry && (
         <Section>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            onPress={() => {
-              showPostExpiryModal(true)
-            }}>
-            <AppText textStyle="body3">Cut-off Time</AppText>
-            <FormArrowRight />
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              onPress={() => {
+                showPostExpiryModal(true)
+              }}>
+              <AppText textStyle="body3">Cut-off Time</AppText>
+
+              <FormArrowRight />
+            </TouchableOpacity>
+            {true && (
+              <AppText>
+                {moment(postExpiry).format('MMMM D, YYYY @h:mm:ss a')}
+              </AppText>
+            )}
+          </View>
         </Section>
       )}
 
@@ -1071,9 +1108,37 @@ const SellPostForm = ({
         <PostExpiryModal
           close={() => showPostExpiryModal(false)}
           postExpiry={postExpiry}
-          setPostExpiry={setPostExpiry}
+          setPostExpiry={text => setPostExpiry(text)}
         />
       </Modal>
+
+      {activeForm.additionalNotes && (
+        <Section>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            onPress={() => showAdditionalNotes(true)}>
+            <AppText textStyle="body3">Additional Notes*</AppText>
+            <FormArrowRight />
+          </TouchableOpacity>
+        </Section>
+      )}
+
+      <Modal
+        isVisible={additionalNotes}
+        animationIn="slideInRight"
+        animationInTiming={300}
+        animationOut="slideOutRight"
+        animationOutTiming={250}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          justifyContent: 'flex-start',
+          height: Dimensions.get('window').height,
+        }}>
+        <AdditionalNotesModal close={() => showAdditionalNotes(false)} />
+      </Modal>
+
       {/* POST EXPIRY SECTION */}
 
       {/* <Section>
@@ -1176,6 +1241,7 @@ const SellPostForm = ({
         <MoreOptionsModal
           close={() => showMoreOptions(false)}
           setMoreOptions={setMoreOptions}
+          type={activeForm.type}
         />
       </Modal>
 

@@ -1,24 +1,24 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
   TextInput,
-} from 'react-native';
-import Geocoder from 'react-native-geocoding';
-import storage from '@react-native-firebase/storage';
+} from 'react-native'
+import Geocoder from 'react-native-geocoding'
+import storage from '@react-native-firebase/storage'
 
-import Config from '@/services/Config';
-import Modal from 'react-native-modal';
-import StoreLocation from '../StoreLocation';
-import {PostService, ImageUpload, MapService} from '@/services';
-import {PostImageUpload} from '../PostImageUpload';
-import {AppText, AppInput, TransitionIndicator} from '@/components';
-import {normalize, Colors} from '@/globals';
-import {ArrowRight} from '@/assets/images/icons';
-import {UserContext} from '@/context/UserContext';
-import {Context} from '@/context';
+import Config from '@/services/Config'
+import Modal from 'react-native-modal'
+import StoreLocation from '../StoreLocation'
+import { PostService, ImageUpload, MapService } from '@/services'
+import { PostImageUpload } from '../PostImageUpload'
+import { AppText, AppInput, TransitionIndicator } from '@/components'
+import { normalize, Colors } from '@/globals'
+import { ArrowRight } from '@/assets/images/icons'
+import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 
 const ServicePostForm = ({
   navToPost,
@@ -26,7 +26,7 @@ const ServicePostForm = ({
   formState,
   initialData,
 }) => {
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
   const {
     coverPhoto,
     setNeedsRefresh,
@@ -36,18 +36,18 @@ const ServicePostForm = ({
     setSingleCameraImage,
     setSelected,
     setImageCurrent,
-  } = useContext(Context);
-  const [stringAddress, setStringAddress] = useState('');
-  const [buttonEnabled, setButtonEnabled] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [map, setMap] = useState(false);
+  } = useContext(Context)
+  const [stringAddress, setStringAddress] = useState('')
+  const [buttonEnabled, setButtonEnabled] = useState(false)
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [map, setMap] = useState(false)
   const [addressComponents, setAddressComponents] = useState({
     city: '',
     province: '',
     country: '',
     longitude: 0,
     latitude: 0,
-  });
+  })
   const {
     title,
     setTitle,
@@ -60,42 +60,41 @@ const ServicePostForm = ({
     setPaymentMethod,
     pickupState,
     deliveryState,
-  } = formState;
+  } = formState
 
   useEffect(() => {
     //console.log(initialData);
     if (images) {
-      setCameraImage(images);
+      setCameraImage(images)
     }
     if (initialData.post_id) {
-      console.log('edit post');
-      const {store_location} = initialData;
+      const { store_location } = initialData
       MapService.getStringAddress(
         store_location.latitude,
         store_location.longitude,
         '',
         setStringAddress,
         setAddressComponents,
-        addressComponents,
-      );
+        addressComponents
+      )
     } else {
       if (userInfo.address) {
-        const {address} = userInfo;
+        const { address } = userInfo
         MapService.getStringAddress(
           address.latitude,
           address.longitude,
           '',
           setStringAddress,
           setAddressComponents,
-          addressComponents,
-        );
+          addressComponents
+        )
       }
     }
-  }, []);
+  }, [])
 
   const toggleMap = () => {
-    setMap(!map);
-  };
+    setMap(!map)
+  }
 
   const prepareAddressUpdate = (fullAddress, addStr) => {
     MapService.getStringAddress(
@@ -104,30 +103,28 @@ const ServicePostForm = ({
       addStr,
       setStringAddress,
       setAddressComponents,
-      addressComponents,
-    );
-  };
+      addressComponents
+    )
+  }
 
   const checkFormContent = () => {
-    if (title && price && paymentMethod) return setButtonEnabled(false);
+    if (title && price && paymentMethod) return setButtonEnabled(false)
 
-    return setButtonEnabled(true);
-  };
+    return setButtonEnabled(true)
+  }
 
   useEffect(() => {
-    checkFormContent();
-  }, [title, price, paymentMethod, description]);
+    checkFormContent()
+  }, [title, price, paymentMethod, description])
 
   const publish = async () => {
-    setLoadingSubmit(true);
+    setLoadingSubmit(true)
 
     const data = {
       uid: user.uid,
       post_type: 'Need',
       images: await Promise.all(
-        coverPhoto.map(
-          async (image) => await ImageUpload.upload(image, user.uid),
-        ),
+        coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
       ),
       title: title,
       price: price,
@@ -138,44 +135,44 @@ const ServicePostForm = ({
         pickup: pickupState,
         delivery: deliveryState,
       },
-    };
+    }
 
     if (initialData.post_id) {
-      const res = await PostService.editPost(initialData.post_id, data);
-      clearContextState();
+      const res = await PostService.editPost(initialData.post_id, data)
+      clearContextState()
       navToPost({
         ...res,
         viewing: false,
         created: false,
         edited: true,
-      });
+      })
     } else {
-      const res = await PostService.createPost(data);
+      const res = await PostService.createPost(data)
       setUserInfo({
         ...userInfo,
         post_count: userInfo.post_count + 1,
-      });
-      clearContextState();
+      })
+      clearContextState()
       navToPost({
         ...res,
         viewing: false,
         created: true,
         edited: false,
-      });
+      })
     }
-  };
+  }
 
   const clearContextState = () => {
-    togglePostModal();
-    setLoadingSubmit(false);
-    setNeedsRefresh(true);
-    setCoverPhoto([]);
-    setLibImages([]);
-    setCameraImage([]);
-    setSingleCameraImage(null);
-    setSelected([]);
-    setImageCurrent('');
-  };
+    togglePostModal()
+    setLoadingSubmit(false)
+    setNeedsRefresh(true)
+    setCoverPhoto([])
+    setLibImages([])
+    setCameraImage([])
+    setSingleCameraImage(null)
+    setSelected([])
+    setImageCurrent('')
+  }
 
   return (
     <View
@@ -190,17 +187,17 @@ const ServicePostForm = ({
       <PostImageUpload />
 
       <AppInput
-        customStyle={{marginBottom: 16}}
+        customStyle={{ marginBottom: 16 }}
         label="Title"
         placeholder="Eg. Iphone, Macbook"
         value={title}
-        onChangeText={(text) => setTitle(text)}
+        onChangeText={text => setTitle(text)}
       />
       <AppInput
-        customStyle={{marginBottom: 16}}
+        customStyle={{ marginBottom: 16 }}
         label="Price"
         value={price}
-        onChangeText={(text) => setPrice(text)}
+        onChangeText={text => setPrice(text)}
       />
       <TextInput
         value={description}
@@ -222,16 +219,16 @@ const ServicePostForm = ({
           marginBottom: 16,
           textAlign: 'left',
         }}
-        onChangeText={(text) => setDescription(text)}
+        onChangeText={text => setDescription(text)}
         underlineColorAndroid={'transparent'}
         textAlignVertical="top"
         scrollEnabled={false}
       />
-      <View style={{position: 'relative'}}>
+      <View style={{ position: 'relative' }}>
         <TouchableOpacity onPress={() => toggleMap()}>
           <AppInput
             label="Location Address"
-            customStyle={{marginBottom: 16}}
+            customStyle={{ marginBottom: 16 }}
             value={stringAddress}
             //onChangeText={(text) => setStoreLocation(text)}
           />
@@ -250,9 +247,9 @@ const ServicePostForm = ({
       <AppInput
         label="Payment Method"
         placeholder="Eg: Cash, Gcash"
-        customStyle={{marginBottom: 64}}
+        customStyle={{ marginBottom: 64 }}
         value={paymentMethod}
-        onChangeText={(text) => setPaymentMethod(text)}
+        onChangeText={text => setPaymentMethod(text)}
       />
 
       <TouchableOpacity
@@ -299,7 +296,7 @@ const ServicePostForm = ({
       </Modal>
       <TransitionIndicator loading={loadingSubmit} />
     </View>
-  );
-};
+  )
+}
 
-export default ServicePostForm;
+export default ServicePostForm

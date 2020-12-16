@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -7,58 +7,56 @@ import {
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
+} from 'react-native'
 
 import {
   ScreenHeaderTitle,
   PaddingView,
   AppText,
   ProfileInfo,
-} from '@/components';
-import {CloseDark} from '@/assets/images/icons';
-import {normalize, Colors} from '@/globals';
-import Modal from 'react-native-modal';
-import {UserContext} from '@/context/UserContext';
-import AdminFunctionService from '@/services/Admin/AdminFunctions';
+} from '@/components'
+import { CloseDark } from '@/assets/images/icons'
+import { normalize, Colors } from '@/globals'
+import Modal from 'react-native-modal'
+import { UserContext } from '@/context/UserContext'
+import AdminFunctionService from '@/services/Admin/AdminFunctions'
 
 // create a component
-const BlockList = ({toggleBlockedUser}) => {
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
-  const [selectedUser, setSelectedUser] = useState({});
-  const {blocked_users} = userInfo;
-  const [blockUsers, setBlockUsers] = useState(blocked_users);
+const BlockList = ({ toggleBlockedUser }) => {
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const [selectedUser, setSelectedUser] = useState({})
+  const { blocked_users } = userInfo
+  const [blockUsers, setBlockUsers] = useState(blocked_users)
 
-  //console.log(userInfo);
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const cancelModalToggle = user => {
+    setShowCancelModal(!showCancelModal)
+    setSelectedUser(user)
+  }
 
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const cancelModalToggle = (user) => {
-    setShowCancelModal(!showCancelModal);
-    setSelectedUser(user);
-  };
-
-  const closeHandler = (value) => {
-    setShowCancelModal(!showCancelModal);
-  };
+  const closeHandler = value => {
+    setShowCancelModal(!showCancelModal)
+  }
 
   const unBlockUser = async () => {
     //body: { uid, pid }
     return await AdminFunctionService.unBlockUser({
       uid: user?.uid,
       reported_uid: selectedUser.uid,
-    }).then((res) => {
+    }).then(res => {
       if (res.success) {
-        console.log(res);
-        setBlockUsers(res.blocked_users);
-        setUserInfo({...userInfo, blocked_users: res.blocked_users});
+        console.log(res)
+        setBlockUsers(res.blocked_users)
+        setUserInfo({ ...userInfo, blocked_users: res.blocked_users })
       }
-      closeHandler();
-    });
-  };
+      closeHandler()
+    })
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <View style={{padding: normalize(16)}}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ padding: normalize(16) }}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Blocked Users"
@@ -79,13 +77,13 @@ const BlockList = ({toggleBlockedUser}) => {
                   userInfo={user}
                   type="block-user"
                   cancelModalToggle={() => {
-                    cancelModalToggle(user);
+                    cancelModalToggle(user)
                   }}
                 />
-              );
+              )
             })
           ) : (
-            <View style={{padding: 16}}>
+            <View style={{ padding: 16 }}>
               <AppText textStyle="caption">
                 You don't have any block user
               </AppText>
@@ -108,7 +106,7 @@ const BlockList = ({toggleBlockedUser}) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -120,20 +118,20 @@ const BlockList = ({toggleBlockedUser}) => {
             justifyContent: 'center',
             padding: 16,
           }}>
-          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
             Unblock {selectedUser.display_name}?
           </AppText>
 
           <AppText
             textStyle="caption"
-            customStyle={{textAlign: 'center'}}
-            customStyle={{marginBottom: 16}}>
+            customStyle={{ textAlign: 'center' }}
+            customStyle={{ marginBottom: 16 }}>
             Are you sure you want to unblock {selectedUser.display_name}?
           </AppText>
 
           <TouchableOpacity
             onPress={() => {
-              unBlockUser();
+              unBlockUser()
             }}
             style={{
               backgroundColor: Colors.yellow2,
@@ -148,7 +146,11 @@ const BlockList = ({toggleBlockedUser}) => {
 
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
-            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
             <AppText textStyle="button2" color={Colors.contentOcean}>
               Cancel
             </AppText>
@@ -156,10 +158,10 @@ const BlockList = ({toggleBlockedUser}) => {
         </View>
       </Modal>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 
 //make this component available to the app
-export default BlockList;
+export default BlockList

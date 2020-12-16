@@ -50,10 +50,14 @@ const PostExpiryModal = ({ close, postExpiry, setPostExpiry }) => {
   const clearExpiry = () => {
     setSelectedTime('')
     setSelectedDate('')
+    setShowDate(false)
+    setShowTime(false)
   }
 
   const submitHandler = () => {
     let expiryTimeStamp = new Date(`${selectedDate} ${selectedTime}`)
+    setPostExpiry(expiryTimeStamp)
+    close()
   }
 
   return (
@@ -61,8 +65,11 @@ const PostExpiryModal = ({ close, postExpiry, setPostExpiry }) => {
       <ScreenHeaderTitle title="Post Expiry" paddingSize={2} close={close} />
       <View style={{ padding: normalize(16), height: '100%' }}>
         <View style={{ flex: 0.8 }}>
-          <AppText textStyle="body2">Set post cut off date</AppText>
-          <AppText textStyle="captionDashboard">Something, something</AppText>
+          <AppText textStyle="body2">Set your post cut-off time </AppText>
+          <AppText textStyle="captionDashboard">
+            Manage orders by setting the time and dates that your product will
+            be available.{' '}
+          </AppText>
           <TouchableOpacity
             onPress={clearExpiry}
             disabled={selectedTime || selectedDate ? false : true}>

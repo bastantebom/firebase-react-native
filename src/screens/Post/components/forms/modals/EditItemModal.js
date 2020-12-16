@@ -155,7 +155,7 @@ const EditItemModal = ({
                 marginTop: 24,
               }}>
               <View style={{ flex: 1 }}>
-                {categoryName === 'uncategorized' ? (
+                {categoryName === 'others' ? (
                   <AppText textStyle="body2">Select Category</AppText>
                 ) : (
                   <></>

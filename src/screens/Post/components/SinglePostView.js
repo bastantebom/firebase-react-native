@@ -513,6 +513,7 @@ const SinglePostView = props => {
           </View>
         </Animated.View>
         <ScrollView
+          bounces={false}
           ref={ref}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}

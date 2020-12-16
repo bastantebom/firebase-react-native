@@ -1,38 +1,33 @@
-//import liraries
-import React, {useState} from 'react';
+import React, { useState } from 'react'
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from 'react-native';
-import {AppText} from '@/components';
-import {Colors} from '@/globals';
-import Modal from 'react-native-modal';
+} from 'react-native'
+import { AppText } from '@/components'
+import { Colors } from '@/globals'
+import Modal from 'react-native-modal'
 
-import {EditProfile, UpdateTempScreen} from '@/screens/Profile/components';
-//import {UpdateTemp} from '@/screens/Profile/components';
-
-// create a component
-const ProfileButtons = ({triggerNotify}) => {
-  //console.log(Dimensions.get('window').width);
-  const [editProfile, setEditProfile] = useState(false);
+import { EditProfile, UpdateTempScreen } from '@/screens/Profile/components'
+const ProfileButtons = ({ triggerNotify }) => {
+  const [editProfile, setEditProfile] = useState(false)
   const toggleEditProfile = () => {
-    setEditProfile(!editProfile);
-  };
+    setEditProfile(!editProfile)
+  }
 
-  const [updateTemp, setUpdateTemp] = useState(false);
+  const [updateTemp, setUpdateTemp] = useState(false)
   const toggleUpdateTemp = () => {
-    setUpdateTemp(!updateTemp);
-  };
+    setUpdateTemp(!updateTemp)
+  }
 
   return (
     <>
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={toggleEditProfile}
-        style={{paddingRight: 8}}>
+        style={{ paddingRight: 8 }}>
         <View
           style={{
             width: Dimensions.get('window').width / 2.35,
@@ -49,7 +44,7 @@ const ProfileButtons = ({triggerNotify}) => {
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={toggleUpdateTemp}
-        style={{paddingLeft: 8}}>
+        style={{ paddingLeft: 8 }}>
         <View
           style={{
             width: Dimensions.get('window').width / 2.35,
@@ -96,10 +91,10 @@ const ProfileButtons = ({triggerNotify}) => {
         <UpdateTempScreen toggleUpdateTemp={toggleUpdateTemp} />
       </Modal>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 
 //make this component available to the app
-export default ProfileButtons;
+export default ProfileButtons

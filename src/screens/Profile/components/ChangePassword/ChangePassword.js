@@ -70,7 +70,6 @@ const ChangePassword = ({ toggleChangePassword }) => {
             } else {
               setisUpdating(false)
               triggerNotification(response.message, 'danger')
-              console.log(response)
             }
           })
           .catch(error => {
@@ -90,7 +89,6 @@ const ChangePassword = ({ toggleChangePassword }) => {
         'Please complete the form before you can update the your Password',
         'danger'
       )
-      //console.log('Please complete form');
     }
   }
 

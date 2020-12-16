@@ -11,22 +11,15 @@ const uploadImageHandler = async (image, uid) => {
     const uploadUri =
       Platform.OS === 'ios' ? image.replace('file://', '') : image
 
-    console.log('NEW FILE NAME')
-    console.log(newFilename)
-
-    // generate random filename
-
     const task = storage().ref()
     const fileRef = task.child(`${uid}/post-photo/${newFilename}`)
 
     await fileRef.putFile(uploadUri)
     const downloadURL = await fileRef.getDownloadURL()
 
-    // return Promise.resolve(downloadURL)
     return downloadURL
   } catch (err) {
     console.log(err)
-    // return Promise.reject("Failed to upload")
   }
 }
 

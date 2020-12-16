@@ -1,19 +1,12 @@
-import React, { useContext } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { AppText, CacheableImage } from '@/components';
-import { Context } from '@/context';
-import { normalize } from '@/globals';
-import { Search } from '@/assets/images/icons';
+import React, { useContext } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { AppText, CacheableImage } from '@/components'
+import { Context } from '@/context'
+import { normalize } from '@/globals'
+import { Search } from '@/assets/images/icons'
 
 const Highlight = ({ hit }) => {
-
-  const { searchType } = useContext(Context);
-
-  // const regex = /(<([^>]+)>)/ig;
-
-  // const title = hit._highlightResult.title.value.replace(regex, '')
-  // console.log('************************************************')
-  // console.log(hit.cover_photos)
+  const { searchType } = useContext(Context)
 
   return (
     <View style={styles.highlightWrapper}>
@@ -22,27 +15,28 @@ const Highlight = ({ hit }) => {
         <AppText
           textStyle={'body2'}
           numberOfLines={1}
-          customStyle={{ marginLeft: 10 }}
-        >
-          {searchType === 'posts' ? hit.title : hit.display_name || '@' + hit.username}
+          customStyle={{ marginLeft: 10 }}>
+          {searchType === 'posts'
+            ? hit.title
+            : hit.display_name || '@' + hit.username}
         </AppText>
       </View>
-      { searchType === 'posts' && hit.cover_photos ?
+      {searchType === 'posts' && hit.cover_photos ? (
         <CacheableImage
           source={{ uri: hit.cover_photos[0] }}
           style={styles.icon}
         />
-        :
+      ) : (
         <CacheableImage
           source={{ uri: hit.profile_photo }}
           style={styles.icon}
         />
-      }
+      )}
     </View>
-  );
-};
+  )
+}
 
-export default Highlight;
+export default Highlight
 
 const styles = StyleSheet.create({
   highlightWrapper: {
@@ -52,8 +46,6 @@ const styles = StyleSheet.create({
   icon: {
     height: normalize(25),
     width: normalize(25),
-    borderRadius: 4
-  }
+    borderRadius: 4,
+  },
 })
-
-

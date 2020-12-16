@@ -130,44 +130,27 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
   }
 
   const deletePost = async () => {
-    console.log('delete this post with id: ')
-    console.log(post_id)
     return await PostService.deletePost(post_id).then(() => {
       toggleEllipsisState()
-      console.log('deletePost ' + userInfo.post_count)
       setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
-      // navigation.goBack();
       closePostModal()
     })
   }
 
   const hidePost = async () => {
-    //body: { uid, pid }
     return await PostService.hidePost({ uid: user?.uid, pid: post_id }).then(
       res => {
         toggleEllipsisState()
-        //console.log('deletePost ' + userInfo.post_count);
         setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
-        console.log(userInfo.hidden_posts)
-        // navigation.goBack();
         closePostModal()
       }
     )
-    //navigation.goBack();
-    //alert('hide Post View Post');
   }
 
   const SinglePostContent = ({ children }) => {
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.postImageContainer}>
-          {/* <Image
-            style={GlobalStyle.image}
-            source={{
-              uri:
-                'https://i.insider.com/5bbd187101145529745a9895?width=750&format=jpeg&auto=webp',
-            }}
-          /> */}
           {cover_photos === undefined || cover_photos.length == 0 ? (
             post_type === 'Need' || post_type === 'need' ? (
               <Image
@@ -192,7 +175,6 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
               dotStyle={{ marginRight: 9 }}
               activeDotStyle={{ marginRight: 9 }}>
               {cover_photos.map((item, index) => {
-                // console.log(item);
                 return (
                   <TouchableWithoutFeedback
                     key={index}

@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   StyleSheet,
@@ -7,58 +7,51 @@ import {
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
+} from 'react-native'
 
 import {
   ScreenHeaderTitle,
   PaddingView,
   AppText,
   CacheableImage,
-} from '@/components';
-import {CloseDark} from '@/assets/images/icons';
-import {ProfileImageDefault, DefaultSell} from '@/assets/images';
-import {normalize, Colors, GlobalStyle} from '@/globals';
-import Modal from 'react-native-modal';
-import {UserContext} from '@/context/UserContext';
-import PostService from '@/services/Post/PostService';
+} from '@/components'
+import { CloseDark } from '@/assets/images/icons'
+import { ProfileImageDefault, DefaultSell } from '@/assets/images'
+import { normalize, Colors, GlobalStyle } from '@/globals'
+import Modal from 'react-native-modal'
+import { UserContext } from '@/context/UserContext'
+import PostService from '@/services/Post/PostService'
 
 // create a component
-const HiddenPost = ({toggleHiddenPost}) => {
-  const {userInfo, user, setUserInfo} = useContext(UserContext);
-  const {hidden_posts} = userInfo;
-  //console.log('_ ' + hidden_posts);
-  const [hiddenPosts, setHiddenPosts] = useState(hidden_posts);
-  const [selectedPost, setSelectedPost] = useState({});
-  //console.log(JSON.stringify(hiddenPosts));
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const cancelModalToggle = (post) => {
-    //console.log(title);
-    setSelectedPost(post);
-    setShowCancelModal(!showCancelModal);
-  };
+const HiddenPost = ({ toggleHiddenPost }) => {
+  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const { hidden_posts } = userInfo
+  const [hiddenPosts, setHiddenPosts] = useState(hidden_posts)
+  const [selectedPost, setSelectedPost] = useState({})
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const cancelModalToggle = post => {
+    setSelectedPost(post)
+    setShowCancelModal(!showCancelModal)
+  }
 
-  const closeHandler = (value) => {
-    setShowCancelModal(!showCancelModal);
-  };
+  const closeHandler = value => {
+    setShowCancelModal(!showCancelModal)
+  }
 
   const unHidePost = async () => {
-    //body: { uid, pid }
-    console.log('selected pid ' + selectedPost.pid);
     return await PostService.unHidePost({
       pid: selectedPost.pid,
       uid: user?.uid,
-    }).then((res) => {
+    }).then(res => {
       if (res.success) {
-        setHiddenPosts(res.hidden_posts);
-        setUserInfo({...userInfo, hidden_posts: res.hidden_posts});
+        setHiddenPosts(res.hidden_posts)
+        setUserInfo({ ...userInfo, hidden_posts: res.hidden_posts })
       }
-      //console.log(res);
-      closeHandler();
-    });
-  };
+      closeHandler()
+    })
+  }
 
-  //console.log(hiddenPosts.length);
-  const ProfilePhoto = ({postImage, size}) => {
+  const ProfilePhoto = ({ postImage, size }) => {
     return postImage ? (
       <CacheableImage
         style={GlobalStyle.image}
@@ -68,13 +61,13 @@ const HiddenPost = ({toggleHiddenPost}) => {
       />
     ) : (
       <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    );
-  };
+    )
+  }
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <View style={{padding: normalize(16)}}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ padding: normalize(16) }}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Hidden Posts"
@@ -103,7 +96,7 @@ const HiddenPost = ({toggleHiddenPost}) => {
                     {post.image ? (
                       <CacheableImage
                         style={GlobalStyle.image}
-                        source={{uri: post.image}}
+                        source={{ uri: post.image }}
                       />
                     ) : (
                       // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
@@ -113,19 +106,22 @@ const HiddenPost = ({toggleHiddenPost}) => {
                       />
                     )}
                   </View>
-                  <View style={{marginLeft: 8, justifyContent: 'center'}}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <AppText textStyle="body2" customStyle={{marginRight: 4}}>
+                  <View style={{ marginLeft: 8, justifyContent: 'center' }}>
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <AppText
+                        textStyle="body2"
+                        customStyle={{ marginRight: 4 }}>
                         {post.title.length > 20
                           ? `${post.title.substring(0, 20)}...`
                           : post.title}{' '}
                       </AppText>
                     </View>
                   </View>
-                  <View style={{flex: 1, alignItems: 'flex-end'}}>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
                     <TouchableOpacity
                       onPress={() => {
-                        cancelModalToggle(post);
+                        cancelModalToggle(post)
                       }}
                       style={{
                         paddingHorizontal: normalize(8),
@@ -146,10 +142,10 @@ const HiddenPost = ({toggleHiddenPost}) => {
                     </TouchableOpacity>
                   </View>
                 </View>
-              );
+              )
             })
           ) : (
-            <View style={{padding: 16}}>
+            <View style={{ padding: 16 }}>
               <AppText textStyle="caption">
                 You don't have any hidden post.
               </AppText>
@@ -172,7 +168,7 @@ const HiddenPost = ({toggleHiddenPost}) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -184,20 +180,20 @@ const HiddenPost = ({toggleHiddenPost}) => {
             justifyContent: 'center',
             padding: 16,
           }}>
-          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
             Unhide {selectedPost.title} ?
           </AppText>
 
           <AppText
             textStyle="caption"
-            customStyle={{textAlign: 'center'}}
-            customStyle={{marginBottom: 16}}>
+            customStyle={{ textAlign: 'center' }}
+            customStyle={{ marginBottom: 16 }}>
             Are you sure you want to unhide {selectedPost.title}?
           </AppText>
 
           <TouchableOpacity
             onPress={() => {
-              unHidePost();
+              unHidePost()
             }}
             style={{
               backgroundColor: Colors.yellow2,
@@ -212,7 +208,11 @@ const HiddenPost = ({toggleHiddenPost}) => {
 
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
-            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
             <AppText textStyle="button2" color={Colors.contentOcean}>
               Cancel
             </AppText>
@@ -220,8 +220,8 @@ const HiddenPost = ({toggleHiddenPost}) => {
         </View>
       </Modal>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   userInfoDetailsUsernameContainer: {
     flexDirection: 'row',
   },
-});
+})
 
 //make this component available to the app
-export default HiddenPost;
+export default HiddenPost

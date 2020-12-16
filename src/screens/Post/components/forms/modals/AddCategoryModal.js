@@ -76,10 +76,7 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
           ...category,
           selected: true,
         }
-      } else if (
-        categoryName === 'uncategorized' &&
-        category.category === 'items'
-      ) {
+      } else if (categoryName === 'others' && category.category === 'items') {
         return {
           ...category,
           selected: true,
@@ -134,7 +131,7 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
     })
 
     if (selected.category === 'items') {
-      setCategoryName('uncategorized')
+      setCategoryName('others')
     } else setCategoryName(selected.category)
 
     close()
@@ -163,7 +160,7 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
                 <>
                   <AppRadio
                     key={choice.id}
-                    label={'Uncategorized'}
+                    label={'Others'}
                     value={choice.selected}
                     style={{ paddingLeft: 0, marginBottom: 8 }}
                     valueChangeHandler={() => {
@@ -216,7 +213,7 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
                 <>
                   <AppRadio
                     key={choice.id}
-                    label={'Uncategorized'}
+                    label={'Others'}
                     value={choice.selected}
                     style={{ paddingLeft: 0, marginBottom: 8 }}
                     valueChangeHandler={() => {
