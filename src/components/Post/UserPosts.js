@@ -17,8 +17,9 @@ const UserPosts = ({
   userID,
   isFetching,
   selectNeedFunction,
+  userInfo,
 }) => {
-  const { user, userInfo } = useContext(UserContext)
+  const { user } = useContext(UserContext)
   const { setUserPosts, needsRefresh, setNeedsRefresh } = useContext(Context)
 
   const renderItem = ({ item }) => (
@@ -109,7 +110,7 @@ const UserPosts = ({
         </View>
       )
     }
-    return <PostOwnEmpty isLoading={isLoading} />
+    return <PostOwnEmpty isLoading={isLoading} userInfo={userInfo} />
   }
 
   if (type !== 'own') {

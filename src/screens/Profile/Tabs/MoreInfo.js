@@ -13,7 +13,8 @@ import ProfileInfoService from '@/services/Profile/ProfileInfo'
 // create a component
 const MoreInfo = ({ profileInfo }) => {
   const [hasInfo, setHasInfo] = useState(false)
-  const { description, uid } = profileInfo
+  const { description, uid, display_name, full_name } = profileInfo
+  const { userInfo } = useContext(UserContext)
   const [followers, setFollowers] = useState(0)
   const [following, setFollowing] = useState(0)
 
@@ -76,13 +77,6 @@ const MoreInfo = ({ profileInfo }) => {
             </View>
           </PaddingView>
         </View>
-        {/* <PaddingView paddingSize={4}>
-          <View style={styles.verifiedTitle}>
-            <AppText textStyle="subtitle2">
-              User is verified by Servbees!
-            </AppText>
-          </View>
-        </PaddingView> */}
       </>
     )
   }
@@ -99,23 +93,22 @@ const MoreInfo = ({ profileInfo }) => {
             </View>
             <View style={styles.copyWrapper}>
               <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
-                Complete your profile
+                {userInfo?.uid === uid
+                  ? 'Complete your profile'
+                  : `No additional information about ${
+                      display_name ? display_name : full_name
+                    }`}
               </AppText>
-              <AppText
-                textStyle="body2"
-                color={Colors.profileLink}
-                customStyle={styles.centerCopy}>
-                Additional information about you will be posted here. Complete
-                your profile now.
-              </AppText>
+              {userInfo?.uid === uid && (
+                <AppText
+                  textStyle="body2"
+                  color={Colors.profileLink}
+                  customStyle={styles.centerCopy}>
+                  Additional information about you will be posted here. Complete
+                  your profile now.
+                </AppText>
+              )}
             </View>
-            {/* <View style={styles.linksWrapper}>
-            <TouchableOpacity>
-              <AppText textStyle="body1" color={Colors.contentOcean}>
-                Complete your Profile
-              </AppText>
-            </TouchableOpacity>
-          </View> */}
           </View>
         </ScrollView>
       )}

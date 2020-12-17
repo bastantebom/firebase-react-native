@@ -7,11 +7,14 @@ import { NoPost } from '@/assets/images'
 import { AppText } from '@/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Context } from '@/context/index'
+import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
 
 // create a component
-const PostOwnEmpty = ({ isLoading }) => {
+const PostOwnEmpty = ({ isLoading, userInfo }) => {
   const { openPostButtons } = useContext(Context)
+  const { user } = useContext(UserContext)
+  const { display_name, full_name, uid } = userInfo
   const navigation = useNavigation()
   return (
     <ScrollView>
@@ -21,15 +24,19 @@ const PostOwnEmpty = ({ isLoading }) => {
         </View>
         <View style={styles.copyWrapper}>
           <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
-            You have no post yet
+            {user?.uid !== uid
+              ? `${display_name ? display_name : full_name} has no post yet`
+              : 'You have no post yet'}
           </AppText>
-          <AppText
-            textStyle="body2"
-            color={Colors.profileLink}
-            customStyle={styles.centerCopy}>
-            Browse through and discover nearby services and products. Or, you
-            can post your own offers!
-          </AppText>
+          {user?.uid === uid && (
+            <AppText
+              textStyle="body2"
+              color={Colors.profileLink}
+              customStyle={styles.centerCopy}>
+              Browse through and discover nearby services and products. Or, you
+              can post your own offers!
+            </AppText>
+          )}
         </View>
 
         <View style={styles.linksWrapper}>

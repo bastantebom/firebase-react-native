@@ -1,8 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { FlatList, View, ActivityIndicator } from 'react-native'
 
 import Post from '@/components/Post/Post'
-import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import { PostService } from '@/services'
 import { AppText } from '@/components'
@@ -16,24 +15,16 @@ const UserPosts = ({
   setIsLoading,
   userID,
   isFetching,
+  userInfo,
 }) => {
-  const { user, userInfo } = useContext(UserContext)
-  const {
-    setUserPosts,
-    userPosts,
-    setOtherUserPosts,
-    otherUserPosts,
-    needsRefresh,
-    setNeedsRefresh,
-  } = useContext(Context)
+  const { setOtherUserPosts } = useContext(Context)
   const renderItem = ({ item }) => (
     <Post data={item} type={type} isLoading={isLoading} />
   )
 
   const [refresh, setRefresh] = useState(false)
   const [lastPID, setLastPID] = useState(0)
-  const [fetchMore, setFetchMore] = useState(false)
-  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
+
   const [
     onEndReachedCalledDuringMomentum,
     setOnEndReachedCalledDuringMomentum,
@@ -108,7 +99,7 @@ const UserPosts = ({
         </View>
       )
     }
-    return <PostOwnEmpty isLoading={isLoading} />
+    return <PostOwnEmpty isLoading={isLoading} userInfo={userInfo} />
   }
 
   if (type !== 'own') {

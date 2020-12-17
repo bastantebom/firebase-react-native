@@ -7,8 +7,9 @@ import { normalize } from '@/globals'
 
 import { VerifiedIllustration } from '@/assets/images/icons'
 
-const Verified = () => {
+const Verified = props => {
   const navigation = useNavigation()
+  const { name } = props.route?.params?.info[0]
 
   const badgeInfo = {
     name: 'Wayne',
@@ -20,7 +21,7 @@ const Verified = () => {
       <View style={styles.contentWrapper}>
         <VerifiedIllustration />
         <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
-          Yay, {badgeInfo.name}! You're now bee-rified!
+          Yay, {name}! You're now bee-rified!
         </AppText>
         <AppText textStyle="caption">
           Some text here saying more about the badge.
@@ -37,10 +38,7 @@ const Verified = () => {
             borderRadius: 3,
           }}
           onPress={() => {
-            navigation.goBack()
-            navigation.navigate('Profile', {
-              screen: 'Profile',
-            })
+            navigation.navigate('TabStack', { screen: 'You' })
           }}>
           <AppText textStyle="button2">View Profile</AppText>
         </TouchableOpacity>

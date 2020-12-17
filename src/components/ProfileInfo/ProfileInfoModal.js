@@ -291,6 +291,7 @@ function ProfileInfoModal(props) {
           setIsLoading={setIsDataLoading}
           userID={uid}
           isFetching={fetchMore}
+          userInfo={otherUserInfo}
         />
       ),
     },

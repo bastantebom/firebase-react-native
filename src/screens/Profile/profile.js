@@ -138,14 +138,6 @@ const ProfileScreen = ({
     }, 5000)
   }
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-
-    return () => clearTimeout(timeout)
-  }, [])
-
   const triggerNotify = notify => {
     if (notify) {
       triggerNotification('Profile has been updated successfully!', 'success')
@@ -215,9 +207,9 @@ const ProfileScreen = ({
       }
       const res = await PostService.getUserPosts(params)
       setLastPID(1)
-      setIsLoading(false)
 
       if (res.data.length) {
+        setIsLoading(false)
         setUserPosts(res.data)
         setNeedsRefresh(false)
       }
@@ -359,6 +351,7 @@ const ProfileScreen = ({
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           userID={user.uid}
+          userInfo={userInfo}
           isFetching={fetchMore}
         />
       ),
