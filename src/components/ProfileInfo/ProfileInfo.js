@@ -22,10 +22,6 @@ import {
   StarRating,
 } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
-import { Profile } from '@/screens/Profile'
-import ProfileInfoModal from './ProfileInfoModal'
-import AppButton from '../AppButton/AppButton'
-import { PaddingView } from '../AppViewContainer'
 
 const ProfileInfo = ({
   userInfo,
@@ -36,22 +32,22 @@ const ProfileInfo = ({
   toggleLikePost,
 }) => {
   const { user } = useContext(UserContext)
-  const [profileModal, setProfileModal] = useState(false)
+
   const navigation = useNavigation()
 
   const {
     username = 'defaultuser',
     profile_photo = '',
-    account_verified = false,
     display_name = 'Busy Bee',
     date_posted,
     uid,
     post_type,
+    account_verified,
   } = userInfo
 
-  const VerifiedBadge = ({ width = 10, height = 11.25 }) => {
+  const VerifiedBadge = ({ size }) => {
     return account_verified ? (
-      <Verified width={normalize(width)} height={normalize(height)} />
+      <Verified width={normalize(size)} height={normalize(size)} />
     ) : null
   }
 
@@ -77,7 +73,6 @@ const ProfileInfo = ({
       toggleLikePost()
       toggleMenu()
     }
-
     if (user && user.uid === uid) {
       isModal && cancelModalToggle()
       navigation.navigate('Profile', {
@@ -113,7 +108,7 @@ const ProfileInfo = ({
                 customStyle={styles.userInfoDetailsName}>
                 {display_name}
               </AppText>
-              <VerifiedBadge />
+              <VerifiedBadge size={10} />
             </View>
             <View style={styles.userInfoDetailsUsernameContainer}>
               <AppText

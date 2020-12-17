@@ -34,7 +34,7 @@ const OwnPost = ({ data, isLoading }) => {
   const navigation = useNavigation()
 
   const {
-    user: { display_name, profile_photo },
+    user: { display_name, profile_photo, account_verified },
     date_posted,
     available,
     payment_method,
@@ -50,33 +50,24 @@ const OwnPost = ({ data, isLoading }) => {
     price,
     post_id,
     cover_photos,
-    account_verified,
     email,
     phone_number,
-
     full_name,
   } = data
+
   const post_type = data?.type
   const userInfo = {
-    username: username,
-    profile_photo: profile_photo,
-    account_verified: account_verified,
+    username,
+    profile_photo,
+    account_verified,
     display_name: display_name ? display_name : full_name,
-    date_posted: date_posted,
-    uid: uid,
-    post_type: post_type,
+    date_posted,
+    uid,
+    post_type,
   }
 
   const toggleLike = () => {
     setLikePost(!likePost)
-  }
-
-  const VerifiedBadge = () => {
-    return account_verified ? (
-      <Verified width={normalize(9)} height={normalize(10.12)} />
-    ) : (
-      <></>
-    )
   }
 
   const navToPost = () => {

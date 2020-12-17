@@ -44,7 +44,7 @@ const Post = ({
   const [showPost, setShowPost] = useState(false)
 
   const {
-    user: { display_name, profile_photo },
+    user: { display_name, profile_photo, account_verified },
     date_posted,
     available,
     payment_method,
@@ -60,7 +60,6 @@ const Post = ({
     uid,
     id,
     cover_photos,
-    account_verified,
     email,
     phone_number,
     is_multiple,
@@ -77,7 +76,7 @@ const Post = ({
   const [likePost, setLikePost] = useState(isLiked)
 
   const VerifiedBadge = () => {
-    return account_verified ? <Verified /> : <></>
+    return account?.account_verified ? <Verified /> : <></>
   }
 
   let timeAgo = time => {
@@ -90,13 +89,13 @@ const Post = ({
   }
 
   const userInfo = {
-    username: username,
-    profile_photo: profile_photo,
-    account_verified: account_verified,
+    username,
+    profile_photo,
+    account_verified,
     display_name: display_name ? display_name : full_name,
-    date_posted: date_posted,
-    uid: uid,
-    post_type: post_type,
+    date_posted,
+    uid,
+    post_type,
   }
 
   const navigation = useNavigation()
