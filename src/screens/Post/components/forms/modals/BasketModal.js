@@ -463,121 +463,126 @@ const BasketModal = ({
               <AppText textStyle="body1medium">₱{computedTotal()}</AppText>
             </View>
           </View>
-          <View
-            style={{
-              padding: normalize(20),
-              backgroundColor: 'white',
-              borderRadius: 8,
-              marginBottom: normalize(10),
-              display: postType !== 'need' ? 'flex' : 'none',
-            }}>
-            <View style={styles.caption}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <PostBox width={normalize(24)} height={normalize(24)} />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  {postType === 'service'
-                    ? 'Service Location'
-                    : postType === 'sell'
-                    ? deliveryChoice !== 'delivery'
-                      ? 'Pick-up'
-                      : 'Delivery'
-                    : null}
-                </AppText>
-              </View>
-              <TouchableOpacity onPress={() => showChangeDeliveryModal(true)}>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  Change
-                </AppText>
-              </TouchableOpacity>
-            </View>
+          {postType !== 'need' ? (
             <View
               style={{
-                backgroundColor: Colors.secondarySolitude,
-                padding: 16.5,
+                padding: normalize(20),
+                backgroundColor: 'white',
                 borderRadius: 8,
-                marginBottom: 16,
+                marginBottom: normalize(10),
               }}>
-              <AppText
-                textStyle="body2medium"
-                color={Colors.primaryMidnightBlue}
-                customStyle={{ marginBottom: 4 }}>
-                A few things to note..
-              </AppText>
-              <AppText textStyle="caption" customStyle={{ paddingBottom: 16 }}>
-                Please note that we’re currently working on adding the delivery
-                fee/s in the order. For the meantime, delivery fees will be
-                arranged with the seller using chat or outside the Servbees app.
-              </AppText>
-              <TouchableOpacity onPress={() => {}}>
-                <AppText textStyle="body2medium" color={Colors.contentOcean}>
-                  Learn More
+              <View style={styles.caption}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <PostBox width={normalize(24)} height={normalize(24)} />
+                  <AppText
+                    textStyle="body1medium"
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    {postType === 'service'
+                      ? 'Service Location'
+                      : postType === 'sell'
+                      ? deliveryChoice !== 'delivery'
+                        ? 'Pick-up'
+                        : 'Delivery'
+                      : null}
+                  </AppText>
+                </View>
+                <TouchableOpacity onPress={() => showChangeDeliveryModal(true)}>
+                  <AppText textStyle="button2" color={Colors.contentOcean}>
+                    Change
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  backgroundColor: Colors.secondarySolitude,
+                  padding: 16.5,
+                  borderRadius: 8,
+                  marginBottom: 16,
+                }}>
+                <AppText
+                  textStyle="body2medium"
+                  color={Colors.primaryMidnightBlue}
+                  customStyle={{ marginBottom: 4 }}>
+                  A few things to note..
+                </AppText>
+                <AppText
+                  textStyle="caption"
+                  customStyle={{ paddingBottom: 16 }}>
+                  Please note that we’re currently working on adding the
+                  delivery fee/s in the order. For the meantime, delivery fees
+                  will be arranged with the seller using chat or outside the
+                  Servbees app.
+                </AppText>
+                <TouchableOpacity onPress={() => {}}>
+                  <AppText textStyle="body2medium" color={Colors.contentOcean}>
+                    Learn More
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+              <>
+                <View
+                  pointerEvents="none"
+                  style={{
+                    top: 0,
+                    height: normalize(125),
+                    width: '100%',
+                    marginBottom: 8,
+                  }}>
+                  {!mapInitialized ? (
+                    <View style={[styles.loader]}>
+                      <ActivityIndicator
+                        color="#3781FC"
+                        size="large"
+                        animating={true}
+                      />
+                    </View>
+                  ) : (
+                    <MapComponent
+                      latitude={mapCoords.lat}
+                      longitude={mapCoords.lng}
+                      reCenter={mapCoords}
+                      onRegionChange={handleRegionChange}
+                      withCurrentMarker
+                      customDelta={0.002}
+                      customMarker={
+                        <View
+                          style={{
+                            marginTop: normalize(25),
+                            marginLeft: normalize(9),
+                          }}>
+                          <NavigationPinAlt
+                            width={normalize(30)}
+                            height={normalize(30)}
+                          />
+                        </View>
+                      }
+                    />
+                  )}
+                </View>
+                <View style={{ paddingTop: normalize(10) }}>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginVertical: normalize(10) }}>
+                    {deliveryChoice === 'delivery' ||
+                    deliveryChoice === 'service'
+                      ? addressData.full_address
+                      : full_address}
+                  </AppText>
+                </View>
+              </>
+              <TouchableOpacity onPress={() => showAddNoteModal(true)}>
+                <AppText textStyle="button2" color={Colors.contentOcean}>
+                  {postType === 'sell'
+                    ? deliveryChoice === 'delivery'
+                      ? 'Add delivery notes'
+                      : 'Add pick-up notes'
+                    : postType === 'service'
+                    ? 'Add notes'
+                    : null}
                 </AppText>
               </TouchableOpacity>
             </View>
-            <>
-              <View
-                pointerEvents="none"
-                style={{
-                  top: 0,
-                  height: normalize(125),
-                  width: '100%',
-                  marginBottom: 8,
-                }}>
-                {!mapInitialized ? (
-                  <View style={[styles.loader]}>
-                    <ActivityIndicator
-                      color="#3781FC"
-                      size="large"
-                      animating={true}
-                    />
-                  </View>
-                ) : (
-                  <MapComponent
-                    latitude={mapCoords.lat}
-                    longitude={mapCoords.lng}
-                    reCenter={mapCoords}
-                    onRegionChange={handleRegionChange}
-                    withCurrentMarker
-                    customDelta={0.002}
-                    customMarker={
-                      <View
-                        style={{
-                          marginTop: normalize(25),
-                          marginLeft: normalize(9),
-                        }}>
-                        <NavigationPinAlt
-                          width={normalize(30)}
-                          height={normalize(30)}
-                        />
-                      </View>
-                    }
-                  />
-                )}
-              </View>
-              <View style={{ paddingTop: normalize(10) }}>
-                <AppText
-                  textStyle="body2"
-                  customStyle={{ marginVertical: normalize(10) }}>
-                  {deliveryChoice === 'delivery' || deliveryChoice === 'service'
-                    ? addressData.full_address
-                    : full_address}
-                </AppText>
-              </View>
-            </>
-            <TouchableOpacity onPress={() => showAddNoteModal(true)}>
-              <AppText textStyle="button2" color={Colors.contentOcean}>
-                {postType === 'sell'
-                  ? deliveryChoice === 'delivery'
-                    ? 'Add delivery notes'
-                    : 'Add pick-up notes'
-                  : postType === 'service'
-                  ? 'Add notes'
-                  : null}
-              </AppText>
-            </TouchableOpacity>
-          </View>
+          ) : null}
           <View
             style={{
               padding: normalize(20),
