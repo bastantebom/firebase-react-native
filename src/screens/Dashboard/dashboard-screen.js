@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   Animated,
-  RefreshControl,
 } from 'react-native'
 
 import { WhiteOpacity } from '@/components'
@@ -118,9 +117,7 @@ const DashboardScreen = ({ navigation }) => {
 
   const handleUserPress = _user => {
     if (user?.uid === _user.uid) {
-      navigation.navigate('Profile', {
-        screen: 'Profile',
-      })
+      navigation.navigate('TabStack', { screen: 'You' })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
@@ -405,13 +402,8 @@ const DashboardScreen = ({ navigation }) => {
               onPostPress={handlePostPress}
               onUserPress={handleUserPress}
               onLikePress={handleLikePress}
-              refreshControl={
-                <RefreshControl
-                  enabled={true}
-                  refreshing={isRefreshing}
-                  onRefresh={handleRefresh}
-                />
-              }
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
               onEndReached={handleOnEndReached}
               isLoadingMoreItems={isLoadingMoreItems}
               contentContainerStyle={{
