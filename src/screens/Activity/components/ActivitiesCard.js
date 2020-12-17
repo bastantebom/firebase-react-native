@@ -304,6 +304,7 @@ const ActivitiesCard = ({ info }) => {
           postType={postData?.type}
           orderID={info.orderID}
           postData={postData}
+          fromNotification={true}
         />
       </Modal>
     </>

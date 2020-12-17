@@ -160,6 +160,7 @@ const ItemCard = ({ item }) => {
           postType={postData.type}
           orderID={item.orderID}
           postData={postData}
+          fromNotification={true}
         />
       </Modal>
     </>

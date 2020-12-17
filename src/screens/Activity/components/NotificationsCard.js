@@ -528,6 +528,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
           postType={postData.type}
           orderID={orderId}
           postData={postData}
+          fromNotification={true}
         />
       </Modal>
     </>

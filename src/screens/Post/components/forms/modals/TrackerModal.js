@@ -74,6 +74,7 @@ const TrackerModal = ({
   postData,
   orderID,
   editOrder,
+  fromNotification,
 }) => {
   const { openNotification, closeNotification } = useContext(Context)
   const { user, userInfo } = useContext(UserContext)
@@ -816,7 +817,7 @@ const TrackerModal = ({
           paddingSize={3}
           iconSize={normalize(16)}
         />
-        {notif && (
+        {notif && !fromNotification && (
           <Notification
             onClose={() => showNotif(false)}
             type="success"
@@ -1293,7 +1294,7 @@ const TrackerModal = ({
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={() => setCancelOrder(true)}
-                  style={{ width: '50%' }}>
+                  style={{ width: '100%', alignItems: 'flex-start' }}>
                   <AppText
                     textStyle="button2"
                     color={Colors.secondaryBrinkPink}>
@@ -1302,18 +1303,6 @@ const TrackerModal = ({
                       : postType === 'service'
                       ? 'Cancel Request'
                       : 'Cancel Offer'}
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => editOrderHandler(orderDetails.id)}
-                  style={{ width: '50%', alignItems: 'flex-end' }}>
-                  <AppText textStyle="button2" color={Colors.contentOcean}>
-                    {postType === 'sell'
-                      ? 'Edit Order'
-                      : postType === 'service'
-                      ? 'Edit Request'
-                      : 'Edit Offer'}
                   </AppText>
                 </TouchableOpacity>
               </View>
@@ -1327,21 +1316,9 @@ const TrackerModal = ({
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => setCancelOrder(true)}
-                style={{ width: '50%' }}>
+                style={{ width: '100%', alignItems: 'flex-start' }}>
                 <AppText textStyle="button2" color={Colors.secondaryBrinkPink}>
                   {postType === 'sell' ? 'Cancel Order' : null}
-                </AppText>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => editOrderHandler(orderDetails.id)}
-                style={{ width: '50%' }}>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  {postType === 'sell'
-                    ? 'Edit Order'
-                    : postType === 'need'
-                    ? 'Edit Offer'
-                    : null}
                 </AppText>
               </TouchableOpacity>
             </View>

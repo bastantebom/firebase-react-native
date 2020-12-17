@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   TextInput,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Dimensions,
   Keyboard,
-  SafeAreaView,
   Animated,
   Image,
 } from 'react-native'
@@ -24,8 +23,10 @@ import { ChevronRight } from '@/assets/images/icons'
 
 import SelectPostModal from './SelectPostModal'
 import Api from '@/services/Api'
+import { UserContext } from '@/context/UserContext'
 
 const OfferModal = ({ postType, postData }) => {
+  const { user } = useContext(UserContext)
   const [offer, setOffer] = useState(null)
   const [message, setMessage] = useState(null)
   const [selectedPost, setSelectedPost] = useState()
@@ -35,6 +36,7 @@ const OfferModal = ({ postType, postData }) => {
   const [basketModal, showBasketModal] = useState(false)
   const [animatedPadding] = useState(new Animated.Value(30))
   const [continueState, setContinueState] = useState(false)
+  const [hasPost, setHasPost] = useState(0)
 
   function onKeyboardDidShow(e) {
     const keyboardHeight = e.endCoordinates.height
@@ -86,12 +88,15 @@ const OfferModal = ({ postType, postData }) => {
 
   const getPostDetail = async post_id => {
     const post = await Api.getPost({ pid: post_id })
-
     const { data, success } = post
+    if (success) setSelectedPostDetails(data)
+  }
 
-    if (success) {
-      setSelectedPostDetails(data)
-    }
+  const getUserPostCount = async () => {
+    if (!user?.uid) return
+    const { uid } = user
+    const userPost = await Api.getUserPostsCount({ uid })
+    if (userPost.success) setHasPost(userPost.count)
   }
 
   useEffect(() => {
@@ -99,6 +104,12 @@ const OfferModal = ({ postType, postData }) => {
       getPostDetail(selectedPost)
     }
   }, [selectedPost])
+
+  useEffect(() => {
+    let isMounted = true
+    if (isMounted) getUserPostCount()
+    return () => (isMounted = false)
+  }, [])
 
   const SelectedPost = () => {
     return (
@@ -178,32 +189,36 @@ const OfferModal = ({ postType, postData }) => {
               scrollEnabled={false}
             />
 
-            <TouchableOpacity
-              style={{
-                borderColor: Colors.neutralGray,
-                borderWidth: 1,
-                borderRadius: 4,
-                paddingHorizontal: normalize(20),
-                paddingVertical: normalize(20),
-              }}
-              onPress={() => showSelectPostModal(true)}>
-              <View
+            {hasPost > 0 && (
+              <TouchableOpacity
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                {!selectedPost ? (
-                  <View style={{ flexDirection: 'column' }}>
-                    <AppText textStyle="body2">Send a post</AppText>
-                    <AppText textStyle="caption">Send one of your post</AppText>
-                  </View>
-                ) : (
-                  <SelectedPost />
-                )}
-                <ChevronRight />
-              </View>
-            </TouchableOpacity>
+                  borderColor: Colors.neutralGray,
+                  borderWidth: 1,
+                  borderRadius: 4,
+                  paddingHorizontal: normalize(20),
+                  paddingVertical: normalize(20),
+                }}
+                onPress={() => showSelectPostModal(true)}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  {!selectedPost ? (
+                    <View style={{ flexDirection: 'column' }}>
+                      <AppText textStyle="body2">Send a post</AppText>
+                      <AppText textStyle="caption">
+                        Send one of your post
+                      </AppText>
+                    </View>
+                  ) : (
+                    <SelectedPost />
+                  )}
+                  <ChevronRight />
+                </View>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               disabled={!continueState}
               style={[
