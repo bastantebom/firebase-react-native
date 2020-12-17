@@ -286,23 +286,8 @@ const StickyHeader = ({
                 flexDirection: 'row',
                 width: '40%',
                 paddingLeft: 25,
-                justifyContent: 'space-between',
+                justifyContent: 'flex-end',
               }}>
-              <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
-                <View style={GlobalStyle.marginLeft1}>
-                  <HeaderShareGray
-                    width={normalize(15)}
-                    height={normalize(15)}
-                  />
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleQR}>
-                <View style={GlobalStyle.marginLeft1}>
-                  <HeaderQRGray width={normalize(15)} height={normalize(15)} />
-                </View>
-              </TouchableOpacity>
-
               <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
                 <View style={GlobalStyle.marginLeft1}>
                   <HeaderMenuGray
