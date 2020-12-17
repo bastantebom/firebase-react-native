@@ -411,7 +411,6 @@ const ProfileScreen = ({
             refreshing={refresh}
             titleColor="#2E3034"
             tintColor="#2E3034"
-            title="Refreshing"
             onRefresh={refreshPosts}
           />
         }

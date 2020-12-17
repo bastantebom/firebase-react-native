@@ -392,7 +392,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
             <View style={styles.holder}>
               <PostClock width={normalize(16)} height={normalize(16)} />
               <AppText
-                textStyle="caption"
+                textStyle="metadata"
                 customStyle={{
                   marginLeft: 3,
                   color: '#8C8B98',

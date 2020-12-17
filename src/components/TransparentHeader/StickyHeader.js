@@ -11,7 +11,7 @@ import Modal from 'react-native-modal'
 import Share from 'react-native-share'
 import { useNavigation } from '@react-navigation/native'
 
-import { AppText, BottomSheetHeader } from '@/components'
+import { AppText, HexagonBorder } from '@/components'
 import {
   EllipsisMenu,
   OwnMenu,
@@ -64,7 +64,8 @@ const StickyHeader = ({
   postId,
   isFollowing,
 }) => {
-  const { display_name, is_verified, full_name } = userInfo
+  const { display_name, is_verified, full_name, profile_photo } = userInfo
+  const name = display_name ? display_name : full_name
 
   const navigation = useNavigation()
   const shareHandler = async () => {
@@ -269,11 +270,15 @@ const StickyHeader = ({
                 flexDirection: 'row',
                 width: '60%',
               }}>
+              <View style={styles.profileImageWrapper}>
+                <HexagonBorder size={40} imgSrc={profile_photo} />
+              </View>
               <AppText
                 textStyle="subtitle2"
                 color={Colors.primaryMidnightBlue}
-                numberOfLines={1}>
-                {display_name ? display_name : full_name}
+                numberOfLines={1}
+                customStyle={{ paddingLeft: normalize(40) }}>
+                {name}
               </AppText>
             </View>
             <View
@@ -358,11 +363,15 @@ const StickyHeader = ({
                 flexDirection: 'row',
                 width: '60%',
               }}>
+              <View style={styles.profileImageWrapper}>
+                <HexagonBorder size={40} imgSrc={profile_photo} />
+              </View>
               <AppText
                 textStyle="subtitle2"
                 color={Colors.primaryMidnightBlue}
-                numberOfLines={1}>
-                {display_name}
+                numberOfLines={1}
+                customStyle={{ paddingLeft: normalize(40) }}>
+                {name}
               </AppText>
             </View>
             {user ? (
@@ -452,6 +461,12 @@ const styles = StyleSheet.create({
     borderRadius: normalize(32 / 2),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  profileImageWrapper: {
+    width: normalize(40),
+    height: normalize(40),
+    top: normalize(40),
+    position: 'absolute',
   },
   followButton: {
     borderRadius: 20,
