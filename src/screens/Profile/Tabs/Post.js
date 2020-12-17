@@ -39,21 +39,23 @@ const PostOwnEmpty = ({ isLoading, userInfo }) => {
           )}
         </View>
 
-        <View style={styles.linksWrapper}>
-          <TouchableOpacity onPress={() => navigation.navigate('dashboard')}>
-            <AppText textStyle="body1" color={Colors.contentOcean}>
-              Discover
+        {user?.uid === uid && (
+          <View style={styles.linksWrapper}>
+            <TouchableOpacity onPress={() => navigation.navigate('dashboard')}>
+              <AppText textStyle="body1" color={Colors.contentOcean}>
+                Discover
+              </AppText>
+            </TouchableOpacity>
+            <AppText textStyle="body1" customStyle={styles.copySpacing}>
+              or
             </AppText>
-          </TouchableOpacity>
-          <AppText textStyle="body1" customStyle={styles.copySpacing}>
-            or
-          </AppText>
-          <TouchableOpacity onPress={openPostButtons}>
-            <AppText textStyle="body1" color={Colors.contentOcean}>
-              Post
-            </AppText>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity onPress={openPostButtons}>
+              <AppText textStyle="body1" color={Colors.contentOcean}>
+                Post
+              </AppText>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </ScrollView>
   )

@@ -17,7 +17,7 @@ import Modal from 'react-native-modal'
 import Swiper from 'react-native-swiper'
 import ReadMore from 'react-native-read-more-text'
 import Api from '@/services/Api'
-
+import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 
@@ -266,6 +266,38 @@ const SinglePostView = props => {
   const toggleLike = async () => {
     const res = await PostService.likeUnlike(id, isLiked)
     setLikePost(!likePost)
+  }
+
+  const handleChatPress = async () => {
+    let channel
+    try {
+      if (!user?.uid) return
+      const snapshot = await firestore()
+        .collection('chat_rooms')
+        .where('members', '==', {
+          [user.uid]: true,
+          [uid]: true,
+        })
+        .get()
+
+      if (!snapshot.docs.length) {
+        const ref = firestore().collection('chat_rooms')
+        const { id } = await ref.add({
+          members: {
+            [user.uid]: true,
+            [uid]: true,
+          },
+        })
+
+        await ref.doc(id).update({ id })
+        channel = (await ref.doc(id).get()).data()
+      } else {
+        channel = snapshot.docs[0].data()
+      }
+      navigation.navigate('Chat', { user, channel })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const CustomNotification = () => {
@@ -891,7 +923,8 @@ const SinglePostView = props => {
               )}
               <TouchableOpacity
                 style={{ marginRight: email ? 8 : 0 }}
-                activeOpacity={0.7}>
+                activeOpacity={0.7}
+                onPress={handleChatPress}>
                 <View style={styles.contactButtonContainer}>
                   <Icons.Chat width={normalize(24)} height={normalize(24)} />
                 </View>

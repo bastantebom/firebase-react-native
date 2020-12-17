@@ -42,7 +42,7 @@ const TransparentHeader = ({
   postId,
   following,
   handleLikedPost,
-  handleFollowing,
+  toggleFollowing,
   liked,
 }) => {
   const navigation = useNavigation()
@@ -81,7 +81,7 @@ const TransparentHeader = ({
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={handleFollowing}>
+                    onPress={toggleFollowing}>
                     <View
                       style={[styles.followButton, GlobalStyle.marginLeft1]}>
                       {following ? (
@@ -344,7 +344,7 @@ const TransparentHeader = ({
 
             {user ? (
               <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity activeOpacity={0.7} onPress={handleFollowing}>
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
                   <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
                     {following ? (
                       <Icons.HeaderFollowing
@@ -403,6 +403,7 @@ const TransparentHeader = ({
             userInfo={userInfo}
             userID={userID}
             isFollowing={following}
+            toggleFollowing={toggleFollowing}
           />
         </Modal>
       </>

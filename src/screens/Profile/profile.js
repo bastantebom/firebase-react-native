@@ -160,6 +160,13 @@ const ProfileScreen = ({
     return () => (isMounted = false)
   }, [needsRefresh])
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+    return () => clearTimeout(timeout)
+  }, [])
+
   const [lastPID, setLastPID] = useState(0)
   const [fetchMore, setFetchMore] = useState(false)
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)

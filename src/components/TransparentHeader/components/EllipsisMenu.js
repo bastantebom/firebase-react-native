@@ -56,7 +56,8 @@ const EllipsisMenu = ({
   }
 
   const followingHandler = () => {
-    toggleEllipsisState()
+    toggleEllipsisState?.()
+
     toggleFollowing()
   }
 
@@ -118,11 +119,7 @@ const EllipsisMenu = ({
             </AppText>
           </View>
         </TouchableOpacity> */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              followingHandler()
-            }}>
+          <TouchableOpacity activeOpacity={0.7} onPress={followingHandler}>
             <View
               style={{
                 flexDirection: 'row',
