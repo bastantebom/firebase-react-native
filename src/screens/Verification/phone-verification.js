@@ -5,6 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native'
 import {
   AppText,
@@ -66,61 +68,64 @@ const PhoneVerificationScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TransitionIndicator loading={isSubmitting} />
-      <View style={{ padding: normalize(24) }}>
-        <View style={{ justifyContent: 'space-between', height: '100%' }}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity
-              onPress={navigation.goBack}
-              activeOpacity={0.7}
-              style={{ position: 'absolute', left: 0 }}>
-              <HeaderBackGray width={normalize(16)} height={normalize(16)} />
-            </TouchableOpacity>
-            <AppText textStyle="body3">&nbsp;</AppText>
-          </View>
-          <>
-            <View style={{ flex: 1 }}>
-              <AppText textStyle="body1" customStyle={{ marginBottom: 8 }}>
-                Add and verify mobile number
-              </AppText>
-              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                We'll use this number for notifications, transaction updates,
-                and login help
-              </AppText>
-              <Validator
-                style={{ marginBottom: normalize(16) }}
-                errorState={{
-                  message: error,
-                  shown: error.length,
-                }}>
-                <FloatingAppInput
-                  value={phoneNumber}
-                  selectTextOnFocus={false}
-                  onChangeText={handlePhoneNumberChange}
-                  label="Mobile Number"
-                  customStyle={{ marginTop: normalize(35) }}
-                  keyboardType="phone-pad"
-                />
-              </Validator>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={{ padding: normalize(24) }}>
+          <View style={{ justifyContent: 'space-between', height: '100%' }}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity
+                onPress={navigation.goBack}
+                activeOpacity={0.7}
+                style={{ position: 'absolute', left: 0 }}>
+                <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+              </TouchableOpacity>
+              <AppText textStyle="body3">&nbsp;</AppText>
             </View>
-            <AppButton
-              text="Verify"
-              type="primary"
-              height="xl"
-              disabled={error.length}
-              customStyle={{
-                ...styles.customButtonStyle,
-                ...(error.length
-                  ? {
-                      backgroundColor: Colors.buttonDisable,
-                      borderColor: Colors.buttonDisable,
-                    }
-                  : {}),
-              }}
-              onPress={handleSubmit}
-            />
-          </>
+            <>
+              <View style={{ flex: 1 }}>
+                <AppText textStyle="body1" customStyle={{ marginBottom: 8 }}>
+                  Add and verify mobile number
+                </AppText>
+                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+                  We'll use this number for notifications, transaction updates,
+                  and login help
+                </AppText>
+                <Validator
+                  style={{ marginBottom: normalize(16) }}
+                  errorState={{
+                    message: error,
+                    shown: error.length,
+                  }}>
+                  <FloatingAppInput
+                    value={phoneNumber}
+                    selectTextOnFocus={false}
+                    onChangeText={handlePhoneNumberChange}
+                    label="Mobile Number"
+                    customStyle={{ marginTop: normalize(35) }}
+                    keyboardType="phone-pad"
+                    returnKeyType={'done'}
+                  />
+                </Validator>
+              </View>
+              <AppButton
+                text="Verify"
+                type="primary"
+                height="xl"
+                disabled={error.length}
+                customStyle={{
+                  ...styles.customButtonStyle,
+                  ...(error.length
+                    ? {
+                        backgroundColor: Colors.buttonDisable,
+                        borderColor: Colors.buttonDisable,
+                      }
+                    : {}),
+                }}
+                onPress={handleSubmit}
+              />
+            </>
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   )
 }
