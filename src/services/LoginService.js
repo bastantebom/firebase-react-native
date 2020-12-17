@@ -7,6 +7,7 @@ import { GoogleSignin } from '@react-native-community/google-signin'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
 
 import Api from '@/services/Api'
+import { Alert } from 'react-native'
 
 GoogleSignin.configure({
   webClientId: Config.dev.googleSignIn,
@@ -85,6 +86,8 @@ const signInWithProvider = async provider => {
     if (!response.success && response.message !== 'Account already exist')
       throw new Error(response.message)
   } catch (error) {
+    if (~error.message?.indexOf('already exist'))
+      Alert.alert('Error', error.message.slice(error.message.indexOf(']') + 1))
     console.log(error)
   }
 }
