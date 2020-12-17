@@ -21,11 +21,10 @@ import Validator from '@/components/AppInput/Validator'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'PhoneVerification'>} param0 */
 const PhoneVerificationScreen = ({ navigation }) => {
-  const { user, setUserInfo } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
 
   const [error, setError] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
+  const [phoneNumber, setPhoneNumber] = useState(userInfo.phone_number || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handlePhoneNumberChange = async _phoneNumber => {
@@ -53,7 +52,8 @@ const PhoneVerificationScreen = ({ navigation }) => {
         login: phoneNumber,
         provider: 'number',
         onSubmit: () => {
-          navigation.pop(2)
+          navigation.goBack()
+          navigation.goBack()
         },
         onBackPress: navigation.goBack,
       })
@@ -62,24 +62,6 @@ const PhoneVerificationScreen = ({ navigation }) => {
     }
     setIsSubmitting(false)
   }
-
-  const initialize = async () => {
-    try {
-      const response = await Api.getUser({ uid: user.uid })
-      const { account, ...userInfo } = response.data
-      setUserInfo(userInfo)
-      const { phone_number } = userInfo
-
-      setPhoneNumber(phone_number)
-      setIsLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    initialize()
-  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -95,59 +77,48 @@ const PhoneVerificationScreen = ({ navigation }) => {
             </TouchableOpacity>
             <AppText textStyle="body3">&nbsp;</AppText>
           </View>
-          {isLoading && (
-            <View style={[styles.loader]}>
-              <ActivityIndicator
-                color="#3781FC"
-                size="large"
-                animating={true}
-              />
+          <>
+            <View style={{ flex: 1 }}>
+              <AppText textStyle="body1" customStyle={{ marginBottom: 8 }}>
+                Add and verify mobile number
+              </AppText>
+              <AppText textStyle="body2" color={Colors.contentPlaceholder}>
+                We'll use this number for notifications, transaction updates,
+                and login help
+              </AppText>
+              <Validator
+                style={{ marginBottom: normalize(16) }}
+                errorState={{
+                  message: error,
+                  shown: error.length,
+                }}>
+                <FloatingAppInput
+                  value={phoneNumber}
+                  selectTextOnFocus={false}
+                  onChangeText={handlePhoneNumberChange}
+                  label="Mobile Number"
+                  customStyle={{ marginTop: normalize(35) }}
+                  keyboardType="phone-pad"
+                />
+              </Validator>
             </View>
-          )}
-          {!isLoading && (
-            <>
-              <View style={{ flex: 1 }}>
-                <AppText textStyle="body1" customStyle={{ marginBottom: 8 }}>
-                  Add and verify mobile number
-                </AppText>
-                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                  We'll use this number for notifications, transaction updates,
-                  and login help
-                </AppText>
-                <Validator
-                  style={{ marginBottom: normalize(16) }}
-                  errorState={{
-                    message: error,
-                    shown: error.length,
-                  }}>
-                  <FloatingAppInput
-                    value={phoneNumber}
-                    selectTextOnFocus={false}
-                    onChangeText={handlePhoneNumberChange}
-                    label="Mobile Number"
-                    customStyle={{ marginTop: normalize(35) }}
-                    keyboardType="phone-pad"
-                  />
-                </Validator>
-              </View>
-              <AppButton
-                text="Verify"
-                type="primary"
-                height="xl"
-                disabled={error.length}
-                customStyle={{
-                  ...styles.customButtonStyle,
-                  ...(error.length
-                    ? {
-                        backgroundColor: Colors.buttonDisable,
-                        borderColor: Colors.buttonDisable,
-                      }
-                    : {}),
-                }}
-                onPress={handleSubmit}
-              />
-            </>
-          )}
+            <AppButton
+              text="Verify"
+              type="primary"
+              height="xl"
+              disabled={error.length}
+              customStyle={{
+                ...styles.customButtonStyle,
+                ...(error.length
+                  ? {
+                      backgroundColor: Colors.buttonDisable,
+                      borderColor: Colors.buttonDisable,
+                    }
+                  : {}),
+              }}
+              onPress={handleSubmit}
+            />
+          </>
         </View>
       </View>
     </SafeAreaView>

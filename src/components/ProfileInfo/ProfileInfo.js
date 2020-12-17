@@ -68,7 +68,7 @@ const ProfileInfo = ({
     )
   }
 
-  openProfileHandler = () => {
+  const openProfileHandler = () => {
     if (toggleMenu && toggleLikePost) {
       toggleLikePost()
       toggleMenu()

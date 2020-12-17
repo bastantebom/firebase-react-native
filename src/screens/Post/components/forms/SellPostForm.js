@@ -7,6 +7,7 @@ import {
   TextInput,
   Animated,
   TouchableWithoutFeedback,
+  StyleSheet,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -520,6 +521,50 @@ const SellPostForm = ({
     service: 'e.g. Online Tutor, Maintenance',
   }
 
+  const handleOnAddMobileNumberPress = () => {
+    navigation.navigate('Verification', {
+      screen: 'phone-verification',
+    })
+  }
+
+  const renderAllowContact = () => {
+    if (userInfo.phone_number) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => setAllowContact(!allowContact)}
+          style={styles.allowContactWrapper}>
+          <AppText textStyle="body2" customStyle={{ maxWidth: '87%' }}>
+            Display my mobile number and allow customers to contact me via call
+            or text.
+          </AppText>
+          <AppCheckbox
+            value={allowContact}
+            valueChangeHandler={() => setAllowContact(!allowContact)}
+          />
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <View style={styles.noNumber}>
+          <AppText textStyle="body2medium" customStyle={styles.noNumberTitle}>
+            No mobile number added
+          </AppText>
+          <AppText textStyle="eyebrow2" customStyle={styles.noNumberMessage}>
+            Add your mobile number to ensure customer service.
+          </AppText>
+          <TouchableOpacity onPress={handleOnAddMobileNumberPress}>
+            <AppText
+              textStyle="body2medium"
+              customStyle={styles.noNumberAction}>
+              Add and verify mobile number
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }
+
   return (
     <>
       <View
@@ -635,25 +680,7 @@ const SellPostForm = ({
             scrollEnabled={false}
           />
         </View>
-        {/* Hide for the meantime */}
-        {/* <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => setAllowContact(!allowContact)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-          }}>
-          <AppText textStyle="body2" customStyle={{ maxWidth: '87%' }}>
-            Display my mobile number and allow customers to contact me via call
-            or text.
-          </AppText>
-          <AppCheckbox
-            value={allowContact}
-            valueChangeHandler={() => setAllowContact(!allowContact)}
-          />
-        </TouchableOpacity> */}
+        {renderAllowContact()}
       </View>
 
       {/* LOCATION SECTION */}
@@ -1301,5 +1328,33 @@ const Section = ({ children, style }) => {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  allowContactWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  noNumber: {
+    borderRadius: normalize(8),
+    backgroundColor: Colors.secondarySolitude,
+    paddingVertical: normalize(10),
+    paddingHorizontal: normalize(16),
+    paddingBottom: normalize(4),
+  },
+  noNumberTitle: {
+    color: Colors.primaryMidnightBlue,
+    lineHeight: normalize(18),
+  },
+  noNumberMessage: {
+    color: '#2e3034',
+    lineHeight: normalize(18),
+  },
+  noNumberAction: {
+    color: Colors.contentOcean,
+    paddingVertical: normalize(6),
+  },
+})
 
 export default SellPostForm
