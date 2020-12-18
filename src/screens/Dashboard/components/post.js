@@ -46,7 +46,7 @@ const Post = ({
                 />
               )
             } else {
-              switch (post.post_type?.toLowerCase()) {
+              switch (post.type?.toLowerCase()) {
                 case 'service':
                   return <DefaultService {...postImageProps} />
                 case 'need':
