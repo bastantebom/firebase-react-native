@@ -1,33 +1,30 @@
 //import liraries
-import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react'
+import { View, TouchableOpacity } from 'react-native'
 
-import { AppText, BottomSheetHeader, PaddingView } from '@/components';
-import Modal from 'react-native-modal';
-import { Colors, normalize } from '@/globals';
-import { UserContext } from '@/context/UserContext';
-import { useNavigation } from '@react-navigation/native';
-import AdminFunctionService from '@/services/Admin/AdminFunctions';
+import { AppText } from '@/components'
+
+import { Colors, normalize } from '@/globals'
+import { UserContext } from '@/context/UserContext'
+import { useNavigation } from '@react-navigation/native'
+import Api from '@/services/Api'
 
 // create a component
-const ConfirmationOtherProfile = ({ userID, toggleEllipsisState, cancelModalToggle }) => {
-  const { user, userInfo, setUserInfo } = useContext(UserContext);
-  const navigation = useNavigation();
+const ConfirmationOtherProfile = ({
+  userID,
+  toggleEllipsisState,
+  cancelModalToggle,
+}) => {
+  const { user, userInfo, setUserInfo } = useContext(UserContext)
+  const navigation = useNavigation()
 
   const blockUser = async () => {
-    //body: { uid, pid }
-    return await AdminFunctionService.blockUser({
-      uid: user?.uid,
-      reported_uid: userID,
-    }).then((res) => {
-      //console.log(res);
-      if (res.success) {
-        setUserInfo({ ...userInfo, blocked_users: res.data });
-        toggleEllipsisState();
-        navigation.goBack();
-      }
-    });
-  };
+    const blockUserResponse = await Api.blockUser({ uid: userID })
+    if (blockUserResponse.success) {
+      toggleEllipsisState()
+      navigation.goBack()
+    }
+  }
 
   return (
     <View
@@ -51,9 +48,7 @@ const ConfirmationOtherProfile = ({ userID, toggleEllipsisState, cancelModalTogg
       </AppText>
 
       <TouchableOpacity
-        onPress={() => {
-          blockUser();
-        }}
+        onPress={blockUser}
         style={{
           backgroundColor: Colors.yellow2,
           paddingVertical: 14,
@@ -73,8 +68,8 @@ const ConfirmationOtherProfile = ({ userID, toggleEllipsisState, cancelModalTogg
         </AppText>
       </TouchableOpacity>
     </View>
-  );
-};
+  )
+}
 
 //make this component available to the app
-export default ConfirmationOtherProfile;
+export default ConfirmationOtherProfile

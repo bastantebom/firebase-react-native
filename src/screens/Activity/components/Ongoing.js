@@ -197,7 +197,7 @@ const Ongoing = () => {
   return (
     <SafeAreaView>
       <TransitionIndicator loading={isLoading} />
-      {!onGoing.length ? (
+      {!onGoing.length && !isLoading ? (
         <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <IllustActivity width={normalize(250)} height={normalize(200)} />
@@ -211,7 +211,8 @@ const Ongoing = () => {
                 customStyle={{
                   textAlign: 'center',
                   paddingHorizontal: normalize(60),
-                }}>
+                }}
+                textStyle="body2">
                 Get more project leads, buy and sell items, start your own
                 online business, or just bookmark posts for future reference—do
                 all these and more on Servbees.
@@ -233,61 +234,63 @@ const Ongoing = () => {
           </View>
         </ScrollView>
       ) : (
-        <ScrollView>
-          <View style={styles.filterWrapper}>
-            <View style={styles.filterBtns}>
-              {filterBtns.map((btn, i) => {
+        !isLoading && (
+          <ScrollView>
+            <View style={styles.filterWrapper}>
+              <View style={styles.filterBtns}>
+                {filterBtns.map((btn, i) => {
+                  return (
+                    <TouchableOpacity
+                      key={i}
+                      style={[
+                        activeButton === btn.value
+                          ? styles.btnActive
+                          : styles.btn,
+                      ]}
+                      onPress={() => setActive(btn.value)}>
+                      <AppText textStyle="caption">{btn.value}</AppText>
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+              <Animated.View style={[styles.search, { width: inputLength }]}>
+                <TextInput onBlur={onBlur} onFocus={onFocus} />
+                <View style={[styles.searchIcon]}>
+                  <Search width={normalize(20)} height={normalize(20)} />
+                </View>
+              </Animated.View>
+            </View>
+            <View style={{ paddingTop: normalize(15) }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: normalize(15),
+                }}>
+                <Calendar
+                  height={normalize(20)}
+                  width={normalize(20)}
+                  style={{ marginRight: 10 }}
+                />
+                <AppText textStyle="body3">Today</AppText>
+              </View>
+              <View style={{ paddingHorizontal: normalize(15) }}>
+                <AppText
+                  textStyle="eyebrow1"
+                  customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                  NEW
+                </AppText>
+              </View>
+              {onGoing.map((info, i) => {
                 return (
-                  <TouchableOpacity
-                    key={i}
-                    style={[
-                      activeButton === btn.value
-                        ? styles.btnActive
-                        : styles.btn,
-                    ]}
-                    onPress={() => setActive(btn.value)}>
-                    <AppText textStyle="caption">{btn.value}</AppText>
-                  </TouchableOpacity>
+                  <View key={i}>
+                    <ActivitiesCard info={info} />
+                  </View>
                 )
               })}
             </View>
-            <Animated.View style={[styles.search, { width: inputLength }]}>
-              <TextInput onBlur={onBlur} onFocus={onFocus} />
-              <View style={[styles.searchIcon]}>
-                <Search width={normalize(20)} height={normalize(20)} />
-              </View>
-            </Animated.View>
-          </View>
-          <View style={{ paddingTop: normalize(15) }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: normalize(15),
-              }}>
-              <Calendar
-                height={normalize(20)}
-                width={normalize(20)}
-                style={{ marginRight: 10 }}
-              />
-              <AppText textStyle="body3">Today</AppText>
-            </View>
-            <View style={{ paddingHorizontal: normalize(15) }}>
-              <AppText
-                textStyle="eyebrow1"
-                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
-                NEW
-              </AppText>
-            </View>
-            {onGoing.map((info, i) => {
-              return (
-                <View key={i}>
-                  <ActivitiesCard info={info} />
-                </View>
-              )
-            })}
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )
       )}
     </SafeAreaView>
   )
