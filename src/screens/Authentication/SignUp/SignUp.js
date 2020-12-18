@@ -151,10 +151,11 @@ const SignUp = props => {
   }, [formData])
 
   useEffect(() => {
-    const { login, password, full_name } = formData
+    const { login, password, name } = formData
 
     let filled = false
-    if (login && password && full_name) filled = true
+    if (login && password && name) filled = true
+
     setCanSubmit(
       Object.values(errors).every(value => !value.length) &&
         formData.terms_conditions &&

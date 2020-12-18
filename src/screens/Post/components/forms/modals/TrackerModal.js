@@ -204,8 +204,8 @@ const TrackerModal = ({
           switch (status) {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Confirming your order request...')
-              setStatusMessage('<Awaiting Confirmation copy>')
+              setMessageHeader('Got your order request, Buzzybee!')
+              setStatusMessage('Got your order request, Buzzybee!')
               setStatusIcon(
                 <Status.Pending width={normalize(100)} height={normalize(80)} />
               )
@@ -213,8 +213,12 @@ const TrackerModal = ({
             case 'confirmed':
               if (orderDetails.payment_method === 'cash') {
                 setStatusHeader('Order Confirmed')
-                setMessageHeader('Yay! Your order is confirmed by the seller.')
-                setStatusMessage('<Confirmed copy>')
+                setMessageHeader(
+                  'Bee ready! Your order is now being processed.'
+                )
+                setStatusMessage(
+                  'Bee ready! Your order is now being processed.'
+                )
                 setStatusIcon(
                   <Status.OrderConfirmed
                     width={normalize(100)}
@@ -223,8 +227,12 @@ const TrackerModal = ({
                 )
               } else {
                 setStatusHeader('Order Confirmed')
-                setMessageHeader('Order confirmed! Continue to payment...')
-                setStatusMessage('<Processing message here>')
+                setMessageHeader(
+                  'Confeeermed! Please complete payment to process your order. '
+                )
+                setStatusMessage(
+                  'Confeeermed! Please complete payment to process your order. '
+                )
                 setStatusIcon(
                   <Status.OrderConfirmed
                     width={normalize(100)}
@@ -235,8 +243,12 @@ const TrackerModal = ({
               break
             case 'paid':
               setStatusHeader('Processing')
-              setMessageHeader('Your order is now being prepared...')
-              setStatusMessage('<Confirmed copy>')
+              setMessageHeader(
+                'Transaction completed! Thank you for your beezness!...'
+              )
+              setStatusMessage(
+                'Transaction completed! Thank you for your beezness!...'
+              )
               setStatusIcon(
                 <Status.OrderConfirmed
                   width={normalize(100)}
@@ -246,8 +258,12 @@ const TrackerModal = ({
               break
             case 'delivering':
               setStatusHeader('Delivering')
-              setMessageHeader('Your order is ready for delivery...')
-              setStatusMessage('<Delivering message here>')
+              setMessageHeader(
+                'Delivering Bee on the lookout, your delivery is on its way to...'
+              )
+              setStatusMessage(
+                'Delivering Bee on the lookout, your delivery is on its way to...'
+              )
               setStatusIcon(
                 <Status.ReadyForDelivery
                   width={normalize(100)}
@@ -257,8 +273,8 @@ const TrackerModal = ({
               break
             case 'pickup':
               setStatusHeader('Pick up')
-              setMessageHeader('Your order is ready for pickup...')
-              setStatusMessage('<Processing message here>')
+              setMessageHeader('BUZZ! Your order is waiting for you. ')
+              setStatusMessage('BUZZ! Your order is waiting for you. ')
               setStatusIcon(
                 <Status.ReadyForPickup
                   width={normalize(100)}
@@ -281,8 +297,8 @@ const TrackerModal = ({
               break
             case 'completed':
               setStatusHeader('Completed')
-              setMessageHeader('Order completed!')
-              setStatusMessage('<Completed message here>')
+              setMessageHeader('All good? Tell us all about your experience. ')
+              setStatusMessage('All good? Tell us all about your experience. ')
               setStatusIcon(
                 <Status.OrderCompleted
                   width={normalize(100)}
@@ -292,8 +308,8 @@ const TrackerModal = ({
               break
             case 'cancelled':
               setStatusHeader('Cancelled')
-              setMessageHeader('Your order was cancelled')
-              setStatusMessage('<Order Cancelled copy>')
+              setMessageHeader('Oh noooo. Try again or contact the SELLER. ')
+              setStatusMessage('Oh noooo. Try again or contact the SELLER. ')
               setStatusIcon(
                 <Status.Cancelled
                   width={normalize(100)}
@@ -309,16 +325,20 @@ const TrackerModal = ({
           switch (status) {
             case 'pending':
               setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Confirming your request...')
-              setStatusMessage('<Awaiting Confirmation copy>')
+              setMessageHeader('Reviewing your booking request. ')
+              setStatusMessage('Reviewing your booking request. ')
               setStatusIcon(
                 <Status.Pending width={normalize(100)} height={normalize(80)} />
               )
               break
             case 'confirmed':
               setStatusHeader('Scheduled Confirmed')
-              setMessageHeader('Your booking is confirmed')
-              setStatusMessage('<Schedule confirmed copy>')
+              setMessageHeader(
+                'Booked! Please bee on time for your appointment. '
+              )
+              setStatusMessage(
+                'Booked! Please bee on time for your appointment. '
+              )
               setStatusIcon(
                 <Status.ServiceScheduled
                   width={normalize(100)}
@@ -328,7 +348,9 @@ const TrackerModal = ({
               break
             case 'cancelled':
               setStatusHeader('Cancelled')
-              setMessageHeader('Your schedule was cancelled')
+              setMessageHeader(
+                'Luh. Cancelled?! Chat with the Service Provider for details. '
+              )
               setStatusMessage(null)
               setStatusIcon(
                 <Status.ServiceDeclined
@@ -347,7 +369,7 @@ const TrackerModal = ({
               break
             case 'completed':
               setStatusHeader('Completed')
-              setMessageHeader('Service complete!')
+              setMessageHeader('All good? Tell us all about your experience. ')
               setStatusMessage(null)
               setStatusIcon(
                 <Status.ServiceCompleted
@@ -402,8 +424,12 @@ const TrackerModal = ({
               break
             case 'completed':
               setStatusHeader('Completed!')
-              setMessageHeader('Completed!')
-              setStatusMessage('<Completed message here>')
+              setMessageHeader(
+                'Transaction completed! Thank you for your beezness!...'
+              )
+              setStatusMessage(
+                'Transaction completed! Thank you for your beezness!...'
+              )
               setStatusIcon(
                 <Status.OrderCompleted
                   width={normalize(100)}
@@ -424,7 +450,9 @@ const TrackerModal = ({
           switch (status) {
             case 'pending':
               setStatusHeader('Requesting...')
-              setMessageHeader('Confirm or decline an order...')
+              setMessageHeader(
+                'Please review booking details and click CONFIRM to proceed. '
+              )
               setStatusMessage('<Awaiting Confirmation copy>')
               setStatusIcon(
                 <Status.Pending width={normalize(100)} height={normalize(80)} />
@@ -432,8 +460,10 @@ const TrackerModal = ({
               break
             case 'confirmed':
               if (orderDetails.payment_method === 'cash') {
-                setStatusHeader('Processing')
-                setMessageHeader('Preparing the order...')
+                setStatusHeader('Schedule Confirmed')
+                setMessageHeader(
+                  'Booked! Please bee on time for your appointment. '
+                )
                 setStatusMessage('<Processing message here>')
                 setStatusIcon(
                   <Status.Ongoing
@@ -443,7 +473,9 @@ const TrackerModal = ({
                 )
               } else {
                 setStatusHeader('Awaiting Payment')
-                setMessageHeader('Waiting for Payment...')
+                setMessageHeader(
+                  'Just waiting for the customer to  complete the payment.'
+                )
                 setStatusMessage('<Processing message here>')
                 setStatusIcon(
                   <Status.Pending
@@ -455,7 +487,7 @@ const TrackerModal = ({
               break
             case 'paid':
               setStatusHeader('Processing')
-              setMessageHeader('Preparing the order...')
+              setMessageHeader('Bee ready! ')
               setStatusMessage('<Processing message here>')
               setStatusIcon(
                 <Status.Ongoing width={normalize(100)} height={normalize(80)} />
@@ -463,7 +495,9 @@ const TrackerModal = ({
               break
             case 'delivering':
               setStatusHeader('Delivering')
-              setMessageHeader('Order is ready for delivery...')
+              setMessageHeader(
+                'Delivering Bee on the lookout, your delivery is on its way to...'
+              )
               setStatusMessage('<Delivering message here>')
               setStatusIcon(
                 <Status.ReadyForDelivery
@@ -485,7 +519,9 @@ const TrackerModal = ({
               break
             case 'completed':
               setStatusHeader('Completed')
-              setMessageHeader('Order completed!')
+              setMessageHeader(
+                'Transaction completed! Thank you for your beezness!...'
+              )
               setStatusMessage('<Completed message here>')
               setStatusIcon(
                 <Status.OrderCompleted
@@ -1237,6 +1273,43 @@ const TrackerModal = ({
                 </View>
               </View>
             </View>
+            {orderDetails.notes && (
+              <View
+                style={[
+                  styles.section,
+                  { display: postType !== 'need' ? 'flex' : 'none' },
+                ]}>
+                <View>
+                  <View style={{ position: 'absolute', top: normalize(3) }}>
+                    <PostNote width={normalize(20)} height={normalize(20)} />
+                  </View>
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#E5E5E5',
+                      paddingBottom: normalize(10),
+                    }}>
+                    <AppText
+                      textStyle="body1medium"
+                      customStyle={{
+                        marginLeft: normalize(30),
+                        marginBottom: normalize(7),
+                      }}>
+                      Order Notes
+                    </AppText>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingTop: normalize(10),
+                    }}>
+                    <AppText textStyle="body1medium">
+                      {orderDetails.notes}
+                    </AppText>
+                  </View>
+                </View>
+              </View>
+            )}
             <View
               style={[
                 styles.section,

@@ -48,7 +48,7 @@ const MoreOptions = ({ close, setMoreOptions, type }) => {
             </AppText>
           </TouchableOpacity>
         )}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.buttonContainer}
           activeOpacity={0.7}
           onPress={() => showOption('additionalNotes')}>
@@ -56,7 +56,7 @@ const MoreOptions = ({ close, setMoreOptions, type }) => {
           <AppText textStyle="body2" customStyle={styles.textMargin}>
             Additional Notes
           </AppText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* Hide for the meantime */}
         {/* <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.7}>
           <Draft height={normalize(24)} width={normalize(24)} />

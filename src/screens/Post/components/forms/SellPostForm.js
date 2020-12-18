@@ -172,6 +172,8 @@ const SellPostForm = ({
   const [bookingMethodModal, showBookingMethodModal] = useState(false)
   const [coverPhotoGuidelines, showCoverPhotoGuidelines] = useState(false)
   const [additionalNotes, showAdditionalNotes] = useState(false)
+  const [storeSchedule, setStoreSchedule] = useState([])
+  const [schedule, setSchedule] = useState()
 
   const [data, setData] = useState([])
 
@@ -335,7 +337,7 @@ const SellPostForm = ({
       payment: paymentMethodsList,
       store_details: {
         location: storeAddress,
-        schedule: 0,
+        schedule: schedule,
       },
       expiry: postExpiry,
       availability: true,
@@ -726,6 +728,24 @@ const SellPostForm = ({
             <AppText textStyle="body3">Schedule</AppText>
             <FormArrowRight />
           </TouchableOpacity>
+          {storeSchedule.map(schedule => {
+            return (
+              <View style={{ flexDirection: 'row' }}>
+                <AppText
+                  textStyle="body2"
+                  customStyle={{
+                    textTransform: 'capitalize',
+                    marginRight: 8,
+                    flex: 1,
+                  }}>
+                  {schedule.day}
+                </AppText>
+                <AppText customStyle={{ flex: 2 }} textStyle="body2">
+                  {schedule.time}
+                </AppText>
+              </View>
+            )
+          })}
         </Section>
       )}
       <Modal
@@ -740,7 +760,12 @@ const SellPostForm = ({
           justifyContent: 'flex-start',
           height: Dimensions.get('window').height,
         }}>
-        <ScheduleModal close={() => showScheduleModal(false)} />
+        <ScheduleModal
+          close={() => showScheduleModal(false)}
+          setStoreSchedule={schedule => setStoreSchedule(schedule)}
+          setSchedule={schedule => setSchedule(schedule)}
+          schedule={schedule}
+        />
       </Modal>
 
       {activeForm.multipleItems && (
@@ -1053,7 +1078,6 @@ const SellPostForm = ({
               showBookingMethodModal(true)
             }}>
             <AppText textStyle="body3">Booking Methods*</AppText>
-            {console.log(deliveryState)}
             <FormArrowRight />
           </TouchableOpacity>
           {pickupState ? (
@@ -1213,22 +1237,24 @@ const SellPostForm = ({
       </Section> */}
 
       <Section>
-        <TouchableOpacity
-          onPress={() => showMoreOptions(true)}
-          activeOpacity={0.7}
-          style={{
-            marginBottom: 40,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <MoreOptions />
-          <AppText
-            customStyle={{ marginLeft: 8 }}
-            textStyle="body2medium"
-            color={Colors.contentOcean}>
-            More Options
-          </AppText>
-        </TouchableOpacity>
+        {activeForm.type !== 'need' && (
+          <TouchableOpacity
+            onPress={() => showMoreOptions(true)}
+            activeOpacity={0.7}
+            style={{
+              marginBottom: 40,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <MoreOptions />
+            <AppText
+              customStyle={{ marginLeft: 8 }}
+              textStyle="body2medium"
+              color={Colors.contentOcean}>
+              More Options
+            </AppText>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity
           onPress={publish}

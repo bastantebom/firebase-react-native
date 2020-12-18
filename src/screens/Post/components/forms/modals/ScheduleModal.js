@@ -26,65 +26,69 @@ import { ArrowDown } from '@/assets/images/icons'
 
 // new Date(year, month, day, hours, minutes, seconds, milliseconds)
 
-const ScheduleModal = ({ close }) => {
-  const [days, setDays] = useState({
-    monday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-    tuesday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-    wednesday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-    thursday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-    friday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-    saturday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-    sunday: {
-      value: false,
-      opens: new Date(0, 0, 0, 8, 0, 0, 0),
-      closes: new Date(0, 0, 0, 17, 0, 0, 0),
-      hour24: false,
-      showOpeningTime: false,
-      showClosingTime: false,
-    },
-  })
+const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
+  const [days, setDays] = useState(
+    schedule
+      ? schedule
+      : {
+          monday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+          tuesday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+          wednesday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+          thursday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+          friday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+          saturday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+          sunday: {
+            value: false,
+            opens: new Date(0, 0, 0, 8, 0, 0, 0),
+            closes: new Date(0, 0, 0, 17, 0, 0, 0),
+            hour24: false,
+            showOpeningTime: false,
+            showClosingTime: false,
+          },
+        }
+  )
 
   const onChangeTime = (event, selectedTime, k, opens) => {
     if (opens)
@@ -187,8 +191,6 @@ const ScheduleModal = ({ close }) => {
   const [holidayDate, setHolidayDate] = useState(new Date())
 
   const holidayHandler = () => {
-    // showHolidayModal(true)
-
     let tempList = holidayList
 
     tempList.push(holidayDate)
@@ -198,6 +200,26 @@ const ScheduleModal = ({ close }) => {
 
   const onChangeHolidayDate = (event, selectedtime) => {
     setHolidayDate(selectedtime)
+  }
+
+  const saveHandler = () => {
+    let finalSchedule = []
+
+    for (const [key, value] of Object.entries(days)) {
+      if (value.value) {
+        finalSchedule.push({
+          day: key,
+          time: !value.hour24
+            ? `${moment(value.opens).format('LT')} - ${moment(
+                value.closes
+              ).format('LT')}`
+            : '24 hours',
+        })
+      }
+    }
+    setSchedule(days)
+    setStoreSchedule(finalSchedule)
+    close()
   }
 
   const DayList = () => {
@@ -313,108 +335,6 @@ const ScheduleModal = ({ close }) => {
         <View style={{ paddingHorizontal: 24 }}>
           <DayList />
 
-          {/* <View>
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-              activeOpacity={0.7}
-              onPress={() => selectDayHandler('monday')}>
-              <AppText
-                textStyle="body1"
-                customStyle={{ textTransform: 'capitalize' }}>
-                Monday
-              </AppText>
-              <Switch
-                value={days.monday.value}
-                onValueChange={() => selectDayHandler('monday')}
-              />
-            </TouchableOpacity>
-            {days?.monday.value && (
-              <>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <AppCheckbox
-                    value={days.monday.hour24}
-                    style={{ paddingLeft: 0 }}
-                    valueChangeHandler={() => noClosing('monday')}
-                  />
-                  <AppText>24 hours</AppText>
-                </TouchableOpacity>
-                {!days?.monday.hour24 && (
-                  <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        showOpeningTime(true)
-                        showClosingTime(false)
-                      }}
-                      activeOpacity={0.7}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        flex: 1,
-                        justifyContent: 'space-between',
-                        paddingRight: 24,
-                      }}>
-                      <AppText>Opens</AppText>
-                      <AppText>
-                        {moment(days?.monday.opens).format('hh:mm A')}
-                      </AppText>
-                      <ArrowDown />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        showOpeningTime(false)
-                        showClosingTime(true)
-                      }}
-                      activeOpacity={0.7}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        flex: 1,
-                        justifyContent: 'space-between',
-                        paddingRight: 24,
-                      }}>
-                      <AppText>Closes</AppText>
-                      <AppText>
-                        {moment(days?.monday.closes).format('hh:mm A')}
-                      </AppText>
-                      <ArrowDown />
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {openingTime && !days?.monday.hour24 && (
-                  <DateTimePicker
-                    value={new Date(days?.monday.opens)}
-                    mode="time"
-                    display="spinner"
-                    onChange={(event, selectedtime) =>
-                      onChangeTime(event, selectedtime, 'monday', true)
-                    }
-                  />
-                )}
-                {closingTime && !days?.monday.hour24 && (
-                  <DateTimePicker
-                    value={new Date(days?.monday.closes)}
-                    mode="time"
-                    display="spinner"
-                    onChange={(event, selectedtime) =>
-                      onChangeTime(event, selectedtime, 'monday', false)
-                    }
-                  />
-                )}
-              </>
-            )}
-          </View>
-
-          <Divider />
-          */}
-
           {holidayList.length > 0 &&
             holidayList.map((holidate, index) => {
               return (
@@ -436,9 +356,7 @@ const ScheduleModal = ({ close }) => {
         </View>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => {
-            close()
-          }}
+          onPress={saveHandler}
           style={{
             backgroundColor: Colors.primaryYellow,
             paddingVertical: 8,
