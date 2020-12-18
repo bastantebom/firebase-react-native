@@ -22,6 +22,7 @@ export const UserContextProvider = ({ children }) => {
         uid: uid,
         displayName: displayName,
         email: email,
+        date_joined: new Date(user.metadata.creationTime).getTime(),
       })
 
       unsubscribe = unsubscribe?.()
@@ -42,7 +43,11 @@ export const UserContextProvider = ({ children }) => {
       unsubscribe = firestore()
         .doc(`users/${user.uid}`)
         .onSnapshot(snap => {
-          if (snap?.data()) setUserInfo(snap.data())
+          if (snap?.data())
+            setUserInfo({
+              ...snap.data(),
+              date_joined: user.date_joined,
+            })
         })
     }
 
