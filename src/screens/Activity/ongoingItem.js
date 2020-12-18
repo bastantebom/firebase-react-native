@@ -69,12 +69,16 @@ const OngoingItem = ({ route }) => {
   }
 
   useEffect(() => {
-    initPending(orders?.pending)
-    initPending(orders?.confirmed)
-    initPending(orders?.paid)
-    initPending(orders?.delivering)
-    initPending(orders?.pickup)
-    initPending(orders?.completed)
+    let isMounted = true
+    if (isMounted) {
+      initPending(orders?.pending)
+      initPending(orders?.confirmed)
+      initPending(orders?.paid)
+      initPending(orders?.delivering)
+      initPending(orders?.pickup)
+      initPending(orders?.completed)
+    }
+    return () => (isMounted = false)
   }, [orders])
 
   return (

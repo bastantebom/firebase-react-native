@@ -48,11 +48,15 @@ const Notifications = () => {
   }
 
   useEffect(() => {
-    if (notificationsList) assembleNotification()
+    let isMounted = true
+    if (notificationsList && isMounted) assembleNotification()
+    return () => (isMounted = false)
   }, [notificationsList])
 
   useEffect(() => {
-    initNotifications(user?.uid)
+    let isMounted = true
+    if (isMounted) initNotifications(user?.uid)
+    return () => (isMounted = false)
   }, [])
 
   const openNotificationHandler = async readDocId => {

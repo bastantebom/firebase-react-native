@@ -190,8 +190,12 @@ const Ongoing = () => {
   }
 
   useEffect(() => {
-    setIsLoading(true)
-    callAllOrders()
+    let isMounted = true
+    if (isMounted) {
+      setIsLoading(true)
+      callAllOrders()
+    }
+    return () => (isMounted = false)
   }, [])
 
   return (

@@ -327,7 +327,7 @@ const TabStack = props => {
   const tabBarOptions = {
     style: {
       position: 'relative',
-      height: Platform.OS === 'android' ? normalize(55) : normalize(75),
+      paddingTop: normalize(2),
     },
     tabStyle: {
       flex: 1,

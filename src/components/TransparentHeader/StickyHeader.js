@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: normalize(40),
     height: normalize(40),
-    top: normalize(40),
+    top: normalize(35),
     position: 'absolute',
   },
   followButton: {

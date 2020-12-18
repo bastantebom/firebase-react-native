@@ -15,13 +15,11 @@ const Activity = () => {
     {
       key: 'ongoing',
       title: 'ONGOING',
-      numberBadge: '',
       renderPage: <Ongoing />,
     },
     {
       key: 'notifications',
       title: 'NOTIFICATIONS',
-      numberBadge: notificationsList?.filter(notif => !notif.read).length,
       renderPage: <Notifications />,
     },
   ]
