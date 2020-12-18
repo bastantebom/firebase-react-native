@@ -1,6 +1,5 @@
-//import liraries
 import React, { useContext } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Alert } from 'react-native'
 
 import { AppText } from '@/components'
 
@@ -9,7 +8,6 @@ import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
 import Api from '@/services/Api'
 
-// create a component
 const ConfirmationOtherProfile = ({
   userID,
   toggleEllipsisState,
@@ -21,6 +19,7 @@ const ConfirmationOtherProfile = ({
   const blockUser = async () => {
     const blockUserResponse = await Api.blockUser({ uid: userID })
     if (blockUserResponse.success) {
+      Alert.alert('Success', blockUserResponse.message)
       toggleEllipsisState()
       navigation.goBack()
     }
@@ -71,5 +70,4 @@ const ConfirmationOtherProfile = ({
   )
 }
 
-//make this component available to the app
 export default ConfirmationOtherProfile

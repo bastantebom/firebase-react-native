@@ -1,61 +1,85 @@
-//import liraries
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
-  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native'
 
 import {
   ScreenHeaderTitle,
-  PaddingView,
   AppText,
   ProfileInfo,
+  TransitionIndicator,
 } from '@/components'
-import { CloseDark } from '@/assets/images/icons'
+
 import { normalize, Colors } from '@/globals'
 import Modal from 'react-native-modal'
 import { UserContext } from '@/context/UserContext'
-import AdminFunctionService from '@/services/Admin/AdminFunctions'
+import Api from '@/services/Api'
 
-// create a component
 const BlockList = ({ toggleBlockedUser }) => {
   const { userInfo, user, setUserInfo } = useContext(UserContext)
   const [selectedUser, setSelectedUser] = useState({})
-  const { blocked_users } = userInfo
-  const [blockUsers, setBlockUsers] = useState(blocked_users)
-
+  const [blockUsers, setBlockUsers] = useState([])
   const [showCancelModal, setShowCancelModal] = useState(false)
   const cancelModalToggle = user => {
     setShowCancelModal(!showCancelModal)
     setSelectedUser(user)
   }
+  const [isLoading, setIsLoading] = useState(false)
 
   const closeHandler = value => {
     setShowCancelModal(!showCancelModal)
   }
 
   const unBlockUser = async () => {
-    //body: { uid, pid }
-    return await AdminFunctionService.unBlockUser({
-      uid: user?.uid,
-      reported_uid: selectedUser.uid,
-    }).then(res => {
-      if (res.success) {
-        console.log(res)
-        setBlockUsers(res.blocked_users)
-        setUserInfo({ ...userInfo, blocked_users: res.blocked_users })
-      }
-      closeHandler()
-    })
+    const unblockUser = await Api.unblockUser({ uid: selectedUser.uid })
+    if (unblockUser.success) {
+      setIsLoading(true)
+      setBlockUsers([])
+      getBlockUsers()
+    }
+    closeHandler()
   }
+
+  const getBlockUsers = async () => {
+    try {
+      const blockUsers = await Api.getBlockedUsers({ uid: user?.uid })
+      if (!blockUsers.success) return
+      else {
+        const blockList = await Promise.all(
+          blockUsers.blocked_users.map(async blocked => {
+            const getUser = await Api.getUser({ uid: blocked.blocked_uid })
+            if (!getUser.success) return
+            else {
+              return {
+                ...getUser.data,
+              }
+            }
+          })
+        )
+        const filtered = blockList.filter(user => user)
+        setBlockUsers(blockUsers => [...blockUsers, ...filtered])
+        setIsLoading(false)
+      }
+    } catch (error) {
+      setIsLoading(false)
+      console.log(error || error.message)
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    setIsLoading(true)
+    if (isMounted) getBlockUsers()
+    return () => (isMounted = false)
+  }, [])
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
+        <TransitionIndicator loading={isLoading} />
         <View style={{ padding: normalize(16) }}>
           <ScreenHeaderTitle
             iconSize={16}
@@ -69,29 +93,27 @@ const BlockList = ({ toggleBlockedUser }) => {
             borderTopColor: Colors.neutralGray,
             borderTopWidth: 1,
           }}>
-          {blockUsers && blockUsers.length > 0 ? (
-            blockUsers.map((user, index) => {
-              return (
-                <ProfileInfo
-                  key={index}
-                  userInfo={user}
-                  type="block-user"
-                  cancelModalToggle={() => {
-                    cancelModalToggle(user)
-                  }}
-                />
-              )
-            })
-          ) : (
-            <View style={{ padding: 16 }}>
-              <AppText textStyle="caption">
-                You don't have any block user
-              </AppText>
-            </View>
-          )}
+          {blockUsers?.length
+            ? blockUsers.map((user, index) => {
+                return (
+                  <ProfileInfo
+                    key={index}
+                    userInfo={user}
+                    type="block-user"
+                    cancelModalToggle={() => {
+                      cancelModalToggle(user)
+                    }}
+                  />
+                )
+              })
+            : !isLoading && (
+                <View style={{ padding: 16 }}>
+                  <AppText textStyle="caption">
+                    You don't have any block user
+                  </AppText>
+                </View>
+              )}
         </View>
-
-        {/* About Servbees Modal */}
       </SafeAreaView>
       <Modal
         isVisible={showCancelModal}
