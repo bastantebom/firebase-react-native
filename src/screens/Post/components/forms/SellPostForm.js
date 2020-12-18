@@ -8,6 +8,7 @@ import {
   Animated,
   TouchableWithoutFeedback,
   StyleSheet,
+  Alert,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -284,98 +285,106 @@ const SellPostForm = ({
   const publish = async () => {
     setLoadingSubmit(true)
 
-    let paymentMethodsList = []
+    try {
 
-    for (const [key, value] of Object.entries(paymentMethods)) {
-      if (value === true) {
-        paymentMethodsList.push(key)
+      let paymentMethodsList = []
+  
+      for (const [key, value] of Object.entries(paymentMethods)) {
+        if (value === true) {
+          paymentMethodsList.push(key)
+        }
       }
-    }
-
-    const priceRange =
-      activeForm.type === 'need'
-        ? {
-            price_range: {
-              min: budgetMinimum,
-              max: budgetMaximum,
-            },
-          }
-        : {}
-
-    const itemsToSave = listAsMultiple
-      ? await Promise.all(
-          items.map(async item => {
-            return {
-              category: item.categoryName,
-              image: await ImageUpload.upload(item.itemImage?.uri, user.uid),
-              name: item.title,
-              description: item.description,
-              price: item.price,
+  
+      const priceRange =
+        activeForm.type === 'need'
+          ? {
+              price_range: {
+                min: budgetMinimum,
+                max: budgetMaximum,
+              },
             }
-          })
-        )
-      : [
-          {
-            price: price,
-          },
-        ]
-
-    const data = {
-      type: activeForm.type,
-      privacy: 'public',
-      title: title,
-      description: description,
-      cover_photos: await Promise.all(
-        coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
-      ),
-      items: itemsToSave,
-      is_multiple: listAsMultiple,
-      delivery_methods: {
-        pickup: { ...pickupState?.pickup },
-        delivery: { ...deliveryState?.delivery },
-      },
-      payment: paymentMethodsList,
-      store_details: {
-        location: storeAddress,
-        schedule: schedule,
-      },
-      expiry: postExpiry,
-      availability: true,
-      allow_contact: allowContact,
-      ...priceRange,
+          : {}
+  
+      const itemsToSave = listAsMultiple
+        ? await Promise.all(
+            items.map(async item => {
+              return {
+                category: item.categoryName,
+                image: await ImageUpload.upload(item.itemImage?.uri, user.uid),
+                name: item.title,
+                description: item.description,
+                price: item.price,
+              }
+            })
+          )
+        : [
+            {
+              price: price,
+            },
+          ]
+  
+      const data = {
+        type: activeForm.type,
+        privacy: 'public',
+        title: title,
+        description: description,
+        cover_photos: await Promise.all(
+          coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
+        ),
+        items: itemsToSave,
+        is_multiple: listAsMultiple,
+        delivery_methods: {
+          pickup: { ...pickupState?.pickup },
+          delivery: { ...deliveryState?.delivery },
+        },
+        payment: paymentMethodsList,
+        store_details: {
+          location: storeAddress,
+          schedule: schedule,
+        },
+        expiry: postExpiry,
+        availability: true,
+        allow_contact: allowContact,
+        ...priceRange,
+      }
+  
+      if (initialData.id) {
+        const res = await PostService.editPost(initialData.id, data)
+        navToPost({
+          ...res,
+          viewing: false,
+          created: false,
+          edited: true,
+        })
+      } else {
+        const res = await PostService.createPost(data)
+        setUserInfo({
+          ...userInfo,
+          post_count: userInfo.post_count + 1,
+        })
+        navToPost({
+          ...res,
+          viewing: false,
+          created: true,
+          edited: false,
+        })
+      }
+  
+      togglePostModal()
+      setLoadingSubmit(false)
+      setNeedsRefresh(true)
+      setCoverPhoto([])
+      setLibImages([])
+      setCameraImage([])
+      setSingleCameraImage([])
+      setSelected([])
+      setImageCurrent('')
+    } catch (error) {
+      Alert.alert('Error', error.message)
+      console.log(error.message || error)
     }
 
-    if (initialData.id) {
-      const res = await PostService.editPost(initialData.id, data)
-      navToPost({
-        ...res,
-        viewing: false,
-        created: false,
-        edited: true,
-      })
-    } else {
-      const res = await PostService.createPost(data)
-      setUserInfo({
-        ...userInfo,
-        post_count: userInfo.post_count + 1,
-      })
-      navToPost({
-        ...res,
-        viewing: false,
-        created: true,
-        edited: false,
-      })
-    }
-
-    togglePostModal()
     setLoadingSubmit(false)
-    setNeedsRefresh(true)
-    setCoverPhoto([])
-    setLibImages([])
-    setCameraImage([])
-    setSingleCameraImage([])
-    setSelected([])
-    setImageCurrent('')
   }
 
   const RadioStateHandler = val => {
