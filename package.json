@@ -13,6 +13,7 @@
     "debug": "yarn android -- --variant=debug",
     "release": "yarn android -- --variant=release",
     "generate:services": "node ./src/scripts/generate-services",
+    "generate:services:prod": "NODE_ENV=production node ./src/scripts/generate-services",
     "postinstall": "yarn generate:services"
   },
   "dependencies": {
