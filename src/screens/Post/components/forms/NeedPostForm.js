@@ -163,7 +163,7 @@ const ServicePostForm = ({
   }
 
   const clearContextState = () => {
-    togglePostModal()
+    togglePostModal?.()
     setLoadingSubmit(false)
     setNeedsRefresh(true)
     setCoverPhoto([])

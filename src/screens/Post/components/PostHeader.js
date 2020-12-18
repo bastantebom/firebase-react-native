@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { normalize, Colors } from '@/globals'
 import { PostSell, PostService, PostNeed } from '@/assets/images/icons'
 
 import { SellPostForm, NeedPostForm, ServicePostForm } from './forms'
+import { UserContext } from '@/context/UserContext'
 
 const Post = ({ card, togglePostModal, initialData }) => {
   useEffect(() => {
@@ -21,11 +22,25 @@ const Post = ({ card, togglePostModal, initialData }) => {
   }, [])
 
   const navigation = useNavigation()
+  const { userInfo } = useContext(UserContext)
 
   const navToPost = data => {
+    const defaultAddress = userInfo.addresses.find(address => address.default)
+    const post = data.data
     navigation.navigate('Post', {
       screen: 'SinglePostView',
-      params: data,
+      params: {
+        data: {
+          ...post,
+          user: userInfo,
+          store_details: {
+            ...(post.store_details || {}),
+            location: {
+              ...(post.store_details?.location || defaultAddress),
+            },
+          },
+        },
+      },
     })
   }
 
@@ -638,19 +653,24 @@ const RenderActiveForm = ({
   initialData,
 }) => {
   const [title, setTitle] = useState(initialData.title)
-  const [images, setImages] = useState(initialData.images)
-  const [price, setPrice] = useState(initialData.price?.toString())
+  const [images, setImages] = useState(
+    initialData.cover_photos || initialData.images
+  )
+  const [price, setPrice] = useState(initialData?.items?.[0]?.price?.toString())
   const [description, setDescription] = useState(initialData.description)
   const [pickupState, setPickupState] = useState(
-    initialData ? initialData?.delivery_method?.pickup : {}
+    initialData ? initialData?.delivery_methods?.pickup : {}
   )
   const [deliveryState, setDeliveryState] = useState(
-    initialData ? initialData?.delivery_method?.delivery : {}
+    initialData ? initialData?.delivery_methods : {}
   )
   const [storeLocation, setStoreLocation] = useState(initialData.store_location)
   const [paymentMethod, setPaymentMethod] = useState(initialData.payment_method)
-  const [listAsSingle, setListAsSingle] = useState(false)
-  const [listAsMultiple, setListAsMultiple] = useState(false)
+  const [listAsSingle, setListAsSingle] = useState(!initialData.is_multiple)
+  const [listAsMultiple, setListAsMultiple] = useState(
+    !!initialData.is_multiple
+  )
+  const [allowContact, setAllowContact] = useState(initialData.allow_contact)
   const [freeCheckbox, setFreeCheckbox] = useState(false)
   const [postInStore, setPostInStore] = useState(false)
   const [paymentMethods, setPaymentMethods] = useState({
@@ -663,6 +683,10 @@ const RenderActiveForm = ({
     bank: '',
     others: false,
     otherMethods: '',
+    ...(initialData.payment?.reduce?.((methods, current) => {
+      methods[current] = true
+      return methods
+    }, {}) || {}),
   })
 
   const [postExpiry, setPostExpiry] = useState()
@@ -696,6 +720,8 @@ const RenderActiveForm = ({
     setFreeCheckbox: setFreeCheckbox,
     postInStore,
     setPostInStore,
+    allowContact,
+    setAllowContact,
   }
 
   return (

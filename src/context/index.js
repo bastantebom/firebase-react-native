@@ -235,7 +235,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    setImageCount(coverPhoto.length)
+    setImageCount(coverPhoto?.length || 0)
   }, [coverPhoto])
 
   useEffect(() => {

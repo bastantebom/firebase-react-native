@@ -157,8 +157,12 @@ const SellPostForm = ({
     latitude: 0,
   })
   const [budgetRange, setBudgetRange] = useState(false)
-  const [budgetMinimum, setBudgetMinimum] = useState()
-  const [budgetMaximum, setBudgetMaximum] = useState()
+  const [budgetMinimum, setBudgetMinimum] = useState(
+    initialData?.price_range?.min
+  )
+  const [budgetMaximum, setBudgetMaximum] = useState(
+    initialData?.price_range?.max
+  )
   const [bookingMethods, setBookingMethods] = useState(false)
 
   const [showLocation, setShowLocation] = useState(false)
@@ -190,8 +194,6 @@ const SellPostForm = ({
       : addresses.find(address => address.default)
   )
 
-  const [allowContact, setAllowContact] = useState(false)
-
   const {
     title,
     setTitle,
@@ -220,6 +222,8 @@ const SellPostForm = ({
     setPaymentMethods,
     postExpiry,
     setPostExpiry,
+    allowContact,
+    setAllowContact,
   } = formState
 
   const togglePickupState = () => {
@@ -245,6 +249,13 @@ const SellPostForm = ({
   useEffect(() => {
     checkFormContent()
   })
+
+  useEffect(() => {
+    if (listAsMultiple) RadioStateHandler('multiple')
+    else if (listAsSingle) RadioStateHandler('single')
+
+    setCoverPhoto(images)
+  }, [])
 
   const checkFormContent = () => {
     const paymentListValues = Object.values(paymentMethods)
@@ -286,15 +297,14 @@ const SellPostForm = ({
     setLoadingSubmit(true)
 
     try {
-
       let paymentMethodsList = []
-  
+
       for (const [key, value] of Object.entries(paymentMethods)) {
         if (value === true) {
           paymentMethodsList.push(key)
         }
       }
-  
+
       const priceRange =
         activeForm.type === 'need'
           ? {
@@ -304,7 +314,7 @@ const SellPostForm = ({
               },
             }
           : {}
-  
+
       const itemsToSave = listAsMultiple
         ? await Promise.all(
             items.map(async item => {
@@ -322,14 +332,16 @@ const SellPostForm = ({
               price: price,
             },
           ]
-  
+
       const data = {
         type: activeForm.type,
         privacy: 'public',
         title: title,
         description: description,
         cover_photos: await Promise.all(
-          coverPhoto.map(async image => await ImageUpload.upload(image, user.uid))
+          coverPhoto.map(
+            async image => await ImageUpload.upload(image, user.uid)
+          )
         ),
         items: itemsToSave,
         is_multiple: listAsMultiple,
@@ -347,7 +359,7 @@ const SellPostForm = ({
         allow_contact: allowContact,
         ...priceRange,
       }
-  
+
       if (initialData.id) {
         const res = await PostService.editPost(initialData.id, data)
         navToPost({
@@ -369,7 +381,7 @@ const SellPostForm = ({
           edited: false,
         })
       }
-  
+
       togglePostModal()
       setLoadingSubmit(false)
       setNeedsRefresh(true)

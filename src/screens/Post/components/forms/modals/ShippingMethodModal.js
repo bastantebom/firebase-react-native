@@ -51,14 +51,16 @@ const ShippingMethodModal = ({
       : false
   )
   const [nationwide, setNationwide] = useState(
-    deliveryState?.nationwide ? true : false
+    deliveryState?.delivery?.nationwide ? true : false
   )
-  const [within, setWithin] = useState(deliveryState?.radius ? true : false)
+  const [within, setWithin] = useState(
+    deliveryState?.delivery?.radius ? true : false
+  )
   const [nationwideNotes, setNationwideNotes] = useState(
-    deliveryState?.nationwide?.notes || ''
+    deliveryState?.delivery?.nationwide?.notes || ''
   )
   const [withinNotes, setWithinNotes] = useState(
-    deliveryState?.radius?.notes || ''
+    deliveryState?.delivery?.radius?.notes || ''
   )
 
   const [showNationwideNotes, setShowNationwideNotes] = useState(false)
@@ -72,17 +74,21 @@ const ShippingMethodModal = ({
   const CheckboxStateHandler = val => {
     if (val === 'nationwide') {
       setNationwide(!nationwide)
-      setWithinNotes('')
       setRangeValue(0)
       setDeliveryState({
-        nationwide: {},
+        delivery: {
+          ...deliveryState.delivery,
+          nationwide: {},
+        },
       })
     }
     if (val === 'within') {
       setWithin(!within)
-      setNationwideNotes('')
       setDeliveryState({
-        radius: {},
+        delivery: {
+          ...deliveryState.delivery,
+          radius: {},
+        },
       })
     }
   }

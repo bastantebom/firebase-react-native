@@ -1,45 +1,52 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   TouchableWithoutFeedback,
-} from 'react-native';
-import {AppText, ScreenHeaderTitle} from '@/components';
-import PostHeader from './PostHeader';
-import Modal from 'react-native-modal';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+} from 'react-native'
+import { AppText, ScreenHeaderTitle } from '@/components'
+import PostHeader from './PostHeader'
+import Modal from 'react-native-modal'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import {Colors, normalize} from '@/globals';
-import {Context} from '@/context';
+import { Colors, normalize } from '@/globals'
+import { Context } from '@/context'
 
-const EditPostScreen = ({data, togglePostModal, card}) => {
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const {setCoverPhoto, setPostCameraImage, setSelected, setPostImage, setImageCount, setImageCurrent} = useContext(Context);
+const EditPostScreen = ({ data, togglePostModal, card }) => {
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const {
+    setCoverPhoto,
+    setPostCameraImage,
+    setSelected,
+    setPostImage,
+    setImageCount,
+    setImageCurrent,
+  } = useContext(Context)
 
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
-  const closeHandler = (value) => {
+    setShowCancelModal(!showCancelModal)
+  }
+  const closeHandler = value => {
     if (value === 'continue') {
-      cancelModalToggle();
+      cancelModalToggle()
       // setPostImage([]);
-      setCoverPhoto([]);
-      setPostCameraImage([]);
-      setSelected([]);
-      setImageCount(0);
-      setImageCurrent('');
+      setCoverPhoto([])
+      setPostCameraImage([])
+      setSelected([])
+      setImageCount(0)
+      setImageCurrent('')
       setTimeout(() => {
-        togglePostModal();
-      }, 200);
+        togglePostModal?.()
+      }, 200)
     }
 
-    cancelModalToggle();
-  };
+    cancelModalToggle()
+  }
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: Colors.neutralsZircon}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.neutralsZircon }}>
       <View style={styles.container}>
         <ScreenHeaderTitle
           close={closeHandler}
@@ -78,7 +85,7 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -90,17 +97,17 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
             justifyContent: 'center',
             padding: 16,
           }}>
-          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
             Cancel Post?
           </AppText>
 
-          <AppText textStyle="caption" customStyle={{textAlign: 'center'}}>
+          <AppText textStyle="caption" customStyle={{ textAlign: 'center' }}>
             You haven't finished your post yet.
           </AppText>
           <AppText
             textStyle="caption"
-            customStyle={{textAlign: 'center'}}
-            customStyle={{marginBottom: 16}}>
+            customStyle={{ textAlign: 'center' }}
+            customStyle={{ marginBottom: 16 }}>
             Do you want to leave without finishing?
           </AppText>
 
@@ -119,7 +126,11 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
 
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
-            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
             <AppText textStyle="button2" color={Colors.contentOcean}>
               Cancel
             </AppText>
@@ -127,8 +138,8 @@ const EditPostScreen = ({data, togglePostModal, card}) => {
         </View>
       </Modal>
     </SafeAreaView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -137,6 +148,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutralsZircon,
     flex: 1,
   },
-});
+})
 
-export default EditPostScreen;
+export default EditPostScreen

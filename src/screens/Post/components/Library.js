@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -6,19 +6,19 @@ import {
   Image,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
-import CameraRollPicker from 'react-native-camera-roll-picker';
-import Modal from 'react-native-modal';
+} from 'react-native'
+import CameraRollPicker from 'react-native-camera-roll-picker'
+import Modal from 'react-native-modal'
 
-import { AppText } from '@/components';
-import { Context } from '@/context';
-import { normalize, Colors } from '@/globals';
+import { AppText } from '@/components'
+import { Context } from '@/context'
+import { normalize, Colors } from '@/globals'
 // import { ArrowDown } from '@/assets/images/icons';
-import { PhotoAlbums } from './PhotoAlbums';
-import { CoverPhoto } from '@/assets/images';
-import { CircleTickWhite } from '@/assets/images/icons';
+import { PhotoAlbums } from './PhotoAlbums'
+import { CoverPhoto } from '@/assets/images'
+import { CircleTickWhite } from '@/assets/images/icons'
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window')
 
 export const Library = ({ cancel, next, data }) => {
   const {
@@ -26,23 +26,23 @@ export const Library = ({ cancel, next, data }) => {
     imageCurrent,
     selected,
     setLibImages,
-    coverPhoto
-  } = useContext(Context);
+    coverPhoto,
+  } = useContext(Context)
 
-  const [showFolderList, setShowFolderList] = useState(false);
+  const [showFolderList, setShowFolderList] = useState(false)
 
-  const getSelectedImages = async (images) => {
-    const imageUrl = [];
+  const getSelectedImages = async images => {
+    const imageUrl = []
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
     setLibImages(imageUrl)
 
     const num = imageUrl.length - 1
-    setImageCurrent(num >= 0 ? images[num].uri : "");
-  };
+    setImageCurrent(num >= 0 ? images[num].uri : '')
+  }
 
   const toggleFolderList = () => {
-    setShowFolderList(!showFolderList);
-  };
+    setShowFolderList(!showFolderList)
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -70,7 +70,9 @@ export const Library = ({ cancel, next, data }) => {
           </TouchableOpacity> */}
           <TouchableOpacity
             // disabled={selected.length < 1 && true}
-            onPress={() => { next() }}
+            onPress={() => {
+              next()
+            }}
             style={{ paddingVertical: 5, paddingHorizontal: 25 }}>
             <AppText
               textStyle="body3"
@@ -79,8 +81,7 @@ export const Library = ({ cancel, next, data }) => {
               //     ? Colors.buttonDisable
               //     : Colors.contentOcean
               // }
-              color={Colors.contentOcean}
-            >
+              color={Colors.contentOcean}>
               Next
             </AppText>
           </TouchableOpacity>
@@ -102,7 +103,7 @@ export const Library = ({ cancel, next, data }) => {
               <AppText
                 customStyle={{ fontWeight: '700' }}
                 color={Colors.neutralsWhite}>
-                Photos - {coverPhoto.length}/10{' '}
+                Photos - {coverPhoto?.length || 0}/10{' '}
               </AppText>{' '}
               Choose your listing’s main photo first for Cover Photo.
             </AppText>
@@ -124,11 +125,11 @@ export const Library = ({ cancel, next, data }) => {
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: coverPhoto.length >= 10 ? .5 : 1
+              opacity: coverPhoto?.length || 0 >= 10 ? 0.5 : 1,
             }}>
             <CameraRollPicker
               groupTypes="All"
-              maximum={coverPhoto.length >= 10 ? selected.length : 10}
+              maximum={coverPhoto?.length || 0 >= 10 ? selected.length : 10}
               scrollRenderAheadDistance={500}
               selected={selected}
               imagesPerRow={3}
@@ -143,9 +144,16 @@ export const Library = ({ cancel, next, data }) => {
                     position: 'absolute',
                     right: 4,
                     top: 6,
-                  }}
-                >
-                  <CircleTickWhite width={normalize(28)} height={normalize(28)} style={{ backgroundColor: 'transparent', marginTop: -3, marginLeft: -3 }} />
+                  }}>
+                  <CircleTickWhite
+                    width={normalize(28)}
+                    height={normalize(28)}
+                    style={{
+                      backgroundColor: 'transparent',
+                      marginTop: -3,
+                      marginLeft: -3,
+                    }}
+                  />
                 </View>
               }
               callback={() => getSelectedImages(selected)}
@@ -180,5 +188,5 @@ export const Library = ({ cancel, next, data }) => {
         </Modal>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
