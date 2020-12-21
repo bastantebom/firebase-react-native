@@ -81,30 +81,6 @@ const TransparentHeader = ({
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={toggleFollowing}>
-                    <View
-                      style={[styles.followButton, GlobalStyle.marginLeft1]}>
-                      {following ? (
-                        <Icons.HeaderFollowing
-                          width={normalize(16)}
-                          height={normalize(16)}
-                        />
-                      ) : (
-                        <Icons.HeaderFollow
-                          width={normalize(16)}
-                          height={normalize(16)}
-                        />
-                      )}
-                      <AppText
-                        textStyle="button3"
-                        color="white"
-                        customStyle={{ marginLeft: 4 }}>
-                        {following ? 'Following' : 'Follow'}
-                      </AppText>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={handleLikedPost}>
                     <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                       {liked ? (
@@ -113,9 +89,10 @@ const TransparentHeader = ({
                           height={normalize(16)}
                         />
                       ) : (
-                        <Icons.JarHeartWhite
+                        <Icons.LikeHeader
                           width={normalize(16)}
                           height={normalize(16)}
+                          style={{ color: 'white' }}
                         />
                       )}
                     </View>

@@ -43,6 +43,7 @@ import FilterDark from '@/assets/images/icons/filter-dark.svg'
 import JarHeartDark from '@/assets/images/icons/jar-heart-dark.svg'
 import JarHeartWhite from '@/assets/images/icons/jar-heart-white.svg'
 import Like from '@/assets/images/icons/like.svg'
+import LikeHeader from '@/assets/images/icons/like-header.svg'
 import LikeColored from '@/assets/images/icons/like-colored.svg'
 import ChevronRightWhite from '@/assets/images/icons/chevron-right-white.svg'
 import ChevronRightGray from '@/assets/images/icons/chevron-right-gray.svg'
@@ -531,7 +532,7 @@ export const Icons = {
   Id,
   JarHeartWhite,
   Like,
-  Like,
+  LikeHeader,
   LikeColored,
   Lock,
   Mobile,
