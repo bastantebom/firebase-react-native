@@ -98,6 +98,7 @@ const VerificationScreen = ({ navigation }) => {
               ? Colors.checkboxBorderDefault
               : 'transparent'
           }
+          style={styles.listItemArrow}
         />
       </TouchableOpacity>
     )
@@ -232,12 +233,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listItem: {
+    position: 'relative',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.neutralsZircon,
     padding: normalize(12),
+    paddingRight: normalize(48),
     borderRadius: 8,
     marginBottom: normalize(16),
     backgroundColor: '#fff',
@@ -249,6 +251,10 @@ const styles = StyleSheet.create({
   },
   listHeader: {
     marginBottom: 15,
+  },
+  listItemArrow: {
+    position: 'absolute',
+    right: normalize(12),
   },
 })
 
