@@ -64,6 +64,8 @@ import ReadyForDelivery from './post-status/ready-delivery.svg'
 import ReadyForPickup from './post-status/ready-pickup.svg'
 import ServiceScheduled from './post-status/scheduled.svg'
 
+import WelcomeServbees from './welcome-servbees.svg'
+
 export {
   Guide,
   Category,
@@ -100,6 +102,7 @@ export {
   Clipboard,
   EmptyPayout,
   SuccessPayout,
+  WelcomeServbees,
 }
 
 export const Status = {
