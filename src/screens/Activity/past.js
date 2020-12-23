@@ -119,7 +119,7 @@ const Past = () => {
           title="Past Activities"
         />
       </PaddingView>
-      {past.length == 0 ? (
+      {!past.length && !isLoading ? (
         <View
           style={{
             paddingHorizontal: normalize(12),
@@ -155,31 +155,33 @@ const Past = () => {
           </TouchableOpacity>
         </View>
       ) : (
-        <ScrollView
-          style={{ paddingTop: normalize(20), paddingTop: normalize(30) }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 24,
-            }}>
-            <Calendar
-              height={normalize(20)}
-              width={normalize(20)}
-              style={{ marginRight: 10 }}
-            />
-            <AppText textStyle="caption2">Last 6 Months</AppText>
-          </View>
-          <View style={{ paddingTop: 15 }}>
-            {past.map((info, i) => {
-              return (
-                <View key={i}>
-                  <ActivitiesCard info={info} />
-                </View>
-              )
-            })}
-          </View>
-        </ScrollView>
+        !isLoading && (
+          <ScrollView
+            style={{ paddingTop: normalize(20), paddingTop: normalize(30) }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 24,
+              }}>
+              <Calendar
+                height={normalize(20)}
+                width={normalize(20)}
+                style={{ marginRight: 10 }}
+              />
+              <AppText textStyle="caption2">Last 6 Months</AppText>
+            </View>
+            <View style={{ paddingTop: 15 }}>
+              {past.map((info, i) => {
+                return (
+                  <View key={i}>
+                    <ActivitiesCard info={info} />
+                  </View>
+                )
+              })}
+            </View>
+          </ScrollView>
+        )
       )}
     </SafeAreaView>
   )
