@@ -1,218 +1,265 @@
-//import liraries
 import React, { useState, useContext } from 'react'
-import { View, StyleSheet, SafeAreaView, TextInput } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  TextInput,
+  ScrollView,
+} from 'react-native'
 import {
   ScreenHeaderTitle,
   PaddingView,
   AppText,
   AppButton,
-  Notification,
 } from '@/components'
-import { ContactUsImg } from '@/assets/images'
+import { ContactUsBee, ContactSuccess } from '@/assets/images'
 import AdminFunctionsService from '@/services/Admin/AdminFunctions'
 import {
   EmailContactUs,
   CallContactUs,
-  LocationContactUs,
-  CircleTick,
+  ContactLocation,
+  InfoGray,
 } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
-import { Context } from '@/context'
 import { normalize, Colors } from '@/globals'
+import FloatingAppInput from '@/components/AppInput/AppInput'
 
-// create a component
 const ContactUs = ({ toggleContactUs }) => {
   const { userInfo } = useContext(UserContext)
-  const { openNotification, closeNotification } = useContext(Context)
   const [contact, setContact] = useState({
-    full_name: userInfo.full_name,
-    email: userInfo.email,
+    full_name: newName,
+    email: newEmail,
     message: '',
   })
-  const [notificationMessage, setNotificationMessage] = useState()
-  const [notificationType, setNotificationType] = useState()
+  const [newName, setNewName] = useState(userInfo.full_name)
+  const [newEmail, setNewEmail] = useState(userInfo.email)
+  const [messageSuccess, setMessageSuccess] = useState(false)
 
   const handleSubmit = async () => {
     try {
       const res = await AdminFunctionsService.contactServbees(contact)
 
       if (res.success) {
-        triggerNotification(
-          'Your message has been sent, please wait for our feedbaack',
-          'success'
-        )
         setContact({ ...contact, message: '' })
+        setMessageSuccess(true)
       }
     } catch (error) {}
   }
 
-  const triggerNotification = (message, type) => {
-    setNotificationType(type)
-    setNotificationMessage(
-      <AppText
-        textStyle="body2"
-        customStyle={
-          type === 'success' ? notificationText : notificationErrorTextStyle
-        }>
-        {message}
-      </AppText>
+  const MessageSuccess = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+        }}>
+        <ScreenHeaderTitle iconSize={0} title="Contact Us" paddingSize={3} />
+        <PaddingView paddingSize={3}>
+          <View
+            style={{
+              justifyContent: 'space-between',
+              height: '83%',
+            }}>
+            <View style={{ alignItems: 'center' }}>
+              <ContactSuccess />
+              <AppText
+                textStyle="body1medium"
+                customStyle={{
+                  marginTop: normalize(32),
+                  marginBottom: normalize(8),
+                }}>
+                Thanks for messaging us!
+              </AppText>
+              <AppText textStyle="body1" customStyle={{ textAlign: 'center' }}>
+                Your message has been successfully sent. We’ll review your
+                inquiry and get back to you very soon.{' '}
+              </AppText>
+            </View>
+          </View>
+          <AppButton text="Okay" type="primary" onPress={toggleContactUs} />
+        </PaddingView>
+      </View>
     )
-    openNotification()
-    closeNotificationTimer()
-  }
-
-  const notificationErrorTextStyle = {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 12,
-    color: 'white',
-    flexWrap: 'wrap',
-  }
-
-  const notificationText = {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 12,
-    flexWrap: 'wrap',
-  }
-
-  const closeNotificationTimer = () => {
-    setTimeout(() => {
-      setNotificationType()
-      setNotificationMessage()
-      closeNotification()
-    }, 5000)
   }
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Notification
-          type={notificationType}
-          customStyle={{
-            position: 'absolute',
-          }}
-          icon={<CircleTick />}>
-          {notificationMessage}
-        </Notification>
-        <View style={{ padding: 24 }}>
+      {!messageSuccess ? (
+        <SafeAreaView style={{ flex: 1 }}>
           <ScreenHeaderTitle
             iconSize={16}
             title="Contact Us"
             close={toggleContactUs}
+            paddingSize={3}
           />
-        </View>
-
-        <View style={{ flex: 1, backgroundColor: Colors.neutralsZircon }}>
-          <View style={[styles.contentWrapper]}>
-            <PaddingView paddingSize={3}>
-              <View style={styles.imageWrapper}>
-                <ContactUsImg width={normalize(214)} height={normalize(214)} />
-              </View>
-              <View>
-                <View style={{ flexDirection: 'row' }}>
-                  <EmailContactUs
-                    width={normalize(24)}
-                    height={normalize(24)}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              backgroundColor: Colors.neutralsZircon,
+            }}>
+            <View style={styles.contentWrapper}>
+              <PaddingView paddingSize={3} style={{ paddingTop: 0 }}>
+                <View style={styles.imageWrapper}>
+                  <ContactUsBee
+                    width={normalize(200)}
+                    height={normalize(200)}
                   />
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginLeft: normalize(16) }}>
-                    hello@servbees.com
-                  </AppText>
                 </View>
-                <View
-                  style={{ flexDirection: 'row', marginTop: normalize(20) }}>
-                  <CallContactUs width={normalize(24)} height={normalize(24)} />
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginLeft: normalize(16) }}>
-                    +63 2 7746-2061
-                  </AppText>
+                <View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <EmailContactUs
+                      width={normalize(23)}
+                      height={normalize(23)}
+                    />
+                    <AppText
+                      textStyle="body2"
+                      customStyle={{ marginLeft: normalize(16) }}>
+                      hello@servbees.com
+                    </AppText>
+                  </View>
+                  <View
+                    style={{ flexDirection: 'row', marginTop: normalize(20) }}>
+                    <CallContactUs
+                      width={normalize(18)}
+                      height={normalize(18)}
+                    />
+                    <AppText
+                      textStyle="body2"
+                      customStyle={{ marginLeft: normalize(16) }}>
+                      +65 6988 3863
+                    </AppText>
+                  </View>
+                  <View style={{ marginTop: normalize(20) }}>
+                    <View style={{ position: 'absolute' }}>
+                      <ContactLocation
+                        width={normalize(18)}
+                        height={normalize(18)}
+                      />
+                    </View>
+                    <View style={{ marginLeft: normalize(32) }}>
+                      <AppText textStyle="body2medium">Singapore</AppText>
+                      <AppText textStyle="body2">
+                        Flora Drive #02-12, Singapore 50689242
+                      </AppText>
+                      <AppText
+                        textStyle="body2medium"
+                        customStyle={{ marginTop: normalize(24) }}>
+                        Philippines
+                      </AppText>
+                      <AppText textStyle="body2">
+                        8/F 8 Rockwell Building, Hidalgo Drive, Rockwell Center,
+                        Makati City 1210
+                      </AppText>
+                    </View>
+                  </View>
                 </View>
+              </PaddingView>
+            </View>
+            <View
+              style={[
+                styles.contentWrapper,
+                {
+                  borderBottomLeftRadius: 0,
+                  borderBottomRightRadius: 0,
+                  marginBottom: 0,
+                },
+              ]}>
+              <PaddingView paddingSize={3}>
+                <AppText
+                  textStyle="subtitle1"
+                  color={Colors.primaryMidnightBlue}
+                  customStyle={{ marginBottom: normalize(8) }}>
+                  Hit buzz anytime!
+                </AppText>
+                <AppText
+                  textStyle="body1"
+                  customStyle={{ marginBottom: normalize(16) }}>
+                  Interested in being a partner? Thinking of offering your
+                  products or services on Servbees? Have some questions? Get in
+                  touch with us so we can get buzzy together!
+                </AppText>
+                <FloatingAppInput
+                  label="Full Name"
+                  value={newName}
+                  onChangeText={newName => {
+                    setNewName(newName)
+                  }}
+                  wrapperStyle={{ marginBottom: normalize(24) }}
+                />
+                <FloatingAppInput
+                  label="Email address"
+                  value={newEmail}
+                  onChangeText={newEmail => {
+                    setNewEmail(newEmail)
+                  }}
+                  wrapperStyle={{ marginBottom: normalize(24) }}
+                />
+                <TextInput
+                  multiline={true}
+                  value={contact.message}
+                  placeholder="Your message"
+                  placeholderTextColor={Colors.profileLink}
+                  numberOfLines={Platform.OS === 'ios' ? null : 6}
+                  minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
+                  style={[styles.input]}
+                  onChangeText={text => {
+                    setContact({
+                      ...contact,
+                      message: text,
+                    })
+                  }}
+                  underlineColorAndroid={'transparent'}
+                  textAlignVertical="top"
+                />
                 <View
-                  style={{ flexDirection: 'row', marginTop: normalize(20) }}>
-                  <LocationContactUs
-                    width={normalize(24)}
-                    height={normalize(24)}
-                  />
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: normalize(50),
+                    marginBottom: normalize(24),
+                  }}>
+                  <InfoGray />
                   <AppText
-                    textStyle="body2"
+                    textStyle="caption"
                     customStyle={{
-                      marginLeft: normalize(16),
-                      flex: 1,
-                      flexWrap: 'wrap',
+                      marginLeft: normalize(12),
+                      maxWidth: '85%',
                     }}>
-                    142-48 Pinatubo Street Barangka Ilaya Mandaluyong City 1550
+                    By submitting, you agree to our Privacy Policy
                   </AppText>
                 </View>
-              </View>
-            </PaddingView>
-          </View>
-          <View
-            style={[
-              styles.contentWrapper,
-              {
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-                marginBottom: 0,
-              },
-            ]}>
-            <PaddingView paddingSize={3}>
-              <AppText
-                textStyle="body2"
-                customStyle={{ marginBottom: normalize(16) }}>
-                Send us a message!
-              </AppText>
-              <TextInput
-                multiline={true}
-                value={contact.message}
-                placeholder="Your message"
-                placeholderTextColor={Colors.profileLink}
-                numberOfLines={Platform.OS === 'ios' ? null : 6}
-                minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
-                style={[styles.input]}
-                onChangeText={text => {
-                  setContact({
-                    ...contact,
-                    message: text,
-                  })
-                }}
-                underlineColorAndroid={'transparent'}
-                textAlignVertical="top"
-              />
-
-              <AppButton
-                text="Submit"
-                type="primary"
-                size="l"
-                height="xl"
-                onPress={() => handleSubmit()}
-                disabled={contact.message.length < 1}
-                customStyle={{
-                  backgroundColor:
-                    contact.message.length < 1
-                      ? Colors.buttonDisable
-                      : Colors.primaryYellow,
-                  borderColor:
-                    contact.message.length < 1
-                      ? Colors.buttonDisable
-                      : Colors.primaryYellow,
-                }}
-              />
-            </PaddingView>
-          </View>
-        </View>
-      </SafeAreaView>
+                <AppButton
+                  text="Submit"
+                  type="primary"
+                  size="l"
+                  height="xl"
+                  onPress={() => handleSubmit()}
+                  disabled={contact.message.length < 1}
+                  customStyle={{
+                    backgroundColor:
+                      contact.message.length < 1
+                        ? Colors.buttonDisable
+                        : Colors.primaryYellow,
+                    borderColor:
+                      contact.message.length < 1
+                        ? Colors.buttonDisable
+                        : Colors.primaryYellow,
+                  }}
+                />
+              </PaddingView>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      ) : (
+        <MessageSuccess />
+      )}
     </>
   )
 }
 
-// define your styles
-// define your styles
 const styles = StyleSheet.create({
   imageWrapper: {
-    marginBottom: normalize(16),
+    marginBottom: normalize(24),
     alignItems: 'center',
   },
   contentWrapper: {
@@ -244,5 +291,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default ContactUs

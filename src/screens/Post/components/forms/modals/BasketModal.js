@@ -997,7 +997,6 @@ const BasketModal = ({
         }}>
         <AddNoteModal closeModal={() => showAddNoteModal(false)} />
       </Modal>
-
       <Modal
         isVisible={scheduleModal}
         animationIn="slideInUp"
@@ -1015,7 +1014,6 @@ const BasketModal = ({
           setServiceSchedule={text => setServiceSchedule(text)}
         />
       </Modal>
-
       <Modal
         isVisible={trackerModal}
         animationIn="slideInRight"

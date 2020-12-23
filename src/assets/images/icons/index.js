@@ -181,6 +181,7 @@ import ProfileImageDefault from './profile-image-default.svg'
 
 import ContactTelephone from './contact-telephone.svg'
 import ContactEmail from './contact-email.svg'
+import ContactLocation from './contact-location.svg'
 
 import LoginFB from './new-facebook.svg'
 import LoginGoogle from './new-google.svg'
@@ -285,6 +286,8 @@ import Trash from './Trash.svg'
 import RoundEllipsisBlue from './round-ellipsis.svg'
 import WelcomeNotif from './WelcomeNotif.svg'
 
+import InfoGray from './info-menu-gray.svg'
+
 export {
   Trash,
   MOCalendar,
@@ -301,6 +304,7 @@ export {
   Public,
   ContactTelephone,
   ContactEmail,
+  ContactLocation,
   CircleTickWhite,
   ProfileImageDefault,
   PostPencil,
@@ -498,6 +502,7 @@ export {
   PayoutWallet,
   RoundEllipsisBlue,
   WelcomeNotif,
+  InfoGray,
 }
 
 export const Icons = {

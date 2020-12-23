@@ -921,7 +921,7 @@ const TrackerModal = ({
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={() => setCancelOrder(true)}
-                  style={{ width: '100%', alignItems: 'flex-start' }}>
+                  style={{ width: '100%', alignItems: 'center' }}>
                   <AppText
                     textStyle="button2"
                     color={Colors.secondaryBrinkPink}>
@@ -1047,12 +1047,13 @@ const TrackerModal = ({
 
             <View
               style={{
-                display: postType === 'sell' ? 'flex' : 'none',
+                display:
+                  postType === 'sell' && status !== 'confirmed'
+                    ? 'flex'
+                    : 'none',
+                padding: normalize(15),
               }}>
-              <View
-                style={{
-                  padding: normalize(15),
-                }}>
+              <View>
                 {delivery &&
                   ((status === 'confirmed' &&
                     orderDetails.payment_method === 'cash') ||

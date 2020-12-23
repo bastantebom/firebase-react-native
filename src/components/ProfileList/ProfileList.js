@@ -78,6 +78,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
             toggleProfileList={toggleProfileList}
             type="followers"
             viewType={viewType}
+            followCount={followersCount}
           />
         </View>
       ),
@@ -93,6 +94,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
             toggleProfileList={toggleProfileList}
             type="following"
             viewType={viewType}
+            followCount={followingsCount}
           />
         </View>
       ),

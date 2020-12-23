@@ -35,6 +35,8 @@ import DefaultSell from './default-sell.svg'
 import DefaultService from './default-service.svg'
 import InviteFriend from './InviteFriends.svg'
 import ContactUsImg from './ContactUsImg.svg'
+import ContactUsBee from './contact-bee.svg'
+import ContactSuccess from './contact-success.svg'
 
 import BodyTemp from './Body-Temp.svg'
 
@@ -66,6 +68,9 @@ import ServiceScheduled from './post-status/scheduled.svg'
 
 import WelcomeServbees from './welcome-servbees.svg'
 
+import FollowersEmpty from './bees-followers-empty.svg'
+import FollowingEmpty from './bees-following-empty.svg'
+
 export {
   Guide,
   Category,
@@ -94,6 +99,8 @@ export {
   VerifySms,
   InviteFriend,
   ContactUsImg,
+  ContactUsBee,
+  ContactSuccess,
   BodyTemp,
   LogoPaypal,
   LogoGCash,
@@ -103,6 +110,8 @@ export {
   EmptyPayout,
   SuccessPayout,
   WelcomeServbees,
+  FollowersEmpty,
+  FollowingEmpty,
 }
 
 export const Status = {
