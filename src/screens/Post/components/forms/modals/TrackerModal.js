@@ -13,6 +13,8 @@ import {
 import Modal from 'react-native-modal'
 import firestore from '@react-native-firebase/firestore'
 import { useNavigation } from '@react-navigation/native'
+import LottieView from 'lottie-react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
 import {
   AppText,
@@ -67,6 +69,7 @@ import { UserContext } from '@/context/UserContext'
 import { Delivering, Status } from '@/assets/images'
 import Api from '@/services/Api'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import { generateStatus } from './Tracker/TrackerData'
 
 const TrackerModal = ({
   closeModal,
@@ -84,6 +87,7 @@ const TrackerModal = ({
   const [seller, setSeller] = useState(false)
   const [pickup, setPickup] = useState(false)
   const [delivery, setDelivery] = useState(true)
+  const [orderStatus, setOrderStatus] = useState({})
 
   const [statusDetails, showstatusDetails] = useState(false)
   const [statusIcon, setStatusIcon] = useState(
@@ -156,6 +160,8 @@ const TrackerModal = ({
     computedTotalPrice()
   }, [orderList])
 
+  console.log(orderDetails.history)
+
   const getOtherUserData = async userUID => {
     const userData = await Api.getUser({
       uid: userUID,
@@ -197,513 +203,10 @@ const TrackerModal = ({
     )
   }
 
-  const orderStatus = (status, postType) => {
-    if (buyer) {
-      switch (postType) {
-        case 'sell':
-          switch (status) {
-            case 'pending':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Got your order request, Buzzybee!')
-              setStatusMessage('Got your order request, Buzzybee!')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'confirmed':
-              if (orderDetails.payment_method === 'cash') {
-                setStatusHeader('Order Confirmed')
-                setMessageHeader(
-                  'Bee ready! Your order is now being processed.'
-                )
-                setStatusMessage(
-                  'Bee ready! Your order is now being processed.'
-                )
-                setStatusIcon(
-                  <Status.OrderConfirmed
-                    width={normalize(100)}
-                    height={normalize(80)}
-                  />
-                )
-              } else {
-                setStatusHeader('Order Confirmed')
-                setMessageHeader(
-                  'Confeeermed! Please complete payment to process your order. '
-                )
-                setStatusMessage(
-                  'Confeeermed! Please complete payment to process your order. '
-                )
-                setStatusIcon(
-                  <Status.OrderConfirmed
-                    width={normalize(100)}
-                    height={normalize(80)}
-                  />
-                )
-              }
-              break
-            case 'paid':
-              setStatusHeader('Processing')
-              setMessageHeader(
-                'Transaction completed! Thank you for your beezness!...'
-              )
-              setStatusMessage(
-                'Transaction completed! Thank you for your beezness!...'
-              )
-              setStatusIcon(
-                <Status.OrderConfirmed
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'delivering':
-              setStatusHeader('Delivering')
-              setMessageHeader(
-                'Delivering Bee on the lookout, your delivery is on its way to...'
-              )
-              setStatusMessage(
-                'Delivering Bee on the lookout, your delivery is on its way to...'
-              )
-              setStatusIcon(
-                <Status.ReadyForDelivery
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'pickup':
-              setStatusHeader('Pick up')
-              setMessageHeader('BUZZ! Your order is waiting for you. ')
-              setStatusMessage('BUZZ! Your order is waiting for you. ')
-              setStatusIcon(
-                <Status.ReadyForPickup
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'ready':
-              setStatusHeader('Pick up')
-              setMessageHeader(
-                'Your order is ready! You can now pickup your order.'
-              )
-              setStatusMessage('<Ready for pick up message here>')
-              setStatusIcon(
-                <Status.ReadyForPickup
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'completed':
-              setStatusHeader('Completed')
-              setMessageHeader('All good? Tell us all about your experience. ')
-              setStatusMessage('All good? Tell us all about your experience. ')
-              setStatusIcon(
-                <Status.OrderCompleted
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'cancelled':
-              setStatusHeader('Cancelled')
-              setMessageHeader('Oh noooo. Try again or contact the SELLER. ')
-              setStatusMessage('Oh noooo. Try again or contact the SELLER. ')
-              setStatusIcon(
-                <Status.Cancelled
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            default:
-              null
-          }
-          break
-        case 'service':
-          switch (status) {
-            case 'pending':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Reviewing your booking request. ')
-              setStatusMessage('Reviewing your booking request. ')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'confirmed':
-              setStatusHeader('Scheduled Confirmed')
-              setMessageHeader(
-                'Booked! Please bee on time for your appointment. '
-              )
-              setStatusMessage(
-                'Booked! Please bee on time for your appointment. '
-              )
-              setStatusIcon(
-                <Status.ServiceScheduled
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'cancelled':
-              setStatusHeader('Cancelled')
-              setMessageHeader(
-                'Luh. Cancelled?! Chat with the Service Provider for details. '
-              )
-              setStatusMessage(null)
-              setStatusIcon(
-                <Status.ServiceDeclined
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'ongoing':
-              setStatusHeader('Ongoing')
-              setMessageHeader('Service is ongoing')
-              setStatusMessage('<Ongoing copy>')
-              setStatusIcon(
-                <Status.Ongoing width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'completed':
-              setStatusHeader('Completed')
-              setMessageHeader('All good? Tell us all about your experience. ')
-              setStatusMessage(null)
-              setStatusIcon(
-                <Status.ServiceCompleted
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            default:
-              null
-          }
-          break
-        case 'need':
-          switch (status) {
-            case 'ongoing':
-              setStatusHeader('In Progress')
-              setMessageHeader('Ongoing')
-              setStatusMessage('<Ongoing Confirmation copy>')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'pending':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
-              setStatusMessage('<Awaiting Confirmation copy>')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'confirmed':
-              setStatusHeader('Offer Accepted')
-              setMessageHeader('Your offer is accepted')
-              setStatusMessage('<Offer accepted copy>')
-              setStatusIcon(
-                <Status.OrderConfirmed
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'declined':
-              setStatusHeader('Offer declined')
-              setMessageHeader('Your offer is declined')
-              setStatusMessage('<Offer declined copy>')
-              setStatusIcon(
-                <Status.OrderDeclined
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'completed':
-              setStatusHeader('Completed!')
-              setMessageHeader(
-                'Transaction completed! Thank you for your beezness!...'
-              )
-              setStatusMessage(
-                'Transaction completed! Thank you for your beezness!...'
-              )
-              setStatusIcon(
-                <Status.OrderCompleted
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            default:
-              null
-          }
-          break
-        default:
-          null
-      }
-    } else {
-      switch (postType) {
-        case 'sell':
-          switch (status) {
-            case 'pending':
-              setStatusHeader('Requesting...')
-              setMessageHeader(
-                'Please review booking details and click CONFIRM to proceed. '
-              )
-              setStatusMessage('<Awaiting Confirmation copy>')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'confirmed':
-              if (orderDetails.payment_method === 'cash') {
-                setStatusHeader('Schedule Confirmed')
-                setMessageHeader(
-                  'Booked! Please bee on time for your appointment. '
-                )
-                setStatusMessage('<Processing message here>')
-                setStatusIcon(
-                  <Status.Ongoing
-                    width={normalize(100)}
-                    height={normalize(80)}
-                  />
-                )
-              } else {
-                setStatusHeader('Awaiting Payment')
-                setMessageHeader(
-                  'Just waiting for the customer to  complete the payment.'
-                )
-                setStatusMessage('<Processing message here>')
-                setStatusIcon(
-                  <Status.Pending
-                    width={normalize(100)}
-                    height={normalize(80)}
-                  />
-                )
-              }
-              break
-            case 'paid':
-              setStatusHeader('Processing')
-              setMessageHeader('Bee ready! ')
-              setStatusMessage('<Processing message here>')
-              setStatusIcon(
-                <Status.Ongoing width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'delivering':
-              setStatusHeader('Delivering')
-              setMessageHeader(
-                'Delivering Bee on the lookout, your delivery is on its way to...'
-              )
-              setStatusMessage('<Delivering message here>')
-              setStatusIcon(
-                <Status.ReadyForDelivery
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'pickup':
-              setStatusHeader('Pick up')
-              setMessageHeader('Order is ready for pickup...')
-              setStatusMessage('<Pick Up message here>')
-              setStatusIcon(
-                <Status.ReadyForPickup
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'completed':
-              setStatusHeader('Completed')
-              setMessageHeader(
-                'Transaction completed! Thank you for your beezness!...'
-              )
-              setStatusMessage('<Completed message here>')
-              setStatusIcon(
-                <Status.OrderCompleted
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'cancelled':
-              setStatusHeader('Cancelled')
-              setMessageHeader('Your order was cancelled')
-              setStatusMessage('<Cancelled message here>')
-              setStatusIcon(
-                <Status.Cancelled
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'declined':
-              setStatusHeader('Order Declined')
-              setMessageHeader('Your order was declined')
-              setStatusMessage('<Declined message here>')
-              setStatusIcon(
-                <Status.OrderDeclined
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            default:
-              null
-          }
-          break
-        case 'service':
-          switch (status) {
-            case 'pending':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
-              setStatusMessage('<Awaiting Confirmation copy>')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'confirmed':
-              if (orderDetails.payment_method === 'cash') {
-                setStatusHeader('Schedule Confirmed')
-                setMessageHeader('Your schedule is confirmed...')
-                setStatusMessage('<Schedule confirmed copy>')
-                setStatusIcon(
-                  <Status.ServiceScheduled
-                    width={normalize(100)}
-                    height={normalize(80)}
-                  />
-                )
-              } else {
-                setStatusHeader('Awaiting Payment')
-                setMessageHeader('Waiting for payment...')
-                setStatusMessage('<Schedule confirmed copy>')
-                setStatusIcon(
-                  <Status.Pending
-                    width={normalize(100)}
-                    height={normalize(80)}
-                  />
-                )
-              }
-              break
-            case 'paid':
-              setStatusHeader('Schedule Confirmed')
-              setMessageHeader('Your schedule is confirmed...')
-              setStatusMessage('<Schedule confirmed copy>')
-              setStatusIcon(
-                <Status.ServiceScheduled
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'ongoing':
-              setStatusHeader('Ongoing')
-              setMessageHeader('Service ongoing')
-              setStatusMessage('<Ongoing copy>')
-              setStatusIcon(
-                <Status.Ongoing width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'declined':
-              setStatusHeader('Declined')
-              setMessageHeader('Declined')
-              setStatusMessage('<Declined copy>')
-              setStatusIcon(
-                <Status.ServiceDeclined
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'completed':
-              setStatusHeader('Completed')
-              setMessageHeader('Completed')
-              setStatusMessage('<Completed copy>')
-              setStatusIcon(
-                <Status.ServiceCompleted
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'cancelled':
-              setStatusHeader('Cancelled')
-              setMessageHeader('Cancelled by customer')
-              setStatusMessage('<Cancelled copy>')
-              setStatusIcon(
-                <Status.ServiceDeclined
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            default:
-              null
-          }
-          break
-        case 'need':
-          switch (status) {
-            case 'ongoing':
-              setStatusHeader('In Progress')
-              setMessageHeader('Ongoing')
-              setStatusMessage('<Ongoing Confirmation copy>')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'pending':
-              setStatusHeader('Awaiting Confirmation')
-              setMessageHeader('Awaiting Confirmation')
-              setStatusMessage('<Awaiting Confirmation copy>')
-              setStatusIcon(
-                <Status.Pending width={normalize(100)} height={normalize(80)} />
-              )
-              break
-            case 'confirmed':
-              setStatusHeader('Offer Accepted')
-              setMessageHeader('Your offer is accepted')
-              setStatusMessage('<Offer accepted copy>')
-              setStatusIcon(
-                <Status.OrderConfirmed
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'declined':
-              setStatusHeader('Offer declined')
-              setMessageHeader('Your offer is declined')
-              setStatusMessage('<Offer declined copy>')
-              setStatusIcon(
-                <Status.OrderDeclined
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            case 'completed':
-              setStatusHeader('Completed!')
-              setMessageHeader('Completed!')
-              setStatusMessage('<Completed message here>')
-              setStatusIcon(
-                <Status.OrderCompleted
-                  width={normalize(100)}
-                  height={normalize(80)}
-                />
-              )
-              break
-            default:
-              null
-          }
-          break
-        default:
-          null
-      }
-    }
+  const orderStatusFunction = (status, postType) => {
+    let generatedStatus = generateStatus(status, postType, !buyer)
+
+    setOrderStatus(generatedStatus)
   }
 
   const title = () => {
@@ -769,7 +272,7 @@ const TrackerModal = ({
   }
 
   useEffect(() => {
-    orderStatus(status, postType)
+    orderStatusFunction(status, postType)
   }, [postType, status])
 
   const [notif, showNotif] = useState(true)
@@ -819,7 +322,7 @@ const TrackerModal = ({
       id: orderID,
       uid: user.uid,
       body: {
-        status,
+        status: status,
       },
     }
     try {
@@ -923,20 +426,71 @@ const TrackerModal = ({
                         marginBottom: 5,
                       }}
                       color={Colors.primaryMidnightBlue}>
-                      {statusHeader}
+                      {orderStatus?.title}
                     </AppText>
-                    <AppText textStyle="caption">{messageHeader}</AppText>
+                    <AppText textStyle="caption">
+                      {orderStatus?.message}
+                    </AppText>
                   </View>
-                  {statusIcon}
+                  {}
+                  <View
+                    style={{ width: 100, height: 60, position: 'relative' }}>
+                    <LottieView
+                      source={
+                        orderStatus.animation ||
+                        require('@/assets/animations/awaiting.json')
+                      }
+                      autoPlay
+                    />
+                    <LinearGradient
+                      style={{
+                        width: 12,
+                        height: 60,
+                        backgroundColor: 'transparent',
+                        position: 'absolute',
+                        left: 0,
+                      }}
+                      colors={['rgba(255,255,255, 1)', 'rgba(255,255,255, .3)']}
+                      locations={[0.1, 0.7]}
+                      start={{ x: 0.1, y: 0 }}
+                      end={{ x: 1.0, y: 0 }}
+                    />
+                    <LinearGradient
+                      style={{
+                        width: 12,
+                        height: 60,
+                        backgroundColor: 'transparent',
+                        position: 'absolute',
+                        right: 0,
+                      }}
+                      colors={['rgba(255,255,255, .3)', 'rgba(255,255,255, 1)']}
+                      locations={[0.1, 0.7]}
+                      start={{ x: 0.1, y: 0 }}
+                      end={{ x: 1.0, y: 0 }}
+                    />
+                  </View>
                 </View>
               </View>
-              {statusDetails && (
-                <AppText
-                  textStyle="caption"
-                  customStyle={{ marginTop: normalize(8) }}>
-                  {statusMessage}
-                </AppText>
-              )}
+              {statusDetails &&
+                orderDetails?.history?.map(status => {
+                  const stats = generateStatus(status.status, postType, !buyer)
+                  console.log({ stats })
+
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <GreenDot />
+                      <AppText
+                        textStyle="caption"
+                        customStyle={{ marginLeft: 8 }}>
+                        {stats.title}
+                      </AppText>
+                    </View>
+                  )
+                })}
             </TouchableOpacity>
             <TouchableOpacity
               style={{ position: 'relative', width: '100%' }}
