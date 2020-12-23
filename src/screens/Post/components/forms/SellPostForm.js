@@ -339,9 +339,9 @@ const SellPostForm = ({
         title: title,
         description: description,
         cover_photos: await Promise.all(
-          coverPhoto.map(
+          coverPhoto?.map?.(
             async image => await ImageUpload.upload(image, user.uid)
-          )
+          ) || []
         ),
         items: itemsToSave,
         is_multiple: listAsMultiple,
@@ -382,7 +382,7 @@ const SellPostForm = ({
         })
       }
 
-      togglePostModal()
+      togglePostModal?.()
       setLoadingSubmit(false)
       setNeedsRefresh(true)
       setCoverPhoto([])
@@ -392,7 +392,7 @@ const SellPostForm = ({
       setSelected([])
       setImageCurrent('')
     } catch (error) {
-      Alert.alert('Error', error.message)
+      Alert.alert('Error', 'Something went wrong.')
       console.log(error.message || error)
     }
 
