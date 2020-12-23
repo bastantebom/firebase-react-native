@@ -61,3 +61,4 @@ buck-out/
 *.hprof
 
 src/services/Api.js
+.env

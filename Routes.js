@@ -22,6 +22,7 @@ import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
+import url from 'url'
 
 import {
   Post,
@@ -66,6 +67,13 @@ import {
   UserAltActive,
   NotificationDot,
 } from '@/assets/images/icons'
+import dynamicLinks from '@react-native-firebase/dynamic-links'
+
+export const navigationRef = React.createRef()
+
+export function navigate(name, params) {
+  navigationRef.current?.navigate(name, params)
+}
 
 const HiveStack = createStackNavigator()
 const PostStack = createStackNavigator()
@@ -492,6 +500,40 @@ export default Routes = () => {
     }, 2500)
   }, [])
 
+  const handleDynamicLink = async link => {
+    if (!link?.url) return
+    const { pathname, query } = url.parse(link.url, true)
+
+    switch (pathname) {
+      case '/':
+        break
+      case '/reset-password': {
+        const { login, token } = query
+        navigate('NBTScreen', {
+          screen: 'SetNewPassword',
+          params: { token, login },
+        })
+        break
+      }
+      case '/profile': {
+        const { uid } = query
+        break
+      }
+      case 'post': {
+        const { id } = query
+        break
+      }
+    }
+  }
+
+  useEffect(() => {
+    dynamicLinks().getInitialLink().then(handleDynamicLink)
+    const linkingListener = dynamicLinks().onLink(handleDynamicLink)
+    return () => {
+      linkingListener()
+    }
+  }, [])
+
   const renderAuthScreens = () => {
     if (
       userStatus.verified &&
@@ -547,7 +589,7 @@ export default Routes = () => {
       </Animated.View>
 
       <Animated.View style={fadingContainerStyle}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           {token && userInfo?.uid && userStatus?.verified ? (
             <Stack.Navigator headerMode="none">
               {renderAuthScreens()}

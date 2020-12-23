@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.servbees">
 
   <uses-permission android:name="android.permission.INTERNET" />
-  <uses-permission android:name="android.permission.CAMERA"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -11,13 +11,12 @@
 
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme">
     <!-- You will only need to add this meta-data tag, but make sure it's a child of application -->
-    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCu10vZtdRHmJ7bxnebSSj7u1LFeMV4GUs"/>
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCu10vZtdRHmJ7bxnebSSj7u1LFeMV4GUs" />
 
     <!-- You will also only need to add this uses-library tag -->
-    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
 
-    <activity android:name="com.facebook.FacebookActivity" android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name" />
+    <activity android:name="com.facebook.FacebookActivity" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name" />
     <activity android:name="com.facebook.CustomTabActivity" android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -28,7 +27,7 @@
     </activity>
 
 
-    <activity android:name=".SplashActivity"  android:theme="@style/SplashTheme" android:label="@string/app_name">
+    <activity android:name=".SplashActivity" android:theme="@style/SplashTheme" android:label="@string/app_name">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -37,12 +36,12 @@
     </activity>
 
     <activity android:name=".MainActivity" android:label="@string/app_name" android:screenOrientation="portrait" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:exported="true">
-      <intent-filter>
+      <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="https" android:host="m.servbees.com" />
-        <data android:scheme="servbees" />
+        <data android:host="servbees.page.link" android:scheme="http" />
+        <data android:host="servbees.page.link" android:scheme="https" />
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

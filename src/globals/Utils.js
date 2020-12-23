@@ -3,12 +3,13 @@ import {
   PermissionsAndroid,
   PixelRatio,
   Platform,
-  Linking,
 } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
 import Geocoder from 'react-native-geocoding'
 import Config from '@/services/Config'
+
+import dynamicLinks from '@react-native-firebase/dynamic-links'
 
 Geocoder.init(Config.apiKey)
 
@@ -280,4 +281,30 @@ export const thousandsSeparators = num => {
   const num_parts = num.toString().split('.')
   num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   return num_parts.join('.')
+}
+
+export const generateDynamicLink = async ({ type, params = {} }) => {
+  const baseAppURL = 'https://app.servbees.com'
+  const path = type === 'root' ? '/' : `/${type}`
+  const parameters = Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')
+  const link = `${baseAppURL}${path}${
+    parameters.length ? `?${parameters}` : ''
+  }`
+
+  return await dynamicLinks().buildShortLink(
+    {
+      link,
+      domainUriPrefix: 'https://servbees.page.link',
+      android: {
+        packageName: 'com.servbees',
+      },
+      ios: {
+        appStoreId: '1530137634',
+        bundleId: 'com.servbees.appservbees',
+      },
+    },
+    'SHORT'
+  )
 }

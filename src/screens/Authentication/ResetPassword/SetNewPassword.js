@@ -18,7 +18,7 @@ const SetNewPassword = props => {
   }
 
   const navigation = useNavigation()
-  const { token, id } = props?.route?.params
+  const { token, login } = props?.route?.params
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -31,8 +31,8 @@ const SetNewPassword = props => {
 
     const data = {
       password: finalPassword,
-      token: token,
-      login: id,
+      token,
+      login,
     }
 
     try {
@@ -61,7 +61,7 @@ const SetNewPassword = props => {
 
         <AppText textStyle="body2">
           User ID:
-          <AppText textStyle="body3"> {id}</AppText>
+          <AppText textStyle="body3"> {login}</AppText>
         </AppText>
 
         <AppText textStyle="body2" customStyle={{ marginTop: 24 }}>
