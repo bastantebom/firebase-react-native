@@ -27,6 +27,7 @@ export const generateStatus = (status, type, seller) => {
         ? 'Bee ready! '
         : 'Bee ready! Your order is now being processed. ',
       animation: inProgress,
+      withGradient: true,
     },
     delivering: {
       title: 'Delivering',
@@ -34,6 +35,7 @@ export const generateStatus = (status, type, seller) => {
         ? 'Delivering Bee on the lookout, your delivery is on its way to the customer.'
         : 'Your order will be buzzing at your doorstep in a bit!',
       animation: delivering,
+      withGradient: true,
     },
     completed: {
       title: 'Completed',
@@ -129,6 +131,7 @@ export const generateStatus = (status, type, seller) => {
         ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees. "
         : 'All good? Tell us all about your experience. ',
       animation: sellerOrderCompleted,
+      withGradient: true,
     },
     cancelled: {
       title: 'Cancelled',

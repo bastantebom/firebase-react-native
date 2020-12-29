@@ -35,6 +35,7 @@ import { ImageModal } from './ImageModal'
 import ItemModal from './forms/modals/ItemModal'
 import BasketModal from './forms/modals/BasketModal'
 import OfferModal from './forms/modals/OfferModal'
+import NewBasketPrompt from './forms/modals/NewBasketPrompt'
 import { PostService } from '@/services'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 import Share from 'react-native-share'
@@ -118,6 +119,8 @@ const SinglePostView = props => {
     userCart,
     deleteCurrentOrderModal,
     showDeleteCurrentOrderModal,
+    setCurrentPost,
+    currentPostOrder,
   } = useContext(Context)
 
   const isLiked = ~likers?.indexOf(user?.uid)
@@ -139,6 +142,8 @@ const SinglePostView = props => {
   const [offerModal, showOfferModal] = useState(false)
   const [liked, setLiked] = useState(false)
   const [disableCartButton, setDisableCartButton] = useState(false)
+  const [newBasketPrompt, showNewBasketPrompt] = useState(false)
+  const [currentItem, setCurrentItem] = useState()
 
   useEffect(() => {
     let computedPrice = 0
@@ -487,7 +492,14 @@ const SinglePostView = props => {
             <TouchableOpacity
               disabled={uid === user?.uid}
               key={item.id}
-              onPress={() => showItemModalWithItem(item)}>
+              onPress={async () => {
+                if (currentPostOrder === undefined || currentPostOrder === id) {
+                  showItemModalWithItem(item)
+                } else {
+                  showNewBasketPrompt(true)
+                  setCurrentItem(item)
+                }
+              }}>
               <View style={styles.itemWrapper}>
                 {item?.image?.substring(0, 8) === 'https://' && (
                   <View style={styles.imageWrapper}>
@@ -1133,6 +1145,25 @@ const SinglePostView = props => {
             <AppText>Cancel</AppText>
           </TouchableOpacity>
         </View>
+      </Modal>
+
+      <Modal
+        isVisible={newBasketPrompt}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        // style={{ margin: 0 }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showNewBasketPrompt(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <NewBasketPrompt
+          currentItem={currentItem}
+          close={() => showNewBasketPrompt(false)}
+          postID={id}
+        />
       </Modal>
 
       <Modal

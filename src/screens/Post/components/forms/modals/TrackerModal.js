@@ -442,32 +442,42 @@ const TrackerModal = ({
                       }
                       autoPlay
                     />
-                    <LinearGradient
-                      style={{
-                        width: 12,
-                        height: 60,
-                        backgroundColor: 'transparent',
-                        position: 'absolute',
-                        left: 0,
-                      }}
-                      colors={['rgba(255,255,255, 1)', 'rgba(255,255,255, .3)']}
-                      locations={[0.1, 0.7]}
-                      start={{ x: 0.1, y: 0 }}
-                      end={{ x: 1.0, y: 0 }}
-                    />
-                    <LinearGradient
-                      style={{
-                        width: 12,
-                        height: 60,
-                        backgroundColor: 'transparent',
-                        position: 'absolute',
-                        right: 0,
-                      }}
-                      colors={['rgba(255,255,255, .3)', 'rgba(255,255,255, 1)']}
-                      locations={[0.1, 0.7]}
-                      start={{ x: 0.1, y: 0 }}
-                      end={{ x: 1.0, y: 0 }}
-                    />
+                    {orderStatus.withGradient && (
+                      <LinearGradient
+                        style={{
+                          width: 12,
+                          height: 60,
+                          backgroundColor: 'transparent',
+                          position: 'absolute',
+                          left: 0,
+                        }}
+                        colors={[
+                          'rgba(255,255,255, 1)',
+                          'rgba(255,255,255, .3)',
+                        ]}
+                        locations={[0.1, 0.7]}
+                        start={{ x: 0.1, y: 0 }}
+                        end={{ x: 1.0, y: 0 }}
+                      />
+                    )}
+                    {orderStatus.withGradient && (
+                      <LinearGradient
+                        style={{
+                          width: 12,
+                          height: 60,
+                          backgroundColor: 'transparent',
+                          position: 'absolute',
+                          right: 0,
+                        }}
+                        colors={[
+                          'rgba(255,255,255, .3)',
+                          'rgba(255,255,255, 1)',
+                        ]}
+                        locations={[0.1, 0.7]}
+                        start={{ x: 0.1, y: 0 }}
+                        end={{ x: 1.0, y: 0 }}
+                      />
+                    )}
                   </View>
                 </View>
               </View>

@@ -41,6 +41,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
     setUserCart,
     setCurrentPost,
     deleteCurrentOrderModal,
+    currentPostOrder,
     showDeleteCurrentOrderModal,
   } = useContext(Context)
 
@@ -72,17 +73,19 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
     }).start()
   }
 
-  const onChangeDate = selectedDate => {
+  const onChangeDate = (_, selectedDate) => {
     const currentDate = selectedDate || date
     setShowDate(Platform.OS === 'ios')
+    setShowTime(false)
     setDate(currentDate)
     const dateSelected = moment(currentDate).format('LL')
     setSelectedDate(dateSelected)
   }
 
-  const onChangeTime = selectedTime => {
+  const onChangeTime = (_, selectedTime) => {
     const currentTime = selectedTime || time
     setShowTime(Platform.OS === 'ios')
+    setShowDate(false)
     setTime(currentTime)
     const timeSelected = moment(currentTime).format('h:mm A')
 
@@ -91,10 +94,12 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
 
   const showDatepicker = () => {
     setShowDate(true)
+    setShowTime(false)
   }
 
   const showTimepicker = () => {
     setShowTime(true)
+    setShowDate(false)
   }
 
   const onAdd = () => {
@@ -159,6 +164,67 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
         name: currentItem.name,
         price: currentItem.price,
         note: notes,
+      }
+
+      currentCart.push(data)
+      setUserCart(currentCart)
+    }
+
+    closeModal()
+  }
+
+  const handleBooking = async () => {
+    let isNewPost = await setCurrentPost(postID)
+
+    const serviceSchedule =
+      postType === 'service'
+        ? {
+            date: selectedDate,
+            time: selectedTime,
+          }
+        : {}
+
+    if (!isNewPost) {
+      let currentCart = userCart
+
+      const found = currentCart.find(item => item.id === currentItem.id)
+
+      const data = {
+        id: currentItem.id,
+        quantity: qty,
+        name: currentItem.name,
+        price: currentItem.price,
+        note: notes,
+        ...serviceSchedule,
+      }
+
+      if (found) {
+        currentCart = currentCart.filter(item => {
+          if (item.id !== currentItem.id) {
+            return item
+          }
+        })
+
+        currentCart.push(data)
+      } else {
+        currentCart.push(data)
+      }
+
+      currentCart = currentCart.filter(item => item.quantity)
+
+      setUserCart(currentCart)
+    }
+
+    if (isNewPost) {
+      let currentCart = []
+
+      const data = {
+        id: currentItem.id,
+        quantity: qty,
+        name: currentItem.name,
+        price: currentItem.price,
+        note: notes,
+        ...serviceSchedule,
       }
 
       currentCart.push(data)
@@ -331,19 +397,33 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
               </TouchableOpacity>
               <View>
                 {showDate && (
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    onChange={onChangeDate}
-                  />
+                  <View>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setShowDate(false)}>
+                      <AppText color={Colors.contentOcean}>Done</AppText>
+                    </TouchableOpacity>
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      onChange={onChangeDate}
+                    />
+                  </View>
                 )}
                 {showTime && (
-                  <DateTimePicker
-                    value={time}
-                    mode="time"
-                    display="spinner"
-                    onChange={onChangeTime}
-                  />
+                  <View>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setShowTime(false)}>
+                      <AppText color={Colors.contentOcean}>Done</AppText>
+                    </TouchableOpacity>
+                    <DateTimePicker
+                      value={time}
+                      mode="time"
+                      display="spinner"
+                      onChange={onChangeTime}
+                    />
+                  </View>
                 )}
               </View>
             </>
@@ -382,6 +462,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
               text="Book"
               type="primary"
               customStyle={{ height: normalize(43) }}
+              onPress={handleBooking}
             />
           ) : (
             <></>

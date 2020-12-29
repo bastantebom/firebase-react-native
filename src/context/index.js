@@ -331,6 +331,7 @@ export const ContextProvider = ({ children }) => {
   return (
     <Context.Provider
       value={{
+        currentPostOrder,
         deleteItemsByCategory,
         editCategory,
         items,

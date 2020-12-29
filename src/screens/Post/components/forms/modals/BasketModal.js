@@ -788,13 +788,35 @@ const BasketModal = ({
                   Service Schedule
                 </AppText>
               </View>
-              <TouchableOpacity onPress={() => showScheduleModal(true)}>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  Change
-                </AppText>
-              </TouchableOpacity>
+              {postType !== 'service' && (
+                <TouchableOpacity onPress={() => showScheduleModal(true)}>
+                  <AppText textStyle="button2" color={Colors.contentOcean}>
+                    Change
+                  </AppText>
+                </TouchableOpacity>
+              )}
             </View>
-            <AppText textStyle="body2">{serviceSchedule}</AppText>
+            {/* <AppText textStyle="body2">{serviceSchedule}</AppText> */}
+            {postType === 'service' && (
+              <>
+                {userCart.map((item, i) => {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginBottom: userCart.length - 1 === i ? 0 : 8,
+                      }}>
+                      <AppText textStyle="body2" customStyle={{ flex: 1 }}>
+                        {item.name}
+                      </AppText>
+                      <AppText textStyle="body2" customStyle={{ flex: 2 }}>{`${
+                        item.date
+                      } ${item.time ? `@ ${item.time}` : ''}`}</AppText>
+                    </View>
+                  )
+                })}
+              </>
+            )}
           </View>
           <View
             style={{
