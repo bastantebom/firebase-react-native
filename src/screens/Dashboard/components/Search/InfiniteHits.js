@@ -37,9 +37,7 @@ const InfiniteHits = ({ value }) => {
   const openProfile = item => {
     const uid = item.uid
     if (user && user.uid === uid) {
-      navigation.navigate('Profile', {
-        screen: 'Profile',
-      })
+      navigation.navigate('TabStack', { screen: 'You' })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',

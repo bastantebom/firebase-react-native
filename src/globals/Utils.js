@@ -9,8 +9,10 @@ import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
 import Geocoder from 'react-native-geocoding'
 import Config from '@/services/Config'
 
-import dynamicLinks from '@react-native-firebase/dynamic-links'
+import firebase from '@react-native-firebase/app'
+import axios from 'axios'
 
+const FIREBASE_API_KEY = firebase.app().options.apiKey
 Geocoder.init(Config.apiKey)
 
 export const timePassed = seconds => {
@@ -283,7 +285,11 @@ export const thousandsSeparators = num => {
   return num_parts.join('.')
 }
 
-export const generateDynamicLink = async ({ type, params = {} }) => {
+export const generateDynamicLink = async ({
+  type,
+  params = {},
+  social = {},
+}) => {
   const baseAppURL = 'https://app.servbees.com'
   const path = type === 'root' ? '/' : `/${type}`
   const parameters = Object.entries(params)
@@ -293,18 +299,83 @@ export const generateDynamicLink = async ({ type, params = {} }) => {
     parameters.length ? `?${parameters}` : ''
   }`
 
-  return await dynamicLinks().buildShortLink(
-    {
-      link,
-      domainUriPrefix: 'https://servbees.page.link',
-      android: {
-        packageName: 'com.servbees',
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: 'https://firebasedynamiclinks.googleapis.com/v1/shortLinks',
+      params: {
+        key: FIREBASE_API_KEY,
       },
-      ios: {
-        appStoreId: '1530137634',
-        bundleId: 'com.servbees.appservbees',
+      data: {
+        dynamicLinkInfo: {
+          domainUriPrefix: 'https://servbees.page.link',
+          link,
+          androidInfo: {
+            androidPackageName: 'com.servbees',
+          },
+          iosInfo: {
+            iosBundleId: 'com.servbees.appservbees',
+            iosAppStoreId: '1530137634',
+          },
+          socialMetaTagInfo: social,
+        },
+        suffix: {
+          option: 'SHORT',
+        },
       },
-    },
-    'SHORT'
-  )
+    })
+
+    return response.data.shortLink
+  } catch (error) {
+    console.log(error.response)
+  }
+}
+
+export const getPreviewLinkData = ({ type, data }) => {
+  const getPostPrice = post => {
+    const prices = post.price_range
+      ? [post.price_range.min, post.price_range.max]
+      : post.items.map(item => +(item.price || 0))
+
+    return prices.length === 1
+      ? prices[0].toLocaleString()
+      : `${Math.min(...prices).toLocaleString()} - ${Math.max(
+          ...prices
+        ).toLocaleString()}`
+  }
+
+  const getPostTitle = () => {
+    const prefix = {
+      need: 'Searching for',
+      sell: 'Now selling',
+      service: 'Available for hire',
+    }
+
+    return `${prefix[data.type]}: ${data.title}`
+  }
+
+  const getPostDescription = () => {
+    const prefix = {
+      need: 'Budget',
+      sell: 'Price',
+      service: 'Price',
+    }
+
+    return `${prefix[data.type]}: ₱${getPostPrice(data)}. ${data.description}`
+  }
+
+  if (type === 'user') {
+    const name = data.display_name || data.full_name
+
+    return {
+      socialTitle: `${name} Profile - Servbees`,
+      socialImageLink: data.profile_photo,
+    }
+  } else if (type === 'post') {
+    return {
+      socialTitle: getPostTitle(),
+      socialImageLink: data.cover_photos[0],
+      socialDescription: getPostDescription(),
+    }
+  }
 }

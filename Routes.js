@@ -23,6 +23,7 @@ import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
 import url from 'url'
+import Api from '@/services/Api'
 
 import {
   Post,
@@ -276,58 +277,6 @@ const TabStack = props => {
   const newNotificationIndicator =
     notificationsList?.filter(notif => !notif.read).length > 0
 
-  const navigation = useNavigation()
-
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      Linking.getInitialURL().then(url => {
-        if (url) navigate(url)
-        else return
-      })
-    } else {
-      Linking.getInitialURL().then(url => {
-        if (url) navigate(url)
-        else return
-      })
-    }
-
-    const handleOpenURL = event => {
-      navigate(event.url)
-    }
-
-    const navigate = async url => {
-      const route = url.replace(/.*?:\/\//g, '')
-      const id = route.split('/')[1]
-      const token = route.split('/')[2]
-      const routeName = route.split('/')[0]
-
-      if (routeName === 'reset-password') {
-        navigation.navigate('NBTScreen', {
-          screen: 'SetNewPassword',
-          params: { token: token, id: id },
-        })
-      }
-
-      if (routeName === 'profile') {
-        navigation.navigate('NBTScreen', {
-          screen: 'OthersProfile',
-          params: { uid: id },
-        })
-      }
-      if (routeName === 'post') {
-        try {
-          const response = await PostService.getPost(id)
-          navigation.navigate('NBTScreen', {
-            screen: 'OthersPost',
-            params: { ...response, othersView: true },
-          })
-        } catch (error) {
-          console.log(error.message || error)
-        }
-      }
-    }
-  }, [])
-
   useEffect(() => {
     if (user) initNotifications(user?.uid)
   }, [])
@@ -517,10 +466,33 @@ export default Routes = () => {
       }
       case '/profile': {
         const { uid } = query
+        if (uid && uid === userInfo?.uid)
+          navigate('TabStack', { screen: 'You' })
+        else navigate('NBTScreen', { screen: 'OthersProfile', params: { uid } })
         break
       }
-      case 'post': {
+      case '/post': {
         const { id } = query
+        const { data: post } = await Api.getPost({ pid: id })
+        const { data: user } = await Api.getUser({ uid: post.uid })
+        post.user = user
+        const params = {
+          data: post,
+          viewing: true,
+          created: false,
+          edited: false,
+        }
+
+        if (post.uid === userInfo?.uid)
+          navigate('Post', {
+            screen: 'SinglePostView',
+            params,
+          })
+        else
+          navigate('NBTScreen', {
+            screen: 'OthersPost',
+            params: { ...params, othersView: true },
+          })
         break
       }
     }

@@ -75,9 +75,7 @@ const ProfileInfo = ({
     }
     if (user && user.uid === uid) {
       isModal && cancelModalToggle()
-      navigation.navigate('Profile', {
-        screen: 'Profile',
-      })
+      navigation.navigate('TabStack', { screen: 'You' })
     } else {
       isModal && cancelModalToggle()
       navigation.navigate('NBTScreen', {

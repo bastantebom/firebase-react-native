@@ -88,9 +88,7 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
   const openProfileHandler = () => {
     toggleProfileList()
     if (user?.uid === uid) {
-      navigation.navigate('Profile', {
-        screen: 'Profile',
-      })
+      navigation.navigate('TabStack', { screen: 'You' })
     } else {
       navigation.goBack()
       navigation.navigate('NBTScreen', {

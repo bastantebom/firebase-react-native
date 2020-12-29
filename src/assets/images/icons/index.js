@@ -287,6 +287,7 @@ import RoundEllipsisBlue from './round-ellipsis.svg'
 import WelcomeNotif from './WelcomeNotif.svg'
 
 import InfoGray from './info-menu-gray.svg'
+import Share from './share.svg'
 
 export {
   Trash,
@@ -537,8 +538,8 @@ export const Icons = {
   Id,
   JarHeartWhite,
   Like,
-  LikeHeader,
   LikeColored,
+  LikeHeader,
   Lock,
   Mobile,
   More,
@@ -553,7 +554,9 @@ export const Icons = {
   PostParcel,
   PostParcelBlue,
   PostTool,
+  RoundEllipsisBlue,
   Search,
+  Share,
   ShoppingCart,
   TransportationBox,
   UploadId,
@@ -564,6 +567,5 @@ export const Icons = {
   VerifyNumber,
   VerifyTick,
   Warning,
-  RoundEllipsisBlue,
   WelcomeNotif,
 }

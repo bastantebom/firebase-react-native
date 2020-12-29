@@ -28,7 +28,7 @@ import {
   ProfileInfo,
   CacheableImage,
 } from '@/components'
-import { Icons } from '@/assets/images/icons'
+import { HeaderShareGray, Icons } from '@/assets/images/icons'
 
 import EditPostScreen from './EditPostScreen'
 import { ImageModal } from './ImageModal'
@@ -36,6 +36,8 @@ import ItemModal from './forms/modals/ItemModal'
 import BasketModal from './forms/modals/BasketModal'
 import OfferModal from './forms/modals/OfferModal'
 import { PostService } from '@/services'
+import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
+import Share from 'react-native-share'
 
 const SinglePostView = props => {
   const navigation = useNavigation()
@@ -300,6 +302,23 @@ const SinglePostView = props => {
     }
   }
 
+  const handleShare = async () => {
+    try {
+      const url = await generateDynamicLink({
+        type: 'post',
+        params: { id },
+        social: getPreviewLinkData({
+          type: 'post',
+          data: props.route?.params?.data,
+        }),
+      })
+
+      await Share.open({ url })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const CustomNotification = () => {
     const backgroundColor = props.route.params?.created
       ? Colors.primaryYellow
@@ -530,16 +549,33 @@ const SinglePostView = props => {
                     {profileInfo.display_name}
                   </AppText>
                 </View>
-                <TouchableOpacity onPress={toggleLike}>
-                  {likePost ? (
-                    <Icons.LikeColored
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  ) : (
-                    <Icons.Like width={normalize(20)} height={normalize(20)} />
-                  )}
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
+                    <View
+                      style={[styles.headerButton, GlobalStyle.marginLeft1]}>
+                      <HeaderShareGray
+                        width={normalize(20)}
+                        height={normalize(20)}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={toggleLike}>
+                    <View
+                      style={[styles.headerButton, GlobalStyle.marginLeft1]}>
+                      {likePost ? (
+                        <Icons.LikeColored
+                          width={normalize(20)}
+                          height={normalize(20)}
+                        />
+                      ) : (
+                        <Icons.Like
+                          width={normalize(20)}
+                          height={normalize(20)}
+                        />
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -1188,6 +1224,9 @@ const cardMap = card => {
 }
 
 const styles = StyleSheet.create({
+  headerButton: {
+    paddingHorizontal: normalize(8),
+  },
   postImageContainer: {
     height: normalize(248),
     width: normalize(375),

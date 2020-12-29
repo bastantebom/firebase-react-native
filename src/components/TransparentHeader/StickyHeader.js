@@ -42,6 +42,7 @@ import {
 import { normalize, GlobalStyle } from '@/globals'
 import Colors from '@/globals/Colors'
 import { UserContext } from '@/context/UserContext'
+import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 
 const StickyHeader = ({
   toggleEllipsisState,
@@ -68,20 +69,20 @@ const StickyHeader = ({
   const name = display_name ? display_name : full_name
 
   const navigation = useNavigation()
-  const shareHandler = async () => {
-    const shareOptions = {
-      title: 'Share profile',
-      url:
-        'https://github.com/react-native-community/react-native-share/blob/master/example/App.js',
-      failOnCancel: false,
-    }
 
+  const handleShare = async () => {
     try {
-      const ShareResponse = await Share.open(shareOptions)
+      const url = await generateDynamicLink({
+        type: 'profile',
+        params: { uid: userInfo.uid },
+        social: getPreviewLinkData({ type: 'user', data: userInfo }),
+      })
+      await Share.open({ url })
     } catch (error) {
-      console.log('Error =>', error)
+      console.log(error)
     }
   }
+
   const { user } = useContext(UserContext)
 
   if (type === 'post-other') {
@@ -109,9 +110,9 @@ const StickyHeader = ({
                 </View>
               </TouchableOpacity>
             </View>
-            {user ? (
-              <>
-                <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row' }}>
+              {user ? (
+                <>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={toggleFollowing}>
@@ -154,9 +155,9 @@ const StickyHeader = ({
                       />
                     </View>
                   </TouchableOpacity>
-                </View>
-              </>
-            ) : null}
+                </>
+              ) : null}
+            </View>
           </View>
         </SafeAreaView>
         <Modal
@@ -288,8 +289,16 @@ const StickyHeader = ({
                 paddingLeft: 25,
                 justifyContent: 'flex-end',
               }}>
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+              <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                 <View style={GlobalStyle.marginLeft1}>
+                  <HeaderShareGray
+                    width={normalize(15)}
+                    height={normalize(15)}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+                <View style={GlobalStyle.marginLeft2}>
                   <HeaderMenuGray
                     width={normalize(15)}
                     height={normalize(15)}
@@ -382,7 +391,7 @@ const StickyHeader = ({
                     )}
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} onPress={shareHandler}>
+                <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                   <View style={GlobalStyle.marginLeft1}>
                     <HeaderShareGray
                       width={normalize(15)}

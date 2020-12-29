@@ -18,9 +18,12 @@ import {
   PostEllipsis,
   OtherPostEllipsis,
 } from './components'
-import { Icons } from '@/assets/images/icons'
+import { HeaderShare, Icons } from '@/assets/images/icons'
 import { normalize, GlobalStyle } from '@/globals'
 import { UserContext } from '@/context/UserContext'
+import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
+import Share from 'react-native-share'
+import Api from '@/services/Api'
 
 const TransparentHeader = ({
   toggleEllipsisState,
@@ -46,7 +49,41 @@ const TransparentHeader = ({
   liked,
 }) => {
   const navigation = useNavigation()
-  const { user } = useContext(UserContext)
+  const { user, userInfo: ownUserInfo } = useContext(UserContext)
+
+  const handleShare = async () => {
+    try {
+      const url = await (async () => {
+        switch (type) {
+          case 'own':
+          case 'other':
+            return await generateDynamicLink({
+              type: 'profile',
+              params: { uid: type === 'own' ? ownUserInfo.uid : userInfo.uid },
+              social: getPreviewLinkData({
+                type: 'user',
+                data: type === 'own' ? ownUserInfo : userInfo,
+              }),
+            })
+
+          case 'post-other':
+          case 'post-own':
+            return await generateDynamicLink({
+              type: 'post',
+              params: { id: postId },
+              social: getPreviewLinkData({
+                type: 'post',
+                data: (await Api.getPost({ pid: postId })).data,
+              }),
+            })
+        }
+      })()
+
+      await Share.open({ url })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   if (type === 'post-other') {
     return (
@@ -76,9 +113,14 @@ const TransparentHeader = ({
                 </View>
               </TouchableOpacity>
             </View>
-            {user ? (
-              <>
-                <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(16)} height={normalize(16)} />
+                </View>
+              </TouchableOpacity>
+              {user ? (
+                <>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={handleLikedPost}>
@@ -107,9 +149,9 @@ const TransparentHeader = ({
                       />
                     </View>
                   </TouchableOpacity>
-                </View>
-              </>
-            ) : null}
+                </>
+              ) : null}
+            </View>
           </View>
         </SafeAreaView>
         <Modal
@@ -170,10 +212,15 @@ const TransparentHeader = ({
             </View>
 
             <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
+                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(15)} height={normalize(15)} />
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={toggleEllipsisState}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                <View style={[styles.circle, GlobalStyle.marginLeft]}>
                   <Icons.HeaderEllipsis
                     width={normalize(16)}
                     height={normalize(16)}
@@ -231,8 +278,14 @@ const TransparentHeader = ({
             <View></View>
 
             <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+              <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(15)} height={normalize(15)} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+                <View style={[styles.circle, GlobalStyle.marginLeft]}>
                   <Icons.HeaderMenu
                     width={normalize(16)}
                     height={normalize(16)}
@@ -313,7 +366,12 @@ const TransparentHeader = ({
             {user ? (
               <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity activeOpacity={0.7} onPress={toggleFollowing}>
-                  <View style={[styles.followButton, GlobalStyle.marginLeft1]}>
+                  <View
+                    style={[
+                      styles.button,
+                      styles.followButton,
+                      GlobalStyle.marginLeft1,
+                    ]}>
                     {following ? (
                       <Icons.HeaderFollowing
                         width={normalize(16)}
@@ -336,8 +394,24 @@ const TransparentHeader = ({
 
                 <TouchableOpacity
                   activeOpacity={0.7}
+                  onPress={handleShare}
+                  style={[
+                    styles.button,
+                    styles.circle,
+                    GlobalStyle.marginLeft1,
+                  ]}>
+                  <Icons.Share width={normalize(16)} height={normalize(16)} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  activeOpacity={0.7}
                   onPress={toggleEllipsisState}>
-                  <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                  <View
+                    style={[
+                      styles.button,
+                      styles.circle,
+                      GlobalStyle.marginLeft1,
+                    ]}>
                     <Icons.HeaderEllipsis
                       width={normalize(16)}
                       height={normalize(16)}
@@ -380,21 +454,20 @@ const TransparentHeader = ({
 
 const styles = StyleSheet.create({
   circle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
     width: normalize(32),
-    height: normalize(32),
     borderRadius: normalize(32 / 2),
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   followButton: {
     borderRadius: 20,
     flexDirection: 'row',
-    height: normalize(32),
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: 8,
+  },
+  button: {
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: normalize(32),
+    marginLeft: normalize(8),
   },
 })
 

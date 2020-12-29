@@ -72,9 +72,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
 
   const handleUserPress = _user => {
     if (user?.uid === _user.uid) {
-      navigation.navigate('Profile', {
-        screen: 'Profile',
-      })
+      navigation.navigate('TabStack', { screen: 'You' })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
