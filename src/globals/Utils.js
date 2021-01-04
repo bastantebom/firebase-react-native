@@ -12,7 +12,9 @@ import Config from '@/services/Config'
 import firebase from '@react-native-firebase/app'
 import axios from 'axios'
 
-const FIREBASE_API_KEY = firebase.app().options.apiKey
+// const FIREBASE_API_KEY = firebase.app().options.apiKey
+const FIREBASE_API_KEY = 'AIzaSyDMknlgnSUy46tevw-jAixdIegnE4yiPCQ'
+
 Geocoder.init(Config.apiKey)
 
 export const timePassed = seconds => {
