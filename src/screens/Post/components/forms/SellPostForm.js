@@ -1039,24 +1039,38 @@ const SellPostForm = ({
             Object.keys(deliveryState).length === 0 ? (
               <></>
             ) : (
-              <AppText textStyle="body3" customStyle={{ marginTop: 4 }}>
-                Delivery
-              </AppText>
+              <View>
+                <AppText
+                  textStyle="body3"
+                  customStyle={{ marginTop: 4, marginBottom: 8 }}>
+                  Delivery
+                </AppText>
+                {deliveryState.delivery?.nationwide && (
+                  <View style={{ marginBottom: 8 }}>
+                    <AppText textStyle="body2medium">
+                      Ship via third party couriers
+                    </AppText>
+                    {deliveryState.delivery?.nationwide?.notes !== '' && (
+                      <AppText textStyle="body2">
+                        Notes: {deliveryState.delivery.nationwide.notes}
+                      </AppText>
+                    )}
+                  </View>
+                )}
+                {deliveryState.delivery?.radius && (
+                  <View>
+                    <AppText textStyle="body2medium">
+                      Deliver your products
+                    </AppText>
+                    {deliveryState.delivery?.nationwide?.notes !== '' && (
+                      <AppText textStyle="body2">
+                        Notes: {deliveryState.delivery.radius.notes}
+                      </AppText>
+                    )}
+                  </View>
+                )}
+              </View>
             )
-          ) : (
-            <></>
-          )}
-          {deliveryState?.nationwide ? (
-            <AppText textStyle="body2">
-              {deliveryState?.nationwide?.notes}
-            </AppText>
-          ) : (
-            <></>
-          )}
-          {deliveryState?.radius?.notes ? (
-            <AppText textStyle="body2">
-              {deliveryState?.radius?.notes} {deliveryState?.radius?.distance}
-            </AppText>
           ) : (
             <></>
           )}
