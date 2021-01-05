@@ -1,40 +1,26 @@
-//import liraries
-import React, { useState, useEffect, useContext } from 'react'
-import { StyleSheet, View, Text, SafeAreaView } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { StyleSheet, View, SafeAreaView, Alert } from 'react-native'
 
-//import Geolocation from '@react-native-community/geolocation';
 import Config from '@/services/Config'
 import Geocoder from 'react-native-geocoding'
 import MapComponent from '@/components/MapComponent/MapComponent'
-import {
-  AppText,
-  AppButton,
-  TransitionIndicator,
-  ScreenHeaderTitle,
-} from '@/components'
+import { AppButton, TransitionIndicator, ScreenHeaderTitle } from '@/components'
 import { Colors } from '@/globals'
 
 import GooglePlacesInput from '@/components/LocationSearchInput'
 
 import { useNavigation } from '@react-navigation/native'
-import SignUpService from '@/services/SignUpService'
 import { UserContext } from '@/context/UserContext'
+import Api from '@/services/Api'
 
-// create a component
 const AlmostThereMap = route => {
   const navigation = useNavigation()
 
-  const [buttonStyle, setButtonStyle] = useState({
-    backgroundColor: Colors.buttonDisable,
-    borderColor: Colors.buttonDisable,
-  })
-
   const [isScreenLoading, setIsScreenLoading] = useState(false)
 
-  const { user, fetch: updateUserInfo } = useContext(UserContext)
+  const { user } = useContext(UserContext)
   Geocoder.init(Config.apiKey)
   const [addressData, setAddressData] = useState(route?.route?.params)
-  const [mapInitialized, setMapInitialized] = useState(false)
   const [mapCoords, setMapCoords] = useState({})
 
   const getLocationName = (components, key) =>
@@ -83,25 +69,19 @@ const AlmostThereMap = route => {
     }
   }
 
-  const saveRefineLocation = async () => {
-    setIsScreenLoading(true)
+  const saveLocation = async () => {
     const { uid } = user
-    if (uid) {
-      try {
-        const saveLocationResponse = await SignUpService.saveLocation({
-          uid,
-          ...addressData,
-        })
-        if (!saveLocationResponse.success)
-          throw new Error(saveLocationResponse.message)
-        else await updateUserInfo()
-        setIsScreenLoading(false)
-      } catch (error) {
-        console.log(error.message || error)
-      }
-    } else {
-      setIsScreenLoading(false)
+    if (!uid || !addressData) return
+
+    setIsScreenLoading(true)
+    try {
+      const response = await Api.saveLocation({ uid, body: addressData })
+      if (!response.success) throw new Error(response.message)
+    } catch (error) {
+      console.log(error.message || error)
+      Alert.alert('Error', 'Oops something went wrong')
     }
+    setIsScreenLoading(false)
   }
 
   return (
@@ -140,9 +120,7 @@ const AlmostThereMap = route => {
                 text="Confirm"
                 type="primary"
                 height="xl"
-                onPress={() => {
-                  saveRefineLocation()
-                }}
+                onPress={saveLocation}
               />
             </View>
           </>
@@ -152,7 +130,6 @@ const AlmostThereMap = route => {
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   header: {
     height: 88,

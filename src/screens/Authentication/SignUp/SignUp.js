@@ -27,7 +27,7 @@ import Validator from '@/components/AppInput/Validator'
 import SwitchComponent from '@/components/Switch/Switch'
 import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy'
 import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse'
-import SignUpService from '@/services/SignUpService'
+import Api from '@/services/Api'
 
 const SignUp = props => {
   const [formData, setFormData] = useState({
@@ -123,12 +123,14 @@ const SignUp = props => {
         terms_conditions,
         receive_updates,
       } = formData
-      const response = await SignUpService.createUser({
-        login,
-        password,
-        full_name,
-        terms_conditions,
-        receive_updates,
+      const response = await Api.createUser({
+        body: {
+          login,
+          password,
+          full_name,
+          terms_conditions,
+          receive_updates,
+        },
       })
 
       if (!response.success) throw new Error(response.message)

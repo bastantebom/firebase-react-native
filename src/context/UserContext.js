@@ -8,7 +8,6 @@ export const UserContext = createContext(null)
 export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [userInfo, setUserInfo] = useState({})
-  const [userDataAvailable, setUserDataAvailable] = useState(false)
   const [providerData, setProviderData] = useState({})
   const [token, setToken] = useState(null)
   const [userStatus, setUserStatus] = useState({})
@@ -78,14 +77,9 @@ export const UserContextProvider = ({ children }) => {
 
   const fetch = () => {
     if (user) {
-      ProfileInfoService.getUser(user.uid)
-        .then(response => {
-          setUserInfo({ ...userInfo, ...response.data })
-          setUserDataAvailable(true)
-        })
-        .catch(error => {
-          setUserDataAvailable(false)
-        })
+      ProfileInfoService.getUser(user.uid).then(response => {
+        setUserInfo({ ...userInfo, ...response.data })
+      })
     }
   }
 

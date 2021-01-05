@@ -1,4 +1,3 @@
-//import liraries
 import React, { useContext, useEffect, useState } from 'react'
 import {
   View,
@@ -16,17 +15,14 @@ import Geolocation from '@react-native-community/geolocation'
 import Geocoder from 'react-native-geocoding'
 import { useNavigation } from '@react-navigation/native'
 
-//import GooglePlacesInput from '@/components/LocationSearchInput';
-
 import Config from '@/services/Config'
-import SignUpService from '@/services/SignUpService'
 import { UserContext } from '@/context/UserContext'
 import { getCurrentPosition } from '@/globals/Utils'
+import Api from '@/services/Api'
 
-// create a component
-const AlmostThere = ({ route }) => {
+const AlmostThere = () => {
   const navigation = useNavigation()
-  const { user, fetch: updateUserInfo } = useContext(UserContext)
+  const { user } = useContext(UserContext)
   Geocoder.init(Config.apiKey)
 
   const [addressData, setAddressData] = useState(null)
@@ -73,15 +69,11 @@ const AlmostThere = ({ route }) => {
 
     setIsScreenLoading(true)
     try {
-      const response = await SignUpService.saveLocation({
-        ...addressData,
-        uid,
-      })
+      const response = await Api.saveLocation({ uid, body: addressData })
       if (!response.success) throw new Error(response.message)
-
-      await updateUserInfo()
     } catch (error) {
       console.log(error.message || error)
+      Alert.alert('Error', 'Oops something went wrong')
     }
     setIsScreenLoading(false)
   }
