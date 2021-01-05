@@ -31,6 +31,7 @@ import {
   PaypalActive,
   Bank,
   BankActive,
+  AngleDown,
 } from '@/assets/images/icons'
 import { Clipboard } from '@/assets/images'
 
@@ -43,6 +44,10 @@ const PaymentMethodModal = ({
 
   const [showLearnMore, setShowLearnMore] = useState(false)
   const [paymentMethods, setPaymentMethods] = useState(parentPaymentMethod)
+  const [visa, showVisa] = useState(false)
+  const [grab, showGrab] = useState(false)
+  const [paypal, showPaypal] = useState(false)
+  const [cash, showCash] = useState(false)
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white', paddingTop: 8 }}>
@@ -322,15 +327,14 @@ const PaymentMethodModal = ({
             contentContainerStyle={{
               paddingHorizontal: 24,
               paddingTop: 16,
-              paddingBottom: 24,
               justifyContent: 'space-between',
-              height: '100%',
               flexGrow: 1,
             }}>
             <View
               style={{
-                justifyContent: 'center',
                 alignItems: 'center',
+                flex: 1,
+                marginBottom: 16,
               }}>
               <Clipboard height={normalize(70)} width={normalize(70)} />
               <AppText
@@ -349,6 +353,296 @@ const PaymentMethodModal = ({
                 convenient, and reliable payments via credit/debit cards and
                 e-wallets.
               </AppText>
+
+              <View
+                style={{
+                  marginTop: 32,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  borderRadius: 4,
+                  width: '100%',
+                  padding: 12,
+                }}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => showVisa(!visa)}
+                  style={{
+                    marginBottom: visa ? 16 : 0,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <AppText textStyle="subtitle2">
+                    Card payments: Visa and Mastercard
+                  </AppText>
+                  <AngleDown />
+                </TouchableOpacity>
+                {visa && (
+                  <>
+                    <AppText
+                      textStyle="caption2"
+                      customStyle={{ marginBottom: 16 }}>
+                      Payment Fee: 3.5% + ₱15
+                    </AppText>
+
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 16 }}>
+                      Your customers can pay using the payment methods you set
+                      on each post. Please note that for payments made using
+                      credit/debit, e-wallets, and PayPal, additional fees will
+                      be deducted per sale.
+                    </AppText>
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 16 }}>
+                      We've partnered with PayMongo so you can make secure,
+                      convenient, and reliable payments via credit/debit cards
+                      and e-wallets.
+                    </AppText>
+
+                    <View
+                      style={{
+                        backgroundColor: Colors.secondarySolitude,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption">Transaction Amount</AppText>
+                      <AppText textStyle="caption">₱360.00</AppText>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: Colors.secondarySolitude,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption">
+                        Payment Fee 3.5% + ₱15
+                      </AppText>
+                      <AppText textStyle="caption">₱27.60</AppText>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: Colors.primaryAliceBlue,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption2">Net Amount</AppText>
+                      <AppText textStyle="caption2">₱332.40</AppText>
+                    </View>
+                  </>
+                )}
+              </View>
+
+              <View
+                style={{
+                  marginTop: 24,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  borderRadius: 4,
+                  width: '100%',
+                  padding: 12,
+                }}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => showGrab(!grab)}
+                  style={{
+                    marginBottom: grab ? 16 : 0,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <AppText textStyle="subtitle2">
+                    E-wallets: GCash and GrabPay
+                  </AppText>
+                  <AngleDown />
+                </TouchableOpacity>
+
+                {grab && (
+                  <>
+                    <AppText
+                      textStyle="caption2"
+                      customStyle={{ marginBottom: 16 }}>
+                      Payment Fee: 2.9%
+                    </AppText>
+
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 16 }}>
+                      If any of these payment channels is selected, customers
+                      will be redirected to a new page where they can log in to
+                      their account. After the transaction, they will be
+                      redirected back to our app to confirm that the order has
+                      pushed through.
+                    </AppText>
+
+                    <View
+                      style={{
+                        backgroundColor: Colors.secondarySolitude,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption">Transaction Amount</AppText>
+                      <AppText textStyle="caption">₱360.00</AppText>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: Colors.secondarySolitude,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption">Payment Fee 2.9%</AppText>
+                      <AppText textStyle="caption">₱10.44</AppText>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: Colors.primaryAliceBlue,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption2">Net Amount</AppText>
+                      <AppText textStyle="caption2">₱349.56</AppText>
+                    </View>
+                  </>
+                )}
+              </View>
+
+              <View
+                style={{
+                  marginTop: 24,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  borderRadius: 4,
+                  width: '100%',
+                  padding: 12,
+                }}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => showPaypal(!paypal)}
+                  style={{
+                    marginBottom: paypal ? 16 : 0,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <AppText textStyle="subtitle2">PayPal</AppText>
+                  <AngleDown />
+                </TouchableOpacity>
+
+                {paypal && (
+                  <>
+                    <AppText
+                      textStyle="caption2"
+                      customStyle={{ marginBottom: 16 }}>
+                      Payment Fee: 3.90% + ₱15
+                    </AppText>
+                    <View
+                      style={{
+                        borderLeftWidth: 2,
+                        borderLeftColor: Colors.primaryYellow,
+                        paddingLeft: 12,
+                        paddingVertical: 4,
+                        marginBottom: 16,
+                      }}>
+                      <AppText textStyle="caption">
+                        Domestic payments: 3.9% + Fixed Fee
+                      </AppText>
+                      <AppText textStyle="caption">
+                        International payments: 4.4% + Fixed Fee
+                      </AppText>
+                    </View>
+
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 16 }}>
+                      Customers will be redirected to a new page where they can
+                      log in to their account. After the transaction, they will
+                      be redirected back to our app to confirm that the order
+                      has pushed through.
+                    </AppText>
+
+                    <View
+                      style={{
+                        backgroundColor: Colors.secondarySolitude,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption">Transaction Amount</AppText>
+                      <AppText textStyle="caption">₱360.00</AppText>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: Colors.secondarySolitude,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption">Payment Fee 3.9%</AppText>
+                      <AppText textStyle="caption">₱25.44</AppText>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: Colors.primaryAliceBlue,
+                        padding: 12,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 8,
+                      }}>
+                      <AppText textStyle="caption2">Net Amount</AppText>
+                      <AppText textStyle="caption2">₱334.56</AppText>
+                    </View>
+                  </>
+                )}
+              </View>
+
+              <View
+                style={{
+                  marginTop: 24,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  borderRadius: 4,
+                  width: '100%',
+                  padding: 12,
+                }}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => showCash(!cash)}
+                  style={{
+                    marginBottom: cash ? 16 : 0,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <AppText textStyle="subtitle2">
+                    Cash, Online Banking, or other Payment Methods
+                  </AppText>
+                  <AngleDown />
+                </TouchableOpacity>
+                {cash && (
+                  <>
+                    <AppText
+                      textStyle="caption"
+                      customStyle={{ marginBottom: 16 }}>
+                      Customers can still pay using cash, online banking, or
+                      other payment methods not included in the app. For these
+                      payment options, the seller/service provider should send
+                      the payment instructions and reminders directly to the
+                      customer using chat.
+                    </AppText>
+                  </>
+                )}
+              </View>
             </View>
             <AppButton
               text="Okay, got it!"

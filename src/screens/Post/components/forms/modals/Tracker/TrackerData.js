@@ -29,6 +29,14 @@ export const generateStatus = (status, type, seller) => {
       animation: inProgress,
       withGradient: true,
     },
+    paid: {
+      title: seller ? 'Processing' : 'Order Confirmed',
+      message: seller
+        ? 'Bee ready! '
+        : 'Bee ready! Your order is now being processed. ',
+      animation: inProgress,
+      withGradient: true,
+    },
     delivering: {
       title: 'Delivering',
       message: seller
@@ -121,6 +129,11 @@ export const generateStatus = (status, type, seller) => {
       animation: pending,
     },
     confirmed: {
+      title: 'Schedule Confirmed',
+      message: 'Booked! Please bee on time for your appointment.',
+      animation: bookingScheduled,
+    },
+    paid: {
       title: 'Schedule Confirmed',
       message: 'Booked! Please bee on time for your appointment.',
       animation: bookingScheduled,
