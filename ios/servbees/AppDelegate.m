@@ -37,26 +37,20 @@ static void InitializeFlipper(UIApplication *application) {
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
- restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
-{
-  NSURL *url = [userActivity webpageURL];
-  BOOL result = [RCTLinkingManager application:application
-                          continueUserActivity:userActivity
-                            restorationHandler:restorationHandler];
-  if([userActivity webpageURL]){
-    #if DEBUG
-    float seconds = 3.5;
-    #else
-    float seconds = 1.5;
-    #endif
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-      NSURL *newUrl = [NSURL URLWithString:[NSString stringWithFormat:@"MYAPPSCHEME:/%@", url.path]];
-      [[UIApplication sharedApplication] openURL:newUrl options:@{} completionHandler:nil];
-    });
-  }
-  
-  return result;
+ restorationHandler:
+ #if defined(__IPHONE_12_0) && (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_12_0)
+  (nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler { 
+ #else
+  (nonnull void (^)(NSArray *_Nullable))restorationHandler {
+ #endif  // __IPHONE_12_0
+  BOOL handled = [[FIRDynamicLinks dynamicLinks] handleUniversalLink:userActivity.webpageURL
+                                                          completion:^(FIRDynamicLink * _Nullable dynamicLink,
+                                                                       NSError * _Nullable error) {
+                                                            // ...
+                                                          }];
+  return handled;
 }
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
