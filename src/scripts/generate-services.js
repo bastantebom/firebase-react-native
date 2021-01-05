@@ -9,7 +9,7 @@ const baseURL =
     switch (process.env.NODE_ENV) {
       case 'prod':
       case 'production':
-        return 'https://api.servbees.com/'
+        return 'https://api.servbees.com'
       case 'local':
         return 'http://localhost:5000'
       case 'dev':

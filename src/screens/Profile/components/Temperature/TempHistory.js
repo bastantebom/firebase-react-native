@@ -221,7 +221,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: normalize(32),
+    paddingVertical: normalize(32),
+    paddingHorizontal: normalize(16),
     alignItems: 'center',
   },
   modalContentTitle: {
@@ -238,6 +239,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     color: Colors.contentPlaceholder,
     textAlign: 'center',
+    marginTop: normalize(8),
     marginBottom: normalize(32),
   },
   modalButton: {
