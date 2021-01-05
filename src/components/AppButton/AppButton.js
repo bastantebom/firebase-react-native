@@ -83,7 +83,6 @@ const AppButton = ({
 
   const textSyle = {
     color: btnTextColor,
-    flex: 1,
     textAlign: 'center',
   }
 

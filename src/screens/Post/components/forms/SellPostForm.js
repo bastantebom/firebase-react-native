@@ -370,10 +370,6 @@ const SellPostForm = ({
         })
       } else {
         const res = await PostService.createPost(data)
-        setUserInfo({
-          ...userInfo,
-          post_count: userInfo.post_count + 1,
-        })
         navToPost({
           ...res,
           viewing: false,
@@ -383,7 +379,6 @@ const SellPostForm = ({
       }
 
       togglePostModal?.()
-      setLoadingSubmit(false)
       setNeedsRefresh(true)
       setCoverPhoto([])
       setLibImages([])

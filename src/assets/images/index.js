@@ -70,6 +70,7 @@ import WelcomeServbees from './welcome-servbees.svg'
 
 import FollowersEmpty from './bees-followers-empty.svg'
 import FollowingEmpty from './bees-following-empty.svg'
+import Doctor from './doctor.svg'
 
 export {
   Guide,
@@ -127,4 +128,8 @@ export const Status = {
   ReadyForDelivery,
   ReadyForPickup,
   ServiceScheduled,
+}
+
+export const Images = {
+  Doctor,
 }

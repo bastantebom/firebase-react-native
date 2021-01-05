@@ -289,6 +289,8 @@ import WelcomeNotif from './WelcomeNotif.svg'
 import InfoGray from './info-menu-gray.svg'
 import Share from './share.svg'
 
+import Info from './info.svg'
+
 export {
   Trash,
   MOCalendar,
@@ -536,6 +538,7 @@ export const Icons = {
   HeaderMenu,
   HeaderQR,
   Id,
+  Info,
   JarHeartWhite,
   Like,
   LikeColored,
