@@ -5,15 +5,19 @@ import {
   SafeAreaView,
   TextInput,
   ScrollView,
+  Linking,
+  Alert,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native'
 import {
   ScreenHeaderTitle,
   PaddingView,
   AppText,
   AppButton,
+  TransitionIndicator,
 } from '@/components'
 import { ContactUsBee, ContactSuccess } from '@/assets/images'
-import AdminFunctionsService from '@/services/Admin/AdminFunctions'
 import {
   EmailContactUs,
   CallContactUs,
@@ -23,27 +27,42 @@ import {
 import { UserContext } from '@/context/UserContext'
 import { normalize, Colors } from '@/globals'
 import FloatingAppInput from '@/components/AppInput/AppInput'
+import Api from '@/services/Api'
 
 const ContactUs = ({ toggleContactUs }) => {
+  const contactNumber = '+65 6988 3863'
+  const contactEmail = 'hello@servbees.com'
+
   const { userInfo } = useContext(UserContext)
-  const [contact, setContact] = useState({
-    full_name: newName,
-    email: newEmail,
+  const [messageSuccess, setMessageSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    full_name: userInfo.full_name || '',
+    email: userInfo.email || '',
     message: '',
   })
-  const [newName, setNewName] = useState(userInfo.full_name)
-  const [newEmail, setNewEmail] = useState(userInfo.email)
-  const [messageSuccess, setMessageSuccess] = useState(false)
 
   const handleSubmit = async () => {
+    setIsLoading(true)
     try {
-      const res = await AdminFunctionsService.contactServbees(contact)
+      const response = await Api.contactUs({ body: formData })
+      if (!response.success) throw new Error(response.message)
 
-      if (res.success) {
-        setContact({ ...contact, message: '' })
-        setMessageSuccess(true)
-      }
-    } catch (error) {}
+      setFormData({ ...formData, message: '' })
+      setMessageSuccess(true)
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+    setIsLoading(false)
+  }
+
+  const handlePhoneNumberPress = () => {
+    Linking.openURL(`tel:${contactNumber}`)
+  }
+
+  const handleEmailPress = () => {
+    Linking.openURL(`mailto:${contactEmail}`)
   }
 
   const MessageSuccess = () => {
@@ -83,6 +102,7 @@ const ContactUs = ({ toggleContactUs }) => {
 
   return (
     <>
+      {isLoading ? <TransitionIndicator loading={isLoading} /> : null}
       {!messageSuccess ? (
         <SafeAreaView style={{ flex: 1 }}>
           <ScreenHeaderTitle
@@ -110,11 +130,13 @@ const ContactUs = ({ toggleContactUs }) => {
                       width={normalize(23)}
                       height={normalize(23)}
                     />
-                    <AppText
-                      textStyle="body2"
-                      customStyle={{ marginLeft: normalize(16) }}>
-                      hello@servbees.com
-                    </AppText>
+                    <TouchableOpacity onPress={handleEmailPress}>
+                      <AppText
+                        textStyle="body2"
+                        customStyle={{ marginLeft: normalize(16) }}>
+                        {contactEmail}
+                      </AppText>
+                    </TouchableOpacity>
                   </View>
                   <View
                     style={{ flexDirection: 'row', marginTop: normalize(20) }}>
@@ -122,11 +144,13 @@ const ContactUs = ({ toggleContactUs }) => {
                       width={normalize(18)}
                       height={normalize(18)}
                     />
-                    <AppText
-                      textStyle="body2"
-                      customStyle={{ marginLeft: normalize(16) }}>
-                      +65 6988 3863
-                    </AppText>
+                    <TouchableOpacity onPress={handlePhoneNumberPress}>
+                      <AppText
+                        textStyle="body2"
+                        customStyle={{ marginLeft: normalize(16) }}>
+                        {contactNumber}
+                      </AppText>
+                    </TouchableOpacity>
                   </View>
                   <View style={{ marginTop: normalize(20) }}>
                     <View style={{ position: 'absolute' }}>
@@ -179,32 +203,30 @@ const ContactUs = ({ toggleContactUs }) => {
                 </AppText>
                 <FloatingAppInput
                   label="Full Name"
-                  value={newName}
-                  onChangeText={newName => {
-                    setNewName(newName)
-                  }}
+                  value={formData.full_name}
+                  onChangeText={full_name =>
+                    setFormData({ ...formData, full_name })
+                  }
                   wrapperStyle={{ marginBottom: normalize(24) }}
                 />
                 <FloatingAppInput
                   label="Email address"
-                  value={newEmail}
-                  onChangeText={newEmail => {
-                    setNewEmail(newEmail)
-                  }}
+                  value={formData.email}
+                  onChangeText={email => setFormData({ ...formData, email })}
                   wrapperStyle={{ marginBottom: normalize(24) }}
                 />
                 <TextInput
                   multiline={true}
-                  value={contact.message}
+                  value={formData.message}
                   placeholder="Your message"
                   placeholderTextColor={Colors.profileLink}
                   numberOfLines={Platform.OS === 'ios' ? null : 6}
                   minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
                   style={[styles.input]}
-                  onChangeText={text => {
-                    setContact({
-                      ...contact,
-                      message: text,
+                  onChangeText={message => {
+                    setFormData({
+                      ...formData,
+                      message,
                     })
                   }}
                   underlineColorAndroid={'transparent'}
@@ -233,15 +255,15 @@ const ContactUs = ({ toggleContactUs }) => {
                   type="primary"
                   size="l"
                   height="xl"
-                  onPress={() => handleSubmit()}
-                  disabled={contact.message.length < 1}
+                  onPress={handleSubmit}
+                  disabled={formData.message.length < 1}
                   customStyle={{
                     backgroundColor:
-                      contact.message.length < 1
+                      formData.message.length < 1
                         ? Colors.buttonDisable
                         : Colors.primaryYellow,
                     borderColor:
-                      contact.message.length < 1
+                      formData.message.length < 1
                         ? Colors.buttonDisable
                         : Colors.primaryYellow,
                   }}
