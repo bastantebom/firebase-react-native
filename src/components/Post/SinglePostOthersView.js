@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   Linking,
   ScrollView,
-  Dimensions,
+  Alert,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import Modal from 'react-native-modal'
@@ -35,19 +35,10 @@ import { UserContext } from '@/context/UserContext'
 import { ImageModal } from '@/screens/Post/components/ImageModal'
 import { useNavigation } from '@react-navigation/native'
 import EditPostScreen from '@/screens/Post/components/EditPostScreen'
+import Api from '@/services/Api'
+import { Context } from '@/context'
 
 const SinglePostOthersView = ({ data, closePostModal }) => {
-  // console.log("SINGLEW POST VIEW POST PROPS")
-  // console.log(props)
-
-  // const {navigation} = props;
-
-  // const {data} = props.route.params;
-
-  // console.log('****************************data****************************')
-  // console.log(data)
-
-  const navigation = useNavigation()
   const [showNotification, setShowNotification] = useState(false)
   const [ellipsisState, setEllipsisState] = useState(false)
   const [otherPostModal, setOtherPostModal] = useState(false)
@@ -56,6 +47,7 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
   const [editPost, showEditPost] = useState(false)
 
   const { user, setUserInfo, userInfo } = useContext(UserContext)
+  const { userPosts, setUserPosts } = useContext(Context)
 
   const {
     user: { display_name, profile_photo, email, phone_number },
@@ -130,11 +122,18 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
   }
 
   const deletePost = async () => {
-    return await PostService.deletePost(post_id).then(() => {
+    try {
+      const response = await Api.deletePost({ pid: post_id })
+      if (!response.success) throw new Error(response.message)
       toggleEllipsisState()
       setUserInfo({ ...userInfo, post_count: userInfo.post_count - 1 })
       closePostModal()
-    })
+
+      setUserPosts(userPosts.filter(post => post.id !== post_id))
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong')
+    }
   }
 
   const hidePost = async () => {

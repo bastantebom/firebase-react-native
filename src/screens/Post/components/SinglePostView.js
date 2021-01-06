@@ -10,6 +10,7 @@ import {
   Linking,
   Dimensions,
   Animated,
+  Alert,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -121,6 +122,8 @@ const SinglePostView = props => {
     showDeleteCurrentOrderModal,
     setCurrentPost,
     currentPostOrder,
+    userPosts,
+    setUserPosts,
   } = useContext(Context)
 
   const isLiked = ~likers?.indexOf(user?.uid)
@@ -224,11 +227,16 @@ const SinglePostView = props => {
   ]
 
   const deletePost = async () => {
-    const { success } = await Api.deletePost({ pid: id })
-
-    if (success) {
+    try {
+      const response = await Api.deletePost({ pid: id })
+      if (!response.success) throw new Error(response.message)
       toggleEllipsisState()
       navigation.goBack()
+
+      setUserPosts(userPosts.filter(post => post.id !== id))
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong')
     }
   }
 
