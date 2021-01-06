@@ -106,7 +106,6 @@ export const UserContextProvider = ({ children }) => {
         userInfo,
         setUserInfo,
         userStatus,
-        userDataAvailable,
         fetch,
         token,
         providerData,

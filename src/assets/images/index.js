@@ -72,6 +72,8 @@ import FollowersEmpty from './bees-followers-empty.svg'
 import FollowingEmpty from './bees-following-empty.svg'
 import Doctor from './doctor.svg'
 
+import NoSearch from './search-empty.svg'
+
 export {
   Guide,
   Category,
@@ -113,6 +115,7 @@ export {
   WelcomeServbees,
   FollowersEmpty,
   FollowingEmpty,
+  NoSearch,
 }
 
 export const Status = {

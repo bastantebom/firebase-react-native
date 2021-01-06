@@ -41,12 +41,15 @@ import { GuestPost } from '@/screens/Post/components/GuestPost'
 
 import { ProfileInfoModal, SinglePostOthersView, AppText } from '@/components'
 import { Past } from '@/screens/Activity'
+import { Notifications } from '@/screens/Activity'
 import { Badge } from '@/screens/Activity'
 import { Welcome } from '@/screens/Activity'
 import { Verified } from '@/screens/Activity'
 import { NotVerified } from '@/screens/Activity'
 import { OngoingItem } from '@/screens/Activity'
 import GuestActivity from '@/screens/Activity/components/GuestActivity'
+
+import ChatHouse from '@/screens/Chat/chat-house'
 
 import {
   AlmostThere,
@@ -134,6 +137,11 @@ function NoBottomTabScreens() {
         name="Verification"
         component={VerificationStack}
       />
+      <NoBottomTabScreenStack.Screen
+        name="Notifications"
+        component={Notifications}
+      />
+      <NoBottomTabScreenStack.Screen name="ChatHouse" component={ChatHouse} />
     </NoBottomTabScreenStack.Navigator>
   )
 }
@@ -237,6 +245,7 @@ function ActivityStackScreen() {
       <ActivityStack.Navigator headerMode="none">
         <ActivityStack.Screen name="Activity" component={Activity} />
         <ActivityStack.Screen name="Past" component={Past} />
+        <ActivityStack.Screen name="Notifications" component={Notifications} />
         <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
         <ActivityStack.Screen name="Chat" component={ChatScreen} />
       </ActivityStack.Navigator>

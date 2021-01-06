@@ -232,6 +232,7 @@ import HelpfulBadge from '@/assets/images/icons/badge-helpful.svg'
 
 import LatestTemp from './current-temp.svg'
 import Chat from './chat.svg'
+import ChatGray from './chat-gray.svg'
 import ShoppingCart from './shopping-cart.svg'
 import PlusSign from './plus-sign.svg'
 import MinusSign from './minus-sign.svg'
@@ -288,6 +289,7 @@ import WelcomeNotif from './WelcomeNotif.svg'
 
 import InfoGray from './info-menu-gray.svg'
 import Share from './share.svg'
+import MegaPhone from './megaphone.svg'
 
 import Info from './info.svg'
 
@@ -515,6 +517,7 @@ export const Icons = {
   Card,
   CartDot,
   Chat,
+  ChatGray,
   CheckActive,
   ChevronRight,
   ChevronRightGray,
@@ -571,4 +574,5 @@ export const Icons = {
   VerifyTick,
   Warning,
   WelcomeNotif,
+  MegaPhone,
 }
