@@ -808,6 +808,8 @@ const SellPostForm = ({
               label="Price"
               value={price}
               onChangeText={text => setPrice(text)}
+              maxLength={6}
+              keyboardType="number-pad"
             />
           </Animated.View>
 
@@ -878,6 +880,8 @@ const SellPostForm = ({
               label="Price"
               value={price}
               onChangeText={text => setPrice(text)}
+              maxLength={6}
+              keyboardType="number-pad"
             />
           </Animated.View>
 
@@ -945,6 +949,7 @@ const SellPostForm = ({
               onChangeText={text => setBudgetMinimum(text)}
               placeholder="00"
               label="Minimum"
+              maxLength={6}
             />
 
             <PriceInput
@@ -954,6 +959,7 @@ const SellPostForm = ({
               onChangeText={text => setBudgetMaximum(text)}
               placeholder="00"
               label="Maximum"
+              maxLength={6}
             />
           </>
         </Section>

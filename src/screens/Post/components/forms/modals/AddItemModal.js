@@ -235,6 +235,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
                 onChangeText={text => setPrice(text)}
                 placeholder="00"
                 editable={!free}
+                maxLength={6}
               />
             </View>
 
