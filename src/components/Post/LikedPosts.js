@@ -145,7 +145,13 @@ const LikedPosts = ({
         </View>
       )
     }
-    return <PostOwnEmpty isLoading={isLoading} />
+    return (
+      <PostOwnEmpty
+        isLoading={isLoading}
+        toggleLikePost={toggleLikePost}
+        toggleMenu={toggleMenu}
+      />
+    )
   }
 
   if (type !== 'liked') {

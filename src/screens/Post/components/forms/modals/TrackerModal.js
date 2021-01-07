@@ -160,8 +160,6 @@ const TrackerModal = ({
     computedTotalPrice()
   }, [orderList])
 
-  console.log(orderDetails.history)
-
   const getOtherUserData = async userUID => {
     const userData = await Api.getUser({
       uid: userUID,

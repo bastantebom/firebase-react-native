@@ -1,18 +1,22 @@
-//import liraries
 import React, { useContext } from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { NoPost } from '@/assets/images'
 import { AppText } from '@/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { Context } from '@/context/index'
+import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
 
-// create a component
-const EmptyLikedPosts = ({ isLoading }) => {
-  const { openPostButtons } = useContext(Context)
+const EmptyLikedPosts = ({ toggleLikePost, toggleMenu }) => {
+  const { user } = useContext(UserContext)
   const navigation = useNavigation()
+
+  const handleDiscoverPress = () => {
+    toggleLikePost?.()
+    toggleMenu?.()
+    navigation.navigate('dashboard')
+  }
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
@@ -20,24 +24,29 @@ const EmptyLikedPosts = ({ isLoading }) => {
       </View>
       <View style={styles.copyWrapper}>
         <AppText textStyle="display6" customStyle={styles.centerCopy}>
-          Posts you like appears here
+          You have no liked posts yet
         </AppText>
         <AppText
-          textStyle="body3"
+          textStyle="body2"
           color={Colors.profileLink}
           customStyle={styles.centerCopy}>
           Browse through and discover nearby services and products.
         </AppText>
+        {user?.uid && (
+          <TouchableOpacity onPress={handleDiscoverPress}>
+            <AppText textStyle="body1" color={Colors.contentOcean}>
+              Discover
+            </AppText>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: normalize(16),
   },
@@ -67,5 +76,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default EmptyLikedPosts

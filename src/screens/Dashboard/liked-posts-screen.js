@@ -5,6 +5,7 @@ import Posts from './components/posts'
 import { normalize } from '@/globals'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
+import EmptyLikePost from '@/screens/Profile/components/Account/EmptyLikedPosts'
 
 /**
  * @typedef {Object} LikedPostsProps
@@ -37,7 +38,6 @@ const LikedPostsScreen = ({ navigation, route }) => {
         }),
         {}
       )
-
     setPosts(newPosts)
   }
 
@@ -147,6 +147,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
           close={navigation.goBack}
         />
       </View>
+      {!isLoadingMoreItems && !posts.length && <EmptyLikePost />}
       <Posts
         posts={posts}
         isLoadingMoreItems={isLoadingMoreItems}
