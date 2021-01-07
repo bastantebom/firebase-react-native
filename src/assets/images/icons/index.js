@@ -275,6 +275,7 @@ import VerifyNumber from './verify-number.svg'
 import VerifyEmail from './verify-email.svg'
 import UploadId from './upload-id.svg'
 import CheckActive from './check-active.svg'
+import CheckInactive from './check-inactive.svg'
 import More from './more.svg'
 import MoreOptions from './more-options.svg'
 
@@ -519,6 +520,7 @@ export const Icons = {
   Chat,
   ChatGray,
   CheckActive,
+  CheckInactive,
   ChevronRight,
   ChevronRightGray,
   CircleAdd,
