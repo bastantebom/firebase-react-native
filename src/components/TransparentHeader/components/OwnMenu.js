@@ -10,23 +10,12 @@ import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
 
-import { AppText, BottomSheetHeader, PaddingView } from '@/components'
+import { AppText, PaddingView } from '@/components'
 import { Colors, normalize } from '@/globals'
 import {
-  ProfileMute,
-  ProfileReport,
-  ProfileBlockRed,
   HeaderBackGray,
-  MenuLiked,
   MenuEdit,
-  MenuKey,
-  MenuInfo,
-  MenuChat,
-  MenuBell,
-  MenuArchive,
   MenuLogOut,
-  MenuTelephone,
-  MenuAddFriend,
   HidePost,
   AboutRed,
   BlockedUsers,
@@ -37,7 +26,6 @@ import {
   Faq,
   ContactUs,
   Notifications,
-  PayoutWallet,
 } from '@/assets/images/icons'
 
 import {
@@ -52,6 +40,7 @@ import {
   ContactServbees,
   FaqScreen,
   PayoutMethod,
+  NotificationSettings,
 } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
 
@@ -69,30 +58,21 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
   const [payoutMethod, setPayoutMethod] = useState(false)
+  const [notifications, setNotifications] = useState(false)
   const [hasPassword, setHasPassword] = useState(
     providerData.some(pd => pd.providerId === 'password')
   )
 
   const toggleEditProfile = () => setEditProfile(!editProfile)
-
   const toggleAbout = () => setAbout(!about)
-
   const toggleChangePassword = () => setChangePassword(!changePassword)
-
   const toggleBlockedUser = () => setBlockUser(!blockUser)
-
   const toggleHiddenPost = () => setHiddenPost(!hiddenPost)
-
   const toggleLikePost = () => setLikePost(!likePost)
-
   const toggleArchivedPost = () => setArchivedPost(!archivedPost)
-
   const toggleInviteFriends = () => setInviteFriends(!inviteFriends)
-
   const toggleContactUs = () => setContactServbees(!contactServbees)
-
   const toggleFaq = () => setQuestions(!questions)
-
   const togglePayoutMethod = () => setPayoutMethod(!payoutMethod)
 
   return (
@@ -118,7 +98,7 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
                 onPress={toggleMenu}
                 activeOpacity={0.7}
                 style={{ position: 'absolute', left: 0 }}>
-                <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+                <HeaderBackGray width={normalize(24)} height={normalize(24)} />
               </TouchableOpacity>
               <AppText textStyle="body3">Settings</AppText>
             </View>
@@ -259,7 +239,9 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setNotifications(true)}>
                 <View style={{ flexDirection: 'row', marginBottom: 16 }}>
                   <Notifications width={normalize(24)} height={normalize(24)} />
                   <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
@@ -448,6 +430,21 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <PayoutMethod close={togglePayoutMethod} />
+      </Modal>
+
+      <Modal
+        isVisible={notifications}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        onBackButtonPress={() => setNotifications(false)}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <NotificationSettings close={() => setNotifications(false)} />
       </Modal>
     </SafeAreaView>
   )

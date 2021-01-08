@@ -116,7 +116,7 @@ const TransparentHeader = ({
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(16)} height={normalize(16)} />
+                  <HeaderShare width={normalize(24)} height={normalize(24)} />
                 </View>
               </TouchableOpacity>
               {user ? (
@@ -144,8 +144,8 @@ const TransparentHeader = ({
                     onPress={toggleEllipsisState}>
                     <View style={[styles.circle, GlobalStyle.marginLeft1]}>
                       <Icons.HeaderEllipsis
-                        width={normalize(16)}
-                        height={normalize(16)}
+                        width={normalize(24)}
+                        height={normalize(24)}
                       />
                     </View>
                   </TouchableOpacity>
@@ -214,7 +214,7 @@ const TransparentHeader = ({
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(15)} height={normalize(15)} />
+                  <HeaderShare width={normalize(24)} height={normalize(24)} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -222,8 +222,8 @@ const TransparentHeader = ({
                 onPress={toggleEllipsisState}>
                 <View style={[styles.circle, GlobalStyle.marginLeft]}>
                   <Icons.HeaderEllipsis
-                    width={normalize(16)}
-                    height={normalize(16)}
+                    width={normalize(24)}
+                    height={normalize(24)}
                   />
                 </View>
               </TouchableOpacity>
@@ -280,15 +280,15 @@ const TransparentHeader = ({
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                 <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(15)} height={normalize(15)} />
+                  <HeaderShare width={normalize(24)} height={normalize(24)} />
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
                 <View style={[styles.circle, GlobalStyle.marginLeft]}>
                   <Icons.HeaderMenu
-                    width={normalize(16)}
-                    height={normalize(16)}
+                    width={normalize(24)}
+                    height={normalize(24)}
                   />
                 </View>
               </TouchableOpacity>
@@ -356,8 +356,8 @@ const TransparentHeader = ({
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
                 <View style={styles.circle}>
                   <Icons.HeaderBack
-                    width={normalize(16)}
-                    height={normalize(16)}
+                    width={normalize(24)}
+                    height={normalize(24)}
                   />
                 </View>
               </TouchableOpacity>
@@ -400,7 +400,7 @@ const TransparentHeader = ({
                     styles.circle,
                     GlobalStyle.marginLeft1,
                   ]}>
-                  <Icons.Share width={normalize(16)} height={normalize(16)} />
+                  <Icons.Share width={normalize(24)} height={normalize(24)} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -413,8 +413,8 @@ const TransparentHeader = ({
                       GlobalStyle.marginLeft1,
                     ]}>
                     <Icons.HeaderEllipsis
-                      width={normalize(16)}
-                      height={normalize(16)}
+                      width={normalize(24)}
+                      height={normalize(24)}
                     />
                   </View>
                 </TouchableOpacity>

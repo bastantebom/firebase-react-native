@@ -26,6 +26,7 @@ import TempAboutScreen from './Temperature/TempAbout'
 import VerificationStatus from './VerificationStatus'
 
 import PayoutMethod from './PayoutMethod/PayoutMethod'
+import NotificationSettings from './Account/NotificationSettings'
 
 export {
   About,
@@ -49,4 +50,5 @@ export {
   TempAboutScreen,
   VerificationStatus,
   PayoutMethod,
+  NotificationSettings,
 }
