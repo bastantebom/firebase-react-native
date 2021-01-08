@@ -25,7 +25,7 @@ export const generateStatus = (status, type, seller) => {
       title: seller ? 'Processing' : 'Order Confirmed',
       message: seller
         ? 'Bee ready! '
-        : 'Bee ready! Your order is now being processed. ',
+        : 'Bee patient, seller’s processing your order.',
       animation: inProgress,
       withGradient: true,
     },
@@ -62,14 +62,14 @@ export const generateStatus = (status, type, seller) => {
     cancelled: {
       title: 'Cancelled',
       message: seller
-        ? 'You cancelled the order.' //need copy
-        : 'Oh noooo. Try again or contact the SELLER. ',
+        ? 'Sorry, the buyer cancelled their order.'
+        : "Unfortunately, the buyer cancelled their order. Don't worry. Just keep on hustling.",
       animation: customerOrderCancelled,
     },
     declined: {
       title: 'Declined',
       message: seller
-        ? 'You declined the order.' //need copy
+        ? 'You declined the transaction.'
         : 'It seems your order cannot be processed. Please check with the SELLER.',
       animation: orderDeclined,
     },
@@ -77,7 +77,7 @@ export const generateStatus = (status, type, seller) => {
       title: 'Awaiting Payment',
       message: seller
         ? 'Just waiting for the customer to complete the payment.'
-        : 'The seller is waiting for your payment.', //need copy
+        : 'Last step! Once the payment is complete the order will be processed.', //need copy
       animation: awaitingPayment,
     },
   }
@@ -90,33 +90,19 @@ export const generateStatus = (status, type, seller) => {
         : 'Got your order request, Buzzybee!',
       animation: pending,
     },
-    confirmed: {
-      title: seller ? 'Processing' : 'Order Confirmed',
-      message: seller
-        ? 'Bee ready! '
-        : 'Bee ready! Your order is now being processed. ',
-      animation: pending,
-    },
     completed: {
       title: 'Completed',
       message: seller
         ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees. "
         : 'All good? Tell us all about your experience. ',
-      animation: pending,
-    },
-    cancelled: {
-      title: 'Cancelled',
-      message: seller
-        ? 'You cancelled the order.' //need copy
-        : 'Oh noooo. Try again or contact the SELLER. ',
-      animation: pending,
+      animation: customerOrderCompleted,
     },
     declined: {
       title: 'Declined',
       message: seller
-        ? '' //need copy
-        : '',
-      animation: pending,
+        ? 'You declined the request.'
+        : 'Uh-oh. Your order was declined.',
+      animation: sellerServiceCancelled,
     },
   }
 
@@ -149,14 +135,14 @@ export const generateStatus = (status, type, seller) => {
     cancelled: {
       title: 'Cancelled',
       message: seller
-        ? 'You cancelled the order.'
+        ? "Unfortunately, the buyer cancelled their order. Don't worry. Just keep on hustling."
         : 'Luh. Cancelled?! Chat with the Service Provider for details.',
       animation: sellerServiceCancelled,
     },
     declined: {
       title: 'Declined',
       message: seller
-        ? 'You declined the order'
+        ? 'You declined the transaction.'
         : 'Uh-oh. Try checking with the service provider or look for other options on Servbees.',
       animation: sellerServiceCancelled,
     },

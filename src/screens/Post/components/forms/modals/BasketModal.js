@@ -326,8 +326,14 @@ const BasketModal = ({
                 justifyContent: 'space-between',
                 paddingBottom: normalize(10),
                 display: postType !== 'need' ? 'flex' : 'none',
+                flex: 1,
               }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingRight: 16,
+                  maxWidth: '70%',
+                }}>
                 <AppText textStyle="body1">{item.quantity}x</AppText>
                 <View
                   style={{

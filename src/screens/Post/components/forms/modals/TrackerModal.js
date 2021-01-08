@@ -798,7 +798,7 @@ const TrackerModal = ({
                           justifyContent: 'space-between',
                           paddingBottom: normalize(10),
                         }}>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
                           <AppText
                             textStyle="body1"
                             color={Colors.secondaryLavenderBlue}>
