@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   SafeAreaView,
   View,
@@ -8,16 +8,18 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { useNavigation } from '@react-navigation/native'
-import { AppText, TabNavigation } from '@/components'
+import { AppText } from '@/components'
 import { Colors, normalize } from '@/globals'
 
 import Ongoing from './components/Ongoing'
-import Notifications from './components/Notifications'
 import { ChevronDown, Icons } from '@/assets/images/icons'
 import ActivitySort from './components/ActivitySort'
 import FilterSlider from './components/Search/Filters'
 import SearchBarWithFilter from './components/Search/SearchWithFilter'
 import SearchResults from './components/Search/SearchResults'
+import { Context } from '@/context'
+import { UserContext } from '@/context/UserContext'
+import _ from 'lodash'
 
 const Activity = () => {
   const [activitySort, setActivitySort] = useState(false)
@@ -25,8 +27,46 @@ const Activity = () => {
   const [activities, setActivities] = useState('all')
   const [searchBarFocused, setSearchBarFocused] = useState(false)
   const [searchValue, setSearchValue] = useState('')
+  const [groupNotifications, setGroupNotifications] = useState([])
+  const { notificationsList, initNotifications } = useContext(Context)
+  const { user } = useContext(UserContext)
 
   const navigation = useNavigation()
+
+  const assembleNotification = () => {
+    let postGroup = []
+    let idGroup = []
+    const allPending = notificationsList?.filter(
+      notif => notif?.status === 'pending'
+    )
+    const restStatus = notificationsList?.filter(
+      notif => notif?.status !== 'pending'
+    )
+    if (allPending.length)
+      postGroup = _.groupBy(allPending, notif => notif.postId)
+    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif.id)
+    const combinedGroup = { ...postGroup, ...idGroup }
+
+    const tempNotifList = []
+
+    for (const [key, notification] of Object.entries(combinedGroup)) {
+      tempNotifList.push(notification)
+    }
+
+    setGroupNotifications(tempNotifList)
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    if (notificationsList && isMounted) assembleNotification()
+    return () => (isMounted = false)
+  }, [notificationsList])
+
+  useEffect(() => {
+    let isMounted = true
+    if (isMounted) initNotifications(user?.uid)
+    return () => (isMounted = false)
+  }, [])
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
@@ -96,7 +136,7 @@ const Activity = () => {
                     borderRadius: 16,
                   }}>
                   <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                    4
+                    {groupNotifications.filter(notif => !notif[0].read).length}
                   </AppText>
                 </View>
               </TouchableOpacity>

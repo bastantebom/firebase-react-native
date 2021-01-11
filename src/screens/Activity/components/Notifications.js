@@ -14,51 +14,13 @@ import { Calendar } from '@/assets/images/icons'
 import NotificationsCard from './NotificationsCard'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
-import { Context } from '@/context'
-import _ from 'lodash'
 
 const Notifications = () => {
   const { user } = useContext(UserContext)
-  const { notificationsList, initNotifications } = useContext(Context)
   const [notifications, setNotifications] = useState({
     notificationsActivity: [1],
   })
-  const [groupNotifications, setGroupNotifications] = useState([])
   const navigation = useNavigation()
-
-  const assembleNotification = () => {
-    let postGroup = []
-    let idGroup = []
-    const allPending = notificationsList?.filter(
-      notif => notif?.status === 'pending'
-    )
-    const restStatus = notificationsList?.filter(
-      notif => notif?.status !== 'pending'
-    )
-    if (allPending.length)
-      postGroup = _.groupBy(allPending, notif => notif.postId)
-    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif.id)
-    const combinedGroup = { ...postGroup, ...idGroup }
-
-    const tempNotifList = []
-    for (const [key, notification] of Object.entries(combinedGroup)) {
-      tempNotifList.push(notification)
-    }
-    setGroupNotifications(tempNotifList)
-  }
-
-  useEffect(() => {
-    let isMounted = true
-    if (notificationsList && isMounted) assembleNotification()
-    return () => (isMounted = false)
-  }, [notificationsList])
-
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) initNotifications(user?.uid)
-    return () => (isMounted = false)
-  }, [])
-
   const openNotificationHandler = async readDocId => {
     if (!readDocId && !user?.uid) return
     const docRef = firestore()
