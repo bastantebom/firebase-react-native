@@ -284,6 +284,7 @@ import Notes from './Notes.svg'
 import Clock from './Clock.svg'
 import MOCalendar from './MO-Calendar.svg'
 import Trash from './Trash.svg'
+import TrashWhite from './trash-white.svg'
 
 import RoundEllipsisBlue from './round-ellipsis.svg'
 import WelcomeNotif from './WelcomeNotif.svg'
@@ -293,6 +294,9 @@ import Share from './share.svg'
 import MegaPhone from './megaphone.svg'
 
 import Info from './info.svg'
+import ChatBlue from './chat-blue.svg'
+import HorizontalWhiteEllipsis from './ellipsis-horizontal-white.svg'
+import WalletGray from './wallet-gray.svg'
 
 export {
   Trash,
@@ -509,6 +513,9 @@ export {
   RoundEllipsisBlue,
   WelcomeNotif,
   InfoGray,
+  ChatBlue,
+  TrashWhite,
+  HorizontalWhiteEllipsis,
 }
 
 export const Icons = {
@@ -577,4 +584,5 @@ export const Icons = {
   Warning,
   WelcomeNotif,
   MegaPhone,
+  WalletGray,
 }

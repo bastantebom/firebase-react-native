@@ -35,6 +35,8 @@ const ScreenHeaderTitle = ({
   withOptions = false,
   rightLink,
   rightLinkEvent,
+  rightIcon,
+  rightIconEvent
 }) => {
   const RenderIcon = () => {
     if (icon === 'close')
@@ -85,6 +87,15 @@ const ScreenHeaderTitle = ({
             activeOpacity={0.7}
             style={{position: 'absolute', right: 0}}>
             <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
+          </TouchableOpacity>
+        )}
+
+        {rightIcon && (
+          <TouchableOpacity
+            onPress={rightIconEvent}
+            activeOpacity={0.7}
+            style={{position: 'absolute', right: 0}}>
+            {rightIcon}
           </TouchableOpacity>
         )}
        

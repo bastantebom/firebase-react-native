@@ -62,20 +62,20 @@ const Activity = () => {
                   })
                 }>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
+                <View
+                  style={{
+                    position: 'absolute',
+                    backgroundColor: Colors.secondaryBrinkPink,
+                    top: normalize(-7),
+                    right: normalize(-8),
+                    paddingHorizontal: normalize(6),
+                    borderRadius: 16,
+                  }}>
+                  <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                    2
+                  </AppText>
+                </View>
               </TouchableOpacity>
-              <View
-                style={{
-                  position: 'absolute',
-                  backgroundColor: Colors.secondaryBrinkPink,
-                  top: normalize(-7),
-                  right: normalize(-8),
-                  paddingHorizontal: normalize(6),
-                  borderRadius: 16,
-                }}>
-                <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                  2
-                </AppText>
-              </View>
             </View>
             <View>
               <TouchableOpacity
@@ -86,20 +86,20 @@ const Activity = () => {
                   })
                 }>
                 <Icons.MegaPhone width={normalize(20)} height={normalize(20)} />
+                <View
+                  style={{
+                    position: 'absolute',
+                    backgroundColor: Colors.secondaryBrinkPink,
+                    top: normalize(-7),
+                    right: normalize(-8),
+                    paddingHorizontal: normalize(6),
+                    borderRadius: 16,
+                  }}>
+                  <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                    4
+                  </AppText>
+                </View>
               </TouchableOpacity>
-              <View
-                style={{
-                  position: 'absolute',
-                  backgroundColor: Colors.secondaryBrinkPink,
-                  top: normalize(-7),
-                  right: normalize(-8),
-                  paddingHorizontal: normalize(6),
-                  borderRadius: 16,
-                }}>
-                <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                  4
-                </AppText>
-              </View>
             </View>
           </View>
         </View>

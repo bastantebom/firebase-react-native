@@ -161,7 +161,10 @@ const ActivitiesCard = ({ info }) => {
           activeOpacity={0.7}
           onPress={() =>
             cardType === 'seller'
-              ? navigation.navigate('OngoingItem', { info })
+              ? navigation.navigate('NBTScreen', {
+                  screen: 'OngoingItem',
+                  params: { info },
+                })
               : showTrackerModal(true)
           }>
           <MarginView

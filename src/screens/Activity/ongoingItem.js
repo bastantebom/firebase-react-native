@@ -7,7 +7,6 @@ import {
   StyleSheet,
 } from 'react-native'
 
-import { useNavigation } from '@react-navigation/native'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
 import {
@@ -16,14 +15,19 @@ import {
   ChevronUp,
   ChevronDown,
   GreenTick,
+  Icons,
+  PostClock,
+  PayoutWallet,
 } from '@/assets/images/icons'
 
 import ActivitiesCard from './components/ActivitiesCard'
 import ItemCard from './components/ItemCard'
 import Api from '@/services/Api'
 
-const OngoingItem = ({ route }) => {
-  const navigation = useNavigation()
+const OngoingItem = ({ route, navigation }) => {
+  const [pendingPayment, showPendingPayment] = useState(false)
+  const [requests, showRequests] = useState(false)
+  const [ongoing, showOngoing] = useState(false)
   const [readyForDelivery, showReadyForDelivery] = useState(false)
   const [readyForPickup, showReadyForPickup] = useState(false)
 
@@ -85,102 +89,184 @@ const OngoingItem = ({ route }) => {
     <SafeAreaView style={styles.contentWrapper}>
       <ScrollView>
         <TransitionIndicator loading={isPendingLoading} />
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderBottomLeftRadius: 8,
-            borderBottomRightRadius: 8,
-            paddingBottom: 8,
-          }}>
+        <View style={styles.itemCardContainer}>
           <ScreenHeaderTitle
             close={() => navigation.goBack()}
-            title={title}
+            title={name}
             paddingSize={2}
             iconSize={normalize(16)}
+            rightIcon={<Icons.ChatGray />}
+            rightIconEvent={() =>
+              navigation.navigate('NBTScreen', { screen: 'PostChat' })
+            }
           />
           <ActivitiesCard info={route?.params?.info} />
         </View>
-        {pending?.filter(order => order.cardType === 'pending').length > 0 && (
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 8,
-              marginVertical: normalize(10),
-              paddingVertical: normalize(30),
-              paddingHorizontal: normalize(16),
-            }}>
-            <View
+
+        {pending?.filter(order => order.cardType === 'pendingPayment').length >
+          0 && (
+          <View style={styles.itemCard}>
+            <TouchableOpacity
+              onPress={() => showPendingPayment(!pendingPayment)}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                alignItems: 'center',
               }}>
               <View style={styles.iconText}>
-                <Chat />
+                <Icons.WalletGray
+                  width={normalize(18)}
+                  height={normalize(18)}
+                />
+                <AppText
+                  textStyle="body1medium"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Awaiting Payment
+                </AppText>
+                <View
+                  style={[
+                    styles.iconBadge,
+                    { backgroundColor: Colors.secondaryBrinkPink },
+                  ]}>
+                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
+                    {
+                      pending?.filter(
+                        order => order.cardType === 'pendingPayment'
+                      ).length
+                    }
+                  </AppText>
+                </View>
+              </View>
+              {pendingPayment ? (
+                <ChevronUp width={normalize(16)} height={normalize(16)} />
+              ) : (
+                <ChevronDown width={normalize(16)} height={normalize(16)} />
+              )}
+            </TouchableOpacity>
+            {pendingPayment && (
+              <View style={{ marginTop: normalize(8) }}>
+                {pending
+                  ?.filter(order => order.cardType === 'pendingPayment')
+                  .map((item, i) => {
+                    return (
+                      <View key={i}>
+                        <ItemCard item={item} />
+                      </View>
+                    )
+                  })}
+              </View>
+            )}
+          </View>
+        )}
+
+        {pending?.filter(order => order.cardType === 'pending').length > 0 && (
+          <View style={styles.itemCard}>
+            <TouchableOpacity
+              onPress={() => showRequests(!requests)}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <View style={styles.iconText}>
+                <Icons.ChatGray />
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
                   Requests
                 </AppText>
+                <View
+                  style={[
+                    styles.iconBadge,
+                    { backgroundColor: Colors.secondaryDarkTangerine },
+                  ]}>
+                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
+                    {
+                      pending?.filter(order => order.cardType === 'pending')
+                        .length
+                    }
+                  </AppText>
+                </View>
               </View>
-              <TouchableOpacity>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  View All
-                </AppText>
-              </TouchableOpacity>
-            </View>
-            {pending
-              ?.filter(order => order.cardType === 'pending')
-              .map((item, i) => {
-                return (
-                  <View key={i}>
-                    <ItemCard item={item} />
-                  </View>
-                )
-              })}
+              {requests ? (
+                <ChevronUp width={normalize(16)} height={normalize(16)} />
+              ) : (
+                <ChevronDown width={normalize(16)} height={normalize(16)} />
+              )}
+            </TouchableOpacity>
+            {requests && (
+              <View style={{ marginTop: normalize(8) }}>
+                {pending
+                  ?.filter(order => order.cardType === 'pending')
+                  .map((item, i) => {
+                    return (
+                      <View key={i}>
+                        <ItemCard item={item} />
+                      </View>
+                    )
+                  })}
+              </View>
+            )}
           </View>
         )}
+
         {pending?.filter(
           order => order.cardType === 'confirmed' || order.cardType === 'paid'
         ).length > 0 && (
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 8,
-              marginVertical: normalize(10),
-              paddingVertical: normalize(30),
-              paddingHorizontal: normalize(16),
-            }}>
-            <View
+          <View style={styles.itemCard}>
+            <TouchableOpacity
+              onPress={() => showOngoing(!ongoing)}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                alignItems: 'center',
               }}>
               <View style={styles.iconText}>
-                <Chat />
+                <PostClock />
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
                   {type === 'sell' ? 'Confirmed and Paid' : 'Ongoing'}
                 </AppText>
+                <View
+                  style={[
+                    styles.iconBadge,
+                    { backgroundColor: Colors.secondaryShamrock },
+                  ]}>
+                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
+                    {
+                      pending?.filter(
+                        order =>
+                          order.cardType === 'confirmed' ||
+                          order.cardType === 'paid'
+                      ).length
+                    }
+                  </AppText>
+                </View>
               </View>
-              <TouchableOpacity>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  View All
-                </AppText>
-              </TouchableOpacity>
-            </View>
-            {pending
-              ?.filter(
-                order =>
-                  order.cardType === 'confirmed' || order.cardType === 'paid'
-              )
-              .map((item, i) => {
-                return (
-                  <View key={i}>
-                    <ItemCard item={item} />
-                  </View>
-                )
-              })}
+              {ongoing ? (
+                <ChevronUp width={normalize(16)} height={normalize(16)} />
+              ) : (
+                <ChevronDown width={normalize(16)} height={normalize(16)} />
+              )}
+            </TouchableOpacity>
+            {ongoing && (
+              <View style={{ marginTop: normalize(8) }}>
+                {pending
+                  ?.filter(
+                    order =>
+                      order.cardType === 'confirmed' ||
+                      order.cardType === 'paid'
+                  )
+                  .map((item, i) => {
+                    return (
+                      <View key={i}>
+                        <ItemCard item={item} />
+                      </View>
+                    )
+                  })}
+              </View>
+            )}
           </View>
         )}
 
@@ -196,7 +282,7 @@ const OngoingItem = ({ route }) => {
               paddingHorizontal: normalize(16),
             }}>
             <View style={styles.iconText}>
-              <PostCash />
+              <PostClock />
               <AppText
                 textStyle="body1medium"
                 customStyle={{ marginLeft: normalize(10) }}>
@@ -336,6 +422,13 @@ const OngoingItem = ({ route }) => {
           </View>
         )}
       </ScrollView>
+      <View style={styles.bottomBtnContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('Past')}>
+          <AppText textStyle="body1medium" color={Colors.contentOcean}>
+            View Past Orders
+          </AppText>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
@@ -347,7 +440,35 @@ const styles = StyleSheet.create({
   iconText: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: normalize(10),
+  },
+  itemCardContainer: {
+    backgroundColor: 'white',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingBottom: 8,
+  },
+  itemCard: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginTop: normalize(10),
+    paddingVertical: normalize(16),
+    paddingHorizontal: normalize(16),
+  },
+  iconBadge: {
+    borderRadius: 50,
+    marginLeft: normalize(8),
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalize(18),
+    height: normalize(18),
+  },
+  bottomBtnContainer: {
+    marginTop: normalize(8),
+    paddingVertical: normalize(25),
+    paddingHorizontal: normalize(25),
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
+    backgroundColor: 'white',
   },
 })
 

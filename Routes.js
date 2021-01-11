@@ -50,6 +50,7 @@ import { OngoingItem } from '@/screens/Activity'
 import GuestActivity from '@/screens/Activity/components/GuestActivity'
 
 import ChatHouse from '@/screens/Chat/chat-house'
+import PostChat from '@/screens/Chat/post-chat'
 
 import {
   AlmostThere,
@@ -142,6 +143,11 @@ function NoBottomTabScreens() {
         component={Notifications}
       />
       <NoBottomTabScreenStack.Screen name="ChatHouse" component={ChatHouse} />
+      <NoBottomTabScreenStack.Screen name="PostChat" component={PostChat} />
+      <NoBottomTabScreenStack.Screen
+        name="OngoingItem"
+        component={OngoingItem}
+      />
     </NoBottomTabScreenStack.Navigator>
   )
 }
@@ -248,6 +254,7 @@ function ActivityStackScreen() {
         <ActivityStack.Screen name="Notifications" component={Notifications} />
         <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
         <ActivityStack.Screen name="Chat" component={ChatScreen} />
+        <ActivityStack.Screen name="PostChat" component={PostChat} />
       </ActivityStack.Navigator>
     )
   } else {
