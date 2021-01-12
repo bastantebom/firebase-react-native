@@ -126,19 +126,25 @@ const Activity = () => {
                   })
                 }>
                 <Icons.MegaPhone width={normalize(20)} height={normalize(20)} />
-                <View
-                  style={{
-                    position: 'absolute',
-                    backgroundColor: Colors.secondaryBrinkPink,
-                    top: normalize(-7),
-                    right: normalize(-8),
-                    paddingHorizontal: normalize(6),
-                    borderRadius: 16,
-                  }}>
-                  <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                    {groupNotifications.filter(notif => !notif[0].read).length}
-                  </AppText>
-                </View>
+                {groupNotifications.filter(notif => !notif[0].read).length >
+                  0 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      backgroundColor: Colors.secondaryBrinkPink,
+                      top: normalize(-7),
+                      right: normalize(-8),
+                      paddingHorizontal: normalize(6),
+                      borderRadius: 16,
+                    }}>
+                    <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                      {
+                        groupNotifications.filter(notif => !notif[0].read)
+                          .length
+                      }
+                    </AppText>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           </View>

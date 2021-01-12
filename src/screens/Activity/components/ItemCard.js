@@ -140,40 +140,42 @@ const ItemCard = ({ item }) => {
               No. of services: {item.numOfItems}
             </AppText>
           )}
-          <View
-            style={{
-              backgroundColor: Colors.secondarySolitude,
-              borderRadius: 4,
-              padding: normalize(8),
-              marginTop: normalize(8),
-            }}>
-            <View style={{ flexDirection: 'row' }}>
-              <ChatBlue />
-              <AppText
-                textStyle="caption"
-                color={Colors.contentOcean}
-                customStyle={{ marginLeft: normalize(6) }}>
-                sent you a message
-              </AppText>
-            </View>
+          <TouchableOpacity>
             <View
               style={{
-                marginTop: normalize(4),
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                backgroundColor: Colors.secondarySolitude,
+                borderRadius: 4,
+                padding: normalize(8),
+                marginTop: normalize(8),
               }}>
-              <AppText
-                textStyle="caption2"
-                customStyle={{ width: '90%' }}
-                numberOfLines={1}>
-                Message here
-              </AppText>
-              <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
-                1s
-              </AppText>
+              <View style={{ flexDirection: 'row' }}>
+                <ChatBlue />
+                <AppText
+                  textStyle="caption"
+                  color={Colors.contentOcean}
+                  customStyle={{ marginLeft: normalize(6) }}>
+                  sent you a message
+                </AppText>
+              </View>
+              <View
+                style={{
+                  marginTop: normalize(4),
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <AppText
+                  textStyle="caption2"
+                  customStyle={{ width: '90%' }}
+                  numberOfLines={1}>
+                  Message here
+                </AppText>
+                <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
+                  1s
+                </AppText>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
       <Modal

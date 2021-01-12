@@ -200,19 +200,20 @@ const PostChat = () => {
         withOptions
         openOptions={() => setShowMultiChatOptions(true)}
       />
-      <View
-        style={{
-          display: multipleSelect ? 'flex' : 'none',
-          position: multipleSelect ? 'absolute' : 'relative',
-          top: normalize(25),
-          left: normalize(16),
-        }}>
-        <TouchableOpacity onPress={() => setMultipleSelect(false)}>
-          <AppText textStyle="button3" color={Colors.red}>
-            Cancel
-          </AppText>
-        </TouchableOpacity>
-      </View>
+      {multipleSelect && (
+        <View
+          style={{
+            position: 'absolute',
+            top: normalize(25),
+            left: normalize(16),
+          }}>
+          <TouchableOpacity onPress={() => setMultipleSelect(false)}>
+            <AppText textStyle="button3" color={Colors.red}>
+              Cancel
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.postChatHeader}>
         <View style={{ flexDirection: 'row', paddingTop: normalize(15) }}>
           <PostParcelBlue />

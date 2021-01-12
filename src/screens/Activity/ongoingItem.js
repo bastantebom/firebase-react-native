@@ -30,6 +30,7 @@ const OngoingItem = ({ route, navigation }) => {
   const [ongoing, showOngoing] = useState(false)
   const [readyForDelivery, showReadyForDelivery] = useState(false)
   const [readyForPickup, showReadyForPickup] = useState(false)
+  const [completed, showCompleted] = useState(false)
 
   const { orders, name, title, type, postData } = route?.params?.info
   const [pending, setPending] = useState([])
@@ -95,7 +96,24 @@ const OngoingItem = ({ route, navigation }) => {
             title={name}
             paddingSize={2}
             iconSize={normalize(16)}
-            rightIcon={<Icons.ChatGray />}
+            rightIcon={
+              <View>
+                <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
+                <View
+                  style={{
+                    position: 'absolute',
+                    backgroundColor: Colors.secondaryBrinkPink,
+                    top: normalize(-7),
+                    right: normalize(-8),
+                    paddingHorizontal: normalize(6),
+                    borderRadius: 16,
+                  }}>
+                  <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                    2
+                  </AppText>
+                </View>
+              </View>
+            }
             rightIconEvent={() =>
               navigation.navigate('NBTScreen', { screen: 'PostChat' })
             }
@@ -273,25 +291,10 @@ const OngoingItem = ({ route, navigation }) => {
         {(pending?.filter(order => order.cardType === 'delivering').length >
           0 ||
           pending?.filter(order => order.cardType === 'pickup').length > 0) && (
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 8,
-              marginVertical: normalize(10),
-              paddingVertical: normalize(30),
-              paddingHorizontal: normalize(16),
-            }}>
-            <View style={styles.iconText}>
-              <PostClock />
-              <AppText
-                textStyle="body1medium"
-                customStyle={{ marginLeft: normalize(10) }}>
-                Ongoing
-              </AppText>
-            </View>
+          <View style={styles.itemCard}>
             {pending?.filter(order => order.cardType === 'delivering').length >
               0 && (
-              <View style={{ marginBottom: normalize(20) }}>
+              <View>
                 <TouchableOpacity
                   onPress={() => showReadyForDelivery(!readyForDelivery)}>
                   <View
@@ -300,15 +303,26 @@ const OngoingItem = ({ route, navigation }) => {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                     }}>
-                    <AppText textStyle="body2medium">
-                      Ready for Delivery (
-                      {
-                        pending?.filter(
-                          order => order.cardType === 'delivering'
-                        ).length
-                      }
-                      )
-                    </AppText>
+                    <View style={styles.iconText}>
+                      <AppText textStyle="body1medium">
+                        Ready for Delivery
+                      </AppText>
+                      <View
+                        style={[
+                          styles.iconBadge,
+                          { backgroundColor: Colors.secondaryShamrock },
+                        ]}>
+                        <AppText
+                          textStyle="metadata"
+                          color={Colors.neutralsWhite}>
+                          {
+                            pending?.filter(
+                              order => order.cardType === 'delivering'
+                            ).length
+                          }
+                        </AppText>
+                      </View>
+                    </View>
                     {readyForDelivery ? (
                       <ChevronUp width={normalize(16)} height={normalize(16)} />
                     ) : (
@@ -345,14 +359,26 @@ const OngoingItem = ({ route, navigation }) => {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                     }}>
-                    <AppText textStyle="body2medium">
-                      Ready for Pick up (
-                      {
-                        pending?.filter(order => order.cardType === 'pickup')
-                          .length
-                      }
-                      )
-                    </AppText>
+                    <View style={styles.iconText}>
+                      <AppText textStyle="body1medium">
+                        Ready for Pick up
+                      </AppText>
+                      <View
+                        style={[
+                          styles.iconBadge,
+                          { backgroundColor: Colors.secondaryShamrock },
+                        ]}>
+                        <AppText
+                          textStyle="metadata"
+                          color={Colors.neutralsWhite}>
+                          {
+                            pending?.filter(
+                              order => order.cardType === 'pickup'
+                            ).length
+                          }
+                        </AppText>
+                      </View>
+                    </View>
                     {readyForPickup ? (
                       <ChevronUp width={normalize(16)} height={normalize(16)} />
                     ) : (
@@ -383,42 +409,42 @@ const OngoingItem = ({ route, navigation }) => {
 
         {pending?.filter(order => order.cardType === 'completed').length >
           0 && (
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderTopLeftRadius: 8,
-              borderTopRightRadius: 8,
-              paddingVertical: normalize(30),
-              paddingHorizontal: normalize(16),
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <View style={styles.iconText}>
-                <GreenTick />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Completed
-                </AppText>
+          <View style={styles.itemCard}>
+            <TouchableOpacity onPress={() => showCompleted(!completed)}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View style={styles.iconText}>
+                  <GreenTick />
+                  <AppText
+                    textStyle="body1medium"
+                    customStyle={{ marginLeft: normalize(10) }}>
+                    Completed
+                  </AppText>
+                </View>
+                {completed ? (
+                  <ChevronUp width={normalize(16)} height={normalize(16)} />
+                ) : (
+                  <ChevronDown width={normalize(16)} height={normalize(16)} />
+                )}
               </View>
-              <TouchableOpacity>
-                <AppText textStyle="button2" color={Colors.contentOcean}>
-                  View All
-                </AppText>
-              </TouchableOpacity>
-            </View>
-            {pending
-              ?.filter(order => order.cardType === 'completed')
-              .map((item, i) => {
-                return (
-                  <View key={i}>
-                    <ItemCard item={item} />
-                  </View>
-                )
-              })}
+            </TouchableOpacity>
+            {completed && (
+              <View style={{ marginTop: normalize(8) }}>
+                {pending
+                  ?.filter(order => order.cardType === 'completed')
+                  .map((item, i) => {
+                    return (
+                      <View key={i}>
+                        <ItemCard item={item} />
+                      </View>
+                    )
+                  })}
+              </View>
+            )}
           </View>
         )}
       </ScrollView>

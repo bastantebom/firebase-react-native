@@ -92,39 +92,14 @@ const ChatHouse = () => {
       post:
         'Wayne’s Burgers and Smoothies Wayne’s Burgers and Smoothies Wayne’s Burgers and Smoothies',
       icon: require('@/assets/images/burger.jpg'),
-      post_chat: [
-        {
-          user_icon: require('@/assets/images/default-profile.png'),
-          user_name: 'Grae',
-          message: 'Hello! I’d like to make amendme..',
-        },
-        {
-          user_icon: require('@/assets/images/default-profile.png'),
-          user_name: 'Trizh',
-          message: 'Would like to follow up an order?????????????',
-        },
-        {
-          user_icon: require('@/assets/images/default-profile.png'),
-          user_name: 'Gail',
-          message:
-            'Would like to follow up an order Would like to follow up an order',
-        },
-        {
-          user_icon: require('@/assets/images/default-profile.png'),
-          user_name: 'Pia',
-          message: 'Would like to follow up an order',
-        },
-      ],
     },
     {
       post: "Wayne's Desserts",
       icon: require('@/assets/images/burger.jpg'),
-      post_chat: [],
     },
     {
       post: "Wayne's Desserts",
       icon: require('@/assets/images/burger.jpg'),
-      post_chat: [],
     },
   ]
 
@@ -217,60 +192,6 @@ const ChatHouse = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-
-              {post.post_chat.map((item, i) => {
-                return (
-                  <TouchableOpacity
-                    key={i}
-                    activeOpacity={0.7}
-                    onPress={() => {}}
-                    style={{
-                      flex: 1,
-                      flexDirection: 'row',
-                      marginBottom: normalize(16),
-                      marginLeft: normalize(80),
-                    }}>
-                    <Image
-                      source={item.user_icon}
-                      style={{
-                        width: normalize(25),
-                        height: normalize(25),
-                        borderRadius: 50,
-                        marginRight: normalize(8),
-                      }}
-                    />
-                    <View style={{ flex: 1 }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}>
-                        <AppText textStyle="caption2">{item.user_name}</AppText>
-                        <AppText
-                          textStyle="metadata"
-                          color={Colors.contentPlaceholder}>
-                          1m
-                        </AppText>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}>
-                        <AppText
-                          textStyle="caption2"
-                          customStyle={{ width: '85%' }}
-                          numberOfLines={1}>
-                          {item.message}
-                        </AppText>
-                        <BlueDot />
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                )
-              })}
             </View>
           )
         })}

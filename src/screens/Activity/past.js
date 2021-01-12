@@ -95,6 +95,7 @@ const Past = () => {
         close={() => navigation.goBack()}
         title="Past Activities"
         paddingSize={3}
+        iconSize={normalize(16)}
       />
       {!past.length && !isLoading ? (
         <View
