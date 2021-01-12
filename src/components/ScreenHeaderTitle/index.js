@@ -1,7 +1,7 @@
-import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import React from 'react'
+import { View, TouchableOpacity } from 'react-native'
 
-import {AppText, PaddingView} from '@/components';
+import { AppText, PaddingView } from '@/components'
 
 import {
   HeaderBackGray,
@@ -10,9 +10,9 @@ import {
   QRDownload,
   QRShare,
   Close,
-  VerticalEllipsis
-} from '@/assets/images/icons';
-import {Colors, normalize} from '@/globals';
+  VerticalEllipsis,
+} from '@/assets/images/icons'
+import { Colors, normalize } from '@/globals'
 
 /**
  *
@@ -36,7 +36,7 @@ const ScreenHeaderTitle = ({
   rightLink,
   rightLinkEvent,
   rightIcon,
-  rightIconEvent
+  rightIconEvent,
 }) => {
   const RenderIcon = () => {
     if (icon === 'close')
@@ -45,7 +45,7 @@ const ScreenHeaderTitle = ({
           width={normalize(iconSize)}
           height={normalize(iconSize)}
         />
-      );
+      )
 
     if (icon === 'back')
       return (
@@ -53,18 +53,18 @@ const ScreenHeaderTitle = ({
           width={normalize(iconSize)}
           height={normalize(iconSize)}
         />
-      );
+      )
 
     return (
       <HeaderBackGray
         width={normalize(iconSize)}
         height={normalize(iconSize)}
       />
-    );
-  };
+    )
+  }
 
   return (
-    <PaddingView paddingSize={paddingSize} style={{width: '100%'}}>
+    <PaddingView paddingSize={paddingSize} style={{ width: '100%' }}>
       <View
         style={{
           position: 'relative',
@@ -75,17 +75,19 @@ const ScreenHeaderTitle = ({
         <TouchableOpacity
           onPress={close}
           activeOpacity={0.7}
-          style={{position: 'absolute', left: 0}}>
+          style={{ position: 'absolute', left: 0 }}>
           <RenderIcon />
         </TouchableOpacity>
-        <AppText customStyle={{textTransform: 'capitalize'}} textStyle="body3">
+        <AppText
+          customStyle={{ textTransform: 'capitalize' }}
+          textStyle="body3">
           {title}
         </AppText>
         {withOptions && (
           <TouchableOpacity
             onPress={openOptions}
             activeOpacity={0.7}
-            style={{position: 'absolute', right: 0}}>
+            style={{ position: 'absolute', right: 0 }}>
             <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
           </TouchableOpacity>
         )}
@@ -94,16 +96,16 @@ const ScreenHeaderTitle = ({
           <TouchableOpacity
             onPress={rightIconEvent}
             activeOpacity={0.7}
-            style={{position: 'absolute', right: 0}}>
+            style={{ position: 'absolute', right: 0 }}>
             {rightIcon}
           </TouchableOpacity>
         )}
-       
+
         {rightLink ? (
           <TouchableOpacity
             onPress={rightLinkEvent}
             activeOpacity={0.7}
-            style={{position: 'absolute', right: 0}}>
+            style={{ position: 'absolute', right: 0 }}>
             <AppText textStyle="captionConstant" color={Colors.contentOcean}>
               {rightLink}
             </AppText>
@@ -111,7 +113,7 @@ const ScreenHeaderTitle = ({
         ) : null}
       </View>
     </PaddingView>
-  );
-};
+  )
+}
 
-export default ScreenHeaderTitle;
+export default ScreenHeaderTitle

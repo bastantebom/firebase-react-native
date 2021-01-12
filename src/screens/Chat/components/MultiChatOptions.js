@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { AppButton, AppText } from '@/components'
 
 import { normalize, Colors } from '@/globals'
-import { EyeDark, ProfileMute, Trash } from '@/assets/images/icons'
+import { EyeDark } from '@/assets/images/icons'
 
 const MultiChatOptions = ({ close, options }) => {
   const onSelectOption = option => {
@@ -20,29 +20,9 @@ const MultiChatOptions = ({ close, options }) => {
 
       <TouchableOpacity
         style={styles.optionWrapper}
-        onPress={() => onSelectOption('markRead')}>
-        <EyeDark />
+        onPress={() => onSelectOption(true)}>
         <AppText textStyle="body2" customStyle={{ marginLeft: normalize(10) }}>
-          Mark as Read
-        </AppText>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.optionWrapper}
-        onPress={() => onSelectOption('mute')}>
-        <ProfileMute />
-        <AppText textStyle="body2" customStyle={{ marginLeft: normalize(10) }}>
-          Mute
-        </AppText>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.optionWrapper}
-        onPress={() => onSelectOption('delete')}>
-        <Trash />
-        <AppText
-          textStyle="body2"
-          customStyle={{ marginLeft: normalize(10) }}
-          color={Colors.red}>
-          Delete message
+          Select multiple
         </AppText>
       </TouchableOpacity>
       <AppButton

@@ -13,7 +13,7 @@ import {
   PaddingView,
   TransitionIndicator,
 } from '@/components'
-import { normalize } from '@/globals'
+import { Colors, normalize } from '@/globals'
 import { Calendar, ArrowLeft } from '@/assets/images/icons'
 import ActivitiesCard from '../Activity/components/ActivitiesCard'
 import { UserContext } from '@/context/UserContext'
@@ -27,28 +27,6 @@ const Past = () => {
   const [past, setPast] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const { user, userInfo } = useContext(UserContext)
-
-  const oldNotificationsCards = [
-    {
-      category: 'Follow',
-      badge: 'Red',
-      name: 'Trisha Paredes',
-      time: '3w',
-    },
-    {
-      category: 'Approve',
-      badge: 'Yellow',
-      hiveName: 'Pixel',
-      time: '4m',
-    },
-    {
-      category: 'Default',
-      name: 'Wayne',
-      message:
-        "Hey Wayne! Don't forget, June 21st is Father's Day 🎁 Check out and shop our collection of brands that dads love.",
-      time: '6m',
-    },
-  ]
 
   const initOwnPast = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
@@ -113,12 +91,11 @@ const Past = () => {
   return (
     <SafeAreaView style={styles.contentWrapper}>
       <TransitionIndicator loading={isLoading} />
-      <PaddingView paddingSize={3}>
-        <ScreenHeaderTitle
-          close={() => navigation.goBack()}
-          title="Past Activities"
-        />
-      </PaddingView>
+      <ScreenHeaderTitle
+        close={() => navigation.goBack()}
+        title="Past Activities"
+        paddingSize={3}
+      />
       {!past.length && !isLoading ? (
         <View
           style={{
@@ -126,16 +103,16 @@ const Past = () => {
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
-            padding: 24,
           }}>
           <IllustActivity width={normalize(250)} height={normalize(200)} />
           <AppText
-            textStyle="body1"
+            textStyle="display5"
+            color={Colors.primaryMidnightBlue}
             customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
-            Get Active and Whatnots {'\n'} & Click Like or Whatever eh!
+            Start buzzing on Servbees!
           </AppText>
           <View style={styles.descHolder}>
-            <AppText customStyle={{ textAlign: 'center' }}>
+            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
               Get projects, buy and sell items, start your own online business,
               or just bookmark posts—do all these and more on Servbees.
             </AppText>
@@ -190,8 +167,6 @@ const Past = () => {
 const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
-    paddingTop: normalize(16),
-    paddingHorizontal: normalize(16),
     backgroundColor: 'white',
   },
   descHolder: {

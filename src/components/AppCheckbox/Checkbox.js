@@ -6,11 +6,22 @@ import { normalize, Colors } from '@/globals'
 
 import { CheckboxCheck } from '@/assets/images/icons'
 
-const Checkbox = ({ Icon, label, style, value, valueChangeHandler }) => {
+const Checkbox = ({
+  Icon,
+  label,
+  style,
+  value,
+  valueChangeHandler,
+  children,
+  containerStyle,
+  checkboxStyle,
+  round,
+}) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() => valueChangeHandler(!value)}>
+      onPress={() => valueChangeHandler(!value)}
+      style={{ ...containerStyle }}>
       <View
         style={{
           flexDirection: 'row',
@@ -42,14 +53,25 @@ const Checkbox = ({ Icon, label, style, value, valueChangeHandler }) => {
             backgroundColor: value
               ? Colors.primaryCream
               : Colors.neutralsWhitesmoke,
+            ...checkboxStyle,
           }}>
-          {value ? (
+          {value && round ? (
+            <View
+              style={{
+                backgroundColor: Colors.checkboxBorderActive,
+                width: normalize(8),
+                height: normalize(8),
+                borderRadius: 50,
+              }}
+            />
+          ) : value ? (
             <CheckboxCheck width={normalize(7.83)} height={normalize(7.26)} />
           ) : (
             <></>
           )}
         </View>
       </View>
+      {children}
     </TouchableOpacity>
   )
 }

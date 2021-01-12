@@ -6,7 +6,7 @@ import { AppButton, AppText } from '@/components'
 import { normalize, Colors } from '@/globals'
 import { EyeDark, ProfileMute, Trash } from '@/assets/images/icons'
 
-const ChatOptions = ({ close }) => {
+const ChatOptions = ({ close, deleteMessage }) => {
   return (
     <View style={styles.container}>
       <View style={{ alignItems: 'center', paddingBottom: normalize(35) }}>
@@ -25,7 +25,7 @@ const ChatOptions = ({ close }) => {
           Mute
         </AppText>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.optionWrapper}>
+      <TouchableOpacity style={styles.optionWrapper} onPress={deleteMessage}>
         <Trash />
         <AppText
           textStyle="body2"

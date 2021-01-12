@@ -17,7 +17,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Modal from 'react-native-modal'
 
 import { normalize, Colors } from '@/globals'
-import { AppRadio, AppText, ScreenHeaderTitle } from '@/components'
+import { AppCheckbox, AppText, ScreenHeaderTitle } from '@/components'
 import {
   BlueDot,
   PostParcelBlue,
@@ -38,6 +38,7 @@ const PostChat = () => {
 
   const messages = [
     {
+      id: 0,
       user_name: 'Trizh',
       icon: require('@/assets/images/default-profile.png'),
       message:
@@ -45,24 +46,28 @@ const PostChat = () => {
       read: false,
     },
     {
+      id: 1,
       user_name: 'Gail',
       icon: require('@/assets/images/default-profile.png'),
       message: 'Okay po',
       read: false,
     },
     {
+      id: 2,
       user_name: 'Pia',
       icon: require('@/assets/images/default-profile.png'),
       message: 'Do you have Keto-friendly set?',
       read: false,
     },
     {
+      id: 3,
       user_name: 'Grae',
       icon: require('@/assets/images/default-profile.png'),
       message: 'Hello! I’d like to make amendments to my order please :)',
       read: true,
     },
     {
+      id: 4,
       user_name: 'Jayson',
       icon: require('@/assets/images/default-profile.png'),
       message:
@@ -70,6 +75,7 @@ const PostChat = () => {
       read: true,
     },
     {
+      id: 5,
       user_name: 'Rey',
       icon: require('@/assets/images/default-profile.png'),
       message: 'sent you an attachment',
@@ -77,18 +83,22 @@ const PostChat = () => {
     },
   ]
 
-  const [value, setValue] = useState('')
+  const [filters, setFilters] = useState({
+    type: [],
+  })
 
-  const handleChange = value => {
-    setValue(value)
-  }
-
+  const [multipleSelect, setMultipleSelect] = useState(false)
+  const [showCancelModal, setShowCancelModal] = useState(false)
   const [showChatOptions, setShowChatOptions] = useState(false)
   const [showMultiChatOptions, setShowMultiChatOptions] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
   const [cancelPosition] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
+
+  const cancelModalToggle = () => {
+    setShowCancelModal(!showCancelModal)
+  }
 
   const onFocus = () => {
     Animated.parallel([
@@ -142,8 +152,8 @@ const PostChat = () => {
 
   const renderRightActions = dragX => {
     const trans = dragX.interpolate({
-      inputRange: [-200, -100, 100, 200],
-      outputRange: [-200, -100, 100, 200],
+      inputRange: [0, 1, 1, 1],
+      outputRange: [100, 1, -1, 0],
     })
     return (
       <Animated.View
@@ -163,6 +173,7 @@ const PostChat = () => {
         </RectButton>
 
         <RectButton
+          onPress={cancelModalToggle}
           style={[
             styles.swipeOption,
             { backgroundColor: Colors.secondaryBrinkPink },
@@ -175,18 +186,33 @@ const PostChat = () => {
     )
   }
 
-  const getOption = option => {}
+  const getOption = option => {
+    setMultipleSelect(option)
+  }
 
   return (
     <SafeAreaView style={styles.parent}>
       <ScreenHeaderTitle
         title="Post Chats"
-        iconSize={normalize(16)}
+        iconSize={multipleSelect ? 0 : normalize(16)}
         paddingSize={3}
         close={() => navigation.goBack()}
         withOptions
         openOptions={() => setShowMultiChatOptions(true)}
       />
+      <View
+        style={{
+          display: multipleSelect ? 'flex' : 'none',
+          position: multipleSelect ? 'absolute' : 'relative',
+          top: normalize(25),
+          left: normalize(16),
+        }}>
+        <TouchableOpacity onPress={() => setMultipleSelect(false)}>
+          <AppText textStyle="button3" color={Colors.red}>
+            Cancel
+          </AppText>
+        </TouchableOpacity>
+      </View>
       <View style={styles.postChatHeader}>
         <View style={{ flexDirection: 'row', paddingTop: normalize(15) }}>
           <PostParcelBlue />
@@ -215,58 +241,100 @@ const PostChat = () => {
         {messages.map((chat, i) => {
           return (
             <Swipeable renderRightActions={renderRightActions} key={i}>
-              <View style={{ marginBottom: normalize(15) }}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => {}}
-                  style={{
-                    flexDirection: 'row',
-                    paddingHorizontal: normalize(16),
-                  }}>
-                  <Image source={chat.icon} style={styles.icon} />
-                  <View style={{ flex: 1 }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <AppText
-                        textStyle="caption2"
-                        customStyle={{
-                          paddingRight: 15,
-                          width: '90%',
-                          marginBottom: normalize(4),
-                        }}
-                        numberOfLines={1}>
-                        {chat.user_name}
-                      </AppText>
-                      <AppText
-                        textStyle="metadata"
-                        color={Colors.contentPlaceholder}>
-                        1m
-                      </AppText>
+              <AppCheckbox
+                style={{
+                  flexDirection: 'row-reverse',
+                  paddingRight: normalize(16),
+                  paddingLeft: normalize(8),
+                  display: multipleSelect ? 'flex' : 'none',
+                }}
+                containerStyle={{ flexDirection: 'row', alignItems: 'center' }}
+                checkboxStyle={{ borderRadius: 50, borderWidth: 2 }}
+                value={filters.type.includes(chat.id)}
+                valueChangeHandler={value => {
+                  const currentSelectedChats = filters.type
+                  if (value) currentSelectedChats.push(chat.id)
+                  else
+                    currentSelectedChats.splice(
+                      filters.type.indexOf(chat.id),
+                      1
+                    )
+                  setFilters(filters => ({
+                    ...filters,
+                    type: [...new Set(currentSelectedChats)],
+                  }))
+                }}
+                round>
+                <View style={{ marginBottom: normalize(15), flex: 1 }}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => {}}
+                    style={{
+                      flexDirection: 'row',
+                      paddingHorizontal: normalize(16),
+                    }}>
+                    <Image source={chat.icon} style={styles.icon} />
+                    <View style={{ flex: 1 }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <AppText
+                          textStyle="caption2"
+                          customStyle={{
+                            paddingRight: 15,
+                            width: '90%',
+                            marginBottom: normalize(4),
+                          }}
+                          numberOfLines={1}>
+                          {chat.user_name}
+                        </AppText>
+                        <AppText
+                          textStyle="metadata"
+                          color={Colors.contentPlaceholder}>
+                          1m
+                        </AppText>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}>
+                        <AppText
+                          textStyle={chat.read ? 'caption2' : 'caption'}
+                          customStyle={{ width: '90%' }}
+                          numberOfLines={2}>
+                          {chat.message}
+                        </AppText>
+                        {chat.read && <BlueDot />}
+                      </View>
                     </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}>
-                      <AppText
-                        textStyle={chat.read ? 'caption2' : 'caption'}
-                        customStyle={{ width: '90%' }}
-                        numberOfLines={2}>
-                        {chat.message}
-                      </AppText>
-                      {chat.read && <BlueDot />}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
+                  </TouchableOpacity>
+                </View>
+              </AppCheckbox>
             </Swipeable>
           )
         })}
       </ScrollView>
+      <View
+        style={{
+          display: multipleSelect ? 'flex' : 'none',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingVertical: normalize(24),
+          paddingHorizontal: normalize(35),
+        }}>
+        <TouchableOpacity>
+          <AppText textStyle="button3">Mark as Read</AppText>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <AppText textStyle="button3" color={Colors.red}>
+            Delete
+          </AppText>
+        </TouchableOpacity>
+      </View>
       <Modal
         isVisible={showChatOptions}
         animationIn="slideInUp"
@@ -279,7 +347,10 @@ const PostChat = () => {
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
-        <ChatOptions close={() => setShowChatOptions(false)} />
+        <ChatOptions
+          close={() => setShowChatOptions(false)}
+          deleteMessage={cancelModalToggle}
+        />
       </Modal>
       <Modal
         isVisible={showMultiChatOptions}
@@ -298,6 +369,67 @@ const PostChat = () => {
           close={() => setShowMultiChatOptions(false)}
           options={getOption}
         />
+      </Modal>
+      <Modal
+        isVisible={showCancelModal}
+        animationIn="bounceIn"
+        animationInTiming={450}
+        animationOut="bounceOut"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={cancelModalToggle}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: normalize(300),
+            width: normalize(300),
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
+            Delete Message?
+          </AppText>
+
+          <AppText
+            textStyle="caption"
+            customStyle={{ textAlign: 'center', marginBottom: normalize(15) }}>
+            Are you sure you want to delete this message?
+          </AppText>
+
+          <TouchableOpacity
+            onPress={cancelModalToggle}
+            style={{
+              backgroundColor: Colors.yellow2,
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+              marginBottom: 16,
+              borderRadius: 4,
+            }}>
+            <AppText textStyle="button2">Delete</AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={cancelModalToggle}
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <AppText textStyle="button2" color={Colors.contentOcean}>
+              Cancel
+            </AppText>
+          </TouchableOpacity>
+        </View>
       </Modal>
     </SafeAreaView>
   )
