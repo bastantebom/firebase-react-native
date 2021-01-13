@@ -20,6 +20,7 @@ import CloseLight from '@/assets/images/icons/close-light.svg'
 // password
 import EyeDark from '@/assets/images/icons/eye-dark.svg'
 import EyeLight from '@/assets/images/icons/password-hide.svg'
+import Eye from './eye.svg'
 
 // 3rd party
 import Facebook from '@/assets/images/icons/facebook.svg'
@@ -542,6 +543,7 @@ export const Icons = {
   CloseLight,
   ContactTelephone,
   Direction,
+  Eye,
   FillUp,
   Flash,
   FlashOff,
@@ -555,11 +557,13 @@ export const Icons = {
   HeaderQR,
   Id,
   Info,
+  InfoSmall,
   JarHeartWhite,
   Like,
   LikeColored,
   LikeHeader,
   Lock,
+  MegaPhone,
   Mobile,
   More,
   NavigationPin,
@@ -585,9 +589,7 @@ export const Icons = {
   VerifyEmail,
   VerifyNumber,
   VerifyTick,
+  WalletGray,
   Warning,
   WelcomeNotif,
-  MegaPhone,
-  WalletGray,
-  InfoSmall,
 }

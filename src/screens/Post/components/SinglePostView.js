@@ -982,7 +982,11 @@ const SinglePostView = props => {
                 activeOpacity={0.7}
                 onPress={handleChatPress}>
                 <View style={styles.contactButtonContainer}>
-                  <Icons.Chat width={normalize(24)} height={normalize(24)} />
+                  <Icons.Chat
+                    style={{ color: '#1F1A54' }}
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
                 </View>
               </TouchableOpacity>
               {multipleItems ? (

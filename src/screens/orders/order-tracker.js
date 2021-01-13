@@ -16,8 +16,10 @@ import {
   LayoutAnimation,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   TouchableWithoutFeedback,
   UIManager,
@@ -42,7 +44,6 @@ import {
   ProfileImageDefault,
   VisaActive,
 } from '@/assets/images/icons'
-import { ScrollView } from 'react-native-gesture-handler'
 import { View } from 'native-base'
 import Svg, { Circle, Line } from 'react-native-svg'
 import getStatusData from './utils/order-statuses'
@@ -216,6 +217,41 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         orderData,
       },
     })
+  }
+
+  const handleViewPostPress = async () => {
+    setIsLoading(true)
+    const params = {
+      data: post,
+      viewing: true,
+      created: false,
+      edited: false,
+    }
+
+    try {
+      if (!params.data.user) {
+        const response = await Api.getUser({ uid: post.uid })
+        const user = response.data
+        params.data.user = user
+
+        setPost(post => ({ ...post, user }))
+      }
+
+      if (user?.uid === post.uid)
+        navigation.navigate('Post', {
+          screen: 'SinglePostView',
+          params,
+        })
+      else
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersPost',
+          params: { ...params, othersView: true },
+        })
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong')
+    }
+    setIsLoading(false)
   }
 
   const handleChatPress = async () => {
@@ -499,7 +535,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         ? orderData?.sellerData?.display_name ||
           orderData?.sellerData?.full_name
         : orderData?.buyerData?.display_name || orderData?.buyerData?.full_name
-    const textContent =
+    const messageText =
       userType === 'buyer'
         ? post.type === 'sell'
           ? 'Message seller'
@@ -511,34 +547,48 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         : `Message`
 
     return (
-      <TouchableOpacity
-        style={[styles.section, styles.messageButton]}
-        activeOpacity={0.7}
-        onPress={handleChatPress}>
+      <View style={styles.section}>
         <View style={[styleUtils.row, styleUtils.alignCenter]}>
           {renderAvatar()}
           <View>
-            <AppText textStyle="body2medium" customStyle={{ marginBottom: 5 }}>
-              {name}
-            </AppText>
-            <View style={[styleUtils.row, styleUtils.alignCenter]}>
-              <Chat width={normalize(18)} height={normalize(18)} />
-              <AppText
-                textStyle="caption"
-                customStyle={{ marginLeft: normalize(5) }}>
-                {textContent}
-              </AppText>
-            </View>
-          </View>
-          <View style={{ position: 'absolute', right: 0 }}>
-            <Icons.ChevronRight
-              style={{ color: Colors.checkboxBorderDefault }}
-              width={normalize(20)}
-              height={normalize(20)}
-            />
+            <Text style={styles.messageSectionName}>{name}</Text>
+            <Text style={styles.messageSectionDescription}>
+              Order # {orderData.id}
+            </Text>
           </View>
         </View>
-      </TouchableOpacity>
+        <View style={styles.messageSectionButtonsWrapper}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleViewPostPress}
+            style={[
+              styles.messageSectionButtonWrapper,
+              { marginRight: normalize(8) },
+            ]}>
+            <View style={styles.messageSectionButton}>
+              <Icons.Eye
+                style={styles.messageSectionButtonIcon}
+                width={normalize(16)}
+                height={normalize(16)}
+              />
+              <Text style={styles.messageSectionButtonText}>View Post</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleChatPress}
+            style={styles.messageSectionButtonWrapper}>
+            <View style={styles.messageSectionButton}>
+              <Icons.Chat
+                style={styles.messageSectionButtonIcon}
+                width={normalize(16)}
+                height={normalize(16)}
+              />
+              <Text style={styles.messageSectionButtonText}>{messageText}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 
@@ -1176,11 +1226,22 @@ const styles = StyleSheet.create({
     lineHeight: normalize(21),
     marginLeft: normalize(16),
   },
+  avatarImageWrapper: {
+    borderRadius: 35 / 2,
+  },
   buttonLink: {
     color: Colors.contentOcean,
     fontFamily: 'RoundedMplus1c-Medium',
     fontSize: normalize(12),
     letterSpacing: 1.25,
+  },
+  deliverFrom: {
+    flexDirection: 'row',
+    paddingBottom: normalize(10),
+  },
+  deliverTo: {
+    borderTopColor: Colors.neutralGray,
+    flexDirection: 'row',
   },
   gradient: {
     backgroundColor: 'transparent',
@@ -1200,13 +1261,65 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: -1,
   },
+  messagePhoto: {
+    height: normalize(36),
+    marginRight: normalize(10),
+    overflow: 'hidden',
+    width: normalize(36),
+  },
+  messageSectionButton: {
+    alignItems: 'center',
+    backgroundColor: Colors.secondarySolitude,
+    borderRadius: normalize(4),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: normalize(8),
+  },
+  messageSectionButtonIcon: {
+    color: Colors.contentOcean,
+  },
+  messageSectionButtonsWrapper: {
+    flexDirection: 'row',
+    marginTop: normalize(12),
+  },
+  messageSectionButtonText: {
+    color: Colors.contentOcean,
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(12),
+    letterSpacing: 0.4,
+    lineHeight: normalize(18),
+    marginLeft: normalize(6),
+  },
+  messageSectionButtonWrapper: {
+    flex: 1,
+  },
+  messageSectionDescription: {
+    color: Colors.checkboxBorderDefault,
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(12),
+    letterSpacing: 0.4,
+    lineHeight: normalize(18),
+  },
+  messageSectionName: {
+    color: Colors.contentEbony,
+    fontFamily: 'RoundedMplus1c-Medium',
+    fontSize: normalize(14),
+    letterSpacing: 0.25,
+    lineHeight: normalize(21),
+  },
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
   orderHistoryItem: {
     flexDirection: 'row',
     marginBottom: normalize(8),
   },
   orderStatus: {
+    alignItems: 'flex-start',
     backgroundColor: '#fff',
     elevation: 12,
+    marginTop: normalize(16),
     shadowColor: '#000',
     shadowOffset: {
       height: 2,
@@ -1214,26 +1327,27 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
-    alignItems: 'flex-start',
-    marginTop: normalize(16),
+  },
+  postImageWrapper: {
+    borderRadius: 8,
   },
   scrollWrapper: {
     flex: 1,
-  },
-
-  messageButton: {
-    backgroundColor: Colors.secondarySolitude,
-    borderWidth: 0,
   },
   section: {
     backgroundColor: Colors.neutralsWhite,
     borderColor: Colors.neutralsZirconLight,
     borderRadius: 4,
     borderWidth: 1,
-    padding: normalize(16),
     margin: normalize(16),
     marginTop: 0,
+    padding: normalize(16),
+  },
+  sectionIcon: {
+    marginTop: normalize(3),
+  },
+  sectionInfo: {
+    marginLeft: normalize(8),
   },
   statusAnimation: {
     flexBasis: 120,
@@ -1244,7 +1358,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
   },
-  statusIndicatorLine: { position: 'absolute', left: 3, top: '50%' },
+  statusIndicatorLine: {
+    left: 3,
+    position: 'absolute',
+    top: '50%',
+  },
   statusInfo: {
     flex: 1,
     flexDirection: 'column',
@@ -1258,41 +1376,14 @@ const styles = StyleSheet.create({
     lineHeight: normalize(18),
     marginLeft: normalize(16),
   },
-  wrapper: {
-    flex: 1,
-  },
-  messagePhoto: {
-    width: normalize(36),
-    height: normalize(36),
-    overflow: 'hidden',
-    marginRight: normalize(10),
-  },
-  avatarImageWrapper: {
-    borderRadius: 35 / 2,
-  },
-  postImageWrapper: {
-    borderRadius: 8,
-  },
-  sectionInfo: {
-    marginLeft: normalize(8),
-  },
-  deliverFrom: {
-    flexDirection: 'row',
-    paddingBottom: normalize(10),
-  },
-  deliverTo: {
-    flexDirection: 'row',
-    borderTopColor: Colors.neutralGray,
-  },
-  sectionIcon: {
-    marginTop: normalize(3),
-  },
   summaryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingBottom: normalize(10),
   },
-  modal: { margin: 0, justifyContent: 'flex-end' },
+  wrapper: {
+    flex: 1,
+  },
 })
 
 const styleUtils = StyleSheet.create({
