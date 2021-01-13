@@ -274,10 +274,12 @@ export const generateDynamicLink = async ({
           link,
           androidInfo: {
             androidPackageName: 'com.servbees',
+            androidFallbackLink: 'https://app.servbees.com/download',
           },
           iosInfo: {
             iosBundleId: 'com.servbees.appservbees',
             iosAppStoreId: '1530137634',
+            iosFallbackLink: 'https://app.servbees.com/download',
           },
           socialMetaTagInfo: social,
         },
