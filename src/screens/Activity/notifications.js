@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -13,52 +13,15 @@ import { Calendar } from '@/assets/images/icons'
 import NotificationsCard from './components/NotificationsCard'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
-import { Context } from '@/context'
-import _ from 'lodash'
 import { useNavigation } from '@react-navigation/native'
 
-const Notifications = () => {
+const Notifications = ({ route }) => {
   const navigation = useNavigation()
-
-  const { user } = useContext(UserContext)
-  const { notificationsList, initNotifications } = useContext(Context)
+  const groupNotifications = route?.params?.groupNotifications
   const [notifications, setNotifications] = useState({
     notificationsActivity: [1],
   })
-  const [groupNotifications, setGroupNotifications] = useState([])
-
-  const assembleNotification = () => {
-    let postGroup = []
-    let idGroup = []
-    const allPending = notificationsList?.filter(
-      notif => notif?.status === 'pending'
-    )
-    const restStatus = notificationsList?.filter(
-      notif => notif?.status !== 'pending'
-    )
-    if (allPending.length)
-      postGroup = _.groupBy(allPending, notif => notif.postId)
-    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif.id)
-    const combinedGroup = { ...postGroup, ...idGroup }
-
-    const tempNotifList = []
-    for (const [key, notification] of Object.entries(combinedGroup)) {
-      tempNotifList.push(notification)
-    }
-    setGroupNotifications(tempNotifList)
-  }
-
-  useEffect(() => {
-    let isMounted = true
-    if (notificationsList && isMounted) assembleNotification()
-    return () => (isMounted = false)
-  }, [notificationsList])
-
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) initNotifications(user?.uid)
-    return () => (isMounted = false)
-  }, [])
+  const { user } = useContext(UserContext)
 
   const openNotificationHandler = async readDocId => {
     if (!readDocId && !user?.uid) return
@@ -116,7 +79,7 @@ const Notifications = () => {
       ) : (
         <ScrollView
           contentContainerStyle={{ paddingHorizontal: normalize(15) }}>
-          {groupNotifications.length > 0 && (
+          {groupNotifications && (
             <View style={{ paddingTop: 15 }}>
               <AppText
                 textStyle="eyebrow1"

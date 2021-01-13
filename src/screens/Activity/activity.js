@@ -36,15 +36,13 @@ const Activity = () => {
   const assembleNotification = () => {
     let postGroup = []
     let idGroup = []
-    const allPending = notificationsList?.filter(
-      notif => notif?.status === 'pending'
-    )
-    const restStatus = notificationsList?.filter(
-      notif => notif?.status !== 'pending'
-    )
+    const filtered = notificationsList.filter(el => el)
+    const allPending = filtered?.filter(notif => notif?.status === 'pending')
+    const restStatus = filtered?.filter(notif => notif?.status !== 'pending')
     if (allPending.length)
       postGroup = _.groupBy(allPending, notif => notif.postId)
-    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif.id)
+
+    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif?.id)
     const combinedGroup = { ...postGroup, ...idGroup }
 
     const tempNotifList = []
@@ -112,7 +110,7 @@ const Activity = () => {
                     borderRadius: 16,
                   }}>
                   <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                    2
+                    0
                   </AppText>
                 </View>
               </TouchableOpacity>
@@ -123,6 +121,7 @@ const Activity = () => {
                 onPress={() =>
                   navigation.navigate('NBTScreen', {
                     screen: 'Notifications',
+                    params: { groupNotifications },
                   })
                 }>
                 <Icons.MegaPhone width={normalize(20)} height={normalize(20)} />

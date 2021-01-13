@@ -9,17 +9,17 @@ const ChatSort = ({ choice, close }) => {
   const choices = [
     {
       label: 'All Messages',
-      value: 'All Messages',
+      value: 'all',
       description: 'These are all your messages',
     },
     {
       label: 'Own Posts',
-      value: 'Own Posts',
+      value: 'seller',
       description: 'Messages on your own posts',
     },
     {
       label: 'My orders',
-      value: 'My orders',
+      value: 'own',
       description: 'Your orders',
     },
     {
@@ -48,7 +48,7 @@ const ChatSort = ({ choice, close }) => {
           <View key={i}>
             <TouchableOpacity
               style={{ paddingVertical: normalize(16) }}
-              onPress={() => onSortSelect(option.value)}>
+              onPress={() => onSortSelect(option)}>
               <AppText
                 textStyle="body1medium"
                 customStyle={{ paddingBottom: normalize(4.5) }}>

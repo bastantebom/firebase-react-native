@@ -292,6 +292,7 @@ const TrackerModal = ({
           [user.uid]: true,
           [otherUID]: true,
         })
+        .where('post_id', '==', orderDetails.post_id)
         .get()
 
       if (!snapshot.docs.length) {
@@ -301,6 +302,7 @@ const TrackerModal = ({
             [user.uid]: true,
             [otherUID]: true,
           },
+          post_id: orderDetails.post_id,
         })
 
         await ref.doc(id).update({ id })

@@ -82,6 +82,7 @@ const ChatScreen = ({ route, navigation }) => {
           created_at,
           createdAt: created_at.seconds * 1000,
           uid: currentUser._id,
+          read: false,
         }
         delete messageData.user
         await chatsRef.add(messageData)

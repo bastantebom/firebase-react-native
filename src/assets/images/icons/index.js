@@ -295,6 +295,7 @@ import MegaPhone from './megaphone.svg'
 
 import Info from './info.svg'
 import ChatBlue from './chat-blue.svg'
+import ChatEmpty from './chat-empty.svg'
 import HorizontalWhiteEllipsis from './ellipsis-horizontal-white.svg'
 import WalletGray from './wallet-gray.svg'
 import InfoSmall from './info-small.svg'
@@ -515,6 +516,7 @@ export {
   WelcomeNotif,
   InfoGray,
   ChatBlue,
+  ChatEmpty,
   TrashWhite,
   HorizontalWhiteEllipsis,
   InfoSmall,

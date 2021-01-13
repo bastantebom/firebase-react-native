@@ -43,7 +43,7 @@ const Ongoing = () => {
             if (!getPostResponse.success) {
               return true
             }
-            if (getPostResponse.success) {
+            if (getPostResponse.success && getUserReponse.success) {
               const {
                 full_name,
                 display_name,

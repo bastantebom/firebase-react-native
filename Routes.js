@@ -291,7 +291,7 @@ const TabStack = props => {
   )
   const { user } = useContext(UserContext)
   const newNotificationIndicator =
-    notificationsList?.filter(notif => !notif.read).length > 0
+    notificationsList?.filter(notif => !notif?.read).length > 0
 
   useEffect(() => {
     if (user) initNotifications(user?.uid)
