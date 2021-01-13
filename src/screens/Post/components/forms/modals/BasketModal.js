@@ -8,6 +8,7 @@ import {
   Dimensions,
   SafeAreaView,
   ActivityIndicator,
+  Alert,
 } from 'react-native'
 
 import Modal from 'react-native-modal'
@@ -48,9 +49,9 @@ import { BeeResponsible } from '@/assets/images'
 import ChangeDeliveryMethodModal from './ChangeDeliveryMethodModal'
 import ChangePaymentMethodModal from './ChangePaymentMethodModal'
 import AddNoteModal from './AddNoteModal'
-import TrackerModal from './TrackerModal'
 import OrderNotesModal from './OrderNotesModal'
 import ServiceSchedule from './ServiceSchedule'
+import { useNavigation } from '@react-navigation/native'
 
 const BasketModal = ({
   closeModal,
@@ -63,7 +64,6 @@ const BasketModal = ({
   const [changeDeliveryModal, showChangeDeliveryModal] = useState(false)
   const [changePaymentModal, showChangePaymentModal] = useState(false)
   const [addNoteModal, showAddNoteModal] = useState(false)
-  const [trackerModal, showTrackerModal] = useState(false)
   const [orderNotes, showOrderNotes] = useState(false)
   const [fromEdit, setFromEdit] = useState(false)
   const [editOrderId, setEditOrderId] = useState()
@@ -77,6 +77,8 @@ const BasketModal = ({
   const { userCart, setUserCart } = useContext(Context)
   const { userInfo, user } = useContext(UserContext)
   const { addresses } = userInfo
+
+  const navigation = useNavigation()
 
   const {
     is_multiple,
@@ -207,20 +209,29 @@ const BasketModal = ({
       },
     }
 
-    const response = await (!fromEdit
-      ? Api.createOrder(parameters)
-      : Api.updateOrder(editParameters))
+    try {
+      const response = await (!fromEdit
+        ? Api.createOrder(parameters)
+        : Api.updateOrder(editParameters))
 
-    if (response.success) {
+      if (!response.success) throw new Error(response.message)
+      const orderID = !fromEdit ? response.order_id : editOrderId
       setOrderID(!fromEdit ? response.order_id : editOrderId)
-      showTrackerModal(true)
-    } else {
-      alert('Creating offer failed.')
+      closeModal()
+      navigation.navigate('orders', {
+        screen: 'order-tracker',
+        params: {
+          post: postData,
+          orderID,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
   }
 
   const editOrder = id => {
-    showTrackerModal(false)
     setFromEdit(true)
     setEditOrderId(id)
   }
@@ -266,17 +277,27 @@ const BasketModal = ({
       },
     }
 
-    const response = await (!fromEdit
-      ? Api.createOrder(parameters)
-      : Api.updateOrder(editParameters))
+    try {
+      const response = await (!fromEdit
+        ? Api.createOrder(parameters)
+        : Api.updateOrder(editParameters))
 
-    if (response.success) {
-      setOrderID(!fromEdit ? response.order_id : editOrderId)
-      showTrackerModal(true)
+      if (!response.success) throw new Error(response.message)
+      const orderID = !fromEdit ? response.order_id : editOrderId
+      closeModal()
+      navigation.navigate('orders', {
+        screen: 'order-tracker',
+        params: {
+          post: postData,
+          orderID,
+        },
+      })
+      setOrderID(orderID)
       setOrderedCart(userCart)
       setUserCart([])
-    } else {
-      alert('Creating offer failed.')
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong')
     }
   }
 
@@ -1089,29 +1110,7 @@ const BasketModal = ({
           setServiceSchedule={text => setServiceSchedule(text)}
         />
       </Modal>
-      <Modal
-        isVisible={trackerModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <TrackerModal
-          closeModal={() => {
-            showTrackerModal(false)
-            closeModal()
-          }}
-          postType={postType}
-          postData={postData}
-          orderID={orderID}
-          editOrder={id => editOrder(id)}
-        />
-      </Modal>
+
       <Modal
         isVisible={orderNotes}
         animationIn="slideInUp"

@@ -1,24 +1,49 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   View,
   ScrollView,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native'
 import axios from 'axios'
 import base64 from 'react-native-base64'
 import { validateCardNumber } from '@/globals/Utils'
 import Api from '@/services/Api'
 
-import { AppText, AppInput, ScreenHeaderTitle } from '@/components'
+import {
+  AppText,
+  AppInput,
+  ScreenHeaderTitle,
+  TransitionIndicator,
+} from '@/components'
 
 import { normalize, Colors } from '@/globals'
 import { MasterCard, Visa } from '@/assets/images/icons'
 import { Picker } from 'native-base'
 import { provinces } from 'psgc'
+import { UserContext } from '@/context/UserContext'
 
-const CreditCardModal = ({ closeModal, orderDetails }) => {
+/**
+ * @typedef {object} CreditCardProps
+ * @property {object} orderData
+ */
+
+/**
+ * @typedef {object} RootProps
+ * @property {CreditCardProps} CreditCard
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'CreditCard'>} param0 */
+const CreditCardScreen = ({ navigation, route }) => {
+  const { orderData } = route.params
+  const { userInfo } = useContext(UserContext)
+
+  const totalPrice = orderData.items.reduce(
+    (total, item) => total + +(item.price * item.quantity),
+    0
+  )
   const [errors, setErrors] = useState({
     name: '',
     cardNumber: '',
@@ -47,6 +72,8 @@ const CreditCardModal = ({ closeModal, orderDetails }) => {
     zipCode: '',
   })
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const getProvinces = () =>
     provinces
       .all()
@@ -66,40 +93,46 @@ const CreditCardModal = ({ closeModal, orderDetails }) => {
       zipCode: postal_code,
     } = address
     const paymongoSK = base64.encode('sk_test_Hf4GQS4e8sBEzUe6a3rwyfGx')
-    const paymentMethodResponse = await axios({
-      method: 'POST',
-      url: 'https://api.paymongo.com/v1/payment_methods',
-      data: JSON.stringify({
-        data: {
-          attributes: {
-            details: {
-              card_number: formData.cardNumber,
-              exp_month: parseInt(formData.expiry.slice(0, 2)),
-              exp_year: parseInt(formData.expiry.slice(2)),
-              cvc: formData.cvv,
-            },
-            type: 'card',
-            billing: {
-              address: {
-                line1,
-                line2,
-                city,
-                state,
-                postal_code,
-                country,
+    try {
+      const paymentMethodResponse = await axios({
+        method: 'POST',
+        url: 'https://api.paymongo.com/v1/payment_methods',
+        data: JSON.stringify({
+          data: {
+            attributes: {
+              details: {
+                card_number: formData.cardNumber.replace(/\s/g, ''),
+                exp_month: parseInt(formData.expiry.split('/')[0]),
+                exp_year: parseInt(formData.expiry.split('/')[1]),
+                cvc: formData.cvv,
               },
+              type: 'card',
+              billing: {
+                address: {
+                  line1,
+                  line2,
+                  city,
+                  state,
+                  postal_code,
+                  country: 'PH',
+                },
+                name: userInfo.full_name,
+                email: userInfo.email,
+              },
+              metadata: null,
             },
-            metadata: null,
           },
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${paymongoSK}`,
         },
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${paymongoSK}`,
-      },
-    })
-
-    return paymentMethodResponse.data.data.id
+      })
+      return paymentMethodResponse.data.data.id
+    } catch (error) {
+      console.log(error.response.data.errors)
+      throw error
+    }
   }
 
   const checkErrors = () => {
@@ -139,22 +172,30 @@ const CreditCardModal = ({ closeModal, orderDetails }) => {
   }
 
   const handleSubmit = async () => {
+    if (checkErrors()) return
+    let status = 'failed'
+    setIsLoading(true)
     try {
-      if (checkErrors()) return
       const paymentMethodId = await createPaymentMethod()
       const response = await Api.createCardPayment({
         body: {
-          amount: orderDetails.totalPrice * 100,
+          amount: totalPrice * 100,
           currency: 'PHP',
-          order_id: orderDetails.id,
+          order_id: orderData.id,
           payment_method_id: paymentMethodId,
         },
       })
-      if (!response.success) throw new Error(response.message)
-      closeModal()
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      status = 'success'
     } catch (error) {
-      console.log(error)
+      console.log(error, error.message)
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
+
+    navigation.navigate('payment-status', { status, amount: totalPrice })
+    setIsLoading(false)
   }
 
   const renderCardIcon = cardNumber => {
@@ -174,8 +215,9 @@ const CreditCardModal = ({ closeModal, orderDetails }) => {
         backgroundColor: 'white',
         flex: 1,
       }}>
+      <TransitionIndicator loading={isLoading} />
       <ScreenHeaderTitle
-        close={closeModal}
+        close={navigation.goBack}
         title="Visa / Mastercard"
         iconSize={normalize(16)}
         paddingSize={3}
@@ -530,4 +572,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CreditCardModal
+export default CreditCardScreen

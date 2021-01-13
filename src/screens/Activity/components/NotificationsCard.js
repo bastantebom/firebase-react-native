@@ -14,8 +14,6 @@ import { AppText, CacheableImage } from '@/components'
 import { GlobalStyle, normalize, timePassedShort, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
-import Modal from 'react-native-modal'
-import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 
 import {
   RedBadge,
@@ -49,7 +47,6 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
   } = info[0]
 
   const [following, setFollowing] = useState(isFollowing)
-  const [trackerModal, showTrackerModal] = useState(false)
   const [postData, setPostData] = useState({})
   const [isContentLoading, setIsContentLoading] = useState(false)
 
@@ -140,7 +137,13 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
 
   const orderTrackerHandler = () => {
     if (!read) openNotificationHandler(id)
-    showTrackerModal(true)
+    navigation.navigate('orders', {
+      screen: 'order-tracker',
+      params: {
+        post: postData,
+        orderID: orderId,
+      },
+    })
   }
 
   const getLatest = async orderData => {
@@ -498,7 +501,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                       borderRadius: 5,
                     }}
                     activeOpacity={0.7}
-                    onPress={() => orderTrackerHandler()}>
+                    onPress={orderTrackerHandler}>
                     <AppText textStyle="button3">
                       {['cancelled', 'completed', 'declined'].includes(status)
                         ? 'View Order'
@@ -546,26 +549,6 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
           </View>
         )}
       </View>
-      <Modal
-        isVisible={trackerModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <TrackerModal
-          closeModal={() => showTrackerModal(false)}
-          postType={postData.type}
-          orderID={orderId}
-          postData={postData}
-          fromNotification={true}
-        />
-      </Modal>
     </>
   )
 }

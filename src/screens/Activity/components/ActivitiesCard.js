@@ -14,13 +14,19 @@ import { Colors, GlobalStyle, normalize, timePassedShort } from '@/globals'
 import { AppText, MarginView, CacheableImage } from '@/components'
 import { ProfileImageDefault } from '@/assets/images/icons'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
-import Modal from 'react-native-modal'
-import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
 
 const ActivitiesCard = ({ info }) => {
   const navigation = useNavigation()
-  const { status, time, profilePhoto, orders, name, cardType, postData } = info
-  const [trackerModal, showTrackerModal] = useState(false)
+  const {
+    status,
+    time,
+    profilePhoto,
+    orders,
+    name,
+    cardType,
+    postData,
+    orderID,
+  } = info
 
   const statusBackground = () => {
     if (cardType === 'own' && status === 'pending')
@@ -165,7 +171,13 @@ const ActivitiesCard = ({ info }) => {
                   screen: 'OngoingItem',
                   params: { info },
                 })
-              : showTrackerModal(true)
+              : navigation.navigate('orders', {
+                  screen: 'order-tracker',
+                  params: {
+                    post: postData,
+                    orderID,
+                  },
+                })
           }>
           <MarginView
             marginSize={2}
@@ -290,26 +302,6 @@ const ActivitiesCard = ({ info }) => {
           </MarginView>
         </TouchableOpacity>
       </ScrollView>
-      <Modal
-        isVisible={trackerModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <TrackerModal
-          closeModal={() => showTrackerModal(false)}
-          postType={postData?.type}
-          orderID={info.orderID}
-          postData={postData}
-          fromNotification={true}
-        />
-      </Modal>
     </>
   )
 }

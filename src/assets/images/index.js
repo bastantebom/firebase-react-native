@@ -74,6 +74,8 @@ import Doctor from './doctor.svg'
 
 import NoSearch from './search-empty.svg'
 import BeeResponsible from './bee-responsible.svg'
+import PaymentFailed from './payment-failed.svg'
+import PaymentSuccess from './payment-success.svg'
 
 export {
   Guide,
@@ -88,6 +90,7 @@ export {
   OnboardingIllustration2,
   OnboardingIllustration3,
   OnboardingIllustration4,
+  PaymentFailed,
   PolygonStatic,
   ProfileHeaderDefault,
   NoPost,
@@ -137,4 +140,6 @@ export const Status = {
 
 export const Images = {
   Doctor,
+  PaymentFailed,
+  PaymentSuccess,
 }

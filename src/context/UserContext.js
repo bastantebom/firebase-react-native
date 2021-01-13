@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth'
-import ProfileInfoService from '@/services/Profile/ProfileInfo'
 import AsyncStorage from '@react-native-community/async-storage'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
@@ -77,7 +76,7 @@ export const UserContextProvider = ({ children }) => {
 
   const fetch = () => {
     if (user) {
-      ProfileInfoService.getUser(user.uid).then(response => {
+      Api.getUser({ uid: user.uid }).then(response => {
         setUserInfo({ ...userInfo, ...response.data })
       })
     }

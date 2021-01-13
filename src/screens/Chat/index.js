@@ -266,7 +266,7 @@ const renderSend = props => {
 const ChatHeader = ({ navigation, user, showActiveStatus }) => {
   return (
     <View style={styles.chatWrapper}>
-      <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
+      <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
         <HeaderBackGray style={styles.backButton} />
       </TouchableOpacity>
       <View

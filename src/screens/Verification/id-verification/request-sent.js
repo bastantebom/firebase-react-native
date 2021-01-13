@@ -52,7 +52,7 @@ export const RequestSentScreen = ({ navigation }) => {
               type="primary"
               onPress={() => {
                 navigation.navigate('TabStack', {
-                  screen: 'dashboard',
+                  screen: 'Servbees',
                 })
               }}
               customStyle={{ marginBottom: normalize(20) }}

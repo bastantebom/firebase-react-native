@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { AppText, CacheableImage, TransitionIndicator } from '@/components'
 import Api from '@/services/Api'
-import Modal from 'react-native-modal'
 import {
   GlobalStyle,
   normalize,
@@ -13,12 +12,11 @@ import {
 } from '@/globals'
 
 import { ChatBlue, ProfileImageDefault, Verified } from '@/assets/images/icons'
-import TrackerModal from '@/screens/Post/components/forms/modals/TrackerModal'
+import { useNavigation } from '@react-navigation/native'
 
 const ItemCard = ({ item }) => {
-  const [trackerModal, showTrackerModal] = useState(false)
+  const navigation = useNavigation()
   const [isLoading, setIsLoading] = useState(false)
-  const [postData, setPostData] = useState({})
 
   const timeAgo = time => {
     if (time <= 60) {
@@ -41,18 +39,25 @@ const ItemCard = ({ item }) => {
   }
 
   const getPostDetails = async () => {
+    if (!item.postId) return
+    setIsLoading(true)
+
     try {
-      if (!item.postId) return
-      setIsLoading(true)
-      const getPostResponse = await Api.getPost({ pid: item.postId })
-      if (getPostResponse.success) {
-        setPostData(getPostResponse.data)
-        setIsLoading(false)
-        showTrackerModal(true)
-      }
+      const response = await Api.getPost({ pid: item.postId })
+      if (!response.success) throw new Error(response.message)
+
+      navigation.navigate('orders', {
+        screen: 'order-tracker',
+        params: {
+          post: response.data,
+          orderID: item.orderID,
+        },
+      })
     } catch (error) {
-      setIsLoading(false)
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong')
     }
+    setIsLoading(false)
   }
   return (
     <>
@@ -178,26 +183,6 @@ const ItemCard = ({ item }) => {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-      <Modal
-        isVisible={trackerModal}
-        animationIn="slideInRight"
-        animationInTiming={750}
-        animationOut="slideOutRight"
-        animationOutTiming={750}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          justifyContent: 'flex-start',
-          height: Dimensions.get('window').height,
-        }}>
-        <TrackerModal
-          closeModal={() => showTrackerModal(false)}
-          postType={postData.type}
-          orderID={item.orderID}
-          postData={postData}
-          fromNotification={true}
-        />
-      </Modal>
     </>
   )
 }

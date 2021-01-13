@@ -22,6 +22,8 @@ import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
+import PaymentsStack from '@/screens/payments'
+import OrdersStack from '@/screens/orders'
 import url from 'url'
 import Api from '@/services/Api'
 
@@ -566,6 +568,8 @@ export default Routes = () => {
       <>
         <Stack.Screen name="TabStack" component={TabStack} />
         <Stack.Screen name="NBTScreen" component={NoBottomTabScreens} />
+        <Stack.Screen name="payments" component={PaymentsStack} />
+        <Stack.Screen name="orders" component={OrdersStack} />
       </>
     )
   }

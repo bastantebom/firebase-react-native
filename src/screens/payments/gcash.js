@@ -1,80 +1,78 @@
-import React, { useState, useEffect } from 'react'
-import { View, SafeAreaView, StyleSheet } from 'react-native'
-import Modal from 'react-native-modal'
-import WebViewModal from '@/screens/Post/components/forms/modals/WebViewModal'
-
-import { thousandsSeparators } from '@/globals/Utils'
-import firestore from '@react-native-firebase/firestore'
+import React, { useState } from 'react'
+import { View, SafeAreaView, StyleSheet, Alert } from 'react-native'
 import Api from '@/services/Api'
-
 import {
   AppButton,
   AppCheckbox,
   AppText,
-  PaddingView,
   ScreenHeaderTitle,
+  TransitionIndicator,
 } from '@/components'
+
 import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
 
-const GCashModal = ({ closeModal, orderDetails }) => {
-  const [webViewLink, setWebViewLink] = useState('')
-  const [terms, setTerms] = useState(false)
+/**
+ * @typedef {object} GCashProps
+ * @property {object} orderData
+ */
 
-  const handleFormChange = () => setTerms(!terms)
+/**
+ * @typedef {object} RootProps
+ * @property {GCashProps} GCash
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'GCash'>} param0 */
+const GCashScreen = ({ navigation, route }) => {
+  const { orderData } = route.params
+  const [terms, setTerms] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const totalPrice = orderData.items.reduce(
+    (total, item) => total + +(item.price * item.quantity),
+    0
+  )
 
   const handleSubmit = async () => {
-    const response = await Api.createSourcePayment({
-      body: {
-        amount: orderDetails.totalPrice * 100,
-        type: 'gcash',
-        currency: 'PHP',
-        order_id: orderDetails.id,
-      },
-    })
-
-    if (response.success) setWebViewLink(response.data.redirect.checkout_url)
-  }
-
-  useEffect(() => {
-    return firestore()
-      .doc(`orders/${orderDetails.id}`)
-      .onSnapshot(snap => {
-        if (snap.data().status === 'paid') closeModal()
-
-        setWebViewLink('')
+    setIsLoading(true)
+    try {
+      const response = await Api.createSourcePayment({
+        body: {
+          amount: totalPrice * 100,
+          type: 'gcash',
+          currency: 'PHP',
+          order_id: orderData.id,
+        },
       })
-  }, [])
+
+      if (!response.success) throw new Error(response.message)
+      navigation.navigate('payments', {
+        screen: 'payment-webview',
+        params: {
+          link: response.data.redirect.checkout_url,
+          amount: totalPrice,
+          title: 'GCash',
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+    setIsLoading(false)
+  }
 
   return (
     <>
-      <View
-        style={{
-          backgroundColor: '#EDF0F8',
-          height: normalize(170),
-          width: '100%',
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          opacity: 1,
-          zIndex: -1,
-        }}
-      />
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.backgroundHeader} />
+      <SafeAreaView style={styles.safeArea}>
+        <TransitionIndicator loading={isLoading} />
         <ScreenHeaderTitle
-          close={closeModal}
+          close={navigation.goBack}
           title="GCash"
           iconSize={normalize(16)}
           paddingSize={3}
         />
-        <PaddingView
-          paddingSize={3}
-          style={{
-            paddingTop: 0,
-            justifyContent: 'space-between',
-            flex: 1,
-          }}>
+        <View style={styles.contentWrapper}>
           <View>
             <View
               style={{
@@ -96,7 +94,7 @@ const GCashModal = ({ closeModal, orderDetails }) => {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <AppText textStyle="display6">
-                  ₱{thousandsSeparators(orderDetails.totalPrice.toFixed(2))}
+                  ₱{(+totalPrice.toFixed(2)).toLocaleString()}
                 </AppText>
                 <AppText textStyle="caption">Amount</AppText>
               </View>
@@ -104,7 +102,7 @@ const GCashModal = ({ closeModal, orderDetails }) => {
                 <AppText
                   textStyle="caption"
                   customStyle={{ textAlign: 'center' }}>
-                  Reference No. / Payment ID: {orderDetails.id}
+                  Reference No. / Payment ID: {orderData.id}
                 </AppText>
               </View>
             </View>
@@ -122,7 +120,7 @@ const GCashModal = ({ closeModal, orderDetails }) => {
                 Icon=""
                 label=""
                 value={terms}
-                valueChangeHandler={value => handleFormChange(value)}
+                valueChangeHandler={setTerms}
                 style={{
                   paddingLeft: 0,
                   marginRight: 5,
@@ -143,41 +141,26 @@ const GCashModal = ({ closeModal, orderDetails }) => {
             <AppButton
               text="Proceed"
               type="primary"
-              disabled={!terms}
+              disabled={!terms || isLoading}
               onPress={handleSubmit}
               customStyle={{
-                backgroundColor: !terms
-                  ? Colors.neutralsZirconLight
-                  : Colors.primaryYellow,
-                borderColor: !terms
-                  ? Colors.neutralsZirconLight
-                  : Colors.primaryYellow,
+                backgroundColor:
+                  !terms || isLoading
+                    ? Colors.neutralsZirconLight
+                    : Colors.primaryYellow,
+                borderColor:
+                  !terms || isLoading
+                    ? Colors.neutralsZirconLight
+                    : Colors.primaryYellow,
               }}
             />
           </View>
-        </PaddingView>
-
-        <Modal
-          isVisible={!!webViewLink.length}
-          animationIn="slideInRight"
-          animationInTiming={750}
-          animationOut="slideOutRight"
-          animationOutTiming={750}
-          style={styles.webViewModal}>
-          <WebViewModal link={webViewLink}>
-            <ScreenHeaderTitle
-              close={() => setWebViewLink('')}
-              title="GCash"
-              iconSize={normalize(16)}
-              paddingSize={3}
-            />
-          </WebViewModal>
-        </Modal>
+        </View>
       </SafeAreaView>
     </>
   )
 }
-export default GCashModal
+export default GCashScreen
 
 const styles = StyleSheet.create({
   border: {
@@ -188,9 +171,22 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     borderRadius: 4,
   },
-  webViewModal: {
-    margin: 0,
-    backgroundColor: 'white',
-    justifyContent: 'flex-start',
+  backgroundHeader: {
+    backgroundColor: '#EDF0F8',
+    height: normalize(170),
+    width: '100%',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    opacity: 1,
+    zIndex: -1,
+  },
+  safeArea: { flex: 1 },
+  contentWrapper: {
+    padding: normalize(24),
+    paddingTop: 0,
+    justifyContent: 'space-between',
+    flex: 1,
   },
 })
