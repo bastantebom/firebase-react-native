@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { useNavigation } from '@react-navigation/native'
-import { AppText } from '@/components'
+import { AppText, WhiteOpacity } from '@/components'
 import { Colors, normalize } from '@/globals'
 
 import Ongoing from './components/Ongoing'
@@ -208,6 +208,7 @@ const Activity = () => {
         onDrag>
         <FilterSlider close={() => setIsFiltersVisible(false)} />
       </Modal>
+      <WhiteOpacity />
     </SafeAreaView>
   )
 }

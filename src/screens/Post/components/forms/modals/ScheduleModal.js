@@ -24,8 +24,6 @@ import { Colors, normalize } from '@/globals'
 
 import { ArrowDown } from '@/assets/images/icons'
 
-// new Date(year, month, day, hours, minutes, seconds, milliseconds)
-
 const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
   const [days, setDays] = useState(
     schedule
@@ -247,18 +245,19 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
             </TouchableOpacity>
             {days[day].value && (
               <>
-                <TouchableOpacity
+                <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
+                    paddingTop: normalize(12),
                   }}>
                   <AppCheckbox
                     value={days[day].hour24}
                     style={{ paddingLeft: 0 }}
                     valueChangeHandler={() => noClosing(day)}
                   />
-                  <AppText>24 hours</AppText>
-                </TouchableOpacity>
+                  <AppText textStyle="caption">24 hours</AppText>
+                </View>
                 {!days[day].hour24 && (
                   <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
@@ -271,8 +270,8 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
                         justifyContent: 'space-between',
                         paddingRight: 24,
                       }}>
-                      <AppText>Opens</AppText>
-                      <AppText>
+                      <AppText textStyle="caption">Opens</AppText>
+                      <AppText textStyle="caption2">
                         {moment(days[day].opens).format('hh:mm A')}
                       </AppText>
                       <ArrowDown />
@@ -287,8 +286,8 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
                         justifyContent: 'space-between',
                         paddingRight: 24,
                       }}>
-                      <AppText>Closes</AppText>
-                      <AppText>
+                      <AppText textStyle="caption">Closes</AppText>
+                      <AppText textStyle="caption2">
                         {moment(days[day].closes).format('hh:mm A')}
                       </AppText>
                       <ArrowDown />
@@ -325,16 +324,20 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <ScreenHeaderTitle
+        title="Store Schedule"
+        paddingSize={3}
+        iconSize={normalize(16)}
+        close={close}
+      />
       <ScrollView>
-        <ScreenHeaderTitle
-          title="Store Schedule"
-          paddingSize={2}
-          close={close}
-        />
-        <View style={{ paddingHorizontal: 24 }}>
+        <View
+          style={{
+            paddingHorizontal: normalize(24),
+            paddingTop: normalize(16),
+          }}>
           <DayList />
-
           {holidayList.length > 0 &&
             holidayList.map((holidate, index) => {
               return (
@@ -345,7 +348,6 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
                 </View>
               )
             })}
-          {/* Select date first then select time  */}
           <TouchableOpacity
             onPress={() => showHolidayModal(true)}
             style={{ marginTop: 32 }}>

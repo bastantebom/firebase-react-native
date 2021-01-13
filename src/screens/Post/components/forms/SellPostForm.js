@@ -14,7 +14,6 @@ import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 
 /*Map Essentials*/
-// import {ArrowRight, Public, ArrowDown} from '@/assets/images/icons';
 import Geocoder from 'react-native-geocoding'
 import Config from '@/services/Config'
 import Modal from 'react-native-modal'
@@ -143,7 +142,6 @@ const SellPostForm = ({
   const { user, userInfo, setUserInfo } = useContext(UserContext)
   const [buttonEnabled, setButtonEnabled] = useState(false)
 
-  // Converting to route
   const navigation = useNavigation()
 
   /*MAP Essentials */
@@ -706,14 +704,30 @@ const SellPostForm = ({
         <Section>
           <TouchableOpacity
             onPress={() => setMap(true)}
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: normalize(12),
+            }}>
             <AppText textStyle="body3">Location</AppText>
             <FormArrowRight />
           </TouchableOpacity>
-          <AppText textStyle="body3" customStyle={{ marginTop: 4 }}>
-            {storeAddress.name} {storeAddress.default ? '(Default)' : ''}{' '}
+          {!storeAddress.name && storeAddress.default ? (
+            <AppText
+              textStyle="body3"
+              customStyle={{ marginBottom: normalize(4) }}>
+              {storeAddress.name && storeAddress.name}
+              {storeAddress.default ? '(Default)' : ''}
+            </AppText>
+          ) : (
+            <></>
+          )}
+          <AppText textStyle="body2">
+            {storeAddress.full_address
+              ? storeAddress.full_address
+              : storeAddress}
           </AppText>
-          <AppText textStyle="body2">{storeAddress.full_address}</AppText>
         </Section>
       )}
 
@@ -731,8 +745,8 @@ const SellPostForm = ({
         }}>
         <StoreLocationModal
           close={() => setMap(false)}
-          pickupAddress={storeAddress}
           setPickupAddress={setStoreAddress}
+          pickupAddress={storeAddress}
         />
       </Modal>
 
@@ -740,7 +754,12 @@ const SellPostForm = ({
         <Section>
           <TouchableOpacity
             onPress={() => showScheduleModal(true)}
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: normalize(12),
+            }}>
             <AppText textStyle="body3">Schedule</AppText>
             <FormArrowRight />
           </TouchableOpacity>
@@ -825,8 +844,6 @@ const SellPostForm = ({
             You can add more products and categories.
           </AppText>
 
-          {/* IF statement here where we show the added items */}
-
           {items.length > 0 ? (
             <View>
               <ItemCategory items={items} />
@@ -896,8 +913,6 @@ const SellPostForm = ({
           <AppText textStyle="caption" color={Colors.contentPlaceholder}>
             You can add more products and categories.
           </AppText>
-
-          {/* IF statement here where we show the added items */}
 
           {items.length > 0 ? (
             <View>
@@ -969,13 +984,18 @@ const SellPostForm = ({
         <Section>
           <TouchableOpacity
             activeOpacity={0.7}
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: normalize(12),
+            }}
             onPress={() => showPaymentMethodModal(true)}>
             <AppText textStyle="body3">Payment Methods*</AppText>
             <FormArrowRight />
           </TouchableOpacity>
 
-          <View style={{ flexDirection: 'row', marginTop: 8 }}>
+          <View style={{ flexDirection: 'row' }}>
             <SelectedPaymentMethods />
           </View>
         </Section>
@@ -1004,10 +1024,14 @@ const SellPostForm = ({
         <Section>
           <TouchableOpacity
             activeOpacity={0.7}
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: normalize(12),
+            }}
             onPress={() => {
               showShippingMethodModal(true)
-              // navigation.navigate('ShippingMethodScreen')
             }}>
             <AppText textStyle="body3">Shipping Methods*</AppText>
             <FormArrowRight />
@@ -1017,7 +1041,9 @@ const SellPostForm = ({
             Object.keys(pickupState).length === 0 ? (
               <></>
             ) : (
-              <AppText textStyle="body3" customStyle={{ marginTop: 4 }}>
+              <AppText
+                textStyle="body3"
+                customStyle={{ marginBottom: normalize(4) }}>
                 Pick Up
               </AppText>
             )
@@ -1036,7 +1062,11 @@ const SellPostForm = ({
                 </AppText>
               </>
             ) : (
-              <AppText textStyle="body2">{pickupAddress.full_address}</AppText>
+              <AppText textStyle="body2">
+                {pickupAddress.full_address
+                  ? pickupAddress.full_address
+                  : pickupAddress}
+              </AppText>
             )
           ) : (
             <></>
@@ -1225,52 +1255,6 @@ const SellPostForm = ({
         }}>
         <AdditionalNotesModal close={() => showAdditionalNotes(false)} />
       </Modal>
-
-      {/* POST EXPIRY SECTION */}
-
-      {/* <Section>
-        <AppText textStyle="subtitle2" customStyle={{marginBottom: 16}}>
-          Delivery/Pick up Method
-        </AppText>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 16,
-          }}>
-          <AppText textStyle="body2">Pickup</AppText>
-          <Switch value={pickupState} onValueChange={togglePickupState} />
-        </View>
-        <View style={{position: 'relative'}}>
-          <TouchableOpacity onPress={() => toggleMap()}>
-            <AppInput
-              label="Location Address"
-              customStyle={{marginBottom: 16}}
-              value={stringAddress}
-              //onChangeText={(text) => setStoreLocation(text)}
-            />
-            <View
-              style={{
-                position: 'absolute',
-                right: 0,
-                top: 12,
-                right: 12,
-              }}>
-              <ArrowRight height={normalize(24)} width={normalize(24)} />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-          <AppText textStyle="body2">Offer Delivery</AppText>
-          <Switch value={deliveryState} onValueChange={toggleDeliveryState} />
-        </View>
-      </Section> */}
 
       <Section>
         {activeForm.type !== 'need' && (

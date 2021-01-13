@@ -66,7 +66,6 @@ const ShippingMethodModal = ({
   const [showNationwideNotes, setShowNationwideNotes] = useState(false)
   const [showWithinNotes, setShowWithinNotes] = useState(false)
 
-  // const [activeSwitch, setActiveSwitch] = useState(null);
   const [rangeValue, setRangeValue] = useState(
     deliveryState?.radius?.distance || 0
   )
@@ -147,13 +146,11 @@ const ShippingMethodModal = ({
                 <View style={{ flex: 0.75 }}>
                   {pickupAddress.name && (
                     <View style={{ flexDirection: 'row' }}>
-                      {/* // If may address name from profile */}
                       <AppText textStyle="body2">{pickupAddress.name}</AppText>
                       {pickupAddress.default && (
                         <AppText
                           textStyle="body3"
                           customStyle={{ marginLeft: normalize(5) }}>
-                          {/* //if true yung default property */}
                           (Default)
                         </AppText>
                       )}
@@ -166,9 +163,9 @@ const ShippingMethodModal = ({
                     }}
                     numberOfLines={1}
                     ellipsizeMode="tail">
-                    {/* Full address from address */}
-                    {/* Wayne’s Burger and Smoothies, Hon. B. Soliven */}
-                    {pickupAddress ? pickupAddress.full_address : 'No address'}
+                    {pickupAddress.full_address
+                      ? pickupAddress.full_address
+                      : pickupAddress}
                   </Text>
                 </View>
                 <View

@@ -1,41 +1,60 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
+  Keyboard,
+  StyleSheet,
 } from 'react-native'
 
-import {
-  AppText,
-  Item,
-  ScreenHeaderTitle,
-  FloatingAppInput,
-  Divider,
-} from '@/components'
+import { AppText, ScreenHeaderTitle, Divider } from '@/components'
 import { Colors, normalize } from '@/globals'
-import { CircleAdd } from '@/assets/images/icons'
 import Modal from 'react-native-modal'
-import CategoryOptions from './CategoryOptions'
 import MapAddress from '@/screens/Profile/components/EditProfile/MapAddress'
 
-import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
+import GooglePlacesInput from '@/components/LocationSearchInput'
 
-const AddedItemPreview = ({ close, pickupAddress, setPickupAddress }) => {
-  const [locationModal, showLocationModal] = useState(false)
+const DismissKeyboard = ({ children, isFocused }) => {
+  const onDismissPress = () => {
+    Keyboard.dismiss()
+    isFocused()
+  }
 
+  return (
+    <TouchableWithoutFeedback onPress={onDismissPress}>
+      {children}
+    </TouchableWithoutFeedback>
+  )
+}
+
+const StoreLocationModal = ({ close, pickupAddress, setPickupAddress }) => {
   const { userInfo } = useContext(UserContext)
 
   const { addresses } = userInfo
 
   const [addressSelected, setAddressSelected] = useState()
+  const [changeMapAddress, setChangeMapAddress] = useState(
+    pickupAddress.full_address ? pickupAddress.full_address : pickupAddress
+  )
+
+  const [locationModal, showLocationModal] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
 
   const openMapHandler = () => {
     setAddressSelected(addresses.find(address => address.default))
 
     showLocationModal(true)
+  }
+
+  const onInputFocus = () => {
+    setIsFocused(true)
+  }
+
+  const onInputBlur = () => {
+    setIsFocused(false)
   }
 
   const getSelectedAddress = fullAddress => {
@@ -48,70 +67,97 @@ const AddedItemPreview = ({ close, pickupAddress, setPickupAddress }) => {
     close()
   }
 
+  const saveLocation = changeMapAddress => {
+    setPickupAddress(changeMapAddress)
+    close()
+  }
+
   const addressesLength = addresses.length
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          flex: 1,
-        }}>
-        <ScreenHeaderTitle
-          iconSize={24}
-          close={close}
-          title={'Location'}
-          paddingSize={2}
-        />
-        <View style={{ backgroundColor: Colors.neutralsZirconLight }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              marginBottom: 8,
-              borderBottomRightRadius: 8,
-              borderBottomLeftRadius: 8,
-              paddingHorizontal: 24,
-            }}>
-            <TouchableOpacity
-              style={{ marginTop: 24 }}
-              onPress={openMapHandler}>
-              <FloatingAppInput
-                label="location"
-                value={pickupAddress.full_address}
-                disabled
+    <DismissKeyboard isFocused={onInputBlur}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <View style={{ backgroundColor: Colors.neutralsZirconLight }}>
+            <View
+              style={{
+                top: normalize(60),
+                width: Dimensions.get('window').width,
+                position: 'absolute',
+                paddingHorizontal: 16,
+                paddingTop: 8,
+                zIndex: 9999,
+              }}>
+              <GooglePlacesInput
+                onResultsClick={data => {
+                  setChangeMapAddress(data)
+                }}
+                onInputFocus={onInputFocus}
+                onClearInput={() => {}}
+                currentValue={changeMapAddress}
+                customListViewStyle={{
+                  top: normalize(110),
+                  marginLeft: normalize(0),
+                  marginRight: normalize(0),
+                  height: Dimensions.get('window').height - normalize(155),
+                  width: Dimensions.get('window').width,
+                  backgroundColor: Colors.neutralsWhite,
+                  zIndex: 999,
+                  paddingLeft: 16,
+                  paddingRight: 32,
+                  left: -16,
+                }}
+                customTextInputStyle={{
+                  borderColor: '#DADCE0',
+                  borderWidth: 1,
+                  height: normalize(55),
+                  paddingLeft: normalize(50),
+                }}
+                customIconStyle={{
+                  left: normalize(25),
+                  top: normalize(23),
+                }}
               />
-            </TouchableOpacity>
+            </View>
+            <View style={styles.addressTop}>
+              <ScreenHeaderTitle
+                close={close}
+                title="Store Location"
+                iconSize={normalize(16)}
+              />
+              <TouchableOpacity
+                style={{
+                  marginTop: 16,
+                  position: 'absolute',
+                  zIndex: 99,
+                  bottom: normalize(30),
+                  left: 24,
+                }}
+                onPress={openMapHandler}>
+                <AppText color={Colors.contentOcean} textStyle="body2">
+                  Search from map
+                </AppText>
+              </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity
-              style={{ marginTop: 16 }}
-              onPress={openMapHandler}>
-              <AppText color={Colors.contentOcean} textStyle="body2">
-                Search from map
-              </AppText>
-            </TouchableOpacity>
-          </View>
-
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderBottomRightRadius: 8,
-              borderBottomLeftRadius: 8,
-              paddingHorizontal: 24,
-              paddingVertical: 24,
-            }}>
-            <View>
-              <AppText customStyle={{ marginBottom: 24 }} textStyle="caption">
-                Saved Address
-              </AppText>
+            <View style={styles.addressBottom}>
+              <AppText textStyle="caption">Saved Address</AppText>
               {addresses.map((address, index) => {
                 if (addressesLength === index + 1)
                   return (
                     <TouchableOpacity
                       key={address.name}
+                      style={{ marginTop: 16 }}
                       onPress={() => selectSavedAddress(address)}>
-                      <AppText textStyle={address.default ? 'body3' : 'body2'}>
-                        {address.name} {address.default ? '(Default)' : ''}
+                      <AppText
+                        textStyle="body2medium"
+                        customStyle={{ paddingBottom: normalize(8) }}>
+                        {address.name && address.name}
+                        {address.default ? '(Default)' : ''}
                       </AppText>
-                      <AppText>{address.full_address}</AppText>
+                      <AppText textStyle="caption">
+                        {address.full_address}
+                      </AppText>
                     </TouchableOpacity>
                   )
                 else
@@ -119,14 +165,17 @@ const AddedItemPreview = ({ close, pickupAddress, setPickupAddress }) => {
                     <>
                       <TouchableOpacity
                         key={address.name}
+                        style={{ marginTop: 16 }}
                         onPress={() => selectSavedAddress(address)}>
                         <AppText
-                          textStyle={address.default ? 'body3' : 'body2'}>
+                          textStyle="body2medium"
+                          customStyle={{ paddingBottom: normalize(8) }}>
                           {address.name} {address.default ? '(Default)' : ''}
                         </AppText>
-                        <AppText>{address.full_address}</AppText>
+                        <AppText textStyle="caption">
+                          {address.full_address}
+                        </AppText>
                       </TouchableOpacity>
-
                       <Divider />
                     </>
                   )
@@ -134,43 +183,69 @@ const AddedItemPreview = ({ close, pickupAddress, setPickupAddress }) => {
             </View>
           </View>
         </View>
-      </View>
 
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={close}
-        style={{
-          backgroundColor: Colors.primaryYellow,
-          paddingVertical: 8,
-          marginHorizontal: 24,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: 24,
-          borderRadius: 4,
-        }}>
-        <AppText textStyle="body3">Save</AppText>
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => saveLocation(changeMapAddress)}
+          style={{
+            backgroundColor: Colors.primaryYellow,
+            paddingVertical: 8,
+            marginHorizontal: 24,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 24,
+            borderRadius: 4,
+          }}>
+          <AppText textStyle="body3">Save</AppText>
+        </TouchableOpacity>
 
-      <Modal
-        isVisible={locationModal}
-        animationIn="slideInRight"
-        animationInTiming={500}
-        animationOut="slideOutLeft"
-        animationOutTiming={500}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-          justifyContent: 'flex-start',
-        }}>
-        <MapAddress
-          address={addressSelected}
-          toggleMap={() => showLocationModal(false)}
-          changeFromMapHandler={fulladdress => getSelectedAddress(fulladdress)}
-        />
-      </Modal>
-    </SafeAreaView>
+        <Modal
+          isVisible={locationModal}
+          animationIn="slideInRight"
+          animationInTiming={500}
+          animationOut="slideOutLeft"
+          animationOutTiming={500}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+            justifyContent: 'flex-start',
+          }}>
+          <MapAddress
+            address={addressSelected}
+            toggleMap={() => showLocationModal(false)}
+            changeFromMapHandler={fulladdress =>
+              getSelectedAddress(fulladdress)
+            }
+          />
+        </Modal>
+      </SafeAreaView>
+    </DismissKeyboard>
   )
 }
 
-export default AddedItemPreview
+export default StoreLocationModal
+
+const styles = StyleSheet.create({
+  addressTop: {
+    backgroundColor: Colors.neutralsWhite,
+    paddingTop: 24,
+    paddingBottom: 30,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingHorizontal: 24,
+    height: normalize(200),
+  },
+  addressBottom: {
+    marginTop: 15,
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
+    backgroundColor: Colors.neutralsWhite,
+    paddingTop: 24,
+    paddingBottom: 30,
+    paddingHorizontal: 24,
+    height: '100%',
+    position: 'relative',
+    zIndex: -1,
+  },
+})
