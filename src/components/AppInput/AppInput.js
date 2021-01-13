@@ -24,6 +24,8 @@ const FloatingAppInput = ({
   label,
   wrapperStyle,
   debounce = true,
+  customLabelStyle,
+  error,
   ...props
 }) => {
   const [labelPosition] = useState(new Animated.Value(0))
@@ -81,8 +83,9 @@ const FloatingAppInput = ({
     ? Colors.contentOcean
     : Colors.contentPlaceholder
 
-  const fontSize = {
+  const labelTextStyle = {
     fontSize: !isActive && value === '' ? normalize(16) : normalize(12),
+    ...customLabelStyle,
   }
 
   const paddingLeftCustom = {
@@ -102,7 +105,7 @@ const FloatingAppInput = ({
           {
             paddingVertical: normalize(4),
             paddingHorizontal: normalize(16),
-            borderColor: activeBorderColor,
+            borderColor: error ? Colors.red : activeBorderColor,
             borderWidth: 1,
             borderRadius: 4,
             height: normalize(50),
@@ -113,7 +116,7 @@ const FloatingAppInput = ({
           <AppText
             textStyle="body1"
             color={activeTextColor}
-            customStyle={fontSize}>
+            customStyle={labelTextStyle}>
             {label}
           </AppText>
         </Animated.Text>

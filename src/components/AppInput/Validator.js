@@ -1,12 +1,20 @@
-import React from 'react';
-import {View} from 'react-native';
+import React from 'react'
+import { View } from 'react-native'
 
-import {AppText} from '@/components';
+import { AppText } from '@/components'
 
-const Validator = ({errorState, setErrorState, value, style, ...props}) => {
+const Validator = ({
+  errorState,
+  setErrorState,
+  value,
+  style,
+  customTextStyle,
+  ...props
+}) => {
   let textStyle = {
     display: errorState.shown ? 'flex' : 'none',
-  };
+    ...customTextStyle,
+  }
 
   return (
     <View style={style}>
@@ -15,7 +23,7 @@ const Validator = ({errorState, setErrorState, value, style, ...props}) => {
         {errorState.message}
       </AppText>
     </View>
-  );
-};
+  )
+}
 
-export default Validator;
+export default Validator

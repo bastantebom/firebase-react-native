@@ -135,6 +135,12 @@ function Login() {
               />
               <Validator
                 style={{ marginBottom: normalize(16) }}
+                customTextStyle={{
+                  fontFamily: 'RoundedMplus1c-Regular',
+                  fontSize: normalize(12),
+                  marginTop: normalize(8),
+                  color: Colors.secondaryBrinkPink,
+                }}
                 errorState={errors.password}>
                 <View style={{ position: 'relative' }}>
                   <AppInput

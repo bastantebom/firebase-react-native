@@ -264,6 +264,12 @@ const SignUp = props => {
             <View style={styles.formWrapper}>
               <Validator
                 style={{ marginBottom: normalize(16) }}
+                customTextStyle={{
+                  fontFamily: 'RoundedMplus1c-Regular',
+                  fontSize: normalize(12),
+                  marginTop: normalize(8),
+                  color: AppColor.secondaryBrinkPink,
+                }}
                 errorState={{
                   message: errors.login,
                   shown: errors.login.length,
@@ -272,6 +278,7 @@ const SignUp = props => {
                   label={
                     signUpMethod === 'email' ? 'Email Address' : 'Mobile Number'
                   }
+                  customLabelStyle={{ color: AppColor.contentPlaceholder }}
                   value={formData.login}
                   onFocusInput={() => {
                     setIsToggleVisible(true)
@@ -288,6 +295,7 @@ const SignUp = props => {
                     handleFormChange({ key: 'login', value })
                   }}
                   maxLength={signUpMethod === 'email' ? null : 13}
+                  error={errors.login.length}
                 />
               </Validator>
 
@@ -299,7 +307,7 @@ const SignUp = props => {
                   validate()
                 }}>
                 <AppText
-                  textStyle="button3"
+                  textStyle="caption"
                   color={AppColor.contentOcean}
                   customStyle={{ marginBottom: 16 }}>
                   {signUpMethod === 'email'
@@ -309,12 +317,19 @@ const SignUp = props => {
               </TouchableOpacity>
               <Validator
                 style={{ marginBottom: normalize(16) }}
+                customTextStyle={{
+                  fontFamily: 'RoundedMplus1c-Regular',
+                  fontSize: normalize(12),
+                  marginTop: normalize(8),
+                  color: AppColor.secondaryBrinkPink,
+                }}
                 errorState={{
                   message: errors.name,
                   shown: errors.name.length,
                 }}>
                 <AppInput
                   label="Full Name"
+                  customLabelStyle={{ color: AppColor.contentPlaceholder }}
                   onBlurInput={() => {
                     setDirtyStates([...new Set([...dirtyStates, 'name'])])
                   }}
@@ -323,18 +338,26 @@ const SignUp = props => {
                     handleFormChange({ key: 'name', value })
                   }}
                   value={formData.name}
+                  error={errors.name.length}
                 />
               </Validator>
 
               <View style={{ position: 'relative' }}>
                 <Validator
                   style={{ marginBottom: normalize(16) }}
+                  customTextStyle={{
+                    fontFamily: 'RoundedMplus1c-Regular',
+                    fontSize: normalize(12),
+                    marginTop: normalize(8),
+                    color: AppColor.secondaryBrinkPink,
+                  }}
                   errorState={{
                     message: errors.password,
                     shown: errors.password.length,
                   }}>
                   <AppInput
                     label="Password"
+                    customLabelStyle={{ color: AppColor.contentPlaceholder }}
                     onBlurInput={() => {
                       setDirtyStates([...new Set([...dirtyStates, 'password'])])
                     }}
@@ -347,6 +370,7 @@ const SignUp = props => {
                     }}
                     secureTextEntry={!isPasswordVisible ? true : false}
                     value={formData.password}
+                    error={errors.password.length}
                   />
                 </Validator>
 
