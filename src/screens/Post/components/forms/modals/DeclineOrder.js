@@ -48,7 +48,6 @@ const DeclineOrder = ({ goBack, postType, declineOrderFunction }) => {
             marginTop: 15,
           }}>
           <AppText textStyle="display6">Decline Order?</AppText>
-          <AppText textStyle="body2">{'<copy>'}</AppText>
         </View>
         <View>
           <AppText

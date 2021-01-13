@@ -103,7 +103,9 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
   }
 
   const onAdd = () => {
-    setQty(qty + 1)
+    if (qty < 10) {
+      setQty(qty + 1)
+    }
   }
 
   const onMinus = () => {

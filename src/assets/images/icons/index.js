@@ -297,6 +297,7 @@ import Info from './info.svg'
 import ChatBlue from './chat-blue.svg'
 import HorizontalWhiteEllipsis from './ellipsis-horizontal-white.svg'
 import WalletGray from './wallet-gray.svg'
+import InfoSmall from './info-small.svg'
 
 export {
   Trash,
@@ -516,6 +517,7 @@ export {
   ChatBlue,
   TrashWhite,
   HorizontalWhiteEllipsis,
+  InfoSmall,
 }
 
 export const Icons = {
@@ -585,4 +587,5 @@ export const Icons = {
   WelcomeNotif,
   MegaPhone,
   WalletGray,
+  InfoSmall,
 }

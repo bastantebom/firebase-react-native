@@ -67,8 +67,8 @@ const Post = ({
       : post.items.map(item => +(item.price || 0))
 
     return prices.length === 1
-      ? prices[0].toLocaleString()
-      : `${Math.min(...prices).toLocaleString()} - ${Math.max(
+      ? `₱${prices[0].toLocaleString()}`
+      : `₱${Math.min(...prices).toLocaleString()} - ₱${Math.max(
           ...prices
         ).toLocaleString()}`
   }
@@ -99,7 +99,7 @@ const Post = ({
         textStyle="price"
         customStyle={{ marginBottom: normalize(10) }}
         color={Colors.secondaryMountainMeadow}>
-        ₱{getPrice()}
+        {getPrice()}
       </AppText>
     )
   }

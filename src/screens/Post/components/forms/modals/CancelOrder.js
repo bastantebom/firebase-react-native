@@ -73,7 +73,6 @@ const CancelOrder = ({ goBack, postType, orderDetails, userId }) => {
               ? 'Cancel Request'
               : null}
           </AppText>
-          <AppText textStyle="body2">{'<copy>'}</AppText>
         </View>
         <View>
           <AppText

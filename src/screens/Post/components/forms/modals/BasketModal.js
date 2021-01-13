@@ -41,7 +41,9 @@ import {
   GrabPayActive,
   PaypalActive,
   Paypal,
+  InfoSmall,
 } from '@/assets/images/icons'
+import { BeeResponsible } from '@/assets/images'
 
 import ChangeDeliveryMethodModal from './ChangeDeliveryMethodModal'
 import ChangePaymentMethodModal from './ChangePaymentMethodModal'
@@ -385,6 +387,50 @@ const BasketModal = ({
           <AppText textStyle="body3">{title}</AppText>
         </View>
       )
+  }
+
+  const ImportantNotes = () => {
+    return (
+      <View>
+        <View style={{ flexDirection: 'row', marginLeft: 12 }}>
+          <InfoSmall width={normalize(16)} height={normalize(16)} />
+          <AppText textStyle="caption" customStyle={{ marginLeft: 8 }}>
+            Please wait for the seller to confirm your order before proceeding
+            with the payment.
+          </AppText>
+        </View>
+        <View style={{ flexDirection: 'row', marginLeft: 12, marginTop: 16 }}>
+          <InfoSmall width={normalize(16)} height={normalize(16)} />
+          <AppText textStyle="caption" customStyle={{ marginLeft: 8 }}>
+            Before you continue, kindly review our{' '}
+            <AppText color={Colors.contentOcean}>Privacy Policy </AppText>
+            and <AppText color={Colors.contentOcean}>Terms of Use.</AppText>
+          </AppText>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: Colors.secondarySolitude,
+            padding: 16,
+            borderRadius: 8,
+            marginTop: 24,
+          }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <BeeResponsible width={normalize(34)} height={normalize(34)} />
+            <AppText customStyle={{ marginLeft: 8 }} textStyle="body2medium">
+              Bee Responsible
+            </AppText>
+          </View>
+          <View style={{ marginTop: 4 }}>
+            <AppText textStyle="caption">
+              Pranking or cheating a seller, a customer, and delivery personnel
+              is an act punishable by law. Let's keep this community a safe hive
+              for everyone.
+            </AppText>
+          </View>
+        </View>
+      </View>
+    )
   }
 
   return (
@@ -880,6 +926,7 @@ const BasketModal = ({
               </TouchableOpacity>
             </View>
             <AppText textStyle="body2">{notes}</AppText>
+            <ImportantNotes />
           </View>
           {attachedPostData && (
             <View

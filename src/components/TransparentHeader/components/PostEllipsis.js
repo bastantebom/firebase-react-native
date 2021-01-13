@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { AppText, BottomSheetHeader, PaddingView } from '@/components';
-import { Colors, normalize } from '@/globals';
-import { PostPencil, PostRemove } from '@/assets/images/icons';
-import Modal from 'react-native-modal';
+import React, { useState } from 'react'
+import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { AppText, BottomSheetHeader, PaddingView } from '@/components'
+import { Colors, normalize } from '@/globals'
+import { PostPencil, PostRemove } from '@/assets/images/icons'
+import Modal from 'react-native-modal'
 
 const PostEllipsis = ({
   toggleEllipsisState,
   editPostFunction,
   deletePostFunction,
-  togglePostModal
+  togglePostModal,
 }) => {
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false)
 
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
-  const closeHandler = (value) => {
-    cancelModalToggle();
+    setShowCancelModal(!showCancelModal)
+  }
+  const closeHandler = value => {
+    cancelModalToggle()
     setTimeout(() => {
       togglePostModal = { togglePostModal }
-    }, 200);
+    }, 200)
 
-    cancelModalToggle();
-  };
+    cancelModalToggle()
+  }
 
   return (
     <View
@@ -85,7 +85,7 @@ const PostEllipsis = ({
           style={{
             margin: 0,
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
           customBackdrop={
             <TouchableWithoutFeedback onPress={cancelModalToggle}>
@@ -103,14 +103,14 @@ const PostEllipsis = ({
             }}>
             <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
               Remove Post?
-          </AppText>
+            </AppText>
 
             <AppText
               textStyle="caption"
               customStyle={{ textAlign: 'center' }}
               customStyle={{ marginBottom: 16 }}>
               Are you sure you want to remove this post?
-          </AppText>
+            </AppText>
 
             <TouchableOpacity
               onPress={deletePostFunction}
@@ -127,16 +127,20 @@ const PostEllipsis = ({
 
             <TouchableOpacity
               onPress={() => closeHandler('cancel')}
-              style={{ paddingVertical: 14, width: '100%', alignItems: 'center' }}>
+              style={{
+                paddingVertical: 14,
+                width: '100%',
+                alignItems: 'center',
+              }}>
               <AppText textStyle="button2" color={Colors.contentOcean}>
                 Cancel
-            </AppText>
+              </AppText>
             </TouchableOpacity>
           </View>
         </Modal>
       </PaddingView>
     </View>
-  );
-};
+  )
+}
 
-export default PostEllipsis;
+export default PostEllipsis

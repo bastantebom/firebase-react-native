@@ -1055,7 +1055,9 @@ const SinglePostView = props => {
                               <AppText
                                 textStyle="body3"
                                 color={Colors.contentOcean}>
-                                {userCart?.length}
+                                {userCart
+                                  .map(item => item.quantity)
+                                  .reduce((qty, curr) => qty + curr, 0)}
                               </AppText>
                             </View>
                           </View>
