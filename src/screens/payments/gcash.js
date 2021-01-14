@@ -11,6 +11,7 @@ import {
 
 import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
+import { commaSeparate } from '@/globals/Utils'
 
 /**
  * @typedef {object} GCashProps
@@ -94,7 +95,7 @@ const GCashScreen = ({ navigation, route }) => {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <AppText textStyle="display6">
-                  ₱{(+totalPrice.toFixed(2)).toLocaleString()}
+                  ₱{commaSeparate(totalPrice)}
                 </AppText>
                 <AppText textStyle="caption">Amount</AppText>
               </View>

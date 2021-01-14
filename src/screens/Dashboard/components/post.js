@@ -9,7 +9,7 @@ import { UserContext } from '@/context/UserContext'
 import { getDistance } from 'geolib'
 
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
-import { Context } from '@/context'
+import { commaSeparate } from '@/globals/Utils'
 
 /**
  * @param {object} param0
@@ -67,10 +67,10 @@ const Post = ({
       : post.items.map(item => +(item.price || 0))
 
     return prices.length === 1
-      ? `₱${prices[0].toLocaleString()}`
-      : `₱${Math.min(...prices).toLocaleString()} - ₱${Math.max(
-          ...prices
-        ).toLocaleString()}`
+      ? `₱${commaSeparate(prices[0])}`
+      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
+          Math.max(...prices)
+        )}`
   }
 
   const renderDeliveryMethods = () => {

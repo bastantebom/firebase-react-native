@@ -12,6 +12,7 @@ import {
 
 import { Colors, normalize } from '@/globals'
 import { LogoPaypal } from '@/assets/images'
+import { commaSeparate } from '@/globals/Utils'
 
 /**
  * @typedef {object} PaypalProps
@@ -100,7 +101,7 @@ const PaypalScreen = ({ navigation, route }) => {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <AppText textStyle="display6">
-                  ₱{(+totalPrice.toFixed(2)).toLocaleString()}
+                  ₱{commaSeparate(totalPrice)}
                 </AppText>
                 <AppText textStyle="caption">Amount</AppText>
               </View>

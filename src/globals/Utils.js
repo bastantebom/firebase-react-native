@@ -241,10 +241,12 @@ export const getLocationData = async ({ latitude, longitude }) => {
   }
 }
 
-export const thousandsSeparators = num => {
-  const num_parts = num.toString().split('.')
-  num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return num_parts.join('.')
+/**
+ * @param {number} num
+ * @returns {string}
+ */
+export const commaSeparate = num => {
+  return (+(+num).toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export const generateDynamicLink = async ({
@@ -302,10 +304,10 @@ export const getPreviewLinkData = ({ type, data }) => {
       : post.items.map(item => +(item.price || 0))
 
     return prices.length === 1
-      ? prices[0].toLocaleString()
-      : `${Math.min(...prices).toLocaleString()} - ${Math.max(
-          ...prices
-        ).toLocaleString()}`
+      ? `₱${commaSeparate(prices[0])}`
+      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
+          Math.max(...prices)
+        )}`
   }
 
   const getPostTitle = () => {

@@ -13,6 +13,7 @@ import {
 
 import { ChatBlue, ProfileImageDefault, Verified } from '@/assets/images/icons'
 import { useNavigation } from '@react-navigation/native'
+import { commaSeparate } from '@/globals/Utils'
 
 const ItemCard = ({ item }) => {
   const navigation = useNavigation()
@@ -119,7 +120,7 @@ const ItemCard = ({ item }) => {
               marginVertical: normalize(10),
             }}>
             <AppText textStyle="body2medium">
-              ₱{item.amount.toLocaleString()}
+              ₱{commaSeparate(item.amount)}
             </AppText>
             {item.type !== 'need' && (
               <>

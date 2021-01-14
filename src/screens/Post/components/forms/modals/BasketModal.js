@@ -50,6 +50,7 @@ import AddNoteModal from './AddNoteModal'
 import OrderNotesModal from './OrderNotesModal'
 import ServiceSchedule from './ServiceSchedule'
 import { useNavigation } from '@react-navigation/native'
+import { commaSeparate } from '@/globals/Utils'
 
 const BasketModal = ({
   closeModal,
@@ -367,7 +368,9 @@ const BasketModal = ({
                   )}
                 </View>
               </View>
-              <AppText textStyle="body1">₱{item.price * item.quantity}</AppText>
+              <AppText textStyle="body1">
+                ₱{commaSeparate(item.price * item.quantity)}
+              </AppText>
             </View>
           )
         })
@@ -395,7 +398,9 @@ const BasketModal = ({
                   )}
                 </View>
               </View>
-              <AppText textStyle="body1">₱{item.price * item.quantity}</AppText>
+              <AppText textStyle="body1">
+                ₱{commaSeparate(item.price * item.quantity)}
+              </AppText>
             </View>
           )
         })
@@ -514,7 +519,7 @@ const BasketModal = ({
                 <AppText textStyle="body1">
                   ₱
                   {postType === 'need' && offerData?.price
-                    ? offerData?.price
+                    ? commaSeparate(offerData?.price)
                     : ''}
                 </AppText>
               )}
@@ -531,7 +536,9 @@ const BasketModal = ({
                 display: postType !== 'need' ? 'flex' : 'none',
               }}>
               <AppText textStyle="body1medium">Total</AppText>
-              <AppText textStyle="body1medium">₱{computedTotal()}</AppText>
+              <AppText textStyle="body1medium">
+                ₱{commaSeparate(computedTotal())}
+              </AppText>
             </View>
           </View>
           {postType !== 'need' ? (
@@ -1028,8 +1035,8 @@ const BasketModal = ({
               )}
               <AppText textStyle="body1">
                 {postType === 'need'
-                  ? `₱${offerData?.price}`
-                  : `₱${computedTotal()}`}
+                  ? `₱${commaSeparate(offerData?.price)}`
+                  : `₱${commaSeparate(computedTotal())}`}
               </AppText>
             </View>
           </View>

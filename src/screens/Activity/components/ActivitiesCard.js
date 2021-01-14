@@ -1,12 +1,5 @@
-import React, { useState } from 'react'
-import {
-  View,
-  ScrollView,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native'
+import React from 'react'
+import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { useNavigation } from '@react-navigation/native'
 
@@ -14,6 +7,7 @@ import { Colors, GlobalStyle, normalize, timePassedShort } from '@/globals'
 import { AppText, MarginView, CacheableImage } from '@/components'
 import { ProfileImageDefault } from '@/assets/images/icons'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import { commaSeparate } from '@/globals/Utils'
 
 const ActivitiesCard = ({ info }) => {
   const navigation = useNavigation()
@@ -258,7 +252,7 @@ const ActivitiesCard = ({ info }) => {
                     (postData?.type === 'service' ||
                       postData?.type === 'sell') && (
                       <AppText textStyle="metadata">
-                        • ₱{info.price.toLocaleString()}
+                        • ₱{commaSeparate(info.price)}
                       </AppText>
                     )}
                   {cardType === 'seller' &&

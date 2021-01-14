@@ -13,14 +13,11 @@ import Modal from 'react-native-modal'
 import { Colors, GlobalStyle, timePassed, normalize } from '@/globals'
 import OwnPost from './OwnPost'
 import NeedPost from './NeedPost'
-import ArchivePost from './ArchivePost'
 import { PaddingView, AppText, ProfileInfo, CacheableImage } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import {
   Verified,
-  StarRating,
   NavigationPinRed,
-  NavigationArrow,
   TransportationBox,
   Like,
   LikeColored,
@@ -30,6 +27,7 @@ import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 import LoadingScreen from './loading'
 import SinglePostOthersView from './SinglePostOthersView'
 import { PostService } from '@/services'
+import { commaSeparate } from '@/globals/Utils'
 
 const Post = ({
   data,
@@ -126,21 +124,18 @@ const Post = ({
 
   const getPrice = () => {
     const prices = items.map(item => {
-      return Number(item.price)
+      return `₱${Number(item.price)}`
     })
 
-    if (post_type !== 'need') {
-      if (prices.length === 1) return prices[0].toString()
+    if (type !== 'need') {
+      if (prices.length === 1) return `₱${commaSeparate(prices[0])}`
       else {
         const min = Math.min(...prices)
         const max = Math.max(...prices)
-
-        const finalPrices = [min, max]
-
-        return finalPrices.join(' - ')
+        return `₱${commaSeparate(min)} - ₱${commaSeparate(max)}`
       }
     } else {
-      return `${price_range?.min} - ${price_range?.max}`
+      return `₱${commaSeparate(price_range?.min)} - ₱${price_range?.max}`
     }
   }
 
@@ -197,7 +192,7 @@ const Post = ({
                     textStyle="price"
                     customStyle={styles.priceText}
                     color={Colors.secondaryMountainMeadow}>
-                    ₱{getPrice()}
+                    {getPrice()}
                   </AppText>
                 </View>
               </TouchableOpacity>
@@ -302,7 +297,7 @@ const Post = ({
                   textStyle="price"
                   customStyle={styles.priceText}
                   color={Colors.secondaryMountainMeadow}>
-                  ₱{getPrice()}
+                  {getPrice()}
                 </AppText>
               </TouchableOpacity>
 

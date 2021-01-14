@@ -38,7 +38,11 @@ import BasketModal from './forms/modals/BasketModal'
 import OfferModal from './forms/modals/OfferModal'
 import NewBasketPrompt from './forms/modals/NewBasketPrompt'
 import { PostService } from '@/services'
-import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
+import {
+  commaSeparate,
+  generateDynamicLink,
+  getPreviewLinkData,
+} from '@/globals/Utils'
 import Share from 'react-native-share'
 
 const SinglePostView = props => {
@@ -524,7 +528,9 @@ const SinglePostView = props => {
                     )}
                   </View>
                   <View style={styles.itemPrice}>
-                    <AppText textStyle="subtitle1">₱{item.price}</AppText>
+                    <AppText textStyle="subtitle1">
+                      ₱{commaSeparate(item.price)}
+                    </AppText>
                   </View>
                 </View>
               </View>
@@ -702,12 +708,10 @@ const SinglePostView = props => {
                     customStyle={{ marginLeft: 8 }}>
                     ₱
                     {type !== 'need'
-                      ? Number(items[0].price).toLocaleString()
-                      : `${Number(
-                          price_range?.min
-                        ).toLocaleString()} - ${Number(
+                      ? commaSeparate(items[0].price)
+                      : `${commaSeparate(price_range?.min)} - ${commaSeparate(
                           price_range?.max
-                        ).toLocaleString()}`}
+                        )}`}
                   </AppText>
                 </>
               )}
@@ -1069,7 +1073,7 @@ const SinglePostView = props => {
                             </View>
                           </View>
                           <AppText textStyle="body1medium">
-                            ₱{totalCartPrice}
+                            ₱{commaSeparate(totalCartPrice)}
                           </AppText>
                         </>
                       )}

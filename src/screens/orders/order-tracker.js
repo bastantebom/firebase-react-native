@@ -19,7 +19,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   TouchableWithoutFeedback,
   UIManager,
@@ -29,7 +28,6 @@ import Api from '@/services/Api'
 import { capitalize } from 'lodash'
 import {
   CashActive,
-  Chat,
   CircleTickWhite,
   CreditCardActive,
   GCashActive,
@@ -37,6 +35,7 @@ import {
   Icons,
   LocationContactUs,
   MasterCardActive,
+  Note,
   PaypalActive,
   PostBox,
   PostCash,
@@ -57,6 +56,7 @@ import CancelOrderModal from './modals/cancel-order'
 import DeclineOrderModal from './modals/decline-order'
 
 import moment from 'moment'
+import { commaSeparate } from '@/globals/Utils'
 
 if (
   Platform.OS === 'android' &&
@@ -759,7 +759,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         )}
         {post.type === 'need' && (
           <AppText textStyle="body2" customStyle={{ marginTop: normalize(7) }}>
-            {orderData?.price}
+            {commaSeparate(orderData?.price)}
           </AppText>
         )}
       </View>
@@ -797,9 +797,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             borderBottomColor: Colors.neutralGray,
             paddingBottom: normalize(10),
           }}>
-          {orderData.items?.map?.(item => {
+          {(orderData.items || []).map((item, index) => {
             return (
-              <View key={item.id} style={styles.summaryItem}>
+              <View key={item.id || index} style={styles.summaryItem}>
                 <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
                   <AppText
                     textStyle="body1"
@@ -816,7 +816,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   </View>
                 </View>
                 <AppText textStyle="body1" color={Colors.contentPlaceholder}>
-                  ₱{item.price * item.quantity}
+                  ₱{commaSeparate(item.price * item.quantity)}
                 </AppText>
               </View>
             )
@@ -829,7 +829,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             paddingTop: normalize(10),
           }}>
           <AppText textStyle="body1medium">Total</AppText>
-          <AppText textStyle="body1medium">₱{totalPrice}</AppText>
+          <AppText textStyle="body1medium">
+            ₱{commaSeparate(totalPrice)}
+          </AppText>
         </View>
       </View>
     )
@@ -948,7 +950,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   style={[styleUtils.btnPrimary]}
                   onPress={() => handlePayment(orderData.payment_method)}>
                   <AppText textStyle="body2medium">Continue to Payment</AppText>
-                  <AppText textStyle="body2">₱{totalPrice}</AppText>
+                  <AppText textStyle="body2">
+                    ₱{commaSeparate(totalPrice)}
+                  </AppText>
                 </TouchableOpacity>
               )}
 

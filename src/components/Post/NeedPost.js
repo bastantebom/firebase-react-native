@@ -1,30 +1,19 @@
-import React, { useContext, useState } from 'react'
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native'
+import React, { useContext } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import Modal from 'react-native-modal'
 
 import { AppText, PaddingView, ProfileInfo, CacheableImage } from '@/components'
 import { GlobalStyle, normalize, timePassedShort, Colors } from '@/globals'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 import {
   Verified,
-  JarHeartColored,
-  JarHeart,
   NavigationPinRed,
   TransportationBox,
-  LikeColored,
-  Like,
 } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
 import LoadingScreen from './loading'
-import SinglePostOthersView from './SinglePostOthersView'
+import { commaSeparate } from '@/globals/Utils'
 
 const NeedPost = ({ data, isLoading }) => {
   const { user } = useContext(UserContext)
@@ -81,21 +70,18 @@ const NeedPost = ({ data, isLoading }) => {
 
   const getPrice = () => {
     const prices = items.map(item => {
-      return Number(item.price)
+      return `₱${Number(item.price)}`
     })
 
     if (type !== 'need') {
-      if (prices.length === 1) return prices[0].toString()
+      if (prices.length === 1) return `₱${commaSeparate(prices[0])}`
       else {
         const min = Math.min(...prices)
         const max = Math.max(...prices)
-
-        const finalPrices = [min, max]
-
-        return finalPrices.join(' - ')
+        return `₱${commaSeparate(min)} - ₱${commaSeparate(max)}`
       }
     } else {
-      return `${price_range?.min} - ${price_range?.max}`
+      return `₱${commaSeparate(price_range?.min)} - ₱${price_range?.max}`
     }
   }
 
@@ -131,7 +117,7 @@ const NeedPost = ({ data, isLoading }) => {
                   textStyle="price"
                   customStyle={styles.priceText}
                   color={Colors.secondaryMountainMeadow}>
-                  ₱{getPrice()}
+                  {getPrice()}
                 </AppText>
               </View>
             </TouchableOpacity>

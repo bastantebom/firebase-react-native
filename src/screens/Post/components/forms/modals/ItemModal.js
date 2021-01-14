@@ -21,6 +21,7 @@ import { normalize, Colors } from '@/globals'
 import { ChevronDown, MinusSign, PlusSign } from '@/assets/images/icons'
 import { Context } from '@/context'
 import { ImageModal } from '@/screens/Post/components/ImageModal'
+import { commaSeparate } from '@/globals/Utils'
 
 const ItemModal = ({ closeModal, postType, item, postID }) => {
   const [notes, setNotes] = useState()
@@ -289,7 +290,9 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
                 )}
               </View>
               <View style={styles.itemPrice}>
-                <AppText textStyle="subtitle1">₱{currentItem.price}</AppText>
+                <AppText textStyle="subtitle1">
+                  ₱{commaSeparate(currentItem.price)}
+                </AppText>
               </View>
             </View>
           </View>
@@ -454,7 +457,9 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
                       paddingHorizontal: normalize(30),
                     }}>
                     <AppText textStyle="body1medium">Add to order</AppText>
-                    <AppText textStyle="subtitle1">₱{subtotal}</AppText>
+                    <AppText textStyle="subtitle1">
+                      ₱{commaSeparate(subtotal)}
+                    </AppText>
                   </View>
                 )}
               </View>
