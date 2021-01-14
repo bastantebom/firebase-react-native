@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -8,22 +8,18 @@ import {
   Dimensions,
   PermissionsAndroid,
   Platform,
+  Text,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions'
 
-import {
-  AppText,
-  TabNavigation,
-  BottomSheetHeader,
-  CacheableImage,
-} from '@/components'
+import { AppText, TabNavigation } from '@/components'
 import { normalize, Colors } from '@/globals'
-import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import { PostImages, CloseLight } from '@/assets/images/icons'
 import { PostCamera } from './Camera'
 import { Library } from './Library'
+import { Images } from '@/assets/images'
 
 const { height, width } = Dimensions.get('window')
 
@@ -154,24 +150,23 @@ export const PostImageUpload = ({ data }) => {
       {imageCount === 0 ? (
         <View
           style={{
-            height: normalize(114),
-            borderStyle: 'dashed',
-            borderRadius: 4,
-            borderWidth: 1,
-            borderColor: Colors.neutralGray,
+            flexDirection: 'row',
             justifyContent: 'center',
-            marginBottom: 8,
+            alignItems: 'center',
           }}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => requestPermission()}>
-            <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-              <PostImages width={normalize(56)} height={normalize(56)} />
-              <AppText textStyle="body2" color={Colors.contentOcean}>
-                Upload Cover Photos
-              </AppText>
-            </View>
-          </TouchableOpacity>
+          <View style={styles.uploadDropBox}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => requestPermission()}>
+              <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+                <Images.CameraImage
+                  width={normalize(56)}
+                  height={normalize(56)}
+                />
+                <Text style={styles.uploadLabel}>+ Add 10 Photos</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       ) : (
         <View
@@ -289,3 +284,25 @@ export const PostImageUpload = ({ data }) => {
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  uploadDropBox: {
+    borderStyle: 'dashed',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: Colors.neutralGray,
+    justifyContent: 'center',
+    marginBottom: normalize(17),
+    paddingHorizontal: normalize(28),
+    paddingVertical: normalize(14),
+  },
+  uploadLabel: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(12),
+    color: Colors.contentOcean,
+    letterSpacing: 0.4,
+    lineHeight: normalize(18),
+    width: normalize(60),
+    textAlign: 'center',
+  },
+})

@@ -12,6 +12,7 @@ import OnboardingIllustration2 from './onboarding-img2.svg'
 import OnboardingIllustration3 from './onboarding-img3.svg'
 import OnboardingIllustration4 from './onboarding-img4.svg'
 
+import CameraImage from './camera-image.svg'
 import PolygonStatic from './polygon-static.svg'
 
 import ProfileHeaderDefault from './profile-header-default.svg'
@@ -139,6 +140,7 @@ export const Status = {
 }
 
 export const Images = {
+  CameraImage,
   Doctor,
   PaymentFailed,
   PaymentSuccess,

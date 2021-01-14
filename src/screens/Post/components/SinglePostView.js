@@ -706,10 +706,9 @@ const SinglePostView = props => {
                     textStyle="subtitle1"
                     color={Colors.secondaryMountainMeadow}
                     customStyle={{ marginLeft: 8 }}>
-                    ₱
                     {type !== 'need'
-                      ? commaSeparate(items[0].price)
-                      : `${commaSeparate(price_range?.min)} - ${commaSeparate(
+                      ? `₱${commaSeparate(items[0].price)}`
+                      : `₱${commaSeparate(price_range?.min)} - ₱${commaSeparate(
                           price_range?.max
                         )}`}
                   </AppText>
