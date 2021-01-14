@@ -334,7 +334,7 @@ export const getPreviewLinkData = ({ type, data }) => {
     const name = data.display_name || data.full_name
 
     return {
-      socialTitle: `${name} Profile - Servbees`,
+      socialTitle: `${name} is on Servbees, your friendly neighborhood Pagkakakita-App`,
       socialImageLink: data.profile_photo,
     }
   } else if (type === 'post') {
