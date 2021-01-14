@@ -6,6 +6,7 @@ import { normalize } from '@/globals'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import EmptyLikePost from '@/screens/Profile/components/Account/EmptyLikedPosts'
+import _ from 'lodash'
 
 /**
  * @typedef {Object} LikedPostsProps
@@ -147,7 +148,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
           close={navigation.goBack}
         />
       </View>
-      {!isLoadingMoreItems && !posts.length && <EmptyLikePost />}
+      {!isLoadingMoreItems && _.isEmpty(posts) && <EmptyLikePost />}
       <Posts
         posts={posts}
         isLoadingMoreItems={isLoadingMoreItems}

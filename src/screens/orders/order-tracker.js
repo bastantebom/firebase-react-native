@@ -502,11 +502,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             />
           )
         } else if (post.type === 'service')
-          return <DefaultService width={normalize(64)} height={normalize(72)} />
+          return <DefaultService width={normalize(36)} height={normalize(36)} />
         else if (post.type === 'need')
-          return <DefaultNeed width={normalize(64)} height={normalize(72)} />
+          return <DefaultNeed width={normalize(36)} height={normalize(36)} />
         else if (post.type === 'sell')
-          return <DefaultSell width={normalize(64)} height={normalize(72)} />
+          return <DefaultSell width={normalize(36)} height={normalize(36)} />
       }
 
       return (
@@ -873,7 +873,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           <View style={styles.section}>
             <View style={styleUtils.row}>
               {post.type === 'need' ? (
-                <Note
+                <PostNote
                   style={styles.sectionIcon}
                   width={normalize(18)}
                   height={normalize(18)}

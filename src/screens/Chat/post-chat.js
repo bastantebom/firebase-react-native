@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   StyleSheet,
   View,
@@ -15,27 +15,42 @@ import { useNavigation } from '@react-navigation/native'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Modal from 'react-native-modal'
-
-import { normalize, Colors } from '@/globals'
-import { AppCheckbox, AppText, ScreenHeaderTitle } from '@/components'
+import firestore from '@react-native-firebase/firestore'
+import { UserContext } from '@/context/UserContext'
+import { normalize, Colors, GlobalStyle } from '@/globals'
+import {
+  AppCheckbox,
+  AppText,
+  ScreenHeaderTitle,
+  TransitionIndicator,
+  CacheableImage,
+} from '@/components'
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 import {
   BlueDot,
   PostParcelBlue,
   Search,
   TrashWhite,
   HorizontalWhiteEllipsis,
+  ProfileImageDefault,
 } from '@/assets/images/icons'
 import ChatOptions from './components/ChatOptions'
 import MultiChatOptions from './components/MultiChatOptions'
+import _ from 'lodash'
+import Api from '@/services/Api'
+import { HiddenPost } from '../Profile/components'
 
 const { width } = Dimensions.get('window')
 const PADDING = 16
 const SEARCH_FULL_WIDTH = width - PADDING * 2
 const SEARCH_SHRINK_WIDTH = normalize(45)
 
-const PostChat = () => {
+const PostChat = ({ route }) => {
+  const post = route?.params?.post
   const navigation = useNavigation()
-
+  const [roomsChats, setRoomsChats] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const { user } = useContext(UserContext)
   const messages = [
     {
       id: 0,
@@ -82,6 +97,66 @@ const PostChat = () => {
       read: true,
     },
   ]
+
+  const getAllRooms = async () => {
+    firestore()
+      .collection('chat_rooms')
+      .where('post_id', '==', post.postData.id)
+      .onSnapshot(async snap => {
+        if (!snap) return
+        snap.docs.map(async (room, index) => {
+          const roomId = room.id
+          let roomChats = []
+          firestore()
+            .collection('chat_rooms')
+            .doc(room.id)
+            .collection('messages')
+            .where('uid', '!=', user?.uid)
+            .onSnapshot(async chatRef => {
+              let chats = chatRef.docs.map(chatDoc => {
+                if (chatDoc.data()) {
+                  return chatDoc.data()
+                }
+              })
+
+              chats.sort((a, b) => b.createdAt - a.createdAt)
+              if (chats[0]?.uid) {
+                const userData =
+                  (await Api.getUser({ uid: chats[0].uid })).data || {}
+                const { full_name, profile_photo } = userData
+                const currentChats = {
+                  chats,
+                  full_name,
+                  profile_photo,
+                  roomId,
+                }
+
+                const foundIndex = roomChats.findIndex(
+                  rmChats => rmChats.roomId == currentChats.roomId
+                )
+
+                if (~foundIndex) {
+                  roomChats[foundIndex] = currentChats
+                  setRoomsChats([...roomChats])
+                } else {
+                  roomChats.push(currentChats)
+                  setRoomsChats(roomsChats => [...roomsChats, ...roomChats])
+                }
+                setIsLoading(false)
+              }
+            })
+        })
+      })
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    if (isMounted) {
+      setIsLoading(true)
+      getAllRooms()
+    }
+    return () => (isMounted = false)
+  }, [post])
 
   const [filters, setFilters] = useState({
     type: [],
@@ -142,11 +217,80 @@ const PostChat = () => {
     setIsSearchFocused(false)
   }
 
+  const CoverPhoto = ({ post }) => {
+    return post?.cover_photos?.length > 0 ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{ uri: post?.cover_photos[0] }}
+      />
+    ) : post?.postData.type === 'service' ? (
+      <DefaultService width={normalize(24)} height={normalize(24)} />
+    ) : post?.postData.type === 'need' ? (
+      <DefaultNeed width={normalize(24)} height={normalize(24)} />
+    ) : (
+      <DefaultSell width={normalize(24)} height={normalize(24)} />
+    )
+  }
+
+  const ProfilePhoto = ({ size, photo }) => {
+    return photo ? (
+      <CacheableImage
+        style={GlobalStyle.image}
+        source={{
+          uri: photo,
+        }}
+      />
+    ) : (
+      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+    )
+  }
+
   const handleSearchPress = () => {
     if (!isSearchFocused) {
       onFocus()
     } else {
       onBlur()
+    }
+  }
+
+  const handleChatPress = async (otherUID, postId) => {
+    let channel
+    try {
+      if (!user?.uid) return
+      const snapshot = await firestore()
+        .collection('chat_rooms')
+        .where('members', '==', {
+          [user?.uid]: true,
+          [otherUID]: true,
+        })
+        .where('post_id', '==', postId)
+        .get()
+
+      if (!snapshot.docs.length) {
+        const ref = firestore().collection('chat_rooms')
+        const { id } = await ref.add({
+          members: {
+            [user.uid]: true,
+            [otherUID]: true,
+          },
+          post_id: postId,
+        })
+
+        await ref.doc(id).update({ id })
+        channel = (await ref.doc(id).get()).data()
+      } else {
+        channel = snapshot.docs[0].data()
+      }
+
+      navigation.navigate('NBTScreen', {
+        screen: 'Chat',
+        params: {
+          user,
+          channel,
+        },
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -192,6 +336,7 @@ const PostChat = () => {
 
   return (
     <SafeAreaView style={styles.parent}>
+      <TransitionIndicator loading={isLoading} />
       <ScreenHeaderTitle
         title="Post Chats"
         iconSize={multipleSelect ? 0 : normalize(16)}
@@ -216,9 +361,11 @@ const PostChat = () => {
       )}
       <View style={styles.postChatHeader}>
         <View style={{ flexDirection: 'row', paddingTop: normalize(15) }}>
-          <PostParcelBlue />
+          <View style={styles.postImageContainer}>
+            <CoverPhoto post={post} />
+          </View>
           <AppText textStyle="body2" customStyle={{ marginLeft: normalize(8) }}>
-            Wayne's Burgers and Smoothies
+            {post.postData.title}
           </AppText>
         </View>
         <Animated.View style={[styles.search, { width: inputLength }]}>
@@ -239,7 +386,7 @@ const PostChat = () => {
         </Animated.View>
       </View>
       <ScrollView contentContainerStyle={{ paddingBottom: normalize(25) }}>
-        {messages.map((chat, i) => {
+        {roomsChats.map((chat, i) => {
           return (
             <Swipeable renderRightActions={renderRightActions} key={i}>
               <AppCheckbox
@@ -269,12 +416,16 @@ const PostChat = () => {
                 <View style={{ marginBottom: normalize(15), flex: 1 }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={() => {}}
+                    onPress={() =>
+                      handleChatPress(chat?.chats[0]?.uid, post.postData.id)
+                    }
                     style={{
                       flexDirection: 'row',
                       paddingHorizontal: normalize(16),
                     }}>
-                    <Image source={chat.icon} style={styles.icon} />
+                    <View style={styles.icon}>
+                      <ProfilePhoto size={50} photo={chat.profile_photo} />
+                    </View>
                     <View style={{ flex: 1 }}>
                       <View
                         style={{
@@ -289,7 +440,7 @@ const PostChat = () => {
                             marginBottom: normalize(4),
                           }}
                           numberOfLines={1}>
-                          {chat.user_name}
+                          {chat.full_name}
                         </AppText>
                         <AppText
                           textStyle="metadata"
@@ -304,12 +455,14 @@ const PostChat = () => {
                           justifyContent: 'space-between',
                         }}>
                         <AppText
-                          textStyle={chat.read ? 'caption2' : 'caption'}
+                          textStyle={
+                            !chat.chats[0].read ? 'caption2' : 'caption'
+                          }
                           customStyle={{ width: '90%' }}
                           numberOfLines={2}>
-                          {chat.message}
+                          {chat.chats[0].text}
                         </AppText>
-                        {chat.read && <BlueDot />}
+                        {!chat.chats[0].read && <BlueDot />}
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -450,9 +603,10 @@ const styles = StyleSheet.create({
     marginBottom: normalize(20),
   },
   icon: {
-    width: normalize(60),
-    height: normalize(60),
-    borderRadius: 50,
+    width: normalize(50),
+    height: normalize(50),
+    borderRadius: normalize(50 / 2),
+    overflow: 'hidden',
     marginRight: normalize(15),
   },
   search: {
@@ -481,5 +635,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  postImageContainer: {
+    width: normalize(24),
+    height: normalize(24),
+    borderRadius: normalize(24 / 2),
+    overflow: 'hidden',
   },
 })

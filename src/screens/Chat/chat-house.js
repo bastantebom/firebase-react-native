@@ -234,9 +234,9 @@ const ChatHouse = () => {
         style={GlobalStyle.image}
         source={{ uri: post?.cover_photos[0] }}
       />
-    ) : post?.type === 'service' ? (
+    ) : post?.postData.type === 'service' ? (
       <DefaultService width={normalize(64)} height={normalize(72)} />
-    ) : post?.type === 'need' ? (
+    ) : post?.postData.type === 'need' ? (
       <DefaultNeed width={normalize(64)} height={normalize(72)} />
     ) : (
       <DefaultSell width={normalize(64)} height={normalize(72)} />
@@ -303,7 +303,12 @@ const ChatHouse = () => {
               <View key={i} style={{ marginBottom: normalize(15) }}>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => navigation.navigate('PostChat')}
+                  onPress={() =>
+                    navigation.navigate('NBTScreen', {
+                      screen: 'PostChat',
+                      params: { post },
+                    })
+                  }
                   style={{
                     flexDirection: 'row',
                   }}>
