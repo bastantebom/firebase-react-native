@@ -137,8 +137,8 @@ const EditItemModal = ({
             }}>
             <AppText textStyle="body1">Categories</AppText>
             <AppText textStyle="caption" color={Colors.contentPlaceholder}>
-              If you don't have categories added, items will be automatically
-              displayed under 'Items'.
+              No specific category? Your service will be automatically
+              categorized under "Others”.
             </AppText>
 
             <TouchableOpacity

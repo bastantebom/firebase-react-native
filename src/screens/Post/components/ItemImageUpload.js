@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import ImagePicker from 'react-native-image-crop-picker'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
-import { CoverPhoto } from '@/assets/images'
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native'
+import { CoverPhoto, Images } from '@/assets/images'
 import { normalize, Colors } from '@/globals'
 import { AppText } from '@/components'
 import { Svg, Rect, Image } from 'react-native-svg'
@@ -55,6 +55,15 @@ const CoverPhotoUpload = ({
       borderWidth: 0,
       borderRadius: normalize(8),
     },
+    uploadLabel: {
+      fontFamily: 'RoundedMplus1c-Regular',
+      fontSize: normalize(12),
+      color: Colors.contentOcean,
+      letterSpacing: 0.4,
+      lineHeight: normalize(18),
+      width: normalize(60),
+      textAlign: 'center',
+    },
   })
 
   return (
@@ -63,13 +72,8 @@ const CoverPhotoUpload = ({
         onPress={() => handleSelect()}
         style={{ display: isVisible && !imgSrc ? 'flex' : 'none' }}>
         <View style={styles.coverPhoto}>
-          <CoverPhoto width={normalize(48)} height={normalize(42)} />
-          <AppText
-            textStyle="body2"
-            color={Colors.contentOcean}
-            customStyle={{ marginTop: normalize(8), maxWidth: 67 }}>
-            Add a photo
-          </AppText>
+          <Images.CameraImage width={normalize(56)} height={normalize(56)} />
+          <Text style={styles.uploadLabel}>+ Add 10 Photos</Text>
         </View>
       </TouchableOpacity>
 

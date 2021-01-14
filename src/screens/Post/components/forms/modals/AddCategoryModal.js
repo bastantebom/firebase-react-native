@@ -170,8 +170,8 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
                   <AppText
                     textStyle="caption"
                     color={Colors.contentPlaceholder}>
-                    If you don't have categories, items will be displayed under
-                    "items".
+                    No specific category? Your service will be automatically
+                    categorized under "Others”.
                   </AppText>
 
                   <Divider
@@ -223,8 +223,8 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
                   <AppText
                     textStyle="caption"
                     color={Colors.contentPlaceholder}>
-                    If you don't have categories, items will be displayed under
-                    "items".
+                    No specific category? Your service will be automatically
+                    categorized under "Others”.
                   </AppText>
 
                   <Divider
@@ -240,15 +240,10 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
         <TouchableOpacity
           onPress={() => setNewCategoryModal(true)}
           activeOpacity={0.7}>
-          <AppText
-            textStyle="body2"
-            customStyle={{ fontWeight: 'bold' }}
-            color={Colors.contentOcean}>
-            or Create a New Category
+          <AppText textStyle="body2medium" color={Colors.contentOcean}>
+            Create a New Category
           </AppText>
-          <AppText textStyle="body2">
-            e.g. Burgers, Drinks, Desserts, Snacks
-          </AppText>
+          <AppText textStyle="body2">e.g., Grooming, Haircut, Beauty</AppText>
         </TouchableOpacity>
 
         <Animated.View style={newActiveStyle}>
