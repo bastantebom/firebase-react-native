@@ -24,9 +24,8 @@ const VerifyNotifictaion = ({ onPress, onClose }) => {
         }}>
         <View
           style={{
-            width: '100%',
             justifyContent: 'space-evenly',
-            marginLeft: 15,
+            marginLeft: normalize(16),
           }}>
           <TouchableOpacity onPress={onPress}>
             <AppText
@@ -42,8 +41,8 @@ const VerifyNotifictaion = ({ onPress, onClose }) => {
               </AppText>
               <Icons.ChevronRight
                 style={{ color: '#fff', marginLeft: normalize(4) }}
-                width={normalize(24)}
-                height={normalize(24)}
+                width={normalize(16)}
+                height={normalize(16)}
               />
             </View>
           </TouchableOpacity>
