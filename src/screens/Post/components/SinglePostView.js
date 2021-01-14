@@ -270,7 +270,7 @@ const SinglePostView = props => {
   const timeAgo = time => {
     if (time <= 60) return 'Just now'
 
-    return ` ${timePassed(time)} ago`
+    return `${timePassed(time)} ago`
   }
 
   const makeCall = () =>
@@ -684,11 +684,15 @@ const SinglePostView = props => {
               {!is_multiple && (
                 <>
                   {type !== 'need' ? (
-                    <AppText customStyle={{ fontSize: normalize(10) }}>
+                    <AppText
+                      textStyle="eyebrow1"
+                      customStyle={{ fontSize: normalize(10) }}>
                       PRICE
                     </AppText>
                   ) : (
-                    <AppText customStyle={{ fontSize: normalize(10) }}>
+                    <AppText
+                      textStyle="eyebrow1"
+                      customStyle={{ fontSize: normalize(10) }}>
                       BUDGET
                     </AppText>
                   )}
@@ -709,18 +713,16 @@ const SinglePostView = props => {
               )}
             </View>
             <View style={styles.iconText}>
-              <Icons.PostClock width={normalize(24)} height={normalize(24)} />
+              <Icons.PostClock width={normalize(18)} height={normalize(18)} />
               <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                 {timeAgo(Date.now() / 1000 - date_posted._seconds)}
               </AppText>
             </View>
 
             <View style={styles.iconText}>
-              <Icons.PostParcel width={normalize(24)} height={normalize(24)} />
-              <AppText
-                textStyle="body2"
-                customStyle={{ marginLeft: 8, marginRight: 4 }}>
-                in
+              <Icons.PostParcel width={normalize(18)} height={normalize(18)} />
+              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+                in{' '}
               </AppText>
               {type === 'service' ? (
                 <AppText textStyle="body2" color={Colors.secondaryBrinkPink}>
@@ -738,10 +740,11 @@ const SinglePostView = props => {
                 </AppText>
               )}
             </View>
+
             <View style={styles.iconText}>
               <Icons.PostNavigation
-                width={normalize(24)}
-                height={normalize(24)}
+                width={normalize(18)}
+                height={normalize(18)}
               />
               <AppText
                 textStyle="body2"
@@ -753,8 +756,8 @@ const SinglePostView = props => {
               <View
                 style={[{ paddingBottom: normalize(100) }, styles.iconText]}>
                 <Icons.PostInfoRed
-                  width={normalize(24)}
-                  height={normalize(24)}
+                  width={normalize(18)}
+                  height={normalize(18)}
                 />
                 <AppText
                   textStyle="body2"
@@ -774,8 +777,8 @@ const SinglePostView = props => {
                         marginBottom: 0,
                       }}>
                       <Icons.PostCalendar
-                        width={normalize(18)}
-                        height={normalize(18)}
+                        width={normalize(16)}
+                        height={normalize(16)}
                       />
                       <AppText
                         textStyle="body2"
@@ -804,8 +807,8 @@ const SinglePostView = props => {
                 )}
                 <View style={styles.iconText}>
                   <Icons.PostInfo
-                    width={normalize(24)}
-                    height={normalize(24)}
+                    width={normalize(18)}
+                    height={normalize(18)}
                   />
                   <View
                     style={{
@@ -826,8 +829,8 @@ const SinglePostView = props => {
                 {payment?.length > 0 && (
                   <View style={styles.iconText}>
                     <Icons.PostCash
-                      width={normalize(24)}
-                      height={normalize(24)}
+                      width={normalize(18)}
+                      height={normalize(18)}
                     />
 
                     <AppText
@@ -843,8 +846,8 @@ const SinglePostView = props => {
                 {type == 'service' && (
                   <View style={styles.iconText}>
                     <Icons.PostTool
-                      width={normalize(20)}
-                      height={normalize(20)}
+                      width={normalize(18)}
+                      height={normalize(18)}
                     />
                     <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                       Serviceable area within 50KM
@@ -853,8 +856,8 @@ const SinglePostView = props => {
                 )}
                 <View style={styles.iconText}>
                   <Icons.PostNote
-                    width={normalize(22)}
-                    height={normalize(22)}
+                    width={normalize(18)}
+                    height={normalize(18)}
                   />
                   <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
                     You can see the product in person
@@ -1295,7 +1298,6 @@ const styles = StyleSheet.create({
   },
   iconText: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 16,
   },
   contactButtonContainer: {

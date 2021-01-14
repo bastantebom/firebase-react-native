@@ -105,7 +105,7 @@ const TransparentHeader = ({
             }}>
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-                <View style={styles.circle}>
+                <View style={styles.headerBtn}>
                   <Icons.HeaderBack
                     width={normalize(16)}
                     height={normalize(16)}
@@ -115,8 +115,8 @@ const TransparentHeader = ({
             </View>
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(24)} height={normalize(24)} />
+                <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(18)} height={normalize(17)} />
                 </View>
               </TouchableOpacity>
               {user ? (
@@ -124,16 +124,16 @@ const TransparentHeader = ({
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={handleLikedPost}>
-                    <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                    <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                       {liked ? (
                         <Icons.LikeColored
-                          width={normalize(16)}
-                          height={normalize(16)}
+                          width={normalize(18)}
+                          height={normalize(18)}
                         />
                       ) : (
                         <Icons.LikeHeader
-                          width={normalize(16)}
-                          height={normalize(16)}
+                          width={normalize(18)}
+                          height={normalize(18)}
                           style={{ color: 'white' }}
                         />
                       )}
@@ -142,10 +142,10 @@ const TransparentHeader = ({
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={toggleEllipsisState}>
-                    <View style={[styles.circle, GlobalStyle.marginLeft1]}>
+                    <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                       <Icons.HeaderEllipsis
-                        width={normalize(24)}
-                        height={normalize(24)}
+                        width={normalize(18)}
+                        height={normalize(18)}
                       />
                     </View>
                   </TouchableOpacity>
@@ -202,7 +202,7 @@ const TransparentHeader = ({
             }}>
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-                <View style={styles.circle}>
+                <View style={styles.headerBtn}>
                   <Icons.HeaderBack
                     width={normalize(16)}
                     height={normalize(16)}
@@ -213,17 +213,17 @@ const TransparentHeader = ({
 
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(24)} height={normalize(24)} />
+                <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(18)} height={normalize(17)} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={toggleEllipsisState}>
-                <View style={[styles.circle, GlobalStyle.marginLeft]}>
+                <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                   <Icons.HeaderEllipsis
-                    width={normalize(24)}
-                    height={normalize(24)}
+                    width={normalize(18)}
+                    height={normalize(18)}
                   />
                 </View>
               </TouchableOpacity>
@@ -279,16 +279,16 @@ const TransparentHeader = ({
 
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderShare width={normalize(24)} height={normalize(24)} />
+                <View style={styles.headerBtn}>
+                  <HeaderShare width={normalize(18)} height={normalize(17)} />
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
-                <View style={[styles.circle, GlobalStyle.marginLeft]}>
+                <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                   <Icons.HeaderMenu
-                    width={normalize(24)}
-                    height={normalize(24)}
+                    width={normalize(18)}
+                    height={normalize(18)}
                   />
                 </View>
               </TouchableOpacity>
@@ -354,10 +354,10 @@ const TransparentHeader = ({
             }}>
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-                <View style={styles.circle}>
+                <View style={styles.headerBtn}>
                   <Icons.HeaderBack
-                    width={normalize(24)}
-                    height={normalize(24)}
+                    width={normalize(16)}
+                    height={normalize(16)}
                   />
                 </View>
               </TouchableOpacity>
@@ -395,26 +395,17 @@ const TransparentHeader = ({
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={handleShare}
-                  style={[
-                    styles.button,
-                    styles.circle,
-                    GlobalStyle.marginLeft1,
-                  ]}>
-                  <Icons.Share width={normalize(24)} height={normalize(24)} />
+                  style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
+                  <HeaderShare width={normalize(18)} height={normalize(17)} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={toggleEllipsisState}>
-                  <View
-                    style={[
-                      styles.button,
-                      styles.circle,
-                      GlobalStyle.marginLeft1,
-                    ]}>
+                  <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                     <Icons.HeaderEllipsis
-                      width={normalize(24)}
-                      height={normalize(24)}
+                      width={normalize(18)}
+                      height={normalize(18)}
                     />
                   </View>
                 </TouchableOpacity>
@@ -453,10 +444,6 @@ const TransparentHeader = ({
 }
 
 const styles = StyleSheet.create({
-  circle: {
-    width: normalize(32),
-    borderRadius: normalize(32 / 2),
-  },
   followButton: {
     borderRadius: 20,
     flexDirection: 'row',
@@ -468,6 +455,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: normalize(32),
     marginLeft: normalize(8),
+  },
+  headerBtn: {
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    height: normalize(32),
+    width: normalize(32),
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })
 

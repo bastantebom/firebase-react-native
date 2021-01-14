@@ -278,7 +278,7 @@ const StickyHeader = ({
                 textStyle="subtitle2"
                 color={Colors.primaryMidnightBlue}
                 numberOfLines={1}
-                customStyle={{ paddingLeft: normalize(40) }}>
+                customStyle={{ paddingLeft: normalize(45) }}>
                 {name}
               </AppText>
             </View>
@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: normalize(40),
     height: normalize(40),
-    top: normalize(35),
+    top: normalize(37),
     position: 'absolute',
   },
   followButton: {

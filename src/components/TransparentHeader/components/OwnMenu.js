@@ -10,7 +10,7 @@ import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
 
-import { AppText, PaddingView } from '@/components'
+import { AppText, PaddingView, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
 import {
   HeaderBackGray,
@@ -77,6 +77,12 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <ScreenHeaderTitle
+        title="Settings"
+        iconSize={normalize(20)}
+        close={toggleMenu}
+        paddingSize={3}
+      />
       <ScrollView>
         <View
           style={{
@@ -86,44 +92,35 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
             borderTopStartRadius: 8,
           }}>
           <PaddingView paddingSize={3}>
-            <View
-              style={{
-                position: 'relative',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'row',
-                marginBottom: 32,
-              }}>
-              <TouchableOpacity
-                onPress={toggleMenu}
-                activeOpacity={0.7}
-                style={{ position: 'absolute', left: 0 }}>
-                <HeaderBackGray width={normalize(24)} height={normalize(24)} />
-              </TouchableOpacity>
-              <AppText textStyle="body3">Settings</AppText>
-            </View>
-
             <View>
-              <AppText customStyle={{ marginLeft: 8 }} textStyle="body3">
-                Account
-              </AppText>
+              <AppText textStyle="body3">Account</AppText>
 
               <TouchableOpacity
                 style={{ marginTop: normalize(16) }}
                 activeOpacity={0.7}
                 onPress={toggleLikePost}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <LikedPostMenu width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
-                    Liked Post
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <LikedPostMenu width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                    Liked Posts
                   </AppText>
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleEditProfile}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <MenuEdit width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <MenuEdit width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Edit Profile
                   </AppText>
                 </View>
@@ -132,21 +129,31 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={toggleArchivedPost}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
                   <ArchivePostMenu
-                    width={normalize(24)}
-                    height={normalize(24)}
+                    width={normalize(20)}
+                    height={normalize(20)}
                   />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Archived Post
                   </AppText>
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleHiddenPost}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <HidePost width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <HidePost width={normalize(22)} height={normalize(22)} />
+                  <AppText customStyle={{ marginLeft: 11 }} textStyle="body1">
                     Hidden Posts
                   </AppText>
                 </View>
@@ -155,12 +162,16 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={toggleInviteFriends}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
                   <InviteFriendsMenu
-                    width={normalize(24)}
-                    height={normalize(24)}
+                    width={normalize(22)}
+                    height={normalize(22)}
                   />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                  <AppText customStyle={{ marginLeft: 11 }} textStyle="body1">
                     Invite Friends
                   </AppText>
                 </View>
@@ -180,18 +191,23 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
               </AppText>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleFaq}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <Faq width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <Faq width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Frequently Asked Questions
                   </AppText>
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
-                <View style={{ flexDirection: 'row' }}>
-                  <ContactUs width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <ContactUs width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Contact Us
                   </AppText>
                 </View>
@@ -215,12 +231,17 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
                   style={{ marginTop: normalize(16) }}
                   activeOpacity={0.7}
                   onPress={toggleChangePassword}>
-                  <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginBottom: 16,
+                      alignItems: 'center',
+                    }}>
                     <ChangePasswordRed
-                      width={normalize(24)}
-                      height={normalize(24)}
+                      width={normalize(20)}
+                      height={normalize(20)}
                     />
-                    <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                       Change Password
                     </AppText>
                   </View>
@@ -231,9 +252,14 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
                 style={{ marginTop: !hasPassword ? normalize(16) : 0 }}
                 activeOpacity={0.7}
                 onPress={toggleBlockedUser}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <BlockedUsers width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <BlockedUsers width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Blocked Users
                   </AppText>
                 </View>
@@ -242,27 +268,37 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => setNotifications(true)}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <Notifications width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <Notifications width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Notification
                   </AppText>
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleAbout}>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <AboutRed width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: 16,
+                    alignItems: 'center',
+                  }}>
+                  <AboutRed width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     About
                   </AppText>
                 </View>
               </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={signOut}>
-                <View style={{ flexDirection: 'row' }}>
-                  <MenuLogOut width={normalize(24)} height={normalize(24)} />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MenuLogOut width={normalize(20)} height={normalize(20)} />
+                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Log out
                   </AppText>
                 </View>

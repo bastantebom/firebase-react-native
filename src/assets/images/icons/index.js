@@ -35,6 +35,7 @@ import NavigationArrowAlt from '@/assets/images/icons/navigation-arrow-alt.svg'
 import NavigationPinAlt from '@/assets/images/icons/navigation-pin-alt.svg'
 import PushPin from '@/assets/images/icons/push-pin-alt.svg'
 import PinBee from '@/assets/images/icons/pinbee-blue.svg'
+import PinBeeAlt from '@/assets/images/icons/pinbee-alt.svg'
 
 // Dashboard
 import Filter from '@/assets/images/icons/filter.svg'
@@ -414,6 +415,7 @@ export {
   NavigationPinAlt,
   PushPin,
   PinBee,
+  PinBeeAlt,
   NavigationPinRed,
   MapMarker,
   Warning,

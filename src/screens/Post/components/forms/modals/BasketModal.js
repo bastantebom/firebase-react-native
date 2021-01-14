@@ -28,14 +28,11 @@ import {
   PostNote,
   PostBox,
   PostCash,
-  StarRating,
-  DeliveryVan,
   Send,
   Cash,
   CreditCard,
   GCash,
   GrabPay,
-  NavigationPinAlt,
   CashActive,
   CreditCardActive,
   GCashActive,
@@ -43,6 +40,7 @@ import {
   PaypalActive,
   Paypal,
   InfoSmall,
+  PinBeeAlt,
 } from '@/assets/images/icons'
 import { BeeResponsible } from '@/assets/images'
 
@@ -615,17 +613,15 @@ const BasketModal = ({
                       longitude={mapCoords.lng}
                       reCenter={mapCoords}
                       onRegionChange={handleRegionChange}
-                      withCurrentMarker
                       customDelta={0.002}
                       customMarker={
                         <View
                           style={{
                             marginTop: normalize(25),
-                            marginLeft: normalize(9),
                           }}>
-                          <NavigationPinAlt
-                            width={normalize(30)}
-                            height={normalize(30)}
+                          <PinBeeAlt
+                            width={normalize(45)}
+                            height={normalize(45)}
                           />
                         </View>
                       }
