@@ -23,7 +23,9 @@ import Posts from './components/posts'
 
 import { cloneDeep } from 'lodash'
 import { getCurrentPosition, getLocationData } from '@/globals/Utils'
-import VerifyNotifictaion from './components/verify-account-notification'
+import VerifyNotification from './components/verify-account-notification'
+import DeleteNotification from './components/deleted-post-notification'
+
 import { Context } from '@/context'
 import LinearGradient from 'react-native-linear-gradient'
 import SearchResults from './components/Search/SearchResults'
@@ -325,7 +327,7 @@ const DashboardScreen = ({ navigation }) => {
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
         {isVerifyNotificationVisible && (
-          <VerifyNotifictaion
+          <VerifyNotification
             onPress={() => {
               navigation.navigate('NBTScreen', {
                 screen: 'Verification',

@@ -7,6 +7,7 @@ import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
 import { Divider } from 'react-native-paper'
 import { UserContext } from '@/context/UserContext'
 import { getDistance } from 'geolib'
+import { isEmpty } from '@/globals/Utils'
 
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 import { commaSeparate } from '@/globals/Utils'
@@ -75,10 +76,23 @@ const Post = ({
 
   const renderDeliveryMethods = () => {
     const methods = post.delivery_methods || {}
+    const objectArray = Object.entries(methods)
 
-    const deliveryMethods = Object.keys(methods).map(
-      method => method[0].toUpperCase() + method.slice(1)
-    )
+    let temp = []
+
+    objectArray.forEach(([key, value]) => {
+      if (isEmpty(value)) {
+        if (post.type === 'service') {
+          if (key === 'delivery') {
+            temp.push('appointment')
+          } else {
+            temp.push('walk-in')
+          }
+        } else temp.push(key)
+      }
+    })
+
+    const deliveryMethods = temp
 
     return (
       <View style={GlobalStyle.rowCenter}>
@@ -86,7 +100,11 @@ const Post = ({
 
         <AppText
           textStyle="eyebrow2"
-          customStyle={{ color: Colors.contentEbony, marginLeft: 4 }}>
+          customStyle={{
+            color: Colors.contentEbony,
+            marginLeft: 4,
+            textTransform: 'capitalize',
+          }}>
           {deliveryMethods.length ? deliveryMethods.join(' and ') : 'not set'}
         </AppText>
       </View>

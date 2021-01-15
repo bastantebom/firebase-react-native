@@ -25,6 +25,11 @@ const PostEllipsis = ({
     cancelModalToggle()
   }
 
+  const deletePostHandler = () => {
+    alert('Post has been deleted.')
+    deletePostFunction()
+  }
+
   return (
     <View
       style={{
@@ -113,7 +118,7 @@ const PostEllipsis = ({
             </AppText>
 
             <TouchableOpacity
-              onPress={deletePostFunction}
+              onPress={deletePostHandler}
               style={{
                 backgroundColor: Colors.yellow2,
                 paddingVertical: 14,

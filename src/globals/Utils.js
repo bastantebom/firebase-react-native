@@ -249,6 +249,13 @@ export const commaSeparate = num => {
   return (+(+num).toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
+export const isEmpty = obj => {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false
+  }
+  return true
+}
+
 export const generateDynamicLink = async ({
   type,
   params = {},

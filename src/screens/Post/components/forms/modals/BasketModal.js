@@ -440,7 +440,7 @@ const BasketModal = ({
             marginTop: 24,
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <BeeResponsible width={normalize(34)} height={normalize(34)} />
+            <BeeResponsible width={normalize(40)} height={normalize(40)} />
             <AppText customStyle={{ marginLeft: 8 }} textStyle="body2medium">
               Bee Responsible
             </AppText>
@@ -570,33 +570,16 @@ const BasketModal = ({
                   </AppText>
                 </TouchableOpacity>
               </View>
-              <View
-                style={{
-                  backgroundColor: Colors.secondarySolitude,
-                  padding: 16.5,
-                  borderRadius: 8,
-                  marginBottom: 16,
-                }}>
+              <View style={{ paddingTop: normalize(10) }}>
                 <AppText
-                  textStyle="body2medium"
-                  color={Colors.primaryMidnightBlue}
-                  customStyle={{ marginBottom: 4 }}>
-                  A few things to note..
+                  textStyle="body2"
+                  customStyle={{ marginVertical: normalize(10) }}>
+                  {deliveryChoice === 'delivery' || deliveryChoice === 'service'
+                    ? addressData.full_address
+                    : full_address}
                 </AppText>
-                <AppText
-                  textStyle="caption"
-                  customStyle={{ paddingBottom: 16 }}>
-                  Please note that we’re currently working on adding the
-                  delivery fee/s in the order. For the meantime, delivery fees
-                  will be arranged with the seller using chat or outside the
-                  Servbees app.
-                </AppText>
-                <TouchableOpacity onPress={() => {}}>
-                  <AppText textStyle="body2medium" color={Colors.contentOcean}>
-                    Learn More
-                  </AppText>
-                </TouchableOpacity>
               </View>
+
               <>
                 <View
                   pointerEvents="none"
@@ -635,17 +618,35 @@ const BasketModal = ({
                     />
                   )}
                 </View>
-                <View style={{ paddingTop: normalize(10) }}>
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginVertical: normalize(10) }}>
-                    {deliveryChoice === 'delivery' ||
-                    deliveryChoice === 'service'
-                      ? addressData.full_address
-                      : full_address}
-                  </AppText>
-                </View>
               </>
+              <View
+                style={{
+                  backgroundColor: Colors.secondarySolitude,
+                  padding: 16.5,
+                  borderRadius: 8,
+                  marginBottom: 16,
+                }}>
+                <AppText
+                  textStyle="body2medium"
+                  color={Colors.primaryMidnightBlue}
+                  customStyle={{ marginBottom: 4 }}>
+                  A few things to note..
+                </AppText>
+                <AppText
+                  textStyle="caption"
+                  customStyle={{ paddingBottom: 16 }}>
+                  Please note that we’re currently working on adding the
+                  delivery fee/s in the order. For the meantime, delivery fees
+                  will be arranged with the seller using chat or outside the
+                  Servbees app.
+                </AppText>
+                <TouchableOpacity onPress={() => {}}>
+                  <AppText textStyle="body2medium" color={Colors.contentOcean}>
+                    Learn More
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+
               <TouchableOpacity onPress={() => showAddNoteModal(true)}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
                   {postType === 'sell'
@@ -949,7 +950,9 @@ const BasketModal = ({
                 </AppText>
               </TouchableOpacity>
             </View>
-            <AppText textStyle="body2">{notes}</AppText>
+            <AppText textStyle="body2" customStyle={{ marginBottom: 24 }}>
+              {notes}
+            </AppText>
             <ImportantNotes />
           </View>
           {attachedPostData && (
