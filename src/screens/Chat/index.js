@@ -52,6 +52,8 @@ const ChatScreen = ({ route, navigation }) => {
   const { userInfo } = useContext(UserContext)
   const [isLoading, setIsLoading] = useState(true)
 
+  let unsubscribe
+
   const [currentUser] = useState({
     _id: userInfo.uid,
     name: userInfo.full_name,
@@ -112,7 +114,7 @@ const ChatScreen = ({ route, navigation }) => {
     setMembers(chatMembers)
     setIsLoading(false)
 
-    firestore()
+    unsubscribe = firestore()
       .collection('chat_rooms')
       .doc(channel.id)
       .collection('messages')
@@ -120,6 +122,9 @@ const ChatScreen = ({ route, navigation }) => {
       .onSnapshot(snap => {
         const messages = snap?.docs.map(doc => {
           const data = doc.data()
+          if (data.uid !== userInfo?.uid && !data.read) {
+            readChat(doc.id, channel.id)
+          }
           return {
             id: doc.id,
             text: '',
@@ -131,9 +136,24 @@ const ChatScreen = ({ route, navigation }) => {
       })
   }
 
+  const readChat = async (id, channel) => {
+    if (!userInfo?.uid) return
+    const messageRef = firestore()
+      .collection('chat_rooms')
+      .doc(channel)
+      .collection('messages')
+      .doc(id)
+    await messageRef.update({
+      read: true,
+    })
+  }
+
   useEffect(() => {
     let isSubscribed = true
-    if (isSubscribed) init()
+    if (isSubscribed) {
+      init()
+      unsubscribe = unsubscribe?.()
+    }
     return () => (isSubscribed = false)
   }, [])
 
@@ -150,7 +170,11 @@ const ChatScreen = ({ route, navigation }) => {
         loading={isLoading}
         backdropStyle={{ backgroundColor: '#fff' }}
       />
-      <ChatHeader user={messagingUser} navigation={navigation} />
+      <ChatHeader
+        user={messagingUser}
+        navigation={navigation}
+        unsubscribe={unsubscribe?.()}
+      />
       <GiftedChat
         messages={messages}
         messagesContainerStyle={styles.messagesContainer}
@@ -263,10 +287,15 @@ const renderSend = props => {
   )
 }
 
-const ChatHeader = ({ navigation, user, showActiveStatus }) => {
+const ChatHeader = ({ unsubscribe, navigation, user, showActiveStatus }) => {
   return (
     <View style={styles.chatWrapper}>
-      <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack()
+          unsubscribe?.()
+        }}
+        activeOpacity={0.7}>
         <HeaderBackGray style={styles.backButton} />
       </TouchableOpacity>
       <View

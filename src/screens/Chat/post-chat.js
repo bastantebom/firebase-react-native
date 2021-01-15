@@ -106,12 +106,12 @@ const PostChat = ({ route }) => {
         if (!snap) return
         snap.docs.map(async (room, index) => {
           const roomId = room.id
+          const members = room.data().members
           let roomChats = []
           firestore()
             .collection('chat_rooms')
             .doc(room.id)
             .collection('messages')
-            .where('uid', '!=', user?.uid)
             .onSnapshot(async chatRef => {
               let chats = chatRef.docs.map(chatDoc => {
                 if (chatDoc.data()) {
@@ -123,11 +123,13 @@ const PostChat = ({ route }) => {
               if (chats[0]?.uid) {
                 const userData =
                   (await Api.getUser({ uid: chats[0].uid })).data || {}
-                const { full_name, profile_photo } = userData
+                const { full_name, profile_photo, uid } = userData
                 const currentChats = {
                   chats,
                   full_name,
                   profile_photo,
+                  members,
+                  uid,
                   roomId,
                 }
 
@@ -253,16 +255,13 @@ const PostChat = ({ route }) => {
     }
   }
 
-  const handleChatPress = async (otherUID, postId) => {
+  const handleChatPress = async (members, postId) => {
     let channel
     try {
       if (!user?.uid) return
       const snapshot = await firestore()
         .collection('chat_rooms')
-        .where('members', '==', {
-          [user?.uid]: true,
-          [otherUID]: true,
-        })
+        .where('members', '==', members)
         .where('post_id', '==', postId)
         .get()
 
@@ -417,7 +416,7 @@ const PostChat = ({ route }) => {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() =>
-                      handleChatPress(chat?.chats[0]?.uid, post.postData.id)
+                      handleChatPress(chat?.members, post.postData.id)
                     }
                     style={{
                       flexDirection: 'row',
@@ -440,7 +439,9 @@ const PostChat = ({ route }) => {
                             marginBottom: normalize(4),
                           }}
                           numberOfLines={1}>
-                          {chat.full_name}
+                          {chat.uid === user?.uid
+                            ? 'You'
+                            : chat.full_name.split(' ')[0]}
                         </AppText>
                         <AppText
                           textStyle="metadata"
@@ -456,13 +457,17 @@ const PostChat = ({ route }) => {
                         }}>
                         <AppText
                           textStyle={
-                            !chat.chats[0].read ? 'caption2' : 'caption'
+                            !chat.chats[0].read && chat.uid !== user?.uid
+                              ? 'caption2'
+                              : 'caption'
                           }
                           customStyle={{ width: '90%' }}
                           numberOfLines={2}>
                           {chat.chats[0].text}
                         </AppText>
-                        {!chat.chats[0].read && <BlueDot />}
+                        {!chat.chats[0].read && chat.uid !== user?.uid && (
+                          <BlueDot />
+                        )}
                       </View>
                     </View>
                   </TouchableOpacity>
