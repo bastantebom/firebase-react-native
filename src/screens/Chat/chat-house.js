@@ -62,6 +62,26 @@ const ChatHouse = () => {
   const [messageList, setMessageList] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
+  const buyerChat = [
+    {
+      seller_name: 'Reynan',
+      seller_store: 'Reynan Plumbing Repair',
+      cover_photo: <DefaultSell width={normalize(64)} height={normalize(72)} />,
+      chat: 'You: Hello! Follow up po :)',
+      read: false,
+      time: '2m',
+    },
+    {
+      seller_name: 'Pia',
+      seller_store: 'Pia’s Green Thumb & Co.',
+      cover_photo: <DefaultSell width={normalize(64)} height={normalize(72)} />,
+      chat:
+        'Pia: Can give 3 free pots if you avail 2 Can give 3 free pots if you avail 2 ',
+      read: true,
+      time: '3m',
+    },
+  ]
+
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
@@ -309,27 +329,20 @@ const ChatHouse = () => {
                       params: { post },
                     })
                   }
-                  style={{
-                    flexDirection: 'row',
-                  }}>
+                  style={{ flexDirection: 'row' }}>
                   <View style={styles.postImageContainer}>
                     <CoverPhoto post={post} />
                   </View>
-                  <View
-                    style={{
-                      paddingLeft: normalize(8),
-                    }}>
+                  <View style={{ paddingLeft: normalize(8), flex: 1 }}>
                     <View
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        width: '85%',
                       }}>
                       <AppText
                         textStyle="body2medium"
                         customStyle={{
                           paddingRight: 15,
-                          width: '90%',
                           marginBottom: normalize(4),
                         }}
                         numberOfLines={1}>
@@ -365,6 +378,58 @@ const ChatHouse = () => {
               </View>
             )
           })}
+        {buyerChat.map((chat, i) => {
+          return (
+            <View key={i} style={{ marginBottom: normalize(15) }}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('PostChat')}
+                style={{ flexDirection: 'row', flex: 1 }}>
+                <View style={styles.postImageContainer}>
+                  {chat.cover_photo}
+                </View>
+                <View style={{ paddingLeft: normalize(8), flex: 1 }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <AppText
+                      textStyle="caption2"
+                      customStyle={{
+                        paddingRight: 15,
+                        marginBottom: normalize(4),
+                      }}
+                      numberOfLines={1}>
+                      {chat.seller_name} • {chat.seller_store}
+                    </AppText>
+                    <AppText
+                      textStyle="metadata"
+                      color={Colors.contentPlaceholder}>
+                      {chat.time}
+                    </AppText>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <AppText
+                      textStyle={!chat.read ? 'caption2' : 'caption'}
+                      customStyle={{
+                        width: chat.read ? '100%' : '90%',
+                      }}
+                      numberOfLines={2}>
+                      {chat.chat}
+                    </AppText>
+                    {!chat.read && <BlueDot />}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )
+        })}
       </ScrollView>
       <Modal
         isVisible={chatSort}
