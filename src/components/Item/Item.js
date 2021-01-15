@@ -1,31 +1,34 @@
-import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import React from 'react'
+import { View, StyleSheet, Image } from 'react-native'
 
-import {AppText} from '@/components';
-import {Colors, normalize} from '@/globals';
+import { AppText } from '@/components'
+import { Colors, normalize } from '@/globals'
+import { commaSeparate } from '@/globals/Utils'
 
-const Item = ({item, children, style}) => {
+const Item = ({ item, children, style }) => {
   // console.log('ITEM RECEIVED');
   // console.log(item);
 
-  const {title, description, itemImage, price} = item;
+  const { title, description, itemImage, price } = item
 
   return (
-    <View style={{paddingVertical: 8}}>
+    <View style={{ paddingVertical: 8 }}>
       <View style={styles.itemContainer}>
         <View style={styles.image}>
           <Image source={itemImage} style={styles.image} />
         </View>
 
         <View style={styles.itemDetailsContainer}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <AppText
               textStyle="subtitle2"
-              customStyle={{paddingRight: 16, flex: 1}}>
+              customStyle={{ paddingRight: 16, flex: 1 }}>
               {title}
             </AppText>
             <AppText textStyle="subtitle2">
-              {price === 'Free' ? '' : '₱'} {price}
+              {price === 'Free' ? '' : '₱'}
+              {commaSeparate(price)}
             </AppText>
           </View>
           <AppText textStyle="caption">{description}</AppText>
@@ -33,8 +36,8 @@ const Item = ({item, children, style}) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   image: {
@@ -50,6 +53,6 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     flex: 1,
   },
-});
+})
 
-export default Item;
+export default Item

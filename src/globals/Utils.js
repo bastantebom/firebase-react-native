@@ -246,7 +246,27 @@ export const getLocationData = async ({ latitude, longitude }) => {
  * @returns {string}
  */
 export const commaSeparate = num => {
-  return (+(+num).toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return parseFloat((+num.toString().replace(/[^0-9\.\-]+/g, '')).toFixed(2))
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+/**
+ * @param {string} str
+ */
+export const formatPrice = str => {
+  const price = commaSeparate(str)
+  const amount = parseFloat(price.replace(/,/g, ''))
+
+  if (amount >= 1000000) return commaSeparate(999999)
+  else if (
+    (amount >= 1000 && !str.endsWith('.')) ||
+    str.split('.')[1]?.length > 2
+  )
+    return price
+  else if (amount > 1000 && str.endsWith('.')) return `${price}.`
+
+  return str.replace(/[^0-9\.]+/g, '')
 }
 
 export const isEmpty = obj => {
@@ -334,7 +354,7 @@ export const getPreviewLinkData = ({ type, data }) => {
       service: 'Price',
     }
 
-    return `${prefix[data.type]}: ₱${getPostPrice(data)}. ${data.description}`
+    return `${prefix[data.type]}: ${getPostPrice(data)}. ${data.description}`
   }
 
   if (type === 'user') {

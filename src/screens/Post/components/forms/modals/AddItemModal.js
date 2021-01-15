@@ -6,29 +6,21 @@ import {
   Platform,
   TextInput,
   TouchableWithoutFeedback,
-  Dimensions,
 } from 'react-native'
 import Modal from 'react-native-modal'
 
-import {
-  AppText,
-  ScreenHeaderTitle,
-  FloatingAppInput,
-  AppCheckbox,
-  BottomSheetHeader,
-} from '@/components'
-import { AngleDown, PostInfo } from '@/assets/images/icons'
+import { AppText, ScreenHeaderTitle, FloatingAppInput } from '@/components'
+import { AngleDown } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 import Section from '../../Section'
 import ItemImageUpload from '../../ItemImageUpload'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { AppInput, PriceInput } from '@/components/AppInput'
+import { PriceInput } from '@/components/AppInput'
 
 import AddCategoryModal from './AddCategoryModal'
-import AddedItemPreview from './AddedItemPreview'
-import { CategoryService } from '@/services'
 
 import { Context } from '@/context'
+import { formatPrice } from '@/globals/Utils'
 
 const AddItemModal = ({ closeModal, ...props }) => {
   const { addItem } = useContext(Context)
@@ -232,10 +224,9 @@ const AddItemModal = ({ closeModal, ...props }) => {
               <PriceInput
                 value={price}
                 keyboardType="number-pad"
-                onChangeText={text => setPrice(text)}
+                onChangeText={text => setPrice(formatPrice(text))}
                 placeholder="00"
                 editable={!free}
-                maxLength={6}
               />
             </View>
 

@@ -64,6 +64,7 @@ import BookingMethodModal from './modals/BookingMethodModal'
 import MoreOptionsModal from './modals/MoreOptions'
 import CoverPhotoGuidelinesModal from './modals/CoverPhotoGuidelines'
 import AdditionalNotesModal from './modals/AdditionalNotesModal'
+import { formatPrice } from '@/globals/Utils'
 
 const SellPostForm = ({
   navToPost,
@@ -826,9 +827,9 @@ const SellPostForm = ({
               customStyle={{ marginBottom: 16 }}
               label="Price"
               value={price}
-              onChangeText={text => setPrice(text)}
-              maxLength={6}
+              onChangeText={text => setPrice(formatPrice(text))}
               keyboardType="number-pad"
+              debounce={false}
             />
           </Animated.View>
 
@@ -896,9 +897,9 @@ const SellPostForm = ({
               customStyle={{ marginBottom: 16 }}
               label="Price"
               value={price}
-              onChangeText={text => setPrice(text)}
-              maxLength={6}
+              onChangeText={text => setPrice(formatPrice(text))}
               keyboardType="number-pad"
+              debounce={false}
             />
           </Animated.View>
 
@@ -961,20 +962,18 @@ const SellPostForm = ({
               style={{ marginTop: 16 }}
               value={budgetMinimum}
               keyboardType="number-pad"
-              onChangeText={text => setBudgetMinimum(text)}
+              onChangeText={text => setBudgetMinimum(formatPrice(text))}
               placeholder="00"
               label="Minimum"
-              maxLength={6}
             />
 
             <PriceInput
               style={{ marginTop: 16 }}
               value={budgetMaximum}
               keyboardType="number-pad"
-              onChangeText={text => setBudgetMaximum(text)}
+              onChangeText={text => setBudgetMaximum(formatPrice(text))}
               placeholder="00"
               label="Maximum"
-              maxLength={6}
             />
           </>
         </Section>

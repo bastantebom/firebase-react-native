@@ -92,10 +92,18 @@ const AddedItemPreview = ({
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={AddAnotherItemHandler}
-            style={{ marginTop: 24 }}>
-            <AppText textStyle="caption" customStyle={{ alignItems: 'center' }}>
-              <CircleAdd /> Add an Item
-            </AppText>
+            style={{ marginTop: normalize(24) }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <CircleAdd />
+              <AppText
+                textStyle="caption"
+                customStyle={{
+                  alignItems: 'center',
+                  marginLeft: normalize(4),
+                }}>
+                Add an Item
+              </AppText>
+            </View>
           </TouchableOpacity>
         </View>
 
