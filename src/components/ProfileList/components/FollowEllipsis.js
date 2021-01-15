@@ -20,7 +20,6 @@ import {
   ProfileBlockRed,
   FollowUnfollow,
 } from '@/assets/images/icons'
-import Report from '@/components/TransparentHeader/components/Report'
 import ReportContent from './ReportContent'
 
 const FollowEllipsis = ({

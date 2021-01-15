@@ -157,7 +157,7 @@ const TransparentHeader = ({
         <Modal
           isVisible={ellipsisState}
           animationIn="slideInUp"
-          animationInTiming={200}
+          animationInTiming={250}
           animationOut="slideOutDown"
           animationOutTiming={200}
           onSwipeComplete={toggleEllipsisState}
@@ -234,7 +234,7 @@ const TransparentHeader = ({
         <Modal
           isVisible={ellipsisState}
           animationIn="slideInUp"
-          animationInTiming={200}
+          animationInTiming={250}
           animationOut="slideOutDown"
           animationOutTiming={200}
           onSwipeComplete={toggleEllipsisState}
@@ -417,9 +417,9 @@ const TransparentHeader = ({
         <Modal
           isVisible={ellipsisState}
           animationIn="slideInUp"
-          animationInTiming={500}
+          animationInTiming={250}
           animationOut="slideOutDown"
-          animationOutTiming={500}
+          animationOutTiming={200}
           onSwipeComplete={toggleEllipsisState}
           swipeDirection="down"
           style={{

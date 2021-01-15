@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { View, Animated, Linking, Platform } from 'react-native'
 import SplashScreenComponent from './SplashScreen'
@@ -19,6 +22,7 @@ import DashboardStack from '@/screens/Dashboard'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
 import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
+import ReportScreen from '@/screens/Profile/report'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
@@ -76,6 +80,10 @@ import {
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
 
+const defaultScreenOptions = {
+  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+}
+
 export const navigationRef = React.createRef()
 
 export function navigate(name, params) {
@@ -98,7 +106,9 @@ const NoBottomTabScreenStack = createStackNavigator()
 
 function NoBottomTabScreens() {
   return (
-    <NoBottomTabScreenStack.Navigator headerMode="none">
+    <NoBottomTabScreenStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
       <NoBottomTabScreenStack.Screen
         name="OthersProfile"
         component={ProfileInfoModal}
@@ -150,13 +160,16 @@ function NoBottomTabScreens() {
         name="OngoingItem"
         component={OngoingItem}
       />
+      <NoBottomTabScreenStack.Screen name="report" component={ReportScreen} />
     </NoBottomTabScreenStack.Navigator>
   )
 }
 
 function WelcomeStackScreen() {
   return (
-    <WelcomeStack.Navigator headerMode="none">
+    <WelcomeStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
       <WelcomeStack.Screen name="WelcomeScreen" component={Welcome} />
     </WelcomeStack.Navigator>
   )
@@ -164,7 +177,9 @@ function WelcomeStackScreen() {
 
 function BadgeStackScreen() {
   return (
-    <BadgeStack.Navigator headerMode="none">
+    <BadgeStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
       <BadgeStack.Screen name="BadgeScreen" component={Badge} />
     </BadgeStack.Navigator>
   )
@@ -172,7 +187,9 @@ function BadgeStackScreen() {
 
 function VerifiedStackScreen() {
   return (
-    <VerifiedStack.Navigator headerMode="none">
+    <VerifiedStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
       <VerifiedStack.Screen name="VerifiedScreen" component={Verified} />
     </VerifiedStack.Navigator>
   )
@@ -180,7 +197,9 @@ function VerifiedStackScreen() {
 
 function NotVerifiedStackScreen() {
   return (
-    <NotVerifiedStack.Navigator headerMode="none">
+    <NotVerifiedStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
       <NotVerifiedStack.Screen
         name="NotVerifiedScreen"
         component={NotVerified}
@@ -191,7 +210,9 @@ function NotVerifiedStackScreen() {
 
 function CreatePostStackScreen() {
   return (
-    <CreatePostStack.Navigator headerMode="none">
+    <CreatePostStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
       <CreatePostStack.Screen name="CreatePostScreen" component={PostScreen} />
       <CreatePostStack.Screen name="AddItemScreen" component={AddItemScreen} />
       <CreatePostStack.Screen
@@ -221,7 +242,7 @@ function CreatePostStackScreen() {
 
 function HiveStackScreen() {
   return (
-    <HiveStack.Navigator headerMode="none">
+    <HiveStack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
       <HiveStack.Screen name="Hive" component={Hives} />
     </HiveStack.Navigator>
   )
@@ -231,7 +252,9 @@ function PostStackScreen({ navigation }) {
   const { user } = useContext(UserContext)
   if (user) {
     return (
-      <PostStack.Navigator headerMode="none">
+      <PostStack.Navigator
+        headerMode="none"
+        screenOptions={defaultScreenOptions}>
         <PostStack.Screen name="PostScreen" component={PostScreen} />
         <PostStack.Screen name="SinglePostView" component={SinglePostView} />
         <PostStack.Screen name="Chat" component={ChatScreen} />
@@ -239,7 +262,9 @@ function PostStackScreen({ navigation }) {
     )
   } else {
     return (
-      <PostStack.Navigator headerMode="none">
+      <PostStack.Navigator
+        headerMode="none"
+        screenOptions={defaultScreenOptions}>
         <PostStack.Screen name="PostScreen" component={GuestPost} />
       </PostStack.Navigator>
     )
@@ -250,7 +275,9 @@ function ActivityStackScreen() {
   const { user } = useContext(UserContext)
   if (user) {
     return (
-      <ActivityStack.Navigator headerMode="none">
+      <ActivityStack.Navigator
+        headerMode="none"
+        screenOptions={defaultScreenOptions}>
         <ActivityStack.Screen name="Activity" component={Activity} />
         <ActivityStack.Screen name="Past" component={Past} />
         <ActivityStack.Screen name="Notifications" component={Notifications} />
@@ -261,7 +288,9 @@ function ActivityStackScreen() {
     )
   } else {
     return (
-      <ActivityStack.Navigator headerMode="none">
+      <ActivityStack.Navigator
+        headerMode="none"
+        screenOptions={defaultScreenOptions}>
         <ActivityStack.Screen name="Activity" component={GuestActivity} />
       </ActivityStack.Navigator>
     )
@@ -272,13 +301,17 @@ function ProfileStackScreen() {
   const { user } = useContext(UserContext)
   if (user) {
     return (
-      <ProfileStack.Navigator headerMode="none">
+      <ProfileStack.Navigator
+        headerMode="none"
+        screenOptions={defaultScreenOptions}>
         <ProfileStack.Screen name="Profile" component={ProfileScreen} />
       </ProfileStack.Navigator>
     )
   } else {
     return (
-      <ProfileStack.Navigator headerMode="none">
+      <ProfileStack.Navigator
+        headerMode="none"
+        screenOptions={defaultScreenOptions}>
         <ProfileStack.Screen name="Profile" component={GuestProfile} />
       </ProfileStack.Navigator>
     )
@@ -319,7 +352,9 @@ const TabStack = props => {
   }
 
   return (
-    <Tab.Navigator tabBarOptions={tabBarOptions}>
+    <Tab.Navigator
+      tabBarOptions={tabBarOptions}
+      screenOptions={defaultScreenOptions}>
       <Tab.Screen
         name="Servbees"
         component={DashboardStack}
@@ -583,11 +618,15 @@ export default Routes = () => {
       <Animated.View style={fadingContainerStyle}>
         <NavigationContainer ref={navigationRef}>
           {token && userInfo?.uid && userStatus?.verified ? (
-            <Stack.Navigator headerMode="none">
+            <Stack.Navigator
+              headerMode="none"
+              screenOptions={defaultScreenOptions}>
               {renderAuthScreens()}
             </Stack.Navigator>
           ) : (
-            <Stack.Navigator headerMode="none">
+            <Stack.Navigator
+              headerMode="none"
+              screenOptions={defaultScreenOptions}>
               <Stack.Screen name="Onboarding" component={Onboarding} />
               <Stack.Screen name="ResetPassword" component={ResetPassword} />
               <Stack.Screen name="TabStack" component={TabStack} />

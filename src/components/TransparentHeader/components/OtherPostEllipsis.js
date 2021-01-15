@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react'
 import {
   View,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
-} from 'react-native';
-import {AppText, BottomSheetHeader, PaddingView} from '@/components';
-import {Colors, normalize} from '@/globals';
-import {ProfileReport, PostRemove} from '@/assets/images/icons';
-import Modal from 'react-native-modal';
-import Report from './Report';
+} from 'react-native'
+import { AppText, BottomSheetHeader, PaddingView } from '@/components'
+import { Colors, normalize } from '@/globals'
+import { ProfileReport, PostRemove } from '@/assets/images/icons'
+import Modal from 'react-native-modal'
+import { useNavigation } from '@react-navigation/native'
 
 const OtherPostEllipsis = ({
   toggleEllipsisState,
@@ -18,29 +18,34 @@ const OtherPostEllipsis = ({
   postId,
   hidePost,
 }) => {
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [reportUser, setReportUser] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const navigation = useNavigation()
+
+  const handleReportPress = () => {
+    navigation.navigate('NBTScreen', {
+      screen: 'report',
+      params: {
+        post: {
+          id: postId,
+          title: postTitle,
+        },
+      },
+    })
+    toggleEllipsisState()
+  }
 
   const cancelModalToggle = () => {
-    setShowCancelModal(!showCancelModal);
-  };
+    setShowCancelModal(!showCancelModal)
+  }
 
-  const closeHandler = (value) => {
-    cancelModalToggle();
+  const closeHandler = value => {
+    cancelModalToggle()
     setTimeout(() => {
-      togglePostModal = {togglePostModal};
-    }, 200);
+      togglePostModal = { togglePostModal }
+    }, 200)
 
-    cancelModalToggle();
-  };
-
-  const toggleReportUser = () => {
-    setReportUser(!reportUser);
-    if (reportUser) {
-      toggleEllipsisState();
-      //togglePostModal();
-    }
-  };
+    cancelModalToggle()
+  }
 
   return (
     <View
@@ -52,11 +57,7 @@ const OtherPostEllipsis = ({
       }}>
       <BottomSheetHeader />
       <PaddingView paddingSize={2}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => {
-            closeHandler();
-          }}>
+        <TouchableOpacity activeOpacity={0.7} onPress={closeHandler}>
           <View
             style={{
               flexDirection: 'row',
@@ -64,34 +65,34 @@ const OtherPostEllipsis = ({
             }}>
             <PostRemove />
             <AppText
-              customStyle={{marginLeft: 8}}
+              customStyle={{ marginLeft: 8 }}
               color={Colors.red}
               textStyle="body2">
               Hide Post
             </AppText>
           </View>
-          <View style={{marginBottom: 16}}>
+          <View style={{ marginBottom: 16 }}>
             <AppText
-              customStyle={{marginLeft: 8, paddingLeft: normalize(22)}}
+              customStyle={{ marginLeft: 8, paddingLeft: normalize(22) }}
               textStyle="caption"
               color={Colors.red}>
               Hide this post from your feed.
             </AppText>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} onPress={toggleReportUser}>
+        <TouchableOpacity activeOpacity={0.7} onPress={handleReportPress}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
             }}>
             <ProfileReport />
-            <AppText customStyle={{marginLeft: 8}} textStyle="body2">
+            <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
               Report Post
             </AppText>
           </View>
-          <View style={{marginBottom: 16, paddingLeft: normalize(22)}}>
-            <AppText customStyle={{marginLeft: 8}} textStyle="caption">
+          <View style={{ marginBottom: 16, paddingLeft: normalize(22) }}>
+            <AppText customStyle={{ marginLeft: 8 }} textStyle="caption">
               Report this post for action by Servbees.
             </AppText>
           </View>
@@ -123,7 +124,7 @@ const OtherPostEllipsis = ({
         }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-            <View style={{flex: 1, backgroundColor: 'black'}} />
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -135,20 +136,20 @@ const OtherPostEllipsis = ({
             justifyContent: 'center',
             padding: 16,
           }}>
-          <AppText textStyle="display6" customStyle={{marginBottom: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
             Hide this Post?
           </AppText>
 
           <AppText
             textStyle="caption"
-            customStyle={{textAlign: 'center'}}
-            customStyle={{marginBottom: 16}}>
+            customStyle={{ textAlign: 'center' }}
+            customStyle={{ marginBottom: 16 }}>
             Are you sure you want to hide this post?
           </AppText>
 
           <TouchableOpacity
             onPress={() => {
-              hidePost();
+              hidePost()
             }}
             style={{
               backgroundColor: Colors.yellow2,
@@ -163,35 +164,19 @@ const OtherPostEllipsis = ({
 
           <TouchableOpacity
             onPress={() => closeHandler('cancel')}
-            style={{paddingVertical: 14, width: '100%', alignItems: 'center'}}>
+            style={{
+              paddingVertical: 14,
+              width: '100%',
+              alignItems: 'center',
+            }}>
             <AppText textStyle="button2" color={Colors.contentOcean}>
               Cancel
             </AppText>
           </TouchableOpacity>
         </View>
       </Modal>
-
-      <Modal
-        isVisible={reportUser}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <Report
-          toggleReportUser={toggleReportUser}
-          postId={postId}
-          postTitle={postTitle}
-          type="post"
-        />
-      </Modal>
     </View>
-  );
-};
+  )
+}
 
-export default OtherPostEllipsis;
+export default OtherPostEllipsis

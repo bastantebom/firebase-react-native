@@ -1,10 +1,5 @@
 import React, { useState, useContext } from 'react'
-import {
-  View,
-  TouchableOpacity,
-  Dimensions,
-  TouchableWithoutFeedback,
-} from 'react-native'
+import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 
 import { AppText, BottomSheetHeader, PaddingView } from '@/components'
 import Modal from 'react-native-modal'
@@ -21,7 +16,6 @@ import {
   HeaderFollowBlack,
   SendMessage,
 } from '@/assets/images/icons'
-import Report from './Report'
 
 const EllipsisMenu = ({
   toggleEllipsisState,
@@ -35,11 +29,12 @@ const EllipsisMenu = ({
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
 
-  const [reportUser, setReportUser] = useState(false)
-
-  const toggleReportUser = () => {
-    setReportUser(!reportUser)
-    if (reportUser) toggleEllipsisState()
+  const handleReportPress = () => {
+    navigation.navigate('NBTScreen', {
+      screen: 'report',
+      params: { user: userInfo },
+    })
+    toggleEllipsisState()
   }
 
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -142,7 +137,7 @@ const EllipsisMenu = ({
               </AppText>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7} onPress={toggleReportUser}>
+          <TouchableOpacity activeOpacity={0.7} onPress={handleReportPress}>
             <View
               style={{
                 flexDirection: 'row',
@@ -205,9 +200,9 @@ const EllipsisMenu = ({
       <Modal
         isVisible={showCancelModal}
         animationIn="bounceIn"
-        animationInTiming={450}
+        animationInTiming={250}
         animationOut="bounceOut"
-        animationOutTiming={450}
+        animationOutTiming={200}
         style={{
           margin: 0,
           alignItems: 'center',
@@ -221,25 +216,6 @@ const EllipsisMenu = ({
         <ConfirmationOtherProfile
           toggleEllipsisState={toggleEllipsisState}
           userID={userID}
-        />
-      </Modal>
-      <Modal
-        isVisible={reportUser}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <Report
-          toggleReportUser={toggleReportUser}
-          username={username}
-          userID={userID}
-          type="user"
         />
       </Modal>
     </>
