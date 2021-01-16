@@ -93,12 +93,13 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           }}>
           <PaddingView paddingSize={3}>
             <View>
-              <AppText textStyle="body3">Account</AppText>
+              <AppText
+                textStyle="body3"
+                customStyle={{ marginBottom: normalize(16) }}>
+                Account
+              </AppText>
 
-              <TouchableOpacity
-                style={{ marginTop: normalize(16) }}
-                activeOpacity={0.7}
-                onPress={toggleLikePost}>
+              <TouchableOpacity activeOpacity={0.7} onPress={toggleLikePost}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -186,7 +187,9 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
             />
 
             <View>
-              <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
+              <AppText
+                textStyle="body3"
+                customStyle={{ marginBottom: normalize(16) }}>
                 Help and Support
               </AppText>
 
@@ -222,13 +225,14 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
             />
 
             <View>
-              <AppText customStyle={{ marginLeft: 8 }} textStyle="body3">
+              <AppText
+                textStyle="body3"
+                customStyle={{ marginBottom: normalize(16) }}>
                 Settings and Privacy
               </AppText>
 
               {hasPassword && (
                 <TouchableOpacity
-                  style={{ marginTop: normalize(16) }}
                   activeOpacity={0.7}
                   onPress={toggleChangePassword}>
                   <View

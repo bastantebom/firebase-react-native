@@ -111,8 +111,6 @@ function ProfileInfoModal(props) {
     }
   }, [])
 
-  // fetch posts
-
   useEffect(() => {
     let isMounted = true
     if (isMounted && needsRefresh) refreshPosts()

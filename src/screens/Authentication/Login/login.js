@@ -18,7 +18,7 @@ import AppViewContainer from '@/components/AppViewContainer/AppViewContainer'
 import { AppInput, Validator, valueHandler } from '@/components/AppInput'
 
 import {
-  Close,
+  HeaderCloseGray,
   EyeDark,
   EyeLight,
   LoginApple,
@@ -107,16 +107,12 @@ function Login() {
   return (
     <ScrollView>
       <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
-        <PaddingView
-          paddingSize={2}
-          style={{ paddingTop: 5, paddingBottom: 100 }}>
-          <AppViewContainer
-            paddingSize={2}
-            customStyle={{ paddingTop: 0, paddingHorizontal: 0 }}>
-            <TouchableOpacity onPress={closeSlider}>
-              <Close />
-            </TouchableOpacity>
-          </AppViewContainer>
+        <PaddingView paddingSize={2} style={{ paddingBottom: 100 }}>
+          <TouchableOpacity
+            style={styles.closeIconWrapper}
+            onPress={closeSlider}>
+            <HeaderCloseGray height={normalize(24)} width={normalize(24)} />
+          </TouchableOpacity>
 
           <View style={styles.container}>
             <AppText textStyle="display5">Welcome back!</AppText>
@@ -292,6 +288,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: normalize(8),
     paddingBottom: normalize(16),
+  },
+  closeIconWrapper: {
+    flex: 1,
+    marginBottom: 13,
+    paddingBottom: 24,
   },
 })
 

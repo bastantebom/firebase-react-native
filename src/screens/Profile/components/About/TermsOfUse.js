@@ -1,10 +1,10 @@
 import React from 'react'
-import { SafeAreaView } from 'react-native'
+import { SafeAreaView, View, ActivityIndicator } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 import { ScreenHeaderTitle } from '@/components'
 
-import { normalize } from '@/globals'
+import { normalize, Colors } from '@/globals'
 
 const TermsOfUse = ({ toggleTermsOfUse }) => {
   return (
@@ -15,7 +15,15 @@ const TermsOfUse = ({ toggleTermsOfUse }) => {
         iconSize={normalize(16)}
         paddingSize={3}
       />
-      <WebView source={{ uri: 'https://servbees.com/terms-of-use/' }} />
+      <WebView
+        source={{ uri: 'https://servbees.com/terms-of-use/' }}
+        startInLoadingState={true}
+        renderLoading={() => (
+          <View style={{ flex: 1 }}>
+            <ActivityIndicator color={Colors.primaryYellow} />
+          </View>
+        )}
+      />
     </SafeAreaView>
   )
 }

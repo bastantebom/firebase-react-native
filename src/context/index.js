@@ -78,6 +78,8 @@ export const ContextProvider = ({ children }) => {
       search: value,
     })
     setResults(result.data)
+    console.log('###################')
+    console.log(result.data)
     setPage(0)
   }
 
@@ -88,6 +90,8 @@ export const ContextProvider = ({ children }) => {
       search: value,
     })
     setResults(result.data)
+    console.log('###################')
+    console.log(result.data)
     setPage(0)
   }
 

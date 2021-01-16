@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -10,7 +10,6 @@ import { Searchbar } from 'react-native-paper'
 import { Colors, normalize } from '@/globals'
 import AppColor from '@/globals/Colors'
 import { HeaderBackGray } from '@/assets/images/icons'
-import { Context } from '@/context'
 import { debounce } from 'lodash'
 
 const { width } = Dimensions.get('window')
@@ -21,13 +20,6 @@ const SEARCH_SHRINK_WIDTH = width - PADDING - normalize(70)
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity)
 
 const SearchBox = ({ onFocus, onBlur, onBackPress, onValueChange }) => {
-  const {
-    searchType,
-    setSearchType,
-    handleSearch,
-    handleSearchUser,
-  } = useContext(Context)
-
   const inputRef = useRef(null)
   const [value, setValue] = useState('')
 
@@ -102,7 +94,6 @@ const SearchBox = ({ onFocus, onBlur, onBackPress, onValueChange }) => {
   const handleChange = value => {
     setValue(value)
     debouncedHandler(value)
-    searchType === 'posts' ? handleSearch(value) : handleSearchUser(value)
   }
 
   const searchBarTheme = {

@@ -5,28 +5,31 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Dimensions,
 } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import VF from '@/components/AppInput/ValidationFunctions'
-import AppColor from '@/globals/Colors'
 import { useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
 import { AppText, AppButton, AppInput, AppCheckbox } from '@/components'
 import { ScrollView } from 'react-native-gesture-handler'
+import Modal from 'react-native-modal'
+
 import {
-  Close,
   EyeDark,
   EyeLight,
+  HeaderCloseGray,
   LoginApple,
   LoginFB,
   LoginGoogle,
 } from '@/assets/images/icons'
-import LoginService from '@/services/LoginService'
+import AppColor from '@/globals/Colors'
 import { normalize } from '@/globals'
+import LoginService from '@/services/LoginService'
 import Validator from '@/components/AppInput/Validator'
 import SwitchComponent from '@/components/Switch/Switch'
 import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy'
-import Terms from '@/screens/Authentication/SignUp/components/TermsOfUse'
+import TermsOfUse from '@/screens/Authentication/SignUp/components/TermsOfUse'
 import Api from '@/services/Api'
 
 const SignUp = props => {
@@ -189,7 +192,7 @@ const SignUp = props => {
             <AppText
               textStyle="caption"
               customStyle={{ color: AppColor.promoCopy }}>
-              By signing up, I agree to Servbees
+              By signing up to Servbees, I agree to the{' '}
             </AppText>
             <TouchableOpacity
               onPress={() => {
@@ -221,9 +224,10 @@ const SignUp = props => {
                   color: AppColor.promoCopy,
                   textDecorationLine: 'underline',
                 }}>
-                Privacy Policy.
+                Privacy Policy
               </AppText>
             </TouchableOpacity>
+            <AppText textStyle="promo">.</AppText>
           </View>
         </View>
         <View style={styles.promos}>
@@ -231,7 +235,7 @@ const SignUp = props => {
             <AppText
               textStyle="caption"
               customStyle={{ color: AppColor.promoCopy }}>
-              I want to receive offers, promos, and updates from Servbees.
+              Stay updated with offers, promos, and updates from Servbees.
             </AppText>
           </View>
           <View style={styles.promoSwitch}>
@@ -255,7 +259,7 @@ const SignUp = props => {
             <TouchableOpacity
               style={styles.closeIconWrapper}
               onPress={closeSlider}>
-              <Close height={24} width={24} />
+              <HeaderCloseGray height={normalize(24)} width={normalize(24)} />
             </TouchableOpacity>
             <AppText textStyle="display5">Sign Up</AppText>
             <AppText textStyle="caption" customStyle={styles.textCaption}>
@@ -384,14 +388,6 @@ const SignUp = props => {
             </View>
 
             <TermsCheckbox />
-            <Terms
-              isVisible={isTermsVisible}
-              onClose={() => setIsTermsVisible(false)}
-            />
-            <Privacy
-              isVisible={isPrivacyVisible}
-              onClose={() => setIsPrivacyVisible(false)}
-            />
 
             <View style={{ marginTop: 16 }}>
               <AppButton
@@ -462,6 +458,34 @@ const SignUp = props => {
             </View>
           </View>
         </View>
+        <Modal
+          isVisible={isTermsVisible}
+          animationIn="slideInRight"
+          animationInTiming={450}
+          animationOut="slideOutRight"
+          animationOutTiming={450}
+          onBackButtonPress={() => setIsTermsVisible(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <TermsOfUse onClose={() => setIsTermsVisible(false)} />
+        </Modal>
+        <Modal
+          isVisible={isPrivacyVisible}
+          animationIn="slideInRight"
+          animationInTiming={450}
+          animationOut="slideOutRight"
+          animationOutTiming={450}
+          onBackButtonPress={() => setIsPrivacyVisible(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <Privacy onClose={() => setIsPrivacyVisible(false)} />
+        </Modal>
       </ScrollView>
     </>
   )

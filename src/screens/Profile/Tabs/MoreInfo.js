@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { Users, Icons } from '@/assets/images/icons'
@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.emptyStateBackground,
     padding: normalize(16),
+    height: Dimensions.get('window').height - normalize(110),
   },
   imageWrapper: {
     marginBottom: normalize(16),

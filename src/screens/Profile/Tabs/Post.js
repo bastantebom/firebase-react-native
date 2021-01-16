@@ -1,6 +1,6 @@
 //import liraries
 import React, { useContext } from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView, Dimensions } from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { NoPost } from '@/assets/images'
@@ -65,6 +65,7 @@ const PostOwnEmpty = ({ isLoading, userInfo }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: Dimensions.get('window').height - normalize(110),
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.emptyStateBackground,

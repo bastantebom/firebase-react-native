@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -13,9 +13,7 @@ import Modal from 'react-native-modal'
 import { AppText } from '@/components'
 import { Context } from '@/context'
 import { normalize, Colors } from '@/globals'
-// import { ArrowDown } from '@/assets/images/icons';
 import { PhotoAlbums } from './PhotoAlbums'
-import { CoverPhoto } from '@/assets/images'
 import { CircleTickWhite } from '@/assets/images/icons'
 
 const { height, width } = Dimensions.get('window')
@@ -44,6 +42,8 @@ export const Library = ({ cancel, next, data }) => {
     setShowFolderList(!showFolderList)
   }
 
+  console.log(coverPhoto?.length)
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
@@ -60,28 +60,12 @@ export const Library = ({ cancel, next, data }) => {
             <AppText textStyle="body2">Cancel</AppText>
           </TouchableOpacity>
           <AppText textStyle="body1">All Photos</AppText>
-          {/* <TouchableOpacity
-            onPress={toggleFolderList}
-            style={{paddingVertical: 5, paddingHorizontal: 25}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <AppText textStyle="body1">All Photos</AppText>
-              <ArrowDown height={normalize(24)} width={normalize(24)} />
-            </View>
-          </TouchableOpacity> */}
           <TouchableOpacity
-            // disabled={selected.length < 1 && true}
             onPress={() => {
               next()
             }}
             style={{ paddingVertical: 5, paddingHorizontal: 25 }}>
-            <AppText
-              textStyle="body3"
-              // color={
-              //   selected.length < 1
-              //     ? Colors.buttonDisable
-              //     : Colors.contentOcean
-              // }
-              color={Colors.contentOcean}>
+            <AppText textStyle="body3" color={Colors.contentOcean}>
               Next
             </AppText>
           </TouchableOpacity>
@@ -118,18 +102,17 @@ export const Library = ({ cancel, next, data }) => {
             />
           ) : null}
           <View
-            // pointerEvents={imageCount === 10 ? 'none' : 'auto'}
             style={{
               height: imageCurrent
                 ? height / 1.8 - normalize(122)
                 : height - normalize(117),
               zIndex: -1,
               width: width,
-              opacity: coverPhoto?.length || 0 >= 10 ? 0.5 : 1,
+              opacity: coverPhoto?.length === 10 ? 0.5 : 1,
             }}>
             <CameraRollPicker
               groupTypes="All"
-              maximum={coverPhoto?.length || 0 >= 10 ? selected.length : 10}
+              maximum={coverPhoto?.length === 10 ? selected.length : 10}
               scrollRenderAheadDistance={500}
               selected={selected}
               imagesPerRow={3}
