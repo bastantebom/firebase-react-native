@@ -36,10 +36,16 @@ import { VerificationStatus } from './components'
 import { CircleTick, Warning } from '@/assets/images/icons'
 import { PostService } from '@/services'
 
+import Posts from '@/screens/Dashboard/components/posts'
+import { cloneDeep } from 'lodash'
+
+import Api from '@/services/Api'
+
 const ProfileScreen = ({
   profileViewType = 'own',
   backFunction,
   uid,
+  navigation,
   ...props
 }) => {
   const { user, signOut, userInfo, userStatus } = useContext(UserContext)
@@ -113,6 +119,25 @@ const ProfileScreen = ({
     )
     openNotification()
     closeNotificationTimer()
+  }
+
+  const handlePostPress = post => {
+    const params = {
+      data: post,
+      viewing: true,
+      created: false,
+      edited: false,
+    }
+    if (user?.uid === post.uid)
+      navigation.navigate('Post', {
+        screen: 'SinglePostView',
+        params,
+      })
+    else
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
+        params: { ...params, othersView: true },
+      })
   }
 
   const notificationErrorTextStyle = {
@@ -223,6 +248,51 @@ const ProfileScreen = ({
       setRefresh(false)
     } catch (err) {
       setRefresh(false)
+    }
+  }
+
+  const handleLikePress = async post => {
+    const oldLikes = cloneDeep(post.likes) || []
+    const newLikes = cloneDeep(post.likes) || []
+
+    const liked = post.likes?.includes(user.uid)
+    if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
+    else newLikes.push(user.uid)
+
+    const newPosts = userPosts
+    const postData = newPosts.find(_post => _post.id === post.id)
+    postData.likes = newLikes
+    setUserPosts(newPosts)
+
+    // setUserPosts(posts => ({
+    //   ...posts,
+    //   [post.id]: {
+    //     ...posts[post.id],
+    //     likes: newLikes,
+    //   },
+    // }))
+
+    try {
+      const response = await Api[liked ? 'unlikePost' : 'likePost']({
+        pid: post.id,
+      })
+
+      console.log({ response })
+
+      if (!response.success) throw new Error(response.message)
+    } catch (error) {
+      console.log(error.message || error)
+
+      postData.likes = oldLikes
+      setUserPosts(newPosts)
+
+      // setPosts(posts => ({
+      //   ...posts,
+      //   [post.id]: {
+      //     ...posts[post.id],
+      //     likes: oldLikes,
+      //   },
+      // }))
     }
   }
 
@@ -352,14 +422,12 @@ const ProfileScreen = ({
     {
       title: 'Posts',
       content: (
-        <UserPosts
-          type="own"
-          data={userPosts}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          userID={user.uid}
-          userInfo={userInfo}
-          isFetching={fetchMore}
+        <Posts
+          posts={userPosts}
+          onPostPress={handlePostPress}
+          onLikePress={handleLikePress}
+          isLoadingMoreItems={fetchMore}
+          showsVerticalScrollIndicator={false}
         />
       ),
     },

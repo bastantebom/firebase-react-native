@@ -8,10 +8,11 @@ import {
 } from 'react-native'
 
 import { AppText, Item, ScreenHeaderTitle } from '@/components'
-import { Colors, normalize } from '@/globals'
+import { Colors, GlobalStyle, normalize } from '@/globals'
 import { CircleAdd } from '@/assets/images/icons'
 import Modal from 'react-native-modal'
 import CategoryOptions from './CategoryOptions'
+import { Divider } from 'react-native-paper'
 
 import { Context } from '@/context'
 
@@ -54,13 +55,16 @@ const AddedItemPreview = ({
   const ItemList = () => {
     return items.map((item, index) => {
       return (
-        <Item item={item} key={index}>
-          <TouchableOpacity onPress={() => editItemHandler(item)}>
-            <AppText textStyle="caption" color={Colors.contentOcean}>
-              Edit Item {item.itemId}
-            </AppText>
-          </TouchableOpacity>
-        </Item>
+        <>
+          <Item item={item} key={index}>
+            <TouchableOpacity onPress={() => editItemHandler(item)}>
+              <AppText textStyle="caption" color={Colors.contentOcean}>
+                Edit Item
+              </AppText>
+            </TouchableOpacity>
+          </Item>
+          <Divider style={[GlobalStyle.dividerStyle, { marginVertical: 8 }]} />
+        </>
       )
     })
   }
@@ -92,15 +96,17 @@ const AddedItemPreview = ({
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={AddAnotherItemHandler}
-            style={{ marginTop: normalize(24) }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            style={{ marginTop: 24 }}>
+            <View
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+              }}>
               <CircleAdd />
               <AppText
+                customStyle={{ marginLeft: 4 }}
                 textStyle="caption"
-                customStyle={{
-                  alignItems: 'center',
-                  marginLeft: normalize(4),
-                }}>
+                color={Colors.contentOcean}>
                 Add an Item
               </AppText>
             </View>

@@ -136,6 +136,9 @@ const DashboardScreen = ({ navigation }) => {
     if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
     else newLikes.push(user.uid)
 
+    console.log({ newLikes })
+    console.log({ oldLikes })
+
     setPosts(posts => ({
       ...posts,
       [post.id]: {

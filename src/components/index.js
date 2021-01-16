@@ -48,8 +48,10 @@ import ItemCategory from './ItemCategory/ItemCategory'
 import RangeSlider from './Slider/RangeSlider'
 
 import Divider from './Divider'
+import PriceDisplay from './Price/Price'
 
 export {
+  PriceDisplay,
   Divider,
   ItemCategory,
   Item,

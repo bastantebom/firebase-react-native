@@ -35,6 +35,9 @@ import ProfileInfo from '@/screens/Profile/components/ProfileInfo'
 import StickyHeader from '../TransparentHeader/StickyHeader'
 import { PostService } from '@/services'
 
+import Posts from '@/screens/Dashboard//components/posts'
+import { cloneDeep } from 'lodash'
+
 function ProfileInfoModal(props) {
   const { profileViewType = 'other', uid } = props.route?.params
 
@@ -176,6 +179,64 @@ function ProfileInfoModal(props) {
     }
   }
 
+  const handlePostPress = post => {
+    const params = {
+      data: post,
+      viewing: true,
+      created: false,
+      edited: false,
+    }
+    if (user?.uid === post.uid)
+      navigation.navigate('Post', {
+        screen: 'SinglePostView',
+        params,
+      })
+    else
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
+        params: { ...params, othersView: true },
+      })
+  }
+
+  const handleLikePress = async post => {
+    const oldLikes = cloneDeep(post.likes)
+    const newLikes = cloneDeep(post.likes)
+
+    console.log({ newLikes })
+
+    const liked = post.likes?.includes(user.uid)
+    if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
+    else newLikes.push(user.uid)
+
+    setOtherUserPosts(posts => ({
+      ...posts,
+      [post.id]: {
+        ...posts[post.id],
+        likes: newLikes,
+      },
+    }))
+
+    try {
+      const response = await Api[liked ? 'unlikePost' : 'likePost']({
+        pid: post.id,
+      })
+
+      console.log({ response })
+
+      if (!response.success) throw new Error(response.message)
+    } catch (error) {
+      console.log(error.message || error)
+
+      // setPosts(posts => ({
+      //   ...posts,
+      //   [post.id]: {
+      //     ...posts[post.id],
+      //     likes: oldLikes,
+      //   },
+      // }))
+    }
+  }
+
   const [scroll] = useState(new Animated.Value(0))
   const renderForeground = () => {
     return (
@@ -282,14 +343,12 @@ function ProfileInfoModal(props) {
     {
       title: 'Posts',
       content: (
-        <OtherUserPosts
-          type="own"
-          data={otherUserPosts}
-          isLoading={isDataLoading}
-          setIsLoading={setIsDataLoading}
-          userID={uid}
-          isFetching={fetchMore}
-          userInfo={otherUserInfo}
+        <Posts
+          posts={otherUserPosts}
+          onPostPress={handlePostPress}
+          onLikePress={handleLikePress}
+          isLoadingMoreItems={isDataLoading}
+          showsVerticalScrollIndicator={false}
         />
       ),
     },
