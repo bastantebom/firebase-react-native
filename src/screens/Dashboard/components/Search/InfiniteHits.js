@@ -89,7 +89,6 @@ const InfiniteHits = ({ value }) => {
             height="sm"
             customStyle={{ paddingVertical: 5, height: normalize(40) }}
           />
-          <Tags />
         </View>
       )}
     </View>

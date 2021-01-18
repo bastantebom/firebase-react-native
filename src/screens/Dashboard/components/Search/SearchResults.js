@@ -81,7 +81,6 @@ const SearchResults = ({ searchValue, containerStyle }) => {
                   <ChevronRight width={normalize(25)} height={normalize(25)} />
               </View>
             </TouchableOpacity> */}
-            <Tags />
           </PaddingView>
         </Animated.View>
       ) : (
