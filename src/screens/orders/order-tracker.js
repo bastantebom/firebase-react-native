@@ -869,7 +869,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         )}
 
         {(post.type === 'need' ||
-          (post.type === 'service' && status === 'cancelled')) && (
+          (post.type === 'service' && orderData.status === 'cancelled')) && (
           <View style={styles.section}>
             <View style={styleUtils.row}>
               {post.type === 'need' ? (
@@ -920,7 +920,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     paddingHorizontal: normalize(35),
                     justifyContent:
                       post.type === 'sell' ||
-                      (post.type === 'service' && status === 'pending')
+                      (post.type === 'service' &&
+                        orderData.status === 'pending')
                         ? 'space-between'
                         : 'center',
                   }}>

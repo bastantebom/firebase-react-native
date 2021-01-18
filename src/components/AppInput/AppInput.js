@@ -40,6 +40,7 @@ const FloatingAppInput = ({
 
   const onBlurInput = () => {
     setIsActive(false)
+    props.onBlurInput?.()
     if (value === '') {
       animateBlur()
     }
@@ -130,9 +131,7 @@ const FloatingAppInput = ({
             style={styles.floatingInput}
             underlineColorAndroid="transparent"
             onFocus={onFocusInput}
-            onBlur={() => {
-              onBlurInput()
-            }}
+            onBlur={onBlurInput}
             onEndEditing={onBlurInput}
             blurOnSubmit
             selectTextOnFocus={false}

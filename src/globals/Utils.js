@@ -245,7 +245,7 @@ export const getLocationData = async ({ latitude, longitude }) => {
  * @param {number} num
  * @returns {string}
  */
-export const commaSeparate = num => {
+export const commaSeparate = (num = '') => {
   const amount = parseFloat(
     (+num.toString().replace(/[^0-9\.\-]+/g, '')).toFixed(2)
   )

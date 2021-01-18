@@ -13,7 +13,6 @@ import Modal from 'react-native-modal'
 import { AppText, PaddingView, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
 import {
-  HeaderBackGray,
   MenuEdit,
   MenuLogOut,
   HidePost,
@@ -31,7 +30,6 @@ import {
 import {
   EditProfile,
   About,
-  ChangePassword,
   BlockList,
   HiddenPost,
   LikedPost,
@@ -44,12 +42,11 @@ import {
 } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
 
-const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
+const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
   const navigation = useNavigation()
   const { providerData } = useContext(UserContext)
   const [editProfile, setEditProfile] = useState(false)
   const [about, setAbout] = useState(false)
-  const [changePassword, setChangePassword] = useState(false)
   const [blockUser, setBlockUser] = useState(false)
   const [hiddenPost, setHiddenPost] = useState(false)
   const [likePost, setLikePost] = useState(false)
@@ -65,7 +62,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
 
   const toggleEditProfile = () => setEditProfile(!editProfile)
   const toggleAbout = () => setAbout(!about)
-  const toggleChangePassword = () => setChangePassword(!changePassword)
   const toggleBlockedUser = () => setBlockUser(!blockUser)
   const toggleHiddenPost = () => setHiddenPost(!hiddenPost)
   const toggleLikePost = () => setLikePost(!likePost)
@@ -75,12 +71,17 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
   const toggleFaq = () => setQuestions(!questions)
   const togglePayoutMethod = () => setPayoutMethod(!payoutMethod)
 
+  const handleChangePasswordPress = () => {
+    navigation.navigate('NBTScreen', { screen: 'change-password' })
+    close()
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         title="Settings"
         iconSize={normalize(20)}
-        close={toggleMenu}
+        close={close}
         paddingSize={3}
       />
       <ScrollView>
@@ -234,7 +235,7 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
               {hasPassword && (
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={toggleChangePassword}>
+                  onPress={handleChangePasswordPress}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -324,7 +325,7 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <EditProfile
-          toggleMenu={toggleMenu}
+          toggleMenu={close}
           toggleEditProfile={toggleEditProfile}
           triggerNotify={triggerNotify}
           source="own-menu"
@@ -370,7 +371,7 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        <LikedPost toggleMenu={toggleMenu} toggleLikePost={toggleLikePost} />
+        <LikedPost toggleMenu={close} toggleLikePost={toggleLikePost} />
       </Modal>
 
       <Modal
@@ -413,20 +414,6 @@ const OwnMenu = ({ toggleMenu, signOut, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <About toggleAbout={toggleAbout} />
-      </Modal>
-
-      <Modal
-        isVisible={changePassword}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <ChangePassword toggleChangePassword={toggleChangePassword} />
       </Modal>
 
       <Modal

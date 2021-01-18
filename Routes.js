@@ -22,6 +22,7 @@ import DashboardStack from '@/screens/Dashboard'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
 import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
+import ChangePasswordScreen from '@/screens/Profile/change-password'
 import ReportScreen from '@/screens/Profile/report'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
@@ -161,6 +162,10 @@ function NoBottomTabScreens() {
         component={OngoingItem}
       />
       <NoBottomTabScreenStack.Screen name="report" component={ReportScreen} />
+      <NoBottomTabScreenStack.Screen
+        name="change-password"
+        component={ChangePasswordScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
   )
 }

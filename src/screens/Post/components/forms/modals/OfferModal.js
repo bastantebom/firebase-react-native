@@ -24,6 +24,7 @@ import { ChevronRight } from '@/assets/images/icons'
 import SelectPostModal from './SelectPostModal'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
+import { formatPrice } from '@/globals/Utils'
 
 const OfferModal = ({ postType, postData }) => {
   const { user } = useContext(UserContext)
@@ -158,7 +159,7 @@ const OfferModal = ({ postType, postData }) => {
               style={{ marginBottom: 16 }}
               value={offer}
               keyboardType="number-pad"
-              onChangeText={text => setOffer(text)}
+              onChangeText={text => setOffer(formatPrice(text))}
               placeholder="00"
               label="You are offering"
             />

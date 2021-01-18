@@ -27,6 +27,7 @@ import AddCategoryModal from './AddCategoryModal'
 import AddedItemPreview from './AddedItemPreview'
 import { CategoryService } from '@/services'
 import { Context } from '@/context'
+import { formatPrice } from '@/globals/Utils'
 
 const EditItemModal = ({
   closeModal,
@@ -224,7 +225,7 @@ const EditItemModal = ({
               <PriceInput
                 value={price}
                 keyboardType="number-pad"
-                onChangeText={text => setPrice(text)}
+                onChangeText={text => setPrice(formatPrice(text))}
                 placeholder="00"
                 editable={!free}
               />
