@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  StyleSheet,
   Dimensions,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
@@ -76,6 +77,41 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
     close()
   }
 
+  const accountMenuItems = [
+    {
+      label: 'Liked Posts',
+      onPress: () => setLikePost(true),
+      icon: () => (
+        <LikedPostMenu width={normalize(20)} height={normalize(20)} />
+      ),
+    },
+    {
+      label: 'Edit Profile',
+      onPress: () => setEditProfile(true),
+      icon: () => <MenuEdit width={normalize(20)} height={normalize(20)} />,
+    },
+    {
+      label: 'Archived Posts',
+      onPress: () => setArchivedPost(true),
+      icon: () => (
+        <ArchivePostMenu width={normalize(20)} height={normalize(20)} />
+      ),
+    },
+    {
+      label: 'Hidden Posts',
+      onPress: () => setHiddenPost(true),
+      icon: () => <HidePost width={normalize(20)} height={normalize(20)} />,
+      hidden: true,
+    },
+    {
+      label: 'Invite Friends',
+      onPress: () => setInviteFriends(true),
+      icon: () => (
+        <InviteFriendsMenu width={normalize(22)} height={normalize(22)} />
+      ),
+    },
+  ]
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
@@ -100,84 +136,24 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
                 Account
               </AppText>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleLikePost}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <LikedPostMenu width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Liked Posts
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleEditProfile}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <MenuEdit width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Edit Profile
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={toggleArchivedPost}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <ArchivePostMenu
-                    width={normalize(20)}
-                    height={normalize(20)}
-                  />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Archived Post
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleHiddenPost}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <HidePost width={normalize(22)} height={normalize(22)} />
-                  <AppText customStyle={{ marginLeft: 11 }} textStyle="body1">
-                    Hidden Posts
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={toggleInviteFriends}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <InviteFriendsMenu
-                    width={normalize(22)}
-                    height={normalize(22)}
-                  />
-                  <AppText customStyle={{ marginLeft: 11 }} textStyle="body1">
-                    Invite Friends
-                  </AppText>
-                </View>
-              </TouchableOpacity>
+              {accountMenuItems.map(
+                ({ label, onPress, icon, hidden }) =>
+                  !hidden && (
+                    <TouchableOpacity
+                      key={label}
+                      activeOpacity={0.7}
+                      onPress={onPress}>
+                      <View style={styles.menuItem}>
+                        {icon()}
+                        <AppText
+                          customStyle={styles.menuItemLabel}
+                          textStyle="body1">
+                          {label}
+                        </AppText>
+                      </View>
+                    </TouchableOpacity>
+                  )
+              )}
             </View>
 
             <Divider
@@ -476,5 +452,14 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  menuItem: {
+    flexDirection: 'row',
+    marginBottom: normalize(16),
+    alignItems: 'center',
+  },
+  menuItemLabel: { marginLeft: normalize(12) },
+})
 
 export default OwnMenu
