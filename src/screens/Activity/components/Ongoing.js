@@ -16,7 +16,7 @@ import { normalize, Colors } from '@/globals'
 import IllustActivity from '@/assets/images/activity-img1.svg'
 import ActivitiesCard from './ActivitiesCard'
 
-const Ongoing = () => {
+const Ongoing = ({ sortCategory }) => {
   const navigation = useNavigation()
   const { user, userInfo } = useContext(UserContext)
 
@@ -179,13 +179,19 @@ const Ongoing = () => {
                   NEW
                 </AppText>
               </View>
-              {onGoing.map((info, i) => {
-                return (
-                  <View key={i}>
-                    <ActivitiesCard info={info} />
-                  </View>
+              {onGoing
+                .filter(post =>
+                  sortCategory.value === 'all'
+                    ? post
+                    : post.cardType === sortCategory.value
                 )
-              })}
+                .map((info, i) => {
+                  return (
+                    <View key={i}>
+                      <ActivitiesCard info={info} />
+                    </View>
+                  )
+                })}
             </View>
           </ScrollView>
         )

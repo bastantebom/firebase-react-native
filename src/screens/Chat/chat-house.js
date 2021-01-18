@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
-import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
@@ -20,13 +20,8 @@ import PostService from '@/services/Post/PostService'
 import Modal from 'react-native-modal'
 import _ from 'lodash'
 
-import { normalize, Colors, GlobalStyle, timePassedShort } from '@/globals'
-import {
-  AppText,
-  ScreenHeaderTitle,
-  CacheableImage,
-  TransitionIndicator,
-} from '@/components'
+import { normalize, Colors } from '@/globals'
+import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import {
   BlueDot,
   ChatBlue,
@@ -36,6 +31,7 @@ import {
 } from '@/assets/images/icons'
 
 import ChatSort from './components/ChatSort'
+import ChatHouseCard from './components/ChatHouseCard'
 
 const { width } = Dimensions.get('window')
 const PADDING = 16
@@ -59,28 +55,7 @@ const ChatHouse = () => {
   const { user } = useContext(UserContext)
 
   const [postChats, setPostChats] = useState([])
-  const [messageList, setMessageList] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-
-  const buyerChat = [
-    {
-      seller_name: 'Reynan',
-      seller_store: 'Reynan Plumbing Repair',
-      cover_photo: <DefaultSell width={normalize(64)} height={normalize(72)} />,
-      chat: 'You: Hello! Follow up po :)',
-      read: false,
-      time: '2m',
-    },
-    {
-      seller_name: 'Pia',
-      seller_store: 'Pia’s Green Thumb & Co.',
-      cover_photo: <DefaultSell width={normalize(64)} height={normalize(72)} />,
-      chat:
-        'Pia: Can give 3 free pots if you avail 2 Can give 3 free pots if you avail 2 ',
-      read: true,
-      time: '3m',
-    },
-  ]
 
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
@@ -94,26 +69,49 @@ const ChatHouse = () => {
             uid: order?.seller_id || user?.uid,
           })
 
-          if (!getPostResponse.success || !getUserReponse.success) {
-            return
-          }
-
-          if (getPostResponse.success) {
+          if (!getPostResponse.success || !getUserReponse.success) return
+          if (getPostResponse.success && getUserReponse.success) {
             const {
               full_name,
               display_name,
               profile_photo,
             } = getUserReponse.data
 
+            const members = {
+              [order?.seller_id]: true,
+              [user?.uid]: true,
+            }
+
+            const roomsSnapshot = await firestore()
+              .collection('chat_rooms')
+              .where('post_id', '==', order.post_id)
+              .where('members', '==', members)
+              .get()
+
+            let roomChat = {}
+
+            if (roomsSnapshot.docs.length) {
+              let channel = roomsSnapshot.docs[0].data()
+              roomChatRef = await firestore()
+                .collection('chat_rooms')
+                .doc(channel.id)
+                .collection('messages')
+                .orderBy('createdAt', 'desc')
+                .get()
+              if (roomChatRef.docs.length) {
+                roomChat = {
+                  ...roomChatRef.docs[0].data(),
+                }
+              }
+            }
+
             return {
               profilePhoto: profile_photo,
-              name: display_name ? display_name : full_name,
+              seller: full_name,
+              storeName: display_name ? display_name : full_name,
               cardType: 'own',
-              status: order.status,
-              time: order.date._seconds,
-              orderID: order.id,
-              price: order.total_price,
               postData: getPostResponse.data,
+              chats: roomChat,
             }
           }
         })
@@ -248,26 +246,39 @@ const ChatHouse = () => {
     setSortCategory(choice)
   }
 
-  const CoverPhoto = ({ post }) => {
-    return post?.cover_photos?.length > 0 ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{ uri: post?.cover_photos[0] }}
-      />
-    ) : post?.postData.type === 'service' ? (
-      <DefaultService width={normalize(64)} height={normalize(72)} />
-    ) : post?.postData.type === 'need' ? (
-      <DefaultNeed width={normalize(64)} height={normalize(72)} />
-    ) : (
-      <DefaultSell width={normalize(64)} height={normalize(72)} />
-    )
-  }
+  const handleChatPress = async (members, postId) => {
+    let channel
+    try {
+      if (!user?.uid) return
+      const snapshot = await firestore()
+        .collection('chat_rooms')
+        .where('members', '==', members)
+        .where('post_id', '==', postId)
+        .get()
 
-  const timeAgo = time => {
-    if (time <= 60) {
-      return 'Just now'
+      if (!snapshot.docs.length) {
+        const ref = firestore().collection('chat_rooms')
+        const { id } = await ref.add({
+          members: members,
+          post_id: postId,
+        })
+
+        await ref.doc(id).update({ id })
+        channel = (await ref.doc(id).get()).data()
+      } else {
+        channel = snapshot.docs[0].data()
+      }
+
+      navigation.navigate('NBTScreen', {
+        screen: 'Chat',
+        params: {
+          user,
+          channel,
+        },
+      })
+    } catch (error) {
+      console.log(error)
     }
-    return timePassedShort(time)
   }
 
   return (
@@ -321,115 +332,14 @@ const ChatHouse = () => {
           .map((post, i) => {
             return (
               <View key={i} style={{ marginBottom: normalize(15) }}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() =>
-                    navigation.navigate('NBTScreen', {
-                      screen: 'PostChat',
-                      params: { post },
-                    })
-                  }
-                  style={{ flexDirection: 'row' }}>
-                  <View style={styles.postImageContainer}>
-                    <CoverPhoto post={post} />
-                  </View>
-                  <View style={{ paddingLeft: normalize(8), flex: 1 }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <AppText
-                        textStyle="body2medium"
-                        customStyle={{
-                          paddingRight: 15,
-                          marginBottom: normalize(4),
-                        }}
-                        numberOfLines={1}>
-                        {post?.postData?.title}
-                      </AppText>
-                      <AppText
-                        textStyle="metadata"
-                        color={Colors.contentPlaceholder}>
-                        {timeAgo(Date.now() / 1000 - post.time)}
-                      </AppText>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                      {post?.chats?.length ? <ChatBlue /> : <ChatEmpty />}
-                      <AppText
-                        textStyle="caption"
-                        customStyle={{ marginLeft: normalize(4) }}
-                        color={
-                          post?.chats?.length
-                            ? Colors.contentOcean
-                            : Colors.contentPlaceholder
-                        }>
-                        {post?.chats?.length
-                          ? `${
-                              post.chats.filter(chat => !chat.read).length
-                            } New in ${post.chats.length} ${
-                              post.chats.length > 1 ? `chats` : `chat`
-                            }`
-                          : `No messages yet`}
-                      </AppText>
-                    </View>
-                  </View>
-                </TouchableOpacity>
+                <ChatHouseCard
+                  post={post}
+                  handleChatPress={handleChatPress}
+                  navigation={navigation}
+                />
               </View>
             )
           })}
-        {buyerChat.map((chat, i) => {
-          return (
-            <View key={i} style={{ marginBottom: normalize(15) }}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => navigation.navigate('PostChat')}
-                style={{ flexDirection: 'row', flex: 1 }}>
-                <View style={styles.postImageContainer}>
-                  {chat.cover_photo}
-                </View>
-                <View style={{ paddingLeft: normalize(8), flex: 1 }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <AppText
-                      textStyle="caption2"
-                      customStyle={{
-                        paddingRight: 15,
-                        marginBottom: normalize(4),
-                      }}
-                      numberOfLines={1}>
-                      {chat.seller_name} • {chat.seller_store}
-                    </AppText>
-                    <AppText
-                      textStyle="metadata"
-                      color={Colors.contentPlaceholder}>
-                      {chat.time}
-                    </AppText>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <AppText
-                      textStyle={!chat.read ? 'caption2' : 'caption'}
-                      customStyle={{
-                        width: chat.read ? '100%' : '90%',
-                      }}
-                      numberOfLines={2}>
-                      {chat.chat}
-                    </AppText>
-                    {!chat.read && <BlueDot />}
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          )
-        })}
       </ScrollView>
       <Modal
         isVisible={chatSort}
@@ -488,11 +398,5 @@ const styles = StyleSheet.create({
     zIndex: 999,
     top: 13,
     right: 12,
-  },
-  postImageContainer: {
-    width: normalize(64),
-    height: normalize(72),
-    borderRadius: 8,
-    overflow: 'hidden',
   },
 })

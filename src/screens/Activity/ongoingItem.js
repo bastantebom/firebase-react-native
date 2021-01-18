@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native'
-
+import firestore from '@react-native-firebase/firestore'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
 import {
@@ -20,18 +20,21 @@ import {
   PayoutWallet,
 } from '@/assets/images/icons'
 
+import { UserContext } from '@/context/UserContext'
 import ActivitiesCard from './components/ActivitiesCard'
 import ItemCard from './components/ItemCard'
 import Api from '@/services/Api'
+import _ from 'lodash'
 
 const OngoingItem = ({ route, navigation }) => {
+  const { user } = useContext(UserContext)
   const [pendingPayment, showPendingPayment] = useState(false)
   const [requests, showRequests] = useState(false)
   const [ongoing, showOngoing] = useState(false)
   const [readyForDelivery, showReadyForDelivery] = useState(false)
   const [readyForPickup, showReadyForPickup] = useState(false)
   const [completed, showCompleted] = useState(false)
-
+  const [postChats, setPostChats] = useState([])
   const { orders, name, title, type, postData } = route?.params?.info
   const [pending, setPending] = useState([])
 
@@ -39,23 +42,55 @@ const OngoingItem = ({ route, navigation }) => {
 
   const initPending = async orders => {
     if (!orders?.length) return
-    setIsPendingLoading(true)
+
     const orderedList = orders.sort((a, b) => a.date._seconds - b.date._seconds)
     const done = await Promise.all(
       orderedList.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })
-
         if (getUserResponse.success) {
-          if (orders.length === index + 1) setIsPendingLoading(false)
           const {
             profile_photo,
             display_name,
             full_name,
           } = getUserResponse.data
 
+          const room = await firestore()
+            .collection('chat_rooms')
+            .where('post_id', '==', order.post_id)
+            .where('members', '==', {
+              [user?.uid]: true,
+              [order.buyer_id]: true,
+            })
+            .get()
+
+          let roomChat = {}
+          setPostChats()
+          if (room.docs.length) {
+            let channel = room.docs[0].data()
+
+            roomChatRef = await firestore()
+              .collection('chat_rooms')
+              .doc(channel.id)
+              .collection('messages')
+              .orderBy('createdAt', 'desc')
+              .get()
+
+            if (roomChatRef.docs.length) {
+              let chatCount = 0
+              roomChatRef.docs.map(chat => {
+                if (!chat.data().read) chatCount++
+              })
+
+              roomChat = {
+                ...roomChatRef.docs[0].data(),
+                chatCount,
+              }
+            }
+          }
           return {
             profilePhoto: profile_photo,
             customer: display_name ? display_name : full_name,
+            customerUID: order.buyer_id,
             cardType: order.status,
             amount: order.total_price
               ? order.total_price
@@ -66,16 +101,55 @@ const OngoingItem = ({ route, navigation }) => {
             numOfItems: order.items?.length ? order.items?.length : 0,
             postId: order.post_id,
             type: postData.type,
+            chat: roomChat,
           }
         } else return {}
       })
     )
+
     setPending(pending => [...pending, ...done])
+    setIsPendingLoading(false)
+  }
+
+  const handleChatPress = async (members, postId) => {
+    let channel
+    try {
+      if (!user?.uid) return
+      const snapshot = await firestore()
+        .collection('chat_rooms')
+        .where('members', '==', members)
+        .where('post_id', '==', postId)
+        .get()
+
+      if (!snapshot.docs.length) {
+        const ref = firestore().collection('chat_rooms')
+        const { id } = await ref.add({
+          members: members,
+          post_id: postId,
+        })
+
+        await ref.doc(id).update({ id })
+        channel = (await ref.doc(id).get()).data()
+      } else {
+        channel = snapshot.docs[0].data()
+      }
+
+      navigation.navigate('NBTScreen', {
+        screen: 'Chat',
+        params: {
+          user,
+          channel,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
+      setIsPendingLoading(true)
       initPending(orders?.pending)
       initPending(orders?.confirmed)
       initPending(orders?.paid)
@@ -115,7 +189,10 @@ const OngoingItem = ({ route, navigation }) => {
               </View>
             }
             rightIconEvent={() =>
-              navigation.navigate('NBTScreen', { screen: 'PostChat' })
+              navigation.navigate('NBTScreen', {
+                screen: 'PostChat',
+                params: { post: route?.params?.info },
+              })
             }
           />
           <ActivitiesCard info={route?.params?.info} />
@@ -168,7 +245,10 @@ const OngoingItem = ({ route, navigation }) => {
                   .map((item, i) => {
                     return (
                       <View key={i}>
-                        <ItemCard item={item} />
+                        <ItemCard
+                          item={item}
+                          handleChatPress={handleChatPress}
+                        />
                       </View>
                     )
                   })}
@@ -219,7 +299,10 @@ const OngoingItem = ({ route, navigation }) => {
                   .map((item, i) => {
                     return (
                       <View key={i}>
-                        <ItemCard item={item} />
+                        <ItemCard
+                          item={item}
+                          handleChatPress={handleChatPress}
+                        />
                       </View>
                     )
                   })}
@@ -279,7 +362,10 @@ const OngoingItem = ({ route, navigation }) => {
                   .map((item, i) => {
                     return (
                       <View key={i}>
-                        <ItemCard item={item} />
+                        <ItemCard
+                          item={item}
+                          handleChatPress={handleChatPress}
+                        />
                       </View>
                     )
                   })}
@@ -340,7 +426,10 @@ const OngoingItem = ({ route, navigation }) => {
                       .map((item, i) => {
                         return (
                           <View key={i}>
-                            <ItemCard item={item} />
+                            <ItemCard
+                              item={item}
+                              handleChatPress={handleChatPress}
+                            />
                           </View>
                         )
                       })}
@@ -396,7 +485,10 @@ const OngoingItem = ({ route, navigation }) => {
                       .map((item, i) => {
                         return (
                           <View key={i}>
-                            <ItemCard item={item} />
+                            <ItemCard
+                              item={item}
+                              handleChatPress={handleChatPress}
+                            />
                           </View>
                         )
                       })}
@@ -439,7 +531,10 @@ const OngoingItem = ({ route, navigation }) => {
                   .map((item, i) => {
                     return (
                       <View key={i}>
-                        <ItemCard item={item} />
+                        <ItemCard
+                          item={item}
+                          handleChatPress={handleChatPress}
+                        />
                       </View>
                     )
                   })}

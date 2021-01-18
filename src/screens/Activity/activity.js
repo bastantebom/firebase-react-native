@@ -30,6 +30,11 @@ const Activity = () => {
   const [groupNotifications, setGroupNotifications] = useState([])
   const { notificationsList, initNotifications } = useContext(Context)
   const { user } = useContext(UserContext)
+  const [sortCategory, setSortCategory] = useState({
+    label: 'All Activities',
+    value: 'all',
+    description: 'These are all your activities',
+  })
 
   const navigation = useNavigation()
 
@@ -52,6 +57,10 @@ const Activity = () => {
     }
 
     setGroupNotifications(tempNotifList)
+  }
+
+  const getSortSelected = choice => {
+    setSortCategory(choice)
   }
 
   useEffect(() => {
@@ -87,7 +96,7 @@ const Activity = () => {
             <AppText
               textStyle="body3"
               customStyle={{ marginRight: normalize(8) }}>
-              All Activities
+              {sortCategory.label}
             </AppText>
             <ChevronDown width={normalize(20)} height={normalize(20)} />
           </TouchableOpacity>
@@ -169,7 +178,7 @@ const Activity = () => {
           />
         )}
         <View>
-          <Ongoing />
+          <Ongoing sortCategory={sortCategory} />
         </View>
       </>
       <Modal
@@ -184,7 +193,10 @@ const Activity = () => {
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
         }>
-        <ActivitySort />
+        <ActivitySort
+          close={() => setActivitySort(false)}
+          choice={getSortSelected}
+        />
       </Modal>
       <Modal
         isVisible={isFiltersVisible}

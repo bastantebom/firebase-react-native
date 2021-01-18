@@ -17,7 +17,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Modal from 'react-native-modal'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
-import { normalize, Colors, GlobalStyle } from '@/globals'
+import { normalize, Colors, GlobalStyle, timePassedShort } from '@/globals'
 import {
   AppCheckbox,
   AppText,
@@ -103,7 +103,10 @@ const PostChat = ({ route }) => {
       .collection('chat_rooms')
       .where('post_id', '==', post.postData.id)
       .onSnapshot(async snap => {
-        if (!snap) return
+        if (!snap.docs.length) {
+          setIsLoading(false)
+          return
+        }
         snap.docs.map(async (room, index) => {
           const roomId = room.id
           const members = room.data().members
@@ -113,6 +116,10 @@ const PostChat = ({ route }) => {
             .doc(room.id)
             .collection('messages')
             .onSnapshot(async chatRef => {
+              if (!chatRef.docs.length) {
+                setIsLoading(false)
+                return
+              }
               let chats = chatRef.docs.map(chatDoc => {
                 if (chatDoc.data()) {
                   return chatDoc.data()
@@ -333,6 +340,13 @@ const PostChat = ({ route }) => {
     setMultipleSelect(option)
   }
 
+  const timeAgo = time => {
+    if (time <= 60) {
+      return 'Just now'
+    }
+    return timePassedShort(time)
+  }
+
   return (
     <SafeAreaView style={styles.parent}>
       <TransitionIndicator loading={isLoading} />
@@ -446,7 +460,10 @@ const PostChat = ({ route }) => {
                         <AppText
                           textStyle="metadata"
                           color={Colors.contentPlaceholder}>
-                          1m
+                          {timeAgo(
+                            Date.now() / 1000 -
+                              chat.chats[0].created_at._seconds
+                          )}
                         </AppText>
                       </View>
                       <View
