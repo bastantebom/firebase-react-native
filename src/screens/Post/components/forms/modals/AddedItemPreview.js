@@ -1,18 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native'
 
 import { AppText, Item, ScreenHeaderTitle } from '@/components'
-import { Colors, GlobalStyle, normalize } from '@/globals'
+import { Colors } from '@/globals'
 import { CircleAdd } from '@/assets/images/icons'
 import Modal from 'react-native-modal'
 import CategoryOptions from './CategoryOptions'
-import { Divider } from 'react-native-paper'
 
 import { Context } from '@/context'
 
@@ -25,16 +23,10 @@ const AddedItemPreview = ({
   setData,
   ...props
 }) => {
-  const { getItemsByCategory, editItem } = useContext(Context)
-
+  const { getItemsByCategory } = useContext(Context)
   const { navigation } = props
-
   const { categoryName } = props?.route?.params
-
-  const [items, setItems] = useState(getItemsByCategory(categoryName))
-  const [editItemModal, showEditItemModal] = useState(false)
-  const [itemToEdit, setItemToEdit] = useState(false)
-  const [indexOfItemToEdit, setIndexOfItemToEdit] = useState(0)
+  const [items] = useState(getItemsByCategory(categoryName))
   const [options, showOptions] = useState(false)
 
   const AddAnotherItemHandler = () => {
@@ -45,26 +37,20 @@ const AddedItemPreview = ({
     navigation.navigate('CreatePostScreen')
   }
 
-  const editItemHandler = (item, index) => {
-    setItemToEdit(item)
-    setIndexOfItemToEdit(index)
-
+  const editItemHandler = item => {
     navigation.navigate('EditItemScreen', { itemToEdit: item })
   }
 
   const ItemList = () => {
     return items.map((item, index) => {
       return (
-        <>
-          <Item item={item} key={index}>
-            <TouchableOpacity onPress={() => editItemHandler(item)}>
-              <AppText textStyle="caption" color={Colors.contentOcean}>
-                Edit Item
-              </AppText>
-            </TouchableOpacity>
-          </Item>
-          <Divider style={[GlobalStyle.dividerStyle, { marginVertical: 8 }]} />
-        </>
+        <Item item={item} key={index}>
+          <TouchableOpacity onPress={() => editItemHandler(item)}>
+            <AppText textStyle="caption" color={Colors.contentOcean}>
+              Edit
+            </AppText>
+          </TouchableOpacity>
+        </Item>
       )
     })
   }
@@ -76,6 +62,7 @@ const AddedItemPreview = ({
           flex: 1,
           justifyContent: 'space-between',
           padding: 16,
+          backgroundColor: '#fff',
         }}>
         <View>
           <ScreenHeaderTitle
@@ -96,20 +83,13 @@ const AddedItemPreview = ({
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={AddAnotherItemHandler}
-            style={{ marginTop: 24 }}>
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-              }}>
-              <CircleAdd />
-              <AppText
-                customStyle={{ marginLeft: 4 }}
-                textStyle="caption"
-                color={Colors.contentOcean}>
-                Add an Item
-              </AppText>
-            </View>
+            style={{
+              marginTop: 24,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <CircleAdd style={{ marginRight: 5 }} />
+            <AppText textStyle="caption">Add an Item</AppText>
           </TouchableOpacity>
         </View>
 

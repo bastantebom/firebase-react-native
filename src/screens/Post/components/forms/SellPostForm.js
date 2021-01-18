@@ -492,25 +492,24 @@ const SellPostForm = ({
   const SelectedPaymentMethods = () => {
     let paymentMethodList = []
     for (const [key, value] of Object.entries(paymentMethods)) {
-      if (value === true) {
+      if (value) {
         if (key === 'onlineBanking') {
           paymentMethodList.push('Online Banking')
+        } else if (key === 'gcash') {
+          paymentMethodList.push('GCash')
+        } else if (key === 'grabpay') {
+          paymentMethodList.push('GrabPay')
+        } else if (key === 'paypal') {
+          paymentMethodList.push('PayPal')
         } else {
-          paymentMethodList.push(key)
+          paymentMethodList.push(key.charAt(0).toUpperCase() + key.slice(1))
         }
       }
     }
 
     const display = paymentMethodList.join(', ')
 
-    if (display)
-      return (
-        <AppText
-          textStyle="body2"
-          customStyle={{ textTransform: 'capitalize' }}>
-          {display}
-        </AppText>
-      )
+    if (display) return <AppText textStyle="body2">{display}</AppText>
     else {
       return <></>
     }
@@ -525,7 +524,7 @@ const SellPostForm = ({
 
   const postDescriptionPlaceholder = {
     sell:
-      'Let your customers know what you offer. Make your post attractive and easier to find by adding descriptions and hashtags. e.g. #Food #Dessert (Optional)',
+      'Get the most out of your post by adding the product features and buzz-worthy offers that your buyers might be interested in.',
     need:
       'Attract people that can supply your specific needs by adding descriptions and hashtags here. e.g. #electrician #plumber (Optional)',
     service:
@@ -761,7 +760,7 @@ const SellPostForm = ({
               alignItems: 'center',
               marginBottom: normalize(12),
             }}>
-            <AppText textStyle="body3">Schedule</AppText>
+            <AppText textStyle="body3">Store Schedule</AppText>
             <FormArrowRight />
           </TouchableOpacity>
           {storeSchedule.map(schedule => {
@@ -856,7 +855,7 @@ const SellPostForm = ({
           <Animated.View style={[multipleActiveStyle]}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('AddItemScreen')
+                navigation.navigate('AddItemScreen', { type: 'sell' })
               }}
               activeOpacity={0.7}
               style={{

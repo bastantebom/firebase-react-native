@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Animated,
 } from 'react-native'
 
 import {
@@ -14,10 +13,8 @@ import {
   ScreenHeaderTitle,
   AppButton,
 } from '@/components'
-import { useNavigation } from '@react-navigation/native'
 
 import { Colors, normalize } from '@/globals'
-import FloatingAppInput from '@/components/AppInput/AppInput'
 import {
   Cash,
   CashActive,
@@ -29,8 +26,6 @@ import {
   GrabPayActive,
   Paypal,
   PaypalActive,
-  Bank,
-  BankActive,
   AngleDown,
 } from '@/assets/images/icons'
 import { Clipboard } from '@/assets/images'
@@ -40,8 +35,6 @@ const PaymentMethodModal = ({
   parentPaymentMethod,
   setParentPaymentMethods,
 }) => {
-  const navigation = useNavigation()
-
   const [showLearnMore, setShowLearnMore] = useState(false)
   const [paymentMethods, setPaymentMethods] = useState(parentPaymentMethod)
   const [visa, showVisa] = useState(false)
@@ -624,9 +617,7 @@ const PaymentMethodModal = ({
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <AppText textStyle="subtitle2">
-                    Cash, Online Banking, or other Payment Methods
-                  </AppText>
+                  <AppText textStyle="subtitle2">Cash</AppText>
                   <AngleDown />
                 </TouchableOpacity>
                 {cash && (
@@ -634,10 +625,9 @@ const PaymentMethodModal = ({
                     <AppText
                       textStyle="caption"
                       customStyle={{ marginBottom: 16 }}>
-                      Customers can still pay using cash, online banking, or
-                      other payment methods not included in the app. For these
-                      payment options, the seller/service provider should send
-                      the payment instructions and reminders directly to the
+                      Customers can still pay using cash. For these payment
+                      options, the seller/service provider should send the
+                      payment instructions and reminders directly to the
                       customer using chat.
                     </AppText>
                   </>

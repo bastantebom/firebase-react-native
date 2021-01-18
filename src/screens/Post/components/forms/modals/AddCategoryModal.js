@@ -22,7 +22,7 @@ import {
 
 import { CategoryService } from '@/services'
 
-const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
+const AddCategoryModal = ({ categoryName, setCategoryName, close, type }) => {
   const [newCategoryName, setNewCategoryName] = useState(categoryName)
   const [newCategoryModal, setNewCategoryModal] = useState(false)
   const [catChoices, setCatChoices] = useState([])
@@ -243,7 +243,12 @@ const AddCategoryModal = ({ categoryName, setCategoryName, close }) => {
           <AppText textStyle="body2medium" color={Colors.contentOcean}>
             Create a New Category
           </AppText>
-          <AppText textStyle="body2">e.g., Grooming, Haircut, Beauty</AppText>
+          <AppText textStyle="body2">
+            e.g.,{' '}
+            {type === 'sell'
+              ? 'Burger, Drinks, Desserts, Snacks'
+              : 'Grooming, Haircut, Beauty'}
+          </AppText>
         </TouchableOpacity>
 
         <Animated.View style={newActiveStyle}>

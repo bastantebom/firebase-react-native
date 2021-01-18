@@ -23,23 +23,21 @@ import { Context } from '@/context'
 import { formatPrice } from '@/globals/Utils'
 
 const AddItemModal = ({ closeModal, ...props }) => {
+  const type = props?.route?.params?.type
   const { addItem } = useContext(Context)
 
   const { navigation } = props
-
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
   const [itemImage, setItemImage] = useState()
   const [price, setPrice] = useState(0)
   const [free, setFree] = useState(false)
   const [categoryName, setCategoryName] = useState('others')
-  const [categoryList, setCategoryList] = useState([])
 
   const [categoryModal, setCategoryModal] = useState(false)
-  const [previewItemModal, setPreviewItemModal] = useState(false)
 
   const [buttonEnabled, setButtonEnabled] = useState(false)
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [loadingSubmit] = useState(false)
   const [clearPhoto, setClearPhoto] = useState(false)
 
   // If editing
@@ -191,7 +189,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
               label="Item Name"
               value={title}
               onChangeText={text => setTitle(text)}
-              placeholder="e.g Laptops, Tea, Coffee"
+              placeholder="e.g. Laptops, Tea, Coffee"
             />
 
             <TextInput
@@ -272,6 +270,7 @@ const AddItemModal = ({ closeModal, ...props }) => {
           </TouchableWithoutFeedback>
         }>
         <AddCategoryModal
+          type={type}
           categoryName={categoryName}
           setCategoryName={setCategoryName}
           close={() => setCategoryModal(false)}

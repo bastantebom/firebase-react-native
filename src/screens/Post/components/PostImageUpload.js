@@ -261,8 +261,8 @@ export const PostImageUpload = ({ data }) => {
         <AppText customStyle={{ fontWeight: 'bold' }}>
           Photos - {imageCount}/10
         </AppText>{' '}
-        Choose your listing’s main photo first for Cover Photo. And more photos
-        with multiple angles to show any damage or wear.
+        Choose up to 10 photos for your listing. The first photo you upload is
+        automatically your cover photo.
       </AppText>
 
       <Modal

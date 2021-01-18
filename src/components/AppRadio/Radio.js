@@ -29,7 +29,6 @@ const Radio = ({ Icon, label, style, value, valueChangeHandler, name }) => {
           <AppText
             textStyle="body3"
             customStyle={{
-              textTransform: 'capitalize',
               marginLeft: Icon ? 8 : 0,
             }}>
             {label}
