@@ -63,7 +63,7 @@ const OngoingItem = ({ route, navigation }) => {
             })
             .get()
 
-          let roomChat = {}
+          let roomChat = []
           setPostChats()
           if (room.docs.length) {
             let channel = room.docs[0].data()
@@ -76,15 +76,9 @@ const OngoingItem = ({ route, navigation }) => {
               .get()
 
             if (roomChatRef.docs.length) {
-              let chatCount = 0
               roomChatRef.docs.map(chat => {
-                if (!chat.data().read) chatCount++
+                roomChat = [...roomChat, chat.data()]
               })
-
-              roomChat = {
-                ...roomChatRef.docs[0].data(),
-                chatCount,
-              }
             }
           }
           return {

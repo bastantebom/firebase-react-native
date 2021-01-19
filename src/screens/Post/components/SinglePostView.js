@@ -297,6 +297,7 @@ const SinglePostView = props => {
           [user.uid]: true,
           [uid]: true,
         })
+        .where('post_id', '==', id)
         .get()
 
       if (!snapshot.docs.length) {
@@ -306,6 +307,7 @@ const SinglePostView = props => {
             [user.uid]: true,
             [uid]: true,
           },
+          post_id: id,
         })
 
         await ref.doc(id).update({ id })

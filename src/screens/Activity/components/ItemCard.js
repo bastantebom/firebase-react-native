@@ -20,10 +20,16 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import { commaSeparate } from '@/globals/Utils'
 import { UserContext } from '@/context/UserContext'
+import _ from 'lodash'
 const ItemCard = ({ item, handleChatPress }) => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
   const [isLoading, setIsLoading] = useState(false)
+
+  const unRead =
+    item?.chat[0]?.uid !== user?.uid &&
+    !item?.chat[0]?.read &&
+    !_.isEmpty(item?.chat)
 
   const timeAgo = time => {
     if (time <= 60) {
@@ -76,10 +82,14 @@ const ItemCard = ({ item, handleChatPress }) => {
   }
 
   const renderChatCopy = () => {
-    return item.chat.uid === user?.uid
+    return _.isEmpty(item.chat)
+      ? 'No messages yet'
+      : item?.chat[0].uid === user?.uid
       ? 'You replied'
-      : !item.chat.read && item.chat.chatCount > 1
-      ? `${item.chat.chatCount} new messages`
+      : !item.chat[0].read && item.chat.length > 1
+      ? `${item.chat.length} new messages`
+      : item.chat[0].read && item.chat.length > 1
+      ? `${item.chat.length} messages`
       : `${item.customer.split(' ')[0]} sent you a message`
   }
   return (
@@ -168,57 +178,49 @@ const ItemCard = ({ item, handleChatPress }) => {
               No. of services: {item.numOfItems}
             </AppText>
           )}
-          {item.chat.chatCount > 0 && (
-            <TouchableOpacity onPress={chatPress}>
+
+          <TouchableOpacity onPress={chatPress}>
+            <View
+              style={{
+                backgroundColor: unRead
+                  ? Colors.secondarySolitude
+                  : Colors.neutralsZirconLight,
+                borderRadius: 4,
+                padding: normalize(8),
+                marginTop: normalize(8),
+              }}>
+              <View style={{ flexDirection: 'row' }}>
+                {unRead ? <ChatBlue /> : <ChatEmpty />}
+                <AppText
+                  textStyle="caption"
+                  color={
+                    unRead ? Colors.contentOcean : Colors.contentPlaceholder
+                  }
+                  customStyle={{ marginLeft: normalize(6) }}>
+                  {renderChatCopy()}
+                </AppText>
+              </View>
               <View
                 style={{
-                  backgroundColor:
-                    item.chat.uid !== user?.uid && !item.chat.read
-                      ? Colors.secondarySolitude
-                      : Colors.neutralsZirconLight,
-                  borderRadius: 4,
-                  padding: normalize(8),
-                  marginTop: normalize(8),
+                  marginTop: normalize(4),
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}>
-                <View style={{ flexDirection: 'row' }}>
-                  {item.chat.uid !== user?.uid && !item.chat.read ? (
-                    <ChatBlue />
-                  ) : (
-                    <ChatEmpty />
+                <AppText
+                  textStyle="caption2"
+                  customStyle={{ width: '90%' }}
+                  numberOfLines={1}>
+                  {item?.chat[0]?.text}
+                </AppText>
+                <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
+                  {timeAgo(
+                    Date.now() / 1000 - item?.chat[0]?.created_at?._seconds
                   )}
-                  <AppText
-                    textStyle="caption"
-                    color={
-                      item.chat.uid !== user?.uid && !item.chat.read
-                        ? Colors.contentOcean
-                        : Colors.contentPlaceholder
-                    }
-                    customStyle={{ marginLeft: normalize(6) }}>
-                    {renderChatCopy()}
-                  </AppText>
-                </View>
-                <View
-                  style={{
-                    marginTop: normalize(4),
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}>
-                  <AppText
-                    textStyle="caption2"
-                    customStyle={{ width: '90%' }}
-                    numberOfLines={1}>
-                    {item.chat.text}
-                  </AppText>
-                  <AppText
-                    textStyle="metadata"
-                    color={Colors.contentPlaceholder}>
-                    1s
-                  </AppText>
-                </View>
+                </AppText>
               </View>
-            </TouchableOpacity>
-          )}
+            </View>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </>

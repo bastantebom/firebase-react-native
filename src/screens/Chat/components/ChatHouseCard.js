@@ -30,6 +30,9 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
     )
   }
 
+  const unRead =
+    post?.chats?.length && !post?.chats[0]?.read && !_.isEmpty(post.chats)
+
   const AvatarPhoto = ({ size }) => {
     return post.profilePhoto ? (
       <CacheableImage
@@ -51,19 +54,13 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
   }
 
   const renderChatCopy = post => {
-    return post?.chats?.length && !_.isEmpty(post.chat)
-      ? `${
-          post.chats.filter(chat => !chat.read).length > 0
-            ? `${post.chats.filter(chat => !chat.read).length} New in ${
-                post.chats.length
-              } ${post.chats.length > 1 ? `chats` : `chat`}`
-            : `${
-                post.chats.length > 1
-                  ? `${post.chats.length} chats`
-                  : `${post.chats.length} chat`
-              }`
-        }`
-      : `No messages yet`
+    return _.isEmpty(post.chat) && !post.chats.length
+      ? `No messages yet`
+      : post.chats.filter(chat => !chat.read).length > 0
+      ? `${post.chats.filter(chat => !chat.read).length} New in ${
+          post.chats.length
+        } ${post.chats.length > 1 ? `chats` : `chat`}`
+      : `${post.chats.length} ${post.chats.length > 1 ? `chats` : `chat`}`
   }
 
   const chatPress = () => {
@@ -109,14 +106,12 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
               </AppText>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              {post?.chats?.length ? <ChatBlue /> : <ChatEmpty />}
+              {unRead ? <ChatBlue /> : <ChatEmpty />}
               <AppText
                 textStyle="caption"
                 customStyle={{ marginLeft: normalize(4) }}
                 color={
-                  post?.chats?.length
-                    ? Colors.contentOcean
-                    : Colors.contentPlaceholder
+                  unRead ? Colors.contentOcean : Colors.contentPlaceholder
                 }>
                 {renderChatCopy(post)}
               </AppText>
@@ -131,7 +126,11 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
           <View style={[styles.postImageContainer, styles.postImageBuyer]}>
             <CoverPhoto size={56} />
           </View>
-          <View style={styles.userInfoImageContainer}>
+          <View
+            style={[
+              styles.userInfoImageContainer,
+              post.profilePhoto && styles.additionalPadding,
+            ]}>
             <AvatarPhoto size={24} />
           </View>
           <View style={{ paddingLeft: normalize(8), flex: 1 }}>
@@ -161,12 +160,12 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
               }}>
               <AppText
                 textStyle={
-                  !post?.chats?.read && post?.chats?.uid !== user?.uid
+                  post?.chats?.read && post?.chats[0]?.uid === user?.uid
                     ? 'caption2'
                     : 'caption'
                 }
                 customStyle={{
-                  width: post?.chats?.read ? '100%' : '90%',
+                  width: post?.chats[0]?.read ? '100%' : '90%',
                 }}
                 numberOfLines={2}>
                 {`${
@@ -206,10 +205,13 @@ const styles = StyleSheet.create({
     width: normalize(24),
     borderRadius: normalize(24 / 2),
     overflow: 'hidden',
+    alignSelf: 'center',
     marginLeft: normalize(-15),
     marginTop: normalize(40),
-    padding: 2,
     backgroundColor: Colors.neutralsWhite,
+  },
+  additionalPadding: {
+    padding: normalize(2),
   },
 })
 
