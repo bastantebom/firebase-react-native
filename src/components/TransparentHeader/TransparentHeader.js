@@ -21,6 +21,7 @@ import {
 import { HeaderShare, Icons } from '@/assets/images/icons'
 import { normalize, GlobalStyle } from '@/globals'
 import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 import Share from 'react-native-share'
 import Api from '@/services/Api'
@@ -50,6 +51,7 @@ const TransparentHeader = ({
 }) => {
   const navigation = useNavigation()
   const { user, userInfo: ownUserInfo } = useContext(UserContext)
+  const { unsubcribeNotification } = useContext(Context)
 
   const handleShare = async () => {
     try {
@@ -310,6 +312,7 @@ const TransparentHeader = ({
           <OwnMenu
             signOut={() => {
               signOut().then(() => {
+                unsubcribeNotification()
                 navigation.navigate('Onboarding')
               })
             }}
