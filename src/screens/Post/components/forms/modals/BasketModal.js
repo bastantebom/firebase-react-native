@@ -512,7 +512,7 @@ const BasketModal = ({
               {postType !== 'need' ? (
                 <TouchableOpacity onPress={closeModal}>
                   <AppText textStyle="button2" color={Colors.contentOcean}>
-                    Change
+                    Edit
                   </AppText>
                 </TouchableOpacity>
               ) : (
@@ -524,6 +524,7 @@ const BasketModal = ({
                 </AppText>
               )}
             </View>
+
             <OrderSummary />
             <View
               style={{
@@ -540,6 +541,53 @@ const BasketModal = ({
                 ₱{commaSeparate(computedTotal())}
               </AppText>
             </View>
+          </View>
+          <View
+            style={{
+              padding: normalize(20),
+              backgroundColor: 'white',
+              borderRadius: 8,
+              marginBottom: normalize(10),
+              display: postType === 'service' ? 'flex' : 'none',
+            }}>
+            <View style={styles.caption}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <PostCash width={normalize(24)} height={normalize(24)} />
+                <AppText
+                  textStyle="body1medium"
+                  customStyle={{ marginLeft: normalize(10) }}>
+                  Service Schedule
+                </AppText>
+              </View>
+              {postType !== 'service' && (
+                <TouchableOpacity onPress={() => showScheduleModal(true)}>
+                  <AppText textStyle="button2" color={Colors.contentOcean}>
+                    Change
+                  </AppText>
+                </TouchableOpacity>
+              )}
+            </View>
+            {/* <AppText textStyle="body2">{serviceSchedule}</AppText> */}
+            {postType === 'service' && (
+              <>
+                {userCart.map((item, i) => {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginBottom: userCart.length - 1 === i ? 0 : 8,
+                      }}>
+                      <AppText textStyle="body2" customStyle={{ flex: 1 }}>
+                        {item.name}
+                      </AppText>
+                      <AppText textStyle="body2" customStyle={{ flex: 2 }}>{`${
+                        item.date
+                      } ${item.time ? `@ ${item.time}` : ''}`}</AppText>
+                    </View>
+                  )
+                })}
+              </>
+            )}
           </View>
           {postType !== 'need' ? (
             <View
@@ -574,6 +622,7 @@ const BasketModal = ({
                 <AppText
                   textStyle="body2"
                   customStyle={{ marginVertical: normalize(10) }}>
+                  {/* Display name of address */}
                   {deliveryChoice === 'delivery' || deliveryChoice === 'service'
                     ? addressData.full_address
                     : full_address}
@@ -647,7 +696,8 @@ const BasketModal = ({
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity onPress={() => showAddNoteModal(true)}>
+              {/* Hide for now 01-19 */}
+              {/* <TouchableOpacity onPress={() => showAddNoteModal(true)}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
                   {postType === 'sell'
                     ? deliveryChoice === 'delivery'
@@ -657,7 +707,7 @@ const BasketModal = ({
                     ? 'Add notes'
                     : null}
                 </AppText>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           ) : null}
           <View
@@ -848,53 +898,7 @@ const BasketModal = ({
               </TouchableOpacity>
             )}
           </View>
-          <View
-            style={{
-              padding: normalize(20),
-              backgroundColor: 'white',
-              borderRadius: 8,
-              marginBottom: normalize(10),
-              display: postType === 'service' ? 'flex' : 'none',
-            }}>
-            <View style={styles.caption}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <PostCash width={normalize(24)} height={normalize(24)} />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Service Schedule
-                </AppText>
-              </View>
-              {postType !== 'service' && (
-                <TouchableOpacity onPress={() => showScheduleModal(true)}>
-                  <AppText textStyle="button2" color={Colors.contentOcean}>
-                    Change
-                  </AppText>
-                </TouchableOpacity>
-              )}
-            </View>
-            {/* <AppText textStyle="body2">{serviceSchedule}</AppText> */}
-            {postType === 'service' && (
-              <>
-                {userCart.map((item, i) => {
-                  return (
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        marginBottom: userCart.length - 1 === i ? 0 : 8,
-                      }}>
-                      <AppText textStyle="body2" customStyle={{ flex: 1 }}>
-                        {item.name}
-                      </AppText>
-                      <AppText textStyle="body2" customStyle={{ flex: 2 }}>{`${
-                        item.date
-                      } ${item.time ? `@ ${item.time}` : ''}`}</AppText>
-                    </View>
-                  )
-                })}
-              </>
-            )}
-          </View>
+
           <View
             style={{
               padding: normalize(20),
@@ -941,12 +945,12 @@ const BasketModal = ({
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
-                  Notes
+                  Additional Notes
                 </AppText>
               </View>
               <TouchableOpacity onPress={() => showOrderNotes(true)}>
                 <AppText textStyle="button2" color={Colors.contentOcean}>
-                  {notes ? 'Edit' : 'Add Notes'}
+                  {notes ? 'Edit' : 'Add'}
                 </AppText>
               </TouchableOpacity>
             </View>

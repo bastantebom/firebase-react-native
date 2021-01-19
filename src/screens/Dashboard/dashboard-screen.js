@@ -88,6 +88,8 @@ const DashboardScreen = ({ navigation }) => {
           {}
         )
 
+      // console.log(newPosts['JleewwcGDgV09P8IhjJR'])
+
       setTotalPages(response.total_pages)
       setPosts(posts => (!filters.page ? newPosts : { ...posts, ...newPosts }))
     } catch (error) {

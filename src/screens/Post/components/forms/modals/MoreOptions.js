@@ -76,6 +76,34 @@ const MoreOptions = ({ close, setMoreOptions, type }) => {
             </AppText>
           </TouchableOpacity>
         )}
+        {/* More Options Menu Hide for now. 01-18 */}
+        {/* {type !== 'need' && (
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            activeOpacity={0.7}
+            onPress={() => showOption('expiry')}>
+            <Clock height={normalize(24)} width={normalize(24)} />
+            <AppText textStyle="body2" customStyle={styles.textMargin}>
+              Set Cut-off Time
+            </AppText>
+          </TouchableOpacity>
+        )} */}
+        {/* <TouchableOpacity
+          style={styles.buttonContainer}
+          activeOpacity={0.7}
+          onPress={() => showOption('additionalNotes')}>
+          <Notes height={normalize(24)} width={normalize(24)} />
+          <AppText textStyle="body2" customStyle={styles.textMargin}>
+            Additional Notes
+          </AppText>
+        </TouchableOpacity> */}
+        {/* Hide for the meantime */}
+        {/* <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.7}>
+          <Draft height={normalize(24)} width={normalize(24)} />
+          <AppText textStyle="body2" customStyle={styles.textMargin}>
+            Save As Draft
+          </AppText>
+        </TouchableOpacity> */}
       </View>
     </View>
   )

@@ -18,8 +18,6 @@ import {
   HexagonBorder,
   TransparentHeader,
   ProfileLinks,
-  UserPosts,
-  OtherUserPosts,
   CacheableImage,
 } from '@/components'
 
@@ -37,18 +35,15 @@ import { PostService } from '@/services'
 
 import Posts from '@/screens/Dashboard//components/posts'
 import { cloneDeep } from 'lodash'
+import Api from '@/services/Api'
 
 function ProfileInfoModal(props) {
   const { profileViewType = 'other', uid } = props.route?.params
 
   const navigation = useNavigation()
   const { user, signOut, userInfo, setUserInfo } = useContext(UserContext)
-  const {
-    userPosts,
-    otherUserPosts,
-    setOtherUserPosts,
-    needsRefresh,
-  } = useContext(Context)
+  const { needsRefresh } = useContext(Context)
+  const [otherUserPosts, setOtherUserPosts] = useState({})
   const [otherUserInfo, setOtherUserInfo] = useState({})
 
   const [ellipsisState, setEllipsisState] = useState(false)
@@ -116,7 +111,9 @@ function ProfileInfoModal(props) {
 
   useEffect(() => {
     let isMounted = true
-    if (isMounted && needsRefresh) refreshPosts()
+    if (isMounted && needsRefresh) {
+      refreshPosts()
+    }
     return () => (isMounted = false)
   }, [needsRefresh])
 
@@ -124,6 +121,8 @@ function ProfileInfoModal(props) {
   const [fetchMore, setFetchMore] = useState(false)
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
   const [refresh, setRefresh] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [totalPages, setTotalPages] = useState(Infinity)
 
   const getMorePost = async () => {
     try {
@@ -140,10 +139,23 @@ function ProfileInfoModal(props) {
         page: lastPID,
       }
 
-      const res = await PostService.getUserPosts(getPostsParams)
-      if (res.success) {
+      const res = await Api.getUserPosts(getPostsParams)
+      if (!res.success) throw new Error(res.message)
+
+      if (res.data) {
+        const userPosts = res.data
+          .map(post => ({ ...post, $isLoading: true }))
+          .reduce(
+            (_posts, post) => ({
+              ..._posts,
+              [post.id]: post,
+            }),
+            {}
+          )
+
+        setOtherUserPosts(posts => ({ ...posts, ...userPosts }))
+
         setLastPID(lastPID + 1)
-        setOtherUserPosts([...otherUserPosts, ...res.data])
         setFetchMore(false)
       } else {
         setThereIsMoreFlag(false)
@@ -154,9 +166,50 @@ function ProfileInfoModal(props) {
     }
   }
 
+  const getDeferredData = post => {
+    return Promise.all([
+      Api.getUser({ uid: post.uid }).then(response => {
+        setOtherUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            user: response.data,
+          },
+        }))
+      }),
+      Api.getPostLikes({ pid: post.id }).then(response => {
+        setOtherUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            likes: response.likes,
+          },
+        }))
+      }),
+    ])
+      .then(() => {
+        setOtherUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            $isLoading: false,
+          },
+        }))
+      })
+      .catch(() => {
+        setOtherUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            $hasErrors: true,
+          },
+        }))
+      })
+  }
+
   const refreshPosts = async () => {
     try {
-      setOtherUserPosts([])
+      setOtherUserPosts({})
       setLastPID(0)
       setRefresh(true)
 
@@ -165,9 +218,22 @@ function ProfileInfoModal(props) {
         limit: 5,
         page: 0,
       }
-      const res = await PostService.getUserPosts(params)
-      if (res.data.length) {
-        setOtherUserPosts(res.data)
+      const res = await Api.getUserPosts(params)
+      if (!res.success) throw new Error(res.message)
+
+      if (res.data) {
+        const userPosts = res.data
+          .map(post => ({ ...post, $isLoading: true }))
+          .reduce(
+            (_posts, post) => ({
+              ..._posts,
+              [post.id]: post,
+            }),
+            {}
+          )
+
+        setOtherUserPosts(posts => ({ ...posts, ...userPosts }))
+
         setLastPID(1)
         setIsLoading(false)
       }
@@ -202,8 +268,6 @@ function ProfileInfoModal(props) {
     const oldLikes = cloneDeep(post.likes)
     const newLikes = cloneDeep(post.likes)
 
-    console.log({ newLikes })
-
     const liked = post.likes?.includes(user.uid)
     if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
     else newLikes.push(user.uid)
@@ -221,21 +285,33 @@ function ProfileInfoModal(props) {
         pid: post.id,
       })
 
-      console.log({ response })
-
       if (!response.success) throw new Error(response.message)
     } catch (error) {
       console.log(error.message || error)
 
-      // setPosts(posts => ({
-      //   ...posts,
-      //   [post.id]: {
-      //     ...posts[post.id],
-      //     likes: oldLikes,
-      //   },
-      // }))
+      setOtherUserPosts(posts => ({
+        ...posts,
+        [post.id]: {
+          ...posts[post.id],
+          likes: oldLikes,
+        },
+      }))
     }
   }
+
+  useEffect(() => {
+    Object.values(otherUserPosts)
+      .filter(post => !post.$promise)
+      .forEach(post => {
+        setOtherUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            $promise: getDeferredData(post),
+          },
+        }))
+      })
+  }, [otherUserPosts])
 
   const [scroll] = useState(new Animated.Value(0))
   const renderForeground = () => {

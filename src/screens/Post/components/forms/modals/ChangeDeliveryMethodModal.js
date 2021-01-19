@@ -110,7 +110,7 @@ const ChangeDeliveryMethodModal = ({
             marginVertical: normalize(10),
             textAlign: 'left',
           }}>
-          Change Delivery Method
+          Change Shipping Method
         </AppText>
         <View
           style={{

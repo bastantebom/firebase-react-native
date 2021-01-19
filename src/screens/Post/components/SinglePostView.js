@@ -37,6 +37,7 @@ import ItemModal from './forms/modals/ItemModal'
 import BasketModal from './forms/modals/BasketModal'
 import OfferModal from './forms/modals/OfferModal'
 import NewBasketPrompt from './forms/modals/NewBasketPrompt'
+import SetScheduleModalSingleService from './forms/modals/SetScheduleModal'
 import { PostService } from '@/services'
 import {
   commaSeparate,
@@ -158,6 +159,8 @@ const SinglePostView = props => {
   const [totalCartPrice, setTotalCartPrice] = useState('0.00')
 
   const [showNotification, setShowNotification] = useState(false)
+  const [scheduleModal, showScheduleModal] = useState(false)
+  const [selectedSchedule, setSelectedSchedule] = useState()
   const [editPost, showEditPost] = useState(false)
   const [postImageModal, setPostImageModal] = useState(false)
   const [itemModal, showItemModal] = useState(false)
@@ -660,34 +663,36 @@ const SinglePostView = props => {
                 />
               )
             ) : (
-              <Swiper
-                activeDotColor={Colors.primaryYellow}
-                dotColor={Colors.neutralsIron}
-                dotStyle={{
-                  marginRight: 7,
-                  width: normalize(6),
-                  height: normalize(6),
-                }}
-                activeDotStyle={{
-                  marginRight: 7,
-                  width: normalize(6),
-                  height: normalize(6),
-                }}>
-                {cover_photos.map((item, index) => {
-                  return (
-                    <TouchableWithoutFeedback
-                      key={index}
-                      onPress={togglePostImageModal}>
-                      <CacheableImage
-                        style={GlobalStyle.image}
-                        source={{
-                          uri: item,
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  )
-                })}
-              </Swiper>
+              <View style={{ backgroundColor: 'white', flex: 1 }}>
+                <Swiper
+                  activeDotColor={Colors.primaryYellow}
+                  dotColor={Colors.neutralsIron}
+                  dotStyle={{
+                    marginRight: 7,
+                    width: normalize(6),
+                    height: normalize(6),
+                  }}
+                  activeDotStyle={{
+                    marginRight: 7,
+                    width: normalize(6),
+                    height: normalize(6),
+                  }}>
+                  {cover_photos.map((item, index) => {
+                    return (
+                      <TouchableWithoutFeedback
+                        key={index}
+                        onPress={togglePostImageModal}>
+                        <CacheableImage
+                          style={GlobalStyle.image}
+                          source={{
+                            uri: item,
+                          }}
+                        />
+                      </TouchableWithoutFeedback>
+                    )
+                  })}
+                </Swiper>
+              </View>
             )}
             <CustomNotification />
           </View>
@@ -840,7 +845,11 @@ const SinglePostView = props => {
                       numberOfLines={5}
                       renderTruncatedFooter={renderTruncatedFooter}
                       renderRevealedFooter={renderRevealedFooter}>
-                      <AppText textStyle="body2">{description}</AppText>
+                      <AppText
+                        textStyle="body2"
+                        customStyle={{ fontFamily: 'RoundedMplus1c-Regular' }}>
+                        {description}
+                      </AppText>
                     </ReadMore>
                   </View>
                 </View>
@@ -1092,6 +1101,8 @@ const SinglePostView = props => {
                   onPress={() => {
                     if (type === 'need') {
                       showOfferModal(true)
+                    } else if (type === 'service' && !is_multiple) {
+                      showScheduleModal(true)
                     } else {
                       showBasketModal(true)
                     }
@@ -1268,6 +1279,31 @@ const SinglePostView = props => {
           closeModal={() => showOfferModal(false)}
           postType={type}
           postData={props.route?.params?.data}
+        />
+      </Modal>
+
+      <Modal
+        isVisible={scheduleModal}
+        animationIn="slideInUp"
+        animationInTiming={450}
+        animationOut="slideOutDown"
+        animationOutTiming={450}
+        style={{ margin: 0, justifyContent: 'flex-end' }}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => showScheduleModal(false)}>
+            <View style={{ flex: 1, backgroundColor: 'black' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <SetScheduleModalSingleService
+          closeModal={() => showScheduleModal(false)}
+          post={{
+            title: title,
+            price: `₱${commaSeparate(items[0].price)}`,
+          }}
+          handleContinue={(date, time) => {
+            setSelectedSchedule(`${date, time}`)
+            showScheduleModal(false)
+          }}
         />
       </Modal>
     </SafeAreaView>

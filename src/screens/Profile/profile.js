@@ -53,11 +53,11 @@ const ProfileScreen = ({
     openNotification,
     closeNotification,
     posts,
-    userPosts,
-    setUserPosts,
     needsRefresh,
     setNeedsRefresh,
   } = useContext(Context)
+
+  const [userPosts, setUserPosts] = useState({})
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
   const [ellipsisState, setEllipsisState] = useState(false)
@@ -197,6 +197,47 @@ const ProfileScreen = ({
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
   const [refresh, setRefresh] = useState(false)
 
+  const getDeferredData = post => {
+    return Promise.all([
+      Api.getUser({ uid: post.uid }).then(response => {
+        setUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            user: response.data,
+          },
+        }))
+      }),
+      Api.getPostLikes({ pid: post.id }).then(response => {
+        setUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            likes: response.likes,
+          },
+        }))
+      }),
+    ])
+      .then(() => {
+        setUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            $isLoading: false,
+          },
+        }))
+      })
+      .catch(() => {
+        setUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            $hasErrors: true,
+          },
+        }))
+      })
+  }
+
   const getMorePost = async () => {
     try {
       setFetchMore(true)
@@ -212,10 +253,23 @@ const ProfileScreen = ({
         page: lastPID,
       }
 
-      const res = await PostService.getUserPosts(getPostsParams)
-      if (res.success) {
+      const res = await Api.getUserPosts(getPostsParams)
+      if (!res.success) throw new Error(res.message)
+
+      if (res.data) {
+        const userPosts = res.data
+          .map(post => ({ ...post, $isLoading: true }))
+          .reduce(
+            (_posts, post) => ({
+              ..._posts,
+              [post.id]: post,
+            }),
+            {}
+          )
+
+        setUserPosts(posts => ({ ...posts, ...userPosts }))
+
         setLastPID(lastPID + 1)
-        setUserPosts(res.data ? [...userPosts, ...res.data] : [...userPosts])
         setFetchMore(false)
       } else {
         setThereIsMoreFlag(false)
@@ -228,7 +282,7 @@ const ProfileScreen = ({
 
   const refreshPosts = async () => {
     try {
-      setUserPosts([])
+      setUserPosts({})
       setLastPID(0)
       setRefresh(true)
 
@@ -237,12 +291,23 @@ const ProfileScreen = ({
         limit: 5,
         page: 0,
       }
-      const res = await PostService.getUserPosts(params)
-      setLastPID(1)
+      const res = await Api.getUserPosts(params)
+      if (!res.success) throw new Error(res.message)
 
       if (res.data.length) {
+        const userPosts = res.data
+          .map(post => ({ ...post, $isLoading: true }))
+          .reduce(
+            (_posts, post) => ({
+              ..._posts,
+              [post.id]: post,
+            }),
+            {}
+          )
+
+        setUserPosts(posts => ({ ...posts, ...userPosts }))
+        setLastPID(1)
         setIsLoading(false)
-        setUserPosts(res.data)
         setNeedsRefresh(false)
       }
       setRefresh(false)
@@ -252,49 +317,53 @@ const ProfileScreen = ({
   }
 
   const handleLikePress = async post => {
-    const oldLikes = cloneDeep(post.likes) || []
-    const newLikes = cloneDeep(post.likes) || []
+    const oldLikes = cloneDeep(post.likes)
+    const newLikes = cloneDeep(post.likes)
 
     const liked = post.likes?.includes(user.uid)
     if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
     else newLikes.push(user.uid)
 
-    const newPosts = userPosts
-    const postData = newPosts.find(_post => _post.id === post.id)
-    postData.likes = newLikes
-    setUserPosts(newPosts)
-
-    // setUserPosts(posts => ({
-    //   ...posts,
-    //   [post.id]: {
-    //     ...posts[post.id],
-    //     likes: newLikes,
-    //   },
-    // }))
+    setUserPosts(posts => ({
+      ...posts,
+      [post.id]: {
+        ...posts[post.id],
+        likes: newLikes,
+      },
+    }))
 
     try {
       const response = await Api[liked ? 'unlikePost' : 'likePost']({
         pid: post.id,
       })
 
-      console.log({ response })
-
       if (!response.success) throw new Error(response.message)
     } catch (error) {
       console.log(error.message || error)
 
-      postData.likes = oldLikes
-      setUserPosts(newPosts)
-
-      // setPosts(posts => ({
-      //   ...posts,
-      //   [post.id]: {
-      //     ...posts[post.id],
-      //     likes: oldLikes,
-      //   },
-      // }))
+      setUserPosts(posts => ({
+        ...posts,
+        [post.id]: {
+          ...posts[post.id],
+          likes: oldLikes,
+        },
+      }))
     }
   }
+
+  useEffect(() => {
+    Object.values(userPosts)
+      .filter(post => !post.$promise)
+      .forEach(post => {
+        setUserPosts(posts => ({
+          ...posts,
+          [post.id]: {
+            ...posts[post.id],
+            $promise: getDeferredData(post),
+          },
+        }))
+      })
+  }, [userPosts])
 
   const [scroll] = useState(new Animated.Value(0))
 

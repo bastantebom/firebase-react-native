@@ -488,7 +488,6 @@ const SellPostForm = ({
   }
 
   /**FOR ANIMATION */
-
   const SelectedPaymentMethods = () => {
     let paymentMethodList = []
     for (const [key, value] of Object.entries(paymentMethods)) {

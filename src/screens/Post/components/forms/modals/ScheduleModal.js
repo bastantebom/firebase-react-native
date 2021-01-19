@@ -348,13 +348,14 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
                 </View>
               )
             })}
-          <TouchableOpacity
+          {/* Hide for now. 01-18 */}
+          {/* <TouchableOpacity
             onPress={() => showHolidayModal(true)}
             style={{ marginTop: 32 }}>
             <AppText color={Colors.contentOcean} textStyle="body2">
               Set store schedules on holidays
             </AppText>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <TouchableOpacity
           activeOpacity={0.7}

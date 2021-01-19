@@ -64,14 +64,12 @@ const OrderNotesModal = ({ close, setNotes, notes }) => {
         <View style={{ marginTop: 24 }}>
           <View style={{ alignItems: 'center' }}>
             <AppText textStyle="display6" customStyle={{ textAlign: 'center' }}>
-              Got other details to highlight?
+              Additional Notes
             </AppText>
-            <AppText
+            {/* Wait for copy 01-19 */}
+            {/* <AppText
               textStyle="subtitle2"
-              customStyle={{ textAlign: 'center' }}>
-              Include your promos, discounts, and other information you want to
-              highlight.
-            </AppText>
+              customStyle={{ textAlign: 'center' }}></AppText> */}
           </View>
 
           <TextInput

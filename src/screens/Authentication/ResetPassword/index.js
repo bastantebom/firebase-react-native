@@ -8,6 +8,7 @@ import {
   Text,
   Platform,
   SafeAreaView,
+  StatusBar,
 } from 'react-native'
 
 import {
@@ -141,7 +142,8 @@ const ResetPassword = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <StatusBar backgroundColor="black" barStyle={'light-content'} />
       {notif && (
         <SafeAreaView style={{ zIndex: 2 }}>
           <Notification

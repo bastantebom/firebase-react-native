@@ -49,6 +49,7 @@ import RangeSlider from './Slider/RangeSlider'
 
 import Divider from './Divider'
 import PriceDisplay from './Price/Price'
+import HorizontalView from './HorizontalView/HorizontalView'
 
 export {
   PriceDisplay,
@@ -93,4 +94,5 @@ export {
   RangeSlider,
   LikedPosts,
   ArchivedPosts,
+  HorizontalView,
 }
