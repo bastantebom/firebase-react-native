@@ -25,6 +25,7 @@ import {
 import { UserContext } from '@/context/UserContext'
 import LoadingScreen from './loading'
 import SinglePostOthersView from './SinglePostOthersView'
+import { commaSeparate } from '@/globals/Utils'
 
 const OwnPost = ({ data, isLoading }) => {
   const { user } = useContext(UserContext)
@@ -53,6 +54,8 @@ const OwnPost = ({ data, isLoading }) => {
     email,
     phone_number,
     full_name,
+    price_range,
+    items,
   } = data
 
   const post_type = data?.type
@@ -88,6 +91,18 @@ const OwnPost = ({ data, isLoading }) => {
         screen: 'OthersPost',
         params: { ...computedData, othersView: true },
       })
+  }
+
+  const getPrice = () => {
+    const prices = price_range
+      ? [price_range.min, price_range.max]
+      : items.map(item => parseFloat(item.price.replace(/,/g, '')) || 0)
+
+    return prices.length === 1
+      ? `₱${commaSeparate(prices[0])}`
+      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
+          Math.max(...prices)
+        )}`
   }
 
   return (
@@ -142,7 +157,7 @@ const OwnPost = ({ data, isLoading }) => {
                   textStyle="price"
                   customStyle={styles.priceText}
                   color={Colors.secondaryMountainMeadow}>
-                  ₱{price}
+                  {getPrice()}
                 </AppText>
               </View>
             </TouchableOpacity>

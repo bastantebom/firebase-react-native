@@ -123,20 +123,15 @@ const Post = ({
   }
 
   const getPrice = () => {
-    const prices = items.map(item => {
-      return `₱${Number(item.price)}`
-    })
+    const prices = post.price_range
+      ? [post.price_range.min, post.price_range.max]
+      : post.items.map(item => parseFloat(item.price.replace(/,/g, '')) || 0)
 
-    if (type !== 'need') {
-      if (prices.length === 1) return `₱${commaSeparate(prices[0])}`
-      else {
-        const min = Math.min(...prices)
-        const max = Math.max(...prices)
-        return `₱${commaSeparate(min)} - ₱${commaSeparate(max)}`
-      }
-    } else {
-      return `₱${commaSeparate(price_range?.min)} - ₱${price_range?.max}`
-    }
+    return prices.length === 1
+      ? `₱${commaSeparate(prices[0])}`
+      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
+          Math.max(...prices)
+        )}`
   }
 
   if (type === 'dashboard')
