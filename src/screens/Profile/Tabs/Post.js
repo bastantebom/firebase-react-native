@@ -26,15 +26,15 @@ const PostOwnEmpty = ({ isLoading, userInfo }) => {
           <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
             {user?.uid !== uid
               ? `${display_name ? display_name : full_name} has no post yet`
-              : 'You have no post yet'}
+              : 'No posts yet? Get buzzing!'}
           </AppText>
           {user?.uid === uid && (
             <AppText
               textStyle="body2"
               color={Colors.profileLink}
               customStyle={styles.centerCopy}>
-              Browse through and discover nearby services and products. Or, you
-              can post your own offers!
+              Post your own offers today or just browse through your Servbees
+              feed and discover nearby services and products you might like.
             </AppText>
           )}
         </View>

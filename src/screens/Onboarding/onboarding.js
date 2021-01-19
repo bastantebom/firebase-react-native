@@ -84,7 +84,7 @@ const Onboarding = ({ navigation, illustration }) => {
       illustration: <IllustOne width={width} height={width * 0.8} />,
       title: 'Welcome to Servbees!',
       description:
-        'Find and offer goods, plus services, within your community. Pasabuy? Pabili? Easier on Servbees!',
+        'Go and Raket, Benta, and Search with your friendly neighborhood Pagkakakita-App!',
     },
     {
       illustration: <IllustTwo width={width} height={width * 0.8} />,
@@ -131,7 +131,11 @@ const Onboarding = ({ navigation, illustration }) => {
                   <View style={{ zIndex: 100, width: '100%' }}>
                     {item.illustration}
                   </View>
-                  <AppText textStyle="display6">{item.title}</AppText>
+                  <AppText
+                    textStyle="display5"
+                    color={Colors.primaryMidnightBlue}>
+                    {item.title}
+                  </AppText>
                   <View style={styles.textHolder}>
                     <AppText textStyle="body2" customStyle={styles.text}>
                       {item.description}
@@ -203,13 +207,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryMidnightBlue,
   },
   swiperHolder: {
-    flex: 3,
+    flex: 1,
   },
   slideHolder: {
-    flex: 1,
     alignItems: 'center',
     textAlign: 'center',
-    backgroundColor: 'transparent',
     overflow: 'hidden',
   },
   link: {
@@ -223,14 +225,13 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   dot: {
+    margin: 0,
     zIndex: 5,
-    width: 8,
-    height: 8,
-    marginLeft: 3,
-    marginRight: 3,
-    // marginBottom: height > 700 ? height * 0.3 : height * 0.18,
-    bottom: normalize(130),
-    // marginBottom: normalize(130),
+    width: 5,
+    height: 5,
+    marginLeft: normalize(5.5),
+    marginRight: normalize(5.5),
+    bottom: height > 700 ? height * 0.3 : height * 0.18,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
@@ -244,6 +245,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
+    lineHeight: 23.76,
   },
   btnHolder: {
     position: 'absolute',

@@ -10,14 +10,11 @@ import firestore from '@react-native-firebase/firestore'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
 import {
-  Chat,
-  PostCash,
   ChevronUp,
   ChevronDown,
   GreenTick,
   Icons,
   PostClock,
-  PayoutWallet,
 } from '@/assets/images/icons'
 
 import { UserContext } from '@/context/UserContext'
@@ -25,6 +22,7 @@ import ActivitiesCard from './components/ActivitiesCard'
 import ItemCard from './components/ItemCard'
 import Api from '@/services/Api'
 import _ from 'lodash'
+import { NoPost } from '@/assets/images'
 
 const OngoingItem = ({ route, navigation }) => {
   const { user } = useContext(UserContext)
@@ -156,267 +154,216 @@ const OngoingItem = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      <ScrollView>
-        <TransitionIndicator loading={isPendingLoading} />
-        <View style={styles.itemCardContainer}>
-          <ScreenHeaderTitle
-            close={() => navigation.goBack()}
-            title={name}
-            paddingSize={2}
-            iconSize={normalize(16)}
-            rightIcon={
-              <View>
-                <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
-                <View
+      <TransitionIndicator loading={isPendingLoading} />
+      <View style={styles.itemCardContainer}>
+        <ScreenHeaderTitle
+          close={() => navigation.goBack()}
+          title={name}
+          customTitleStyle={{
+            textTransform: 'none',
+            maxWidth: '80%',
+          }}
+          paddingSize={3}
+          iconSize={normalize(16)}
+          rightIcon={
+            <View>
+              <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
+              <View
+                style={{
+                  position: 'absolute',
+                  backgroundColor: Colors.secondaryBrinkPink,
+                  top: normalize(-7),
+                  right: normalize(-8),
+                  paddingHorizontal: normalize(6),
+                  borderRadius: 16,
+                }}>
+                <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                  0
+                </AppText>
+              </View>
+            </View>
+          }
+          rightIconEvent={() =>
+            navigation.navigate('NBTScreen', {
+              screen: 'PostChat',
+              params: { post: route?.params?.info },
+            })
+          }
+        />
+        <ActivitiesCard info={route?.params?.info} />
+      </View>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {pending.length ? (
+          <View>
+            {pending?.filter(order => order.cardType === 'pendingPayment')
+              .length > 0 && (
+              <View style={styles.itemCard}>
+                <TouchableOpacity
+                  onPress={() => showPendingPayment(!pendingPayment)}
                   style={{
-                    position: 'absolute',
-                    backgroundColor: Colors.secondaryBrinkPink,
-                    top: normalize(-7),
-                    right: normalize(-8),
-                    paddingHorizontal: normalize(6),
-                    borderRadius: 16,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}>
-                  <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                    2
-                  </AppText>
-                </View>
-              </View>
-            }
-            rightIconEvent={() =>
-              navigation.navigate('NBTScreen', {
-                screen: 'PostChat',
-                params: { post: route?.params?.info },
-              })
-            }
-          />
-          <ActivitiesCard info={route?.params?.info} />
-        </View>
-
-        {pending?.filter(order => order.cardType === 'pendingPayment').length >
-          0 && (
-          <View style={styles.itemCard}>
-            <TouchableOpacity
-              onPress={() => showPendingPayment(!pendingPayment)}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={styles.iconText}>
-                <Icons.WalletGray
-                  width={normalize(18)}
-                  height={normalize(18)}
-                />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Awaiting Payment
-                </AppText>
-                <View
-                  style={[
-                    styles.iconBadge,
-                    { backgroundColor: Colors.secondaryBrinkPink },
-                  ]}>
-                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
-                    {
-                      pending?.filter(
-                        order => order.cardType === 'pendingPayment'
-                      ).length
-                    }
-                  </AppText>
-                </View>
-              </View>
-              {pendingPayment ? (
-                <ChevronUp width={normalize(16)} height={normalize(16)} />
-              ) : (
-                <ChevronDown width={normalize(16)} height={normalize(16)} />
-              )}
-            </TouchableOpacity>
-            {pendingPayment && (
-              <View style={{ marginTop: normalize(8) }}>
-                {pending
-                  ?.filter(order => order.cardType === 'pendingPayment')
-                  .map((item, i) => {
-                    return (
-                      <View key={i}>
-                        <ItemCard
-                          item={item}
-                          handleChatPress={handleChatPress}
-                        />
-                      </View>
-                    )
-                  })}
+                  <View style={styles.iconText}>
+                    <Icons.WalletGray
+                      width={normalize(18)}
+                      height={normalize(18)}
+                    />
+                    <AppText
+                      textStyle="body1medium"
+                      customStyle={{ marginLeft: normalize(10) }}>
+                      Awaiting Payment
+                    </AppText>
+                    <View
+                      style={[
+                        styles.iconBadge,
+                        { backgroundColor: Colors.secondaryBrinkPink },
+                      ]}>
+                      <AppText
+                        textStyle="metadata"
+                        color={Colors.neutralsWhite}>
+                        {
+                          pending?.filter(
+                            order => order.cardType === 'pendingPayment'
+                          ).length
+                        }
+                      </AppText>
+                    </View>
+                  </View>
+                  {pendingPayment ? (
+                    <ChevronUp width={normalize(16)} height={normalize(16)} />
+                  ) : (
+                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                  )}
+                </TouchableOpacity>
+                {pendingPayment && (
+                  <View style={{ marginTop: normalize(8) }}>
+                    {pending
+                      ?.filter(order => order.cardType === 'pendingPayment')
+                      .map((item, i) => {
+                        return (
+                          <View key={i}>
+                            <ItemCard
+                              item={item}
+                              handleChatPress={handleChatPress}
+                            />
+                          </View>
+                        )
+                      })}
+                  </View>
+                )}
               </View>
             )}
-          </View>
-        )}
 
-        {pending?.filter(order => order.cardType === 'pending').length > 0 && (
-          <View style={styles.itemCard}>
-            <TouchableOpacity
-              onPress={() => showRequests(!requests)}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={styles.iconText}>
-                <Icons.ChatGray />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  Requests
-                </AppText>
-                <View
-                  style={[
-                    styles.iconBadge,
-                    { backgroundColor: Colors.secondaryDarkTangerine },
-                  ]}>
-                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
-                    {
-                      pending?.filter(order => order.cardType === 'pending')
-                        .length
-                    }
-                  </AppText>
-                </View>
-              </View>
-              {requests ? (
-                <ChevronUp width={normalize(16)} height={normalize(16)} />
-              ) : (
-                <ChevronDown width={normalize(16)} height={normalize(16)} />
-              )}
-            </TouchableOpacity>
-            {requests && (
-              <View style={{ marginTop: normalize(8) }}>
-                {pending
-                  ?.filter(order => order.cardType === 'pending')
-                  .map((item, i) => {
-                    return (
-                      <View key={i}>
-                        <ItemCard
-                          item={item}
-                          handleChatPress={handleChatPress}
-                        />
-                      </View>
-                    )
-                  })}
+            {pending?.filter(order => order.cardType === 'pending').length >
+              0 && (
+              <View style={styles.itemCard}>
+                <TouchableOpacity
+                  onPress={() => showRequests(!requests)}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <View style={styles.iconText}>
+                    <Icons.ChatGray />
+                    <AppText
+                      textStyle="body1medium"
+                      customStyle={{ marginLeft: normalize(10) }}>
+                      Requests
+                    </AppText>
+                    <View
+                      style={[
+                        styles.iconBadge,
+                        { backgroundColor: Colors.secondaryDarkTangerine },
+                      ]}>
+                      <AppText
+                        textStyle="metadata"
+                        color={Colors.neutralsWhite}>
+                        {
+                          pending?.filter(order => order.cardType === 'pending')
+                            .length
+                        }
+                      </AppText>
+                    </View>
+                  </View>
+                  {requests ? (
+                    <ChevronUp width={normalize(16)} height={normalize(16)} />
+                  ) : (
+                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                  )}
+                </TouchableOpacity>
+                {requests && (
+                  <View style={{ marginTop: normalize(8) }}>
+                    {pending
+                      ?.filter(order => order.cardType === 'pending')
+                      .map((item, i) => {
+                        return (
+                          <View key={i}>
+                            <ItemCard
+                              item={item}
+                              handleChatPress={handleChatPress}
+                            />
+                          </View>
+                        )
+                      })}
+                  </View>
+                )}
               </View>
             )}
-          </View>
-        )}
 
-        {pending?.filter(
-          order => order.cardType === 'confirmed' || order.cardType === 'paid'
-        ).length > 0 && (
-          <View style={styles.itemCard}>
-            <TouchableOpacity
-              onPress={() => showOngoing(!ongoing)}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={styles.iconText}>
-                <PostClock />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
-                  {type === 'sell' ? 'Confirmed and Paid' : 'Ongoing'}
-                </AppText>
-                <View
-                  style={[
-                    styles.iconBadge,
-                    { backgroundColor: Colors.secondaryShamrock },
-                  ]}>
-                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
-                    {
-                      pending?.filter(
+            {pending?.filter(
+              order =>
+                order.cardType === 'confirmed' || order.cardType === 'paid'
+            ).length > 0 && (
+              <View style={styles.itemCard}>
+                <TouchableOpacity
+                  onPress={() => showOngoing(!ongoing)}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <View style={styles.iconText}>
+                    <PostClock />
+                    <AppText
+                      textStyle="body1medium"
+                      customStyle={{ marginLeft: normalize(10) }}>
+                      {type === 'sell' ? 'Confirmed and Paid' : 'Ongoing'}
+                    </AppText>
+                    <View
+                      style={[
+                        styles.iconBadge,
+                        { backgroundColor: Colors.secondaryShamrock },
+                      ]}>
+                      <AppText
+                        textStyle="metadata"
+                        color={Colors.neutralsWhite}>
+                        {
+                          pending?.filter(
+                            order =>
+                              order.cardType === 'confirmed' ||
+                              order.cardType === 'paid'
+                          ).length
+                        }
+                      </AppText>
+                    </View>
+                  </View>
+                  {ongoing ? (
+                    <ChevronUp width={normalize(16)} height={normalize(16)} />
+                  ) : (
+                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                  )}
+                </TouchableOpacity>
+                {ongoing && (
+                  <View style={{ marginTop: normalize(8) }}>
+                    {pending
+                      ?.filter(
                         order =>
                           order.cardType === 'confirmed' ||
                           order.cardType === 'paid'
-                      ).length
-                    }
-                  </AppText>
-                </View>
-              </View>
-              {ongoing ? (
-                <ChevronUp width={normalize(16)} height={normalize(16)} />
-              ) : (
-                <ChevronDown width={normalize(16)} height={normalize(16)} />
-              )}
-            </TouchableOpacity>
-            {ongoing && (
-              <View style={{ marginTop: normalize(8) }}>
-                {pending
-                  ?.filter(
-                    order =>
-                      order.cardType === 'confirmed' ||
-                      order.cardType === 'paid'
-                  )
-                  .map((item, i) => {
-                    return (
-                      <View key={i}>
-                        <ItemCard
-                          item={item}
-                          handleChatPress={handleChatPress}
-                        />
-                      </View>
-                    )
-                  })}
-              </View>
-            )}
-          </View>
-        )}
-
-        {(pending?.filter(order => order.cardType === 'delivering').length >
-          0 ||
-          pending?.filter(order => order.cardType === 'pickup').length > 0) && (
-          <View style={styles.itemCard}>
-            {pending?.filter(order => order.cardType === 'delivering').length >
-              0 && (
-              <View>
-                <TouchableOpacity
-                  onPress={() => showReadyForDelivery(!readyForDelivery)}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                    <View style={styles.iconText}>
-                      <AppText textStyle="body1medium">
-                        Ready for Delivery
-                      </AppText>
-                      <View
-                        style={[
-                          styles.iconBadge,
-                          { backgroundColor: Colors.secondaryShamrock },
-                        ]}>
-                        <AppText
-                          textStyle="metadata"
-                          color={Colors.neutralsWhite}>
-                          {
-                            pending?.filter(
-                              order => order.cardType === 'delivering'
-                            ).length
-                          }
-                        </AppText>
-                      </View>
-                    </View>
-                    {readyForDelivery ? (
-                      <ChevronUp width={normalize(16)} height={normalize(16)} />
-                    ) : (
-                      <ChevronDown
-                        width={normalize(16)}
-                        height={normalize(16)}
-                      />
-                    )}
-                  </View>
-                </TouchableOpacity>
-                {readyForDelivery && (
-                  <>
-                    {pending
-                      ?.filter(order => order.cardType === 'delivering')
+                      )
                       .map((item, i) => {
                         return (
                           <View key={i}>
@@ -427,15 +374,147 @@ const OngoingItem = ({ route, navigation }) => {
                           </View>
                         )
                       })}
-                  </>
+                  </View>
                 )}
               </View>
             )}
-            {pending?.filter(order => order.cardType === 'pickup').length >
+
+            {(pending?.filter(order => order.cardType === 'delivering').length >
+              0 ||
+              pending?.filter(order => order.cardType === 'pickup').length >
+                0) && (
+              <View style={styles.itemCard}>
+                {pending?.filter(order => order.cardType === 'delivering')
+                  .length > 0 && (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => showReadyForDelivery(!readyForDelivery)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <View style={styles.iconText}>
+                          <AppText textStyle="body1medium">
+                            Ready for Delivery
+                          </AppText>
+                          <View
+                            style={[
+                              styles.iconBadge,
+                              { backgroundColor: Colors.secondaryShamrock },
+                            ]}>
+                            <AppText
+                              textStyle="metadata"
+                              color={Colors.neutralsWhite}>
+                              {
+                                pending?.filter(
+                                  order => order.cardType === 'delivering'
+                                ).length
+                              }
+                            </AppText>
+                          </View>
+                        </View>
+                        {readyForDelivery ? (
+                          <ChevronUp
+                            width={normalize(16)}
+                            height={normalize(16)}
+                          />
+                        ) : (
+                          <ChevronDown
+                            width={normalize(16)}
+                            height={normalize(16)}
+                          />
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                    {readyForDelivery && (
+                      <>
+                        {pending
+                          ?.filter(order => order.cardType === 'delivering')
+                          .map((item, i) => {
+                            return (
+                              <View key={i}>
+                                <ItemCard
+                                  item={item}
+                                  handleChatPress={handleChatPress}
+                                />
+                              </View>
+                            )
+                          })}
+                      </>
+                    )}
+                  </View>
+                )}
+                {pending?.filter(order => order.cardType === 'pickup').length >
+                  0 && (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => showReadyForPickup(!readyForPickup)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <View style={styles.iconText}>
+                          <AppText textStyle="body1medium">
+                            Ready for Pick up
+                          </AppText>
+                          <View
+                            style={[
+                              styles.iconBadge,
+                              { backgroundColor: Colors.secondaryShamrock },
+                            ]}>
+                            <AppText
+                              textStyle="metadata"
+                              color={Colors.neutralsWhite}>
+                              {
+                                pending?.filter(
+                                  order => order.cardType === 'pickup'
+                                ).length
+                              }
+                            </AppText>
+                          </View>
+                        </View>
+                        {readyForPickup ? (
+                          <ChevronUp
+                            width={normalize(16)}
+                            height={normalize(16)}
+                          />
+                        ) : (
+                          <ChevronDown
+                            width={normalize(16)}
+                            height={normalize(16)}
+                          />
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                    {readyForPickup && (
+                      <>
+                        {pending
+                          ?.filter(order => order.cardType === 'pickup')
+                          .map((item, i) => {
+                            return (
+                              <View key={i}>
+                                <ItemCard
+                                  item={item}
+                                  handleChatPress={handleChatPress}
+                                />
+                              </View>
+                            )
+                          })}
+                      </>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {pending?.filter(order => order.cardType === 'completed').length >
               0 && (
-              <View>
-                <TouchableOpacity
-                  onPress={() => showReadyForPickup(!readyForPickup)}>
+              <View style={styles.itemCard}>
+                <TouchableOpacity onPress={() => showCompleted(!completed)}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -443,26 +522,14 @@ const OngoingItem = ({ route, navigation }) => {
                       alignItems: 'center',
                     }}>
                     <View style={styles.iconText}>
-                      <AppText textStyle="body1medium">
-                        Ready for Pick up
+                      <GreenTick />
+                      <AppText
+                        textStyle="body1medium"
+                        customStyle={{ marginLeft: normalize(10) }}>
+                        Completed
                       </AppText>
-                      <View
-                        style={[
-                          styles.iconBadge,
-                          { backgroundColor: Colors.secondaryShamrock },
-                        ]}>
-                        <AppText
-                          textStyle="metadata"
-                          color={Colors.neutralsWhite}>
-                          {
-                            pending?.filter(
-                              order => order.cardType === 'pickup'
-                            ).length
-                          }
-                        </AppText>
-                      </View>
                     </View>
-                    {readyForPickup ? (
+                    {completed ? (
                       <ChevronUp width={normalize(16)} height={normalize(16)} />
                     ) : (
                       <ChevronDown
@@ -472,10 +539,10 @@ const OngoingItem = ({ route, navigation }) => {
                     )}
                   </View>
                 </TouchableOpacity>
-                {readyForPickup && (
-                  <>
+                {completed && (
+                  <View style={{ marginTop: normalize(8) }}>
                     {pending
-                      ?.filter(order => order.cardType === 'pickup')
+                      ?.filter(order => order.cardType === 'completed')
                       .map((item, i) => {
                         return (
                           <View key={i}>
@@ -486,64 +553,35 @@ const OngoingItem = ({ route, navigation }) => {
                           </View>
                         )
                       })}
-                  </>
+                  </View>
                 )}
               </View>
             )}
           </View>
-        )}
-
-        {pending?.filter(order => order.cardType === 'completed').length >
-          0 && (
-          <View style={styles.itemCard}>
-            <TouchableOpacity onPress={() => showCompleted(!completed)}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <View style={styles.iconText}>
-                  <GreenTick />
-                  <AppText
-                    textStyle="body1medium"
-                    customStyle={{ marginLeft: normalize(10) }}>
-                    Completed
-                  </AppText>
-                </View>
-                {completed ? (
-                  <ChevronUp width={normalize(16)} height={normalize(16)} />
-                ) : (
-                  <ChevronDown width={normalize(16)} height={normalize(16)} />
-                )}
-              </View>
-            </TouchableOpacity>
-            {completed && (
-              <View style={{ marginTop: normalize(8) }}>
-                {pending
-                  ?.filter(order => order.cardType === 'completed')
-                  .map((item, i) => {
-                    return (
-                      <View key={i}>
-                        <ItemCard
-                          item={item}
-                          handleChatPress={handleChatPress}
-                        />
-                      </View>
-                    )
-                  })}
-              </View>
-            )}
+        ) : (
+          <View style={styles.emptyState}>
+            <NoPost />
+            <AppText
+              textStyle="display6"
+              customStyle={{ marginBottom: normalize(4) }}>
+              Bee Patient
+            </AppText>
+            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+              Keep posting and soon your order notifications will be buzzing.
+            </AppText>
           </View>
         )}
       </ScrollView>
-      <View style={styles.bottomBtnContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Past')}>
-          <AppText textStyle="body1medium" color={Colors.contentOcean}>
-            View Past Orders
-          </AppText>
-        </TouchableOpacity>
-      </View>
+
+      {pending.length > 0 && (
+        <View style={styles.bottomBtnContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Past')}>
+            <AppText textStyle="body2medium" color={Colors.contentOcean}>
+              View Past Orders
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -579,11 +617,21 @@ const styles = StyleSheet.create({
   },
   bottomBtnContainer: {
     marginTop: normalize(8),
-    paddingVertical: normalize(25),
+    paddingVertical: normalize(15),
     paddingHorizontal: normalize(25),
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
     backgroundColor: 'white',
+  },
+  emptyState: {
+    backgroundColor: Colors.neutralsWhite,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalize(8),
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    flex: 1,
+    padding: normalize(16),
   },
 })
 

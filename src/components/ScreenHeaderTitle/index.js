@@ -37,6 +37,7 @@ const ScreenHeaderTitle = ({
   rightLinkEvent,
   rightIcon,
   rightIconEvent,
+  customTitleStyle,
 }) => {
   const RenderIcon = () => {
     if (icon === 'close')
@@ -79,8 +80,9 @@ const ScreenHeaderTitle = ({
           <RenderIcon />
         </TouchableOpacity>
         <AppText
-          customStyle={{ textTransform: 'capitalize' }}
-          textStyle="body3">
+          customStyle={{ textTransform: 'capitalize', ...customTitleStyle }}
+          textStyle="body3"
+          numberOfLines={1}>
           {title}
         </AppText>
         {withOptions && (

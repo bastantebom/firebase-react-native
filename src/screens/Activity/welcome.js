@@ -11,12 +11,18 @@ const Welcome = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-      <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={2} />
+      <ScreenHeaderTitle
+        close={() => navigation.goBack()}
+        paddingSize={3}
+        iconSize={normalize(16)}
+      />
       <View style={styles.contentWrapper}>
         <WelcomeServbees />
         <AppText textStyle="display5">Welcome to Servbees</AppText>
         <AppText textStyle="body2">
-          Some text here saying more about the things they can do in Servbees.
+          Get busy connecting with Buzzybees in your community, selling
+          products, offering your services, and scoring sweet deals. Start with
+          your first post today!
         </AppText>
       </View>
       <View style={{ flex: 1, justifyContent: 'flex-end', padding: 24 }}>

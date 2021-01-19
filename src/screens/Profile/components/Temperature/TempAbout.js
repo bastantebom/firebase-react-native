@@ -1,99 +1,53 @@
-//import liraries
-import React, {useState, useContext} from 'react';
-import {View, StyleSheet, SafeAreaView, TextInput} from 'react-native';
+import React from 'react'
+import { View, SafeAreaView, ScrollView } from 'react-native'
 
-import {
-  ScreenHeaderTitle,
-  PaddingView,
-  AppText,
-  AppButton,
-  Dimensions,
-} from '@/components';
+import { PaddingView, AppText, AppButton } from '@/components'
 
-import {BodyTemp} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import Modal from 'react-native-modal';
+import { BodyTemp } from '@/assets/images'
+import { normalize, Colors } from '@/globals'
 
-// create a component
-const TempAbout = ({toggleTempAbout}) => {
+const TempAbout = ({ toggleTempAbout }) => {
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <PaddingView paddingSize={3} style={{flex: 1}}>
-          <BodyTemp />
-          <View>
-            <AppText textStyle="body1" customStyle={{marginBottom: 4}}>
-              Monitor your body temperature
-            </AppText>
-            <AppText
-              textStyle="captionConstant"
-              customStyle={{marginBottom: 24}}>
-              This is the text explaining why we are asking for their body
-              temperature. How this will be used in contact tracing if needed.
-              How this will protect them or their customers to be safe. And how
-              this will benefit the whole Servbees community and the Philippines
-              char.
-            </AppText>
-            <AppText
-              textStyle="captionConstant"
-              customStyle={{marginBottom: 24}}>
-              More text explaining why we are asking for their body temperature.
-              How this will be used in contact tracing if needed. How this will
-              protect them or their customers to be safe. And how this will
-              benefit the whole Servbees community and the Philippines char.
-            </AppText>
-          </View>
-          <View style={{flex: 1, justifyContent: 'flex-end'}}>
-            <AppButton
-              text="Okay, got it"
-              type="primary"
-              size="l"
-              height="xl"
-              onPress={toggleTempAbout}
-              customStyle={{marginTop: normalize(20)}}
-            />
-          </View>
-        </PaddingView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView>
+          <PaddingView paddingSize={3} style={{ flex: 1 }}>
+            <BodyTemp />
+            <View>
+              <AppText
+                textStyle="body1"
+                customStyle={{ marginBottom: 4, marginTop: normalize(15) }}>
+                Monitor your body temperature
+              </AppText>
+              <AppText textStyle="caption" customStyle={{ marginBottom: 24 }}>
+                To comply with DTI and DOLE JOINT MEMORANDUM CIRCULAR NO.
+                20-04-A Series of 2020, everyone is highly encouraged to observe
+                the COVID-19 health protocols and undergo temperature checks
+                before delivering a service or product. If your temperature is
+                at 37.5°C or higher, even after a 5-minute rest, it is best to
+                stay home and get proper medication and care.
+              </AppText>
+
+              <AppText textStyle="caption" customStyle={{ marginBottom: 24 }}>
+                Your safety is important to us. Let's work together in keeping
+                our Servbees community safe and healthy.
+              </AppText>
+            </View>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <AppButton
+                text="Thanks, got it!"
+                type="primary"
+                size="l"
+                height="xl"
+                onPress={toggleTempAbout}
+                customStyle={{ marginTop: normalize(20) }}
+              />
+            </View>
+          </PaddingView>
+        </ScrollView>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
-// define your styles
-// define your styles
-const styles = StyleSheet.create({
-  imageWrapper: {
-    marginBottom: normalize(16),
-    alignItems: 'center',
-  },
-  contentWrapper: {
-    backgroundColor: Colors.neutralsWhite,
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  copyWrapper: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginBottom: normalize(24),
-    backgroundColor: Colors.neutralsWhite,
-  },
-  centerCopy: {
-    textAlign: 'left',
-    marginBottom: normalize(8),
-  },
-  input: {
-    color: Colors.contentEbony,
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(16),
-    letterSpacing: 0.5,
-    borderColor: Colors.neutralGray,
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-});
-
-//make this component available to the app
-export default TempAbout;
+export default TempAbout

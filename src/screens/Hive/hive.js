@@ -17,18 +17,13 @@ const Hive = () => {
         <IllustHive />
         <AppText
           textStyle="display5"
-          customStyle={{
-            textAlign: 'center',
-            marginTop: normalize(10),
-            marginBottom: normalize(8),
-            maxWidth: normalize(250),
-          }}
+          customStyle={styles.textStyle}
           color={Colors.primaryMidnightBlue}>
-          Create your own Hive, coming soon!
+          Create your own Hive soon!
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          Hives are groups with your customers and friends for easier
-          communication. Exciting!
+          With Hive, you can group your customers and friends to send exclusive
+          updates and enjoy easier transactions.
         </AppText>
         <TouchableOpacity
           style={{
@@ -55,6 +50,12 @@ const styles = StyleSheet.create({
     padding: normalize(16),
     textAlign: 'center',
     backgroundColor: 'white',
+  },
+  textStyle: {
+    textAlign: 'center',
+    marginTop: normalize(10),
+    marginBottom: normalize(8),
+    paddingHorizontal: normalize(15),
   },
 })
 

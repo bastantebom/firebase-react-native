@@ -133,6 +133,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: normalize(10),
     marginBottom: normalize(8),
-    maxWidth: normalize(250),
+    paddingHorizontal: normalize(15),
   },
 })

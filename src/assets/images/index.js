@@ -69,8 +69,8 @@ import ServiceScheduled from './post-status/scheduled.svg'
 
 import WelcomeServbees from './welcome-servbees.svg'
 
-import FollowersEmpty from './bees-followers-empty.svg'
-import FollowingEmpty from './bees-following-empty.svg'
+import FollowersEmpty from './followers-empty.svg'
+import FollowingEmpty from './following-empty.svg'
 import Doctor from './doctor.svg'
 
 import NoSearch from './search-empty.svg'

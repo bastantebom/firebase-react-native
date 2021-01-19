@@ -148,9 +148,9 @@ const Ongoing = ({ sortCategory }) => {
                   textAlign: 'center',
                 }}
                 textStyle="body2">
-                Get more project leads, buy and sell items, start your own
-                online business, or just bookmark posts for future reference—do
-                all these and more on Servbees.
+                Get busy with more projects, buying and selling items, boosting
+                your online business or just browsing what’s new in your
+                neighborhood.
               </AppText>
             </View>
             <TouchableOpacity

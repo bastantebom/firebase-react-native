@@ -47,7 +47,7 @@ const VerificationStatus = ({ statusPercentage }) => {
                 })
               }}>
               <AppText textStyle="body1" color={Colors.primaryMidnightBlue}>
-                Get the verified badge
+                Get bee-rified
               </AppText>
               <AppText textStyle="caption" color={Colors.primaryMidnightBlue}>
                 Safeguard your account and boost your credibility within the

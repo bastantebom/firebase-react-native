@@ -1,24 +1,14 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  forwardRef,
-  useLayoutEffect,
-} from 'react'
-import { FlatList, View, ActivityIndicator, Animated } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { FlatList, View, ActivityIndicator } from 'react-native'
 
 import Post from '@/components/Post/Post'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
-import { PostService } from '@/services'
 import { AppText } from '@/components'
-import PostOwnEmpty from '@/screens/Profile/Tabs/Post'
 import LoadingScreen from './loading'
 import { normalize } from '@/globals'
 
 const Posts = ({ data, type, scrollValue, setRef }) => {
-  // const Posts = forwardRef((props, ref) => {
   const { user, userInfo } = useContext(UserContext)
   const {
     setPosts,

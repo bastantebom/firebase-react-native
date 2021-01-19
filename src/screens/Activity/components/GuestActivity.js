@@ -20,12 +20,7 @@ const GuestActivity = () => {
         <OnboardingIllustration2 />
         <AppText
           textStyle="display5"
-          customStyle={{
-            textAlign: 'center',
-            marginTop: normalize(10),
-            marginBottom: normalize(8),
-            maxWidth: normalize(250),
-          }}
+          customStyle={styles.textStyle}
           color={Colors.primaryMidnightBlue}>
           Easily track all your activity
         </AppText>
@@ -58,6 +53,12 @@ const styles = StyleSheet.create({
     padding: normalize(16),
     textAlign: 'center',
     backgroundColor: 'white',
+  },
+  textStyle: {
+    textAlign: 'center',
+    marginTop: normalize(10),
+    marginBottom: normalize(8),
+    paddingHorizontal: normalize(15),
   },
 })
 

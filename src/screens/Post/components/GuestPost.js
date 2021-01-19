@@ -71,7 +71,8 @@ export const GuestPost = () => {
             Offer services, sell goods, find what you need
           </AppText>
           <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-            Joining Servbees only takes minutes!{' '}
+            Post your offers, side gigs, and more! Find what you need in your
+            community.{' '}
           </AppText>
           <TouchableOpacity
             style={{
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: normalize(10),
     marginBottom: normalize(8),
-    maxWidth: normalize(250),
+    paddingHorizontal: normalize(15),
   },
   contentWrapper: {
     flexGrow: 1,

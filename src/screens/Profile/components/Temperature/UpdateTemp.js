@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
 } from 'react-native'
 
 import {
@@ -21,7 +22,6 @@ import { UserContext } from '@/context/UserContext'
 
 import { Colors, normalize } from '@/globals'
 import Modal from 'react-native-modal'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import Api from '@/services/Api'
 import { Icons } from '@/assets/images/icons'
 
@@ -152,8 +152,12 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
 
         <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
           <ScreenHeaderTitle
-            iconSize={16}
-            title="Update Body Temperature"
+            iconSize={normalize(16)}
+            title="Track your temperature"
+            customTitleStyle={{
+              textTransform: 'none',
+              maxWidth: '70%',
+            }}
             close={toggleUpdateTemp}
             rightLink="History"
             rightLinkEvent={toggleHistory}
@@ -166,13 +170,17 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
               <AppText
                 textStyle="captionConstant"
                 customStyle={{ paddingBottom: 8 }}>
-                We’ll need your help to safeguard the health of both you and
-                your customers. Use a temperature scanner or a thermometer to
-                take your temperature.
+                We prioritize health and safety. Please take your temperature
+                using a scanner or thermometer and log it down below.
               </AppText>
+
               <TouchableOpacity
                 onPress={toggleTempAbout}
-                customStyle={{ paddingBottom: 8, marginBottom: 12 }}>
+                customStyle={{
+                  paddingBottom: 8,
+                  marginBottom: 12,
+                  backgroundColor: 'red',
+                }}>
                 <AppText
                   textStyle="captionConstant"
                   color={Colors.contentOcean}>
