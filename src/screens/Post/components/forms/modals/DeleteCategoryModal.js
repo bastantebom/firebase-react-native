@@ -1,35 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   SafeAreaView,
   TouchableOpacity,
   View,
-  Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native'
-import Modal from 'react-native-modal'
+import { useNavigation } from '@react-navigation/native'
 import { Divider } from 'react-native-paper'
+import Modal from 'react-native-modal'
 
-import {
-  AppText,
-  FloatingAppInput,
-  ScreenHeaderTitle,
-  AppRadio,
-} from '@/components'
+import { Context } from '@/context'
+import { Colors, normalize, GlobalStyle } from '@/globals'
+import { AppText, ScreenHeaderTitle, AppRadio } from '@/components'
 import { Category } from '@/assets/images'
 import { AngleDown } from '@/assets/images/icons'
-import { Colors, normalize, GlobalStyle } from '@/globals'
-import { CategoryService } from '@/services'
-import { Context } from '@/context'
-import { useNavigation } from '@react-navigation/native'
-import Section from '@/screens/Post/components/Section'
-
 import AddCategoryModal from './AddCategoryModal'
+import Api from '@/services/Api'
 
 const DeleteCategoryModal = ({ close, categoryName }) => {
-  const [buttonPadding, setButtonPadding] = useState(0)
-  const [buttonDisabled, setButtonDisabled] = useState(true)
-
-  const { items, editCategory, deleteItemsByCategory } = useContext(Context)
+  const { editCategory, deleteItemsByCategory } = useContext(Context)
 
   const [deleteItems, setDeleteItems] = useState(false)
   const [moveItems, setMoveItems] = useState(false)
@@ -39,28 +28,27 @@ const DeleteCategoryModal = ({ close, categoryName }) => {
   const navigation = useNavigation()
 
   const deleteCategoryHandler = async () => {
-    let cats = await CategoryService.getCategories()
+    const { data } = await Api.getCategories()
 
-    cats.map(category => {
+    data.map(async category => {
       if (category.category === categoryName) {
-        CategoryService.deleteCategory(category.id)
+        const result = await Api.deleteCategory({ id: category.id })
+
+        if (result) {
+          if (deleteItems) {
+            deleteItemsByCategory(categoryName)
+          }
+          if (moveItems) {
+            editCategory(NewCategoryName, categoryName)
+          }
+        }
       }
-      return
+
+      navigation.push('AddedItemPreviewScreen', {
+        categoryName: NewCategoryName,
+      })
+      close()
     })
-
-    if (deleteItems) {
-      deleteItemsByCategory(categoryName)
-    }
-
-    if (moveItems) {
-      editCategory(NewCategoryName, categoryName)
-    }
-
-    navigation.push('AddedItemPreviewScreen', {
-      categoryName: NewCategoryName,
-    })
-
-    close()
   }
 
   const select = option => {

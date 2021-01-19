@@ -77,6 +77,22 @@ const SinglePostView = props => {
   } = props.route?.params?.data
   const { othersView = false } = props.route?.params
 
+  const [payments, setPayments] = useState([])
+  useEffect(() => {
+    const paymentMethods = {
+      gcash: 'GCash',
+      paypal: 'PayPal',
+      grabpay: 'GrabPay',
+    }
+
+    setPayments(
+      payment.map(
+        item =>
+          paymentMethods[item] || item.charAt(0).toUpperCase() + item.slice(1)
+      )
+    )
+  }, [])
+
   const itemsByCategory = [
     ...items
       .reduce(
@@ -831,7 +847,7 @@ const SinglePostView = props => {
                 <Divider
                   style={[GlobalStyle.dividerStyle, { marginBottom: 16 }]}
                 />
-                {payment?.length > 0 && (
+                {payments && (
                   <View style={styles.iconText}>
                     <Icons.PostCash
                       width={normalize(18)}
@@ -842,9 +858,8 @@ const SinglePostView = props => {
                       textStyle="body2"
                       customStyle={{
                         marginLeft: 8,
-                        textTransform: 'capitalize',
                       }}>
-                      {payment.join(', ')}
+                      {payments.join(', ')}
                     </AppText>
                   </View>
                 )}
@@ -859,15 +874,6 @@ const SinglePostView = props => {
                     </AppText>
                   </View>
                 )}
-                <View style={styles.iconText}>
-                  <Icons.PostNote
-                    width={normalize(18)}
-                    height={normalize(18)}
-                  />
-                  <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                    You can see the product in person
-                  </AppText>
-                </View>
               </>
             )}
           </View>

@@ -112,6 +112,44 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
     },
   ]
 
+  // Removed from current build
+  const notificationComponent = () => {
+    return (
+      <>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => setNotifications(true)}>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginBottom: 16,
+              alignItems: 'center',
+            }}>
+            <Notifications width={normalize(20)} height={normalize(20)} />
+            <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+              Notification
+            </AppText>
+          </View>
+        </TouchableOpacity>
+
+        <Modal
+          isVisible={notifications}
+          animationIn="slideInRight"
+          animationInTiming={450}
+          animationOut="slideOutLeft"
+          animationOutTiming={450}
+          onBackButtonPress={() => setNotifications(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <NotificationSettings close={() => setNotifications(false)} />
+        </Modal>
+      </>
+    )
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
@@ -242,22 +280,6 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
                   <BlockedUsers width={normalize(20)} height={normalize(20)} />
                   <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
                     Blocked Users
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => setNotifications(true)}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <Notifications width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Notification
                   </AppText>
                 </View>
               </TouchableOpacity>
@@ -433,21 +455,6 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <PayoutMethod close={togglePayoutMethod} />
-      </Modal>
-
-      <Modal
-        isVisible={notifications}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        onBackButtonPress={() => setNotifications(false)}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <NotificationSettings close={() => setNotifications(false)} />
       </Modal>
     </SafeAreaView>
   )

@@ -1,27 +1,17 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { View, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native'
+import Modal from 'react-native-modal'
 
 import { AppText, BottomSheetHeader } from '@/components'
 import CategoryFormModal from './CategoryFormModal'
 import DeleteCategoryModal from './DeleteCategoryModal'
 
-import Modal from 'react-native-modal'
-import { CategoryService } from '@/services'
-import { Context } from '@/context'
-import { useNavigation } from '@react-navigation/native'
 import { Draft, Trash } from '@/assets/images/icons'
 import { Colors } from '@/globals'
 
 const CategoryOptions = ({ close, categoryName }) => {
   const [categoryFormModal, showCategoryFormModal] = useState(false)
   const [deleteCategoryModal, showDeleteCategoryModal] = useState(false)
-  const { editCategory } = useContext(Context)
-
-  const navigation = useNavigation()
-
-  const deleteCategoryHandler = () => {
-    showDeleteCategoryModal(true)
-  }
 
   return (
     <SafeAreaView
@@ -40,9 +30,7 @@ const CategoryOptions = ({ close, categoryName }) => {
         <TouchableOpacity
           activeOpacity={0.7}
           style={{ paddingBottom: 24, flexDirection: 'row' }}
-          onPress={() => {
-            showCategoryFormModal(true)
-          }}>
+          onPress={() => showCategoryFormModal(true)}>
           <Draft />
           <AppText textStyle="body2" customStyle={{ paddingLeft: 8 }}>
             Edit Category Name
@@ -53,7 +41,7 @@ const CategoryOptions = ({ close, categoryName }) => {
         <TouchableOpacity
           activeOpacity={0.7}
           style={{ paddingBottom: 24, flexDirection: 'row' }}
-          onPress={() => deleteCategoryHandler()}>
+          onPress={() => showDeleteCategoryModal(true)}>
           <Trash />
           <AppText
             textStyle="body2"

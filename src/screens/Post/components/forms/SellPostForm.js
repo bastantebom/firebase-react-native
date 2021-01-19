@@ -526,9 +526,9 @@ const SellPostForm = ({
     sell:
       'Get the most out of your post by adding the product features and buzz-worthy offers that your buyers might be interested in.',
     need:
-      'Attract people that can supply your specific needs by adding descriptions and hashtags here. e.g. #electrician #plumber (Optional)',
+      'Attract people that can supply your specific needs by adding descriptions.',
     service:
-      'Let your customers know more about your service. Add details that will help them understand what you offer. You can also add hashtags to make it easier for others to find your post. e.g. #pasabuy (Optional)',
+      'Let your customers know more about your service. Add details that will help them understand what you offer.',
   }
 
   const postTitlePlaceholder = {
@@ -815,7 +815,7 @@ const SellPostForm = ({
             marginBottom: 8,
           }}>
           <AppRadio
-            label="List as Single Item"
+            label="List as a Single Item"
             value={listAsSingle}
             style={{ paddingLeft: 0 }}
             valueChangeHandler={() => RadioStateHandler('single')}
@@ -1154,7 +1154,7 @@ const SellPostForm = ({
               <></>
             ) : (
               <AppText textStyle="body2" customStyle={{ marginTop: 4 }}>
-                Walk-In
+                Walk-in
               </AppText>
             )
           ) : (

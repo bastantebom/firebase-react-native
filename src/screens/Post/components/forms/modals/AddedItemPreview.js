@@ -42,17 +42,21 @@ const AddedItemPreview = ({
   }
 
   const ItemList = () => {
-    return items.map((item, index) => {
-      return (
-        <Item item={item} key={index}>
-          <TouchableOpacity onPress={() => editItemHandler(item)}>
-            <AppText textStyle="caption" color={Colors.contentOcean}>
-              Edit
-            </AppText>
-          </TouchableOpacity>
-        </Item>
-      )
-    })
+    if (items) {
+      return items?.map((item, index) => {
+        return (
+          <Item item={item} key={index}>
+            <TouchableOpacity onPress={() => editItemHandler(item)}>
+              <AppText textStyle="caption" color={Colors.contentOcean}>
+                Edit
+              </AppText>
+            </TouchableOpacity>
+          </Item>
+        )
+      })
+    } else {
+      return <></>
+    }
   }
 
   return (
