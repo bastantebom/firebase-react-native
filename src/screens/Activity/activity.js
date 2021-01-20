@@ -24,11 +24,15 @@ import _ from 'lodash'
 const Activity = () => {
   const [activitySort, setActivitySort] = useState(false)
   const [isFiltersVisible, setIsFiltersVisible] = useState(false)
-  const [activities, setActivities] = useState('all')
   const [searchBarFocused, setSearchBarFocused] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [groupNotifications, setGroupNotifications] = useState([])
-  const { notificationsList, initNotifications } = useContext(Context)
+  const {
+    notificationsList,
+    initNotifications,
+    initChats,
+    chatList,
+  } = useContext(Context)
   const { user } = useContext(UserContext)
   const [sortCategory, setSortCategory] = useState({
     label: 'All Activities',
@@ -71,7 +75,11 @@ const Activity = () => {
 
   useEffect(() => {
     let isMounted = true
-    if (isMounted) initNotifications(user?.uid)
+    if (isMounted) {
+      initNotifications(user?.uid)
+      initChats(user?.uid)
+    }
+
     return () => (isMounted = false)
   }, [])
 
@@ -109,19 +117,21 @@ const Activity = () => {
                   })
                 }>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
-                <View
-                  style={{
-                    position: 'absolute',
-                    backgroundColor: Colors.secondaryBrinkPink,
-                    top: normalize(-7),
-                    right: normalize(-8),
-                    paddingHorizontal: normalize(6),
-                    borderRadius: 16,
-                  }}>
-                  <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                    0
-                  </AppText>
-                </View>
+                {chatList.filter(chat => !chat.read).length > 0 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      backgroundColor: Colors.secondaryBrinkPink,
+                      top: normalize(-7),
+                      right: normalize(-8),
+                      paddingHorizontal: normalize(6),
+                      borderRadius: 16,
+                    }}>
+                    <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                      {chatList.filter(chat => !chat.read).length}
+                    </AppText>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
             <View>

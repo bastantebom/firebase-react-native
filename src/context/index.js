@@ -3,6 +3,7 @@ import NetInfo from '@react-native-community/netinfo'
 import { PostService } from '@/services'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
+import _ from 'lodash'
 
 export const Context = createContext()
 
@@ -129,6 +130,7 @@ export const ContextProvider = ({ children }) => {
   const [userCart, setUserCart] = useState([])
   const [currentPostOrder, setCurrentPostOrder] = useState()
   const [deleteCurrentOrderModal, showDeleteCurrentOrderModal] = useState(false)
+  const [chatList, setChatList] = useState([])
 
   const setCurrentPost = postID => {
     if (currentPostOrder === null) {
@@ -338,6 +340,30 @@ export const ContextProvider = ({ children }) => {
       })
   }
 
+  const initChats = async uid => {
+    if (!uid) return
+    const roomRef = await firestore()
+      .collection('chat_rooms')
+      .where(`members.${uid}`, '==', true)
+      .get()
+    let chats = await Promise.all(
+      roomRef.docs.map(async room => {
+        const chatRef = await firestore()
+          .collection('chat_rooms')
+          .doc(room.id)
+          .collection('messages')
+          .where('uid', '!=', uid)
+          .get()
+
+        return chatRef.docs.map(chatDoc => {
+          return chatDoc.data()
+        })
+      })
+    )
+    chats = _.flatten(chats)
+    setChatList(chats)
+  }
+
   return (
     <Context.Provider
       value={{
@@ -425,6 +451,8 @@ export const ContextProvider = ({ children }) => {
         deleteCurrentOrderModal,
         showDeleteCurrentOrderModal,
         unsubscribeNotification,
+        initChats,
+        chatList,
       }}>
       {children}
     </Context.Provider>
