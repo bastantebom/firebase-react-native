@@ -8,8 +8,8 @@ import {
   Dimensions,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
-import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
+import { Icons } from '@/assets/images/icons'
 
 import { AppText, PaddingView, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -38,14 +38,12 @@ import {
   InviteFriends,
   ContactServbees,
   FaqScreen,
-  PayoutMethod,
   NotificationSettings,
 } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
 
-const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
-  const navigation = useNavigation()
-  const { providerData } = useContext(UserContext)
+const OwnMenu = ({ navigation, triggerNotify }) => {
+  const { providerData, signOut } = useContext(UserContext)
   const [editProfile, setEditProfile] = useState(false)
   const [about, setAbout] = useState(false)
   const [blockUser, setBlockUser] = useState(false)
@@ -55,9 +53,8 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
   const [inviteFriends, setInviteFriends] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
-  const [payoutMethod, setPayoutMethod] = useState(false)
   const [notifications, setNotifications] = useState(false)
-  const [hasPassword, setHasPassword] = useState(
+  const [hasPassword] = useState(
     providerData.some(pd => pd.providerId === 'password')
   )
 
@@ -70,11 +67,9 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
   const toggleInviteFriends = () => setInviteFriends(!inviteFriends)
   const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
-  const togglePayoutMethod = () => setPayoutMethod(!payoutMethod)
 
   const handleChangePasswordPress = () => {
     navigation.navigate('NBTScreen', { screen: 'change-password' })
-    close()
   }
 
   const accountMenuItems = [
@@ -144,7 +139,7 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
             backgroundColor: 'white',
             height: Dimensions.get('window').height,
           }}>
-          <NotificationSettings close={() => setNotifications(false)} />
+          <NotificationSettings />
         </Modal>
       </>
     )
@@ -155,7 +150,7 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
       <ScreenHeaderTitle
         title="Settings"
         iconSize={normalize(20)}
-        close={close}
+        close={() => navigation.goBack()}
         paddingSize={3}
       />
       <ScrollView>
@@ -192,6 +187,32 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
                     </TouchableOpacity>
                   )
               )}
+            </View>
+
+            <Divider
+              style={{
+                backgroundColor: Colors.neutralGray,
+                marginVertical: 24,
+              }}
+            />
+
+            <View>
+              <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
+                Payouts
+              </AppText>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('payout-method')}>
+                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                  <Icons.PayoutWallet
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
+                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                    Payout Method
+                  </AppText>
+                </View>
+              </TouchableOpacity>
             </View>
 
             <Divider
@@ -298,7 +319,14 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={signOut}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  signOut().then(() => {
+                    unsubcribeNotification()
+                    navigation.navigate('Onboarding')
+                  })
+                }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <MenuLogOut width={normalize(20)} height={normalize(20)} />
                   <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
@@ -323,7 +351,6 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <EditProfile
-          toggleMenu={close}
           toggleEditProfile={toggleEditProfile}
           triggerNotify={triggerNotify}
           source="own-menu"
@@ -369,7 +396,8 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        <LikedPost toggleMenu={close} toggleLikePost={toggleLikePost} />
+        {/* <LikedPost toggleMenu={close} toggleLikePost={toggleLikePost} /> */}
+        <LikedPost toggleLikePost={toggleLikePost} />
       </Modal>
 
       <Modal
@@ -440,21 +468,6 @@ const OwnMenu = ({ toggleMenu: close, signOut, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <FaqScreen toggleFaq={toggleFaq} />
-      </Modal>
-
-      <Modal
-        isVisible={payoutMethod}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        onBackButtonPress={togglePayoutMethod}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <PayoutMethod close={togglePayoutMethod} />
       </Modal>
     </SafeAreaView>
   )

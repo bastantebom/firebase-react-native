@@ -1,4 +1,4 @@
-import React, { createRef, useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -9,32 +9,22 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import Share from 'react-native-share'
-import { useNavigation } from '@react-navigation/native'
 
 import { AppText, HexagonBorder } from '@/components'
 import {
   EllipsisMenu,
-  OwnMenu,
   QRScreen,
   PostEllipsis,
   OtherPostEllipsis,
 } from './components'
 import {
   HeaderBack,
-  HeaderShare,
-  HeaderQR,
-  HeaderMenu,
   HeaderFollowing,
   HeaderFollow,
   HeaderEllipsis,
-  ProfileMute,
-  ProfileReport,
-  ProfileBlockRed,
   JarHeartWhite,
   HeaderShareGray,
-  HeaderQRGray,
   HeaderMenuGray,
-  HeaderBackGray,
   HeaderFollowingBlack,
   HeaderFollowBlack,
   HeaderEllipsisGray,
@@ -45,30 +35,26 @@ import { UserContext } from '@/context/UserContext'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 
 const StickyHeader = ({
+  navigation,
   toggleEllipsisState,
   ellipsisState,
   toggleFollowing,
   type,
-  toggleMenu,
-  menu,
   toggleQR,
   QR,
-  signOut,
   backFunction,
   editPostFunction,
   deletePostFunction,
   userInfo,
-  triggerNotify,
   userID,
   hidePost,
   postTitle,
   postId,
   isFollowing,
 }) => {
-  const { display_name, is_verified, full_name, profile_photo } = userInfo
-  const name = display_name ? display_name : full_name
-
-  const navigation = useNavigation()
+  const { user } = useContext(UserContext)
+  const { display_name, full_name, profile_photo } = userInfo
+  const name = display_name || full_name
 
   const handleShare = async () => {
     try {
@@ -82,8 +68,6 @@ const StickyHeader = ({
       console.log(error)
     }
   }
-
-  const { user } = useContext(UserContext)
 
   if (type === 'post-other') {
     return (
@@ -191,7 +175,7 @@ const StickyHeader = ({
     )
   }
 
-  if (type === 'post-own')
+  if (type === 'post-own') {
     return (
       <>
         <SafeAreaView
@@ -260,8 +244,9 @@ const StickyHeader = ({
         </Modal>
       </>
     )
+  }
 
-  if (type === 'own')
+  if (type === 'own') {
     return (
       <>
         <SafeAreaView>
@@ -297,7 +282,11 @@ const StickyHeader = ({
                   />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  navigation.navigate('own-menu')
+                }}>
                 <View style={GlobalStyle.marginLeft2}>
                   <HeaderMenuGray
                     width={normalize(15)}
@@ -308,28 +297,6 @@ const StickyHeader = ({
             </View>
           </View>
         </SafeAreaView>
-
-        <Modal
-          isVisible={menu}
-          animationIn="slideInUp"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <OwnMenu
-            signOut={() => {
-              signOut().then(() => {
-                navigation.navigate('Onboarding')
-              })
-            }}
-            toggleMenu={toggleMenu}
-            triggerNotify={triggerNotify}
-          />
-        </Modal>
 
         <Modal
           isVisible={QR}
@@ -346,8 +313,9 @@ const StickyHeader = ({
         </Modal>
       </>
     )
+  }
 
-  if (type === 'other')
+  if (type === 'other') {
     return (
       <>
         <SafeAreaView>
@@ -445,6 +413,7 @@ const StickyHeader = ({
         </Modal>
       </>
     )
+  }
 }
 
 const styles = StyleSheet.create({

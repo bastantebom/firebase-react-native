@@ -1,28 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import {
   View,
   StyleSheet,
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native'
-import Modal from 'react-native-modal'
 
 import { ScreenHeaderTitle, PaddingView, AppText } from '@/components'
-
 import { Colors, normalize } from '@/globals'
 import { Bank, GCash, Icons, Paypal } from '@/assets/images/icons'
-import PayoutDetails from './PayoutDetails'
 
-const ChangePayoutMethod = ({ close }) => {
-  const [selectedPayout, setSelectedPayout] = useState('')
-
-  const [payoutDetails, setPayoutDetails] = useState(false)
-
-  const togglePayoutDetails = () => {
-    setPayoutDetails(!payoutDetails)
-  }
+const ChangePayoutMethod = ({ navigation, route }) => {
+  const { payout } = route.params
 
   const payoutMethods = [
     {
@@ -49,15 +39,17 @@ const ChangePayoutMethod = ({ close }) => {
   ]
 
   const onSelect = item => {
-    setSelectedPayout(item)
-    togglePayoutDetails()
+    navigation.navigate('payout-details', {
+      payout,
+      method: item,
+    })
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         title="Payout Method"
-        close={close}
+        close={() => navigation.goBack()}
         paddingSize={3}
         iconSize={normalize(20)}
       />
@@ -116,23 +108,6 @@ const ChangePayoutMethod = ({ close }) => {
           })}
         </PaddingView>
       </ScrollView>
-
-      <Modal
-        isVisible={payoutDetails}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutRight"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <PayoutDetails
-          close={togglePayoutDetails}
-          selectedPayout={selectedPayout}
-        />
-      </Modal>
     </SafeAreaView>
   )
 }

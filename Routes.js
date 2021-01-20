@@ -21,6 +21,12 @@ import { Onboarding } from '@/screens/Onboarding'
 import DashboardStack from '@/screens/Dashboard'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
+import OwnMenuScreen from '@/components/TransparentHeader/components/OwnMenu'
+import PayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/PayoutMethod'
+import ChangePayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/ChangePayoutMethod'
+import PayoutDetailsScreen from '@/screens/Profile/components/PayoutMethod/PayoutDetails'
+import PayoutSuccessScreen from '@/screens/Profile/components/PayoutMethod/SuccessScreen'
+
 import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import ChangePasswordScreen from '@/screens/Profile/change-password'
 import ReportScreen from '@/screens/Profile/report'
@@ -310,6 +316,23 @@ function ProfileStackScreen() {
         headerMode="none"
         screenOptions={defaultScreenOptions}>
         <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+        <ProfileStack.Screen name="own-menu" component={OwnMenuScreen} />
+        <ProfileStack.Screen
+          name="payout-method"
+          component={PayoutMethodScreen}
+        />
+        <ProfileStack.Screen
+          name="change-payout-method"
+          component={ChangePayoutMethodScreen}
+        />
+        <ProfileStack.Screen
+          name="payout-details"
+          component={PayoutDetailsScreen}
+        />
+        <ProfileStack.Screen
+          name="payout-success"
+          component={PayoutSuccessScreen}
+        />
       </ProfileStack.Navigator>
     )
   } else {

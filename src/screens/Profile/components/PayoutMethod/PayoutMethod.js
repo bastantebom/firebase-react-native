@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
   ScrollView,
 } from 'react-native'
-import Modal from 'react-native-modal'
 
 import {
   ScreenHeaderTitle,
@@ -15,22 +13,34 @@ import {
   AppText,
   AppButton,
 } from '@/components'
-
 import { EmptyPayout } from '@/assets/images'
+import { Icons } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
-import ChangePayoutMethod from './ChangePayoutMethod'
+import Api from '@/services/Api'
 
-const PayoutMethod = ({ close }) => {
-  const [payoutMethod, setPayoutMethod] = useState('')
-  const [changePayoutMethod, setChangePayoutMethod] = useState(false)
+const PayoutMethod = ({ navigation }) => {
+  const [payout, setPayout] = useState(null)
 
-  const toggleChangePayout = () => setChangePayoutMethod(!changePayoutMethod)
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const result = await Api.getPayout()
+        if (result.success && result.data) {
+          setPayout(result.data)
+        }
+
+        if (!result.success) throw new Error('Error getting payout method')
+      } catch (error) {
+        console.log(error)
+      }
+    })()
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         title="Payout Method"
-        close={close}
+        close={() => navigation.goBack()}
         paddingSize={3}
         iconSize={normalize(20)}
       />
@@ -38,7 +48,7 @@ const PayoutMethod = ({ close }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}>
         <PaddingView paddingSize={3}>
-          {!payoutMethod ? (
+          {!payout ? (
             <View
               style={{
                 justifyContent: 'space-between',
@@ -90,7 +100,11 @@ const PayoutMethod = ({ close }) => {
               <AppButton
                 text="Add payout method"
                 type="primary"
-                onPress={toggleChangePayout}
+                onPress={() =>
+                  navigation.navigate('change-payout-method', {
+                    payout,
+                  })
+                }
               />
             </View>
           ) : (
@@ -108,13 +122,30 @@ const PayoutMethod = ({ close }) => {
                 GrabPay, or PayPal will be credited.
               </AppText>
               <View style={styles.payoutInput}>
-                <AppText textStyle="body2medium">
-                  GCash <AppText textStyle="body2">+63 917 888 1029</AppText>
+                {payout.method === 'GCash' ? (
+                  <Icons.GCashActive />
+                ) : payout.method === 'PayPal' ? (
+                  <Icons.PaypalActive />
+                ) : (
+                  <Icons.BankActive />
+                )}
+                <AppText
+                  textStyle="body2medium"
+                  customStyle={{ marginLeft: 10 }}>
+                  {payout.method}
+                  {'  '}
+                  <AppText textStyle="body2">
+                    {payout.account_number || payout.email_address}
+                  </AppText>
                 </AppText>
               </View>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={toggleChangePayout}>
+                onPress={() =>
+                  navigation.navigate('change-payout-method', {
+                    payout,
+                  })
+                }>
                 <AppText textStyle="body2medium" color={Colors.contentOcean}>
                   Change payout method
                 </AppText>
@@ -123,20 +154,6 @@ const PayoutMethod = ({ close }) => {
           )}
         </PaddingView>
       </ScrollView>
-
-      <Modal
-        isVisible={changePayoutMethod}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutRight"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <ChangePayoutMethod close={toggleChangePayout} />
-      </Modal>
     </SafeAreaView>
   )
 }
@@ -148,6 +165,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: normalize(16),
     marginBottom: normalize(12),
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 })
 

@@ -286,7 +286,11 @@ const TransparentHeader = ({
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleMenu}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  navigation.navigate('own-menu')
+                }}>
                 <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                   <Icons.HeaderMenu
                     width={normalize(18)}
@@ -297,29 +301,6 @@ const TransparentHeader = ({
             </View>
           </View>
         </SafeAreaView>
-
-        <Modal
-          isVisible={menu}
-          animationIn="slideInUp"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <OwnMenu
-            signOut={() => {
-              signOut().then(() => {
-                unsubcribeNotification()
-                navigation.navigate('Onboarding')
-              })
-            }}
-            toggleMenu={toggleMenu}
-            triggerNotify={triggerNotify}
-          />
-        </Modal>
 
         <Modal
           isVisible={QR}

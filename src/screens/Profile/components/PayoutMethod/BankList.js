@@ -9,10 +9,9 @@ import {
 } from 'react-native'
 
 import { ScreenHeaderTitle, PaddingView, AppText } from '@/components'
-
 import { normalize } from '@/globals'
 
-const BankList = ({ close, bankChoice }) => {
+const BankList = ({ close, payoutData, setPayoutData }) => {
   const bankList = [
     {
       label: 'AllBank',
@@ -202,7 +201,10 @@ const BankList = ({ close, bankChoice }) => {
   ]
 
   const onSelect = item => {
-    bankChoice(item)
+    setPayoutData({
+      ...payoutData,
+      bank: item,
+    })
     close()
   }
 

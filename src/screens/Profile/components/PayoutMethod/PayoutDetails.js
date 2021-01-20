@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, SafeAreaView, TouchableOpacity, Dimensions } from 'react-native'
-
 import Modal from 'react-native-modal'
 
 import {
@@ -9,37 +8,37 @@ import {
   AppText,
   AppButton,
 } from '@/components'
-
 import { Colors, normalize } from '@/globals'
 import { ArrowDown } from '@/assets/images/icons'
-import { SuccessPayout } from '@/assets/images'
 import FloatingAppInput from '@/components/AppInput/AppInput'
 import BankList from './BankList'
+import { UserContext } from '@/context/UserContext'
+import Api from '@/services/Api'
 
-const PayoutDetails = ({ close, selectedPayout }) => {
+const PayoutDetails = ({ navigation, route }) => {
+  const { payout, method } = route.params
+
+  const [payoutData, setPayoutData] = useState({ method })
   const [showBankList, setShowBankList] = useState(false)
-  const [gcashNumber, setGcashNumber] = useState('')
-  const [paypalAccoutName, setPaypalAccoutName] = useState('')
-  const [paypalEmailAddress, setPaypalEmailAddress] = useState('')
-  const [bankAccoutName, setBankAccoutName] = useState('')
-  const [bankAccountNumber, setBankAccountNumber] = useState('')
-  const [selectedBank, setSelectedBank] = useState('')
+  const { user } = useContext(UserContext)
 
-  const toggleBankList = () => setShowBankList(!showBankList)
-
-  const bankSelect = item => setSelectedBank(item)
-
-  const onSave = () => {
-    if (selectedBank) {
-      return <Success />
+  const onSave = async () => {
+    let success = false
+    if (!payout) {
+      const result = await Api.savePayout({ body: payoutData })
+      success = result.success
+    } else {
+      const result = await Api.updatePayout({ uid: user.uid, body: payoutData })
+      success = result.success
     }
+    if (success) navigation.navigate('payout-success')
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
-        title={selectedPayout}
-        close={close}
+        title={method}
+        close={() => navigation.goBack()}
         paddingSize={3}
         iconSize={normalize(20)}
       />
@@ -53,7 +52,7 @@ const PayoutDetails = ({ close, selectedPayout }) => {
             justifyContent: 'space-between',
             height: '90%',
           }}>
-          {selectedPayout === 'GCash' ? (
+          {method === 'GCash' ? (
             <View>
               <AppText
                 textStyle="body1"
@@ -70,11 +69,16 @@ const PayoutDetails = ({ close, selectedPayout }) => {
               </AppText>
               <FloatingAppInput
                 label="+63 10 digit number"
-                onChangeText={gcashNumber => setGcashNumber(gcashNumber)}
-                value={gcashNumber}
+                onChangeText={value =>
+                  setPayoutData({
+                    ...payoutData,
+                    account_number: `+63${value}`,
+                  })
+                }
+                value={payoutData.account_number || ''}
               />
             </View>
-          ) : selectedPayout === 'Bank' ? (
+          ) : method === 'Bank' ? (
             <View>
               <View>
                 <AppText
@@ -90,11 +94,13 @@ const PayoutDetails = ({ close, selectedPayout }) => {
                   Thursday for payments made using credit/debit, e-wallets, and
                   PayPal.
                 </AppText>
-                <TouchableOpacity activeOpacity={0.7} onPress={toggleBankList}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => setShowBankList(true)}>
                   <View pointerEvents="none">
                     <FloatingAppInput
-                      label="Select bank"
-                      value={selectedBank}
+                      label={'Select bank'}
+                      value={payoutData.bank || ''}
                       style={{
                         marginBottom: normalize(16),
                         color: 'transparent',
@@ -107,7 +113,7 @@ const PayoutDetails = ({ close, selectedPayout }) => {
                         left: normalize(16),
                         top: normalize(20),
                       }}>
-                      {selectedBank}
+                      {payoutData.bank}
                     </AppText>
                     <View
                       style={{
@@ -121,22 +127,28 @@ const PayoutDetails = ({ close, selectedPayout }) => {
                 </TouchableOpacity>
                 <FloatingAppInput
                   label="Account Name"
-                  onChangeText={bankAccoutName =>
-                    setBankAccoutName(bankAccoutName)
+                  onChangeText={value =>
+                    setPayoutData({
+                      ...payoutData,
+                      account_name: value,
+                    })
                   }
-                  value={bankAccoutName}
+                  value={payoutData.account_name || ''}
                   style={{ marginBottom: normalize(16) }}
                 />
                 <FloatingAppInput
                   label="Account Number"
-                  onChangeText={bankAccountNumber =>
-                    setBankAccountNumber(bankAccountNumber)
+                  onChangeText={value =>
+                    setPayoutData({
+                      ...payoutData,
+                      account_number: value,
+                    })
                   }
-                  value={bankAccountNumber}
+                  value={payoutData.account_number || ''}
                 />
               </View>
             </View>
-          ) : selectedPayout === 'PayPal' ? (
+          ) : method === 'PayPal' ? (
             <View>
               <AppText
                 textStyle="body1"
@@ -153,22 +165,28 @@ const PayoutDetails = ({ close, selectedPayout }) => {
               </AppText>
               <FloatingAppInput
                 label="Account Name"
-                onChangeText={paypalAccoutName =>
-                  setPaypalAccoutName(paypalAccoutName)
+                onChangeText={value =>
+                  setPayoutData({
+                    ...payoutData,
+                    account_name: value,
+                  })
                 }
-                value={paypalAccoutName}
+                value={payoutData.account_name || ''}
                 style={{ marginBottom: normalize(16) }}
               />
               <FloatingAppInput
                 label="Email Address"
-                onChangeText={paypalEmailAddress =>
-                  setPaypalEmailAddress(paypalEmailAddress)
+                onChangeText={value =>
+                  setPayoutData({
+                    ...payoutData,
+                    email_address: value,
+                  })
                 }
-                value={paypalEmailAddress}
+                value={payoutData.email_address || ''}
               />
             </View>
           ) : null}
-          <AppButton type="primary" text="Save" onPress={() => onSave()} />
+          <AppButton type="primary" text="Save" onPress={onSave} />
         </View>
       </PaddingView>
 
@@ -183,42 +201,12 @@ const PayoutDetails = ({ close, selectedPayout }) => {
           backgroundColor: 'white',
           height: Dimensions.get('window').height,
         }}>
-        <BankList close={toggleBankList} bankChoice={bankSelect} />
+        <BankList
+          close={() => setShowBankList(false)}
+          payoutData={payoutData}
+          setPayoutData={setPayoutData}
+        />
       </Modal>
-    </SafeAreaView>
-  )
-}
-
-const Success = () => {
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
-        <ScreenHeaderTitle iconSize={normalize(20)} paddingSize={3} />
-        <View
-          style={{
-            paddingHorizontal: normalize(24),
-            height: '85%',
-            justifyContent: 'space-between',
-            paddingTop: normalize(24),
-          }}>
-          <View style={{ alignItems: 'center' }}>
-            <SuccessPayout />
-            <AppText
-              textStyle="body1medium"
-              customStyle={{
-                marginTop: normalize(32),
-                marginBottom: normalize(8),
-              }}>
-              Payout Method Successfully Saved
-            </AppText>
-            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-              Your future payouts will be deposited to your preferred payout
-              method.
-            </AppText>
-          </View>
-          <AppButton text="Okay" type="primary" />
-        </View>
-      </View>
     </SafeAreaView>
   )
 }
