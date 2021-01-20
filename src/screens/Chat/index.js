@@ -17,7 +17,7 @@ import {
   Send,
 } from 'react-native-gifted-chat'
 import Video from 'react-native-video'
-import { Colors, normalize } from '@/globals'
+import { Colors, normalize, GlobalStyle } from '@/globals'
 import {
   AudioVideo,
   HeaderBackGray,
@@ -28,7 +28,8 @@ import {
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
-import { TransitionIndicator } from '@/components'
+import { TransitionIndicator, CacheableImage, AppText } from '@/components'
+import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
 /**
  * @typedef {Object} ChatChannel
@@ -69,6 +70,7 @@ const ChatScreen = ({ route, navigation }) => {
   const [messages, setMessages] = useState([])
   const [members, setMembers] = useState({})
   const [messagingUser, setMessagingUser] = useState({})
+  const [postDetail, setPostDetail] = useState({})
 
   const handleSend = useCallback(async (messages = []) => {
     const chatsRef = firestore()
@@ -108,6 +110,10 @@ const ChatScreen = ({ route, navigation }) => {
             }
         })
       )
+      const postDetailsResponse = await Api.getPost({ pid: channel.post_id })
+      if (!postDetailsResponse.success)
+        throw new Error(postDetailsResponse.message)
+      setPostDetail(postDetailsResponse.data)
     } catch (error) {
       console.log(error)
     }
@@ -174,6 +180,7 @@ const ChatScreen = ({ route, navigation }) => {
         user={messagingUser}
         navigation={navigation}
         unsubscribe={unsubscribe?.()}
+        post={postDetail}
       />
       <GiftedChat
         messages={messages}
@@ -287,44 +294,73 @@ const renderSend = props => {
   )
 }
 
-const ChatHeader = ({ unsubscribe, navigation, user, showActiveStatus }) => {
+const ChatHeader = ({
+  unsubscribe,
+  navigation,
+  user,
+  showActiveStatus,
+  post,
+}) => {
   return (
-    <View style={styles.chatWrapper}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.goBack()
-          unsubscribe?.()
-        }}
-        activeOpacity={0.7}>
-        <HeaderBackGray style={styles.backButton} />
-      </TouchableOpacity>
-      <View
-        style={{
-          flex: 1,
-        }}>
-        <TouchableOpacity style={styles.headerContent} onPress={() => null}>
-          <Image
-            source={{ uri: user.avatar }}
-            style={styles.headerContentImage}
-          />
-          <View>
-            <Text style={styles.headerContentName}>@{user.username}</Text>
-            {showActiveStatus ? (
-              <Text
-                style={[
-                  styles.headerContentStatus,
-                  { color: user.active ? '#369683' : '#aaa' },
-                ]}>
-                {user.active ? 'Active now' : 'Not active'}
-              </Text>
-            ) : null}
-          </View>
+    <>
+      <View style={styles.chatWrapper}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack()
+            unsubscribe?.()
+          }}
+          activeOpacity={0.7}>
+          <HeaderBackGray style={styles.backButton} />
+        </TouchableOpacity>
+        <View
+          style={{
+            flex: 1,
+          }}>
+          <TouchableOpacity style={styles.headerContent} onPress={() => null}>
+            <Image
+              source={{ uri: user.avatar }}
+              style={styles.headerContentImage}
+            />
+            <View>
+              <Text style={styles.headerContentName}>@{user.username}</Text>
+              {showActiveStatus ? (
+                <Text
+                  style={[
+                    styles.headerContentStatus,
+                    { color: user.active ? '#369683' : '#aaa' },
+                  ]}>
+                  {user.active ? 'Active now' : 'Not active'}
+                </Text>
+              ) : null}
+            </View>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity>
+          <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity>
-        <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
-      </TouchableOpacity>
-    </View>
+      <View style={styles.postDetails}>
+        <View style={styles.postImageContainer}>
+          {post?.cover_photos?.length ? (
+            <CacheableImage
+              style={GlobalStyle.image}
+              source={{ uri: post?.cover_photos[0] }}
+            />
+          ) : post?.type === 'service' ? (
+            <DefaultService width={normalize(28)} height={normalize(28)} />
+          ) : post?.type === 'need' ? (
+            <DefaultNeed width={normalize(28)} height={normalize(28)} />
+          ) : (
+            <DefaultSell width={normalize(28)} height={normalize(28)} />
+          )}
+        </View>
+        <AppText
+          textStyle="caption2"
+          customStyle={{ marginLeft: normalize(6), marginTop: normalize(3) }}>
+          {post?.title}
+        </AppText>
+      </View>
+    </>
   )
 }
 
@@ -358,13 +394,13 @@ const styles = StyleSheet.create({
   inputToolbarWrapper: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#b2b2b2',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsWhite,
     bottom: 0,
     left: 0,
     right: 0,
     borderWidth: 0,
     padding: normalize(24),
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsWhite,
   },
   headerContent: {
     display: 'flex',
@@ -390,8 +426,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: normalize(16),
     borderBottomWidth: 1,
-    borderColor: '#DADCE0',
-    backgroundColor: '#fff',
+    borderColor: Colors.neutralGray,
+    backgroundColor: Colors.neutralsWhite,
     alignItems: 'center',
   },
   avatar: {
@@ -408,7 +444,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     borderWidth: normalize(1),
-    borderColor: '#DADCE0',
+    borderColor: Colors.neutralGray,
     borderRadius: normalize(4),
   },
   inputToolbar: {
@@ -431,20 +467,33 @@ const styles = StyleSheet.create({
     paddingRight: normalize(11),
   },
   sendButton: {
-    color: 'white',
+    color: Colors.neutralsWhite,
     width: normalize(24),
     height: normalize(24),
   },
   messagesContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsWhite,
   },
   sendContainer: {
-    backgroundColor: '#FFD400',
-    padding: 12,
-    height: 48,
-    width: 48,
-    marginLeft: 8,
+    backgroundColor: Colors.primaryYellow,
+    padding: normalize(12),
+    height: normalize(48),
+    width: normalize(48),
+    marginLeft: normalize(8),
     borderRadius: 4,
+  },
+  postDetails: {
+    backgroundColor: Colors.neutralsWhitesmoke,
+    height: normalize(56),
+    flexDirection: 'row',
+    paddingVertical: normalize(14),
+    paddingHorizontal: normalize(16),
+  },
+  postImageContainer: {
+    width: normalize(28),
+    height: normalize(28),
+    borderRadius: 8,
+    overflow: 'hidden',
   },
 })
 
