@@ -12,11 +12,18 @@ import awaitingPayment from '@/assets/animations/awaiting-payment.json'
 import bookingScheduled from '@/assets/animations/booking-scheduled.json'
 import sellerServiceCancelled from '@/assets/animations/seller-service-cancelled.json'
 
-export const getStatusData = ({ userType, type, status }) => {
+export const getStatusData = ({
+  userType,
+  type,
+  status,
+  paymentMethod,
+  past,
+}) => {
   const statuses = {
     sell: {
       pending: {
-        title: 'Awaiting Confirmation',
+        title:
+          userType === 'seller' ? 'Requesting...' : 'Awaiting Confirmation',
         message:
           userType === 'seller'
             ? "Don't forget to check details before confirming your customer's order"
@@ -24,16 +31,30 @@ export const getStatusData = ({ userType, type, status }) => {
         animation: pending,
       },
       confirmed: {
-        title: userType === 'seller' ? 'Processing' : 'Order Confirmed',
+        title:
+          paymentMethod === 'cash'
+            ? userType === 'seller'
+              ? 'Processing'
+              : 'Order Confirmed'
+            : userType === 'seller'
+            ? past
+              ? 'Payment Received'
+              : 'Awaiting Payment'
+            : 'Awaiting Payment',
         message:
-          userType === 'seller'
-            ? 'Bee ready! '
-            : 'Bee ready! Your order is now being processed. ',
+          paymentMethod === 'cash'
+            ? userType === 'seller'
+              ? 'Bee ready! '
+              : 'Your order is now being prepared...'
+            : userType === 'seller'
+            ? 'Just waiting for the customer to  complete the payment.'
+            : 'Last step! Once the payment is complete the order will be processed.',
+
         animation: inProgress,
         withGradient: true,
       },
       paid: {
-        title: userType === 'seller' ? 'Processing' : 'Order Confirmed',
+        title: userType === 'seller' ? 'Processing' : 'Payment Completed',
         message:
           userType === 'seller'
             ? 'Bee ready! '
@@ -71,7 +92,7 @@ export const getStatusData = ({ userType, type, status }) => {
         title: 'Cancelled',
         message:
           userType === 'seller'
-            ? 'You cancelled the order.' //need copy
+            ? 'Sorry, the buyer cancelled their order.'
             : 'Oh noooo. Try again or contact the SELLER. ',
         animation: customerOrderCancelled,
       },
@@ -79,7 +100,7 @@ export const getStatusData = ({ userType, type, status }) => {
         title: 'Declined',
         message:
           userType === 'seller'
-            ? 'You declined the order.' //need copy
+            ? 'You declined the order request.'
             : 'It seems your order cannot be processed. Please check with the SELLER.',
         animation: orderDeclined,
       },
@@ -88,13 +109,14 @@ export const getStatusData = ({ userType, type, status }) => {
         message:
           userType === 'seller'
             ? 'Just waiting for the customer to complete the payment.'
-            : 'The seller is waiting for your payment.', //need copy
+            : 'The seller is waiting for your payment.',
         animation: awaitingPayment,
       },
     },
     service: {
       pending: {
-        title: 'Awaiting Confirmation',
+        title:
+          userType === 'seller' ? 'Requesting...' : 'Awaiting Confirmation',
         message:
           userType === 'seller'
             ? 'Please review booking details and click CONFIRM to proceed. '
@@ -102,8 +124,14 @@ export const getStatusData = ({ userType, type, status }) => {
         animation: pending,
       },
       confirmed: {
-        title: 'Schedule Confirmed',
-        message: 'Booked! Please bee on time for your appointment.',
+        title:
+          paymentMethod === 'cash' ? 'Schedule Confirmed' : 'Awaiting Payment',
+        message:
+          paymentMethod === 'cash'
+            ? 'Booked! Please bee on time for your appointment.'
+            : userType === 'seller'
+            ? 'Just waiting for the customer to  complete the payment.'
+            : 'Confeeermed! Please settle payment to complete your booking.',
         animation: bookingScheduled,
       },
       paid: {
@@ -116,7 +144,7 @@ export const getStatusData = ({ userType, type, status }) => {
         message:
           userType === 'seller'
             ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees. "
-            : 'All good? Tell us all about your experience. ',
+            : 'Order completed! ',
         animation: sellerOrderCompleted,
         withGradient: true,
       },
@@ -164,26 +192,23 @@ export const getStatusData = ({ userType, type, status }) => {
       },
       completed: {
         title: 'Completed',
-        message:
-          userType === 'seller'
-            ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees. "
-            : 'All good? Tell us all about your experience. ',
+        message: 'Offer completed!',
         animation: pending,
       },
       cancelled: {
         title: 'Cancelled',
         message:
           userType === 'seller'
-            ? 'You cancelled the order.' //need copy
-            : 'Oh noooo. Try again or contact the SELLER. ',
+            ? 'Sorry, the respondent cancelled their offer.'
+            : 'Luh. Cancelled?! Chat with the Service Provider for details.',
         animation: pending,
       },
       declined: {
         title: 'Declined',
         message:
           userType === 'seller'
-            ? '' //need copy
-            : '',
+            ? 'You declined the offer.'
+            : 'Uh-oh. Try checking with the service provider or look for other options on Servbees.',
         animation: pending,
       },
     },

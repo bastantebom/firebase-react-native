@@ -11,10 +11,12 @@ import {
   ScreenHeaderTitle,
   TransitionIndicator,
 } from '@/components'
+import Post from '@/screens/Dashboard/components/post'
 import {
   Alert,
   LayoutAnimation,
   Platform,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -87,6 +89,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const [orderStatus, setOrderStatus] = useState({})
   const [title, setTitle] = useState('Order status')
   const [userType, setUserType] = useState('')
+  const [attachedPost, setAttachedPost] = useState(null)
 
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [statusHistoryVisible, setStatusHistoryVisible] = useState(false)
@@ -96,46 +99,33 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const [declineModalVisible, setDeclineModalVisible] = useState(false)
   const [orderStatusHistory, setOrderStatusHistory] = useState([])
 
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
   useEffect(() => {
+    handleRefresh(false)
+
     return firestore()
       .doc(`orders/${orderID}`)
       .onSnapshot(async snapshot => {
         if (!snapshot?.data() || !user) return
-
         setIsLoading(true)
         try {
           const data = snapshot.data()
-          data.buyerData =
-            orderData.buyerData ||
-            (await Api.getUser({ uid: data.buyer_id })).data
-          data.sellerData =
-            orderData.sellerData ||
-            (await Api.getUser({ uid: data.seller_id })).data
+          setOrderData(orderData => ({ ...orderData, ...data }))
 
-          let postData
-          if (!post.id) {
-            const response = await Api.getPost({ pid: data.post_id })
-            postData = response.data
-            setPost(response.data)
-          } else {
-            postData = post
+          if (orderData.status !== data.status && post.type) {
+            const statusData = getStatusData({
+              userType: data.seller_id === user.uid ? 'seller' : 'buyer',
+              type: post.type,
+              status: data.status,
+              paymentMethod: data.payment_method,
+            })
+            setOrderStatus(statusData)
           }
-
-          setOrderData(data)
-
-          if (orderData.status !== data.status)
-            setOrderStatus(
-              getStatusData({
-                userType,
-                type: postData.type,
-                status: data.status,
-              })
-            )
         } catch (error) {
           console.log(error)
           Alert.alert('Error', 'Oops, something went wrong.')
         }
-
         setIsLoading(false)
       })
   }, [])
@@ -144,7 +134,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const newUserType = orderData.seller_id === user.uid ? 'seller' : 'buyer'
     const newTitle = getTitle()
     const newTotal = (orderData?.items || []).reduce(
-      (total, item) => total + +(item.price * item.quantity),
+      (total, item) =>
+        total + parseFloat(item.price.replace(/,/g, '')) * item.quantity,
       0
     )
 
@@ -207,6 +198,60 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     }
 
     return 'Order Request'
+  }
+
+  const handleRefresh = async (refresh = true) => {
+    refresh ? setIsRefreshing(true) : setIsLoading(true)
+    try {
+      const doc = await firestore().doc(`orders/${orderID}`).get()
+      const data = doc.data()
+
+      let response = await Api.getUser({ uid: data.buyer_id })
+      data.buyerData = response.data
+      response = await Api.getUser({ uid: data.seller_id })
+      data.sellerData = response.data
+
+      let postData
+      if (!post.id) {
+        let response = await Api.getPost({ pid: data.post_id })
+        postData = response.data
+        response = await Api.getUser({ uid: postData.uid })
+        postData.user = response.data
+      } else {
+        postData = post
+        if (!postData.user) {
+          const response = await Api.getUser({ uid: postData.uid })
+          postData.user = response.data
+        }
+      }
+
+      if (!attachedPost && data.attachedPostId) {
+        const response = await Api.getPost({
+          pid: data.attachedPostId,
+        })
+        const getUserResponse = await Api.getUser({
+          uid: response.data.uid,
+        })
+        setAttachedPost({ ...response.data, user: getUserResponse.data })
+      }
+
+      setPost(postData)
+      setOrderData(data)
+
+      setOrderStatus(
+        getStatusData({
+          userType: data.seller_id === user.uid ? 'seller' : 'buyer',
+          type: postData.type,
+          status: data.status,
+          paymentMethod: data.payment_method,
+        })
+      )
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+    setIsRefreshing(false)
+    setIsLoading(false)
   }
 
   const handlePayment = method => {
@@ -328,11 +373,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     setIsLoading(false)
   }
 
-  const renderStatusIndicator = (status, drawLine) => {
+  const renderStatusIndicator = (status, drawLine, past) => {
     const color = getStatusColor({
       userType,
       status,
       postType: post.type,
+      paymentMethod: orderData.payment_method,
+      past,
     })
 
     return (
@@ -384,7 +431,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               {orderStatus?.title}
             </Text>
           </View>
-          <AppText textStyle="caption">{orderStatus?.message}</AppText>
+          <Text
+            style={styles.statusDescription}
+            numberOfLines={statusHistoryVisible ? null : 2}>
+            {orderStatus?.message}
+          </Text>
         </View>
       </>
     )
@@ -436,11 +487,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 userType,
                 type: post.type,
                 status,
+                past: true,
               })
 
               return (
                 <View key={date._seconds} style={styles.orderHistoryItem}>
-                  <View>{renderStatusIndicator('confirmed', true)}</View>
+                  <View>{renderStatusIndicator('confirmed', true, true)}</View>
                   <Text numberOfLines={1} style={styles.statusText}>
                     {title}
                   </Text>
@@ -456,24 +508,22 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const history = orderStatusHistory?.slice?.(0, -1) || []
 
     return (
-      !!history.length && (
-        <TouchableOpacity
-          onPress={() => {
-            LayoutAnimation.configureNext({
-              duration: 120,
-              create: {
-                type: LayoutAnimation.Types.easeInEaseOut,
-                property: LayoutAnimation.Properties.opacity,
-              },
-              update: { type: LayoutAnimation.Types.easeInEaseOut },
-            })
-            setStatusHistoryVisible(!statusHistoryVisible)
-          }}>
-          <Text style={styles.buttonLink}>
-            {statusHistoryVisible ? 'Hide' : 'Show'} details
-          </Text>
-        </TouchableOpacity>
-      )
+      <TouchableOpacity
+        onPress={() => {
+          LayoutAnimation.configureNext({
+            duration: 120,
+            create: {
+              type: LayoutAnimation.Types.easeInEaseOut,
+              property: LayoutAnimation.Properties.opacity,
+            },
+            update: { type: LayoutAnimation.Types.easeInEaseOut },
+          })
+          setStatusHistoryVisible(!statusHistoryVisible)
+        }}>
+        <Text style={styles.buttonLink}>
+          {statusHistoryVisible ? 'Hide' : 'Show'} details
+        </Text>
+      </TouchableOpacity>
     )
   }
 
@@ -535,16 +585,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         ? orderData?.sellerData?.display_name ||
           orderData?.sellerData?.full_name
         : orderData?.buyerData?.display_name || orderData?.buyerData?.full_name
-    const messageText =
-      userType === 'buyer'
-        ? post.type === 'sell'
-          ? 'Message seller'
-          : post.type === 'service'
-          ? 'Message service provider'
-          : `Message`
-        : ['sell', 'service'].includes(post.type)
-        ? 'Message customer'
-        : `Message`
 
     return (
       <View style={styles.section}>
@@ -584,7 +624,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 width={normalize(16)}
                 height={normalize(16)}
               />
-              <Text style={styles.messageSectionButtonText}>{messageText}</Text>
+              <Text style={styles.messageSectionButtonText}>Message</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -596,40 +636,37 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (post.type === 'need') return
     return (
       <View style={styles.section}>
-        {post.type === 'sell' && (
-          <View style={styles.deliverFrom}>
-            <LocationContactUs
-              style={styles.sectionIcon}
-              width={normalize(18)}
-              height={normalize(18)}
-            />
-            <View style={styles.sectionInfo}>
-              {orderData.delivery_method === 'delivery' && (
-                <AppText textStyle="body1">
-                  From{' '}
-                  <AppText textStyle="body1medium">
-                    {orderData?.sellerData?.display_name ||
-                      orderData?.sellerData?.full_name}
-                  </AppText>
+        <View style={styles.deliverFrom}>
+          <LocationContactUs
+            style={styles.sectionIcon}
+            width={normalize(18)}
+            height={normalize(18)}
+          />
+          <View style={styles.sectionInfo}>
+            {['pickup', 'delivery'].includes(orderData.delivery_method) && (
+              <AppText textStyle="body1">
+                From{' '}
+                <AppText textStyle="body1medium">
+                  {orderData?.sellerData?.display_name ||
+                    orderData?.sellerData?.full_name}
                 </AppText>
-              )}
-
-              <AppText
-                textStyle="body2"
-                customStyle={{ marginTop: normalize(7) }}>
-                {post?.store_details?.location?.full_address}
               </AppText>
-            </View>
+            )}
+
+            <AppText
+              textStyle="body2"
+              customStyle={{ marginTop: normalize(7) }}>
+              {post?.store_details?.location?.full_address}
+            </AppText>
           </View>
-        )}
-        {orderData.delivery_method === 'pickup' &&
-        post.type === 'sell' ? null : (
+        </View>
+        {
           <View
             style={[
               styles.deliverTo,
               {
-                paddingTop: post.type !== 'sell' ? 0 : normalize(10),
-                borderTopWidth: post.type === 'service' ? 0 : 1,
+                paddingTop: normalize(10),
+                borderTopWidth: 1,
               },
             ]}>
             <PostBox
@@ -674,9 +711,17 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               </AppText>
             </View>
           </View>
-        )}
-        {post.type === 'service' && (
-          <View style={{ flexDirection: 'row' }}>
+        }
+      </View>
+    )
+  }
+
+  const renderScheduleSection = () => {
+    return (
+      post.type === 'service' &&
+      orderData.schedule && (
+        <View style={styles.section}>
+          <View style={styleUtils.row}>
             <PostCash width={normalize(20)} height={normalize(20)} />
             <View style={styles.sectionInfo}>
               <AppText textStyle="body1medium">
@@ -690,8 +735,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               </AppText>
             </View>
           </View>
-        )}
-      </View>
+        </View>
+      )
     )
   }
 
@@ -737,7 +782,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           />
           <View style={styles.sectionInfo}>
             <AppText textStyle="body1medium">
-              {post.type !== 'need' ? 'Payment Method' : 'Your offer'}
+              {post.type !== 'need'
+                ? 'Payment Method'
+                : userType === 'seller'
+                ? 'Offer'
+                : 'Your offer'}
             </AppText>
           </View>
         </View>
@@ -783,11 +832,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               marginLeft: normalize(8),
               marginBottom: normalize(7),
             }}>
-            {post.type === 'sell'
-              ? 'Order Summary'
-              : post.type === 'service'
-              ? 'Service Summary'
-              : null}
+            Order Summary
           </AppText>
         </View>
 
@@ -797,16 +842,26 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             borderBottomColor: Colors.neutralGray,
             paddingBottom: normalize(10),
           }}>
-          {(orderData.items || []).map((item, index) => {
+          {(orderData.items || []).map((item, index, arr) => {
             return (
-              <View key={item.id || index} style={styles.summaryItem}>
+              <View
+                key={item.id || index}
+                style={[
+                  styles.summaryItem,
+                  index === arr.length - 1
+                    ? {}
+                    : { paddingBottom: normalize(10) },
+                ]}>
                 <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
-                  <AppText
-                    textStyle="body1"
-                    color={Colors.secondaryLavenderBlue}>
-                    {item.quantity}x
-                  </AppText>
-                  <View style={{ marginLeft: normalize(10) }}>
+                  {post.type === 'sell' && (
+                    <AppText
+                      textStyle="body1"
+                      color={Colors.secondaryLavenderBlue}
+                      customStyle={{ marginRight: normalize(10) }}>
+                      {item.quantity}x
+                    </AppText>
+                  )}
+                  <View>
                     <AppText textStyle="body1medium">
                       {item.name || post.title}
                     </AppText>
@@ -816,7 +871,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   </View>
                 </View>
                 <AppText textStyle="body1" color={Colors.contentPlaceholder}>
-                  ₱{commaSeparate(item.price * item.quantity)}
+                  ₱
+                  {commaSeparate(
+                    parseFloat(item.price.replace(/,/, '')) * item.quantity
+                  )}
                 </AppText>
               </View>
             )
@@ -840,23 +898,24 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderNotesSection = () => {
     return (
       <>
-        {post.type === 'need' && (
+        {post.type === 'need' && orderData.notes?.length && (
           <View style={styles.section}>
-            <PostNote width={normalize(20)} height={normalize(20)} />
             <View
               style={{
                 borderBottomWidth: 1,
                 borderBottomColor: '#E5E5E5',
                 paddingBottom: normalize(10),
               }}>
-              <AppText
-                textStyle="body1medium"
-                customStyle={{
-                  marginLeft: normalize(30),
-                  marginBottom: normalize(7),
-                }}>
-                Order Notes
-              </AppText>
+              <View style={styleUtils.row}>
+                <PostNote
+                  style={styles.sectionIcon}
+                  width={normalize(20)}
+                  height={normalize(20)}
+                />
+                <View style={styles.sectionInfo}>
+                  <AppText textStyle="body1medium">Order Notes</AppText>
+                </View>
+              </View>
             </View>
             <View
               style={{
@@ -869,34 +928,61 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         )}
 
         {(post.type === 'need' ||
-          (post.type === 'service' && orderData.status === 'cancelled')) && (
-          <View style={styles.section}>
-            <View style={styleUtils.row}>
-              {post.type === 'need' ? (
-                <PostNote
-                  style={styles.sectionIcon}
-                  width={normalize(18)}
-                  height={normalize(18)}
-                />
-              ) : (
-                <PostCash
-                  style={styles.sectionIcon}
-                  width={normalize(24)}
-                  height={normalize(24)}
-                />
-              )}
-              <View style={styles.sectionInfo}>
-                <AppText textStyle="body1medium">Notes</AppText>
-                <AppText
-                  textStyle="body2"
-                  customStyle={{ marginTop: normalize(7) }}>
-                  {orderData?.message}
-                </AppText>
+          (post.type === 'service' && orderData.status === 'cancelled')) &&
+          orderData.message?.length && (
+            <View style={styles.section}>
+              <View style={styleUtils.row}>
+                {post.type === 'need' ? (
+                  <PostNote
+                    style={styles.sectionIcon}
+                    width={normalize(18)}
+                    height={normalize(18)}
+                  />
+                ) : (
+                  <PostCash
+                    style={styles.sectionIcon}
+                    width={normalize(24)}
+                    height={normalize(24)}
+                  />
+                )}
+                <View style={styles.sectionInfo}>
+                  <AppText textStyle="body1medium">Message</AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ marginTop: normalize(7) }}>
+                    {orderData?.message}
+                  </AppText>
+                </View>
               </View>
             </View>
-          </View>
-        )}
+          )}
       </>
+    )
+  }
+
+  const renderAttachedPost = () => {
+    return (
+      post.type === 'need' &&
+      attachedPost && (
+        <View style={[styles.section, { padding: 0, borderWidth: 0 }]}>
+          <View style={{ flexDirection: 'row' }}>
+            <Icons.SendMessage
+              style={[
+                styles.sectionIcon,
+                { color: Colors.checkboxBorderDefault },
+              ]}
+              width={normalize(18)}
+              height={normalize(18)}
+            />
+            <View style={[styles.sectionInfo, { marginBottom: normalize(12) }]}>
+              <AppText textStyle="body1medium">Attached Post</AppText>
+            </View>
+          </View>
+          <View style={[styles.section, { padding: 0, margin: 0 }]}>
+            <Post data={attachedPost} renderLike={() => {}}></Post>
+          </View>
+        </View>
+      )
     )
   }
 
@@ -960,10 +1046,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             {orderData.status === 'confirmed' &&
               post.type === 'service' &&
               orderData.payment_method === 'cash' && (
-                <View
-                  style={{
-                    padding: normalize(16),
-                  }}>
+                <View style={{ padding: normalize(16) }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => setCancelModalVisible(true)}
@@ -1000,7 +1083,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     type="primary"
                     onPress={() => handleStatusChange('confirmed')}
                     text={
-                      post.type === 'sell' ? 'Confirm Order' : 'Confirm Request'
+                      post.type === 'sell'
+                        ? 'Confirm Order'
+                        : post.type === 'need'
+                        ? 'Confirm Offer'
+                        : 'Confirm Request'
                     }
                   />
                 </View>
@@ -1034,34 +1121,37 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 </View>
               )}
 
-            {post.type === 'sell' && orderData.status !== 'confirmed' && (
-              <View style={{ padding: normalize(16) }}>
-                <>
-                  {orderData.delivery_method === 'delivery' &&
-                    ((orderData.status === 'confirmed' &&
-                      orderData.payment_method === 'cash') ||
-                      (orderData.status === 'paid' &&
-                        orderData.payment_method !== 'cash')) && (
-                      <AppButton
-                        type="primary"
-                        onPress={() => handleStatusChange('delivering')}
-                        text="Confirm for Delivery"
-                      />
-                    )}
-                  {orderData.delivery_method === 'pickup' &&
-                    ((orderData.status === 'confirmed' &&
-                      orderData.payment_method === 'cash') ||
-                      (orderData.status === 'paid' &&
-                        orderData.payment_method !== 'cash')) && (
-                      <AppButton
-                        type="primary"
-                        onPress={() => handleStatusChange('pickup')}
-                        text="Confirm for Pick Up"
-                      />
-                    )}
-                </>
-              </View>
-            )}
+            {post.type === 'sell' &&
+              ((orderData.status === 'confirmed' &&
+                orderData.payment_method === 'cash') ||
+                orderData.status === 'paid') && (
+                <View style={{ padding: normalize(16) }}>
+                  <>
+                    {orderData.delivery_method === 'delivery' &&
+                      ((orderData.status === 'confirmed' &&
+                        orderData.payment_method === 'cash') ||
+                        (orderData.status === 'paid' &&
+                          orderData.payment_method !== 'cash')) && (
+                        <AppButton
+                          type="primary"
+                          onPress={() => handleStatusChange('delivering')}
+                          text="Confirm for Delivery"
+                        />
+                      )}
+                    {orderData.delivery_method === 'pickup' &&
+                      ((orderData.status === 'confirmed' &&
+                        orderData.payment_method === 'cash') ||
+                        (orderData.status === 'paid' &&
+                          orderData.payment_method !== 'cash')) && (
+                        <AppButton
+                          type="primary"
+                          onPress={() => handleStatusChange('pickup')}
+                          text="Confirm for Pick Up"
+                        />
+                      )}
+                  </>
+                </View>
+              )}
 
             {post.type === 'service' && (
               <>
@@ -1073,24 +1163,29 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     <AppButton
                       type="primary"
                       onPress={() => handleStatusChange('completed')}
-                      text="Request Completed"
+                      text="Order Completed"
                       customStyle={{ marginBottom: 16 }}
                     />
                   ) : null}
+                  {!['completed', 'cancelled', 'declined', 'pending'].includes(
+                    orderData.status
+                  ) && (
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setCancelModalVisible(true)}
+                      style={{
+                        width: '100%',
+                        alignItems: 'center',
+                        padding: normalize(12),
+                      }}>
+                      <AppText
+                        textStyle="button2"
+                        color={Colors.secondaryBrinkPink}>
+                        Cancel Request
+                      </AppText>
+                    </TouchableOpacity>
+                  )}
                 </View>
-                {!['completed', 'cancelled', 'declined', 'pending'].includes(
-                  orderData.status
-                ) && (
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => setCancelModalVisible(true)}>
-                    <AppText
-                      textStyle="button2"
-                      color={Colors.secondaryBrinkPink}>
-                      Cancel Request
-                    </AppText>
-                  </TouchableOpacity>
-                )}
               </>
             )}
 
@@ -1105,12 +1200,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 </View>
               )}
 
-            {post.type === 'need' && orderData.status === 'confrimed' && (
+            {post.type === 'need' && orderData.status === 'confirmed' && (
               <View style={{ padding: normalize(16) }}>
                 <AppButton
                   type="primary"
                   onPress={() => handleStatusChange('completed')}
-                  text="Order Completed"
+                  text="Offer Completed"
                 />
               </View>
             )}
@@ -1156,13 +1251,25 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         </Notification>
       )}
 
-      <ScrollView style={styles.scrollWrapper}>
+      <ScrollView
+        style={styles.scrollWrapper}
+        refreshControl={
+          <RefreshControl
+            style={{ zIndex: 1 }}
+            refreshing={isRefreshing}
+            titleColor="#2E3034"
+            tintColor="#2E3034"
+            onRefresh={handleRefresh}
+          />
+        }>
         {renderStatusSection()}
         {renderMessageSection()}
         {renderDeliverySection()}
+        {renderScheduleSection()}
         {renderPaymentMethodSection()}
         {renderSummarySection()}
         {renderNotesSection()}
+        {renderAttachedPost()}
       </ScrollView>
 
       {renderActionButtons()}
@@ -1359,6 +1466,14 @@ const styles = StyleSheet.create({
     height: 60,
     position: 'relative',
   },
+  statusDescription: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(12),
+    lineHeight: normalize(21),
+    marginTop: normalize(2),
+    letterSpacing: 0.4,
+    color: Colors.contentPlaceholder,
+  },
   statusIndicator: {
     position: 'absolute',
     top: 0,
@@ -1384,7 +1499,6 @@ const styles = StyleSheet.create({
   summaryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: normalize(10),
   },
   wrapper: {
     flex: 1,

@@ -105,14 +105,14 @@ const ChangePasswordScreen = ({ navigation }) => {
     if (dirtyStates.includes('currentPassword') && !currentPassword.length)
       errors.currentPassword = 'This field is required'
 
-    if (dirtyStates.includes('newPassword') && newPassword.length < 6)
-      errors.newPassword = 'Password must be at least 6 characters'
+    if (dirtyStates.includes('newPassword') && newPassword.length < 8)
+      errors.newPassword = 'Password must be at least 8 characters'
 
     if (
       dirtyStates.includes('confirmNewPassword') &&
-      confirmNewPassword.length < 6
+      confirmNewPassword.length < 8
     )
-      errors.confirmNewPassword = 'Password must be at least 6 characters'
+      errors.confirmNewPassword = 'Password must be at least 8 characters'
 
     if (dirtyStates.includes('newPassword') && !newPassword.length)
       errors.newPassword = 'This field is required'

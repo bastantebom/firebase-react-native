@@ -26,6 +26,7 @@ const Post = ({
   onUserPress,
   onLikePress,
   currentLocation,
+  renderLike,
 }) => {
   const { user } = useContext(UserContext)
 
@@ -205,6 +206,7 @@ const Post = ({
         onAvatarPress={() => onUserPress?.(post.user)}
         onNamePress={() => onUserPress?.(post.user)}
         onLikePress={() => onLikePress?.(post)}
+        renderLike={renderLike}
       />
     ) : null
   }
@@ -235,11 +237,31 @@ const PostHeader = ({
   onAvatarPress,
   onNamePress,
   onLikePress,
+  renderLike: _renderLike,
 }) => {
   const { full_name, display_name, profile_photo, account_verified } = post.user
 
   const name = display_name || full_name
   const timePassed = time => timePassedShort(Date.now() / 1000 - time) + ' ago'
+
+  const renderLike =
+    _renderLike ||
+    (() => (
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+        }}>
+        <TouchableOpacity onPress={() => onLikePress(post)} activeOpacity={1}>
+          {liked ? (
+            <Icons.LikeColored width={normalize(24)} height={normalize(24)} />
+          ) : (
+            <Icons.Like width={normalize(24)} height={normalize(24)} />
+          )}
+        </TouchableOpacity>
+      </View>
+    ))
 
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -332,20 +354,7 @@ const PostHeader = ({
         </View>
       </View>
 
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-        }}>
-        <TouchableOpacity onPress={() => onLikePress(post)} activeOpacity={1}>
-          {liked ? (
-            <Icons.LikeColored width={normalize(24)} height={normalize(24)} />
-          ) : (
-            <Icons.Like width={normalize(24)} height={normalize(24)} />
-          )}
-        </TouchableOpacity>
-      </View>
+      {renderLike()}
     </View>
   )
 }

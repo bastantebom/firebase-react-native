@@ -585,6 +585,7 @@ export const Icons = {
   PostTool,
   RoundEllipsisBlue,
   Search,
+  SendMessage,
   Share,
   ShoppingCart,
   TransportationBox,
