@@ -46,7 +46,7 @@ const SplashScreenComponent = () => {
           autoPlay
         />
         <Animated.View style={[styles.textContainer, copyrightAnimationStyle]}>
-          <AppText textStyle="body2">© Copyright Servbees 2020.</AppText>
+          <AppText textStyle="body2">© Copyright Servbees 2021.</AppText>
           <AppText textStyle="body2">All rights reserved</AppText>
           <AppText
             textStyle="metadata"

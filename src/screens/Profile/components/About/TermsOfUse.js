@@ -16,7 +16,7 @@ const TermsOfUse = ({ toggleTermsOfUse }) => {
         paddingSize={3}
       />
       <WebView
-        source={{ uri: 'https://servbees.com/terms-of-use/' }}
+        source={{ uri: 'https://servbees.com/terms/' }}
         startInLoadingState={true}
         renderLoading={() => (
           <View style={{ flex: 1 }}>

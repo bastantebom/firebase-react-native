@@ -309,6 +309,8 @@ const styles = StyleSheet.create({
     width: normalize(42),
     borderRadius: normalize(42 / 2),
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.neutralsZirconLight,
   },
   userInfoDetailsContainer: {
     flex: 1,

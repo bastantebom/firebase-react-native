@@ -236,6 +236,8 @@ const styles = StyleSheet.create({
     width: normalize(42),
     borderRadius: normalize(42 / 2),
     overflow: 'hidden',
+    borderColor: Colors.neutralsZirconLight,
+    borderWidth: 1,
   },
   dividerStyle: {
     backgroundColor: Colors.neutralsZircon,

@@ -16,7 +16,7 @@ const PrivacyPolicy = ({ togglePrivacyPolicy }) => {
         paddingSize={3}
       />
       <WebView
-        source={{ uri: 'https://servbees.com/privacy-policy/' }}
+        source={{ uri: 'https://servbees.com/privacy/' }}
         startInLoadingState={true}
         renderLoading={() => (
           <View style={{ flex: 1 }}>

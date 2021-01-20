@@ -270,11 +270,13 @@ const PostHeader = ({
           activeOpacity={1}
           onPress={() => onAvatarPress?.()}
           style={{
-            height: normalize(32),
-            width: normalize(32),
-            borderRadius: normalize(32 / 2),
+            height: normalize(33),
+            width: normalize(33),
+            borderRadius: normalize(33 / 2),
             overflow: 'hidden',
             alignSelf: 'center',
+            borderColor: Colors.neutralsZirconLight,
+            borderWidth: 1,
           }}>
           {profile_photo ? (
             <CacheableImage

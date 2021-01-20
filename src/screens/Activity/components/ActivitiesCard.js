@@ -312,6 +312,8 @@ const styles = StyleSheet.create({
     width: normalize(20),
     borderRadius: normalize(20 / 2),
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.neutralsZirconLight,
   },
 })
 

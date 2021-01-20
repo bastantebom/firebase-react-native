@@ -141,7 +141,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
               notificationType === 'danger' ? (
                 <Icons.Warning />
               ) : (
-                <Icons.CircleTick />
+                <Icons.CircleTickWhite />
               )
             }>
             <View style={{ marginLeft: 15, marginTop: 10 }}>
@@ -149,7 +149,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
             </View>
           </Notification>
         )}
-
         <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
           <ScreenHeaderTitle
             iconSize={normalize(16)}
@@ -173,7 +172,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 We prioritize health and safety. Please take your temperature
                 using a scanner or thermometer and log it down below.
               </AppText>
-
               <TouchableOpacity
                 onPress={toggleTempAbout}
                 customStyle={{
