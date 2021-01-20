@@ -20,18 +20,23 @@ const PayoutDetails = ({ navigation, route }) => {
 
   const [payoutData, setPayoutData] = useState({ method })
   const [showBankList, setShowBankList] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
   const { user } = useContext(UserContext)
 
   const onSave = async () => {
     let success = false
-    if (!payout) {
-      const result = await Api.savePayout({ body: payoutData })
-      success = result.success
-    } else {
+    if (payout || isSaved) {
       const result = await Api.updatePayout({ uid: user.uid, body: payoutData })
       success = result.success
+    } else {
+      const result = await Api.savePayout({ body: payoutData })
+      success = result.success
     }
-    if (success) navigation.navigate('payout-success')
+
+    if (success) {
+      setIsSaved(true)
+      navigation.navigate('payout-success')
+    }
   }
 
   return (
