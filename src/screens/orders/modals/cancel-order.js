@@ -1,14 +1,55 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Platform, Text } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Platform,
+  Text,
+  Keyboard,
+  Animated,
+} from 'react-native'
 import { AppText, AppButton } from '@/components'
 import { normalize, Colors } from '@/globals'
 
 const CancelOrderModal = ({ onCancelPress, onBackPress, cancelText }) => {
   const [notes, setNotes] = useState('')
 
+  const [animatedPadding] = useState(new Animated.Value(24))
+
+  const onKeyboardDidShow = e => {
+    const keyboardHeight = e.endCoordinates.height
+    keyboardToggleAnimation(keyboardHeight + 16)
+  }
+
+  const onKeyboardDidHide = () => {
+    keyboardToggleAnimation(24)
+  }
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', onKeyboardDidShow)
+    Keyboard.addListener('keyboardDidHide', onKeyboardDidHide)
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', onKeyboardDidHide)
+    }
+  }, [])
+
+  const keyboardToggleAnimation = height => {
+    if (Platform.OS === 'ios')
+      Animated.timing(animatedPadding, {
+        toValue: height,
+        duration: 500,
+        useNativeDriver: false,
+      }).start()
+  }
+
+  let paddingAnimatedStyle = {
+    paddingBottom: animatedPadding,
+  }
+
   return (
     <View style={styles.container}>
-      <View style={{ padding: normalize(24) }}>
+      <Animated.View style={[{ padding: normalize(24) }, paddingAnimatedStyle]}>
         <View style={[styles.center, styles.titleWrapper]}>
           <Text style={styles.title}>{cancelText}</Text>
           <Text style={styles.description}>
@@ -35,7 +76,7 @@ const CancelOrderModal = ({ onCancelPress, onBackPress, cancelText }) => {
           onPress={() => onCancelPress({ notes })}
         />
         <AppButton text="Go Back" onPress={onBackPress} />
-      </View>
+      </Animated.View>
     </View>
   )
 }

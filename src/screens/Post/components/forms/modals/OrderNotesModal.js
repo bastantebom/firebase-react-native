@@ -6,6 +6,7 @@ import {
   TextInput,
   Keyboard,
   Animated,
+  Platform,
 } from 'react-native'
 
 import { AppText, BottomSheetHeader, ScreenHeaderTitle } from '@/components'
@@ -40,11 +41,12 @@ const OrderNotesModal = ({ close, setNotes, notes }) => {
   }, [])
 
   const keyboardToggleAnimation = height => {
-    Animated.timing(animatedPadding, {
-      toValue: height,
-      duration: 500,
-      useNativeDriver: false,
-    }).start()
+    if (Platform.OS === 'ios')
+      Animated.timing(animatedPadding, {
+        toValue: height,
+        duration: 500,
+        useNativeDriver: false,
+      }).start()
   }
 
   let paddingAnimatedStyle = {

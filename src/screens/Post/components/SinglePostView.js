@@ -160,7 +160,6 @@ const SinglePostView = props => {
 
   const [showNotification, setShowNotification] = useState(false)
   const [scheduleModal, showScheduleModal] = useState(false)
-  const [selectedSchedule, setSelectedSchedule] = useState()
   const [editPost, showEditPost] = useState(false)
   const [postImageModal, setPostImageModal] = useState(false)
   const [itemModal, showItemModal] = useState(false)
@@ -1223,7 +1222,7 @@ const SinglePostView = props => {
         }>
         <EditPostScreen
           data={props.route.params.data}
-          card={cardMap(type)}
+          card={() => {}}
           togglePostModal={() => showEditPost(false)}
         />
       </Modal>
@@ -1301,21 +1300,20 @@ const SinglePostView = props => {
             price: `₱${commaSeparate(items[0].price)}`,
           }}
           handleContinue={(date, time) => {
-            setSelectedSchedule(`${date, time}`)
             showScheduleModal(false)
+            navigation.navigate('NBTScreen', {
+              screen: 'basket',
+              params: {
+                postType: type,
+                postData: props.route?.params?.data,
+                schedule: { date, time },
+              },
+            })
           }}
         />
       </Modal>
     </SafeAreaView>
   )
-}
-
-const cardMap = card => {
-  return card === 'service'
-    ? 'need'
-    : card === 'Need' || card === 'need'
-    ? 'post'
-    : 'sell'
 }
 
 const styles = StyleSheet.create({

@@ -64,6 +64,7 @@ import GuestActivity from '@/screens/Activity/components/GuestActivity'
 
 import ChatHouse from '@/screens/Chat/chat-house'
 import PostChat from '@/screens/Chat/post-chat'
+import Basket from '@/screens/orders/basket'
 
 import {
   AlmostThere,
@@ -172,6 +173,7 @@ function NoBottomTabScreens() {
         name="change-password"
         component={ChangePasswordScreen}
       />
+      <NoBottomTabScreenStack.Screen name="basket" component={Basket} />
     </NoBottomTabScreenStack.Navigator>
   )
 }
