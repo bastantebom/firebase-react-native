@@ -9,14 +9,15 @@ import { normalize, Colors } from '@/globals'
 import { ChevronDown, PostCalendar, PostClock } from '@/assets/images/icons'
 
 import { Context } from '@/context'
+import { isEmpty } from '@/globals/Utils'
 
 const ChangeDeliveryMethodModal = ({
   closeModal,
   availableDeliveryMethods,
   setDeliveryChoice,
   deliveryChoice,
+  type,
 }) => {
-  const { deliveryMethod, setDeliveryMethod } = useContext(Context)
   const [deliverNow, setDeliverNow] = useState(true)
   const [forLater, setForLater] = useState(false)
   const [date, setDate] = useState(new Date())
@@ -30,13 +31,12 @@ const ChangeDeliveryMethodModal = ({
   useEffect(() => {
     let temp
     for (const [key, value] of Object.entries(availableDeliveryMethods)) {
-      temp = { ...temp, [key]: true }
+      if (!isEmpty(value)) {
+        temp = { ...temp, [key]: true }
+        setDeliveryChoice(key)
+      }
       setEnabledMethods(temp)
     }
-    if (!deliveryChoice)
-      for (const [key, value] of Object.entries(temp)) {
-        return setDeliveryChoice(key)
-      }
   }, [])
 
   const RadioStateHandler = val => {
@@ -55,14 +55,12 @@ const ChangeDeliveryMethodModal = ({
   const deliveryHandler = () => {
     if (deliveryChoice !== 'delivery') {
       setDeliveryChoice('delivery')
-      // setDeliveryChoice('delivery')
     }
   }
 
   const pickUpHandler = () => {
     if (deliveryChoice !== 'pickup') {
       setDeliveryChoice('pickup')
-      // setDeliveryChoice('pickup')
     }
   }
 
@@ -117,6 +115,7 @@ const ChangeDeliveryMethodModal = ({
             flexDirection: 'row',
             justifyContent: 'flex-start',
             marginBottom: normalize(10),
+            paddingBottom: 24,
           }}>
           <TouchableOpacity
             onPress={deliveryHandler}
@@ -131,7 +130,7 @@ const ChangeDeliveryMethodModal = ({
                   : Colors.neutralGray
               }
               customStyle={{ marginRight: normalize(15) }}>
-              Delivery
+              {type === 'sell' ? 'Delivery' : 'Walk-In'}
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -146,11 +145,11 @@ const ChangeDeliveryMethodModal = ({
                   ? '#000'
                   : Colors.neutralGray
               }>
-              Pick-up
+              {type === 'sell' ? 'Pickup' : 'Appointment'}
             </AppText>
           </TouchableOpacity>
         </View>
-        <AppRadio
+        {/* <AppRadio
           label={
             <AppText textStyle="body1medium">
               {deliveryChoice === 'delivery' ? 'Deliver Now' : 'Pick up Now'}
@@ -170,7 +169,7 @@ const ChangeDeliveryMethodModal = ({
           value={forLater}
           style={{ paddingLeft: 0, paddingBottom: forLater ? 0 : 50 }}
           valueChangeHandler={() => RadioStateHandler('forLater')}
-        />
+        /> */}
         {forLater && (
           <Animated.View style={{ opacity: 0.5 }}>
             <TouchableOpacity

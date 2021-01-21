@@ -301,6 +301,24 @@ import ChatEmpty from './chat-empty.svg'
 import HorizontalWhiteEllipsis from './ellipsis-horizontal-white.svg'
 import WalletGray from './wallet-gray.svg'
 import InfoSmall from './info-small.svg'
+import PostSchedule from './post-schedule.svg'
+import PostDelivery from './post-delivery.svg'
+import PostAppointment from './post-appointment.svg'
+
+import PostNeedGray from './post-need-gray.svg'
+import PostServiceGray from './post-service-gray.svg'
+
+import BasketSummary from './basket-summary.svg'
+import BasketPayment from './basket-payment.svg'
+import BasketAdditionalNotes from './basket-additional-notes.svg'
+
+import BasketDelivery from './basket-delivery.svg'
+import BasketPickup from './basket-pickup.svg'
+import BasketSchedule from './basket-schedule.svg'
+import BasketWalkIn from './basket-walk-in.svg'
+
+import BasketMessage from './basket-message.svg'
+import BasketAttachedPost from './basket-attached-post.svg'
 
 export {
   Trash,
@@ -526,10 +544,21 @@ export {
 }
 
 export const Icons = {
+  PostDelivery,
+  PostSchedule,
   ArrowRight,
   Avatar: ProfileImageDefault,
   Back,
   BankActive,
+  BasketSummary,
+  BasketDelivery,
+  BasketPayment,
+  BasketAdditionalNotes,
+  BasketPickup,
+  BasketSchedule,
+  BasketMessage,
+  BasketAttachedPost,
+  BasketWalkIn,
   Card,
   CartDot,
   Chat,
@@ -583,6 +612,9 @@ export const Icons = {
   PostParcel,
   PostParcelBlue,
   PostTool,
+  PostAppointment,
+  PostNeedGray,
+  PostServiceGray,
   RoundEllipsisBlue,
   Search,
   SendMessage,

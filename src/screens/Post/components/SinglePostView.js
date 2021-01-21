@@ -21,6 +21,7 @@ import Api from '@/services/Api'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
+import moment from 'moment'
 
 import { normalize, GlobalStyle, Colors, timePassed } from '@/globals'
 import {
@@ -43,6 +44,7 @@ import {
   commaSeparate,
   generateDynamicLink,
   getPreviewLinkData,
+  isEmpty,
 } from '@/globals/Utils'
 import Share from 'react-native-share'
 
@@ -76,7 +78,12 @@ const SinglePostView = props => {
     price_range,
     likers,
   } = props.route?.params?.data
+
   const { othersView = false } = props.route?.params
+
+  const schedule = props.route?.params?.data.store_details.schedule ?? {}
+
+  const deliveryMethods = props.route?.params?.data.delivery_methods ?? {}
 
   const [payments, setPayments] = useState([])
   useEffect(() => {
@@ -561,6 +568,136 @@ const SinglePostView = props => {
     )
   }
 
+  const Schedule = () => {
+    let storeSched = []
+
+    for (const [key, value] of Object.entries(schedule)) {
+      if (value.value) {
+        storeSched.push({
+          day: key,
+          time: !value.hour24
+            ? `${moment(value.opens).format('LT')} - ${moment(
+                value.closes
+              ).format('LT')}`
+            : '24 hours',
+        })
+      }
+    }
+
+    if (storeSched.length)
+      return (
+        <View style={styles.iconText}>
+          <Icons.PostSchedule width={normalize(18)} height={normalize(18)} />
+          <View style={{ marginLeft: 8, marginRight: 20, flex: 1 }}>
+            {storeSched.map(sched => {
+              return (
+                <View style={{ flexDirection: 'row' }} key={sched.day}>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{
+                      fontFamily: 'RoundedMplus1c-Regular',
+                      textTransform: 'capitalize',
+                      marginRight: 16,
+                    }}>
+                    {sched.day}
+                  </AppText>
+                  <AppText
+                    textStyle="body2"
+                    customStyle={{ fontFamily: 'RoundedMplus1c-Regular' }}>
+                    {sched.time}
+                  </AppText>
+                </View>
+              )
+            })}
+          </View>
+        </View>
+      )
+
+    return <></>
+  }
+
+  const DeliveryMethods = () => {
+    const methods = []
+
+    for (const [key, value] of Object.entries(deliveryMethods)) {
+      if (!isEmpty(value)) {
+        if (type === 'service') {
+          if (key === 'delivery') {
+            methods.push('walk-in')
+          } else {
+            methods.push('appointment')
+          }
+        } else methods.push(key)
+      }
+    }
+
+    return (
+      <View style={styles.iconText}>
+        {type === 'sell' ? (
+          <Icons.PostDelivery width={normalize(18)} height={normalize(18)} />
+        ) : (
+          <Icons.PostAppointment width={normalize(18)} height={normalize(18)} />
+        )}
+
+        <AppText
+          textStyle="body2"
+          customStyle={{
+            fontFamily: 'RoundedMplus1c-Regular',
+            textTransform: 'capitalize',
+            marginRight: 16,
+            marginLeft: 8,
+          }}>
+          {type === 'sell'
+            ? `Available for ${methods.join(' or ')}`
+            : `By ${methods.join(' or ')}`}
+        </AppText>
+      </View>
+    )
+  }
+
+  const PostType = () => {
+    const postTypeDataMap = {
+      service: {
+        icon: (
+          <Icons.PostNeedGray width={normalize(18)} height={normalize(18)} />
+        ),
+        text: (
+          <AppText textStyle="body2" color={Colors.secondaryBrinkPink}>
+            Service
+          </AppText>
+        ),
+      },
+      need: {
+        icon: (
+          <Icons.PostNeedGray width={normalize(18)} height={normalize(18)} />
+        ),
+        text: (
+          <AppText textStyle="body2" color={Colors.secondaryMountainMeadow}>
+            Need
+          </AppText>
+        ),
+      },
+      sell: {
+        icon: <Icons.PostParcel width={normalize(18)} height={normalize(18)} />,
+        text: (
+          <AppText textStyle="body2" color={Colors.secondaryRoyalBlue}>
+            Sell
+          </AppText>
+        ),
+      },
+    }
+
+    return (
+      <View style={styles.iconText}>
+        {postTypeDataMap[type].icon}
+        <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
+          in{' '}
+        </AppText>
+        {postTypeDataMap[type].text}
+      </View>
+    )
+  }
+
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
@@ -744,27 +881,7 @@ const SinglePostView = props => {
               </AppText>
             </View>
 
-            <View style={styles.iconText}>
-              <Icons.PostParcel width={normalize(18)} height={normalize(18)} />
-              <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                in{' '}
-              </AppText>
-              {type === 'service' ? (
-                <AppText textStyle="body2" color={Colors.secondaryBrinkPink}>
-                  Service
-                </AppText>
-              ) : type === 'need' ? (
-                <AppText
-                  textStyle="body2"
-                  color={Colors.secondaryMountainMeadow}>
-                  Need
-                </AppText>
-              ) : (
-                <AppText textStyle="body2" color={Colors.secondaryRoyalBlue}>
-                  Sell
-                </AppText>
-              )}
-            </View>
+            <PostType />
 
             <View style={styles.iconText}>
               <Icons.PostNavigation
@@ -777,6 +894,9 @@ const SinglePostView = props => {
                 {city}, {province}
               </AppText>
             </View>
+
+            <Schedule />
+
             {expired ? (
               <View
                 style={[{ paddingBottom: normalize(100) }, styles.iconText]}>
@@ -793,43 +913,6 @@ const SinglePostView = props => {
               </View>
             ) : (
               <>
-                {type == 'service' && (
-                  <View style={{ marginBottom: normalize(16) }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: 0,
-                      }}>
-                      <Icons.PostCalendar
-                        width={normalize(16)}
-                        height={normalize(16)}
-                      />
-                      <AppText
-                        textStyle="body2"
-                        customStyle={{ marginLeft: 8, marginRight: 20 }}>
-                        10:00 AM - 7:00 PM ( Tue - Sun )
-                      </AppText>
-                    </View>
-                    <>
-                      {storeOpen ? (
-                        <AppText
-                          textStyle="body2"
-                          customStyle={{ marginLeft: 30 }}
-                          color={Colors.secondaryMountainMeadow}>
-                          Open Now
-                        </AppText>
-                      ) : (
-                        <AppText
-                          textStyle="body2"
-                          customStyle={{ marginLeft: 30 }}
-                          color={Colors.errColor}>
-                          Closed
-                        </AppText>
-                      )}
-                    </>
-                  </View>
-                )}
                 <View style={styles.iconText}>
                   <Icons.PostInfo
                     width={normalize(18)}
@@ -871,17 +954,7 @@ const SinglePostView = props => {
                     </AppText>
                   </View>
                 )}
-                {type == 'service' && (
-                  <View style={styles.iconText}>
-                    <Icons.PostTool
-                      width={normalize(18)}
-                      height={normalize(18)}
-                    />
-                    <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                      Serviceable area within 50KM
-                    </AppText>
-                  </View>
-                )}
+                {type != 'need' && <DeliveryMethods />}
               </>
             )}
           </View>

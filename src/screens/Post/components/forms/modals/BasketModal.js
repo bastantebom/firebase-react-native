@@ -41,6 +41,7 @@ import {
   Paypal,
   InfoSmall,
   PinBeeAlt,
+  Icons,
 } from '@/assets/images/icons'
 import { BeeResponsible } from '@/assets/images'
 
@@ -50,7 +51,9 @@ import AddNoteModal from './AddNoteModal'
 import OrderNotesModal from './OrderNotesModal'
 import ServiceSchedule from './ServiceSchedule'
 import { useNavigation } from '@react-navigation/native'
-import { commaSeparate } from '@/globals/Utils'
+import { commaSeparate, isEmpty } from '@/globals/Utils'
+import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy'
+import TermsOfUse from '@/screens/Authentication/SignUp/components/TermsOfUse'
 
 const BasketModal = ({
   closeModal,
@@ -68,6 +71,9 @@ const BasketModal = ({
   const [editOrderId, setEditOrderId] = useState()
   const [orderedCart, setOrderedCart] = useState()
   const [serviceSchedule, setServiceSchedule] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPrivacyVisible, setIsPrivacyVisible] = useState(false)
+  const [isTermsVisible, setIsTermsVisible] = useState(false)
 
   const [orderID, setOrderID] = useState()
   const [userData, setUserData] = useState({})
@@ -95,8 +101,9 @@ const BasketModal = ({
   } = postData
 
   const [deliveryChoice, setDeliveryChoice] = useState(
-    delivery_methods.delivery ? 'delivery' : 'pickup'
+    !isEmpty(delivery_methods.delivery) ? 'delivery' : 'pickup'
   )
+
   const [paymentChoice, setPaymentChoice] = useState(payment)
   const [notes, setNotes] = useState()
   const [paymentMethod, setPaymentMethod] = useState('')
@@ -189,6 +196,7 @@ const BasketModal = ({
   }
 
   const sendOfferHandler = async () => {
+    setIsSubmitting(true)
     const parameters = {
       uid: user.uid,
       body: {
@@ -224,9 +232,11 @@ const BasketModal = ({
           orderID,
         },
       })
+      setIsSubmitting(false)
     } catch (error) {
       console.log(error)
       Alert.alert('Error', 'Oops, something went wrong.')
+      setIsSubmitting(false)
     }
   }
 
@@ -236,6 +246,8 @@ const BasketModal = ({
   }
 
   const placeOrderHandler = async () => {
+    setIsSubmitting(true)
+
     const itemsToSave = !is_multiple
       ? [
           {
@@ -293,9 +305,11 @@ const BasketModal = ({
       })
       setOrderID(orderID)
       setOrderedCart(userCart)
+      setIsSubmitting(false)
       setUserCart([])
     } catch (error) {
       console.log(error)
+      setIsSubmitting(false)
       Alert.alert('Error', 'Oops, something went wrong')
     }
   }
@@ -425,12 +439,58 @@ const BasketModal = ({
         </View>
         <View style={{ flexDirection: 'row', marginLeft: 12, marginTop: 16 }}>
           <InfoSmall width={normalize(16)} height={normalize(16)} />
-          <AppText textStyle="caption" customStyle={{ marginLeft: 8 }}>
-            Before you continue, kindly review our{' '}
-            <AppText color={Colors.contentOcean}>Privacy Policy </AppText>
-            and <AppText color={Colors.contentOcean}>Terms of Use.</AppText>
-          </AppText>
+          <View>
+            <AppText textStyle="caption" customStyle={{ marginLeft: 8 }}>
+              Before you continue, kindly review our{' '}
+            </AppText>
+            <View style={{ flexDirection: 'row', marginLeft: 8 }}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  setIsPrivacyVisible(true)
+                }}>
+                <AppText color={Colors.contentOcean}>Privacy Policy </AppText>
+              </TouchableOpacity>
+              <AppText textStyle="caption">and </AppText>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  setIsTermsVisible(true)
+                }}>
+                <AppText color={Colors.contentOcean}>Terms of Use.</AppText>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
+
+        <Modal
+          isVisible={isTermsVisible}
+          animationIn="slideInRight"
+          animationInTiming={450}
+          animationOut="slideOutRight"
+          animationOutTiming={450}
+          onBackButtonPress={() => setIsTermsVisible(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <TermsOfUse onClose={() => setIsTermsVisible(false)} />
+        </Modal>
+        <Modal
+          isVisible={isPrivacyVisible}
+          animationIn="slideInRight"
+          animationInTiming={450}
+          animationOut="slideOutRight"
+          animationOutTiming={450}
+          onBackButtonPress={() => setIsPrivacyVisible(false)}
+          style={{
+            margin: 0,
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <Privacy onClose={() => setIsPrivacyVisible(false)} />
+        </Modal>
 
         <View
           style={{
@@ -452,6 +512,204 @@ const BasketModal = ({
               for everyone.
             </AppText>
           </View>
+        </View>
+      </View>
+    )
+  }
+
+  const SubmitButton = () => {
+    return (
+      <TouchableOpacity
+        disabled={!paymentMethod && postType !== 'need' && !isSubmitting}
+        onPress={() => {
+          if (postType === 'need') {
+            sendOfferHandler()
+          } else {
+            placeOrderHandler()
+          }
+        }}>
+        <View
+          style={
+            styles[
+              !!paymentMethod || postType === 'need'
+                ? 'buyButtonContainer'
+                : 'disabledBuyButtonContainer'
+            ]
+          }>
+          {!isSubmitting ? (
+            <View
+              style={{
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                width: '100%',
+                paddingHorizontal: normalize(16),
+              }}>
+              {fromEdit ? (
+                <AppText textStyle="body1medium">
+                  {postType === 'need' ? 'Update Offer' : 'Update'}
+                </AppText>
+              ) : (
+                <AppText textStyle="body1medium">
+                  {postType === 'need' ? 'Send Offer' : 'Continue'}
+                </AppText>
+              )}
+              <AppText textStyle="body1">
+                {postType === 'need'
+                  ? `₱${commaSeparate(offerData?.price)}`
+                  : `₱${commaSeparate(computedTotal())}`}
+              </AppText>
+            </View>
+          ) : (
+            <View
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'row',
+                width: '100%',
+                paddingHorizontal: normalize(16),
+              }}>
+              <ActivityIndicator />
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  const DeliveryMethod = () => {
+    const deliveryDataMap = {
+      delivery: {
+        icon: (
+          <Icons.BasketDelivery width={normalize(24)} height={normalize(24)} />
+        ),
+        text: 'Delivery',
+      },
+      pickup: {
+        icon: (
+          <Icons.BasketPickup width={normalize(24)} height={normalize(24)} />
+        ),
+        text: 'Pick-up',
+      },
+      appointment: {
+        icon: (
+          <Icons.BasketSchedule width={normalize(24)} height={normalize(24)} />
+        ),
+        text: 'Appointment',
+      },
+      walkIn: {
+        icon: (
+          <Icons.BasketWalkIn width={normalize(24)} height={normalize(24)} />
+        ),
+        text: 'Walk-In',
+      },
+    }
+
+    const delivery = () => {
+      if (postType !== 'sell') {
+        if (deliveryChoice === 'delivery') {
+          return deliveryDataMap.walkIn
+        } else {
+          return deliveryDataMap.appointment
+        }
+      }
+      return deliveryDataMap[deliveryChoice]
+    }
+
+    return (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {delivery().icon}
+        <AppText
+          textStyle="body1medium"
+          customStyle={{ marginLeft: normalize(10) }}>
+          {delivery().text}
+        </AppText>
+      </View>
+    )
+  }
+
+  const DeliveryAddress = () => {
+    const buyerAddress =
+      userInfo.addresses.filter(address => address.default)[0] ?? {}
+
+    let sellerAddress =
+      delivery_methods.pickup?.location ??
+      postData.store_details?.location ??
+      {}
+
+    const getAddress = () => {
+      if (deliveryChoice === 'pickup') {
+        return sellerAddress.full_address
+      } else {
+        return buyerAddress.full_address
+      }
+    }
+
+    const getAddressName = () => {
+      if (deliveryChoice === 'pickup') {
+        return `Seller's Location: ${sellerAddress?.name ?? 'Home (Default)'}`
+      } else {
+        return `Your Location: ${buyerAddress?.name ?? 'Home (Default)'}`
+      }
+    }
+
+    return (
+      <View>
+        <AppText textStyle="body2medium">{getAddressName()}</AppText>
+        <AppText
+          textStyle="body2"
+          customStyle={{ marginVertical: normalize(10) }}>
+          {/* Display name of address */}
+          {getAddress()}
+        </AppText>
+      </View>
+    )
+  }
+
+  const DeliveryNotes = () => {
+    const byCourier = delivery_methods.delivery?.nationwide?.notes || ''
+    const bySeller = delivery_methods.delivery?.radius?.notes || ''
+
+    return (
+      <View>
+        {byCourier != 0 && bySeller != 0 && (
+          <View>
+            <AppText textStyle="body2medium">Seller's Delivery Notes</AppText>
+            {byCourier.length != 0 && (
+              <>
+                <AppText textStyle="body2" customStyle={{ marginTop: 8 }}>
+                  Ship via local or third party couriers
+                </AppText>
+                <AppText textStyle="body2" customStyle={{ marginTop: 4 }}>
+                  {byCourier}
+                </AppText>
+              </>
+            )}
+
+            {bySeller.length != 0 && (
+              <>
+                <AppText textStyle="body2" customStyle={{ marginTop: 8 }}>
+                  Delivery by seller
+                </AppText>
+                <AppText textStyle="body2" customStyle={{ marginTop: 4 }}>
+                  {bySeller}
+                </AppText>
+              </>
+            )}
+          </View>
+        )}
+        <View
+          style={{
+            backgroundColor: Colors.secondarySolitude,
+            padding: 16.5,
+            borderRadius: 8,
+            marginBottom: 16,
+            marginTop: 16,
+          }}>
+          <AppText textStyle="caption" customStyle={{ paddingBottom: 16 }}>
+            For this transaction, kindly agree with the seller how delivery will
+            be made (i.e. Grab, Lalamove, etc.). At the moment, Servbees does
+            not cover this feature. Rest assured, this will be made available to
+            you soon.
+          </AppText>
         </View>
       </View>
     )
@@ -498,7 +756,10 @@ const BasketModal = ({
             </View>
             <View style={styles.caption}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <PostNote width={normalize(24)} height={normalize(24)} />
+                <Icons.BasketSummary
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
@@ -598,20 +859,8 @@ const BasketModal = ({
                 marginBottom: normalize(10),
               }}>
               <View style={styles.caption}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <PostBox width={normalize(24)} height={normalize(24)} />
-                  <AppText
-                    textStyle="body1medium"
-                    customStyle={{ marginLeft: normalize(10) }}>
-                    {postType === 'service'
-                      ? 'Service Location'
-                      : postType === 'sell'
-                      ? deliveryChoice !== 'delivery'
-                        ? 'Pick-up'
-                        : 'Delivery'
-                      : null}
-                  </AppText>
-                </View>
+                <DeliveryMethod />
+
                 <TouchableOpacity onPress={() => showChangeDeliveryModal(true)}>
                   <AppText textStyle="button2" color={Colors.contentOcean}>
                     Change
@@ -619,14 +868,11 @@ const BasketModal = ({
                 </TouchableOpacity>
               </View>
               <View style={{ paddingTop: normalize(10) }}>
-                <AppText
-                  textStyle="body2"
-                  customStyle={{ marginVertical: normalize(10) }}>
-                  {/* Display name of address */}
-                  {deliveryChoice === 'delivery' || deliveryChoice === 'service'
-                    ? addressData.full_address
-                    : full_address}
-                </AppText>
+                {postType !== 'service' ? (
+                  <DeliveryAddress />
+                ) : (
+                  <ServiceAddress />
+                )}
               </View>
 
               <>
@@ -668,33 +914,7 @@ const BasketModal = ({
                   )}
                 </View>
               </>
-              <View
-                style={{
-                  backgroundColor: Colors.secondarySolitude,
-                  padding: 16.5,
-                  borderRadius: 8,
-                  marginBottom: 16,
-                }}>
-                <AppText
-                  textStyle="body2medium"
-                  color={Colors.primaryMidnightBlue}
-                  customStyle={{ marginBottom: 4 }}>
-                  A few things to note..
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  customStyle={{ paddingBottom: 16 }}>
-                  Please note that we’re currently working on adding the
-                  delivery fee/s in the order. For the meantime, delivery fees
-                  will be arranged with the seller using chat or outside the
-                  Servbees app.
-                </AppText>
-                <TouchableOpacity onPress={() => {}}>
-                  <AppText textStyle="body2medium" color={Colors.contentOcean}>
-                    Learn More
-                  </AppText>
-                </TouchableOpacity>
-              </View>
+              <DeliveryNotes />
 
               {/* Hide for now 01-19 */}
               {/* <TouchableOpacity onPress={() => showAddNoteModal(true)}>
@@ -720,7 +940,10 @@ const BasketModal = ({
             }}>
             <View style={styles.caption}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <PostCash width={normalize(24)} height={normalize(24)} />
+                <Icons.BasketPayment
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
@@ -941,7 +1164,10 @@ const BasketModal = ({
             }}>
             <View style={styles.caption}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <PostCash width={normalize(24)} height={normalize(24)} />
+                <Icons.BasketAdditionalNotes
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
                 <AppText
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
@@ -1007,47 +1233,8 @@ const BasketModal = ({
             with the payment.
           </AppText>
         )}
-        <TouchableOpacity
-          disabled={!paymentMethod && postType !== 'need'}
-          onPress={() => {
-            if (postType === 'need') {
-              sendOfferHandler()
-            } else {
-              placeOrderHandler()
-            }
-          }}>
-          <View
-            style={
-              styles[
-                !!paymentMethod || postType === 'need'
-                  ? 'buyButtonContainer'
-                  : 'disabledBuyButtonContainer'
-              ]
-            }>
-            <View
-              style={{
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                width: '100%',
-                paddingHorizontal: normalize(16),
-              }}>
-              {fromEdit ? (
-                <AppText textStyle="body1medium">
-                  {postType === 'need' ? 'Update Offer' : 'Update'}
-                </AppText>
-              ) : (
-                <AppText textStyle="body1medium">
-                  {postType === 'need' ? 'Send Offer' : 'Continue'}
-                </AppText>
-              )}
-              <AppText textStyle="body1">
-                {postType === 'need'
-                  ? `₱${commaSeparate(offerData?.price)}`
-                  : `₱${commaSeparate(computedTotal())}`}
-              </AppText>
-            </View>
-          </View>
-        </TouchableOpacity>
+
+        <SubmitButton />
       </View>
       <Modal
         isVisible={changeDeliveryModal}
@@ -1063,6 +1250,7 @@ const BasketModal = ({
           </TouchableWithoutFeedback>
         }>
         <ChangeDeliveryMethodModal
+          type={postType}
           deliveryChoice={deliveryChoice}
           setDeliveryChoice={choice => setDeliveryChoice(choice)}
           availableDeliveryMethods={delivery_methods}

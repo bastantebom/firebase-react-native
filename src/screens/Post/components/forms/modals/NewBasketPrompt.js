@@ -29,36 +29,38 @@ const NewBasketPrompt = ({ close, currentItem, postID }) => {
           justifyContent: 'center',
         }}>
         <AppText textStyle="body2medium" customStyle={{ textAlign: 'center' }}>
-          Are you sure?
+          Start a new basket?
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          Ordering from another post will empty your basket.{' '}
+          Adding this item will clear your current basket.
         </AppText>
 
         <View style={{ flexDirection: 'row', marginTop: 16 }}>
-          <TouchableOpacity
-            onPress={handleContinue}
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              backgroundColor: Colors.primaryYellow,
-              marginRight: 4,
-              paddingVertical: 8,
-              borderRadius: 4,
-            }}>
-            <AppText textStyle="button1">Continue</AppText>
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={handleCancel}
             style={{
               flex: 1,
               alignItems: 'center',
               backgroundColor: Colors.neutralGray,
-              marginLeft: 4,
+
+              marginRight: 4,
               paddingVertical: 8,
               borderRadius: 4,
             }}>
             <AppText textStyle="button1">Cancel</AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleContinue}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              backgroundColor: Colors.primaryYellow,
+              marginLeft: 4,
+              paddingVertical: 8,
+              borderRadius: 4,
+            }}>
+            <AppText textStyle="button1">Continue</AppText>
           </TouchableOpacity>
         </View>
       </View>
