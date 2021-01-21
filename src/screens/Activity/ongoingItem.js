@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
@@ -29,6 +30,7 @@ import { NoPost } from '@/assets/images'
 
 const OngoingItem = ({ route, navigation }) => {
   const { user } = useContext(UserContext)
+
   const [pendingPayment, showPendingPayment] = useState(true)
   const [requests, showRequests] = useState(true)
   const [ongoing, showOngoing] = useState(false)
@@ -150,6 +152,27 @@ const OngoingItem = ({ route, navigation }) => {
     }
   }
 
+  const getPostDetails = async (postId, orderID) => {
+    if (!postId || !orderID) return
+    setIsPendingLoading(true)
+    try {
+      const response = await Api.getPost({ pid: postId })
+      setIsPendingLoading(false)
+      if (!response.success) throw new Error(response.message)
+      navigation.navigate('orders', {
+        screen: 'order-tracker',
+        params: {
+          post: response.data,
+          orderID,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong')
+    }
+    setIsPendingLoading(false)
+  }
+
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
@@ -158,6 +181,12 @@ const OngoingItem = ({ route, navigation }) => {
     }
     return () => (isMounted = false)
   }, [orders])
+
+  useEffect(() => {
+    return () => {
+      setIsPendingLoading(false)
+    }
+  }, [])
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
@@ -262,6 +291,7 @@ const OngoingItem = ({ route, navigation }) => {
                             <ItemCard
                               item={item}
                               handleChatPress={handleChatPress}
+                              onPress={getPostDetails}
                             />
                           </View>
                         )
@@ -319,6 +349,7 @@ const OngoingItem = ({ route, navigation }) => {
                             <ItemCard
                               item={item}
                               handleChatPress={handleChatPress}
+                              onPress={getPostDetails}
                             />
                           </View>
                         )
@@ -385,6 +416,7 @@ const OngoingItem = ({ route, navigation }) => {
                             <ItemCard
                               item={item}
                               handleChatPress={handleChatPress}
+                              onPress={getPostDetails}
                             />
                           </View>
                         )
@@ -453,6 +485,7 @@ const OngoingItem = ({ route, navigation }) => {
                                 <ItemCard
                                   item={item}
                                   handleChatPress={handleChatPress}
+                                  onPress={getPostDetails}
                                 />
                               </View>
                             )
@@ -515,6 +548,7 @@ const OngoingItem = ({ route, navigation }) => {
                                 <ItemCard
                                   item={item}
                                   handleChatPress={handleChatPress}
+                                  onPress={getPostDetails}
                                 />
                               </View>
                             )
@@ -564,6 +598,7 @@ const OngoingItem = ({ route, navigation }) => {
                             <ItemCard
                               item={item}
                               handleChatPress={handleChatPress}
+                              onPress={getPostDetails}
                             />
                           </View>
                         )

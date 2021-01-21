@@ -108,7 +108,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       .doc(`orders/${orderID}`)
       .onSnapshot(async snapshot => {
         if (!snapshot?.data() || !user) return
-        setIsLoading(true)
+        Platform.OS === 'android' && setIsLoading(true)
         try {
           const data = snapshot.data()
           setOrderData(orderData => ({ ...orderData, ...data }))
@@ -126,7 +126,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           console.log(error)
           Alert.alert('Error', 'Oops, something went wrong.')
         }
-        setIsLoading(false)
+        Platform.OS === 'android' && setIsLoading(false)
       })
   }, [])
 

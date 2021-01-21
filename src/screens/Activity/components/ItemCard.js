@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import { AppText, CacheableImage, TransitionIndicator } from '@/components'
-import Api from '@/services/Api'
+import React, { useState, useContext, useEffect } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { AppText, CacheableImage } from '@/components'
+
 import {
   GlobalStyle,
   normalize,
@@ -17,15 +17,12 @@ import {
   Verified,
   ChatEmpty,
 } from '@/assets/images/icons'
-import { useNavigation } from '@react-navigation/native'
+
 import { commaSeparate } from '@/globals/Utils'
 import { UserContext } from '@/context/UserContext'
 import _ from 'lodash'
-const ItemCard = ({ item, handleChatPress }) => {
-  const navigation = useNavigation()
+const ItemCard = ({ item, handleChatPress, onPress }) => {
   const { user } = useContext(UserContext)
-  const [isLoading, setIsLoading] = useState(false)
-
   const unRead =
     item?.chat[0]?.uid !== user?.uid &&
     !item?.chat[0]?.read &&
@@ -51,28 +48,6 @@ const ItemCard = ({ item, handleChatPress }) => {
     )
   }
 
-  const getPostDetails = async () => {
-    if (!item.postId) return
-    setIsLoading(true)
-
-    try {
-      const response = await Api.getPost({ pid: item.postId })
-      if (!response.success) throw new Error(response.message)
-
-      navigation.navigate('orders', {
-        screen: 'order-tracker',
-        params: {
-          post: response.data,
-          orderID: item.orderID,
-        },
-      })
-    } catch (error) {
-      console.log(error)
-      Alert.alert('Error', 'Oops, something went wrong')
-    }
-    setIsLoading(false)
-  }
-
   const chatPress = () => {
     const members = {
       [item.customerUID]: true,
@@ -92,10 +67,12 @@ const ItemCard = ({ item, handleChatPress }) => {
       ? `${item.chat.length} messages`
       : `${item.customer.split(' ')[0]} sent you a message`
   }
+
   return (
     <>
-      <TransitionIndicator loading={isLoading} />
-      <TouchableOpacity activeOpacity={0.7} onPress={() => getPostDetails()}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => onPress(item.postId, item.orderID)}>
         <View style={styles.card}>
           <View
             style={{
