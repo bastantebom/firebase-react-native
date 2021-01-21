@@ -17,7 +17,6 @@ import {
   CloseLight,
   HeaderBackGray,
   NavigationArrowAlt,
-  PinBee,
   PushPin,
 } from '@/assets/images/icons'
 import Config from '@/services/Config'
@@ -41,8 +40,20 @@ const DismissKeyboard = ({ children, isFocused }) => {
   )
 }
 
-// create a component
-const Location = ({ back, address, onValueChange }) => {
+/**
+ * @typedef {object} LocationSearchMapScreenProps
+ * @property {{latitude: number, longitude: number}} address
+ * @property {() => void} onValueChange
+ */
+
+/**
+ * @typedef {object} RootProps
+ * @property {LocationSearchMapScreenProps} LocationSearchMapScreen
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'LocationSearchMapScreen'>} param0 */
+const LocationSearchMapScreen = ({ navigation, route }) => {
+  const { address, onValueChange } = route.params
   Geocoder.init(Config.apiKey)
   const [mapCoords, setMapCoords] = useState({})
   const [addressData, setAddressData] = useState({})
@@ -73,7 +84,7 @@ const Location = ({ back, address, onValueChange }) => {
   const saveRefineLocation = () => {
     const { latitude, longitude } = addressData
     onValueChange({ latitude, longitude, radius: rangeValue * 1000 })
-    back()
+    navigation.goBack()
   }
 
   const getLocationName = (components, key) =>
@@ -207,7 +218,7 @@ const Location = ({ back, address, onValueChange }) => {
               style={{ height: isFocused ? normalize(130) : normalize(200) }}>
               <View style={styles.textInputWrapper}>
                 <TouchableOpacity
-                  onPress={back}
+                  onPress={navigation.goBack}
                   activeOpacity={0.7}
                   style={{
                     top: normalize(30),
@@ -335,7 +346,7 @@ const Location = ({ back, address, onValueChange }) => {
   )
 }
 
-export default Location
+export default LocationSearchMapScreen
 
 const styles = StyleSheet.create({
   buttonWrapper: {

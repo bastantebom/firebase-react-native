@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/stack'
 import DashboardScreen from './dashboard-screen'
 import LikedPostsScreen from './liked-posts-screen'
+import LocationSearchMapScreen from './location-search-map'
 
 const DashboardStack = () => {
   const Stack = createStackNavigator()
@@ -28,6 +29,11 @@ const DashboardStack = () => {
       <Stack.Screen
         name="liked-posts"
         component={LikedPostsScreen}
+        options={defaultScreenOptions}
+      />
+      <Stack.Screen
+        name="location-search-map"
+        component={LocationSearchMapScreen}
         options={defaultScreenOptions}
       />
     </Stack.Navigator>

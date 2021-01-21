@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
 import Modal from 'react-native-modal'
 import {
   View,
@@ -14,21 +14,19 @@ import Filters from './components/filters'
 import { normalize } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 
-import SearchBarWithFilter from './components/SearchBarWithFilter'
 import LocationSearch from './components/LocationSearch'
 
 import AsyncStorage from '@react-native-community/async-storage'
 import Api from '@/services/Api'
 import Posts from './components/posts'
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep, debounce } from 'lodash'
 import { getCurrentPosition, getLocationData } from '@/globals/Utils'
 import VerifyNotification from './components/verify-account-notification'
-import DeleteNotification from './components/deleted-post-notification'
 
-import { Context } from '@/context'
 import LinearGradient from 'react-native-linear-gradient'
-import SearchResults from './components/Search/SearchResults'
+import SearchToolbar from './components/search-toolbar'
+import SearchResults from './components/search-results'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
 const SEARCH_USER_TOOLBAR_HEIGHT = 120
@@ -38,8 +36,7 @@ const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
 const DashboardScreen = ({ navigation }) => {
-  const { user, userStatus } = useContext(UserContext)
-  const { searchType } = useContext(Context)
+  const { user, userInfo, userStatus } = useContext(UserContext)
   const [searchValue, setSearchValue] = useState('')
   const [isFiltersVisible, setIsFiltersVisible] = useState(false)
   const [
@@ -70,6 +67,11 @@ const DashboardScreen = ({ navigation }) => {
   const [isLoadingMoreItems, setIsLoadingMoreItems] = useState(false)
   const [posts, setPosts] = useState({})
 
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchResults, setSearchResults] = useState([])
+  const [noResults, setNoResults] = useState(false)
+  const [searchType, setSearchType] = useState('post')
+
   const loadPosts = async filters => {
     setIsRefreshing(true)
     try {
@@ -87,8 +89,6 @@ const DashboardScreen = ({ navigation }) => {
           }),
           {}
         )
-
-      // console.log(newPosts['JleewwcGDgV09P8IhjJR'])
 
       setTotalPages(response.total_pages)
       setPosts(posts => (!filters.page ? newPosts : { ...posts, ...newPosts }))
@@ -137,9 +137,6 @@ const DashboardScreen = ({ navigation }) => {
     const liked = post.likes?.includes(user.uid)
     if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
     else newLikes.push(user.uid)
-
-    console.log({ newLikes })
-    console.log({ oldLikes })
 
     setPosts(posts => ({
       ...posts,
@@ -200,6 +197,22 @@ const DashboardScreen = ({ navigation }) => {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const handleLocationSearchPress = () => {
+    const defaultAddress = userInfo.addresses?.find?.(
+      address => address.default
+    )
+
+    navigation.navigate('location-search-map', {
+      address: defaultAddress
+        ? {
+            latitude: defaultAddress.latitude,
+            longitude: defaultAddress.longitude,
+          }
+        : { latitude: 14.5831, longitude: 120.9794 },
+      onValueChange: handleLocationChange,
+    })
   }
 
   const handleTypeFilterPress = type => {
@@ -328,6 +341,55 @@ const DashboardScreen = ({ navigation }) => {
       : SEARCH_TOOLBAR_HEIGHT
   }
 
+  const handleSearch = useCallback(
+    debounce(async (search, searchType) => {
+      setNoResults(false)
+      if (!search.length) return setSearchResults([])
+
+      setIsSearching(true)
+      try {
+        const response = await Api[
+          searchType === 'post' ? 'getPosts' : 'getUsers'
+        ]({
+          limit: 20,
+          page: 0,
+          search,
+          sort: 'recent',
+        })
+
+        console.log(response.data)
+        if (!response.success) throw new Error(response.message)
+        if (!response.data.length) setNoResults(true)
+        setSearchResults(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+      setIsSearching(false)
+    }, 200),
+    []
+  )
+
+  const handleSearchResultPress = async data => {
+    if (searchType === 'post') {
+      const [user, likes] = await Promise.all([
+        Api.getUser({ uid: data.uid }),
+        Api.getPostLikes({ pid: data.id }),
+      ])
+      handlePostPress({ ...data, user: user.data, likes: likes.data })
+    } else {
+      handleUserPress(data)
+    }
+  }
+
+  useEffect(() => {
+    handleSearch(searchValue, searchType)
+  }, [searchValue])
+
+  useEffect(() => {
+    setSearchResults([])
+    handleSearch(searchValue, searchType)
+  }, [searchType])
+
   return (
     <>
       <SafeAreaView style={styles.safeAreaContainer}>
@@ -364,16 +426,20 @@ const DashboardScreen = ({ navigation }) => {
                 height: getSearchToolbarHeight(),
                 transform: [{ translateY }],
                 zIndex: 5,
+                alignItems: 'center',
+                flexDirection: 'row',
               }}>
-              <SearchBarWithFilter
-                onFiltersPress={() => setIsFiltersVisible(true)}
-                filters={filters}
-                onValueChange={setSearchValue}
+              <SearchToolbar
                 value={searchValue}
+                onValueChange={setSearchValue}
                 onFocus={() => setSearchBarFocused(true)}
-                onBackPress={() => {
-                  setSearchBarFocused(false)
-                }}
+                onFiltersPress={() => setIsFiltersVisible(true)}
+                onBackPress={() => setSearchBarFocused(false)}
+                searchType={searchType}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                setSearchType={setSearchType}
+                setSearchResults={setSearchResults}
               />
             </Animated.View>
             <Animated.View
@@ -388,18 +454,27 @@ const DashboardScreen = ({ navigation }) => {
                 onSortFilterPress={handleSortFilterPress}
                 filters={filters}
                 location={locationData}
+                onLocationSearchPress={handleLocationSearchPress}
               />
             </Animated.View>
           </AnimatedLinearGradient>
 
-          <View>
+          <View style={{ position: 'relative' }}>
             {searchBarFocused && (
               <SearchResults
                 containerStyle={{
                   position: 'absolute',
-                  top: getSearchToolbarHeight() + 8,
+                  top: getSearchToolbarHeight(),
                 }}
+                isLoading={isSearching}
+                data={searchResults}
+                noResults={noResults}
                 searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                onResultPress={handleSearchResultPress}
+                setSearchType={setSearchType}
+                searchType={searchType}
+                setSearchResults={setSearchResults}
               />
             )}
 

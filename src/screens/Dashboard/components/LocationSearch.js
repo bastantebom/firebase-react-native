@@ -1,19 +1,16 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
+import React, { useContext, useRef } from 'react'
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Animated,
-  Dimensions,
   ScrollView,
 } from 'react-native'
-import Modal from 'react-native-modal'
 
 import { AppText } from '@/components'
 
 import {
   SortNearest,
-  CloseDark,
   FilterServicesWhite,
   FilterSellerWhite,
   FilterNeedsWhite,
@@ -28,25 +25,20 @@ import {
 import Config from '@/services/Config'
 import { GlobalStyle, Colors, normalize } from '@/globals'
 import { UserContext } from '@/context/UserContext'
-import LocationMap from '@/screens/Dashboard/components/Location'
 import { getColorByBackground } from '@/globals/Utils'
 import Geocoder from 'react-native-geocoding'
-import { Context } from '@/context'
+import { useNavigation } from '@react-navigation/native'
 
 Geocoder.init(Config.apiKey)
 const LocationSearch = ({
-  onValueChange,
   filters,
   onTypeFilterPress,
   onSortFilterPress,
+  onLocationSearchPress,
   location,
 }) => {
   const scrollX = useRef(new Animated.Value(0)).current
-
   const { userInfo } = useContext(UserContext)
-  const { addresses } = userInfo
-
-  const [locationModalVisible, setLocationModalVisible] = useState(false)
 
   const barOpacity = scrollX.interpolate({
     inputRange: [0, 50, 80],
@@ -206,7 +198,7 @@ const LocationSearch = ({
               height: `100%`,
             }}>
             <TouchableOpacity
-              onPress={() => setLocationModalVisible(true)}
+              onPress={onLocationSearchPress}
               style={{
                 height: '100%',
                 flex: 1,
@@ -397,34 +389,6 @@ const LocationSearch = ({
               ))}
           </ScrollView>
         </View>
-
-        <Modal
-          isVisible={locationModalVisible}
-          animationIn="slideInRight"
-          animationInTiming={300}
-          animationOut="slideOutRight"
-          animationOutTiming={250}
-          onBackButtonPress={() => setLocationModalVisible(false)}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <LocationMap
-            address={
-              userInfo.addresses
-                ? {
-                    latitude: addresses.find(address => address.default)
-                      .latitude,
-                    longitude: addresses.find(address => address.default)
-                      .longitude,
-                  }
-                : { latitude: 14.5831, longitude: 120.9794 }
-            }
-            back={() => setLocationModalVisible(false)}
-            onValueChange={onValueChange}
-          />
-        </Modal>
       </View>
     </>
   )
