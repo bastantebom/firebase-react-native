@@ -51,7 +51,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   }
 
   const onTempChangeHandler = temp => {
-    if (temp > 0) {
+    if (temp < 40 && temp >= 35) {
       setButtonState(false)
     } else {
       setButtonState(true)
