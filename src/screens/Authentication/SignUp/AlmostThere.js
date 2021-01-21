@@ -53,14 +53,19 @@ const AlmostThere = () => {
   const initializeMap = async () => {
     try {
       const { latitude, longitude } = await getCurrentPosition()
-      handleRegionChange({ latitude, longitude })
+      if (!latitude || !longitude) await defaultAddress()
+      else handleRegionChange({ latitude, longitude })
       setMapInitialized(true)
     } catch (error) {
-      const { results } = await Geocoder.from('Manila')
-      const { lat, lng } = results[0].geometry.location
-      handleRegionChange({ latitude: lat, longitude: lng })
+      await defaultAddress()
       setMapInitialized(true)
     }
+  }
+
+  const defaultAddress = async () => {
+    const { results } = await Geocoder.from('Manila')
+    const { lat, lng } = results[0].geometry.location
+    handleRegionChange({ latitude: lat, longitude: lng })
   }
 
   const saveLocation = async () => {
