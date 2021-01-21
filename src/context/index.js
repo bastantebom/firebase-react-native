@@ -343,6 +343,7 @@ export const ContextProvider = ({ children }) => {
       .get()
     let chats = await Promise.all(
       roomRef.docs.map(async room => {
+        if (!room.data().post_id) return
         const chatRef = await firestore()
           .collection('chat_rooms')
           .doc(room.id)
@@ -355,7 +356,8 @@ export const ContextProvider = ({ children }) => {
         })
       })
     )
-    chats = _.flatten(chats)
+    chats = _.flatten(chats.filter(e => e))
+
     setChatList(chats)
   }
 

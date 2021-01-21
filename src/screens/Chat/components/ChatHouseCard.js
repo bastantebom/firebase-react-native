@@ -30,8 +30,11 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
     )
   }
 
-  const unRead =
-    post?.chats?.length && !post?.chats[0]?.read && !_.isEmpty(post.chats)
+  const unRead = () => {
+    return (
+      post.chats.filter(chat => !chat.read).length > 0 && !_.isEmpty(post.chats)
+    )
+  }
 
   const AvatarPhoto = ({ size }) => {
     return post.profilePhoto ? (
@@ -106,12 +109,12 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
               </AppText>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              {unRead ? <ChatBlue /> : <ChatEmpty />}
+              {unRead() ? <ChatBlue /> : <ChatEmpty />}
               <AppText
                 textStyle="caption"
                 customStyle={{ marginLeft: normalize(4) }}
                 color={
-                  unRead ? Colors.contentOcean : Colors.contentPlaceholder
+                  unRead() ? Colors.contentOcean : Colors.contentPlaceholder
                 }>
                 {renderChatCopy(post)}
               </AppText>

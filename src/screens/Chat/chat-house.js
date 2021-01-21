@@ -60,8 +60,12 @@ const ChatHouse = () => {
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
+      let postIdStack = []
       const ownOrderData = await Promise.all(
         ownOrdersResponse.data.map(async order => {
+          const existId = postIdStack.indexOf(order.post_id)
+          if (!~existId) postIdStack.push(order.post_id)
+          else return
           const getPostResponse = await Api.getPost({
             pid: order.post_id,
           })

@@ -17,6 +17,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Modal from 'react-native-modal'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
+import _ from 'lodash'
 import { normalize, Colors, GlobalStyle, timePassedShort } from '@/globals'
 import {
   AppCheckbox,
@@ -25,7 +26,12 @@ import {
   TransitionIndicator,
   CacheableImage,
 } from '@/components'
-import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import {
+  DefaultSell,
+  DefaultService,
+  DefaultNeed,
+  NoPost,
+} from '@/assets/images'
 import {
   BlueDot,
   PostParcelBlue,
@@ -36,7 +42,6 @@ import {
 } from '@/assets/images/icons'
 import ChatOptions from './components/ChatOptions'
 import MultiChatOptions from './components/MultiChatOptions'
-import _ from 'lodash'
 import Api from '@/services/Api'
 import { HiddenPost } from '../Profile/components'
 
@@ -51,116 +56,54 @@ const PostChat = ({ route }) => {
   const [roomsChats, setRoomsChats] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const { user } = useContext(UserContext)
-  const messages = [
-    {
-      id: 0,
-      user_name: 'Trizh',
-      icon: require('@/assets/images/default-profile.png'),
-      message:
-        'Would like to follow up an order. I ordered 20 minutes ago. I’m hungry!',
-      read: false,
-    },
-    {
-      id: 1,
-      user_name: 'Gail',
-      icon: require('@/assets/images/default-profile.png'),
-      message: 'Okay po',
-      read: false,
-    },
-    {
-      id: 2,
-      user_name: 'Pia',
-      icon: require('@/assets/images/default-profile.png'),
-      message: 'Do you have Keto-friendly set?',
-      read: false,
-    },
-    {
-      id: 3,
-      user_name: 'Grae',
-      icon: require('@/assets/images/default-profile.png'),
-      message: 'Hello! I’d like to make amendments to my order please :)',
-      read: true,
-    },
-    {
-      id: 4,
-      user_name: 'Jayson',
-      icon: require('@/assets/images/default-profile.png'),
-      message:
-        'Have you received my payment? I can try GCash if my BPI QR doesn’t work Have you received my payment? I can try GCash if my BPI QR doesn’t work',
-      read: true,
-    },
-    {
-      id: 5,
-      user_name: 'Rey',
-      icon: require('@/assets/images/default-profile.png'),
-      message: 'sent you an attachment',
-      read: true,
-    },
-  ]
 
   const getAllRooms = async () => {
-    firestore()
+    const roomsRef = await firestore()
       .collection('chat_rooms')
       .where('post_id', '==', post.postData.id)
-      .onSnapshot(async snap => {
-        if (!snap.docs.length) {
-          setIsLoading(false)
-          return
+      .get()
+
+    let allChats = await Promise.all(
+      roomsRef.docs.map(async room => {
+        let chats = []
+        const members = room.data().members
+        const chatRef = await firestore()
+          .collection('chat_rooms')
+          .doc(room.id)
+          .collection('messages')
+          .orderBy('createdAt', 'desc')
+          .get()
+
+        if (chatRef.docs[0]) {
+          const userData =
+            (await Api.getUser({ uid: chatRef.docs[0].data().uid })).data || {}
+          const { full_name, profile_photo, uid } = userData
+
+          chatRef.docs.map(chatDoc => {
+            chats.push(chatDoc.data())
+          })
+
+          const currentChats = {
+            chats,
+            full_name,
+            profile_photo,
+            members,
+            uid,
+            roomId: room.id,
+          }
+
+          return currentChats
         }
-        snap.docs.map(async (room, index) => {
-          const roomId = room.id
-          const members = room.data().members
-          let roomChats = []
-          firestore()
-            .collection('chat_rooms')
-            .doc(room.id)
-            .collection('messages')
-            .onSnapshot(async chatRef => {
-              if (!chatRef.docs.length) {
-                setIsLoading(false)
-                return
-              }
-              let chats = chatRef.docs.map(chatDoc => {
-                if (chatDoc.data()) {
-                  return chatDoc.data()
-                }
-              })
-
-              chats.sort((a, b) => b.createdAt - a.createdAt)
-              if (chats[0]?.uid) {
-                const userData =
-                  (await Api.getUser({ uid: chats[0].uid })).data || {}
-                const { full_name, profile_photo, uid } = userData
-                const currentChats = {
-                  chats,
-                  full_name,
-                  profile_photo,
-                  members,
-                  uid,
-                  roomId,
-                }
-
-                const foundIndex = roomChats.findIndex(
-                  rmChats => rmChats.roomId == currentChats.roomId
-                )
-
-                if (~foundIndex) {
-                  roomChats[foundIndex] = currentChats
-                  setRoomsChats([...roomChats])
-                } else {
-                  roomChats.push(currentChats)
-                  setRoomsChats(roomsChats => [...roomsChats, ...roomChats])
-                }
-                setIsLoading(false)
-              }
-            })
-        })
       })
+    )
+    allChats = _.flatten(allChats.filter(e => e))
+    setRoomsChats(roomsChats => [...roomsChats, ...allChats])
+    setIsLoading(false)
   }
 
   useEffect(() => {
     let isMounted = true
-    if (isMounted) {
+    if (isMounted && post) {
       setIsLoading(true)
       getAllRooms()
     }
@@ -399,100 +342,124 @@ const PostChat = ({ route }) => {
         </Animated.View>
       </View>
       <ScrollView contentContainerStyle={{ paddingBottom: normalize(25) }}>
-        {roomsChats.map((chat, i) => {
-          return (
-            <Swipeable renderRightActions={renderRightActions} key={i}>
-              <AppCheckbox
-                style={{
-                  flexDirection: 'row-reverse',
-                  paddingRight: normalize(16),
-                  paddingLeft: normalize(8),
-                  display: multipleSelect ? 'flex' : 'none',
-                }}
-                containerStyle={{ flexDirection: 'row', alignItems: 'center' }}
-                checkboxStyle={{ borderRadius: 50, borderWidth: 2 }}
-                value={filters.type.includes(chat.id)}
-                valueChangeHandler={value => {
-                  const currentSelectedChats = filters.type
-                  if (value) currentSelectedChats.push(chat.id)
-                  else
-                    currentSelectedChats.splice(
-                      filters.type.indexOf(chat.id),
-                      1
-                    )
-                  setFilters(filters => ({
-                    ...filters,
-                    type: [...new Set(currentSelectedChats)],
-                  }))
-                }}
-                round>
-                <View style={{ marginBottom: normalize(15), flex: 1 }}>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() =>
-                      handleChatPress(chat?.members, post.postData.id)
-                    }
+        {roomsChats.length ? (
+          <View>
+            {roomsChats.map((chat, i) => {
+              return (
+                <Swipeable renderRightActions={renderRightActions} key={i}>
+                  <AppCheckbox
                     style={{
+                      flexDirection: 'row-reverse',
+                      paddingRight: normalize(16),
+                      paddingLeft: normalize(8),
+                      display: multipleSelect ? 'flex' : 'none',
+                    }}
+                    containerStyle={{
                       flexDirection: 'row',
-                      paddingHorizontal: normalize(16),
-                    }}>
-                    <View style={styles.icon}>
-                      <ProfilePhoto size={50} photo={chat.profile_photo} />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <View
+                      alignItems: 'center',
+                    }}
+                    checkboxStyle={{ borderRadius: 50, borderWidth: 2 }}
+                    value={filters.type.includes(chat.id)}
+                    valueChangeHandler={value => {
+                      const currentSelectedChats = filters.type
+                      if (value) currentSelectedChats.push(chat.id)
+                      else
+                        currentSelectedChats.splice(
+                          filters.type.indexOf(chat.id),
+                          1
+                        )
+                      setFilters(filters => ({
+                        ...filters,
+                        type: [...new Set(currentSelectedChats)],
+                      }))
+                    }}
+                    round>
+                    <View style={{ marginBottom: normalize(15), flex: 1 }}>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() =>
+                          handleChatPress(chat?.members, post.postData.id)
+                        }
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'space-between',
+                          paddingHorizontal: normalize(16),
                         }}>
-                        <AppText
-                          textStyle="caption2"
-                          customStyle={{
-                            paddingRight: 15,
-                            width: '90%',
-                            marginBottom: normalize(4),
-                          }}
-                          numberOfLines={1}>
-                          {chat.uid === user?.uid
-                            ? 'You'
-                            : chat.full_name.split(' ')[0]}
-                        </AppText>
-                        <AppText
-                          textStyle="metadata"
-                          color={Colors.contentPlaceholder}>
-                          {timeAgo(
-                            Date.now() / 1000 -
-                              chat.chats[0].created_at._seconds
-                          )}
-                        </AppText>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}>
-                        <AppText
-                          textStyle={
-                            !chat.chats[0].read && chat.uid !== user?.uid
-                              ? 'caption2'
-                              : 'caption'
-                          }
-                          customStyle={{ width: '90%' }}
-                          numberOfLines={2}>
-                          {chat.chats[0].text}
-                        </AppText>
-                        {!chat.chats[0].read && chat.uid !== user?.uid && (
-                          <BlueDot />
-                        )}
-                      </View>
+                        <View style={styles.icon}>
+                          <ProfilePhoto size={50} photo={chat.profile_photo} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}>
+                            <AppText
+                              textStyle="caption2"
+                              customStyle={{
+                                paddingRight: 15,
+                                width: '90%',
+                                marginBottom: normalize(4),
+                              }}
+                              numberOfLines={1}>
+                              {chat.uid === user?.uid
+                                ? 'You'
+                                : chat.full_name.split(' ')[0]}
+                            </AppText>
+                            <AppText
+                              textStyle="metadata"
+                              color={Colors.contentPlaceholder}>
+                              {timeAgo(
+                                Date.now() / 1000 -
+                                  chat.chats[0].created_at._seconds
+                              )}
+                            </AppText>
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}>
+                            <AppText
+                              textStyle={
+                                !chat.chats[0].read && chat.uid !== user?.uid
+                                  ? 'caption2'
+                                  : 'caption'
+                              }
+                              customStyle={{ width: '90%' }}
+                              numberOfLines={2}>
+                              {chat.chats[0].text}
+                            </AppText>
+                            {!chat.chats[0].read && chat.uid !== user?.uid && (
+                              <BlueDot />
+                            )}
+                          </View>
+                        </View>
+                      </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>
-                </View>
-              </AppCheckbox>
-            </Swipeable>
+                  </AppCheckbox>
+                </Swipeable>
+              )
+            })}
+          </View>
+        ) : (
+          !isLoading && (
+            <View style={styles.emptyState}>
+              <NoPost />
+              <AppText
+                textStyle="display6"
+                customStyle={{
+                  marginBottom: normalize(4),
+                  marginTop: normalize(15),
+                }}>
+                Bee Patient
+              </AppText>
+              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+                Keep posting and soon your messages will be buzzing.
+              </AppText>
+            </View>
           )
-        })}
+        )}
       </ScrollView>
       <View
         style={{
@@ -663,5 +630,15 @@ const styles = StyleSheet.create({
     height: normalize(24),
     borderRadius: normalize(24 / 2),
     overflow: 'hidden',
+  },
+  emptyState: {
+    backgroundColor: Colors.neutralsWhite,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalize(8),
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    flex: 1,
+    padding: normalize(16),
   },
 })

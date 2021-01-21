@@ -61,9 +61,9 @@ const ItemCard = ({ item, handleChatPress, onPress }) => {
       ? 'No messages yet'
       : item?.chat[0].uid === user?.uid
       ? 'You replied'
-      : !item.chat[0].read && item.chat.length > 1
+      : item?.chat?.filter(chat => !chat.read).length > 1
       ? `${item.chat.length} new messages`
-      : item.chat[0].read && item.chat.length > 1
+      : item?.chat?.filter(chat => chat.read).length > 1 && item?.chat[0].read
       ? `${item.chat.length} messages`
       : `${item.customer.split(' ')[0]} sent you a message`
   }
