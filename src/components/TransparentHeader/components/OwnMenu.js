@@ -323,7 +323,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                 activeOpacity={0.7}
                 onPress={() => {
                   signOut().then(() => {
-                    unsubcribeNotification()
                     navigation.navigate('Onboarding')
                   })
                 }}>

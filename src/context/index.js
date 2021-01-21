@@ -45,8 +45,6 @@ export const ContextProvider = ({ children }) => {
   const [results, setResults] = useState([])
   const [page, setPage] = useState(0)
 
-  let unsubscribe
-
   const [filters, setFilters] = useState({
     limit: 5,
     page: 0,
@@ -290,13 +288,9 @@ export const ContextProvider = ({ children }) => {
     })
   }
 
-  const unsubscribeNotification = () => {
-    unsubscribe()
-  }
-
   const initNotifications = async uid => {
     if (!uid) return
-    unsubscribe = firestore()
+    let unsubscribe = firestore()
       .collection('activities')
       .doc(uid)
       .collection('notifications')
@@ -338,6 +332,7 @@ export const ContextProvider = ({ children }) => {
 
         setNotificationsList(allNotifications)
       })
+    return unsubscribe
   }
 
   const initChats = async uid => {
@@ -450,7 +445,6 @@ export const ContextProvider = ({ children }) => {
         setCurrentPost,
         deleteCurrentOrderModal,
         showDeleteCurrentOrderModal,
-        unsubscribeNotification,
         initChats,
         chatList,
       }}>

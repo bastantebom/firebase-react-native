@@ -74,13 +74,11 @@ const Activity = () => {
   }, [notificationsList])
 
   useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      initNotifications(user?.uid)
+    if (user) {
       initChats(user?.uid)
+      let unsubscribe = initNotifications(user?.uid)
+      return () => unsubscribe
     }
-
-    return () => (isMounted = false)
   }, [])
 
   return (

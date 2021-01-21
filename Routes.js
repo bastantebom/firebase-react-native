@@ -359,7 +359,10 @@ const TabStack = props => {
     notificationsList?.filter(notif => !notif?.read).length > 0
 
   useEffect(() => {
-    if (user) initNotifications(user?.uid)
+    if (user) {
+      let unsubscribe = initNotifications(user?.uid)
+      return () => unsubscribe
+    }
   }, [])
 
   const tabBarOptions = {

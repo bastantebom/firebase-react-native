@@ -48,11 +48,11 @@ const Past = () => {
               const getUserReponse = await Api.getUser({
                 uid: order.seller_id,
               })
-              if (!getPostResponse.success) {
+              if (!getPostResponse.success && !getUserReponse.success) {
                 setIsLoading(false)
                 return
               }
-              if (getPostResponse.success) {
+              if (getPostResponse.success && getUserReponse.success) {
                 const {
                   full_name,
                   display_name,

@@ -574,20 +574,22 @@ const OngoingItem = ({ route, navigation }) => {
             )}
           </View>
         ) : (
-          <View style={styles.emptyState}>
-            <NoPost />
-            <AppText
-              textStyle="display6"
-              customStyle={{
-                marginBottom: normalize(4),
-                marginTop: normalize(15),
-              }}>
-              Bee Patient
-            </AppText>
-            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-              Keep posting and soon your order notifications will be buzzing.
-            </AppText>
-          </View>
+          !isPendingLoading && (
+            <View style={styles.emptyState}>
+              <NoPost />
+              <AppText
+                textStyle="display6"
+                customStyle={{
+                  marginBottom: normalize(4),
+                  marginTop: normalize(15),
+                }}>
+                Bee Patient
+              </AppText>
+              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+                Keep posting and soon your order notifications will be buzzing.
+              </AppText>
+            </View>
+          )
         )}
       </ScrollView>
 
