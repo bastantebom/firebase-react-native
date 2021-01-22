@@ -27,7 +27,7 @@ const Ongoing = ({ sortCategory }) => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
       if (!ownOrdersResponse.data.length) return true
-      const ownOrderData = await Promise.all(
+      let ownOrderData = await Promise.all(
         ownOrdersResponse.data.map(async order => {
           if (
             order.status !== 'completed' &&
@@ -52,7 +52,7 @@ const Ongoing = ({ sortCategory }) => {
 
               return {
                 profilePhoto: profile_photo,
-                name: display_name ? display_name : full_name,
+                name: display_name || full_name,
                 cardType: 'own',
                 status: order.status,
                 time: order.date._seconds,
@@ -64,9 +64,10 @@ const Ongoing = ({ sortCategory }) => {
           } else return
         })
       )
-      const filtered = ownOrderData.filter(el => el)
-
-      setOnGoing(onGoing => [...onGoing, ...filtered])
+      ownOrderData = ownOrderData.filter(el => el)
+      setOnGoing(onGoing =>
+        [...onGoing, ...ownOrderData].sort((a, b) => b.time - a.time)
+      )
       return true
     }
   }
@@ -77,7 +78,7 @@ const Ongoing = ({ sortCategory }) => {
     })
     if (getOwnPostResponse.success) {
       if (!getOwnPostResponse.data) return true
-      const sellerOrderData = await Promise.all(
+      let sellerOrderData = await Promise.all(
         getOwnPostResponse.data.map(async post => {
           const responseOrders = await Api.getOrders({
             uid: user?.uid,
@@ -86,21 +87,28 @@ const Ongoing = ({ sortCategory }) => {
           if (responseOrders.success) {
             const { full_name, display_name, profile_photo } = userInfo
             let latestTimeStampOrder = post.date_posted._seconds
-            if (Object.keys(responseOrders.data).length)
+            let sortedOrders = responseOrders.data
+            if (Object.keys(sortedOrders).length) {
               latestTimeStampOrder = await getLatest(responseOrders.data)
+              sortedOrders = await getSorted(responseOrders.data)
+            }
+
             return {
               profilePhoto: profile_photo,
-              name: display_name ? display_name : full_name,
+              name: display_name || full_name,
               cardType: 'seller',
               time: latestTimeStampOrder,
               cover_photos: post.cover_photos,
-              orders: responseOrders.data,
+              orders: sortedOrders,
               postData: post,
             }
           } else return true
         })
       )
-      setOnGoing(onGoing => [...onGoing, ...sellerOrderData])
+
+      setOnGoing(onGoing =>
+        [...onGoing, ...sellerOrderData].sort((a, b) => b.time - a.time)
+      )
       return true
     }
   }
@@ -113,6 +121,16 @@ const Ongoing = ({ sortCategory }) => {
       })
     }
     return Math.max(...timeStampList)
+  }
+
+  const getSorted = async orderData => {
+    let sortedOrders = {}
+    for (const [key, orders] of Object.entries(orderData)) {
+      sortedOrders[`${key}`] = orders.sort(
+        (a, b) => b.date._seconds - a.date._seconds
+      )
+    }
+    return sortedOrders
   }
 
   const callAllOrders = async () => {

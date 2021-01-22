@@ -45,7 +45,7 @@ const OngoingItem = ({ route, navigation }) => {
 
   const initOngoing = async orders => {
     if (!orders?.length) return
-    const orderedList = orders.sort((a, b) => a.date._seconds - b.date._seconds)
+    const orderedList = orders.sort((a, b) => b.date._seconds - a.date._seconds)
     const done = await Promise.all(
       orderedList.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })

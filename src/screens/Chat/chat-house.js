@@ -63,7 +63,7 @@ const ChatHouse = () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
       let postIdStack = []
-      const ownOrderData = await Promise.all(
+      let ownOrderData = await Promise.all(
         ownOrdersResponse.data.map(async order => {
           const existId = postIdStack.indexOf(order.post_id)
           if (!~existId) postIdStack.push(order.post_id)
@@ -114,8 +114,9 @@ const ChatHouse = () => {
             return {
               profilePhoto: profile_photo,
               seller: full_name,
-              storeName: display_name ? display_name : full_name,
+              storeName: display_name || full_name,
               cardType: 'own',
+              time: roomChat?.created_at._seconds,
               postData: getPostResponse.data,
               chats: roomChat,
             }
@@ -123,8 +124,10 @@ const ChatHouse = () => {
         })
       )
 
-      const filtered = ownOrderData.filter(el => el)
-      setPostChats(postChats => [...postChats, ...filtered])
+      ownOrderData = ownOrderData.filter(el => el)
+      setPostChats(postChats =>
+        [...postChats, ...ownOrderData].sort((a, b) => b.time - a.time)
+      )
       return
     }
   }
@@ -134,7 +137,7 @@ const ChatHouse = () => {
       uid: user?.uid,
     })
     if (getOwnPostResponse.success) {
-      const sellerOrderData = await Promise.all(
+      let sellerOrderData = await Promise.all(
         getOwnPostResponse.data.map(async post => {
           const roomsSnapshot = await firestore()
             .collection('chat_rooms')
@@ -156,7 +159,9 @@ const ChatHouse = () => {
             })
           )
 
-          chatsList = _.flatten(chatsList)
+          chatsList = _.flatten(chatsList).sort(
+            (a, b) => b.created_at._seconds - a.created_at._seconds
+          )
           let latestTimeStampOrder = post.date_posted._seconds
           if (chatsList.length)
             latestTimeStampOrder = await getLatest(chatsList)
@@ -170,8 +175,10 @@ const ChatHouse = () => {
           }
         })
       )
-      const filtered = sellerOrderData.filter(el => el)
-      setPostChats(postChats => [...postChats, ...filtered])
+      sellerOrderData = sellerOrderData.filter(el => el)
+      setPostChats(postChats =>
+        [...postChats, ...sellerOrderData].sort((a, b) => b.time - a.time)
+      )
       return
     }
   }

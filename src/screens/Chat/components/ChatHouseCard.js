@@ -152,7 +152,7 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
                 {post.seller.split(' ')[0]} • {post.storeName}
               </AppText>
               <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
-                {timeAgo(Date.now() / 1000 - post?.chats?.created_at?._seconds)}
+                {timeAgo(Date.now() / 1000 - post?.time)}
               </AppText>
             </View>
             <View
