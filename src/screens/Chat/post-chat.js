@@ -297,6 +297,27 @@ const PostChat = ({ route }) => {
     return timePassedShort(time)
   }
 
+  const renderSearch = () => {
+    return (
+      <Animated.View style={[styles.search, { width: inputLength }]}>
+        <TextInput
+          onBlur={onBlur}
+          onFocus={onFocus}
+          style={{
+            fontFamily: 'RoundedMplus1c-Regular',
+            fontSize: normalize(14),
+            paddingRight: normalize(25),
+          }}
+        />
+        <TouchableOpacity
+          style={[styles.searchIcon]}
+          onPress={handleSearchPress}>
+          <Search width={normalize(20)} height={normalize(20)} />
+        </TouchableOpacity>
+      </Animated.View>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.parent}>
       <TransitionIndicator loading={isLoading} />
@@ -305,8 +326,6 @@ const PostChat = ({ route }) => {
         iconSize={multipleSelect ? 0 : normalize(16)}
         paddingSize={3}
         close={() => navigation.goBack()}
-        withOptions
-        openOptions={() => setShowMultiChatOptions(true)}
       />
       {multipleSelect && (
         <View
@@ -331,22 +350,6 @@ const PostChat = ({ route }) => {
             {post.postData.title}
           </AppText>
         </View>
-        <Animated.View style={[styles.search, { width: inputLength }]}>
-          <TextInput
-            onBlur={onBlur}
-            onFocus={onFocus}
-            style={{
-              fontFamily: 'RoundedMplus1c-Regular',
-              fontSize: normalize(14),
-              paddingRight: normalize(25),
-            }}
-          />
-          <TouchableOpacity
-            style={[styles.searchIcon]}
-            onPress={handleSearchPress}>
-            <Search width={normalize(20)} height={normalize(20)} />
-          </TouchableOpacity>
-        </Animated.View>
       </View>
       <ScrollView
         contentContainerStyle={{ paddingBottom: normalize(25) }}

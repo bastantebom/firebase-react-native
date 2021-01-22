@@ -20,12 +20,12 @@ const ChatSort = ({ choice, close }) => {
     {
       label: 'My orders',
       value: 'own',
-      description: 'Your orders',
+      description: 'Messages on you orders',
     },
     {
       label: 'Past',
       value: 'past',
-      description: 'Past',
+      description: 'Messages from past orders',
     },
   ]
 

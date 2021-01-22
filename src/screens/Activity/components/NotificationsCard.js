@@ -200,7 +200,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
             <View style={styles.holder}>
               <View>
                 <View style={styles.avatarHolder}>
-                  <WelcomeNotif width={35} height={35} />
+                  <WelcomeNotif width={40} height={40} />
                 </View>
               </View>
               <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
@@ -222,9 +222,14 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
             ]}>
             <View style={styles.holder}>
               <View>
-                {info.length === 1 && (
+                {info.length === 1 && type !== 'verification' && (
                   <View style={styles.avatarHolder}>
                     <AvatarPhoto size={35} url={profilePhoto} />
+                  </View>
+                )}
+                {info.length === 1 && type === 'verification' && (
+                  <View style={styles.avatarHolder}>
+                    <WelcomeNotif width={40} height={40} />
                   </View>
                 )}
                 {info.length > 1 && (

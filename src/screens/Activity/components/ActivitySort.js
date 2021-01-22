@@ -8,22 +8,23 @@ const ActivitySort = ({ choice, close }) => {
     {
       label: 'All Activities',
       value: 'all',
-      description: 'These are all your activities',
+      description: 'Offers, orders, and past transactions in one place',
     },
     {
       label: 'My Offers',
       value: 'seller',
-      description: 'Activities on your own posts',
+      description:
+        'Keep track of your posts, items for sale, and services offered',
     },
     {
       label: 'My orders',
       value: 'own',
-      description: 'Your orders',
+      description: "Check for updates on items and services you've availed",
     },
     {
       label: 'Past',
       value: 'past',
-      description: 'Past',
+      description: 'Review all completed, cancelled, and declined transactions',
     },
   ]
 

@@ -23,8 +23,11 @@ const Verified = props => {
         <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
           Yay, {name}! You're now bee-rified!
         </AppText>
-        <AppText textStyle="caption">
-          Some text here saying more about the badge.
+        <AppText
+          textStyle="body2Dashboard"
+          customStyle={{ textAlign: 'center' }}>
+          Here's a badge for creating a buzz, and for being awesome in the
+          community. Keep unlocking those achievements.
         </AppText>
         <TouchableOpacity
           style={{
@@ -52,6 +55,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(70),
     alignItems: 'center',
     height: '100%',
+    paddingHorizontal: normalize(24),
   },
 })
 

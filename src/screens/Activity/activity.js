@@ -45,6 +45,7 @@ const Activity = () => {
   const assembleNotification = () => {
     let postGroup = []
     let idGroup = []
+
     const filtered = notificationsList.filter(el => el)
     const allPending = filtered?.filter(notif => notif?.status === 'pending')
     const restStatus = filtered?.filter(notif => notif?.status !== 'pending')
@@ -52,15 +53,32 @@ const Activity = () => {
       postGroup = _.groupBy(allPending, notif => notif.postId)
 
     if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif?.id)
-    const combinedGroup = { ...postGroup, ...idGroup }
+    let combinedGroup = { ...postGroup, ...idGroup }
 
-    const tempNotifList = []
+    let tempNotifList = []
 
     for (const [key, notification] of Object.entries(combinedGroup)) {
       tempNotifList.push(notification)
     }
 
+    tempNotifList = tempNotifList.sort(
+      (a, b) => b[0].date._seconds - a[0].date._seconds
+    )
     setGroupNotifications(tempNotifList)
+  }
+
+  const renderSearchBar = () => {
+    return (
+      <SearchBarWithFilter
+        onFiltersPress={() => setIsFiltersVisible(true)}
+        onValueChange={setSearchValue}
+        value={searchValue}
+        onFocus={() => setSearchBarFocused(true)}
+        onBackPress={() => {
+          setSearchBarFocused(false)
+        }}
+      />
+    )
   }
 
   const getSortSelected = choice => {
@@ -165,17 +183,7 @@ const Activity = () => {
             </View>
           </View>
         </View>
-        <View>
-          <SearchBarWithFilter
-            onFiltersPress={() => setIsFiltersVisible(true)}
-            onValueChange={setSearchValue}
-            value={searchValue}
-            onFocus={() => setSearchBarFocused(true)}
-            onBackPress={() => {
-              setSearchBarFocused(false)
-            }}
-          />
-        </View>
+
         {searchBarFocused && (
           <SearchResults
             containerStyle={{

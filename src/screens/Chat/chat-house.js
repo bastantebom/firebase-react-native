@@ -302,6 +302,27 @@ const ChatHouse = () => {
     }
   }
 
+  const renderSearch = () => {
+    return (
+      <Animated.View style={[styles.search, { width: inputLength }]}>
+        <TextInput
+          onBlur={onBlur}
+          onFocus={onFocus}
+          style={{
+            fontFamily: 'RoundedMplus1c-Regular',
+            fontSize: normalize(14),
+            paddingRight: normalize(25),
+          }}
+        />
+        <TouchableOpacity
+          style={[styles.searchIcon]}
+          onPress={handleSearchPress}>
+          <Search width={normalize(20)} height={normalize(20)} />
+        </TouchableOpacity>
+      </Animated.View>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.parent}>
       <TransitionIndicator loading={isLoading} />
@@ -319,22 +340,6 @@ const ChatHouse = () => {
           </AppText>
           <ChevronDown width={normalize(20)} height={normalize(20)} />
         </TouchableOpacity>
-        <Animated.View style={[styles.search, { width: inputLength }]}>
-          <TextInput
-            onBlur={onBlur}
-            onFocus={onFocus}
-            style={{
-              fontFamily: 'RoundedMplus1c-Regular',
-              fontSize: normalize(14),
-              paddingRight: normalize(25),
-            }}
-          />
-          <TouchableOpacity
-            style={[styles.searchIcon]}
-            onPress={handleSearchPress}>
-            <Search width={normalize(20)} height={normalize(20)} />
-          </TouchableOpacity>
-        </Animated.View>
       </View>
       <ScrollView
         contentContainerStyle={{
