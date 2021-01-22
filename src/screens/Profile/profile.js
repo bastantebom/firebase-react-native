@@ -434,7 +434,7 @@ const ProfileScreen = ({
           </View>
           <ProfileInfo profileData={userInfo} />
 
-          {statusPercentage < 1 ? (
+          {!userInfo.account_verified ? (
             <VerificationStatus statusPercentage={statusPercentage} />
           ) : null}
 
