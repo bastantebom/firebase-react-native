@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { View, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 
-import { AppText, FloatingAppInput } from '@/components'
-import { EyeDark, EyeLight } from '@/assets/images/icons'
-import ForgotPasswordService from '@/services/ForgotPassword'
-import { useNavigation } from '@react-navigation/native'
+import { AppText, FloatingAppInput, TransitionIndicator } from '@/components'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 
 import Api from '@/services/Api'
 
-const SetNewPassword = props => {
+/**
+ * @typedef {object} SetNewPasswordScreenProps
+ * @property {string} orderID
+ * @property {object|undefined} post
+ */
+
+/**
+ * @typedef {object} RootProps
+ * @property {SetNewPasswordScreenProps} SetNewPasswordScreen
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'SetNewPasswordScreen'>} param0 */
+const SetNewPasswordScreen = props => {
   if (props?.route?.params?.token === undefined) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -22,29 +32,33 @@ const SetNewPassword = props => {
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const submitHandler = async () => {
-    console.log('newPassword', newPassword)
-    console.log('confirmPassword', confirmPassword)
-
-    const finalPassword = newPassword
-
-    const data = {
-      password: finalPassword,
-      token,
-      login,
-    }
-
+    setIsLoading(true)
     try {
-      const response = await Api.resetPassword({ body: data })
+      const response = await Api.resetPassword({
+        body: { token, login, password: newPassword },
+      })
 
-      if (!response.success) {
-        throw new Error(response.message)
-      }
-      navigation.navigate('TabStack')
+      if (!response.success) throw new Error(response.message)
+      setIsLoading(false)
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Onboarding' }],
+        })
+      )
     } catch (error) {
       console.log(error)
+      Alert.alert(
+        'Error',
+        error.message === 'Token Expired'
+          ? 'The link has already expired, request another link for resetting your password.'
+          : 'Oops, something went wrong.'
+      )
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -55,9 +69,9 @@ const SetNewPassword = props => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <TransitionIndicator loading={isLoading} />
       <View style={{ padding: 24 }}>
         <AppText textStyle="display5">Reset your password?</AppText>
-        <AppText>my token: {token}</AppText>
 
         <AppText textStyle="body2">
           User ID:
@@ -117,4 +131,4 @@ const SetNewPassword = props => {
   )
 }
 
-export default SetNewPassword
+export default SetNewPasswordScreen
