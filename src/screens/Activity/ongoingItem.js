@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  RefreshControl,
 } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
@@ -40,12 +41,15 @@ const OngoingItem = ({ route, navigation }) => {
   const [postChats, setPostChats] = useState([])
   const { orders, name, title, type, postData } = route?.params?.info
   const [pending, setPending] = useState([])
-
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [isPendingLoading, setIsPendingLoading] = useState(false)
 
   const initOngoing = async orders => {
     if (!orders?.length) return
     const orderedList = orders.sort((a, b) => b.date._seconds - a.date._seconds)
+    let chatId = []
+    let roomChats = []
+    let uniqueChat = []
     const done = await Promise.all(
       orderedList.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })
@@ -64,7 +68,6 @@ const OngoingItem = ({ route, navigation }) => {
               [order.buyer_id]: true,
             })
             .get()
-
           let roomChat = []
           if (room.docs.length) {
             let channel = room.docs[0].data()
@@ -77,12 +80,12 @@ const OngoingItem = ({ route, navigation }) => {
 
             if (roomChatRef.docs.length) {
               roomChatRef.docs.map(chat => {
-                roomChat = [...roomChat, chat.data()]
+                roomChat.push(chat.data())
               })
             }
           }
+          roomChats = [...roomChats, ...roomChat]
 
-          setPostChats(postChats => [...postChats, ...roomChat])
           return {
             profilePhoto: profile_photo,
             customer: display_name ? display_name : full_name,
@@ -102,6 +105,15 @@ const OngoingItem = ({ route, navigation }) => {
         } else return {}
       })
     )
+
+    roomChats.map(chat => {
+      const existId = chatId.indexOf(chat._id)
+      if (!~existId && !chat.read && chat.uid !== user?.uid) {
+        uniqueChat.push(chat)
+        chatId.push(chat._id)
+      }
+    })
+    setPostChats([...uniqueChat])
     setPending(pending => [...pending, ...done])
   }
 
@@ -173,6 +185,13 @@ const OngoingItem = ({ route, navigation }) => {
     setIsPendingLoading(false)
   }
 
+  const handleRefresh = async () => {
+    setIsPendingLoading(true)
+    setPending([])
+    setPostChats([])
+    await callAllOngoing()
+  }
+
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
@@ -190,7 +209,17 @@ const OngoingItem = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.contentWrapper}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl
+            style={{ zIndex: 1 }}
+            refreshing={isRefreshing}
+            titleColor="#2E3034"
+            tintColor="#2E3034"
+            onRefresh={handleRefresh}
+          />
+        }>
         <TransitionIndicator loading={isPendingLoading} />
         <View style={styles.itemCardContainer}>
           <ScreenHeaderTitle
@@ -204,8 +233,7 @@ const OngoingItem = ({ route, navigation }) => {
             rightIcon={
               <View>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
-                {postChats.filter(chat => !chat.read && chat.uid !== user?.uid)
-                  .length > 0 && (
+                {postChats.length > 0 && (
                   <View
                     style={{
                       position: 'absolute',
@@ -216,11 +244,7 @@ const OngoingItem = ({ route, navigation }) => {
                       borderRadius: 16,
                     }}>
                     <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
-                      {
-                        postChats.filter(
-                          chat => !chat.read && chat.uid !== user?.uid
-                        ).length
-                      }
+                      {postChats.length}
                     </AppText>
                   </View>
                 )}

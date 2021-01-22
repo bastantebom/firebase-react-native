@@ -10,6 +10,7 @@ import {
   TextInput,
   Dimensions,
   TouchableWithoutFeedback,
+  RefreshControl,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { RectButton } from 'react-native-gesture-handler'
@@ -43,7 +44,6 @@ import {
 import ChatOptions from './components/ChatOptions'
 import MultiChatOptions from './components/MultiChatOptions'
 import Api from '@/services/Api'
-import { HiddenPost } from '../Profile/components'
 
 const { width } = Dimensions.get('window')
 const PADDING = 16
@@ -55,6 +55,7 @@ const PostChat = ({ route }) => {
   const navigation = useNavigation()
   const [roomsChats, setRoomsChats] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const { user } = useContext(UserContext)
 
   const getAllRooms = async () => {
@@ -99,6 +100,12 @@ const PostChat = ({ route }) => {
     allChats = _.flatten(allChats.filter(e => e))
     setRoomsChats(roomsChats => [...roomsChats, ...allChats])
     setIsLoading(false)
+  }
+
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    setRoomsChats([])
+    await getAllRooms()
   }
 
   useEffect(() => {
@@ -341,7 +348,17 @@ const PostChat = ({ route }) => {
           </TouchableOpacity>
         </Animated.View>
       </View>
-      <ScrollView contentContainerStyle={{ paddingBottom: normalize(25) }}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: normalize(25) }}
+        refreshControl={
+          <RefreshControl
+            style={{ zIndex: 1 }}
+            refreshing={isRefreshing}
+            titleColor="#2E3034"
+            tintColor="#2E3034"
+            onRefresh={handleRefresh}
+          />
+        }>
         {roomsChats.length ? (
           <View>
             {roomsChats.map((chat, i) => {

@@ -10,6 +10,7 @@ import {
   Animated,
   TextInput,
   Dimensions,
+  RefreshControl,
 } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
@@ -58,6 +59,7 @@ const ChatHouse = () => {
 
   const [postChats, setPostChats] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
@@ -196,6 +198,12 @@ const ChatHouse = () => {
     return Math.max(...timeStampList)
   }
 
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    setPostChats([])
+    await callAllPosts()
+  }
+
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
@@ -332,7 +340,16 @@ const ChatHouse = () => {
         contentContainerStyle={{
           paddingHorizontal: normalize(16),
           paddingBottom: normalize(25),
-        }}>
+        }}
+        refreshControl={
+          <RefreshControl
+            style={{ zIndex: 1 }}
+            refreshing={isRefreshing}
+            titleColor="#2E3034"
+            tintColor="#2E3034"
+            onRefresh={handleRefresh}
+          />
+        }>
         {postChats
           .filter(post =>
             sortCategory.value === 'all'

@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  RefreshControl,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
@@ -22,6 +23,7 @@ const Ongoing = ({ sortCategory }) => {
 
   const [onGoing, setOnGoing] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
@@ -138,6 +140,12 @@ const Ongoing = ({ sortCategory }) => {
     setIsLoading(false)
   }
 
+  const handleRefresh = async () => {
+    setIsLoading(true)
+    setOnGoing([])
+    await callAllOrders()
+  }
+
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
@@ -234,9 +242,17 @@ const Ongoing = ({ sortCategory }) => {
           </View>
         </ScrollView>
       ) : (
-        !isLoading &&
-        onGoing.length && (
-          <ScrollView>
+        !isLoading && (
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                style={{ zIndex: 1 }}
+                refreshing={isRefreshing}
+                titleColor="#2E3034"
+                tintColor="#2E3034"
+                onRefresh={handleRefresh}
+              />
+            }>
             <View style={{ paddingTop: normalize(15) }}>
               <View style={{ paddingHorizontal: normalize(15) }}>
                 <AppText
