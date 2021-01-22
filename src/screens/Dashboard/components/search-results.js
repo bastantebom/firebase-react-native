@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
     height: '100%',
-    zIndex: 100,
+    zIndex: 2000,
   },
   searchUserInstead: {
     flexDirection: 'row',
