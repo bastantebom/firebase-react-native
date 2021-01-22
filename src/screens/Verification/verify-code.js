@@ -157,7 +157,7 @@ const VerifyCodeScreen = ({ navigation, route }) => {
         </Notification>
       )}
       <View style={{ padding: normalize(24) }}>
-        <ScreenHeaderTitle iconSize={16} close={() => onBackPress?.()} />
+        <ScreenHeaderTitle close={() => onBackPress?.()} />
       </View>
       <View style={styles.container}>
         <TransitionIndicator loading={isLoading} />
@@ -169,7 +169,7 @@ const VerifyCodeScreen = ({ navigation, route }) => {
         </View>
         <View style={[styles.alignCenter, styles.spacingBottomx2]}>
           <AppText textStyle="body2" customStyle={styles.bodyContent}>
-            An the 4-digit code has been sent to{' '}
+            A 4-digit code has been sent to{' '}
             <AppText textStyle="body3" customStyle={styles.bodyContent}>
               {login}
             </AppText>

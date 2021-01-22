@@ -74,7 +74,7 @@ const Tags = () => {
                 onPress={() => setTagsModal(false)}
                 activeOpacity={0.7}
                 style={{ position: 'absolute', left: 0 }}>
-                <HeaderBackGray width={normalize(25)} height={normalize(25)} />
+                <HeaderBackGray width={normalize(24)} height={normalize(24)} />
               </TouchableOpacity>
               <AppText textStyle="body3">Popular Tags Near You</AppText>
             </View>

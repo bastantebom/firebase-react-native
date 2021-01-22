@@ -103,8 +103,7 @@ const ShippingMethodModal = ({
       <ScreenHeaderTitle
         close={close}
         title="Shipping Methods"
-        paddingSize={2}
-        iconSize={normalize(20)}
+        paddingSize={3}
       />
       <KeyboardAwareScrollView>
         <View style={{ paddingHorizontal: 24, paddingTop: 16 }}>

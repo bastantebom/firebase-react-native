@@ -49,8 +49,7 @@ const PaymentMethodModal = ({
           <ScreenHeaderTitle
             close={close}
             title="Payment Methods"
-            paddingSize={2}
-            iconSize={normalize(20)}
+            paddingSize={3}
           />
           <ScrollView
             contentContainerStyle={{
@@ -313,13 +312,12 @@ const PaymentMethodModal = ({
         <>
           <ScreenHeaderTitle
             close={() => setShowLearnMore(false)}
-            paddingSize={2}
-            iconSize={normalize(20)}
+            paddingSize={3}
           />
           <ScrollView
             contentContainerStyle={{
-              paddingHorizontal: 24,
-              paddingTop: 16,
+              paddingHorizontal: normalize(24),
+              paddingVertical: normalize(16),
               justifyContent: 'space-between',
               flexGrow: 1,
             }}>

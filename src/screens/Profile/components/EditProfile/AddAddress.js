@@ -133,7 +133,6 @@ const AddAddress = ({ toggleAddAddress, address, additional }) => {
             padding: 24,
           }}>
           <ScreenHeaderTitle
-            iconSize={16}
             title={additional === true ? 'Add an Address' : 'Edit an Address'}
             close={toggleAddAddress}
           />

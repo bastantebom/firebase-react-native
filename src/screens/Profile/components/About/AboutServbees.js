@@ -12,7 +12,6 @@ const AboutServbees = ({ toggleServbees }) => {
       <ScreenHeaderTitle
         close={toggleServbees}
         title="Servbees"
-        iconSize={normalize(16)}
         paddingSize={3}
       />
       <WebView

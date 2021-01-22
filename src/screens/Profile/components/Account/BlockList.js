@@ -81,11 +81,7 @@ const BlockList = ({ toggleBlockedUser }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <TransitionIndicator loading={isLoading} />
         <View style={{ padding: normalize(16) }}>
-          <ScreenHeaderTitle
-            iconSize={16}
-            title="Blocked Users"
-            close={toggleBlockedUser}
-          />
+          <ScreenHeaderTitle title="Blocked Users" close={toggleBlockedUser} />
         </View>
         <View
           style={{

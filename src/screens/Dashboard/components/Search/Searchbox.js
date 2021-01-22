@@ -237,7 +237,7 @@ const SearchBox = ({ onFocus, onBlur, onBackPress, onValueChange }) => {
             ]}
             onPress={() => backToPostSearch()}>
             <Animated.View style={{ opacity }}>
-              <HeaderBackGray width={normalize(25)} height={normalize(25)} />
+              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
             </Animated.View>
           </AnimatedTouchable>
           <AnimatedTouchable style={{ left: titlePosition }} disabled>

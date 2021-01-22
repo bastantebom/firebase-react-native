@@ -17,7 +17,7 @@ const Verified = props => {
 
   return (
     <SafeAreaView style={{ backgroundColor: 'white' }}>
-      <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={2} />
+      <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
       <View style={styles.contentWrapper}>
         <VerifiedIllustration />
         <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>

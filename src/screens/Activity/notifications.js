@@ -41,7 +41,6 @@ const Notifications = ({ route }) => {
         close={() => navigation.goBack()}
         title="Notifications"
         paddingSize={3}
-        iconSize={normalize(16)}
       />
       {notifications.notificationsActivity.length == 0 ? (
         <View style={{ paddingHorizontal: normalize(15) }}>

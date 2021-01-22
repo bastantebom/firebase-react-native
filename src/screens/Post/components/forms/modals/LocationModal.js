@@ -131,11 +131,7 @@ const PostLocation = ({
             />
           </View>
           <View style={styles.addressTop}>
-            <ScreenHeaderTitle
-              close={close}
-              title="Location"
-              iconSize={normalize(16)}
-            />
+            <ScreenHeaderTitle close={close} title="Location" />
             <TouchableOpacity
               style={{
                 marginTop: 16,

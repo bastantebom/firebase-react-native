@@ -151,7 +151,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
         )}
         <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
           <ScreenHeaderTitle
-            iconSize={normalize(16)}
             title="Track your temperature"
             customTitleStyle={{
               textTransform: 'none',

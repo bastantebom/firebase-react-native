@@ -132,7 +132,6 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
           </Notification>
         )}
         <ScreenHeaderTitle
-          iconSize={16}
           title={isEmail ? 'Change Email Address' : 'Change Mobile Number'}
           close={() => {
             toggleEditLogin('')

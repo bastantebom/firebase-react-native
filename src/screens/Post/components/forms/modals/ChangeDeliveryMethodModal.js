@@ -99,7 +99,7 @@ const ChangeDeliveryMethodModal = ({
         borderTopRightRadius: 10,
         padding: normalize(20),
       }}>
-      <ScreenHeaderTitle close={closeModal} iconSize={normalize(16)} />
+      <ScreenHeaderTitle close={closeModal} />
       <View>
         <AppText
           textStyle="subtitle1"

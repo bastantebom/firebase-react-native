@@ -86,7 +86,6 @@ const TempHistory = ({ toggleHistory, profileData }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: normalize(24) }}>
         <ScreenHeaderTitle
-          iconSize={16}
           title="Body Temperature History"
           close={toggleHistory}
         />

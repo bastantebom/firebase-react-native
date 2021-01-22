@@ -28,7 +28,6 @@ const SelectPostModal = ({ closeModal, selectNeedFunction }) => {
       <ScreenHeaderTitle
         close={closeModal}
         title="Select Post"
-        iconSize={normalize(16)}
         paddingSize={2}
       />
 

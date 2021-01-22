@@ -72,7 +72,6 @@ const AdditionalNotesModal = ({ close }) => {
         close={close}
         title="Additional Notes"
         paddingSize={2}
-        iconSize={normalize(20)}
       />
       <KeyboardAwareScrollView>
         <View>

@@ -106,7 +106,6 @@ const ContactUs = ({ toggleContactUs }) => {
       {!messageSuccess ? (
         <SafeAreaView style={{ flex: 1 }}>
           <ScreenHeaderTitle
-            iconSize={16}
             title="Contact Us"
             close={toggleContactUs}
             paddingSize={3}

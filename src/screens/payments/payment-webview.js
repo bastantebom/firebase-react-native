@@ -34,7 +34,6 @@ const PaymentWebView = ({ navigation, route }) => {
       <ScreenHeaderTitle
         close={navigation.goBack}
         title={title}
-        iconSize={normalize(16)}
         paddingSize={3}
       />
 

@@ -142,11 +142,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ padding: normalize(24) }}>
-        <ScreenHeaderTitle
-          iconSize={16}
-          title="Liked Posts"
-          close={navigation.goBack}
-        />
+        <ScreenHeaderTitle title="Liked Posts" close={navigation.goBack} />
       </View>
       {!isLoadingMoreItems && _.isEmpty(posts) && <EmptyLikePost />}
       <Posts

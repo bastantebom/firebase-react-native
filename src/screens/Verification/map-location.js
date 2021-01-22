@@ -103,7 +103,7 @@ const MapLocation = ({ back, address, onChange = () => {} }) => {
             onPress={back}
             activeOpacity={0.7}
             style={{ position: 'absolute', left: 0 }}>
-            <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+            <HeaderBackGray width={normalize(24)} height={normalize(24)} />
           </TouchableOpacity>
           <AppText textStyle="body3">Select location</AppText>
         </View>

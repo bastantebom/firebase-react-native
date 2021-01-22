@@ -1235,7 +1235,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         close={navigation.goBack}
         title={title}
         paddingSize={3}
-        iconSize={normalize(16)}
       />
       {notificationMessage && (
         <Notification

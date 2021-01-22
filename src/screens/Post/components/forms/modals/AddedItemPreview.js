@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 
 import { AppText, Item, ScreenHeaderTitle } from '@/components'
-import { Colors } from '@/globals'
+import { Colors, normalize } from '@/globals'
 import { CircleAdd } from '@/assets/images/icons'
 import Modal from 'react-native-modal'
 import CategoryOptions from './CategoryOptions'
@@ -60,29 +60,25 @@ const AddedItemPreview = ({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScreenHeaderTitle
+        close={() => {
+          navigation.navigate('CreatePostScreen')
+        }}
+        title={categoryName}
+        paddingSize={3}
+        withOptions
+        openOptions={() => showOptions(true)}
+      />
       <View
         style={{
           flex: 1,
           justifyContent: 'space-between',
-          padding: 16,
-          backgroundColor: '#fff',
+          padding: normalize(24),
+          paddingTop: 0,
         }}>
         <View>
-          <ScreenHeaderTitle
-            close={() => {
-              navigation.navigate('CreatePostScreen')
-            }}
-            title={categoryName}
-            paddingSize={0}
-            withOptions={true}
-            openOptions={() => {
-              showOptions(true)
-            }}
-          />
-          <View style={{ paddingTop: 24 }}>
-            <ItemList />
-          </View>
+          <ItemList />
 
           <TouchableOpacity
             activeOpacity={0.7}
@@ -96,7 +92,6 @@ const AddedItemPreview = ({
             <AppText textStyle="caption">Add an Item</AppText>
           </TouchableOpacity>
         </View>
-
         <TouchableOpacity
           onPress={submitAddedItems}
           activeOpacity={0.7}

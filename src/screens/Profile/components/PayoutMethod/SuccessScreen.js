@@ -9,11 +9,7 @@ const Success = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <ScreenHeaderTitle
-          close={() => navigation.goBack()}
-          iconSize={normalize(20)}
-          paddingSize={3}
-        />
+        <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
         <View
           style={{
             paddingHorizontal: normalize(24),

@@ -270,11 +270,7 @@ const EditProfile = ({
       <SafeAreaView style={{ flex: 1 }}>
         <TransitionIndicator loading={isUpdating} />
         <PaddingView paddingSize={3}>
-          <ScreenHeaderTitle
-            iconSize={16}
-            title="Edit Profile"
-            close={toggleEditProfile}
-          />
+          <ScreenHeaderTitle title="Edit Profile" close={toggleEditProfile} />
         </PaddingView>
         <KeyboardAwareScrollView
           style={styles.container}

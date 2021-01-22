@@ -87,7 +87,6 @@ const AddAddressScreen = ({ navigation, route }) => {
           padding: 24,
         }}>
         <ScreenHeaderTitle
-          iconSize={16}
           title={address ? 'Edit Address' : 'Add an Address'}
           close={navigation.goBack}
         />

@@ -22,11 +22,7 @@ const LikedPost = ({ toggleMenu, toggleLikePost }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <PaddingView paddingSize={3}>
-        <ScreenHeaderTitle
-          iconSize={16}
-          title="Liked Posts"
-          close={toggleLikePost}
-        />
+        <ScreenHeaderTitle title="Liked Posts" close={toggleLikePost} />
       </PaddingView>
 
       <LikedPosts

@@ -325,12 +325,7 @@ const ScheduleModal = ({ close, setStoreSchedule, setSchedule, schedule }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <ScreenHeaderTitle
-        title="Store Schedule"
-        paddingSize={3}
-        iconSize={normalize(16)}
-        close={close}
-      />
+      <ScreenHeaderTitle title="Store Schedule" paddingSize={3} close={close} />
       <ScrollView>
         <View
           style={{

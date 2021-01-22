@@ -12,12 +12,7 @@ const TermsOfUse = ({ onClose }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScreenHeaderTitle
-        close={onClose}
-        title="Terms of Use"
-        iconSize={normalize(16)}
-        paddingSize={3}
-      />
+      <ScreenHeaderTitle close={onClose} title="Terms of Use" paddingSize={3} />
       <WebView
         source={{ uri: 'https://servbees.com/terms/' }}
         startInLoadingState={true}

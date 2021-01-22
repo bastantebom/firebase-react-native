@@ -8,12 +8,7 @@ const NotificationSettings = ({ close }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white', paddingTop: 8 }}>
-      <ScreenHeaderTitle
-        close={close}
-        title="Notifications"
-        paddingSize={2}
-        iconSize={normalize(20)}
-      />
+      <ScreenHeaderTitle close={close} title="Notifications" paddingSize={2} />
       <View style={styles.container}>
         <View style={styles.withBorder}>
           <AppText textStyle="body1">Push Notifications</AppText>

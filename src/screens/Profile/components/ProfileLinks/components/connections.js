@@ -1,15 +1,15 @@
 //import liraries
-import React from 'react';
-import {View, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
+import React from 'react'
+import { View, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 //import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {HeaderBackGray} from '@/assets/images/icons';
-import {AppText, PaddingView} from '@/components';
-import {normalize} from '@/globals';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { HeaderBackGray } from '@/assets/images/icons'
+import { AppText, PaddingView } from '@/components'
+import { normalize } from '@/globals'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 // create a component
-const Connections = ({toggleConnections}) => {
+const Connections = ({ toggleConnections }) => {
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <View>
           <PaddingView paddingSize={3}>
@@ -20,7 +20,7 @@ const Connections = ({toggleConnections}) => {
                 flexDirection: 'row',
               }}>
               <TouchableOpacity onPress={toggleConnections} activeOpacity={0.7}>
-                <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+                <HeaderBackGray width={normalize(24)} height={normalize(24)} />
               </TouchableOpacity>
             </View>
           </PaddingView>
@@ -33,8 +33,8 @@ const Connections = ({toggleConnections}) => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
   },
-});
+})
 
 //make this component available to the app
-export default Connections;
+export default Connections

@@ -700,6 +700,28 @@ const SinglePostView = props => {
     )
   }
 
+  const PostIcon = () => {
+    const postTypeDataMap = {
+      service: {
+        icon: (
+          <Icons.PostServiceRed width={normalize(25)} height={normalize(25)} />
+        ),
+      },
+      need: {
+        icon: (
+          <Icons.PostNeedGreen width={normalize(25)} height={normalize(25)} />
+        ),
+      },
+      sell: {
+        icon: (
+          <Icons.PostParcelBlue width={normalize(25)} height={normalize(25)} />
+        ),
+      },
+    }
+
+    return <View>{postTypeDataMap[type].icon}</View>
+  }
+
   const SinglePostContent = () => {
     return (
       <View style={{ flex: 1 }}>
@@ -723,11 +745,8 @@ const SinglePostView = props => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Icons.PostParcelBlue
-                    width={normalize(25)}
-                    height={normalize(25)}
-                  />
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <PostIcon />
                   <AppText
                     textStyle="subtitle1"
                     customStyle={{ marginLeft: 8 }}>

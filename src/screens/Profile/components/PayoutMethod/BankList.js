@@ -210,12 +210,7 @@ const BankList = ({ close, payoutData, setPayoutData }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScreenHeaderTitle
-        title="Select Bank"
-        close={close}
-        paddingSize={3}
-        iconSize={normalize(20)}
-      />
+      <ScreenHeaderTitle title="Select Bank" close={close} paddingSize={3} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <PaddingView paddingSize={3} style={{ paddingVertical: 0 }}>
           {bankList.map((item, i) => {

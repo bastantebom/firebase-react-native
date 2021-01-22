@@ -418,8 +418,8 @@ const styles = StyleSheet.create({
     width: normalize(28),
   },
   backButton: {
-    width: normalize(16),
-    height: normalize(16),
+    width: normalize(24),
+    height: normalize(24),
     marginRight: normalize(16),
   },
   composerWrapper: {

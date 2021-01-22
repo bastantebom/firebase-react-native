@@ -40,7 +40,7 @@ export const CaptureSelfieInfoScreen = ({ navigation, route }) => {
   return (
     <>
       <View style={{ padding: normalize(24) }}>
-        <ScreenHeaderTitle iconSize={16} close={navigation.goBack} />
+        <ScreenHeaderTitle close={navigation.goBack} />
       </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <IdSelfie />

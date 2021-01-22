@@ -61,11 +61,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScreenHeaderTitle
-        close={navigation.goBack}
-        paddingSize={3}
-        iconSize={normalize(16)}
-      />
+      <ScreenHeaderTitle close={navigation.goBack} paddingSize={3} />
       <View style={styles.contentWrapper}>
         <View style={styles.content}>
           {statusInfo[status].image()}

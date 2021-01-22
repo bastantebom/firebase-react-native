@@ -214,7 +214,6 @@ const ProfileInformationScreen = ({ navigation }) => {
       />
       <PaddingView paddingSize={3}>
         <ScreenHeaderTitle
-          iconSize={16}
           title="Profile Information"
           close={navigation.goBack}
         />

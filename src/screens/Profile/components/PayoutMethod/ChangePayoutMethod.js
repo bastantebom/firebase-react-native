@@ -51,7 +51,6 @@ const ChangePayoutMethod = ({ navigation, route }) => {
         title="Payout Method"
         close={() => navigation.goBack()}
         paddingSize={3}
-        iconSize={normalize(20)}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <PaddingView paddingSize={3} style={{ paddingBottom: 0 }}>

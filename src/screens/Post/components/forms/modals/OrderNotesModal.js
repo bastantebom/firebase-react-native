@@ -62,7 +62,7 @@ const OrderNotesModal = ({ close, setNotes, notes }) => {
       }}>
       <BottomSheetHeader />
       <Animated.View style={[{ padding: 16 }, paddingAnimatedStyle]}>
-        <ScreenHeaderTitle close={close} iconSize={normalize(16)} />
+        <ScreenHeaderTitle close={close} />
         <View style={{ marginTop: 24 }}>
           <View style={{ alignItems: 'center' }}>
             <AppText textStyle="display6" customStyle={{ textAlign: 'center' }}>

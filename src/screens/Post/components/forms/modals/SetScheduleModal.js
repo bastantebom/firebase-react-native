@@ -88,11 +88,7 @@ const SetScheduleModalSingleService = ({
         borderTopRightRadius: 10,
         paddingBottom: 16,
       }}>
-      <ScreenHeaderTitle
-        close={closeModal}
-        iconSize={normalize(16)}
-        paddingSize={2}
-      />
+      <ScreenHeaderTitle close={closeModal} paddingSize={2} />
       <View style={{ padding: 16, paddingBottom: 24 }}>
         <HorizontalView style={{ justifyContent: 'space-between' }}>
           <AppText textStyle="subtitle1">{post.title}</AppText>

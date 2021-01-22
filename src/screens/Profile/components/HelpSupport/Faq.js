@@ -1,6 +1,6 @@
 //import liraries
-import React, {useState, useContext} from 'react';
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import React, { useState, useContext } from 'react'
+import { View, StyleSheet, SafeAreaView } from 'react-native'
 
 import {
   ScreenHeaderTitle,
@@ -8,24 +8,24 @@ import {
   AppText,
   ProfileInfo,
   AppButton,
-} from '@/components';
+} from '@/components'
 
-import {ContactUsImg} from '@/assets/images';
+import { ContactUsImg } from '@/assets/images'
 import {
   EmailContactUs,
   CallContactUs,
   LocationContactUs,
   ArrowDown,
-} from '@/assets/images/icons';
-import {normalize, Colors} from '@/globals';
-import Modal from 'react-native-modal';
-import {UserContext} from '@/context/UserContext';
-import AdminFunctionService from '@/services/Admin/AdminFunctions';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+} from '@/assets/images/icons'
+import { normalize, Colors } from '@/globals'
+import Modal from 'react-native-modal'
+import { UserContext } from '@/context/UserContext'
+import AdminFunctionService from '@/services/Admin/AdminFunctions'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 
 // create a component
-const Faq = ({toggleFaq}) => {
-  const [currentSelected, setCurrentSelected] = useState(null);
+const Faq = ({ toggleFaq }) => {
+  const [currentSelected, setCurrentSelected] = useState(null)
 
   let dummyData = [
     {
@@ -67,18 +67,17 @@ const Faq = ({toggleFaq}) => {
       topic: 'Topic or question here 8',
       suggestion: 'Lorem ipsum dolor sit amet, ',
     },
-  ];
+  ]
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <PaddingView paddingSize={3}>
         <ScreenHeaderTitle
-          iconSize={16}
           title="Frequently Asked Question"
           close={toggleFaq}
         />
       </PaddingView>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <View style={styles.contentWrapper}>
           {dummyData.map((faq, index) => {
             return (
@@ -88,12 +87,12 @@ const Faq = ({toggleFaq}) => {
                   //setCurrentSelected(index);
                   currentSelected === index
                     ? setCurrentSelected(null)
-                    : setCurrentSelected(index);
+                    : setCurrentSelected(index)
                 }}
                 style={styles.faq}
                 activeOpacity={0.5}>
                 <View style={styles.topicContainer}>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <AppText textStyle="body1medium">{faq.topic}</AppText>
                     <View style={styles.iconContainer}>
                       <ArrowDown height={24} width={24} />
@@ -108,13 +107,13 @@ const Faq = ({toggleFaq}) => {
                   ) : null}
                 </View>
               </TouchableOpacity>
-            );
+            )
           })}
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
-};
+  )
+}
 
 // define your styles
 const styles = StyleSheet.create({
@@ -137,8 +136,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
-});
+})
 // define your styles
 
 //make this component available to the app
-export default Faq;
+export default Faq

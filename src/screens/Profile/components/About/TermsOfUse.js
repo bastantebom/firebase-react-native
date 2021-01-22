@@ -12,7 +12,6 @@ const TermsOfUse = ({ toggleTermsOfUse }) => {
       <ScreenHeaderTitle
         close={toggleTermsOfUse}
         title="Terms of Use"
-        iconSize={normalize(16)}
         paddingSize={3}
       />
       <WebView

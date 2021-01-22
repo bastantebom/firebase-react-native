@@ -116,8 +116,12 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
             <TouchableOpacity
               onPress={toggleProfileList}
               activeOpacity={0.7}
-              style={{ position: 'absolute', left: 0 }}>
-              <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+              style={{
+                position: 'absolute',
+                left: normalize(-6),
+                padding: normalize(6),
+              }}>
+              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
             </TouchableOpacity>
             <AppText textStyle="body3">
               {viewUserInfo.display_name

@@ -120,11 +120,7 @@ const StoreLocationModal = ({ close, pickupAddress, setPickupAddress }) => {
               />
             </View>
             <View style={styles.addressTop}>
-              <ScreenHeaderTitle
-                close={close}
-                title="Store Location"
-                iconSize={normalize(16)}
-              />
+              <ScreenHeaderTitle close={close} title="Store Location" />
               <TouchableOpacity
                 style={{
                   marginTop: 16,

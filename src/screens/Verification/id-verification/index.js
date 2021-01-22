@@ -99,7 +99,7 @@ const IdVerificationScreen = ({ navigation }) => {
       <TransitionIndicator loading={isLoading} />
 
       <View style={{ padding: normalize(24) }}>
-        <ScreenHeaderTitle iconSize={16} close={navigation.goBack} />
+        <ScreenHeaderTitle close={navigation.goBack} />
       </View>
 
       <ScrollView>

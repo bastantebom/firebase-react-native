@@ -70,7 +70,6 @@ const PaypalScreen = ({ navigation, route }) => {
         <ScreenHeaderTitle
           close={navigation.goBack}
           title="PayPal"
-          iconSize={normalize(16)}
           paddingSize={3}
         />
         <PaddingView

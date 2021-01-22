@@ -27,7 +27,6 @@ const AddNoteModal = ({ closeModal }) => {
               ? 'Add Delivery Notes'
               : 'Add Pick-up Notes'
           }
-          iconSize={normalize(16)}
         />
         <View
           style={{

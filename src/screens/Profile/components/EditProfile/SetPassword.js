@@ -27,7 +27,6 @@ const SetPassword = ({ toggleEditLogin, provider }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
-            iconSize={16}
             title={isEmail ? 'Change Email Address' : 'Change Mobile Number'}
             close={() => {
               toggleEditLogin('')

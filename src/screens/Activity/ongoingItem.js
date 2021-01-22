@@ -201,7 +201,6 @@ const OngoingItem = ({ route, navigation }) => {
               maxWidth: '80%',
             }}
             paddingSize={3}
-            iconSize={normalize(16)}
             rightIcon={
               <View>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
@@ -628,13 +627,15 @@ const OngoingItem = ({ route, navigation }) => {
         )}
       </ScrollView>
 
-      <View style={styles.bottomBtnContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Past')}>
-          <AppText textStyle="body2medium" color={Colors.contentOcean}>
-            View Past Orders
-          </AppText>
-        </TouchableOpacity>
-      </View>
+      {pending.length ? (
+        <View style={styles.bottomBtnContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Past')}>
+            <AppText textStyle="body2medium" color={Colors.contentOcean}>
+              View Past Orders
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </SafeAreaView>
   )
 }

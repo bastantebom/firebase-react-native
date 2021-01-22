@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
+} from 'react-native'
 
 import {
   ScreenHeaderTitle,
@@ -15,22 +15,21 @@ import {
   AppText,
   ProfileInfo,
   AppButton,
-} from '@/components';
-import {CloseDark, InviteFriendsMenu} from '@/assets/images/icons';
-import {InviteFriend} from '@/assets/images';
-import {normalize, Colors} from '@/globals';
-import Modal from 'react-native-modal';
-import {UserContext} from '@/context/UserContext';
-import AdminFunctionService from '@/services/Admin/AdminFunctions';
+} from '@/components'
+import { CloseDark, InviteFriendsMenu } from '@/assets/images/icons'
+import { InviteFriend } from '@/assets/images'
+import { normalize, Colors } from '@/globals'
+import Modal from 'react-native-modal'
+import { UserContext } from '@/context/UserContext'
+import AdminFunctionService from '@/services/Admin/AdminFunctions'
 
 // create a component
-const InviteFriends = ({toggleInviteFriends}) => {
+const InviteFriends = ({ toggleInviteFriends }) => {
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <View style={{padding: normalize(16)}}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ padding: normalize(16) }}>
           <ScreenHeaderTitle
-            iconSize={16}
             title="Invite Friends"
             close={toggleInviteFriends}
           />
@@ -64,8 +63,8 @@ const InviteFriends = ({toggleInviteFriends}) => {
         </View>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
 // define your styles
 // define your styles
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: normalize(8),
   },
-});
+})
 
 //make this component available to the app
-export default InviteFriends;
+export default InviteFriends

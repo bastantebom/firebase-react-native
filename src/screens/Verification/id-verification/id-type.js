@@ -84,7 +84,7 @@ const IdTypeScreen = ({ navigation, route }) => {
     <>
       <View style={styles.container}>
         <View style={styles.header}>
-          <ScreenHeaderTitle iconSize={16} close={navigation.goBack} />
+          <ScreenHeaderTitle close={navigation.goBack} />
         </View>
 
         <View>

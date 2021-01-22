@@ -11,11 +11,7 @@ const Welcome = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-      <ScreenHeaderTitle
-        close={() => navigation.goBack()}
-        paddingSize={3}
-        iconSize={normalize(16)}
-      />
+      <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
       <View style={styles.contentWrapper}>
         <WelcomeServbees />
         <AppText textStyle="display5">Welcome to Servbees</AppText>

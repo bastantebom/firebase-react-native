@@ -252,11 +252,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
           },
           paddingAnimatedStyle,
         ]}>
-        <ScreenHeaderTitle
-          close={closeModal}
-          iconSize={normalize(16)}
-          paddingSize={2}
-        />
+        <ScreenHeaderTitle close={closeModal} paddingSize={2} />
         <View
           style={{
             paddingBottom: 32,

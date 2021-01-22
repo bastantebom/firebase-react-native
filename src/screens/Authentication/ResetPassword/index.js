@@ -157,7 +157,7 @@ const ResetPassword = ({ navigation }) => {
       <AppViewContainer paddingSize={3} customStyle={styles.container}>
         <View style={styles.closeIconContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <HeaderBackGray width={16} height={16} />
+            <HeaderBackGray width={normalize(24)} height={normalize(24)} />
           </TouchableOpacity>
         </View>
 

@@ -299,11 +299,8 @@ const ChatHouse = () => {
       <TransitionIndicator loading={isLoading} />
       <ScreenHeaderTitle
         title="All Chats"
-        iconSize={normalize(16)}
         paddingSize={3}
         close={() => navigation.goBack()}
-        withOptions
-        openOptions={() => {}}
       />
       <View style={styles.chatHeader}>
         <TouchableOpacity style={styles.sort} onPress={() => setChatSort(true)}>

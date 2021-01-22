@@ -178,6 +178,8 @@ import PostParcel from './PostParcel.svg'
 import PostInfoRed from './PostInfoRed.svg'
 import PostCalendar from './post-calendar.svg'
 import PostParcelBlue from './post-parcel-blue.svg'
+import PostNeedGreen from './post-need-green.svg'
+import PostServiceRed from './post-service-red.svg'
 
 import ProfileImageDefault from './profile-image-default.svg'
 
@@ -515,7 +517,6 @@ export {
   ChevronRightWhite,
   ChevronRightGray,
   Search,
-  PostParcelBlue,
   Cash,
   CreditCard,
   GCash,
@@ -611,6 +612,8 @@ export const Icons = {
   PostNote,
   PostParcel,
   PostParcelBlue,
+  PostServiceRed,
+  PostNeedGreen,
   PostTool,
   PostAppointment,
   PostNeedGray,

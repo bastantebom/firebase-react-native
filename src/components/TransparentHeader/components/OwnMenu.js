@@ -64,9 +64,9 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   const toggleHiddenPost = () => setHiddenPost(!hiddenPost)
   const toggleLikePost = () => setLikePost(!likePost)
   const toggleArchivedPost = () => setArchivedPost(!archivedPost)
-  const toggleInviteFriends = () => setInviteFriends(!inviteFriends)
   const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
+  const toggleInviteFriends = () => setInviteFriends(!inviteFriends)
 
   const handleChangePasswordPress = () => {
     navigation.navigate('NBTScreen', { screen: 'change-password' })
@@ -86,24 +86,10 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
       icon: () => <MenuEdit width={normalize(20)} height={normalize(20)} />,
     },
     {
-      label: 'Archived Posts',
-      onPress: () => setArchivedPost(true),
-      icon: () => (
-        <ArchivePostMenu width={normalize(20)} height={normalize(20)} />
-      ),
-    },
-    {
       label: 'Hidden Posts',
       onPress: () => setHiddenPost(true),
       icon: () => <HidePost width={normalize(20)} height={normalize(20)} />,
       hidden: true,
-    },
-    {
-      label: 'Invite Friends',
-      onPress: () => setInviteFriends(true),
-      icon: () => (
-        <InviteFriendsMenu width={normalize(22)} height={normalize(22)} />
-      ),
     },
   ]
 
@@ -149,7 +135,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
         title="Settings"
-        iconSize={normalize(20)}
         close={() => navigation.goBack()}
         paddingSize={3}
       />
@@ -228,20 +213,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                 customStyle={{ marginBottom: normalize(16) }}>
                 Help and Support
               </AppText>
-
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleFaq}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <Faq width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Frequently Asked Questions
-                  </AppText>
-                </View>
-              </TouchableOpacity>
 
               <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>

@@ -20,11 +20,7 @@ const ArchivedPost = ({ toggleArchivedPost }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <PaddingView paddingSize={3}>
-        <ScreenHeaderTitle
-          iconSize={16}
-          title="Archived Post"
-          close={toggleArchivedPost}
-        />
+        <ScreenHeaderTitle title="Archived Post" close={toggleArchivedPost} />
       </PaddingView>
 
       <ArchivedPosts

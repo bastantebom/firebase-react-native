@@ -45,7 +45,6 @@ const PayoutDetails = ({ navigation, route }) => {
         title={method}
         close={() => navigation.goBack()}
         paddingSize={3}
-        iconSize={normalize(20)}
       />
       <PaddingView
         paddingSize={3}

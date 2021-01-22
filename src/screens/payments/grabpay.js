@@ -70,7 +70,6 @@ const GrabPayScreen = ({ navigation, route }) => {
         <ScreenHeaderTitle
           close={navigation.goBack}
           title="GrabPay"
-          iconSize={normalize(16)}
           paddingSize={3}
         />
         <View style={styles.contentWrapper}>

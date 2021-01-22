@@ -12,7 +12,6 @@ const PrivacyPolicy = ({ togglePrivacyPolicy }) => {
       <ScreenHeaderTitle
         close={togglePrivacyPolicy}
         title="Privacy Policy"
-        iconSize={normalize(16)}
         paddingSize={3}
       />
       <WebView

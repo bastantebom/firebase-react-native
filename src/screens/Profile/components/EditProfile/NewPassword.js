@@ -33,7 +33,6 @@ const EditLogin = ({ toggleSetPassword, provider }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <PaddingView paddingSize={3}>
           <ScreenHeaderTitle
-            iconSize={16}
             title="Set New Password"
             close={() => {
               toggleSetPassword()

@@ -1,19 +1,19 @@
-import React from 'react';
-import {Hive} from '@/components/Hives';
-import {View, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
+import React from 'react'
+import { Hive } from '@/components/Hives'
+import { View, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 //import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {HeaderBackGray} from '@/assets/images/icons';
-import {PaddingView} from '@/components';
-import {normalize} from '@/globals';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { HeaderBackGray } from '@/assets/images/icons'
+import { PaddingView } from '@/components'
+import { normalize } from '@/globals'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-function ProfileHives({toggleHives}) {
+function ProfileHives({ toggleHives }) {
   //navigation.setOptions({
   // title: 'HIVES LIST', // change to user's display name
   //});
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <View>
           <PaddingView paddingSize={3}>
@@ -24,7 +24,7 @@ function ProfileHives({toggleHives}) {
                 flexDirection: 'row',
               }}>
               <TouchableOpacity onPress={toggleHives} activeOpacity={0.7}>
-                <HeaderBackGray width={normalize(16)} height={normalize(16)} />
+                <HeaderBackGray width={normalize(24)} height={normalize(24)} />
               </TouchableOpacity>
             </View>
           </PaddingView>
@@ -37,10 +37,10 @@ function ProfileHives({toggleHives}) {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  )
 }
 
-export default ProfileHives;
+export default ProfileHives
 
 const styles = StyleSheet.create({
   // container: {
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   //   height: '100%'
   // }
-});
+})

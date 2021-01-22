@@ -37,12 +37,11 @@ const PayoutMethod = ({ navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScreenHeaderTitle
         title="Payout Method"
         close={() => navigation.goBack()}
         paddingSize={3}
-        iconSize={normalize(20)}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -88,13 +87,6 @@ const PayoutMethod = ({ navigation }) => {
                     After your payment has been credited, you should receive a
                     confirmation via notification, SMS, or email.
                   </AppText>
-                  <TouchableOpacity activeOpacity={0.7}>
-                    <AppText
-                      textStyle="body2medium"
-                      color={Colors.contentOcean}>
-                      View FAQ
-                    </AppText>
-                  </TouchableOpacity>
                 </View>
               </View>
               <AppButton

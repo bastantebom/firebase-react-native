@@ -688,7 +688,6 @@ const BasketScreen = ({ navigation, route }) => {
                 ? 'My Basket'
                 : 'Order Summary'
             }
-            iconSize={normalize(16)}
           />
         </View>
         <View style={{ backgroundColor: '#F2F4F6' }}>

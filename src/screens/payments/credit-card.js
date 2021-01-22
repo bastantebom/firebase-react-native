@@ -219,7 +219,6 @@ const CreditCardScreen = ({ navigation, route }) => {
       <ScreenHeaderTitle
         close={navigation.goBack}
         title="Visa / Mastercard"
-        iconSize={normalize(16)}
         paddingSize={3}
       />
       <ScrollView

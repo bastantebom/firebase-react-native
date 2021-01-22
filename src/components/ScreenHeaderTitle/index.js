@@ -29,7 +29,7 @@ const ScreenHeaderTitle = ({
   close,
   paddingSize,
   icon,
-  iconSize = 24,
+  iconSize = normalize(24),
   title,
   openOptions,
   withOptions = false,
@@ -76,7 +76,11 @@ const ScreenHeaderTitle = ({
         <TouchableOpacity
           onPress={close}
           activeOpacity={0.7}
-          style={{ position: 'absolute', left: 0 }}>
+          style={{
+            position: 'absolute',
+            left: normalize(-6),
+            padding: normalize(6),
+          }}>
           <RenderIcon />
         </TouchableOpacity>
         <AppText
