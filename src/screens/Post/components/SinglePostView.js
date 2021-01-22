@@ -152,6 +152,7 @@ const SinglePostView = props => {
     currentPostOrder,
     userPosts,
     setUserPosts,
+    openSlider,
   } = useContext(Context)
 
   const isLiked = ~likers?.indexOf(user?.uid)
@@ -196,13 +197,13 @@ const SinglePostView = props => {
         const { data } = await Api.getFollowers({
           uid: props.route?.params?.data.uid,
         })
-        setFollowing(data.some(resData => resData.uid === user.uid))
+        setFollowing(data.some(resData => resData.uid === user?.uid))
       })(),
       (async () => {
         const { likes } = await Api.getPostLikes({
           pid: props.route?.params?.data.id,
         })
-        setLiked(likes?.includes(user.uid))
+        setLiked(likes?.includes(user?.uid))
       })(),
     ]
 
@@ -279,6 +280,7 @@ const SinglePostView = props => {
   }
 
   const handleLikedPost = async () => {
+    if (!user) return
     const { id } = props.route?.params?.data
     const { likes } = await Api.getPostLikes({ pid: id })
 
@@ -1171,13 +1173,11 @@ const SinglePostView = props => {
               ) : (
                 <TouchableOpacity
                   onPress={() => {
-                    if (type === 'need') {
-                      showOfferModal(true)
-                    } else if (type === 'service' && !is_multiple) {
+                    if (!user) openSlider()
+                    else if (type === 'need') showOfferModal(true)
+                    else if (type === 'service' && !is_multiple)
                       showScheduleModal(true)
-                    } else {
-                      showBasketModal(true)
-                    }
+                    else showBasketModal(true)
                   }}
                   style={{ flex: 1, marginLeft: phone_number ? 8 : 0 }}
                   activeOpacity={0.7}
