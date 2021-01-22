@@ -30,15 +30,16 @@ const AlmostThereMap = route => {
     const { latitude, longitude } = region
     const { results } = await Geocoder.from(latitude, longitude)
     const addressComponents = results[0].address_components || []
+    console.log(addressComponents)
     setAddressData({
       ...addressData,
       longitude,
       latitude,
       city: getLocationName(addressComponents, 'locality'),
-      province: getLocationName(
-        addressComponents,
-        'administrative_area_level_2'
-      ),
+      province:
+        getLocationName(addressComponents, 'administrative_area_level_2') ||
+        getLocationName(addressComponents, 'administrative_area_level_1') ||
+        '',
       country: getLocationName(addressComponents, 'country'),
       full_address: results[0].formatted_address,
     })
@@ -57,10 +58,10 @@ const AlmostThereMap = route => {
         longitude,
         latitude,
         city: getLocationName(addressComponents, 'locality'),
-        province: getLocationName(
-          addressComponents,
-          'administrative_area_level_2'
-        ),
+        province:
+          getLocationName(addressComponents, 'administrative_area_level_2') ||
+          getLocationName(addressComponents, 'administrative_area_level_1') ||
+          '',
         country: getLocationName(addressComponents, 'country'),
         full_address: results[0].formatted_address,
       })

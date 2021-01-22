@@ -132,10 +132,10 @@ const BasketModal = ({
       longitude,
       latitude,
       city: getLocationName(addressComponents, 'locality'),
-      province: getLocationName(
-        addressComponents,
-        'administrative_area_level_2'
-      ),
+      province:
+        getLocationName(addressComponents, 'administrative_area_level_2') ||
+        getLocationName(addressComponents, 'administrative_area_level_1') ||
+        '',
       country: getLocationName(addressComponents, 'country'),
       full_address: results[0].formatted_address,
     })
