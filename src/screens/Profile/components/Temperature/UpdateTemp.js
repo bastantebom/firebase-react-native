@@ -51,7 +51,9 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   }
 
   const onTempChangeHandler = temp => {
-    if (temp < 40 && temp >= 35) {
+    const decimalRegEx = /^\d{2}\.\d{1}$|^\d{2}$/
+
+    if (temp < 40 && temp >= 35 && decimalRegEx.test(temp)) {
       setButtonState(false)
     } else {
       setButtonState(true)
