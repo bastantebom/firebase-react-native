@@ -96,19 +96,24 @@ const Post = ({
     const deliveryMethods = temp
 
     return (
-      <View style={GlobalStyle.rowCenter}>
-        <Icons.TransportationBox width={normalize(16)} height={normalize(16)} />
+      post.type !== 'need' && (
+        <View style={GlobalStyle.rowCenter}>
+          <Icons.TransportationBox
+            width={normalize(16)}
+            height={normalize(16)}
+          />
 
-        <AppText
-          textStyle="eyebrow2"
-          customStyle={{
-            color: Colors.contentEbony,
-            marginLeft: 4,
-            textTransform: 'capitalize',
-          }}>
-          {deliveryMethods.length ? deliveryMethods.join(' and ') : 'not set'}
-        </AppText>
-      </View>
+          <AppText
+            textStyle="eyebrow2"
+            customStyle={{
+              color: Colors.contentEbony,
+              marginLeft: 4,
+              textTransform: 'capitalize',
+            }}>
+            {deliveryMethods.length ? deliveryMethods.join(' and ') : 'not set'}
+          </AppText>
+        </View>
+      )
     )
   }
 
