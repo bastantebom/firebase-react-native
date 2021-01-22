@@ -60,12 +60,8 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
   const [mapInitialized, setMapInitialized] = useState(false)
 
   const [instructionVisible, setInstructionVisible] = useState(true)
-  const [rangeValue, setRangeValue] = useState(5)
+  const [rangeValue, setRangeValue] = useState(address.radius / 1000 || 5)
   const [isFocused, setIsFocused] = useState(false)
-
-  const getSliderValue = rangeValue => {
-    setRangeValue(rangeValue)
-  }
 
   const onInputFocus = () => {
     setIsFocused(true)
@@ -296,7 +292,8 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
                   minValue={0}
                   maxValue={100}
                   step={1}
-                  value={getSliderValue}
+                  onValueChange={setRangeValue}
+                  value={rangeValue}
                 />
               </PaddingView>
             </View>

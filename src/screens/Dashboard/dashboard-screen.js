@@ -204,13 +204,23 @@ const DashboardScreen = ({ navigation }) => {
       address => address.default
     )
 
+    const address = (() => {
+      if (locationData)
+        return {
+          latitude: locationData.latitude,
+          longitude: locationData.longitude,
+          radius: locationData.radius,
+        }
+      else if (defaultAddress)
+        return {
+          latitude: defaultAddress.latitude,
+          longitude: defaultAddress.longitude,
+        }
+      return { latitude: 14.5831, longitude: 120.9794 }
+    })()
+
     navigation.navigate('location-search-map', {
-      address: defaultAddress
-        ? {
-            latitude: defaultAddress.latitude,
-            longitude: defaultAddress.longitude,
-          }
-        : { latitude: 14.5831, longitude: 120.9794 },
+      address,
       onValueChange: handleLocationChange,
     })
   }

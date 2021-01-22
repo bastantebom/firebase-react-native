@@ -4,18 +4,18 @@ import AppText from '../AppText/AppText'
 // import Slider from '@react-native-community/slider';
 import Slider from 'react-native-slider'
 import { Colors, normalize } from '@/globals'
-import AppButton from '../AppButton/AppButton'
 
 export const RangeSlider = ({
   minValue = 0,
   maxValue = 200,
   step = 5,
   value,
+  onValueChange,
   showRange,
 }) => {
   const sliderRef = useRef(null)
 
-  const [rangeValue, setRangeValue] = useState(0)
+  const [rangeValue, setRangeValue] = useState(value || 0)
 
   const tapSliderHandler = evt => {
     if (sliderRef.current) {
@@ -24,11 +24,11 @@ export const RangeSlider = ({
           ((evt.nativeEvent.locationX - px) / width) * normalize(95)
         if (distanceRange < 0) {
           setRangeValue(Math.round(-(distanceRange * 0)))
-          value(Math.round(-(distanceRange * 0)))
+          onValueChange(Math.round(-(distanceRange * 0)))
           console.log('negative value')
         } else {
           setRangeValue(Math.round((distanceRange * 100) / 100))
-          value(Math.round((distanceRange * 100) / 100))
+          onValueChange(Math.round((distanceRange * 100) / 100))
         }
       })
     }
@@ -62,7 +62,7 @@ export const RangeSlider = ({
               value={rangeValue}
               onValueChange={rangeValue => {
                 setRangeValue(rangeValue)
-                value(rangeValue)
+                onValueChange(rangeValue)
               }}
               minimumTrackTintColor={Colors.primaryYellow}
               maximumTrackTintColor={Colors.neutralGray}
