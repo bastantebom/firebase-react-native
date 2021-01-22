@@ -125,7 +125,7 @@ const Activity = () => {
                       paddingHorizontal: normalize(6),
                       borderRadius: 16,
                     }}>
-                    <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                    <AppText textStyle="eyebrow1" color={Colors.neutralsWhite}>
                       {chatList.filter(chat => !chat.read).length}
                     </AppText>
                   </View>
@@ -153,7 +153,7 @@ const Activity = () => {
                       paddingHorizontal: normalize(6),
                       borderRadius: 16,
                     }}>
-                    <AppText textStyle="eyebrow" color={Colors.neutralsWhite}>
+                    <AppText textStyle="eyebrow1" color={Colors.neutralsWhite}>
                       {
                         groupNotifications.filter(notif => !notif[0].read)
                           .length

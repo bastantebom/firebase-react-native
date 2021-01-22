@@ -30,6 +30,8 @@ import {
   ChatEmpty,
 } from '@/assets/images/icons'
 
+import { NoPost, NoInfo, NoReview, IllustActivity } from '@/assets/images'
+
 import ChatSort from './components/ChatSort'
 import ChatHouseCard from './components/ChatHouseCard'
 
@@ -344,6 +346,84 @@ const ChatHouse = () => {
               </View>
             )
           })}
+        {!postChats.filter(post =>
+          sortCategory.value === 'all'
+            ? post
+            : post.cardType === sortCategory.value
+        ).length &&
+          sortCategory.value !== 'past' &&
+          !isLoading && (
+            <View style={styles.emptyState}>
+              {sortCategory.value === 'all' ? (
+                <NoPost />
+              ) : sortCategory.value === 'own' ? (
+                <NoReview />
+              ) : (
+                <NoInfo />
+              )}
+              <AppText
+                textStyle="display6"
+                customStyle={{
+                  marginBottom: normalize(4),
+                  marginTop: normalize(15),
+                }}>
+                {sortCategory.value === 'all'
+                  ? `No activities yet`
+                  : sortCategory.value === 'own'
+                  ? `No orders yet`
+                  : `No offers yet`}
+              </AppText>
+              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+                {sortCategory.value === 'all'
+                  ? `Start checking what you can offer and discover the best deals in your area.`
+                  : sortCategory.value === 'own'
+                  ? `Keep on posting about your products to attract orders, Buzzybee!`
+                  : `Getting projects starts by making offers, Buzzybee! `}
+              </AppText>
+            </View>
+          )}
+        {!postChats.filter(post =>
+          sortCategory.value === 'all'
+            ? post
+            : post.cardType === sortCategory.value
+        ).length &&
+          sortCategory.value === 'past' &&
+          !isLoading && (
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <IllustActivity width={normalize(250)} height={normalize(200)} />
+              <AppText
+                textStyle="display5"
+                color={Colors.primaryMidnightBlue}
+                customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
+                Get active and productive, buzzbee!
+              </AppText>
+              <View style={styles.descHolder}>
+                <AppText
+                  customStyle={{
+                    textAlign: 'center',
+                  }}
+                  textStyle="body2">
+                  Get busy with more projects, buying and selling items,
+                  boosting your online business or just browsing what’s new in
+                  your neighborhood.
+                </AppText>
+              </View>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: normalize(10),
+                  paddingHorizontal: normalize(20),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  backgroundColor: '#FFD400',
+                  borderRadius: 3,
+                  marginTop: normalize(8),
+                }}
+                onPress={() => navigation.navigate('dashboard')}>
+                <AppText textStyle="button3">Explore Postings Near You</AppText>
+              </TouchableOpacity>
+            </View>
+          )}
       </ScrollView>
       <Modal
         isVisible={chatSort}
@@ -402,5 +482,15 @@ const styles = StyleSheet.create({
     zIndex: 999,
     top: 13,
     right: 12,
+  },
+  emptyState: {
+    backgroundColor: Colors.neutralsWhite,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalize(8),
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    flex: 1,
+    padding: normalize(16),
   },
 })

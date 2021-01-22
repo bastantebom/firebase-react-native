@@ -22,7 +22,7 @@ const ActivitySort = ({ choice, close }) => {
     },
     {
       label: 'Past',
-      value: 'Past',
+      value: 'past',
       description: 'Past',
     },
   ]

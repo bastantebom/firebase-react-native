@@ -13,7 +13,7 @@ import PostService from '@/services/Post/PostService'
 
 import { AppText, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
-import IllustActivity from '@/assets/images/activity-img1.svg'
+import { IllustActivity, NoReview, NoPost, NoInfo } from '@/assets/images'
 import ActivitiesCard from './ActivitiesCard'
 
 const Ongoing = ({ sortCategory }) => {
@@ -132,7 +132,13 @@ const Ongoing = ({ sortCategory }) => {
   return (
     <SafeAreaView>
       <TransitionIndicator loading={isLoading} />
-      {!onGoing.length && !isLoading ? (
+      {!onGoing.filter(post =>
+        sortCategory.value === 'all'
+          ? post
+          : post.cardType === sortCategory.value
+      ).length &&
+      !isLoading &&
+      sortCategory.value === 'past' ? (
         <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <IllustActivity width={normalize(250)} height={normalize(200)} />
@@ -168,14 +174,59 @@ const Ongoing = ({ sortCategory }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+      ) : !onGoing.filter(post =>
+          sortCategory.value === 'all'
+            ? post
+            : post.cardType === sortCategory.value
+        ).length &&
+        !isLoading &&
+        sortCategory.value !== 'past' ? (
+        <ScrollView
+          contentContainerStyle={{
+            paddingHorizontal: normalize(16),
+            paddingBottom: normalize(25),
+          }}>
+          <View style={styles.emptyState}>
+            {sortCategory.value === 'all' ? (
+              <NoPost />
+            ) : sortCategory.value === 'own' ? (
+              <NoReview />
+            ) : (
+              <NoInfo />
+            )}
+            <AppText
+              textStyle="display6"
+              customStyle={{
+                marginBottom: normalize(4),
+                marginTop: normalize(15),
+              }}>
+              {sortCategory.value === 'all'
+                ? `No activities yet`
+                : sortCategory.value === 'own'
+                ? `No orders yet`
+                : `No offers yet`}
+            </AppText>
+            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+              {sortCategory.value === 'all'
+                ? `Start checking what you can offer and discover the best deals in your area.`
+                : sortCategory.value === 'own'
+                ? `Keep on posting about your products to attract orders, Buzzybee!`
+                : `Getting projects starts by making offers, Buzzybee! `}
+            </AppText>
+          </View>
+        </ScrollView>
       ) : (
-        !isLoading && (
+        !isLoading &&
+        onGoing.length && (
           <ScrollView>
             <View style={{ paddingTop: normalize(15) }}>
               <View style={{ paddingHorizontal: normalize(15) }}>
                 <AppText
                   textStyle="eyebrow1"
-                  customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                  customStyle={{
+                    color: '#91919C',
+                    paddingTop: normalize(15),
+                  }}>
                   NEW
                 </AppText>
               </View>
@@ -204,6 +255,16 @@ const styles = StyleSheet.create({
   descHolder: {
     paddingTop: normalize(10),
     paddingBottom: normalize(25),
+  },
+  emptyState: {
+    backgroundColor: Colors.neutralsWhite,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalize(8),
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    flex: 1,
+    padding: normalize(16),
   },
 })
 
