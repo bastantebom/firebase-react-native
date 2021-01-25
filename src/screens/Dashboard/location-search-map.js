@@ -60,7 +60,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
   const [mapInitialized, setMapInitialized] = useState(false)
 
   const [instructionVisible, setInstructionVisible] = useState(true)
-  const [rangeValue, setRangeValue] = useState(address.radius / 1000 || 5)
+  const [rangeValue, setRangeValue] = useState(address.radius / 1000 || 101)
   const [isFocused, setIsFocused] = useState(false)
 
   const onInputFocus = () => {
@@ -72,14 +72,18 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    if (rangeValue < 0) {
-      setRangeValue(0)
+    if (rangeValue < 1) {
+      setRangeValue(1)
     }
   }, [rangeValue])
 
   const saveRefineLocation = () => {
     const { latitude, longitude } = addressData
-    onValueChange({ latitude, longitude, radius: rangeValue * 1000 })
+    onValueChange({
+      latitude,
+      longitude,
+      radius: rangeValue === 101 ? 0 : rangeValue * 1000,
+    })
     navigation.goBack()
   }
 
@@ -168,6 +172,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
       handleRegionChange({ latitude, longitude })
 
       setMapInitialized(true)
+      setRangeValue(5)
     } catch (error) {
       console.log(error, 'error')
     }
@@ -261,12 +266,12 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
                   }}>
                   <AppText textStyle="promo">Browse Offers Within</AppText>
                   <AppText textStyle="caption" color="#999">
-                    {rangeValue < 100 ? rangeValue + 'KM' : 'Philippines'}
+                    {rangeValue <= 100 ? rangeValue + 'KM' : 'Philippines'}
                   </AppText>
                 </View>
                 <RangeSlider
-                  minValue={0}
-                  maxValue={100}
+                  minValue={1}
+                  maxValue={101}
                   step={1}
                   onValueChange={setRangeValue}
                   value={rangeValue}
@@ -304,6 +309,8 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
             radius={rangeValue}
             radiusMarker
             customMapStyle={[]}
+            scrollEnabled={rangeValue !== 101}
+            zoomEnabled={rangeValue !== 101}
           />
           <View style={styles.buttonWrapper}>
             <AppButton

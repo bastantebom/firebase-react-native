@@ -29,6 +29,8 @@ const MapComponent = ({
   radiusMarker,
   customMapStyle,
   customDelta,
+  zoomEnabled = true,
+  scrollEnabled = true,
 }) => {
   const circleRef = useRef(null)
   const mapViewRef = useRef(null)
@@ -226,7 +228,7 @@ const MapComponent = ({
 
   useEffect(() => {
     if (withRadius) {
-      if (radius && radius >= 100 && isMapReady) {
+      if (radius === 101 && isMapReady) {
         let centralCoordinates = {
           latitude: 12.879721, //central point of ph
           longitude: 121.774017,
@@ -257,9 +259,9 @@ const MapComponent = ({
         style={styles.mapView}
         initialRegion={initialRegion}
         customMapStyle={customMapStyle ? customMapStyle : mapStyle}
-        zoomEnabled={true}
+        zoomEnabled={zoomEnabled}
         onRegionChangeComplete={onRegionChangeComplete}
-        scrollEnabled={true}
+        scrollEnabled={scrollEnabled}
         showsScale={true}
         showsBuildings={true}
         loadingEnabled={true}

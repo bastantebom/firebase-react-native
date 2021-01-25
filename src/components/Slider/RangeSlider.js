@@ -34,6 +34,10 @@ export const RangeSlider = ({
     }
   }
 
+  useEffect(() => {
+    setRangeValue(value)
+  }, [value])
+
   return (
     <>
       <View

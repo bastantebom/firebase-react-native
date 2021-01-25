@@ -190,10 +190,18 @@ const DashboardScreen = ({ navigation }) => {
   const handleLocationChange = async ({ latitude, longitude, radius }) => {
     try {
       const addressData = await getLocationData({ latitude, longitude })
-      setLocationData({
-        ...addressData,
-        radius,
+      const defaultAddressData = await getLocationData({
+        longitude: 120.983207,
+        latitude: 14.585322,
       })
+      setLocationData(
+        !radius
+          ? { ...defaultAddressData, radius: 0 }
+          : {
+              ...addressData,
+              radius,
+            }
+      )
     } catch (error) {
       console.log(error)
     }
@@ -216,7 +224,7 @@ const DashboardScreen = ({ navigation }) => {
           latitude: defaultAddress.latitude,
           longitude: defaultAddress.longitude,
         }
-      return { latitude: 14.5831, longitude: 120.9794 }
+      return { longitude: 120.983207, latitude: 14.585322 }
     })()
 
     navigation.navigate('location-search-map', {

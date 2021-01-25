@@ -172,7 +172,7 @@ const SearchResults = ({
         <FlatList
           scrollEventThrottle={16}
           data={data}
-          keyExtractor={item => item.id}
+          keyExtractor={item => (searchType === 'post' ? item.id : item.uid)}
           renderItem={renderSearchResult}
           initialNumToRender={15}
         />
