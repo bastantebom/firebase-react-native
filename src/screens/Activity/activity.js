@@ -107,7 +107,7 @@ const Activity = () => {
             flexDirection: 'row',
             width: '100%',
             justifyContent: 'space-between',
-            paddingBottom: normalize(20),
+            paddingTop: normalize(24),
             paddingHorizontal: normalize(16),
             display: searchBarFocused ? 'none' : 'flex',
           }}>
@@ -122,7 +122,7 @@ const Activity = () => {
               customStyle={{ marginRight: normalize(8) }}>
               {sortCategory.label}
             </AppText>
-            <ChevronDown width={normalize(20)} height={normalize(20)} />
+            <ChevronDown width={normalize(24)} height={normalize(24)} />
           </TouchableOpacity>
           <View style={{ flexDirection: 'row' }}>
             <View>

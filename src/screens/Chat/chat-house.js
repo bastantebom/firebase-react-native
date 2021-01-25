@@ -118,7 +118,7 @@ const ChatHouse = () => {
               seller: full_name,
               storeName: display_name || full_name,
               cardType: 'own',
-              time: roomChat?.created_at._seconds,
+              time: roomChat?.created_at?._seconds,
               postData: getPostResponse.data,
               chats: roomChat,
             }
