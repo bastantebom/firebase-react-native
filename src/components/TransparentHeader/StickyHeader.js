@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import Share from 'react-native-share'
+import { useNavigation } from '@react-navigation/native'
 
 import { AppText, HexagonBorder } from '@/components'
 import {
@@ -35,7 +36,6 @@ import { UserContext } from '@/context/UserContext'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 
 const StickyHeader = ({
-  navigation,
   toggleEllipsisState,
   ellipsisState,
   toggleFollowing,
@@ -52,6 +52,7 @@ const StickyHeader = ({
   postId,
   isFollowing,
 }) => {
+  const navigation = useNavigation()
   const { user } = useContext(UserContext)
   const { display_name, full_name, profile_photo } = userInfo
   const name = display_name || full_name
