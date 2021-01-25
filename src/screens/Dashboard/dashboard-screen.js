@@ -205,13 +205,13 @@ const DashboardScreen = ({ navigation }) => {
     )
 
     const address = (() => {
-      if (locationData)
+      if (locationData?.latitude && locationData?.longitude)
         return {
           latitude: locationData.latitude,
           longitude: locationData.longitude,
           radius: locationData.radius,
         }
-      else if (defaultAddress)
+      else if (defaultAddress?.latitude && defaultAddress?.longitude)
         return {
           latitude: defaultAddress.latitude,
           longitude: defaultAddress.longitude,

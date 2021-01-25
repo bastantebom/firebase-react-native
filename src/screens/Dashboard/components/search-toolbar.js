@@ -189,7 +189,7 @@ const SearchToolbar = ({
             height: '100%',
             paddingVertical: normalize(8),
             transform: [{ translateX: inputPosition }],
-            zIndex: isFocused ? 1001 : 2,
+            zIndex: isFocused ? 1000 : 2,
           }}>
           <Animated.View style={{ width: inputWidth, height: normalize(52) }}>
             <Searchbar
@@ -220,7 +220,7 @@ const SearchToolbar = ({
               flexDirection: 'row',
               alignItems: 'center',
               opacity: buttonsOpacity,
-              zIndex: 1000,
+              zIndex: 999,
               position: 'absolute',
               right: normalize(8),
               top: normalize(8),
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     marginVertical: normalize(10),
     position: 'absolute',
     top: normalize(4),
-    zIndex: 1002,
+    zIndex: 1000,
   },
   title: {
     fontFamily: 'RoundedMplus1c-Medium',

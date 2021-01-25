@@ -131,30 +131,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
     })
   }
 
-  const getCurrentLocation = () => {
-    if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization()
-      Geolocation.setRNConfiguration({
-        skipPermissionRequests: false,
-        authorizationLevel: 'whenInUse',
-      })
-      currentLocation()
-    } else {
-      RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
-        interval: 5000,
-        fastInterval: 2000,
-      })
-        .then(data => {
-          if (data) {
-            currentLocation()
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-  }
-
   const initializeMap = async () => {
     try {
       setMapCoords({

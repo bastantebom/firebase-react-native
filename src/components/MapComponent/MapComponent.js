@@ -141,18 +141,20 @@ const MapComponent = ({
   }, [])
 
   useEffect(() => {
-    if (!isNaN(reCenter.lat)) {
+    if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng)) {
       setTimeout(() => {
-        let r = {
-          latitude: parseFloat(reCenter.lat),
-          longitude: parseFloat(reCenter.lng),
-          latitudeDelta: customDelta ? customDelta : Config.latitudeDelta,
-          longitudeDelta: customDelta ? customDelta : Config.longitudeDelta,
-        }
-        mapViewRef.current.animateToRegion(r, 2000)
+        mapViewRef.current.animateToRegion(
+          {
+            latitude: parseFloat(reCenter.lat),
+            longitude: parseFloat(reCenter.lng),
+            latitudeDelta: customDelta || Config.latitudeDelta,
+            longitudeDelta: customDelta || Config.longitudeDelta,
+          },
+          2000
+        )
       }, 100)
     }
-  }, [reCenter.lat])
+  }, [reCenter])
 
   const onRegionChangeComplete = region => {
     onRegionChange(region)
