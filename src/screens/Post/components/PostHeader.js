@@ -662,7 +662,7 @@ const RenderActiveForm = ({
     initialData ? initialData?.delivery_methods?.pickup : {}
   )
   const [deliveryState, setDeliveryState] = useState(
-    initialData ? initialData?.delivery_methods : {}
+    initialData ? initialData?.delivery_methods?.delivery : {}
   )
   const [storeLocation, setStoreLocation] = useState(initialData.store_location)
   const [paymentMethod, setPaymentMethod] = useState(initialData.payment_method)

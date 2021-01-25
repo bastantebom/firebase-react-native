@@ -622,7 +622,7 @@ const SinglePostView = props => {
     const methods = []
 
     for (const [key, value] of Object.entries(deliveryMethods)) {
-      if (!isEmpty(value)) {
+      if (value.value) {
         if (type === 'service') {
           if (key === 'delivery') {
             methods.push('walk-in')

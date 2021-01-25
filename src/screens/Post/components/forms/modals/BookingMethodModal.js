@@ -32,54 +32,25 @@ const BookingMethodModal = ({
   setPickupAddress,
   pickupAddress,
 }) => {
-  const [pickUp, setPickUp] = useState(
-    pickupState ? (Object.keys(pickupState).length === 0 ? false : true) : false
-  )
+  const [pickUp, setPickUp] = useState(pickupState?.value || false)
 
-  const [delivery, setDelivery] = useState(
-    deliveryState
-      ? Object.keys(deliveryState).length === 0
-        ? false
-        : true
-      : false
-  )
-  const [nationwide, setNationwide] = useState(
-    deliveryState?.nationwide ? true : false
-  )
-  const [within, setWithin] = useState(deliveryState?.radius ? true : false)
-  const [nationwideNotes, setNationwideNotes] = useState(
-    deliveryState?.nationwide?.notes || ''
-  )
-  const [withinNotes, setWithinNotes] = useState(
-    deliveryState?.radius?.notes || ''
-  )
-  // const [activeSwitch, setActiveSwitch] = useState(null);
-  const [rangeValue, setRangeValue] = useState(
-    deliveryState?.radius?.distance || 0
-  )
-
-  const CheckboxStateHandler = val => {
-    if (val === 'nationwide') {
-      setNationwide(!nationwide)
-      setWithinNotes('')
-      setRangeValue(0)
-      setDeliveryState({
-        nationwide: {},
-      })
-    }
-    if (val === 'within') {
-      setWithin(!within)
-      setNationwideNotes('')
-      setDeliveryState({
-        radius: {},
-      })
-    }
-  }
+  const [delivery, setDelivery] = useState(deliveryState?.value || false)
 
   const [locationModal, showLocationModal] = useState(false)
 
-  const openLocationHandler = () => {
-    showLocationModal(true)
+  const handleSave = () => {
+    const deliveryData = {
+      value: delivery,
+    }
+
+    const pickupData = {
+      value: pickUp,
+    }
+
+    setPickupState(pickupData)
+    setDeliveryState(deliveryData)
+
+    close()
   }
 
   return (
@@ -105,15 +76,7 @@ const BookingMethodModal = ({
             <Switch
               value={pickUp}
               onValueChange={() => {
-                if (pickUp) {
-                  setPickupState({})
-                  setPickUp(false)
-                } else {
-                  setPickupState({
-                    location: pickupAddress,
-                  })
-                  setPickUp(true)
-                }
+                setPickUp(!pickUp)
               }}
             />
           </View>
@@ -134,23 +97,7 @@ const BookingMethodModal = ({
             <Switch
               value={delivery}
               onValueChange={() => {
-                if (delivery) {
-                  setDeliveryState({})
-                  setDelivery(false)
-                } else {
-                  setDeliveryState({
-                    delivery: {
-                      nationwide: {
-                        notes: '',
-                      },
-                      radius: {
-                        notes: '',
-                        distance: 0,
-                      },
-                    },
-                  })
-                  setDelivery(true)
-                }
+                setDelivery(!delivery)
               }}
             />
           </View>
@@ -166,9 +113,7 @@ const BookingMethodModal = ({
 
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => {
-          close()
-        }}
+        onPress={handleSave}
         style={{
           backgroundColor: Colors.primaryYellow,
           paddingVertical: 8,

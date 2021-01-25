@@ -40,18 +40,18 @@ const ShippingMethodModal = ({
 }) => {
   const navigation = useNavigation()
 
-  const [pickUp, setPickUp] = useState(pickupState.value || false)
+  const [pickUp, setPickUp] = useState(pickupState?.value || false)
 
-  const [delivery, setDelivery] = useState(deliveryState.value || false)
+  const [delivery, setDelivery] = useState(deliveryState?.value || false)
   const [nationwide, setNationwide] = useState(
-    deliveryState.thirdParty?.value || false
+    deliveryState?.thirdParty?.value || false
   )
-  const [within, setWithin] = useState(deliveryState.byeSeller?.value || false)
+  const [within, setWithin] = useState(deliveryState?.bySeller?.value || false)
   const [nationwideNotes, setNationwideNotes] = useState(
-    deliveryState.thirdParty?.notes || ''
+    deliveryState?.thirdParty?.notes || ''
   )
   const [withinNotes, setWithinNotes] = useState(
-    deliveryState.thirdParty?.bySeller || ''
+    deliveryState?.bySeller?.notes || ''
   )
 
   const [showNationwideNotes, setShowNationwideNotes] = useState(false)
@@ -87,7 +87,7 @@ const ShippingMethodModal = ({
 
     const pickupData = {
       value: pickUp,
-      address: pickupAddress,
+      location: pickupAddress,
     }
 
     setPickupState(pickupData)

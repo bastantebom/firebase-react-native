@@ -14,39 +14,24 @@ import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 
 /*Map Essentials*/
-import Geocoder from 'react-native-geocoding'
-import Config from '@/services/Config'
 import Modal from 'react-native-modal'
-import StoreLocation from '../StoreLocation'
 import moment from 'moment'
 /*Map Essentials*/
 
+import { AppInput, PriceInput } from '@/components/AppInput'
 import {
-  AppInput,
-  Validator,
-  valueHandler,
-  PriceInput,
-} from '@/components/AppInput'
-import {
-  ArrowRight,
   Public,
   ArrowDown,
-  MenuInfo,
-  PostInfo,
   PostAdd,
   FormArrowRight,
   MoreOptions,
 } from '@/assets/images/icons'
 import {
   AppText,
-  Switch,
-  AppButton,
-  CacheableImage,
   TransitionIndicator,
   AppRadio,
   AppCheckbox,
   ItemCategory,
-  BottomSheetHeader,
 } from '@/components'
 import { normalize, Colors, GlobalStyle } from '@/globals'
 import { PostService, ImageUpload, MapService } from '@/services'
@@ -333,7 +318,7 @@ const SellPostForm = ({
           ]
 
       const data = {
-        type: activeForm.type,
+        type: initialData?.type ?? activeForm.type,
         privacy: 'public',
         title: title,
         description: description,
@@ -1034,78 +1019,55 @@ const SellPostForm = ({
             <FormArrowRight />
           </TouchableOpacity>
 
-          {pickupState ? (
-            Object.keys(pickupState).length === 0 ? (
-              <></>
-            ) : (
+          {pickupState?.value && (
+            <>
               <AppText
                 textStyle="body3"
                 customStyle={{ marginBottom: normalize(4) }}>
                 Pick Up
               </AppText>
-            )
-          ) : (
-            <></>
-          )}
-          {pickupState ? (
-            pickupState?.location?.name ? (
-              <>
-                <AppText textStyle="body3">
-                  {pickupState?.location?.name}{' '}
-                  {pickupState?.location?.default ? '(Default)' : ''}{' '}
-                </AppText>
-                <AppText textStyle="body2">
-                  {pickupState?.location?.full_address}
-                </AppText>
-              </>
-            ) : (
-              <AppText textStyle="body2">
-                {pickupAddress.full_address
-                  ? pickupAddress.full_address
-                  : pickupAddress}
+              <AppText textStyle="body3">
+                {pickupState?.location?.name ?? 'Home '}
+                {pickupState?.location?.default ? '(Default)' : ''}{' '}
               </AppText>
-            )
-          ) : (
-            <></>
+              <AppText textStyle="body2">
+                {pickupState?.location?.full_address}
+              </AppText>
+            </>
           )}
-          {deliveryState ? (
-            Object.keys(deliveryState).length === 0 ? (
-              <></>
-            ) : (
-              <View>
-                <AppText
-                  textStyle="body3"
-                  customStyle={{ marginTop: 4, marginBottom: 8 }}>
-                  Delivery
-                </AppText>
-                {deliveryState.delivery?.nationwide && (
-                  <View style={{ marginBottom: 8 }}>
-                    <AppText textStyle="body2medium">
-                      Ship via third party couriers
+
+          {deliveryState?.value && (
+            <View>
+              <AppText
+                textStyle="body3"
+                customStyle={{ marginTop: 4, marginBottom: 8 }}>
+                Delivery
+              </AppText>
+              {deliveryState?.thirdParty?.value && (
+                <View style={{ marginBottom: 8 }}>
+                  <AppText textStyle="body2medium">
+                    Ship via third party couriers
+                  </AppText>
+                  {deliveryState?.thirdParty?.notes !== '' && (
+                    <AppText textStyle="body2">
+                      Notes: {deliveryState.thirdParty.notes}
                     </AppText>
-                    {deliveryState.delivery?.nationwide?.notes !== '' && (
-                      <AppText textStyle="body2">
-                        Notes: {deliveryState.delivery.nationwide.notes}
-                      </AppText>
-                    )}
-                  </View>
-                )}
-                {deliveryState.delivery?.radius && (
-                  <View>
-                    <AppText textStyle="body2medium">
-                      Deliver your products
+                  )}
+                </View>
+              )}
+              {deliveryState?.bySeller?.value && (
+                <View>
+                  <AppText textStyle="body2medium">
+                    Deliver your products
+                  </AppText>
+                  {deliveryState?.bySeller?.notes !== '' && (
+                    <AppText textStyle="body2">
+                      Notes: {deliveryState.bySeller.notes}
                     </AppText>
-                    {deliveryState.delivery?.nationwide?.notes !== '' && (
-                      <AppText textStyle="body2">
-                        Notes: {deliveryState.delivery.radius.notes}
-                      </AppText>
-                    )}
-                  </View>
-                )}
-              </View>
-            )
-          ) : (
-            <></>
+                  )}
+                </View>
+              )}
+            </View>
           )}
         </Section>
       )}
@@ -1143,21 +1105,13 @@ const SellPostForm = ({
             <AppText textStyle="body3">Booking Methods*</AppText>
             <FormArrowRight />
           </TouchableOpacity>
-          {pickupState ? (
+          {pickupState?.value && (
             <AppText textStyle="body2">By Appointment</AppText>
-          ) : (
-            <></>
           )}
-          {deliveryState ? (
-            Object.keys(deliveryState).length === 0 ? (
-              <></>
-            ) : (
-              <AppText textStyle="body2" customStyle={{ marginTop: 4 }}>
-                Walk-in
-              </AppText>
-            )
-          ) : (
-            <></>
+          {deliveryState?.value && (
+            <AppText textStyle="body2" customStyle={{ marginTop: 4 }}>
+              Walk-in
+            </AppText>
           )}
         </Section>
       )}

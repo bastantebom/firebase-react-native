@@ -82,7 +82,7 @@ const Post = ({
     let temp = []
 
     objectArray.forEach(([key, value]) => {
-      if (!isEmpty(value)) {
+      if (value.value) {
         if (post.type === 'service') {
           if (key === 'delivery') {
             temp.push('walk-in')
