@@ -12,7 +12,7 @@ import {
   Animated,
   Alert,
 } from 'react-native'
-import { Divider } from 'react-native-paper'
+import { ActivityIndicator, Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import Swiper from 'react-native-swiper'
@@ -60,22 +60,9 @@ const SinglePostView = props => {
       username,
       full_name,
     },
-    cover_photos,
-    title,
-    description,
-    payment,
-    price,
-    store_details: {
-      location: { city, province },
-    },
     account_verified,
-    date_posted,
     id,
     uid,
-    is_multiple,
-    type,
-    items,
-    price_range,
     likers,
   } = props.route?.params?.data
 
@@ -86,6 +73,33 @@ const SinglePostView = props => {
   const deliveryMethods = props.route?.params?.data.delivery_methods ?? {}
 
   const [payments, setPayments] = useState([])
+  const [isDataLoading, setIsDataLoading] = useState(true)
+  const [postData, setPostData] = useState({})
+  const [refreshScreen, setRefreshScreen] = useState(
+    new Date(Date.now()).toString()
+  )
+  const [itemsByCategory, setItemsByCategory] = useState([])
+
+  useEffect(() => {
+    getPostData(props.route?.params?.data?.id)
+  }, [refreshScreen])
+
+  const getPostData = async pid => {
+    setIsDataLoading(true)
+    try {
+      const response = await Api.getPost({ pid: pid })
+
+      if (response.success) {
+        setPostData(response.data)
+        setIsDataLoading(false)
+
+        setItems(response.data?.items)
+      }
+    } catch (error) {
+      setIsDataLoading(false)
+    }
+  }
+
   useEffect(() => {
     const paymentMethods = {
       gcash: 'GCash',
@@ -94,54 +108,59 @@ const SinglePostView = props => {
     }
 
     setPayments(
-      payment.map(
+      postData?.payment?.map(
         item =>
           paymentMethods[item] || item.charAt(0).toUpperCase() + item.slice(1)
       )
     )
-  }, [])
+  }, [postData])
 
-  const itemsByCategory = [
-    ...items
-      .reduce(
-        (
-          r,
-          {
-            category,
-            description,
-            itemImage,
-            image,
-            price,
-            title,
-            itemId,
-            id,
-            name,
-          }
-        ) => {
-          r.has(category) ||
-            r.set(category, {
+  const setItems = items => {
+    const temp = [
+      ...items
+        .reduce(
+          (
+            r,
+            {
               category,
-              items: [],
+              description,
+              itemImage,
+              image,
+              price,
+              title,
+              itemId,
+              id,
+              name,
+            }
+          ) => {
+            r.has(category) ||
+              r.set(category, {
+                category,
+                items: [],
+              })
+
+            r.get(category).items.push({
+              description,
+              itemImage,
+              image,
+              price,
+              title,
+              itemId,
+              category,
+              id,
+              name,
             })
 
-          r.get(category).items.push({
-            description,
-            itemImage,
-            image,
-            price,
-            title,
-            itemId,
-            category,
-            id,
-            name,
-          })
+            return r
+          },
+          new Map()
+        )
+        .values(),
+    ]
 
-          return r
-        },
-        new Map()
-      )
-      .values(),
-  ]
+    setItemsByCategory(temp)
+    setData(temp)
+  }
 
   const { user } = useContext(UserContext)
   const {
@@ -162,7 +181,6 @@ const SinglePostView = props => {
   const [expired] = useState(false)
   const [following, setFollowing] = useState(false)
   const [storeOpen] = useState(true)
-  const [multipleItems] = useState(is_multiple)
   const [itemModalData, setItemModalData] = useState({})
   const [totalCartPrice, setTotalCartPrice] = useState('0.00')
 
@@ -187,7 +205,7 @@ const SinglePostView = props => {
     setTotalCartPrice(computedPrice)
 
     setDisableCartButton(
-      (!Array.isArray(userCart) || !userCart.length) && is_multiple
+      (!Array.isArray(userCart) || !userCart.length) && postData?.is_multiple
     )
   }, [userCart])
 
@@ -476,9 +494,9 @@ const SinglePostView = props => {
 
   const [scrollY] = useState(new Animated.Value(0))
 
-  useEffect(() => {
-    setData(itemsByCategory)
-  }, [])
+  // useEffect(() => {
+  //   setData(itemsByCategory)
+  // }, [])
 
   const HEADER_MAX_HEIGHT = normalize(248)
   const HEADER_MIN_HEIGHT = normalize(80)
@@ -526,9 +544,9 @@ const SinglePostView = props => {
         <AppText
           textStyle="subtitle1"
           customStyle={{ marginBottom: normalize(15) }}>
-          {category.category}
+          {category?.category}
         </AppText>
-        {category.items.map(item => {
+        {category?.items?.map(item => {
           return (
             <TouchableOpacity
               disabled={uid === user?.uid}
@@ -623,7 +641,7 @@ const SinglePostView = props => {
 
     for (const [key, value] of Object.entries(deliveryMethods)) {
       if (value.value) {
-        if (type === 'service') {
+        if (postData?.type === 'service') {
           if (key === 'delivery') {
             methods.push('walk-in')
           } else {
@@ -635,7 +653,7 @@ const SinglePostView = props => {
 
     return (
       <View style={styles.iconText}>
-        {type === 'sell' ? (
+        {postData?.type === 'sell' ? (
           <Icons.PostDelivery width={normalize(18)} height={normalize(18)} />
         ) : (
           <Icons.PostAppointment width={normalize(18)} height={normalize(18)} />
@@ -649,7 +667,7 @@ const SinglePostView = props => {
             marginRight: 16,
             marginLeft: 8,
           }}>
-          {type === 'sell'
+          {postData?.type === 'sell'
             ? `Available for ${methods.join(' or ')}`
             : `By ${methods.join(' or ')}`}
         </AppText>
@@ -691,11 +709,11 @@ const SinglePostView = props => {
 
     return (
       <View style={styles.iconText}>
-        {postTypeDataMap[type].icon}
+        {postTypeDataMap[postData?.type ?? 'sell'].icon}
         <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
           in{' '}
         </AppText>
-        {postTypeDataMap[type].text}
+        {postTypeDataMap[postData?.type ?? 'sell'].text}
       </View>
     )
   }
@@ -719,7 +737,7 @@ const SinglePostView = props => {
       },
     }
 
-    return <View>{postTypeDataMap[type].icon}</View>
+    return <View>{postTypeDataMap[postData?.type ?? 'sell'].icon}</View>
   }
 
   const SinglePostContent = () => {
@@ -802,13 +820,14 @@ const SinglePostView = props => {
           stickyHeaderIndices={[2]}
           contentContainerStyle={{ marginTop: 0 }}>
           <View style={[styles.postImageContainer]}>
-            {cover_photos === undefined || cover_photos.length == 0 ? (
-              type === 'Need' || type === 'need' ? (
+            {postData?.cover_photos === undefined ||
+            postData?.cover_photos.length == 0 ? (
+              postData?.type === 'Need' || postData?.type === 'need' ? (
                 <Image
                   style={GlobalStyle.image}
                   source={require('@/assets/images/cover-need.png')}
                 />
-              ) : type === 'Sell' || type === 'sell' ? (
+              ) : postData?.type === 'Sell' || postData?.type === 'sell' ? (
                 <Image
                   style={GlobalStyle.image}
                   source={require('@/assets/images/cover-sell.png')}
@@ -834,7 +853,7 @@ const SinglePostView = props => {
                     width: normalize(6),
                     height: normalize(6),
                   }}>
-                  {cover_photos.map((item, index) => {
+                  {postData?.cover_photos.map((item, index) => {
                     return (
                       <TouchableWithoutFeedback
                         key={index}
@@ -859,7 +878,7 @@ const SinglePostView = props => {
             <AppText
               textStyle="subtitle1"
               customStyle={{ marginTop: 24, marginBottom: 16 }}>
-              {title}
+              {postData?.title}
             </AppText>
             <View
               style={{
@@ -867,9 +886,9 @@ const SinglePostView = props => {
                 alignItems: 'center',
                 marginBottom: normalize(12),
               }}>
-              {!is_multiple && (
+              {!postData?.is_multiple && (
                 <>
-                  {type !== 'need' ? (
+                  {postData?.type !== 'need' ? (
                     <AppText
                       textStyle="eyebrow1"
                       customStyle={{ fontSize: normalize(10) }}>
@@ -886,11 +905,11 @@ const SinglePostView = props => {
                     textStyle="subtitle1"
                     color={Colors.secondaryMountainMeadow}
                     customStyle={{ marginLeft: 8 }}>
-                    {type !== 'need'
-                      ? `₱${commaSeparate(items[0].price)}`
-                      : `₱${commaSeparate(price_range?.min)} - ₱${commaSeparate(
-                          price_range?.max
-                        )}`}
+                    {postData?.type !== 'need'
+                      ? `₱${commaSeparate(postData?.items?.[0].price)}`
+                      : `₱${commaSeparate(
+                          postData?.price_range?.min
+                        )} - ₱${commaSeparate(postData?.price_range?.max)}`}
                   </AppText>
                 </>
               )}
@@ -898,7 +917,7 @@ const SinglePostView = props => {
             <View style={styles.iconText}>
               <Icons.PostClock width={normalize(18)} height={normalize(18)} />
               <AppText textStyle="body2" customStyle={{ marginLeft: 8 }}>
-                {timeAgo(Date.now() / 1000 - date_posted._seconds)}
+                {timeAgo(Date.now() / 1000 - postData?.date_posted?._seconds)}
               </AppText>
             </View>
 
@@ -912,7 +931,8 @@ const SinglePostView = props => {
               <AppText
                 textStyle="body2"
                 customStyle={{ marginLeft: 8, marginRight: 20 }}>
-                {city}, {province}
+                {postData?.store_details?.location?.city},{' '}
+                {postData?.store_details?.location?.province}
               </AppText>
             </View>
 
@@ -951,7 +971,7 @@ const SinglePostView = props => {
                       <AppText
                         textStyle="body2"
                         customStyle={{ fontFamily: 'RoundedMplus1c-Regular' }}>
-                        {description}
+                        {postData?.description}
                       </AppText>
                     </ReadMore>
                   </View>
@@ -975,11 +995,11 @@ const SinglePostView = props => {
                     </AppText>
                   </View>
                 )}
-                {type != 'need' && <DeliveryMethods />}
+                {postData?.type != 'need' && <DeliveryMethods />}
               </>
             )}
           </View>
-          {is_multiple && (
+          {postData?.is_multiple && (
             <View
               style={{
                 backgroundColor: 'white',
@@ -1014,7 +1034,7 @@ const SinglePostView = props => {
               </ScrollView>
             </View>
           )}
-          {is_multiple && <>{data.map(ItemView)}</>}
+          {postData?.is_multiple && <>{data.map(ItemView)}</>}
         </ScrollView>
         <Animated.View style={[styles.header, { height: headerHeight }]}>
           <Animated.View
@@ -1037,7 +1057,7 @@ const SinglePostView = props => {
               handleFollowing={handleFollowing}
               hidePost={hidePost}
               postId={id}
-              postTitle={title}
+              postTitle={postData?.title}
               liked={liked}
             />
           </Animated.View>
@@ -1057,7 +1077,7 @@ const SinglePostView = props => {
           }>
           <ItemModal
             item={itemModalData}
-            postType={type}
+            postType={postData?.type}
             postID={id}
             closeModal={() => showItemModal(false)}
           />
@@ -1105,7 +1125,7 @@ const SinglePostView = props => {
                   />
                 </View>
               </TouchableOpacity>
-              {multipleItems ? (
+              {postData?.is_multiple ? (
                 <TouchableOpacity
                   style={{
                     flex: 1,
@@ -1114,7 +1134,7 @@ const SinglePostView = props => {
                   activeOpacity={0.7}
                   disabled={disableCartButton}
                   onPress={() => {
-                    if (type === 'need') {
+                    if (postData?.type === 'need') {
                       showOfferModal(true)
                     } else {
                       showBasketModal(true)
@@ -1136,7 +1156,7 @@ const SinglePostView = props => {
                         width: '100%',
                         paddingHorizontal: normalize(16),
                       }}>
-                      {type === 'need' ? (
+                      {postData?.type === 'need' ? (
                         <View
                           style={{
                             flex: 1,
@@ -1193,8 +1213,11 @@ const SinglePostView = props => {
                 <TouchableOpacity
                   onPress={() => {
                     if (!user) openSlider()
-                    else if (type === 'need') showOfferModal(true)
-                    else if (type === 'service' && !is_multiple)
+                    else if (postData?.type === 'need') showOfferModal(true)
+                    else if (
+                      postData?.type === 'service' &&
+                      !postData?.is_multiple
+                    )
                       showScheduleModal(true)
                     else showBasketModal(true)
                   }}
@@ -1210,9 +1233,9 @@ const SinglePostView = props => {
                     <AppText
                       textStyle="button2"
                       customStyle={{ marginLeft: 8 }}>
-                      {type === 'service'
+                      {postData?.type === 'service'
                         ? 'Book'
-                        : type === 'need'
+                        : postData?.type === 'need'
                         ? 'Make an Offer'
                         : 'Buy'}
                     </AppText>
@@ -1228,7 +1251,8 @@ const SinglePostView = props => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <SinglePostContent />
+      {isDataLoading ? <ActivityIndicator /> : <SinglePostContent />}
+
       <Modal
         isVisible={deleteCurrentOrderModal}
         animationIn="zoomIn"
@@ -1283,7 +1307,6 @@ const SinglePostView = props => {
         animationInTiming={450}
         animationOut="slideOutDown"
         animationOutTiming={450}
-        // style={{ margin: 0 }}
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => showNewBasketPrompt(false)}>
             <View style={{ flex: 1, backgroundColor: 'black' }} />
@@ -1313,9 +1336,12 @@ const SinglePostView = props => {
           </TouchableWithoutFeedback>
         }>
         <EditPostScreen
-          data={props.route.params.data}
+          data={postData ?? {}}
           card={() => {}}
-          togglePostModal={() => showEditPost(false)}
+          togglePostModal={() => {
+            showEditPost(false)
+            setRefreshScreen(new Date(Date.now()).toString())
+          }}
         />
       </Modal>
       <Modal
@@ -1330,9 +1356,10 @@ const SinglePostView = props => {
         <ImageModal
           close={togglePostImageModal}
           data={
-            cover_photos === undefined || cover_photos.length == 0
+            postData?.cover_photos === undefined ||
+            postData?.cover_photos.length == 0
               ? defaultImage
-              : cover_photos
+              : postData?.cover_photos
           }
         />
       </Modal>
@@ -1350,7 +1377,7 @@ const SinglePostView = props => {
         }}>
         <BasketModal
           closeModal={() => showBasketModal(false)}
-          postType={type}
+          postType={postData?.type}
           postData={props.route?.params?.data}
         />
       </Modal>
@@ -1368,7 +1395,7 @@ const SinglePostView = props => {
         }>
         <OfferModal
           closeModal={() => showOfferModal(false)}
-          postType={type}
+          postType={postData?.type}
           postData={props.route?.params?.data}
         />
       </Modal>
@@ -1388,15 +1415,15 @@ const SinglePostView = props => {
         <SetScheduleModalSingleService
           closeModal={() => showScheduleModal(false)}
           post={{
-            title: title,
-            price: `₱${commaSeparate(items[0].price)}`,
+            title: postData?.title,
+            price: `₱${commaSeparate(postData?.items?.[0].price)}`,
           }}
           handleContinue={(date, time) => {
             showScheduleModal(false)
             navigation.navigate('NBTScreen', {
               screen: 'basket',
               params: {
-                postType: type,
+                postType: postData?.type,
                 postData: props.route?.params?.data,
                 schedule: { date, time },
               },

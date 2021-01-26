@@ -25,8 +25,6 @@ const AppText = ({
     }
   }
 
-  // console.log(color)
-
   return (
     <Text style={computedTextStyle} numberOfLines={numberOfLines}>
       {children}

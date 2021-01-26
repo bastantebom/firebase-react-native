@@ -108,8 +108,8 @@ const DashboardScreen = ({ navigation }) => {
       edited: false,
     }
     if (user?.uid === post.uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
         params,
       })
     else

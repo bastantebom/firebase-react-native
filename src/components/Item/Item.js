@@ -27,7 +27,7 @@ const Item = ({ item, children, style }) => {
               customStyle={{ paddingRight: 16, flex: 1 }}>
               {title}
             </AppText>
-            <PriceDisplay price={price} textStyle="subtitle2" />
+            <AppText textStyle="subtitle2">₱{price}</AppText>
           </View>
           <AppText textStyle="caption">{description}</AppText>
           {children}

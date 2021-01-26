@@ -31,7 +31,6 @@ const EditPostScreen = ({ data, togglePostModal, card }) => {
   const closeHandler = value => {
     if (value === 'continue') {
       cancelModalToggle()
-      // setPostImage([]);
       setCoverPhoto([])
       setPostCameraImage([])
       setSelected([])
