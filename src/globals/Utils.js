@@ -249,9 +249,7 @@ export const getLocationData = async ({ latitude, longitude }) => {
  * @returns {string}
  */
 export const commaSeparate = (num = '') => {
-  const amount = parseFloat(
-    (+num.toString().replace(/[^0-9\.\-]+/g, '')).toFixed(2)
-  )
+  const amount = parseFloat((num + '').replace(/[^0-9\.\-]+/g, '')).toFixed(2)
 
   return isNaN(amount)
     ? 0

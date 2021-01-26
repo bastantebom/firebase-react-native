@@ -28,6 +28,7 @@ export const UserContextProvider = ({ children }) => {
       const idToken = await auth().currentUser.getIdToken(true)
       await AsyncStorage.setItem('token', idToken)
       await AsyncStorage.setItem('uid', user.uid)
+      await AsyncStorage.setItem('token-timestamp', Date.now().toString())
       setToken(idToken)
     }
   }
@@ -114,4 +115,22 @@ export const UserContextProvider = ({ children }) => {
       {children}
     </UserContext.Provider>
   )
+}
+
+export const checkToken = async () => {
+  try {
+    const timestamp = await AsyncStorage.getItem('token-timestamp')
+    if (
+      timestamp &&
+      Date.now() - +timestamp >= 3600 * 1000 &&
+      auth().currentUser
+    ) {
+      const idToken = await auth().currentUser.getIdToken(true)
+      const tokenTimestamp = Date.now().toString()
+      await AsyncStorage.setItem('token', idToken)
+      await AsyncStorage.setItem('token-timestamp', tokenTimestamp)
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }

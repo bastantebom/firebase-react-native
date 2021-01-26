@@ -43,11 +43,11 @@ const baseURL =
         )
         .replace(
           'fetch(',
-          "const token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
+          "if (!this.tokenRefresher) this.tokenRefresher = checkToken()\nawait this.tokenRefresher\nconst token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
         ),
       { ...config, parser: 'babel' }
     )
-    code = `import AsyncStorage from '@react-native-community/async-storage'\n${code}`
+    code = `import { checkToken } from '@/context/UserContext'\nimport AsyncStorage from '@react-native-community/async-storage'\n${code}`
     fs.writeFileSync('./src/services/Api.js', code)
   } catch (error) {
     console.error(error)

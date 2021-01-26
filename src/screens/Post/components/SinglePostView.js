@@ -197,14 +197,11 @@ const SinglePostView = props => {
   const [currentItem, setCurrentItem] = useState()
 
   useEffect(() => {
-    let computedPrice = 0
-
-    if (userCart.length)
-      userCart.map(
-        item =>
-          (computedPrice +=
-            parseFloat((item.price + '').replace(/,/g, '')) * item.quantity)
-      )
+    let computedPrice = userCart.reduce(
+      (total, item) =>
+        total + parseFloat((item.price + '').replace(/,/g, '')) * item.quantity,
+      0
+    )
 
     setTotalCartPrice(computedPrice)
 

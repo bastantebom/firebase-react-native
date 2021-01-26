@@ -293,8 +293,8 @@ const SellPostForm = ({
         activeForm.type === 'need'
           ? {
               price_range: {
-                min: budgetMinimum,
-                max: budgetMaximum,
+                min: parseFloat((budgetMinimum + '').replace(/,/g, '')),
+                max: parseFloat((budgetMaximum + '').replace(/,/g, '')),
               },
             }
           : {}
@@ -307,7 +307,7 @@ const SellPostForm = ({
                 image: await ImageUpload.upload(item.itemImage?.uri, user.uid),
                 name: item.title,
                 description: item.description,
-                price: item.price,
+                price: parseFloat((item.price + '').replace(/,/g, '')),
               }
             })
           )
