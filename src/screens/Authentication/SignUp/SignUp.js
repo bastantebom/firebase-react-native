@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import VF from '@/components/AppInput/ValidationFunctions'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
 import { AppText, AppButton, AppInput, AppCheckbox } from '@/components'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -54,7 +54,7 @@ const SignUp = props => {
   const [isLoading, setIsLoading] = useState(false)
   const [isTermsVisible, setIsTermsVisible] = useState(false)
   const [isPrivacyVisible, setIsPrivacyVisible] = useState(false)
-  const { closeSlider, openSlider, setAuthType } = useContext(Context)
+  const { closeSlider, setAuthType } = useContext(Context)
 
   const handleFormChange = ({ key, value }) => {
     setFormData({
@@ -118,6 +118,18 @@ const SignUp = props => {
     if (!canSubmit) return
     setIsLoading(true)
 
+    const state = navigation.dangerouslyGetState()
+    let onboardingRoute = state.routes.find(
+      route => route.name === 'Onboarding'
+    ) || { name: 'Onboarding' }
+
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [onboardingRoute],
+      })
+    )
+
     try {
       const {
         login,
@@ -137,7 +149,6 @@ const SignUp = props => {
       })
 
       if (!response.success) throw new Error(response.message)
-
       await auth().signInWithCustomToken(response.custom_token)
       clearForm()
       closeSlider()
@@ -149,6 +160,27 @@ const SignUp = props => {
       console.log(error.message || error)
     }
     setIsLoading(false)
+  }
+
+  const signInWithProvider = async provider => {
+    try {
+      const state = navigation.dangerouslyGetState()
+      let onboardingRoute = state.routes.find(
+        route => route.name === 'Onboarding'
+      ) || { name: 'Onboarding' }
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [onboardingRoute],
+        })
+      )
+      await LoginService.signInWithProvider(provider)
+      closeSlider()
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', error.message)
+    }
   }
 
   useEffect(() => {
@@ -415,27 +447,18 @@ const SignUp = props => {
             <View style={styles.socialMediaLogin}>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
-                  onPress={async () => {
-                    await LoginService.signInWithProvider('apple')
-                    closeSlider()
-                  }}
+                  onPress={() => signInWithProvider('apple')}
                   style={{ paddingHorizontal: normalize(8) }}>
                   <LoginApple />
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
-                onPress={async () => {
-                  await LoginService.signInWithProvider('facebook')
-                  closeSlider()
-                }}
+                onPress={() => signInWithProvider('facebook')}
                 style={{ paddingHorizontal: normalize(8) }}>
                 <LoginFB />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={async () => {
-                  await LoginService.signInWithProvider('google')
-                  closeSlider()
-                }}
+                onPress={() => signInWithProvider('google')}
                 style={{ paddingHorizontal: normalize(8) }}>
                 <LoginGoogle />
               </TouchableOpacity>
@@ -445,11 +468,7 @@ const SignUp = props => {
               <AppText textStyle="button2">Already have an account?</AppText>
               <TouchableOpacity
                 onPress={() => {
-                  closeSlider()
-                  setTimeout(() => {
-                    setAuthType('login')
-                    openSlider()
-                  }, 450)
+                  setAuthType('login')
                 }}>
                 <AppText textStyle="button2" customStyle={styles.underLineText}>
                   Login

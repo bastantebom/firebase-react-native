@@ -3,6 +3,7 @@ import auth from '@react-native-firebase/auth'
 import AsyncStorage from '@react-native-community/async-storage'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
+
 export const UserContext = createContext(null)
 export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null)

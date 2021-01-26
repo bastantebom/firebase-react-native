@@ -7,7 +7,7 @@ import {
   Platform,
   Alert,
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
 import LoginService from '@/services/LoginService'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -51,7 +51,7 @@ function Login() {
   const [password, setPassword] = useState('')
   const [isVisible, setIsVisible] = useState(false)
 
-  const { closeSlider, openSlider, setAuthType } = useContext(Context)
+  const { closeSlider, setAuthType } = useContext(Context)
   const [isLoading, setIsLoading] = useState(false)
   const [enabled, setEnabled] = useState(false)
 
@@ -82,6 +82,19 @@ function Login() {
   const handleLogin = async () => {
     setIsLoading(true)
     try {
+      const state = navigation.dangerouslyGetState()
+      let onboardingRoute = state.routes.find(
+        route => route.name === 'Onboarding'
+      ) || { name: 'Onboarding' }
+
+      if (onboardingRoute) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [onboardingRoute],
+          })
+        )
+      }
       const response = await Api.login({
         body: {
           login: emailAddress,
@@ -102,6 +115,27 @@ function Login() {
     }
     setPassword('')
     setIsLoading(false)
+  }
+
+  const signInWithProvider = async provider => {
+    try {
+      const state = navigation.dangerouslyGetState()
+      let onboardingRoute = state.routes.find(
+        route => route.name === 'Onboarding'
+      ) || { name: 'Onboarding' }
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [onboardingRoute],
+        })
+      )
+      await LoginService.signInWithProvider(provider)
+      closeSlider()
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', error.message)
+    }
   }
 
   return (
@@ -197,27 +231,18 @@ function Login() {
             <View style={styles.socialMediaLogin}>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
-                  onPress={async () => {
-                    await LoginService.signInWithProvider('apple')
-                    closeSlider()
-                  }}
+                  onPress={() => signInWithProvider('apple')}
                   style={{ paddingHorizontal: normalize(8) }}>
                   <LoginApple />
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
-                onPress={async () => {
-                  await LoginService.signInWithProvider('facebook')
-                  closeSlider()
-                }}
+                onPress={() => signInWithProvider('facebook')}
                 style={{ paddingHorizontal: normalize(8) }}>
                 <LoginFB />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={async () => {
-                  await LoginService.signInWithProvider('google')
-                  closeSlider()
-                }}
+                onPress={() => signInWithProvider('google')}
                 style={{ paddingHorizontal: normalize(8) }}>
                 <LoginGoogle />
               </TouchableOpacity>
@@ -227,11 +252,7 @@ function Login() {
               <AppText textStyle="button2">Don't have an account? </AppText>
               <TouchableOpacity
                 onPress={() => {
-                  closeSlider()
-                  setTimeout(() => {
-                    setAuthType('signup')
-                    openSlider()
-                  }, 450)
+                  setAuthType('signup')
                 }}>
                 <AppText textStyle="button2" customStyle={styles.link}>
                   Sign up

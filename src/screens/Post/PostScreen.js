@@ -18,7 +18,7 @@ import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 
 const PostScreen = ({ togglePostModal, ...props }) => {
-  const { card } = props?.route?.params
+  const { card } = props?.route?.params || {}
 
   const [showCancelModal, setShowCancelModal] = useState(false)
   const { user } = useContext(UserContext)

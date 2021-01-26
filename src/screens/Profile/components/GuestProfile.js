@@ -36,8 +36,6 @@ const { height, width } = Dimensions.get('window')
 
 export const GuestProfile = () => {
   const {
-    sliderState,
-    closeSlider,
     openSlider,
     authType,
     setAuthType,
@@ -54,13 +52,6 @@ export const GuestProfile = () => {
     }
   }
 
-  const clickHandler = () => {
-    openSlider()
-  }
-
-  const closeHandler = () => {
-    openSlider()
-  }
   return (
     <>
       <SafeAreaView style={{ flexGrow: 1 }}>
@@ -86,7 +77,7 @@ export const GuestProfile = () => {
               maxWidth: normalize(250),
             }}
             onPress={() => {
-              clickHandler()
+              openSlider()
               setAuthType('signup')
             }}>
             <AppText textStyle="body1medium">Join Now</AppText>

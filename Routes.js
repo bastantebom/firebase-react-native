@@ -387,7 +387,8 @@ const TabStack = props => {
   return (
     <Tab.Navigator
       tabBarOptions={tabBarOptions}
-      screenOptions={defaultScreenOptions}>
+      screenOptions={defaultScreenOptions}
+      initialRouteName="Servbees">
       <Tab.Screen
         name="Servbees"
         component={DashboardStack}

@@ -31,8 +31,6 @@ const { height, width } = Dimensions.get('window')
 
 export const GuestPost = () => {
   const {
-    sliderState,
-    closeSlider,
     openSlider,
     authType,
     setAuthType,
@@ -47,14 +45,6 @@ export const GuestPost = () => {
     if (authType === 'login') {
       return <Login />
     }
-  }
-
-  const clickHandler = () => {
-    openSlider()
-  }
-
-  const closeHandler = () => {
-    openSlider()
   }
 
   return (
@@ -85,8 +75,8 @@ export const GuestPost = () => {
               maxWidth: normalize(250),
             }}
             onPress={() => {
-              clickHandler()
               setAuthType('signup')
+              openSlider()
             }}>
             <AppText textStyle="body1medium">Join Now</AppText>
           </TouchableOpacity>
