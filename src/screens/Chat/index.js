@@ -322,27 +322,29 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
           <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
         </TouchableOpacity>
       </View>
-      <View style={styles.postDetails}>
-        <View style={styles.postImageContainer}>
-          {post?.cover_photos?.length ? (
-            <CacheableImage
-              style={GlobalStyle.image}
-              source={{ uri: post?.cover_photos[0] }}
-            />
-          ) : post?.type === 'service' ? (
-            <DefaultService width={normalize(28)} height={normalize(28)} />
-          ) : post?.type === 'need' ? (
-            <DefaultNeed width={normalize(28)} height={normalize(28)} />
-          ) : (
-            <DefaultSell width={normalize(28)} height={normalize(28)} />
-          )}
+      {post?.id && (
+        <View style={styles.postDetails}>
+          <View style={styles.postImageContainer}>
+            {post?.cover_photos?.length ? (
+              <CacheableImage
+                style={GlobalStyle.image}
+                source={{ uri: post?.cover_photos[0] }}
+              />
+            ) : post?.type === 'service' ? (
+              <DefaultService width={normalize(28)} height={normalize(28)} />
+            ) : post?.type === 'need' ? (
+              <DefaultNeed width={normalize(28)} height={normalize(28)} />
+            ) : (
+              <DefaultSell width={normalize(28)} height={normalize(28)} />
+            )}
+          </View>
+          <AppText
+            textStyle="caption2"
+            customStyle={{ marginLeft: normalize(6), marginTop: normalize(3) }}>
+            {post?.title}
+          </AppText>
         </View>
-        <AppText
-          textStyle="caption2"
-          customStyle={{ marginLeft: normalize(6), marginTop: normalize(3) }}>
-          {post?.title}
-        </AppText>
-      </View>
+      )}
     </>
   )
 }
