@@ -122,7 +122,7 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
   }
 
   useEffect(() => {
-    setSubtotal(qty * item.price)
+    setSubtotal(qty * parseFloat((item.price + '').replace(/,/g, '')))
   }, [qty])
 
   const addToCart = async () => {
@@ -333,7 +333,6 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
               <AppInput
                 style={{ marginVertical: normalize(16) }}
                 label="Notes (Optional)"
-                // placeholder="(ex. no onions)"
                 value={notes}
                 onChangeText={notes => setNotes(notes)}
               />

@@ -180,7 +180,9 @@ const BasketModal = ({
     if (!fromEdit) {
       if (userCart.length > 0 && is_multiple)
         return userCart.reduce(
-          (total, item) => total + +(item.price * item.quantity),
+          (total, item) =>
+            total +
+            +(parseFloat((item.price + '').replace(/,/g, '')) * item.quantity),
           0
         )
 
@@ -189,7 +191,9 @@ const BasketModal = ({
       }
     } else {
       return orderedCart.reduce(
-        (total, item) => total + +(item.price * item.quantity),
+        (total, item) =>
+          total +
+          +(parseFloat((item.price + '').replace(/,/g, '')) * item.quantity),
         0
       )
     }
@@ -383,7 +387,11 @@ const BasketModal = ({
                 </View>
               </View>
               <AppText textStyle="body1">
-                ₱{commaSeparate(item.price * item.quantity)}
+                ₱
+                {commaSeparate(
+                  parseFloat((item.price + '').replace(/,/g, '')) *
+                    item.quantity
+                )}
               </AppText>
             </View>
           )

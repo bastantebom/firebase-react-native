@@ -200,7 +200,11 @@ const SinglePostView = props => {
     let computedPrice = 0
 
     if (userCart.length)
-      userCart.map(item => (computedPrice += item.price * item.quantity))
+      userCart.map(
+        item =>
+          (computedPrice +=
+            parseFloat((item.price + '').replace(/,/g, '')) * item.quantity)
+      )
 
     setTotalCartPrice(computedPrice)
 
