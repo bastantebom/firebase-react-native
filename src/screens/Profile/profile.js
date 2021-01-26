@@ -497,6 +497,7 @@ const ProfileScreen = ({
           onLikePress={handleLikePress}
           isLoadingMoreItems={fetchMore}
           showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
         />
       ),
     },
