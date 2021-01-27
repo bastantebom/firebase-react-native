@@ -334,6 +334,7 @@ const SinglePostView = props => {
   }
 
   const handleChatPress = async () => {
+    const pid = id
     let channel
     try {
       if (!user?.uid) return
@@ -343,7 +344,7 @@ const SinglePostView = props => {
           [user.uid]: true,
           [uid]: true,
         })
-        .where('post_id', '==', id)
+        .where('post_id', '==', pid)
         .get()
 
       if (!snapshot.docs.length) {
@@ -353,7 +354,7 @@ const SinglePostView = props => {
             [user.uid]: true,
             [uid]: true,
           },
-          post_id: id,
+          post_id: pid,
         })
 
         await ref.doc(id).update({ id })
