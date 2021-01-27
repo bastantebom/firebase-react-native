@@ -214,7 +214,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutralsWhite,
   },
   additionalPadding: {
-    padding: normalize(2),
+    borderWidth: normalize(2),
+    borderColor: Colors.neutralsWhite,
   },
 })
 

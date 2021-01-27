@@ -61,79 +61,6 @@ const ChatHouse = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const initOwnOrders = async () => {
-    const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
-    if (ownOrdersResponse.success) {
-      let postIdStack = []
-      let ownOrderData = await Promise.all(
-        ownOrdersResponse.data.map(async order => {
-          const existId = postIdStack.indexOf(order.post_id)
-          if (!~existId) postIdStack.push(order.post_id)
-          else return
-          const getPostResponse = await Api.getPost({
-            pid: order.post_id,
-          })
-          const getUserReponse = await Api.getUser({
-            uid: order?.seller_id || user?.uid,
-          })
-
-          if (!getPostResponse.success || !getUserReponse.success) return
-          if (getPostResponse.success && getUserReponse.success) {
-            const {
-              full_name,
-              display_name,
-              profile_photo,
-            } = getUserReponse.data
-
-            const members = {
-              [order?.seller_id]: true,
-              [user?.uid]: true,
-            }
-
-            const roomsSnapshot = await firestore()
-              .collection('chat_rooms')
-              .where('post_id', '==', order.post_id)
-              .where('members', '==', members)
-              .get()
-
-            let roomChat = {}
-
-            if (roomsSnapshot.docs.length) {
-              let channel = roomsSnapshot.docs[0].data()
-              roomChatRef = await firestore()
-                .collection('chat_rooms')
-                .doc(channel.id)
-                .collection('messages')
-                .orderBy('createdAt', 'desc')
-                .get()
-              if (roomChatRef.docs.length) {
-                roomChat = {
-                  ...roomChatRef.docs[0].data(),
-                }
-              }
-            }
-
-            return {
-              profilePhoto: profile_photo,
-              seller: full_name,
-              storeName: display_name || full_name,
-              cardType: 'own',
-              time: roomChat?.created_at?._seconds,
-              postData: getPostResponse.data,
-              chats: roomChat,
-            }
-          }
-        })
-      )
-
-      ownOrderData = ownOrderData.filter(el => el)
-      setPostChats(postChats =>
-        [...postChats, ...ownOrderData].sort((a, b) => b.time - a.time)
-      )
-      return
-    }
-  }
-
   const initSellerOrders = async () => {
     const getOwnPostResponse = await PostService.getUserPosts({
       uid: user?.uid,
@@ -185,9 +112,69 @@ const ChatHouse = () => {
     }
   }
 
+  const inquiriesMessage = async postIdStack => {
+    const roomRef = await firestore()
+      .collection('chat_rooms')
+      .where(`members.${user?.uid}`, '==', true)
+      .get()
+    let inquiries = await Promise.all(
+      roomRef.docs.map(async room => {
+        if (!room.data().post_id) return
+        const existId = postIdStack.indexOf(room.data().post_id)
+        if (~existId) return
+        postIdStack.push(room.data().post_id)
+        const getPostResponse = await Api.getPost({
+          pid: room.data().post_id,
+        })
+        if (
+          !getPostResponse.success ||
+          getPostResponse?.data?.uid === user?.uid
+        )
+          return
+        const otherUser = Object.keys(room.data().members).filter(
+          uid => uid != user?.uid
+        )
+        const getUserReponse = await Api.getUser({
+          uid: otherUser[0] || user?.uid,
+        })
+        if (!getUserReponse.success) return
+        const { full_name, display_name, profile_photo } = getUserReponse.data
+        let roomChat = {}
+        const chatRef = await firestore()
+          .collection('chat_rooms')
+          .doc(room.id)
+          .collection('messages')
+          .get()
+
+        if (chatRef.docs.length) {
+          roomChat = {
+            ...chatRef.docs[0].data(),
+          }
+          return {
+            profilePhoto: profile_photo,
+            seller: full_name,
+            storeName: display_name || full_name,
+            cardType: 'own',
+            time: roomChat?.created_at?._seconds,
+            postData: getPostResponse.data,
+            chats: roomChat,
+          }
+        }
+      })
+    )
+
+    inquiries = _.flatten(inquiries.filter(e => e))
+    setPostChats(postChats =>
+      [...postChats, ...inquiries].sort((a, b) => b.time - a.time)
+    )
+    return
+  }
+
   const callAllPosts = async () => {
-    await Promise.all([initOwnOrders(), initSellerOrders()])
+    let postIdStack = []
+    await Promise.all([inquiriesMessage(postIdStack), initSellerOrders()])
     setIsLoading(false)
+    setIsRefreshing(false)
   }
 
   const getLatest = async chats => {
