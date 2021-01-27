@@ -255,14 +255,20 @@ const Ongoing = ({ sortCategory }) => {
             }>
             <View style={{ paddingTop: normalize(15) }}>
               <View style={{ paddingHorizontal: normalize(15) }}>
-                <AppText
-                  textStyle="eyebrow1"
-                  customStyle={{
-                    color: '#91919C',
-                    paddingTop: normalize(15),
-                  }}>
-                  NEW
-                </AppText>
+                {onGoing.filter(post =>
+                  sortCategory.value === 'all'
+                    ? post
+                    : post.cardType === sortCategory.value
+                ).length && (
+                  <AppText
+                    textStyle="eyebrow1"
+                    customStyle={{
+                      color: '#91919C',
+                      paddingTop: normalize(15),
+                    }}>
+                    NEW
+                  </AppText>
+                )}
               </View>
               {onGoing
                 .filter(post =>
