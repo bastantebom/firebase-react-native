@@ -260,7 +260,7 @@ export const commaSeparate = (num = '') => {
  * @param {string} str
  */
 export const formatPrice = str => {
-  const price = commaSeparate(str)
+  const price = commaSeparate(str + '')
   const amount = parseFloat(price.replace(/,/g, ''))
 
   if (amount >= 1000000) return commaSeparate(999999)

@@ -135,7 +135,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const newTitle = getTitle()
     const newTotal = (orderData?.items || []).reduce(
       (total, item) =>
-        total + parseFloat(item.price.replace(/,/g, '')) * item.quantity,
+        total + parseFloat((item.price + '').replace(/,/g, '')) * item.quantity,
       0
     )
 
@@ -873,7 +873,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 <AppText textStyle="body1" color={Colors.contentPlaceholder}>
                   ₱
                   {commaSeparate(
-                    parseFloat(item.price.replace(/,/, '')) * item.quantity
+                    parseFloat((item.price + '').replace(/,/, '')) *
+                      item.quantity
                   )}
                 </AppText>
               </View>

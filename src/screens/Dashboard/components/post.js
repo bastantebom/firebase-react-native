@@ -66,7 +66,9 @@ const Post = ({
   const getPrice = () => {
     const prices = post.price_range
       ? [post.price_range.min, post.price_range.max]
-      : post.items.map(item => parseFloat(item.price.replace(/,/g, '')) || 0)
+      : post.items.map(
+          item => parseFloat((item.price + '').replace(/,/g, '')) || 0
+        )
 
     return prices.length === 1
       ? `₱${commaSeparate(prices[0])}`
