@@ -53,6 +53,15 @@ export const getStatusData = ({
         animation: inProgress,
         withGradient: true,
       },
+      ['payment processing']: {
+        title: 'Payment Processing',
+        message:
+          userType === 'seller'
+            ? 'Payment is now being processed'
+            : 'Got your payment, Buzzbee! We are now processing your payment.',
+        animation: inProgress,
+        withGradient: true,
+      },
       paid: {
         title: userType === 'seller' ? 'Processing' : 'Payment Completed',
         message:

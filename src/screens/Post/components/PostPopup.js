@@ -92,34 +92,33 @@ const PostPopup = ({}) => {
               flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 15,
+              paddingBottom: normalize(14),
             }}>
-            <View style={{ position: 'relative' }}>
-              <PostBG width={normalize(40)} height={normalize(40)} />
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 4,
+              }}>
+              <View>
+                <PostBG width={normalize(40)} height={normalize(40)} />
+              </View>
+              <Animated.View
+                style={[CrossButtonAnimationStyle, styles.plusIcon]}>
+                <PostPlus width={normalize(16)} height={normalize(16)} />
+              </Animated.View>
             </View>
-            <Animated.View style={[CrossButtonAnimationStyle, styles.plusIcon]}>
-              <PostPlus width={normalize(16)} height={normalize(16)} />
-            </Animated.View>
+            <AppText
+              textStyle="nav"
+              color={
+                showButtons
+                  ? Colors.primaryMidnightBlue
+                  : Colors.contentPlaceholder
+              }
+              customStyle={{ paddingBottom: normalize(3.5) }}>
+              Post
+            </AppText>
           </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={
-            user
-              ? showButtons
-                ? closePostButtons
-                : openPostButtons
-              : () => navigation.navigate('Post')
-          }>
-          <AppText
-            textStyle="nav"
-            color={
-              showButtons
-                ? Colors.primaryMidnightBlue
-                : Colors.contentPlaceholder
-            }
-            customStyle={{ paddingBottom: normalize(3.5) }}>
-            Post
-          </AppText>
         </TouchableWithoutFeedback>
       </View>
 

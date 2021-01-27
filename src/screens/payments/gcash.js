@@ -30,7 +30,8 @@ const GCashScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const totalPrice = orderData.items.reduce(
-    (total, item) => total + +(item.price * item.quantity),
+    (total, item) =>
+      total + +(parseFloat((item.price + '').replace(/,/, '')) * item.quantity),
     0
   )
 
