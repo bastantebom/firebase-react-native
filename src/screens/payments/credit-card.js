@@ -41,7 +41,8 @@ const CreditCardScreen = ({ navigation, route }) => {
   const { userInfo } = useContext(UserContext)
 
   const totalPrice = orderData.items.reduce(
-    (total, item) => total + +(item.price * item.quantity),
+    (total, item) =>
+      total + parseFloat((item.price + '').replace(/,/g, '')) * item.quantity,
     0
   )
   const [errors, setErrors] = useState({
