@@ -187,9 +187,11 @@ const OngoingItem = ({ route, navigation }) => {
 
   const handleRefresh = async () => {
     setIsPendingLoading(true)
+    setIsRefreshing(true)
     setPending([])
     setPostChats([])
     await callAllOngoing()
+    setIsRefreshing(false)
   }
 
   useEffect(() => {

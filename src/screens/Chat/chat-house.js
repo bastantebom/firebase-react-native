@@ -16,6 +16,7 @@ import firestore from '@react-native-firebase/firestore'
 
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 import Api from '@/services/Api'
 import PostService from '@/services/Post/PostService'
 import Modal from 'react-native-modal'
@@ -56,7 +57,7 @@ const ChatHouse = () => {
   const [cancelPosition] = useState(new Animated.Value(0))
   const [opacity] = useState(new Animated.Value(0))
   const { user } = useContext(UserContext)
-
+  const { initChats } = useContext(Context)
   const [postChats, setPostChats] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -144,6 +145,7 @@ const ChatHouse = () => {
           .collection('chat_rooms')
           .doc(room.id)
           .collection('messages')
+          .orderBy('createdAt', 'desc')
           .get()
 
         if (chatRef.docs.length) {
@@ -174,7 +176,6 @@ const ChatHouse = () => {
     let postIdStack = []
     await Promise.all([inquiriesMessage(postIdStack), initSellerOrders()])
     setIsLoading(false)
-    setIsRefreshing(false)
   }
 
   const getLatest = async chats => {
@@ -187,8 +188,11 @@ const ChatHouse = () => {
 
   const handleRefresh = async () => {
     setIsLoading(true)
+    setIsRefreshing(true)
     setPostChats([])
+    await initChats(user?.uid)
     await callAllPosts()
+    setIsRefreshing(false)
   }
 
   useEffect(() => {

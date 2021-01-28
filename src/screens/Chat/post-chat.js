@@ -104,8 +104,10 @@ const PostChat = ({ route }) => {
 
   const handleRefresh = async () => {
     setIsLoading(true)
+    setIsRefreshing(true)
     setRoomsChats([])
     await getAllRooms()
+    setIsRefreshing(false)
   }
 
   useEffect(() => {
@@ -417,7 +419,7 @@ const PostChat = ({ route }) => {
                               textStyle="caption2"
                               customStyle={{
                                 paddingRight: 15,
-                                width: '90%',
+                                width: '80%',
                                 marginBottom: normalize(4),
                               }}
                               numberOfLines={1}>

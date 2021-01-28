@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 import Api from '@/services/Api'
 import PostService from '@/services/Post/PostService'
 
@@ -18,6 +19,7 @@ import { IllustActivity, NoReview, NoPost, NoInfo } from '@/assets/images'
 import ActivitiesCard from './ActivitiesCard'
 
 const Ongoing = ({ sortCategory }) => {
+  const { initChats } = useContext(Context)
   const navigation = useNavigation()
   const { user, userInfo } = useContext(UserContext)
 
@@ -142,8 +144,11 @@ const Ongoing = ({ sortCategory }) => {
 
   const handleRefresh = async () => {
     setIsLoading(true)
+    setIsRefreshing(true)
     setOnGoing([])
+    await initChats(user?.uid)
     await callAllOrders()
+    setIsRefreshing(false)
   }
 
   useEffect(() => {

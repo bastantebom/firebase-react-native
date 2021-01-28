@@ -186,11 +186,14 @@ const ItemCard = ({ item, handleChatPress, onPress }) => {
                 }}>
                 <AppText
                   textStyle="caption2"
-                  customStyle={{ width: '90%' }}
+                  customStyle={{ width: '80%' }}
                   numberOfLines={1}>
                   {item?.chat[0]?.text}
                 </AppText>
-                <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
+                <AppText
+                  textStyle="metadata"
+                  customStyle={{ textAlign: 'right' }}
+                  color={Colors.contentPlaceholder}>
                   {timeAgo(
                     Date.now() / 1000 - item?.chat[0]?.created_at?._seconds
                   )}
