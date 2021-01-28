@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -24,6 +24,7 @@ export const Library = ({ cancel, next, data }) => {
     imageCurrent,
     selected,
     setLibImages,
+    libImages,
     coverPhoto,
   } = useContext(Context)
 
@@ -32,7 +33,12 @@ export const Library = ({ cancel, next, data }) => {
   const getSelectedImages = async images => {
     const imageUrl = []
     images.forEach(image => imageUrl.push(image.uri ? image.uri : image))
-    setLibImages(imageUrl)
+
+    if (data) {
+      setLibImages([...data, ...imageUrl])
+    } else {
+      setLibImages(imageUrl)
+    }
 
     const num = imageUrl.length - 1
     setImageCurrent(num >= 0 ? images[num].uri : '')
@@ -41,8 +47,6 @@ export const Library = ({ cancel, next, data }) => {
   const toggleFolderList = () => {
     setShowFolderList(!showFolderList)
   }
-
-  console.log(coverPhoto?.length)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -61,9 +65,7 @@ export const Library = ({ cancel, next, data }) => {
           </TouchableOpacity>
           <AppText textStyle="body1">All Photos</AppText>
           <TouchableOpacity
-            onPress={() => {
-              next()
-            }}
+            onPress={() => next()}
             style={{ paddingVertical: 5, paddingHorizontal: 25 }}>
             <AppText textStyle="body3" color={Colors.contentOcean}>
               Next

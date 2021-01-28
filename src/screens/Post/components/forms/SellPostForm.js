@@ -615,7 +615,7 @@ const SellPostForm = ({
           </View>
         )}
 
-        <PostImageUpload />
+        <PostImageUpload data={initialData} />
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => showCoverPhotoGuidelines(true)}

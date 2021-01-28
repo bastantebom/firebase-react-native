@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   TouchableOpacity,
@@ -44,6 +44,9 @@ export const PostImageUpload = ({ data }) => {
   } = useContext(Context)
 
   const [showPickerModal, setShowPickerModal] = useState(false)
+  const [initialUploadedPhotos, setInitialUploadedPhotos] = useState(
+    currentData?.cover_photos
+  )
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -85,17 +88,27 @@ export const PostImageUpload = ({ data }) => {
   }
 
   const handleRemove = async image => {
-    const newCoverPhoto = coverPhoto.filter(item => item !== image)
-    setCoverPhoto(newCoverPhoto)
+    if (initialUploadedPhotos.length > 0) {
+      const newCoverPhoto = initialUploadedPhotos.filter(item => item !== image)
+      setCoverPhoto(newCoverPhoto)
 
-    const newSelected = selected.filter(item => item.uri !== image)
-    setSelected(newSelected)
+      const newLibImage = libImages.filter(item => item !== image)
+      setLibImages(newLibImage)
+    } else {
+      const newCoverPhoto = coverPhoto.filter(item => item !== image)
+      setCoverPhoto(newCoverPhoto)
+    }
 
-    const newLibImage = libImages.filter(item => item !== image)
-    setLibImages(newLibImage)
+    if (!initialUploadedPhotos > 0) {
+      const newCameraImage = cameraImage.filter(item => item !== image)
+      setCameraImage(newCameraImage)
 
-    const newCameraImage = cameraImage.filter(item => item !== image)
-    setCameraImage(newCameraImage)
+      const newSelected = selected.filter(item => item.uri !== image)
+      setSelected(newSelected)
+
+      const newLibImage = libImages.filter(item => item !== image)
+      setLibImages(newLibImage)
+    }
   }
 
   const cancelUploadPhoto = () => {
@@ -134,16 +147,30 @@ export const PostImageUpload = ({ data }) => {
     {
       key: 'camera',
       title: 'Photo',
-      renderPage: <PostCamera cancel={cancelCamera} next={continueCamera} />,
+      renderPage: (
+        <PostCamera
+          cancel={cancelCamera}
+          next={continueCamera}
+          data={initialUploadedPhotos}
+        />
+      ),
     },
     {
       key: 'cameraroll',
       title: 'Library',
       renderPage: (
-        <Library cancel={cancelUploadPhoto} next={continueUploadPhoto} />
+        <Library
+          cancel={cancelUploadPhoto}
+          next={continueUploadPhoto}
+          data={initialUploadedPhotos}
+        />
       ),
     },
   ]
+
+  useEffect(() => {
+    setInitialUploadedPhotos(coverPhoto)
+  }, [coverPhoto])
 
   return (
     <>

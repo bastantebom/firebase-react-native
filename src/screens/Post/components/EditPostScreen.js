@@ -23,6 +23,7 @@ const EditPostScreen = ({ data, togglePostModal, card }) => {
     setPostImage,
     setImageCount,
     setImageCurrent,
+    setLibImages,
   } = useContext(Context)
 
   const cancelModalToggle = () => {
@@ -36,6 +37,7 @@ const EditPostScreen = ({ data, togglePostModal, card }) => {
       setSelected([])
       setImageCount(0)
       setImageCurrent('')
+      setLibImages([])
       setTimeout(() => {
         togglePostModal?.()
       }, 200)
