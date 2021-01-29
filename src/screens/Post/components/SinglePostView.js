@@ -47,6 +47,7 @@ import {
   isEmpty,
 } from '@/globals/Utils'
 import Share from 'react-native-share'
+import { identity } from 'lodash'
 
 const SinglePostView = props => {
   const navigation = useNavigation()
@@ -195,6 +196,8 @@ const SinglePostView = props => {
   const [disableCartButton, setDisableCartButton] = useState(false)
   const [newBasketPrompt, showNewBasketPrompt] = useState(false)
   const [currentItem, setCurrentItem] = useState()
+  const [hasOrder, setHasOrder] = useState(false)
+  const [orderData, setOrderData] = useState({})
 
   useEffect(() => {
     let computedPrice = userCart.reduce(
@@ -240,6 +243,19 @@ const SinglePostView = props => {
 
     return () => clearTimeout(timeout)
   }, [props])
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('orders')
+      .where('buyer_id', '==', user?.uid)
+      .where('status', '==', 'pending')
+      .where('post_id', '==', id)
+      .onSnapshot(async snap => {
+        setHasOrder(!!snap.docs.length)
+        if (snap.docs.length) setOrderData(snap.docs[0].data())
+      })
+    return () => subscriber()
+  }, [])
 
   const toggleEditPost = () => {
     toggleEllipsisState()
@@ -383,6 +399,16 @@ const SinglePostView = props => {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const handleOpenTracker = async () => {
+    navigation.navigate('orders', {
+      screen: 'order-tracker',
+      params: {
+        post: postData,
+        orderID: orderData?.id,
+      },
+    })
   }
 
   const CustomNotification = () => {
@@ -1134,21 +1160,25 @@ const SinglePostView = props => {
                     marginLeft: phone_number ? 8 : 0,
                   }}
                   activeOpacity={0.7}
-                  disabled={disableCartButton}
+                  disabled={disableCartButton && !hasOrder}
                   onPress={() => {
-                    if (postData?.type === 'need') {
-                      showOfferModal(true)
-                    } else {
-                      showBasketModal(true)
+                    if (hasOrder) handleOpenTracker()
+                    else {
+                      if (postData?.type === 'need') {
+                        showOfferModal(true)
+                      } else {
+                        showBasketModal(true)
+                      }
                     }
                   }}>
                   <View
                     style={[
                       styles.cartButtonContainer,
                       {
-                        backgroundColor: disableCartButton
-                          ? Colors.neutralGray
-                          : Colors.primaryYellow,
+                        backgroundColor:
+                          disableCartButton && !hasOrder
+                            ? Colors.neutralGray
+                            : Colors.primaryYellow,
                       },
                     ]}>
                     <View
@@ -1158,7 +1188,17 @@ const SinglePostView = props => {
                         width: '100%',
                         paddingHorizontal: normalize(16),
                       }}>
-                      {postData?.type === 'need' ? (
+                      {hasOrder ? (
+                        <View
+                          style={{
+                            flex: 1,
+                            alignItems: 'center',
+                          }}>
+                          <AppText textStyle="body3">{`View ${
+                            postData?.type === 'need' ? `Offer` : `Order`
+                          }`}</AppText>
+                        </View>
+                      ) : postData?.type === 'need' ? (
                         <View
                           style={{
                             flex: 1,
@@ -1215,6 +1255,7 @@ const SinglePostView = props => {
                 <TouchableOpacity
                   onPress={() => {
                     if (!user) openSlider()
+                    else if (hasOrder) handleOpenTracker()
                     else if (postData?.type === 'need') showOfferModal(true)
                     else if (
                       postData?.type === 'service' &&
@@ -1235,7 +1276,9 @@ const SinglePostView = props => {
                     <AppText
                       textStyle="button2"
                       customStyle={{ marginLeft: 8 }}>
-                      {postData?.type === 'service'
+                      {hasOrder
+                        ? 'View Order'
+                        : postData?.type === 'service'
                         ? 'Book'
                         : postData?.type === 'need'
                         ? 'Make an Offer'
