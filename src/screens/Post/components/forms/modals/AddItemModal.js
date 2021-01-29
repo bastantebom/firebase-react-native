@@ -24,6 +24,7 @@ import { formatPrice } from '@/globals/Utils'
 
 const AddItemModal = ({ closeModal, ...props }) => {
   const type = props?.route?.params?.type
+
   const { addItem } = useContext(Context)
 
   const { navigation } = props
@@ -40,7 +41,6 @@ const AddItemModal = ({ closeModal, ...props }) => {
   const [loadingSubmit] = useState(false)
   const [clearPhoto, setClearPhoto] = useState(false)
 
-  // If editing
   const [index, setIndex] = useState(0)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -54,12 +54,11 @@ const AddItemModal = ({ closeModal, ...props }) => {
     }
 
     clearData()
-
     addItem(newData)
     setClearPhoto(true)
 
     navigation.push('AddedItemPreviewScreen', {
-      categoryName: categoryName,
+      category: categoryName,
     })
   }
 
@@ -75,32 +74,6 @@ const AddItemModal = ({ closeModal, ...props }) => {
     clearData()
   }, [])
 
-  const setInitialData = {
-    setTitle,
-    setDescription,
-    setItemImage,
-    setPrice,
-    setCategoryName,
-    setFree,
-    setIndex,
-    setIsEditing,
-  }
-
-  const freeItemHandler = () => {
-    setFree(!free)
-  }
-
-  useEffect(() => {
-    if (free) {
-      setPrice('Free')
-    } else {
-      if (price === 'Free') {
-        setPrice('')
-      }
-    }
-  }, [free, price])
-
-  // check if all required fields are not empty
   useEffect(() => {
     if (title && price) {
       setButtonEnabled(true)

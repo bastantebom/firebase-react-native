@@ -8,31 +8,57 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Modal from 'react-native-modal'
 import AddedItemPreview from '@/screens/Post/components/forms/modals/AddedItemPreview'
 
-const ItemCategory = ({ items }) => {
+const ItemCategory = ({ items, editing }) => {
   const [previewItemModal, setPreviewItemModal] = useState(false)
 
   const navigation = useNavigation()
 
   const result = [
     ...items
-      .reduce((r, { categoryName, description, itemImage, price, title }) => {
-        r.has(categoryName) ||
-          r.set(categoryName, {
+      .reduce(
+        (
+          r,
+          {
+            category,
+            description,
+            itemImage,
+            price,
+            title,
+            id,
+            name,
+            itemID,
             categoryName,
-            items: [],
+          }
+        ) => {
+          r.has(category ?? categoryName) ||
+            r.set(category ?? categoryName, {
+              category: category ?? categoryName,
+              items: [],
+            })
+
+          r.get(category ?? categoryName).items.push({
+            description,
+            itemImage,
+            price,
+            title,
+            id,
+            name,
+            itemID,
+            categoryName,
           })
 
-        r.get(categoryName).items.push({ description, itemImage, price, title })
-
-        return r
-      }, new Map())
+          return r
+        },
+        new Map()
+      )
       .values(),
   ]
 
   const categoryHandler = category => {
     setPreviewItemModal(true)
     navigation.navigate('AddedItemPreviewScreen', {
-      categoryName: category,
+      category: category,
+      itemsInCategory: result,
     })
   }
 
@@ -40,9 +66,7 @@ const ItemCategory = ({ items }) => {
     return result.map(category => {
       return (
         <TouchableOpacity
-          onPress={() =>
-            categoryHandler(category.categoryName, category.items)
-          }>
+          onPress={() => categoryHandler(category.category, category.items)}>
           <View
             style={{
               borderWidth: 1,
@@ -55,7 +79,7 @@ const ItemCategory = ({ items }) => {
             <AppText
               textStyle="body2"
               customStyle={{ textTransform: 'capitalize' }}>
-              {category.categoryName}{' '}
+              {category.category ?? category.categoryName}
             </AppText>
             <AppText textStyle="caption">
               {category.items?.length}{' '}

@@ -730,7 +730,7 @@ const RenderActiveForm = ({
       togglePostModal={togglePostModal}
       formState={formState}
       initialData={initialData}
-      activeScreen={activeScreen}
+      activeScreen={initialData.type ?? activeScreen}
     />
   )
 }

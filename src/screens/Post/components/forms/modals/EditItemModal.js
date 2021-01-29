@@ -69,10 +69,8 @@ const EditItemModal = ({
     clearData()
 
     navigation.push('AddedItemPreviewScreen', {
-      categoryName: categoryName,
+      category: categoryName,
     })
-
-    // setPreviewItemModal(true);
   }
 
   const clearData = () => {

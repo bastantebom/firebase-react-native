@@ -45,7 +45,7 @@ const DeleteCategoryModal = ({ close, categoryName }) => {
       }
 
       navigation.push('AddedItemPreviewScreen', {
-        categoryName: NewCategoryName,
+        category: NewCategoryName,
       })
       close()
     })

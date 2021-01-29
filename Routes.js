@@ -48,6 +48,7 @@ import {
   PostExpiryScreen,
   ShippingMethodScreen,
   PaymentMethodScreen,
+  EditPostScreen,
 } from '@/screens/Post'
 import { PostScreen } from '@/screens/Post'
 import { GuestPost } from '@/screens/Post/components/GuestPost'
@@ -104,6 +105,7 @@ const ActivityStack = createStackNavigator()
 const ProfileStack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 const CreatePostStack = createStackNavigator()
+const EditPostStack = createStackNavigator()
 const WelcomeStack = createStackNavigator()
 const BadgeStack = createStackNavigator()
 const VerifiedStack = createStackNavigator()
@@ -133,6 +135,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="CreatePost"
         component={CreatePostStackScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="EditPost"
+        component={EditPostStackScreen}
       />
       <NoBottomTabScreenStack.Screen
         name="Welcome"
@@ -218,6 +224,38 @@ function NotVerifiedStackScreen() {
         component={NotVerified}
       />
     </NotVerifiedStack.Navigator>
+  )
+}
+
+function EditPostStackScreen() {
+  return (
+    <EditPostStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
+      <EditPostStack.Screen
+        name="CreatePostScreen"
+        component={EditPostScreen}
+      />
+      <EditPostStack.Screen name="AddItemScreen" component={AddItemScreen} />
+      <EditPostStack.Screen name="EditItemScreen" component={EditItemScreen} />
+      <EditPostStack.Screen
+        name="AddedItemPreviewScreen"
+        component={AddedItemPreviewScreen}
+      />
+      <EditPostStack.Screen
+        name="PostExpiryScreen"
+        component={PostExpiryScreen}
+      />
+      <EditPostStack.Screen
+        name="ShippingMethodScreen"
+        component={ShippingMethodScreen}
+      />
+      <EditPostStack.Screen
+        name="PaymentMethodScreen"
+        component={PaymentMethodScreen}
+      />
+      <EditPostStack.Screen name="Chat" component={ChatScreen} />
+    </EditPostStack.Navigator>
   )
 }
 

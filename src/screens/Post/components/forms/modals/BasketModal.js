@@ -525,6 +525,41 @@ const BasketModal = ({
     )
   }
 
+  const ServiceAddress = () => {
+    const buyerAddress = userInfo.addresses.filter(
+      address => address.default
+    )[0]
+
+    let sellerAddress = postData.store_details?.location
+
+    const getAddress = () => {
+      if (deliveryChoice === 'delivery') {
+        return sellerAddress?.full_address
+      } else {
+        return buyerAddress?.full_address
+      }
+    }
+
+    const getAddressName = () => {
+      if (deliveryChoice === 'delivery') {
+        return `Service's Location: ${sellerAddress?.name ?? 'Home (Default)'}`
+      } else {
+        return `Your Location: ${buyerAddress?.name ?? 'Home (Default)'}`
+      }
+    }
+
+    return (
+      <View>
+        <AppText textStyle="body2medium">{getAddressName()}</AppText>
+        <AppText
+          textStyle="body2"
+          customStyle={{ marginVertical: normalize(10) }}>
+          {getAddress()}
+        </AppText>
+      </View>
+    )
+  }
+
   const SubmitButton = () => {
     return (
       <TouchableOpacity
@@ -975,7 +1010,9 @@ const BasketModal = ({
                       paymentMethod === 'cash' ? 'body2medium' : 'body2'
                     }
                     customStyle={{ marginLeft: normalize(10) }}>
-                    Cash on Delivery / Pick up
+                    {postType === 'service'
+                      ? 'Cash'
+                      : 'Cash on Delivery / Pick up'}
                   </AppText>
                 </View>
               </TouchableOpacity>

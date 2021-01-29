@@ -229,7 +229,7 @@ export const ContextProvider = ({ children }) => {
   const addItem = item => {
     let itemWithID = {
       ...item,
-      itemId: itemId,
+      itemId: item.itemId ?? itemId,
     }
 
     let itemArray = [...items]
@@ -449,6 +449,7 @@ export const ContextProvider = ({ children }) => {
         showDeleteCurrentOrderModal,
         initChats,
         chatList,
+        setItems,
       }}>
       {children}
     </Context.Provider>

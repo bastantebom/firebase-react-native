@@ -39,7 +39,7 @@ const CategoryFormModal = ({ close, editing, categoryName }) => {
     })
 
     navigation.push('AddedItemPreviewScreen', {
-      categoryName: newCategoryName,
+      category: newCategoryName,
     })
 
     close()

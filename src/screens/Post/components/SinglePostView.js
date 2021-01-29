@@ -83,7 +83,7 @@ const SinglePostView = props => {
 
   useEffect(() => {
     getPostData(props.route?.params?.data?.id)
-  }, [refreshScreen])
+  }, [refreshScreen, props.route?.params])
 
   const getPostData = async pid => {
     setIsDataLoading(true)
@@ -258,11 +258,17 @@ const SinglePostView = props => {
   }, [])
 
   const toggleEditPost = () => {
-    toggleEllipsisState()
-
-    setTimeout(() => {
-      showEditPost(!editPost)
-    }, 500)
+    navigation.navigate('NBTScreen', {
+      screen: 'EditPost',
+      params: {
+        screen: 'CreatePostScreen',
+        params: {
+          data: postData,
+          togglePostModal: () => {},
+          card: postData.type,
+        },
+      },
+    })
   }
 
   const toggleEllipsisState = () => setEllipsisState(!ellipsisState)

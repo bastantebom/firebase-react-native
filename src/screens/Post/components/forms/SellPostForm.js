@@ -49,7 +49,7 @@ import BookingMethodModal from './modals/BookingMethodModal'
 import MoreOptionsModal from './modals/MoreOptions'
 import CoverPhotoGuidelinesModal from './modals/CoverPhotoGuidelines'
 import AdditionalNotesModal from './modals/AdditionalNotesModal'
-import { formatPrice } from '@/globals/Utils'
+import { formatPrice, isEmpty } from '@/globals/Utils'
 
 const SellPostForm = ({
   navToPost,
@@ -107,9 +107,12 @@ const SellPostForm = ({
   }
 
   useEffect(() => {
-    if (activeScreen === 'post') setActiveForm(needForm)
-    if (activeScreen === 'sell') setActiveForm(sellForm)
-    if (activeScreen === 'need') setActiveForm(serviceForm)
+    if (activeScreen === 'post' || activeScreen === 'need')
+      setActiveForm(needForm)
+    if (activeScreen === 'sell' || activeScreen === 'sell')
+      setActiveForm(sellForm)
+    if (activeScreen === 'need' || activeScreen === 'service')
+      setActiveForm(serviceForm)
   }, [activeScreen])
 
   const [activeForm, setActiveForm] = useState(sellForm)
@@ -124,11 +127,19 @@ const SellPostForm = ({
     setSelected,
     setImageCurrent,
     items,
+    setItems,
+    addItem,
   } = useContext(Context)
   const { user, userInfo, setUserInfo } = useContext(UserContext)
   const [buttonEnabled, setButtonEnabled] = useState(false)
 
   const navigation = useNavigation()
+
+  useEffect(() => {
+    if (initialData.items) {
+      setItems(initialData.items)
+    }
+  }, [initialData])
 
   /*MAP Essentials */
   const [map, setMap] = useState(false)
@@ -303,9 +314,11 @@ const SellPostForm = ({
         ? await Promise.all(
             items.map(async item => {
               return {
-                category: item.categoryName,
-                image: await ImageUpload.upload(item.itemImage?.uri, user.uid),
-                name: item.title,
+                category: item.category ?? item.categoryName,
+                image:
+                  item.image ??
+                  (await ImageUpload.upload(item.itemImage?.uri, user.uid)),
+                name: item.name ?? item.title,
                 description: item.description,
                 price: parseFloat((item.price + '').replace(/,/g, '')),
               }
@@ -830,7 +843,10 @@ const SellPostForm = ({
 
           {items.length > 0 ? (
             <View>
-              <ItemCategory items={items} />
+              <ItemCategory
+                items={items}
+                editing={initialData !== 'undefined'}
+              />
             </View>
           ) : (
             <></>

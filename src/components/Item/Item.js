@@ -6,12 +6,12 @@ import { Colors, normalize } from '@/globals'
 import { commaSeparate } from '@/globals/Utils'
 
 const Item = ({ item, children, style }) => {
-  const { title, description, itemImage, price } = item
+  const { title, description, itemImage, price, name, id } = item
 
   return (
     <View style={{ paddingVertical: 8 }}>
       <View style={styles.itemContainer}>
-        {itemImage !== '' ? (
+        {itemImage ? (
           <View style={styles.image}>
             <Image source={itemImage} style={styles.image} />
           </View>
@@ -25,7 +25,7 @@ const Item = ({ item, children, style }) => {
             <AppText
               textStyle="subtitle2"
               customStyle={{ paddingRight: 16, flex: 1 }}>
-              {title}
+              {title ?? name}
             </AppText>
             <AppText textStyle="subtitle2">₱{price}</AppText>
           </View>

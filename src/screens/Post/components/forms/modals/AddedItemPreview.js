@@ -25,8 +25,9 @@ const AddedItemPreview = ({
 }) => {
   const { getItemsByCategory } = useContext(Context)
   const { navigation } = props
-  const { categoryName } = props?.route?.params
-  const [items] = useState(getItemsByCategory(categoryName))
+  const { category, itemsInCategory } = props?.route?.params
+
+  const [items] = useState(getItemsByCategory(category) ?? itemsInCategory)
   const [options, showOptions] = useState(false)
 
   const AddAnotherItemHandler = () => {
@@ -42,6 +43,24 @@ const AddedItemPreview = ({
   }
 
   const ItemList = () => {
+    if (itemsInCategory?.length) {
+      const categorizedItems = itemsInCategory.filter(
+        cat => cat.category === category
+      )[0].items
+
+      return categorizedItems.map((item, index) => {
+        return (
+          <Item item={item} key={item.id}>
+            <TouchableOpacity onPress={() => editItemHandler(item)}>
+              <AppText textStyle="caption" color={Colors.contentOcean}>
+                Edit
+              </AppText>
+            </TouchableOpacity>
+          </Item>
+        )
+      })
+    }
+
     if (items) {
       return items?.map((item, index) => {
         return (
@@ -65,7 +84,7 @@ const AddedItemPreview = ({
         close={() => {
           navigation.navigate('CreatePostScreen')
         }}
-        title={categoryName}
+        title={category}
         paddingSize={3}
         withOptions
         openOptions={() => showOptions(true)}
@@ -121,7 +140,7 @@ const AddedItemPreview = ({
           </TouchableWithoutFeedback>
         }>
         <CategoryOptions
-          categoryName={categoryName}
+          categoryName={category}
           close={() => showOptions(false)}
         />
       </Modal>

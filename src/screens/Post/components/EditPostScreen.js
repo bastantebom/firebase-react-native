@@ -14,7 +14,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Colors, normalize } from '@/globals'
 import { Context } from '@/context'
 
-const EditPostScreen = ({ data, togglePostModal, card }) => {
+const EditPostScreen = ({ route, navigation }) => {
+  const { data, togglePostModal, card } = route?.params
+
   const [showCancelModal, setShowCancelModal] = useState(false)
   const {
     setCoverPhoto,
@@ -41,6 +43,7 @@ const EditPostScreen = ({ data, togglePostModal, card }) => {
       setTimeout(() => {
         togglePostModal?.()
       }, 200)
+      navigation.goBack()
     }
 
     cancelModalToggle()
