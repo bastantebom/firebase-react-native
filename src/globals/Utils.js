@@ -196,7 +196,7 @@ export const getCurrentPosition = async () => {
       Geolocation.getCurrentPosition(({ coords }) => resolve(coords), reject, {
         enableHighAccuracy: true,
         timeout: 5000,
-        maximumAge: 5000,
+        maximumAge: 0,
       })
     })
 

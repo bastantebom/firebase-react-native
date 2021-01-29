@@ -11,7 +11,7 @@ import { AppText, AppButton, TransitionIndicator } from '@/components'
 
 import { NavigationArrow } from '@/assets/images/icons'
 import LocationImage from '@/assets/images/location.svg'
-import Geolocation from '@react-native-community/geolocation'
+
 import Geocoder from 'react-native-geocoding'
 import { useNavigation } from '@react-navigation/native'
 
@@ -92,13 +92,6 @@ const AlmostThere = () => {
   }
 
   useEffect(() => {
-    if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization()
-      Geolocation.setRNConfiguration({
-        skipPermissionRequests: false,
-        authorizationLevel: 'whenInUse',
-      })
-    }
     initializeMap()
   }, [])
 
