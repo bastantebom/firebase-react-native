@@ -43,7 +43,7 @@ const baseURL =
         )
         .replace(
           'fetch(',
-          "if (!this.tokenRefresher) this.tokenRefresher = checkToken()\nawait this.tokenRefresher\nconst token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
+          "if (!this.tokenRefresher) this.tokenRefresher = checkToken().then(() => {this.tokenRefresher=null})\nawait this.tokenRefresher\nconst token = await AsyncStorage.getItem('token')\nheaders.Authorization = `Bearer ${token}`\nfetch("
         ),
       { ...config, parser: 'babel' }
     )
