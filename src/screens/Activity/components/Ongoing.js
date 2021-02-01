@@ -61,6 +61,7 @@ const Ongoing = ({ sortCategory }) => {
                 status: order.status,
                 time: order.date._seconds,
                 orderID: order.id,
+                payment: order.payment_method,
                 price: order.total_price,
                 postData: getPostResponse.data,
               }

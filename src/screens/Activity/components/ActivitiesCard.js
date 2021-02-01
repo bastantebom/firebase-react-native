@@ -20,11 +20,13 @@ const ActivitiesCard = ({ info }) => {
     cardType,
     postData,
     orderID,
+    payment,
   } = info
 
   const statusBackground = () => {
     if (cardType === 'own' && status === 'pending')
       return Colors.neutralsMischka
+    if (cardType === 'own' && payment !== 'cash') return Colors.neutralsMischka
     if (
       cardType === 'own' &&
       status === 'confirmed' &&
@@ -37,7 +39,7 @@ const ActivitiesCard = ({ info }) => {
       ['service', 'need'].includes(postData.type)
     )
       return Colors.secondaryLavenderBlue
-    if (cardType === 'own' && status === 'delivering')
+    if (cardType === 'own' && ['delivering', 'pickup'].includes(status))
       return Colors.secondaryDarkTangerine
     if (
       cardType === 'seller' &&
@@ -50,7 +52,7 @@ const ActivitiesCard = ({ info }) => {
     )
       return Colors.secondaryDarkTangerine
     if (cardType === 'own' && status === 'completed')
-      return Colors.secondaryShamrock
+      return Colors.secondaryRoyalBlue
     if (
       cardType === 'seller' &&
       !orders?.confirmed?.length &&
@@ -60,7 +62,7 @@ const ActivitiesCard = ({ info }) => {
       !orders?.pickup?.length &&
       orders?.completed?.length
     )
-      return Colors.secondaryShamrock
+      return Colors.secondaryRoyalBlue
     if (cardType === 'own' && status === 'declined') return Colors.red
     if (cardType === 'own' && status === 'cancelled') return Colors.red
     return 'red'
@@ -68,23 +70,33 @@ const ActivitiesCard = ({ info }) => {
 
   const getStatusLabel = () => {
     if (cardType === 'own' && status === 'pending')
-      return 'Waiting for confirmation'
+      return 'Awaiting confirmation'
     if (cardType === 'own' && status === 'declined') return 'Declined'
     if (cardType === 'own' && status === 'cancelled') return 'Cancelled'
+    if (cardType === 'own' && status === 'confirmed' && payment !== 'cash')
+      return 'Awaiting Payment'
+    if (cardType === 'own' && status === 'paid' && payment !== 'cash')
+      return 'Payment Processing'
     if (
       cardType === 'own' &&
       status === 'confirmed' &&
       postData.type === 'sell'
     )
-      return 'Processing'
+      return 'Ongoing'
     if (
       cardType === 'own' &&
       status === 'confirmed' &&
-      ['service', 'need'].includes(postData.type)
+      postData.type === 'service'
+    )
+      return 'Scheduled'
+    if (
+      cardType === 'own' &&
+      status === 'confirmed' &&
+      postData.type === 'need'
     )
       return 'Confirmed'
-    if (cardType === 'own' && status === 'delivering')
-      return 'Ready for Delivery'
+    if (cardType === 'own' && ['delivering', 'pickup'].includes(status))
+      return `Ready for ${status === `pickup` ? `Pickup` : `Delivery`}`
     if (
       cardType === 'seller' &&
       (orders?.confirmed?.length ||
