@@ -51,6 +51,7 @@ const PaypalScreen = ({ navigation, route }) => {
       navigation.navigate('payments', {
         screen: 'payment-webview',
         params: {
+          orderId: orderData.id,
           link: response.links[1].href,
           amount: totalPrice,
           title: 'Paypal',

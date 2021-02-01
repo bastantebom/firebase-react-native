@@ -53,6 +53,15 @@ export const getStatusData = ({
         animation: inProgress,
         withGradient: true,
       },
+      ['payment failed']: {
+        title: 'Payment Failed',
+        message:
+          userType === 'seller'
+            ? 'Bee ready!'
+            : 'Payment failed please try again',
+        animation: inProgress,
+        withGradient: true,
+      },
       ['payment processing']: {
         title: 'Payment Processing',
         message:
@@ -143,6 +152,24 @@ export const getStatusData = ({
             : 'Confeeermed! Please settle payment to complete your booking.',
         animation: bookingScheduled,
       },
+      ['payment failed']: {
+        title: 'Payment Failed',
+        message:
+          userType === 'seller'
+            ? 'Bee ready!'
+            : 'Payment failed please try again',
+        animation: inProgress,
+        withGradient: true,
+      },
+      ['payment processing']: {
+        title: 'Payment Processing',
+        message:
+          userType === 'seller'
+            ? 'Payment is now being processed'
+            : 'Got your payment, Buzzbee! We are now processing your payment.',
+        animation: inProgress,
+        withGradient: true,
+      },
       paid: {
         title: 'Schedule Confirmed',
         message: 'Booked! Please bee on time for your appointment.',
@@ -198,6 +225,24 @@ export const getStatusData = ({
             ? 'Bee ready! '
             : 'Bee ready! Your order is now being processed. ',
         animation: pending,
+      },
+      ['payment failed']: {
+        title: 'Payment Failed',
+        message:
+          userType === 'seller'
+            ? 'Bee ready!'
+            : 'Payment failed please try again',
+        animation: inProgress,
+        withGradient: true,
+      },
+      ['payment processing']: {
+        title: 'Payment Processing',
+        message:
+          userType === 'seller'
+            ? 'Payment is now being processed'
+            : 'Got your payment, Buzzbee! We are now processing your payment.',
+        animation: inProgress,
+        withGradient: true,
       },
       completed: {
         title: 'Completed',

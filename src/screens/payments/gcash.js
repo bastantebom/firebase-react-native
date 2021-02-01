@@ -51,6 +51,7 @@ const GCashScreen = ({ navigation, route }) => {
       navigation.navigate('payments', {
         screen: 'payment-webview',
         params: {
+          orderId: orderData.id,
           link: response.data.redirect.checkout_url,
           amount: totalPrice,
           title: 'GCash',
