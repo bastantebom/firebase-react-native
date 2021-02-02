@@ -40,23 +40,37 @@ const PaypalScreen = ({ navigation, route }) => {
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
+      const paypalItems = []
+      orderData.items.map(item =>
+        paypalItems.push({
+          name: item.title,
+          sku: item.title,
+          price: `${item.price.replace(',', '')}`,
+          currency: 'PHP',
+          quantity: item.quantity,
+        })
+      )
+
       const response = await Api.createPaypalPayment({
         body: {
           amount: totalPrice,
           currency: 'PHP',
           order_id: orderData.id,
+          items: paypalItems,
         },
       })
 
-      navigation.navigate('payments', {
-        screen: 'payment-webview',
-        params: {
-          orderId: orderData.id,
-          link: response.links[1].href,
-          amount: totalPrice,
-          title: 'Paypal',
-        },
-      })
+      if (response.success)
+        navigation.navigate('payments', {
+          screen: 'payment-webview',
+          params: {
+            orderId: orderData.id,
+            link: response.data.links[1].href,
+            amount: totalPrice,
+            title: 'Paypal',
+          },
+        })
+      else throw new Error(response.message)
     } catch (error) {
       console.log(error.message)
       Alert.alert('Error', 'Oops, something went wrong.')

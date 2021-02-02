@@ -493,9 +493,16 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               return (
                 <View key={date._seconds} style={styles.orderHistoryItem}>
                   <View>{renderStatusIndicator('confirmed', true, true)}</View>
-                  <Text numberOfLines={1} style={styles.statusText}>
-                    {title}
-                  </Text>
+                  <View>
+                    <Text numberOfLines={1} style={styles.statusText}>
+                      {title}
+                    </Text>
+                    <Text numberOfLines={1} style={styles.statusText}>
+                      {moment
+                        .unix(date._seconds)
+                        .format('MMM D YYYY, h:mm a') || 'N/A'}
+                    </Text>
+                  </View>
                 </View>
               )
             })}

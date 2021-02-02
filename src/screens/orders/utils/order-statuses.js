@@ -58,7 +58,7 @@ export const getStatusData = ({
         message:
           userType === 'seller'
             ? 'Bee ready!'
-            : 'Payment failed please try again',
+            : 'Please check and try again in a few minutes.',
         animation: inProgress,
         withGradient: true,
       },
@@ -157,7 +157,7 @@ export const getStatusData = ({
         message:
           userType === 'seller'
             ? 'Bee ready!'
-            : 'Payment failed please try again',
+            : 'Please check and try again in a few minutes.',
         animation: inProgress,
         withGradient: true,
       },
@@ -231,7 +231,7 @@ export const getStatusData = ({
         message:
           userType === 'seller'
             ? 'Bee ready!'
-            : 'Payment failed please try again',
+            : 'Please check and try again in a few minutes.',
         animation: inProgress,
         withGradient: true,
       },
