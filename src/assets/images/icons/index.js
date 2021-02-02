@@ -322,6 +322,10 @@ import BasketWalkIn from './basket-walk-in.svg'
 import BasketMessage from './basket-message.svg'
 import BasketAttachedPost from './basket-attached-post.svg'
 
+import ServicePost from './service-post.svg'
+import SellPost from './sell-post.svg'
+import NeedPost from './need-post.svg'
+
 export {
   Trash,
   MOCalendar,
@@ -634,4 +638,7 @@ export const Icons = {
   WalletGray,
   Warning,
   WelcomeNotif,
+  SellPost,
+  NeedPost,
+  ServicePost,
 }

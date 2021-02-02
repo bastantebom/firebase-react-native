@@ -7,6 +7,7 @@ import { Colors, GlobalStyle, normalize, timePassedShort } from '@/globals'
 import { AppText, MarginView, CacheableImage } from '@/components'
 import { ProfileImageDefault } from '@/assets/images/icons'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import { Icons } from '@/assets/images/icons'
 import { commaSeparate } from '@/globals/Utils'
 
 const ActivitiesCard = ({ info }) => {
@@ -166,6 +167,16 @@ const ActivitiesCard = ({ info }) => {
     )
   }
 
+  const PostIcon = () => {
+    return postData?.type === 'sell' ? (
+      <Icons.SellPost />
+    ) : postData?.type === 'service' ? (
+      <Icons.ServicePost />
+    ) : (
+      <Icons.NeedPost />
+    )
+  }
+
   return (
     <>
       <ScrollView>
@@ -295,9 +306,15 @@ const ActivitiesCard = ({ info }) => {
                     </AppText>
                   )}
                 </View>
-                <AppText textStyle="caption2" numberOfLines={1}>
-                  {postData?.title}
-                </AppText>
+                <View style={{ flexDirection: 'row' }}>
+                  <PostIcon />
+                  <AppText
+                    textStyle="caption2"
+                    numberOfLines={1}
+                    customStyle={{ marginLeft: normalize(4) }}>
+                    {postData?.title}
+                  </AppText>
+                </View>
                 {info.reply && (
                   <AppText textStyle="caption" numberOfLines={1}>
                     {info.reply}
