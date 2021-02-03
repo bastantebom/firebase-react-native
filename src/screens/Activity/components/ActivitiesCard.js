@@ -8,6 +8,7 @@ import { AppText, MarginView } from '@/components'
 import { Icons } from '@/assets/images/icons'
 import { commaSeparate } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
 
 const ActivitiesCard = ({ info }) => {
   const navigation = useNavigation()

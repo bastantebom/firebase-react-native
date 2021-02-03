@@ -47,7 +47,6 @@ import {
   isEmpty,
 } from '@/globals/Utils'
 import Share from 'react-native-share'
-import { identity } from 'lodash'
 import PostImage from '@/components/Post/post-image'
 
 const SinglePostView = props => {

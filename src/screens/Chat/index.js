@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
     height: normalize(32),
     borderRadius: normalize(100),
     marginRight: normalize(6),
+    overflow: 'hidden',
   },
   headerContentName: {
     fontSize: normalize(14),

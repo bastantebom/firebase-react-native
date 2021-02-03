@@ -208,7 +208,7 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                     <View style={styles.avatar}>
                       <Avatar
                         style={{ height: '100%', width: '100%' }}
-                        path={path}
+                        path={profilePhoto}
                         size="64x64"
                       />
                     </View>
@@ -222,14 +222,26 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 {info.length > 1 && (
                   <View style={{ width: normalize(60), flexDirection: 'row' }}>
                     <View style={styles.multiAvatarHolder}>
-                      {renderAvatar(profilePhoto)}
+                      <View style={styles.avatar}>
+                        <Avatar
+                          style={{ height: '100%', width: '100%' }}
+                          path={profilePhoto}
+                          size="64x64"
+                        />
+                      </View>
                     </View>
                     <View
                       style={[
                         styles.multiAvatarHolder,
                         { marginTop: normalize(10) },
                       ]}>
-                      {renderAvatar(info[1].profilePhoto)}
+                      <View style={styles.avatar}>
+                        <Avatar
+                          style={{ height: '100%', width: '100%' }}
+                          path={info[1].profilePhoto}
+                          size="64x64"
+                        />
+                      </View>
                     </View>
                   </View>
                 )}

@@ -476,6 +476,7 @@ const DashboardScreen = ({ navigation }) => {
                 containerStyle={{
                   position: 'absolute',
                   top: getSearchToolbarHeight(),
+                  zIndex: 1000000,
                 }}
                 isLoading={isSearching}
                 data={searchResults}

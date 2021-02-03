@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import FastImage from 'react-native-fast-image'
 
 const SearchResults = ({
   data,
@@ -42,7 +41,7 @@ const SearchResults = ({
     const size = { width: normalize(24), height: normalize(24) }
 
     return (
-      <View style={styles.searchResultItemImage}>
+      <View style={styles.resultImage}>
         <PostImage
           resizeMode="stretch"
           style={styles.resultImage}

@@ -26,7 +26,6 @@ import {
 } from '@/assets/images/icons'
 
 import {
-  EditProfile,
   About,
   BlockList,
   HiddenPost,
@@ -41,7 +40,6 @@ import { UserContext } from '@/context/UserContext'
 
 const OwnMenu = ({ navigation, triggerNotify }) => {
   const { providerData, signOut } = useContext(UserContext)
-  const [editProfile, setEditProfile] = useState(false)
   const [about, setAbout] = useState(false)
   const [blockUser, setBlockUser] = useState(false)
   const [hiddenPost, setHiddenPost] = useState(false)
@@ -55,7 +53,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
     providerData.some(pd => pd.providerId === 'password')
   )
 
-  const toggleEditProfile = () => setEditProfile(!editProfile)
   const toggleAbout = () => setAbout(!about)
   const toggleBlockedUser = () => setBlockUser(!blockUser)
   const toggleHiddenPost = () => setHiddenPost(!hiddenPost)
@@ -79,7 +76,11 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
     },
     {
       label: 'Edit Profile',
-      onPress: () => setEditProfile(true),
+      onPress: () => {
+        navigation.navigate('NBTScreen', {
+          screen: 'edit-profile',
+        })
+      },
       icon: () => <MenuEdit width={normalize(20)} height={normalize(20)} />,
     },
     {
@@ -132,7 +133,7 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
     <SafeAreaView style={styles.safeArea}>
       <ScreenHeaderTitle
         title="Settings"
-        close={() => navigation.goBack()}
+        close={navigation.goBack}
         paddingSize={3}
       />
       <ScrollView>
@@ -304,24 +305,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
           </PaddingView>
         </View>
       </ScrollView>
-
-      <Modal
-        isVisible={editProfile}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <EditProfile
-          toggleEditProfile={toggleEditProfile}
-          triggerNotify={triggerNotify}
-          source="own-menu"
-        />
-      </Modal>
 
       <Modal
         isVisible={blockUser}

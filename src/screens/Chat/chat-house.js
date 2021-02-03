@@ -99,7 +99,6 @@ const ChatHouse = () => {
           return {
             cardType: 'seller',
             time: latestTimeStampOrder,
-            cover_photos: post.cover_photos,
             chats: chatsList,
             postData: post,
           }

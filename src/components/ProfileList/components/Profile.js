@@ -139,7 +139,14 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
         activeOpacity={0.7}
         onPress={openProfileHandler}>
         <View style={styles.userInfoImageContainer}>
-          <Avatar path={profile_photo} size="64x64" />
+          <Avatar
+            path={profile_photo}
+            size="64x64"
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+          />
         </View>
 
         <View style={{ flex: 1, marginLeft: 8 }}>

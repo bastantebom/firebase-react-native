@@ -375,7 +375,14 @@ const PostChat = ({ route }) => {
                           paddingHorizontal: normalize(16),
                         }}>
                         <View style={styles.icon}>
-                          <Avatar path={profile_photo} size="64x64" />
+                          <Avatar
+                            path={chat.profile_photo}
+                            size="64x64"
+                            style={{
+                              height: '100%',
+                              width: '100%',
+                            }}
+                          />
                         </View>
                         <View style={{ flex: 1 }}>
                           <View

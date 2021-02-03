@@ -68,8 +68,8 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
           style={{ flexDirection: 'row' }}>
           <View style={styles.postImageContainer}>
             <PostImage
-              size="32x32"
-              path={post?.cover_photos?.[0]}
+              size="64x64"
+              path={post?.postData?.cover_photos?.[0]}
               postType={post?.type?.toLowerCase()}
               width={normalize(64)}
               height={normalize(64)}
@@ -114,8 +114,8 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
           style={{ flexDirection: 'row', flex: 1 }}>
           <View style={[styles.postImageContainer, styles.postImageBuyer]}>
             <PostImage
-              size="32x32"
-              path={post?.cover_photos?.[0]}
+              size="64x64"
+              path={post?.postData?.cover_photos?.[0]}
               postType={post?.type?.toLowerCase()}
               width={normalize(56)}
               height={normalize(56)}
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   postImageContainer: {
     width: normalize(64),
-    height: normalize(72),
+    height: normalize(64),
     borderRadius: 8,
     overflow: 'hidden',
   },

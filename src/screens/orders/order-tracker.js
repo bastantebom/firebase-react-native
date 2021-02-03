@@ -532,7 +532,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType === 'seller')
       return (
         <View style={[styles.messagePhoto, styles.avatarImageWrapper]}>
-          <Avatar path={profilePhoto} size="64x64" />
+          <Avatar
+            path={profilePhoto}
+            size="64x64"
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+          />
         </View>
       )
     else if (userType === 'buyer') {

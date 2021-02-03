@@ -73,7 +73,14 @@ const ProfileInfo = ({
               overflow: 'hidden',
               alignSelf: 'center',
             }}>
-            <Avatar path={profile_photo} size="64x64" />
+            <Avatar
+              path={profile_photo}
+              size="64x64"
+              style={{
+                height: '100%',
+                width: '100%',
+              }}
+            />
           </View>
           <View style={styles.userInfoDetailsContainer}>
             <View style={styles.userInfoDetailsNameContainer}>
@@ -161,7 +168,14 @@ const ProfileInfo = ({
           paddingVertical: normalize(16),
         }}>
         <View style={styles.userInfoImageContainer}>
-          <Avatar path={profile_photo} size="64x64" />
+          <Avatar
+            path={profile_photo}
+            size="64x64"
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+          />
         </View>
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -215,7 +229,14 @@ const ProfileInfo = ({
           paddingVertical: normalize(16),
         }}>
         <View style={styles.userInfoImageContainer}>
-          <Avatar path={profile_photo} size="64x64" />
+          <Avatar
+            path={profile_photo}
+            size="64x64"
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+          />
         </View>
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -240,7 +261,14 @@ const ProfileInfo = ({
     return (
       <View style={{ flexDirection: 'row' }}>
         <View style={styles.userInfoImageContainer}>
-          <Avatar path={profile_photo} size="64x64" />
+          <Avatar
+            path={profile_photo}
+            size="64x64"
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+          />
         </View>
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
