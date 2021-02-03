@@ -1,51 +1,31 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
-import { normalize, Colors, GlobalStyle, timePassedShort } from '@/globals'
-import {
-  BlueDot,
-  ChatBlue,
-  ChatEmpty,
-  ProfileImageDefault,
-} from '@/assets/images/icons'
-import { AppText, CacheableImage } from '@/components'
+import { normalize, Colors, timePassedShort } from '@/globals'
+import { BlueDot, ChatBlue, ChatEmpty } from '@/assets/images/icons'
+import { AppText } from '@/components'
 import { UserContext } from '@/context/UserContext'
-import _ from 'lodash'
+import { isEmpty } from 'lodash'
+import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
 
 const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
   const { user } = useContext(UserContext)
 
-  const CoverPhoto = ({ size }) => {
-    return post?.postData.cover_photos?.length > 0 ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{ uri: post?.postData?.cover_photos[0] }}
-      />
-    ) : post?.postData.type === 'service' ? (
-      <DefaultService width={normalize(size)} height={normalize(size)} />
-    ) : post?.postData.type === 'need' ? (
-      <DefaultNeed width={normalize(size)} height={normalize(size)} />
-    ) : (
-      <DefaultSell width={normalize(size)} height={normalize(size)} />
-    )
-  }
-
   const unRead = () => {
     return (
-      post.chats.filter(chat => !chat.read).length > 0 && !_.isEmpty(post.chats)
+      post.chats.filter(chat => !chat.read).length > 0 && !isEmpty(post.chats)
     )
   }
 
-  const AvatarPhoto = ({ size }) => {
-    return post.profilePhoto ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: post.profilePhoto,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
+  const renderAvatar = () => {
+    return (
+      <View style={styles.avatar}>
+        <Avatar
+          style={{ height: '100%', width: '100%' }}
+          path={post.profilePhoto}
+          size="64x64"
+        />
+      </View>
     )
   }
 
@@ -57,7 +37,7 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
   }
 
   const renderChatCopy = post => {
-    return _.isEmpty(post.chat) && !post.chats.length
+    return isEmpty(post.chat) && !post.chats.length
       ? `No messages yet`
       : post.chats.filter(chat => !chat.read).length > 0
       ? `${post.chats.filter(chat => !chat.read).length} New in ${
@@ -87,7 +67,13 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
           }
           style={{ flexDirection: 'row' }}>
           <View style={styles.postImageContainer}>
-            <CoverPhoto size={64} />
+            <PostImage
+              size="32x32"
+              path={post?.cover_photos?.[0]}
+              postType={post?.type?.toLowerCase()}
+              width={normalize(64)}
+              height={normalize(64)}
+            />
           </View>
           <View style={{ paddingLeft: normalize(8), flex: 1 }}>
             <View
@@ -127,14 +113,20 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
           onPress={chatPress}
           style={{ flexDirection: 'row', flex: 1 }}>
           <View style={[styles.postImageContainer, styles.postImageBuyer]}>
-            <CoverPhoto size={56} />
+            <PostImage
+              size="32x32"
+              path={post?.cover_photos?.[0]}
+              postType={post?.type?.toLowerCase()}
+              width={normalize(56)}
+              height={normalize(56)}
+            />
           </View>
           <View
             style={[
               styles.userInfoImageContainer,
               post.profilePhoto && styles.additionalPadding,
             ]}>
-            <AvatarPhoto size={24} />
+            {renderAvatar()}
           </View>
           <View style={{ paddingLeft: normalize(8), flex: 1 }}>
             <View
@@ -172,7 +164,7 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
                 }}
                 numberOfLines={2}>
                 {`${
-                  _.isEmpty(post.chats)
+                  isEmpty(post.chats)
                     ? `No messages yet`
                     : `${
                         post.chats.uid === user?.uid
@@ -181,7 +173,7 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
                       } ${post.chats.text}`
                 }`}
               </AppText>
-              {!_.isEmpty(post?.chats) &&
+              {!isEmpty(post?.chats) &&
                 !post?.chats?.read &&
                 post?.chats?.uid !== user?.uid && <BlueDot />}
             </View>
@@ -193,6 +185,10 @@ const ChatHouseCard = ({ post, handleChatPress, navigation }) => {
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    height: normalize(24),
+    width: normalize(24),
+  },
   postImageContainer: {
     width: normalize(64),
     height: normalize(72),

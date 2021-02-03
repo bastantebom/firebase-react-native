@@ -101,22 +101,16 @@ const DashboardScreen = ({ navigation }) => {
   }
 
   const handlePostPress = post => {
-    const params = {
-      data: post,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
-    if (user?.uid === post.uid)
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params,
-      })
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: { ...params, othersView: true },
-      })
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: {
+        data: post,
+        viewing: true,
+        created: false,
+        edited: false,
+        othersView: user?.uid !== post.uid,
+      },
+    })
   }
 
   const handleUserPress = _user => {
@@ -375,7 +369,6 @@ const DashboardScreen = ({ navigation }) => {
           sort: 'recent',
         })
 
-        console.log(response.data)
         if (!response.success) throw new Error(response.message)
         if (!response.data.length) setNoResults(true)
         setSearchResults(response.data)

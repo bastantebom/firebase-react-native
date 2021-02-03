@@ -62,7 +62,7 @@ const StickyHeader = ({
       const url = await generateDynamicLink({
         type: 'profile',
         params: { uid: userInfo.uid },
-        social: getPreviewLinkData({ type: 'user', data: userInfo }),
+        social: await getPreviewLinkData({ type: 'user', data: userInfo }),
       })
       await Share.open({ url })
     } catch (error) {
@@ -258,7 +258,11 @@ const StickyHeader = ({
                 width: '60%',
               }}>
               <View style={styles.profileImageWrapper}>
-                <HexagonBorder size={40} imgSrc={profile_photo} />
+                <HexagonBorder
+                  size={40}
+                  path={profile_photo}
+                  dimensions="64x64"
+                />
               </View>
               <AppText
                 textStyle="subtitle2"
@@ -327,7 +331,11 @@ const StickyHeader = ({
                 width: '60%',
               }}>
               <View style={styles.profileImageWrapper}>
-                <HexagonBorder size={40} imgSrc={profile_photo} />
+                <HexagonBorder
+                  size={40}
+                  path={profile_photo}
+                  dimensions="64x64"
+                />
               </View>
               <AppText
                 textStyle="subtitle2"

@@ -48,6 +48,7 @@ import {
 } from '@/globals/Utils'
 import Share from 'react-native-share'
 import { identity } from 'lodash'
+import PostImage from '@/components/Post/post-image'
 
 const SinglePostView = props => {
   const navigation = useNavigation()
@@ -395,7 +396,7 @@ const SinglePostView = props => {
       const url = await generateDynamicLink({
         type: 'post',
         params: { id },
-        social: getPreviewLinkData({
+        social: await getPreviewLinkData({
           type: 'post',
           data: props.route?.params?.data,
         }),
@@ -594,9 +595,13 @@ const SinglePostView = props => {
                 }
               }}>
               <View style={styles.itemWrapper}>
-                {item?.image?.substring(0, 8) === 'https://' && (
+                {item?.image?.length && (
                   <View style={styles.imageWrapper}>
-                    <Image style={styles.image} source={{ uri: item.image }} />
+                    <PostImage
+                      style={styles.image}
+                      path={item.image}
+                      postType={postData?.type?.toLowerCase()}
+                    />
                   </View>
                 )}
                 <View style={styles.detailWrapper}>
@@ -775,6 +780,21 @@ const SinglePostView = props => {
   }
 
   const SinglePostContent = () => {
+    const CoverPhotos = () => {
+      return postData?.cover_photos.map(path => {
+        return (
+          <TouchableWithoutFeedback key={path} onPress={togglePostImageModal}>
+            <PostImage
+              path={path}
+              size={'375x157'}
+              postType={postData?.type?.toLowerCase()}
+              type="image"
+            />
+          </TouchableWithoutFeedback>
+        )
+      })
+    }
+
     return (
       <View style={{ flex: 1 }}>
         <Animated.View style={{ height: offsetHeight, zIndex: offsetHeight }}>
@@ -854,27 +874,17 @@ const SinglePostView = props => {
           stickyHeaderIndices={[2]}
           contentContainerStyle={{ marginTop: 0 }}>
           <View style={[styles.postImageContainer]}>
-            {postData?.cover_photos === undefined ||
-            postData?.cover_photos.length == 0 ? (
-              postData?.type === 'Need' || postData?.type === 'need' ? (
-                <Image
-                  style={GlobalStyle.image}
-                  source={require('@/assets/images/cover-need.png')}
-                />
-              ) : postData?.type === 'Sell' || postData?.type === 'sell' ? (
-                <Image
-                  style={GlobalStyle.image}
-                  source={require('@/assets/images/cover-sell.png')}
-                />
-              ) : (
-                <Image
-                  style={GlobalStyle.image}
-                  source={require('@/assets/images/cover-service.png')}
-                />
-              )
+            {!postData?.cover_photos?.length ? (
+              <PostImage
+                type="image"
+                postType={postData?.type?.toLowerCase()}
+              />
             ) : (
-              <View style={{ backgroundColor: 'white', flex: 1 }}>
+              <View style={styles.swiperContainer}>
                 <Swiper
+                  height="100%"
+                  width="100%"
+                  loop={false}
                   activeDotColor={Colors.primaryYellow}
                   dotColor={Colors.neutralsIron}
                   dotStyle={{
@@ -887,23 +897,11 @@ const SinglePostView = props => {
                     width: normalize(6),
                     height: normalize(6),
                   }}>
-                  {postData?.cover_photos.map((item, index) => {
-                    return (
-                      <TouchableWithoutFeedback
-                        key={index}
-                        onPress={togglePostImageModal}>
-                        <CacheableImage
-                          style={GlobalStyle.image}
-                          source={{
-                            uri: item,
-                          }}
-                        />
-                      </TouchableWithoutFeedback>
-                    )
-                  })}
+                  {<CoverPhotos />}
                 </Swiper>
               </View>
             )}
+
             <CustomNotification />
           </View>
 
@@ -1487,6 +1485,10 @@ const SinglePostView = props => {
 }
 
 const styles = StyleSheet.create({
+  swiperContainer: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
   headerButton: {
     paddingHorizontal: normalize(8),
   },

@@ -2,34 +2,31 @@ import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
-  Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native'
 import Modal from 'react-native-modal'
-import { Verified, ProfileImageDefault } from '@/assets/images/icons'
-import { AppText, CacheableImage } from '@/components'
-import { normalize, GlobalStyle, Colors } from '@/globals'
+import { AppText } from '@/components'
+import { normalize, Colors } from '@/globals'
 import { FollowingEllipsis } from '@/assets/images/icons'
 
-import MuteContent from './MuteContent'
 import FollowEllipsis from './FollowEllipsis'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import { useNavigation } from '@react-navigation/native'
 import ProfileInfoService from '@/services/Profile/ProfileInfo'
+import Avatar from '@/components/Avatar/avatar'
 
 const Profile = ({ data, type, viewType, toggleProfileList }) => {
   const navigation = useNavigation()
-  const { user, userInfo, setUserInfo } = useContext(UserContext)
-  const { refreshFollowerList, setRefreshFollowerList } = useContext(Context)
+  const { user, userInfo } = useContext(UserContext)
+  const { setRefreshFollowerList } = useContext(Context)
   const {
     profile_photo,
     username,
     display_name,
     full_name,
-    follower,
     uid,
     is_following,
   } = data
@@ -71,19 +68,6 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
   }
 
   const name = display_name ? display_name : full_name
-
-  const ProfilePhoto = ({ size }) => {
-    return profile_photo ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: profile_photo,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
-  }
 
   const openProfileHandler = () => {
     toggleProfileList()
@@ -155,7 +139,7 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
         activeOpacity={0.7}
         onPress={openProfileHandler}>
         <View style={styles.userInfoImageContainer}>
-          <ProfilePhoto size={42} />
+          <Avatar path={profile_photo} size="64x64" />
         </View>
 
         <View style={{ flex: 1, marginLeft: 8 }}>
@@ -166,7 +150,6 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
         </View>
       </TouchableOpacity>
 
-      {/* OWN PROFILE AND FOLLOWERS TAB  */}
       {viewType === 'own-links' && type === 'followers' ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <FollowUnfollowButton userId={uid} uName={username} />
@@ -178,7 +161,6 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
         </View>
       ) : null}
 
-      {/* OWN PROFILE AND FOLLOWING TAB  */}
       {viewType === 'own-links' && type === 'following' ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity
@@ -189,7 +171,6 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
         </View>
       ) : null}
 
-      {/* OTHER PROFILE BOTH TAB  */}
       {viewType === 'other-user-links' ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <FollowUnfollowButton userId={uid} uName={username} />

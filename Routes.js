@@ -22,6 +22,7 @@ import DashboardStack from '@/screens/Dashboard'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
 import OwnMenuScreen from '@/components/TransparentHeader/components/OwnMenu'
+import EditProfileScreen from '@/screens/Profile/edit-profile'
 import PayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/PayoutMethod'
 import ChangePayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/ChangePayoutMethod'
 import PayoutDetailsScreen from '@/screens/Profile/components/PayoutMethod/PayoutDetails'
@@ -42,7 +43,6 @@ import _ from 'lodash'
 import {
   Post,
   SinglePostView,
-  SinglePostViewExternal,
   AddItemScreen,
   AddedItemPreviewScreen,
   EditItemScreen,
@@ -130,10 +130,6 @@ function NoBottomTabScreens() {
         component={SinglePostView}
       />
       <NoBottomTabScreenStack.Screen
-        name="ExternalPostLink"
-        component={SinglePostViewExternal}
-      />
-      <NoBottomTabScreenStack.Screen
         name="CreatePost"
         component={CreatePostStackScreen}
       />
@@ -179,6 +175,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="change-password"
         component={ChangePasswordScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="edit-profile"
+        component={EditProfileScreen}
       />
       <NoBottomTabScreenStack.Screen name="basket" component={Basket} />
     </NoBottomTabScreenStack.Navigator>
@@ -640,24 +640,17 @@ export default Routes = () => {
         const { data: post } = await Api.getPost({ pid: id })
         const { data: user } = await Api.getUser({ uid: post.uid })
         post.user = user
-        const params = {
-          data: post,
-          viewing: true,
-          created: false,
-          edited: false,
-        }
 
-        if (post.uid === userInfo?.uid)
-          navigate('Post', {
-            screen: 'SinglePostView',
-            params,
-          })
-        else
-          navigate('NBTScreen', {
-            screen: 'OthersPost',
-            params: { ...params, othersView: true },
-          })
-        break
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersPost',
+          params: {
+            data: post,
+            viewing: true,
+            created: false,
+            edited: false,
+            othersView: post.uid !== userInfo?.uid,
+          },
+        })
       }
     }
   }

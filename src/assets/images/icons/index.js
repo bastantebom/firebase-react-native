@@ -153,6 +153,7 @@ import VerifiedWhite from '@/assets/images/icons/verified-white.svg'
 import Lock from '@/assets/images/icons/lock.svg'
 import FolderAdd from '@/assets/images/icons/folder-add.svg'
 
+import Camera from './camera.svg'
 import Flash from '@/assets/images/icons/camera-flash.svg'
 import FlashOff from '@/assets/images/icons/camera-flash-off.svg'
 import Flip from '@/assets/images/icons/camera-flip.svg'
@@ -549,21 +550,20 @@ export {
 }
 
 export const Icons = {
-  PostDelivery,
-  PostSchedule,
   ArrowRight,
   Avatar: ProfileImageDefault,
   Back,
   BankActive,
-  BasketSummary,
-  BasketDelivery,
-  BasketPayment,
   BasketAdditionalNotes,
+  BasketAttachedPost,
+  BasketDelivery,
+  BasketMessage,
+  BasketPayment,
   BasketPickup,
   BasketSchedule,
-  BasketMessage,
-  BasketAttachedPost,
+  BasketSummary,
   BasketWalkIn,
+  Camera,
   Card,
   CartDot,
   Chat,
@@ -607,21 +607,23 @@ export const Icons = {
   NavigationPin,
   PayoutWallet,
   PaypalActive,
+  PostAppointment,
   PostCalendar,
   PostCash,
   PostClock,
+  PostDelivery,
   PostInfo,
   PostInfoRed,
   PostNavigation,
+  PostNeedGray,
+  PostNeedGreen,
   PostNote,
   PostParcel,
   PostParcelBlue,
-  PostServiceRed,
-  PostNeedGreen,
-  PostTool,
-  PostAppointment,
-  PostNeedGray,
+  PostSchedule,
   PostServiceGray,
+  PostServiceRed,
+  PostTool,
   RoundEllipsisBlue,
   Search,
   SendMessage,

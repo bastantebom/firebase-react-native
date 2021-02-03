@@ -1,21 +1,13 @@
 import React, { useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native'
+import { View, TouchableOpacity, Dimensions } from 'react-native'
 import { AppText } from '@/components'
 import { Colors } from '@/globals'
 import Modal from 'react-native-modal'
 
-import { EditProfile, UpdateTempScreen } from '@/screens/Profile/components'
-const ProfileButtons = ({ triggerNotify }) => {
-  const [editProfile, setEditProfile] = useState(false)
-  const toggleEditProfile = () => {
-    setEditProfile(!editProfile)
-  }
+import { UpdateTempScreen } from '@/screens/Profile/components'
+import { useNavigation } from '@react-navigation/native'
+const ProfileButtons = () => {
+  const navigation = useNavigation()
 
   const [updateTemp, setUpdateTemp] = useState(false)
   const toggleUpdateTemp = () => {
@@ -26,7 +18,11 @@ const ProfileButtons = ({ triggerNotify }) => {
     <>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={toggleEditProfile}
+        onPress={() =>
+          navigation.navigate('NBTScreen', {
+            screen: 'edit-profile',
+          })
+        }
         style={{ paddingRight: 8 }}>
         <View
           style={{
@@ -59,25 +55,6 @@ const ProfileButtons = ({ triggerNotify }) => {
         </View>
       </TouchableOpacity>
       <Modal
-        isVisible={editProfile}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        {/* <FilterSlider modalToggler={toggleModal} /> */}
-        <EditProfile
-          toggleEditProfile={toggleEditProfile}
-          triggerNotify={triggerNotify}
-          source="profile-button"
-        />
-      </Modal>
-
-      <Modal
         isVisible={updateTemp}
         animationIn="slideInRight"
         animationInTiming={450}
@@ -94,7 +71,4 @@ const ProfileButtons = ({ triggerNotify }) => {
   )
 }
 
-// define your styles
-
-//make this component available to the app
 export default ProfileButtons

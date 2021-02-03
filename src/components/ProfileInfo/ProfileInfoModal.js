@@ -2,9 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   StyleSheet,
-  Button,
   SafeAreaView,
-  ScrollView,
   Dimensions,
   Animated,
   RefreshControl,
@@ -28,26 +26,26 @@ import { normalize, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context/index'
 
-import { MoreInfo, Reviews } from '@/screens/Profile/Tabs'
+import { MoreInfo } from '@/screens/Profile/Tabs'
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo'
 import StickyHeader from '../TransparentHeader/StickyHeader'
-import { PostService } from '@/services'
 
 import Posts from '@/screens/Dashboard//components/posts'
 import { cloneDeep } from 'lodash'
 import Api from '@/services/Api'
+import ImageApi from '@/services/image-api'
+import { isUrl } from '@/globals/Utils'
 
 function ProfileInfoModal(props) {
   const { profileViewType = 'other', uid } = props.route?.params
 
   const navigation = useNavigation()
-  const { user, signOut, userInfo, setUserInfo } = useContext(UserContext)
+  const { user, signOut } = useContext(UserContext)
   const { needsRefresh } = useContext(Context)
   const [otherUserPosts, setOtherUserPosts] = useState({})
   const [otherUserInfo, setOtherUserInfo] = useState({})
 
   const [ellipsisState, setEllipsisState] = useState(false)
-  const [following, setFollowing] = useState(false)
   const [menu, setMenu] = useState(false)
   const [QR, setQR] = useState(false)
 
@@ -60,10 +58,7 @@ function ProfileInfoModal(props) {
   const [addFollowers, setAddFollowers] = useState(null)
 
   const [offsetHeight, setOffsetHeight] = useState(0)
-
-  const changeHeaderHandler = () => {
-    headerState === 'own' ? setHeaderState('other') : setHeaderState('own')
-  }
+  const [coverPhotoUrl, setCoverPhotoUrl] = useState()
 
   const toggleQR = () => setQR(!QR)
 
@@ -108,6 +103,24 @@ function ProfileInfoModal(props) {
       mounted = false
     }
   }, [])
+
+  const updateCoverPhotoUrl = async () => {
+    setCoverPhotoUrl(null)
+    const path = otherUserInfo.cover_photo
+    if (!path) return
+
+    if (isUrl(path)) setCoverPhotoUrl(path)
+    else if (path) {
+      const url =
+        (await ImageApi.getUrl({ path, size: '375x157' })) ||
+        (await ImageApi.getUrl({ path }))
+      setSource(url)
+    }
+  }
+
+  useEffect(() => {
+    updateCoverPhotoUrl()
+  }, [otherUserInfo.cover_photo])
 
   useEffect(() => {
     let isMounted = true
@@ -246,22 +259,16 @@ function ProfileInfoModal(props) {
   }
 
   const handlePostPress = post => {
-    const params = {
-      data: post,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
-    if (user?.uid === post.uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params,
-      })
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: { ...params, othersView: true },
-      })
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: {
+        data: post,
+        viewing: true,
+        created: false,
+        edited: false,
+        othersView: user?.uid !== post.uid,
+      },
+    })
   }
 
   const handleLikePress = async post => {
@@ -342,9 +349,9 @@ function ProfileInfoModal(props) {
             backgroundColor: Colors.buttonDisable,
             height: normalize(158),
           }}>
-          {otherUserInfo.cover_photo ? (
+          {otherUserInfo.cover_photo && coverPhotoUrl ? (
             <CacheableImage
-              source={{ uri: otherUserInfo.cover_photo }}
+              source={{ uri: coverPhotoUrl }}
               style={{ width: normalize(375), height: normalize(158) }}
             />
           ) : (
@@ -356,7 +363,11 @@ function ProfileInfoModal(props) {
         </View>
         <View style={styles.profileBasicInfo}>
           <View style={styles.profileImageWrapper}>
-            <HexagonBorder size={140} imgSrc={otherUserInfo.profile_photo} />
+            <HexagonBorder
+              size={140}
+              path={otherUserInfo.profile_photo}
+              dimensions="256x256"
+            />
           </View>
 
           <ProfileLinks

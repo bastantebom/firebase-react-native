@@ -30,6 +30,8 @@ import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import { TransitionIndicator, CacheableImage, AppText } from '@/components'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
 
 /**
  * @typedef {Object} ChatChannel
@@ -53,16 +55,20 @@ const ChatScreen = ({ route, navigation }) => {
   const { userInfo } = useContext(UserContext)
   const [isLoading, setIsLoading] = useState(true)
 
+  const renderAvatar = path => (
+    <View style={styles.avatar}>
+      <Avatar
+        style={{ height: '100%', width: '100%' }}
+        path={path}
+        size="64x64"
+      />
+    </View>
+  )
+
   const [currentUser] = useState({
     _id: userInfo.uid,
     name: userInfo.full_name,
-    avatar:
-      userInfo.profile_photo ||
-      (() => (
-        <ProfileImageDefault
-          width={normalize(28.5)}
-          height={normalize(28.5)}></ProfileImageDefault>
-      )),
+    avatar: () => renderAvatar(userInfo.profile_photo),
   })
 
   const [messages, setMessages] = useState([])
@@ -103,7 +109,7 @@ const ChatScreen = ({ route, navigation }) => {
             chatMembers[uid] = {
               ...response.data,
               _id: uid,
-              avatar: response.data.profile_photo,
+              avatar: () => renderAvatar(response.data.profile_photo),
               name: response.data.full_name,
             }
         })
@@ -300,10 +306,13 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
             flex: 1,
           }}>
           <TouchableOpacity style={styles.headerContent} onPress={() => null}>
-            <Image
-              source={{ uri: user.avatar }}
-              style={styles.headerContentImage}
-            />
+            <View style={styles.headerContentImage}>
+              <Avatar
+                style={{ height: '100%', width: '100%' }}
+                path={user.avatar}
+                size="64x64"
+              />
+            </View>
             <View>
               <Text style={styles.headerContentName}>@{user.username}</Text>
               {showActiveStatus ? (
@@ -325,18 +334,11 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
       {post?.id && (
         <View style={styles.postDetails}>
           <View style={styles.postImageContainer}>
-            {post?.cover_photos?.length ? (
-              <CacheableImage
-                style={GlobalStyle.image}
-                source={{ uri: post?.cover_photos[0] }}
-              />
-            ) : post?.type === 'service' ? (
-              <DefaultService width={normalize(28)} height={normalize(28)} />
-            ) : post?.type === 'need' ? (
-              <DefaultNeed width={normalize(28)} height={normalize(28)} />
-            ) : (
-              <DefaultSell width={normalize(28)} height={normalize(28)} />
-            )}
+            <PostImage
+              size="32x32"
+              path={post?.cover_photos?.[0]}
+              postType={post?.type?.toLowerCase()}
+            />
           </View>
           <AppText
             textStyle="caption2"
@@ -418,6 +420,8 @@ const styles = StyleSheet.create({
   avatar: {
     height: normalize(28),
     width: normalize(28),
+    borderRadius: normalize(14),
+    overflow: 'hidden',
   },
   backButton: {
     width: normalize(24),

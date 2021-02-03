@@ -87,7 +87,7 @@ const AddAddressScreen = ({ navigation, route }) => {
           padding: 24,
         }}>
         <ScreenHeaderTitle
-          title={address ? 'Edit Address' : 'Add an Address'}
+          title={route.params?.address ? 'Edit Address' : 'Add an Address'}
           close={navigation.goBack}
         />
 

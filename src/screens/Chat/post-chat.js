@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
-  Image,
   ScrollView,
   Animated,
   TextInput,
@@ -18,32 +17,25 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Modal from 'react-native-modal'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
-import _ from 'lodash'
+import { flatten } from 'lodash'
 import { normalize, Colors, GlobalStyle, timePassedShort } from '@/globals'
 import {
   AppCheckbox,
   AppText,
   ScreenHeaderTitle,
   TransitionIndicator,
-  CacheableImage,
 } from '@/components'
+import { NoPost } from '@/assets/images'
 import {
-  DefaultSell,
-  DefaultService,
-  DefaultNeed,
-  NoPost,
-} from '@/assets/images'
-import {
-  BlueDot,
-  PostParcelBlue,
   Search,
   TrashWhite,
   HorizontalWhiteEllipsis,
-  ProfileImageDefault,
 } from '@/assets/images/icons'
 import ChatOptions from './components/ChatOptions'
 import MultiChatOptions from './components/MultiChatOptions'
 import Api from '@/services/Api'
+import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
 
 const { width } = Dimensions.get('window')
 const PADDING = 16
@@ -97,7 +89,7 @@ const PostChat = ({ route }) => {
         }
       })
     )
-    allChats = _.flatten(allChats.filter(e => e))
+    allChats = flatten(allChats.filter(e => e))
     setRoomsChats(roomsChats => [...roomsChats, ...allChats])
     setIsLoading(false)
   }
@@ -176,34 +168,6 @@ const PostChat = ({ route }) => {
       }),
     ]).start()
     setIsSearchFocused(false)
-  }
-
-  const CoverPhoto = ({ post }) => {
-    return post?.cover_photos?.length > 0 ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{ uri: post?.cover_photos[0] }}
-      />
-    ) : post?.postData.type === 'service' ? (
-      <DefaultService width={normalize(24)} height={normalize(24)} />
-    ) : post?.postData.type === 'need' ? (
-      <DefaultNeed width={normalize(24)} height={normalize(24)} />
-    ) : (
-      <DefaultSell width={normalize(24)} height={normalize(24)} />
-    )
-  }
-
-  const ProfilePhoto = ({ size, photo }) => {
-    return photo ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: photo,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
   }
 
   const handleSearchPress = () => {
@@ -346,7 +310,11 @@ const PostChat = ({ route }) => {
       <View style={styles.postChatHeader}>
         <View style={{ flexDirection: 'row', paddingTop: normalize(15) }}>
           <View style={styles.postImageContainer}>
-            <CoverPhoto post={post} />
+            <PostImage
+              size="32x32"
+              path={post?.cover_photos?.[0]}
+              postType={post?.type?.toLowerCase()}
+            />
           </View>
           <AppText textStyle="body2" customStyle={{ marginLeft: normalize(8) }}>
             {post.postData.title}
@@ -407,7 +375,7 @@ const PostChat = ({ route }) => {
                           paddingHorizontal: normalize(16),
                         }}>
                         <View style={styles.icon}>
-                          <ProfilePhoto size={50} photo={chat.profile_photo} />
+                          <Avatar path={profile_photo} size="64x64" />
                         </View>
                         <View style={{ flex: 1 }}>
                           <View

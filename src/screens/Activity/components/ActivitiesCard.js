@@ -3,21 +3,18 @@ import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { useNavigation } from '@react-navigation/native'
 
-import { Colors, GlobalStyle, normalize, timePassedShort } from '@/globals'
-import { AppText, MarginView, CacheableImage } from '@/components'
-import { ProfileImageDefault } from '@/assets/images/icons'
-import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import { Colors, normalize, timePassedShort } from '@/globals'
+import { AppText, MarginView } from '@/components'
 import { Icons } from '@/assets/images/icons'
 import { commaSeparate } from '@/globals/Utils'
+import Avatar from '@/components/Avatar/avatar'
 
 const ActivitiesCard = ({ info }) => {
   const navigation = useNavigation()
   const {
     status,
-    time,
     profilePhoto,
     orders,
-    name,
     cardType,
     postData,
     orderID,
@@ -129,19 +126,6 @@ const ActivitiesCard = ({ info }) => {
     return timePassedShort(time)
   }
 
-  const AvatarPhoto = ({ size }) => {
-    return profilePhoto ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: profilePhoto,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
-  }
-
   const getTotalAvailed = () => {
     const confirmed = orders?.confirmed ? orders?.confirmed?.length : 0
     const delivering = orders?.delivering ? orders?.delivering?.length : 0
@@ -150,21 +134,6 @@ const ActivitiesCard = ({ info }) => {
     const paid = orders?.paid ? orders?.paid?.length : 0
 
     return confirmed + delivering + pickup + completed + paid
-  }
-
-  const CoverPhoto = () => {
-    return postData?.cover_photos?.length > 0 ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{ uri: postData?.cover_photos[0] }}
-      />
-    ) : postData?.type === 'service' ? (
-      <DefaultService width={normalize(64)} height={normalize(72)} />
-    ) : postData?.type === 'need' ? (
-      <DefaultNeed width={normalize(64)} height={normalize(72)} />
-    ) : (
-      <DefaultSell width={normalize(64)} height={normalize(72)} />
-    )
   }
 
   const PostIcon = () => {
@@ -213,7 +182,11 @@ const ActivitiesCard = ({ info }) => {
             }}>
             <View style={{ flexDirection: 'row' }}>
               <View style={styles.postImageContainer}>
-                <CoverPhoto />
+                <PostImage
+                  path={postData?.cover_photos?.[0]}
+                  size="64x64"
+                  postType={postData?.type}
+                />
               </View>
 
               <View style={{ paddingLeft: 12, flex: 1 }}>
@@ -222,7 +195,13 @@ const ActivitiesCard = ({ info }) => {
                     flexDirection: 'row',
                   }}>
                   <View style={styles.userInfoImageContainer}>
-                    <AvatarPhoto size={20} />
+                    <View style={styles.avatar}>
+                      <Avatar
+                        style={{ height: '100%', width: '100%' }}
+                        path={profilePhoto}
+                        size="64x64"
+                      />
+                    </View>
                   </View>
                   <View
                     style={{
@@ -330,6 +309,10 @@ const ActivitiesCard = ({ info }) => {
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    height: normalize(20),
+    width: normalize(20),
+  },
   postImageContainer: {
     width: normalize(64),
     height: normalize(72),

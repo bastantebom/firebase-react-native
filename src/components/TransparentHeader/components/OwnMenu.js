@@ -21,9 +21,6 @@ import {
   BlockedUsers,
   ChangePasswordRed,
   LikedPostMenu,
-  ArchivePostMenu,
-  InviteFriendsMenu,
-  Faq,
   ContactUs,
   Notifications,
 } from '@/assets/images/icons'
@@ -132,7 +129,7 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeArea}>
       <ScreenHeaderTitle
         title="Settings"
         close={() => navigation.goBack()}
@@ -141,7 +138,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
       <ScrollView>
         <View
           style={{
-            backgroundColor: 'white',
             paddingBottom: 24,
             borderTopEndRadius: 8,
             borderTopStartRadius: 8,
@@ -444,6 +440,7 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
 }
 
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: '#fff' },
   menuItem: {
     flexDirection: 'row',
     marginBottom: normalize(16),

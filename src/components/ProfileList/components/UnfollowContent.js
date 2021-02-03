@@ -1,32 +1,14 @@
-import React from 'react';
-import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {Divider} from 'react-native-paper';
+import React from 'react'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { Divider } from 'react-native-paper'
 
-import {
-  AppText,
-  BottomSheetHeader,
-  PaddingView,
-  CacheableImage,
-} from '@/components';
-import {normalize, GlobalStyle, Colors} from '@/globals';
-import {ProfileListUnfollow} from '@/assets/images/icons';
-import {Verified, ProfileImageDefault} from '@/assets/images/icons';
+import { AppText, BottomSheetHeader, PaddingView } from '@/components'
+import { normalize, Colors } from '@/globals'
+import { ProfileListUnfollow } from '@/assets/images/icons'
+import Avatar from '@/components/Avatar/avatar'
 
-const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
-  const {profile_photo, username, display_name} = data;
-
-  const ProfilePhoto = ({size}) => {
-    return profile_photo ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: profile_photo,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    );
-  };
+const UnfollowContent = ({ data, unfollowToggle, unfollowHandler }) => {
+  const { profile_photo, username, display_name } = data
 
   return (
     <View
@@ -38,11 +20,11 @@ const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
       }}>
       <BottomSheetHeader />
       <PaddingView paddingSize={2}>
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <View style={styles.userInfoImageContainer}>
-            <ProfilePhoto size={42} />
+            <Avatar path={profile_photo} size="64x64" />
           </View>
-          <AppText textStyle="display6" customStyle={{marginTop: 16}}>
+          <AppText textStyle="display6" customStyle={{ marginTop: 16 }}>
             Unfollow {display_name}?
           </AppText>
           <Divider style={styles.dividerStyle} />
@@ -57,7 +39,7 @@ const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
             <ProfileListUnfollow width={normalize(24)} height={normalize(24)} />
             <AppText
               textStyle="body1"
-              customStyle={{marginLeft: 8}}
+              customStyle={{ marginLeft: 8 }}
               color={Colors.secondaryBrinkPink}>
               Unfollow @{username}{' '}
             </AppText>
@@ -77,8 +59,8 @@ const UnfollowContent = ({data, unfollowToggle, unfollowHandler}) => {
         </TouchableOpacity>
       </PaddingView>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   userInfoImageContainer: {
@@ -93,6 +75,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 32,
   },
-});
+})
 
-export default UnfollowContent;
+export default UnfollowContent

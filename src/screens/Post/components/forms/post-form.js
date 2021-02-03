@@ -13,10 +13,8 @@ import {
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 
-/*Map Essentials*/
 import Modal from 'react-native-modal'
 import moment from 'moment'
-/*Map Essentials*/
 
 import { AppInput, PriceInput } from '@/components/AppInput'
 import {
@@ -34,7 +32,7 @@ import {
   ItemCategory,
 } from '@/components'
 import { normalize, Colors, GlobalStyle } from '@/globals'
-import { PostService, ImageUpload, MapService } from '@/services'
+import { PostService } from '@/services'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import { PostImageUpload } from '../PostImageUpload'
@@ -49,9 +47,10 @@ import BookingMethodModal from './modals/BookingMethodModal'
 import MoreOptionsModal from './modals/MoreOptions'
 import CoverPhotoGuidelinesModal from './modals/CoverPhotoGuidelines'
 import AdditionalNotesModal from './modals/AdditionalNotesModal'
-import { formatPrice, isEmpty } from '@/globals/Utils'
+import { formatPrice } from '@/globals/Utils'
+import ImageApi from '@/services/image-api'
 
-const SellPostForm = ({
+const PostForm = ({
   navToPost,
   togglePostModal,
   formState,
@@ -107,8 +106,7 @@ const SellPostForm = ({
   }
 
   useEffect(() => {
-    if (activeScreen === 'post' || activeScreen === 'need')
-      setActiveForm(needForm)
+    if (activeScreen === 'need') setActiveForm(needForm)
     if (activeScreen === 'sell' || activeScreen === 'sell')
       setActiveForm(sellForm)
     if (activeScreen === 'need' || activeScreen === 'service')
@@ -141,7 +139,6 @@ const SellPostForm = ({
     }
   }, [initialData])
 
-  /*MAP Essentials */
   const [map, setMap] = useState(false)
   const { addresses } = userInfo
   const [addressComponents, setAddressComponents] = useState({
@@ -255,7 +252,6 @@ const SellPostForm = ({
   const checkFormContent = () => {
     const paymentListValues = Object.values(paymentMethods)
 
-    // Required fields for sell form
     if (
       activeForm.type === 'sell' &&
       title &&
@@ -265,7 +261,6 @@ const SellPostForm = ({
     )
       return setButtonEnabled(false)
 
-    // Required fields for need form
     if (
       activeForm.type === 'need' &&
       title &&
@@ -275,7 +270,6 @@ const SellPostForm = ({
     )
       return setButtonEnabled(false)
 
-    // Required fields for service form
     if (
       activeForm.type === 'service' &&
       title &&
@@ -313,22 +307,22 @@ const SellPostForm = ({
       const itemsToSave = listAsMultiple
         ? await Promise.all(
             items.map(async item => {
+              const imageRef = await ImageApi.upload({
+                type: 'post',
+                uid: user.uid,
+                uri: item.itemImage.uri,
+              })
+
               return {
+                image: imageRef.fullPath,
                 category: item.category ?? item.categoryName,
-                image:
-                  item.image ??
-                  (await ImageUpload.upload(item.itemImage?.uri, user.uid)),
                 name: item.name ?? item.title,
                 description: item.description,
                 price: parseFloat((item.price + '').replace(/,/g, '')),
               }
             })
           )
-        : [
-            {
-              price: price,
-            },
-          ]
+        : [{ price }]
 
       const data = {
         type: initialData?.type ?? activeForm.type,
@@ -336,9 +330,14 @@ const SellPostForm = ({
         title: title,
         description: description,
         cover_photos: await Promise.all(
-          coverPhoto?.map?.(
-            async image => await ImageUpload.upload(image, user.uid)
-          ) || []
+          (Array.isArray(coverPhoto) ? coverPhoto : []).map(async image => {
+            const imageRef = await ImageApi.upload({
+              type: 'post',
+              uid: user.uid,
+              uri: image,
+            })
+            return imageRef.fullPath
+          })
         ),
         items: itemsToSave,
         is_multiple: listAsMultiple,
@@ -409,7 +408,6 @@ const SellPostForm = ({
     }
   }
 
-  /**FOR ANIMATION */
   const [singleActiveHeight] = useState(new Animated.Value(0))
   const [singleActiveOpacity] = useState(new Animated.Value(0))
   const [multipleActiveHeight] = useState(new Animated.Value(0))
@@ -485,7 +483,6 @@ const SellPostForm = ({
     ]).start()
   }
 
-  /**FOR ANIMATION */
   const SelectedPaymentMethods = () => {
     let paymentMethodList = []
     for (const [key, value] of Object.entries(paymentMethods)) {
@@ -696,7 +693,6 @@ const SellPostForm = ({
         {renderAllowContact()}
       </View>
 
-      {/* LOCATION SECTION */}
       {activeForm.location && (
         <Section>
           <TouchableOpacity
@@ -872,7 +868,6 @@ const SellPostForm = ({
         </View>
       )}
 
-      {/* MULTIPLE SERVICE */}
       {activeForm.multipleService && (
         <View
           style={{
@@ -941,7 +936,6 @@ const SellPostForm = ({
           </Animated.View>
         </View>
       )}
-      {/* MULTIPLE SERVICE */}
 
       {activeForm.budgetRange && (
         <Section>
@@ -959,7 +953,7 @@ const SellPostForm = ({
           <>
             <PriceInput
               style={{ marginTop: 16 }}
-              value={budgetMinimum}
+              value={parseFloat(budgetMinimum).toString()}
               keyboardType="number-pad"
               onChangeText={text => setBudgetMinimum(formatPrice(text))}
               placeholder="00"
@@ -968,7 +962,7 @@ const SellPostForm = ({
 
             <PriceInput
               style={{ marginTop: 16 }}
-              value={budgetMaximum}
+              value={parseFloat(budgetMaximum).toString()}
               keyboardType="number-pad"
               onChangeText={text => setBudgetMaximum(formatPrice(text))}
               placeholder="00"
@@ -1154,7 +1148,6 @@ const SellPostForm = ({
         />
       </Modal>
 
-      {/* POST EXPIRY SECTION */}
       {activeForm.expiry && (
         <Section>
           <View>
@@ -1370,4 +1363,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default SellPostForm
+export default PostForm

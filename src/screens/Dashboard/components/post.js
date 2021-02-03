@@ -7,10 +7,11 @@ import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
 import { Divider } from 'react-native-paper'
 import { UserContext } from '@/context/UserContext'
 import { getDistance } from 'geolib'
-import { isEmpty } from '@/globals/Utils'
 
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 import { commaSeparate } from '@/globals/Utils'
+import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
 
 /**
  * @param {object} param0
@@ -31,33 +32,14 @@ const Post = ({
   const { user } = useContext(UserContext)
 
   const renderPostImage = () => {
-    const postImageProps = {
-      width: normalize(125),
-      height: normalize(125),
-    }
-
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => onPress?.(post)}>
         <View style={styles.postImageContainer}>
-          {(() => {
-            if (post.cover_photos?.length) {
-              return (
-                <CacheableImage
-                  style={GlobalStyle.image}
-                  source={{ uri: post.cover_photos[0] }}
-                />
-              )
-            } else {
-              switch (post.type?.toLowerCase()) {
-                case 'service':
-                  return <DefaultService {...postImageProps} />
-                case 'need':
-                  return <DefaultNeed {...postImageProps} />
-                default:
-                  return <DefaultSell {...postImageProps} />
-              }
-            }
-          })()}
+          <PostImage
+            path={post.cover_photos?.[0]}
+            size="120x120"
+            postType={post.type}
+          />
         </View>
       </TouchableOpacity>
     )
@@ -277,24 +259,19 @@ const PostHeader = ({
           activeOpacity={1}
           onPress={() => onAvatarPress?.()}
           style={{
-            height: normalize(33),
-            width: normalize(33),
+            height: normalize(32),
+            width: normalize(32),
             borderRadius: normalize(33 / 2),
             overflow: 'hidden',
             alignSelf: 'center',
             borderColor: Colors.neutralsZirconLight,
             borderWidth: 1,
           }}>
-          {profile_photo ? (
-            <CacheableImage
-              style={GlobalStyle.image}
-              source={{
-                uri: profile_photo,
-              }}
-            />
-          ) : (
-            <Icons.Avatar width={normalize(32)} height={normalize(32)} />
-          )}
+          <Avatar
+            style={{ height: '100%', width: '100%' }}
+            path={profile_photo}
+            size="64x64"
+          />
         </TouchableOpacity>
 
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>

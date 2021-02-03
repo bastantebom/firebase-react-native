@@ -15,6 +15,7 @@ import SwiperFlatList from 'react-native-swiper-flatlist'
 import PropTypes from 'prop-types'
 import ImageZoom from 'react-native-image-pan-zoom'
 import { ScrollView } from 'react-native-gesture-handler'
+import PostImage from '@/components/Post/post-image'
 
 const { width, height } = Dimensions.get('window')
 
@@ -35,7 +36,7 @@ export const ImageModal = ({ close, data }) => {
             <TouchableOpacity
               key={index}
               onPress={() => scrollToIndex({ index })}>
-              <CacheableImage
+              <PostImage
                 style={[
                   {
                     height: 40,
@@ -47,7 +48,9 @@ export const ImageModal = ({ close, data }) => {
                     ? { borderColor: paginationActiveColor, borderWidth: 3 }
                     : { borderColor: paginationDefaultColor },
                 ]}
-                source={{ uri: data[index] }}
+                size="32x32"
+                path={data[index]}
+                resizeMode="contain"
               />
             </TouchableOpacity>
           ))}
@@ -86,7 +89,7 @@ export const ImageModal = ({ close, data }) => {
           paginationActiveColor={Colors.primaryYellow}
           showPagination
           PaginationComponent={Pagination}>
-          {data.map((item, i) => {
+          {data.map((path, i) => {
             return (
               <View key={i} style={styles.child}>
                 <ImageZoom
@@ -97,12 +100,13 @@ export const ImageModal = ({ close, data }) => {
                   minScale={1}
                   maxScale={3}
                   useNativeDriver={true}>
-                  <CacheableImage
+                  <PostImage
+                    path={path}
                     style={{
                       minHeight: 450,
                       width: width - 15,
                     }}
-                    source={{ uri: item }}
+                    resizeMode="contain"
                   />
                 </ImageZoom>
               </View>

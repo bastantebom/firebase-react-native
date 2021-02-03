@@ -1,19 +1,10 @@
 import React, { useContext, useState } from 'react'
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import Modal from 'react-native-modal'
 
 import { Colors, GlobalStyle, timePassed, normalize } from '@/globals'
-import OwnPost from './OwnPost'
-import NeedPost from './NeedPost'
-import { PaddingView, AppText, ProfileInfo, CacheableImage } from '@/components'
+import { PaddingView, AppText, ProfileInfo } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import {
   Verified,
@@ -22,24 +13,14 @@ import {
   Like,
   LikeColored,
 } from '@/assets/images/icons'
-import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 
 import LoadingScreen from './loading'
-import SinglePostOthersView from './SinglePostOthersView'
 import { PostService } from '@/services'
 import { commaSeparate } from '@/globals/Utils'
+import PostImage from './post-image'
 
-const Post = ({
-  data,
-  type,
-  isLoading,
-  toggleLikePost,
-  toggleMenu,
-  selectNeedFunction,
-  activeOpacity,
-}) => {
+const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
   const { user } = useContext(UserContext)
-  const [showPost, setShowPost] = useState(false)
 
   const {
     user: { display_name, profile_photo, account_verified },
@@ -73,14 +54,6 @@ const Post = ({
   const isLiked = ~likers?.indexOf(user?.uid)
   const [likePost, setLikePost] = useState(isLiked)
 
-  const VerifiedBadge = () => {
-    return account?.account_verified ? <Verified /> : <></>
-  }
-
-  let timeAgo = time => {
-    return '• ' + timePassed(time) + ' ago'
-  }
-
   const toggleLike = async () => {
     const res = await PostService.likeUnlike(id, isLiked)
     setLikePost(!likePost)
@@ -99,27 +72,21 @@ const Post = ({
   const navigation = useNavigation()
 
   const navToPost = () => {
-    let computedData = {
-      data: data,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
     if (type === 'liked') {
       toggleLikePost()
       toggleMenu()
     }
 
-    if (user && user?.uid === uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params: computedData,
-      })
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: { ...computedData, othersView: true },
-      })
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: {
+        data,
+        viewing: true,
+        created: false,
+        edited: false,
+        othersView: user?.uid !== uid,
+      },
+    })
   }
 
   const getPrice = () => {
@@ -159,21 +126,11 @@ const Post = ({
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
-                {cover_photos.length > 0 ? (
-                  <CacheableImage
-                    style={GlobalStyle.image}
-                    source={{ uri: cover_photos[0] }}
-                  />
-                ) : post_type === 'service' ? (
-                  <DefaultService
-                    width={normalize(122)}
-                    height={normalize(126)}
-                  />
-                ) : post_type === 'need' || post_type === 'Need' ? (
-                  <DefaultNeed width={normalize(122)} height={normalize(126)} />
-                ) : (
-                  <DefaultSell width={normalize(122)} height={normalize(126)} />
-                )}
+                <PostImage
+                  path={cover_photos?.[0]}
+                  size="375x350"
+                  postType={post_type}
+                />
               </View>
             </TouchableOpacity>
             <View style={styles.postDetailContainer}>
@@ -231,23 +188,6 @@ const Post = ({
             </View>
           </View>
         </PaddingView>
-        <Modal
-          isVisible={showPost}
-          animationIn="slideInUp"
-          animationInTiming={500}
-          animationOut="slideOutLeft"
-          animationOutTiming={500}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-            justifyContent: 'flex-start',
-          }}>
-          <SinglePostOthersView
-            data={data}
-            backFunction={() => setShowPost(false)}
-          />
-        </Modal>
       </LoadingScreen.LoadingPublicPost>
     )
 
@@ -265,21 +205,11 @@ const Post = ({
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
-                {cover_photos.length > 0 ? (
-                  <CacheableImage
-                    style={GlobalStyle.image}
-                    source={{ uri: cover_photos[0] }}
-                  />
-                ) : post_type === 'service' ? (
-                  <DefaultService
-                    width={normalize(122)}
-                    height={normalize(126)}
-                  />
-                ) : post_type === 'need' || post_type === 'Need' ? (
-                  <DefaultNeed width={normalize(122)} height={normalize(126)} />
-                ) : (
-                  <DefaultSell width={normalize(122)} height={normalize(126)} />
-                )}
+                <PostImage
+                  path={cover_photos?.[0]}
+                  size="375x350"
+                  postType={post_type}
+                />
               </View>
             </TouchableOpacity>
             <View style={styles.postDetailContainer}>
@@ -314,39 +244,9 @@ const Post = ({
             </View>
           </View>
         </PaddingView>
-        <Modal
-          isVisible={showPost}
-          animationIn="slideInUp"
-          animationInTiming={500}
-          animationOut="slideOutLeft"
-          animationOutTiming={500}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-            justifyContent: 'flex-start',
-          }}>
-          <SinglePostOthersView
-            data={data}
-            backFunction={() => setShowPost(false)}
-          />
-        </Modal>
       </LoadingScreen.LoadingPublicPost>
     )
 
-  if (type === 'need')
-    return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => selectNeedFunction(post_id)}>
-        <NeedPost
-          data={data}
-          isLoading={isLoading}
-          activeOpacity={activeOpacity}
-        />
-      </TouchableOpacity>
-    )
-  if (type === 'own') return <OwnPost data={data} isLoading={isLoading} />
   if (type === 'archived')
     return (
       <LoadingScreen.LoadingPublicPost isLoading={isLoading}>
@@ -361,21 +261,11 @@ const Post = ({
           <View style={styles.postContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={navToPost}>
               <View style={styles.postImageContainer}>
-                {cover_photos.length > 0 ? (
-                  <CacheableImage
-                    style={GlobalStyle.image}
-                    source={{ uri: cover_photos[0] }}
-                  />
-                ) : post_type === 'service' ? (
-                  <DefaultService
-                    width={normalize(122)}
-                    height={normalize(126)}
-                  />
-                ) : post_type === 'need' || post_type === 'Need' ? (
-                  <DefaultNeed width={normalize(122)} height={normalize(126)} />
-                ) : (
-                  <DefaultSell width={normalize(122)} height={normalize(126)} />
-                )}
+                <PostImage
+                  path={cover_photos?.[0]}
+                  size="375x350"
+                  postType={post_type}
+                />
               </View>
             </TouchableOpacity>
             <View style={styles.postDetailContainer}>
@@ -410,23 +300,6 @@ const Post = ({
             </View>
           </View>
         </PaddingView>
-        <Modal
-          isVisible={showPost}
-          animationIn="slideInUp"
-          animationInTiming={500}
-          animationOut="slideOutLeft"
-          animationOutTiming={500}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-            justifyContent: 'flex-start',
-          }}>
-          <SinglePostOthersView
-            data={data}
-            backFunction={() => setShowPost(false)}
-          />
-        </Modal>
       </LoadingScreen.LoadingPublicPost>
     )
 

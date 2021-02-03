@@ -1,30 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {
   View,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   Text,
-  Image,
-  Dimensions,
   ActivityIndicator,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { AppText, CacheableImage } from '@/components'
-import { GlobalStyle, normalize, timePassedShort, Colors } from '@/globals'
+import { AppText } from '@/components'
+import { normalize, timePassedShort } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
 
 import {
-  RedBadge,
-  YellowBadge,
-  ProfileImageDefault,
   PostClock,
-  Bee,
   Verified,
   NotVerified,
   WelcomeNotif,
 } from '@/assets/images/icons'
+import Avatar from '@/components/Avatar/avatar'
 
 const NotificationsCard = ({ info, openNotificationHandler }) => {
   const { user, userInfo } = useContext(UserContext)
@@ -49,19 +43,6 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
   const [following, setFollowing] = useState(isFollowing)
   const [postData, setPostData] = useState({})
   const [isContentLoading, setIsContentLoading] = useState(false)
-
-  const AvatarPhoto = ({ size, url }) => {
-    return url ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: url,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
-  }
 
   const timeAgo = time => {
     if (time <= 60) {
@@ -224,7 +205,13 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
               <View>
                 {info.length === 1 && type !== 'verification' && (
                   <View style={styles.avatarHolder}>
-                    <AvatarPhoto size={35} url={profilePhoto} />
+                    <View style={styles.avatar}>
+                      <Avatar
+                        style={{ height: '100%', width: '100%' }}
+                        path={path}
+                        size="64x64"
+                      />
+                    </View>
                   </View>
                 )}
                 {info.length === 1 && type === 'verification' && (
@@ -235,14 +222,14 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
                 {info.length > 1 && (
                   <View style={{ width: normalize(60), flexDirection: 'row' }}>
                     <View style={styles.multiAvatarHolder}>
-                      <AvatarPhoto size={35} url={profilePhoto} />
+                      {renderAvatar(profilePhoto)}
                     </View>
                     <View
                       style={[
                         styles.multiAvatarHolder,
                         { marginTop: normalize(10) },
                       ]}>
-                      <AvatarPhoto size={35} url={info[1].profilePhoto} />
+                      {renderAvatar(info[1].profilePhoto)}
                     </View>
                   </View>
                 )}
@@ -559,6 +546,10 @@ const NotificationsCard = ({ info, openNotificationHandler }) => {
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    height: normalize(35),
+    width: normalize(35),
+  },
   notification: {
     padding: 14,
     marginTop: normalize(10),

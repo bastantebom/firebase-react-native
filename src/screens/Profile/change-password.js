@@ -173,7 +173,6 @@ const ChangePasswordScreen = ({ navigation }) => {
             secureTextEntry={!visiblePassword.current}
             onBlurInput={() => {
               setDirtyStates([...new Set([...dirtyStates, 'currentPassword'])])
-              return 1
             }}
             error={errors.currentPassword.length}
             customLabelStyle={

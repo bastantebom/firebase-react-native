@@ -12,11 +12,9 @@ import {
   AppText,
   HexagonBorder,
   TransparentHeader,
-  TabNavigation,
   ProfileLinks,
   WhiteOpacity,
   Notification,
-  UserPosts,
   CacheableImage,
   StickyHeader,
 } from '@/components'
@@ -28,31 +26,28 @@ import { normalize, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context/index'
 
-import { MoreInfo, Reviews } from './Tabs'
+import { MoreInfo } from './Tabs'
 import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
-import { GuestProfile } from './components/GuestProfile'
 import { VerificationStatus } from './components'
 import { CircleTick, Warning } from '@/assets/images/icons'
-import { PostService } from '@/services'
 
 import Posts from '@/screens/Dashboard/components/posts'
 import { cloneDeep } from 'lodash'
 
 import Api from '@/services/Api'
+import ImageApi from '@/services/image-api'
+import { isUrl } from '@/globals/Utils'
 
 const ProfileScreen = ({
   profileViewType = 'own',
   backFunction,
-  uid,
   navigation,
-  ...props
 }) => {
   const { user, signOut, userInfo, userStatus } = useContext(UserContext)
   const {
     openNotification,
     closeNotification,
-    posts,
     needsRefresh,
     setNeedsRefresh,
   } = useContext(Context)
@@ -68,8 +63,8 @@ const ProfileScreen = ({
 
   const [visibleHives, setVisibleHives] = useState(false)
   const [visibleFollowing, setVisibleFollowing] = useState(false)
-  const [isDataLoading, setIsDataLoading] = useState(true)
   const [profileList, setProfileList] = useState(false)
+  const [coverPhotoUrl, setCoverPhotoUrl] = useState(null)
 
   const [offsetHeight, setOffsetHeight] = useState(0)
 
@@ -122,22 +117,16 @@ const ProfileScreen = ({
   }
 
   const handlePostPress = post => {
-    const params = {
-      data: post,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
-    if (user?.uid === post.uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params,
-      })
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: { ...params, othersView: true },
-      })
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: {
+        data: post,
+        viewing: true,
+        created: false,
+        edited: false,
+        othersView: user?.uid !== post.uid,
+      },
+    })
   }
 
   const notificationErrorTextStyle = {
@@ -177,6 +166,19 @@ const ProfileScreen = ({
       0
     ) * 0.25
 
+  const updateCoverPhotoUrl = async () => {
+    setCoverPhotoUrl(null)
+    const path = userInfo.cover_photo
+    if (!path) return
+    if (isUrl(path)) setCoverPhotoUrl(path)
+    else if (path) {
+      const url =
+        (await ImageApi.getUrl({ path, size: '375x157' })) ||
+        (await ImageApi.getUrl({ path }))
+      setCoverPhotoUrl(url)
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
     if (isMounted && needsRefresh) {
@@ -184,6 +186,10 @@ const ProfileScreen = ({
     }
     return () => (isMounted = false)
   }, [needsRefresh])
+
+  useEffect(() => {
+    updateCoverPhotoUrl()
+  }, [userInfo.cover_photo])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -405,9 +411,9 @@ const ProfileScreen = ({
               backgroundColor: Colors.buttonDisable,
               height: normalize(158),
             }}>
-            {userInfo.cover_photo ? (
+            {userInfo.cover_photo && isUrl(coverPhotoUrl) ? (
               <CacheableImage
-                source={{ uri: userInfo.cover_photo }}
+                source={{ uri: coverPhotoUrl }}
                 style={{ width: normalize(375), height: normalize(158) }}
               />
             ) : (
@@ -419,7 +425,11 @@ const ProfileScreen = ({
           </View>
           <View style={styles.profileBasicInfo}>
             <View style={styles.profileImageWrapper}>
-              <HexagonBorder size={140} imgSrc={userInfo.profile_photo} />
+              <HexagonBorder
+                size={140}
+                path={userInfo.profile_photo}
+                dimensions="256x256"
+              />
             </View>
 
             <ProfileLinks
@@ -445,7 +455,7 @@ const ProfileScreen = ({
               paddingHorizontal: 24,
               paddingVertical: 8,
             }}>
-            <ProfileButtons triggerNotify={triggerNotify} />
+            <ProfileButtons />
           </View>
         </View>
       </View>

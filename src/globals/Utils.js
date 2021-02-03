@@ -11,6 +11,7 @@ import Config from '@/services/Config'
 
 import firebase from '@react-native-firebase/app'
 import axios from 'axios'
+import ImageApi from '@/services/image-api'
 
 // const FIREBASE_API_KEY = firebase.app().options.apiKey
 const FIREBASE_API_KEY = 'AIzaSyDMknlgnSUy46tevw-jAixdIegnE4yiPCQ'
@@ -47,6 +48,11 @@ export const timePassed = seconds => {
 
   return
 }
+
+export const isUrl = str =>
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi.test(
+    str
+  )
 
 export const timePassedShort = seconds => {
   seconds = Number(seconds)
@@ -252,7 +258,7 @@ export const commaSeparate = (num = '') => {
   const amount = parseFloat((num + '').replace(/[^0-9\.\-]+/g, '')).toFixed(2)
 
   return isNaN(amount)
-    ? 0
+    ? '0'
     : amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
@@ -329,7 +335,7 @@ export const generateDynamicLink = async ({
   }
 }
 
-export const getPreviewLinkData = ({ type, data }) => {
+export const getPreviewLinkData = async ({ type, data }) => {
   const getPostPrice = post => {
     const prices = post.price_range
       ? [post.price_range.min, post.price_range.max]
@@ -367,12 +373,26 @@ export const getPreviewLinkData = ({ type, data }) => {
 
     return {
       socialTitle: `${name} is on Servbees, your friendly neighborhood Pagkakakita-App`,
-      socialImageLink: data.profile_photo,
+      socialImageLink:
+        (await ImageApi.getUrl({
+          path: data.profile_photo,
+          size: '1200x630',
+        })) ||
+        (await ImageApi.getUrl({ path: data.profile_photo })) ||
+        data.profile_photo,
     }
   } else if (type === 'post') {
     return {
       socialTitle: getPostTitle(),
-      socialImageLink: data.cover_photos[0],
+      socialImageLink:
+        (await ImageApi.getUrl({
+          path: data.cover_photos[0],
+          size: '1200x630',
+        })) ||
+        (await ImageApi.getUrl({
+          path: data.cover_photos[0],
+        })) ||
+        data.cover_photos[0],
       socialDescription: getPostDescription(),
     }
   }

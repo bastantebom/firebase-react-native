@@ -1,9 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { AppText, CacheableImage } from '@/components'
+import { AppText } from '@/components'
 
 import {
-  GlobalStyle,
   normalize,
   Colors,
   fullDateFormat,
@@ -11,16 +10,12 @@ import {
   timePassedShort,
 } from '@/globals'
 
-import {
-  ChatBlue,
-  ProfileImageDefault,
-  Verified,
-  ChatEmpty,
-} from '@/assets/images/icons'
+import { ChatBlue, Verified, ChatEmpty } from '@/assets/images/icons'
 
 import { commaSeparate } from '@/globals/Utils'
 import { UserContext } from '@/context/UserContext'
 import _ from 'lodash'
+import Avatar from '@/components/Avatar/avatar'
 const ItemCard = ({ item, handleChatPress, onPress }) => {
   const { user } = useContext(UserContext)
   const unRead =
@@ -33,19 +28,6 @@ const ItemCard = ({ item, handleChatPress, onPress }) => {
       return 'Just now'
     }
     return timePassedShort(time)
-  }
-
-  const AvatarPhoto = ({ size }) => {
-    return item.profilePhoto ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: item.profilePhoto,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
   }
 
   const chatPress = () => {
@@ -82,7 +64,13 @@ const ItemCard = ({ item, handleChatPress, onPress }) => {
             }}>
             <View style={{ flexDirection: 'row' }}>
               <View style={styles.userInfoImageContainer}>
-                <AvatarPhoto size={35} />
+                <View style={styles.avatar}>
+                  <Avatar
+                    style={{ height: '100%', width: '100%' }}
+                    path={item.profilePhoto}
+                    size="64x64"
+                  />
+                </View>
               </View>
               <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -208,6 +196,10 @@ const ItemCard = ({ item, handleChatPress, onPress }) => {
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    height: normalize(35),
+    width: normalize(35),
+  },
   card: {
     padding: normalize(10),
     marginVertical: normalize(10),

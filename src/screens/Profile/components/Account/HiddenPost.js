@@ -1,28 +1,19 @@
-//import liraries
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native'
 
-import {
-  ScreenHeaderTitle,
-  PaddingView,
-  AppText,
-  CacheableImage,
-} from '@/components'
-import { CloseDark } from '@/assets/images/icons'
-import { ProfileImageDefault, DefaultSell } from '@/assets/images'
+import { ScreenHeaderTitle, AppText, CacheableImage } from '@/components'
+import { DefaultSell } from '@/assets/images'
 import { normalize, Colors, GlobalStyle } from '@/globals'
 import Modal from 'react-native-modal'
 import { UserContext } from '@/context/UserContext'
 import PostService from '@/services/Post/PostService'
 
-// create a component
 const HiddenPost = ({ toggleHiddenPost }) => {
   const { userInfo, user, setUserInfo } = useContext(UserContext)
   const { hidden_posts } = userInfo
@@ -49,19 +40,6 @@ const HiddenPost = ({ toggleHiddenPost }) => {
       }
       closeHandler()
     })
-  }
-
-  const ProfilePhoto = ({ postImage, size }) => {
-    return postImage ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: postImage,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
   }
 
   return (
@@ -95,7 +73,6 @@ const HiddenPost = ({ toggleHiddenPost }) => {
                         source={{ uri: post.image }}
                       />
                     ) : (
-                      // <Image style={GlobalStyle.image} source={require('@/assets/images/logo.png')} />
                       <DefaultSell
                         width={normalize(42)}
                         height={normalize(42)}
@@ -148,8 +125,6 @@ const HiddenPost = ({ toggleHiddenPost }) => {
             </View>
           )}
         </View>
-
-        {/* About Servbees Modal */}
       </SafeAreaView>
       <Modal
         isVisible={showCancelModal}
@@ -219,7 +194,6 @@ const HiddenPost = ({ toggleHiddenPost }) => {
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   userInfoImageContainer: {
     height: normalize(42),
@@ -229,7 +203,6 @@ const styles = StyleSheet.create({
   },
   userInfoDetailsContainer: {
     flex: 1,
-    // backgroundColor: "red",
     paddingLeft: 8,
   },
   userInfoDetailsNameContainer: {
@@ -245,5 +218,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
 export default HiddenPost

@@ -14,12 +14,7 @@ import { Divider } from 'react-native-paper'
 import Modal from 'react-native-modal'
 import Swiper from 'react-native-swiper'
 
-import {
-  AppText,
-  TransparentHeader,
-  ProfileInfo,
-  CacheableImage,
-} from '@/components'
+import { AppText, TransparentHeader, ProfileInfo } from '@/components'
 import { normalize, GlobalStyle, Colors, timePassed } from '@/globals'
 import {
   PostClock,
@@ -33,10 +28,10 @@ import {
 import { PostService } from '@/services'
 import { UserContext } from '@/context/UserContext'
 import { ImageModal } from '@/screens/Post/components/ImageModal'
-import { useNavigation } from '@react-navigation/native'
 import EditPostScreen from '@/screens/Post/components/EditPostScreen'
 import Api from '@/services/Api'
 import { Context } from '@/context'
+import PostImage from './post-image'
 
 const SinglePostOthersView = ({ data, closePostModal }) => {
   const [showNotification, setShowNotification] = useState(false)
@@ -73,16 +68,9 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
     items,
   } = data
 
-  const defaultImage = [
-    {
-      key: 0,
-      image: require('@/assets/images/logo.png'),
-    },
-  ]
-
   const userPostInfo = {
     username: username,
-    profile_photo: profile_photo,
+    profile_photo,
     account_verified: account_verified,
     display_name: display_name ? display_name : full_name,
     uid: uid,
@@ -173,16 +161,15 @@ const SinglePostOthersView = ({ data, closePostModal }) => {
               dotColor={Colors.neutralsIron}
               dotStyle={{ marginRight: 9 }}
               activeDotStyle={{ marginRight: 9 }}>
-              {cover_photos.map((item, index) => {
+              {cover_photos.map((path, index) => {
                 return (
                   <TouchableWithoutFeedback
                     key={index}
                     onPress={togglePostImageModal}>
-                    <CacheableImage
-                      style={GlobalStyle.image}
-                      source={{
-                        uri: item,
-                      }}
+                    <PostImage
+                      path={path}
+                      size="512x512"
+                      postType={post_type}
                     />
                   </TouchableWithoutFeedback>
                 )

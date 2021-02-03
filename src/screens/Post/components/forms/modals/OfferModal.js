@@ -25,6 +25,7 @@ import SelectPostModal from './SelectPostModal'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import { formatPrice } from '@/globals/Utils'
+import PostImage from '@/components/Post/post-image'
 
 const OfferModal = ({ postType, postData }) => {
   const { user } = useContext(UserContext)
@@ -121,9 +122,10 @@ const OfferModal = ({ postType, postData }) => {
               height: normalize(48),
               width: normalize(48),
             }}>
-            <Image
-              source={{ uri: selectedPostDetails?.cover_photos[0] }}
-              style={styles.image}
+            <PostImage
+              path={selectedPostDetails.cover_photos[0]}
+              size="64x64"
+              postType={selectedPostDetails?.type}
             />
           </View>
         ) : (

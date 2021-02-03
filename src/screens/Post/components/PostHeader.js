@@ -13,7 +13,7 @@ import { AppText } from '@/components'
 import { normalize, Colors } from '@/globals'
 import { PostSell, PostService, PostNeed } from '@/assets/images/icons'
 
-import { SellPostForm, NeedPostForm, ServicePostForm } from './forms'
+import PostForm from './forms/post-form'
 import { UserContext } from '@/context/UserContext'
 
 const Post = ({ card, togglePostModal, initialData }) => {
@@ -725,7 +725,7 @@ const RenderActiveForm = ({
   }
 
   return (
-    <SellPostForm
+    <PostForm
       navToPost={navToPost}
       togglePostModal={togglePostModal}
       formState={formState}
@@ -737,7 +737,6 @@ const RenderActiveForm = ({
 
 const styles = StyleSheet.create({
   postAnimationContainer: {
-    // backgroundColor: 'red',
     flexDirection: 'row',
     position: 'relative',
     paddingBottom: 24,
@@ -749,12 +748,9 @@ const styles = StyleSheet.create({
     marginLeft: normalize(9),
   },
   postCard: {
-    // ACTS AS NEED CARD
     backgroundColor: Colors.secondaryMountainMeadow,
     height: normalize(82),
     borderRadius: 8,
-
-    // marginLeft: normalize(8)
   },
   needCard: {
     backgroundColor: Colors.secondaryBrinkPink,

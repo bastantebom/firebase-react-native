@@ -54,4 +54,5 @@ export default {
   emptyStateBackground: '#FAFAFB',
 
   switchDisable: '#CACBCC',
-};
+  link: '#3781FC',
+}

@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 
-import { Colors, GlobalStyle, normalize } from '@/globals'
+import { Colors, normalize } from '@/globals'
 import {
   AppButton,
   AppText,
   BottomSheetHeader,
-  CacheableImage,
   Notification,
   ScreenHeaderTitle,
   TransitionIndicator,
@@ -37,12 +36,10 @@ import {
   Icons,
   LocationContactUs,
   MasterCardActive,
-  Note,
   PaypalActive,
   PostBox,
   PostCash,
   PostNote,
-  ProfileImageDefault,
   VisaActive,
 } from '@/assets/images/icons'
 import { View } from 'native-base'
@@ -51,7 +48,6 @@ import getStatusData from './utils/order-statuses'
 import LinearGradient from 'react-native-linear-gradient'
 import LottieView from 'lottie-react-native'
 import getStatusColor from './utils/order-status-color'
-import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
 
 import Modal from 'react-native-modal'
 import CancelOrderModal from './modals/cancel-order'
@@ -59,6 +55,8 @@ import DeclineOrderModal from './modals/decline-order'
 
 import moment from 'moment'
 import { commaSeparate } from '@/globals/Utils'
+import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
 
 if (
   Platform.OS === 'android' &&
@@ -266,32 +264,27 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
   const handleViewPostPress = async () => {
     setIsLoading(true)
-    const params = {
-      data: post,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
+    const data = post
 
     try {
-      if (!params.data.user) {
+      if (!data.user) {
         const response = await Api.getUser({ uid: post.uid })
         const user = response.data
-        params.data.user = user
+        data.user = user
 
         setPost(post => ({ ...post, user }))
       }
 
-      if (user?.uid === post.uid)
-        navigation.navigate('Post', {
-          screen: 'SinglePostView',
-          params,
-        })
-      else
-        navigation.navigate('NBTScreen', {
-          screen: 'OthersPost',
-          params: { ...params, othersView: true },
-        })
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersPost',
+        params: {
+          data,
+          viewing: true,
+          created: false,
+          edited: false,
+          othersView: user?.uid !== post.uid,
+        },
+      })
     } catch (error) {
       console.log(error)
       Alert.alert('Error', 'Oops, something went wrong')
@@ -539,36 +532,17 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType === 'seller')
       return (
         <View style={[styles.messagePhoto, styles.avatarImageWrapper]}>
-          {profilePhoto ? (
-            <CacheableImage
-              style={GlobalStyle.image}
-              source={{ uri: profilePhoto }}
-            />
-          ) : (
-            <ProfileImageDefault width={normalize(36)} height={normalize(36)} />
-          )}
+          <Avatar path={profilePhoto} size="64x64" />
         </View>
       )
     else if (userType === 'buyer') {
-      const postImage = () => {
-        if (post.cover_photos?.length) {
-          return (
-            <CacheableImage
-              style={GlobalStyle.image}
-              source={{ uri: post.cover_photos[0] }}
-            />
-          )
-        } else if (post.type === 'service')
-          return <DefaultService width={normalize(36)} height={normalize(36)} />
-        else if (post.type === 'need')
-          return <DefaultNeed width={normalize(36)} height={normalize(36)} />
-        else if (post.type === 'sell')
-          return <DefaultSell width={normalize(36)} height={normalize(36)} />
-      }
-
       return (
         <View style={[styles.messagePhoto, styles.postImageWrapper]}>
-          {postImage()}
+          <PostImage
+            size="64x64"
+            path={post?.cover_photos?.[0]}
+            postType={post?.type?.toLowerCase()}
+          />
         </View>
       )
     }

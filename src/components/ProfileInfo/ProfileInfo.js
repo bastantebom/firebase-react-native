@@ -2,26 +2,15 @@
  * Component for profile info
  */
 
-import React, { useState, useContext } from 'react'
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  SafeAreaView,
-} from 'react-native'
-import Modal from 'react-native-modal'
+import React, { useContext } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import { AppText, CacheableImage } from '@/components'
-import { GlobalStyle, Colors, normalize, timePassed } from '@/globals'
-import {
-  Verified,
-  ProfileImageDefault,
-  StarRating,
-} from '@/assets/images/icons'
+import { AppText } from '@/components'
+import { Colors, normalize, timePassed } from '@/globals'
+import { Verified } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
+import Avatar from '../Avatar/avatar'
 
 const ProfileInfo = ({
   userInfo,
@@ -55,19 +44,6 @@ const ProfileInfo = ({
     return timePassed(time) + ' ago'
   }
 
-  const ProfilePhoto = ({ size }) => {
-    return profile_photo ? (
-      <CacheableImage
-        style={GlobalStyle.image}
-        source={{
-          uri: profile_photo,
-        }}
-      />
-    ) : (
-      <ProfileImageDefault width={normalize(size)} height={normalize(size)} />
-    )
-  }
-
   const openProfileHandler = () => {
     if (toggleMenu && toggleLikePost) {
       toggleLikePost()
@@ -97,7 +73,7 @@ const ProfileInfo = ({
               overflow: 'hidden',
               alignSelf: 'center',
             }}>
-            <ProfilePhoto size={32} />
+            <Avatar path={profile_photo} size="64x64" />
           </View>
           <View style={styles.userInfoDetailsContainer}>
             <View style={styles.userInfoDetailsNameContainer}>
@@ -143,13 +119,19 @@ const ProfileInfo = ({
       </TouchableOpacity>
     )
 
-  // OWN POST VIEW
   if (type === 'own-post')
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={openProfileHandler}>
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.userInfoImageContainer}>
-            <ProfilePhoto size={42} />
+            <Avatar
+              path={profile_photo}
+              size="64x64"
+              style={{
+                height: '100%',
+                width: '100%',
+              }}
+            />
           </View>
           <View style={{ marginLeft: 8, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -158,7 +140,7 @@ const ProfileInfo = ({
               </AppText>
               <VerifiedBadge />
             </View>
-            <View style={{}}>
+            <View>
               <AppText textStyle="caption" color={Colors.contentPlaceholder}>
                 @{username.toLowerCase()}
               </AppText>
@@ -179,7 +161,7 @@ const ProfileInfo = ({
           paddingVertical: normalize(16),
         }}>
         <View style={styles.userInfoImageContainer}>
-          <ProfilePhoto size={42} />
+          <Avatar path={profile_photo} size="64x64" />
         </View>
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -233,7 +215,7 @@ const ProfileInfo = ({
           paddingVertical: normalize(16),
         }}>
         <View style={styles.userInfoImageContainer}>
-          <ProfilePhoto size={42} />
+          <Avatar path={profile_photo} size="64x64" />
         </View>
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -258,7 +240,7 @@ const ProfileInfo = ({
     return (
       <View style={{ flexDirection: 'row' }}>
         <View style={styles.userInfoImageContainer}>
-          <ProfilePhoto size={42} />
+          <Avatar path={profile_photo} size="64x64" />
         </View>
         <View style={{ marginLeft: 8, justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -311,6 +293,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: Colors.neutralsZirconLight,
+    alignSelf: 'center',
   },
   userInfoDetailsContainer: {
     flex: 1,

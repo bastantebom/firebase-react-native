@@ -1,6 +1,3 @@
-/**
- * import { NameOfComponent, NameOfComponent2 } from '@/components'
- */
 import AppButton from '@/components/AppButton/AppButton'
 import AppInput from '@/components/AppInput/AppInput'
 import FloatingAppInput from '@/components/AppInput/FloatingAppInput'
@@ -13,7 +10,6 @@ import {
   Posts,
   PostFilter,
   UserPosts,
-  OtherUserPosts,
   SinglePostOthersView,
   LikedPosts,
   ArchivedPosts,
@@ -58,7 +54,6 @@ export {
   Item,
   ProfileInfoModal,
   CacheableImage,
-  OtherUserPosts,
   UserPosts,
   WhiteOpacity,
   ProfileInfo,

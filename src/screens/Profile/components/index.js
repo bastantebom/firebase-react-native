@@ -12,7 +12,6 @@ import InviteFriends from './Account/InviteFriends.js'
 
 import ChangePassword from './ChangePassword/ChangePassword.js'
 
-import EditProfile from './EditProfile/EditProfile.js'
 import AddAddress from './EditProfile/AddAddress.js'
 import Gender from './EditProfile/Gender.js'
 
@@ -38,7 +37,6 @@ export {
   HiddenPost,
   LikedPost,
   ChangePassword,
-  EditProfile,
   AddAddress,
   Gender,
   ArchivedPost,

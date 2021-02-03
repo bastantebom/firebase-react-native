@@ -1,16 +1,11 @@
-import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
-import {
-  ChevronRight,
-  Icons,
-  ProfileImageDefault,
-  UserCircle,
-} from '@/assets/images/icons'
+import { ChevronRight, Icons, UserCircle } from '@/assets/images/icons'
 import { AppText } from '@/components'
-import { Colors, GlobalStyle, normalize } from '@/globals'
+import Avatar from '@/components/Avatar/avatar'
+import PostImage from '@/components/Post/post-image'
+import { Colors, normalize } from '@/globals'
 import React from 'react'
 import {
   ActivityIndicator,
-  Dimensions,
   FlatList,
   StyleSheet,
   Text,
@@ -33,19 +28,12 @@ const SearchResults = ({
 }) => {
   const renderUserImage = item => {
     return (
-      <View style={styles.searchResultItemImage}>
-        {item.profile_photo ? (
-          <FastImage
-            resizeMode={FastImage.resizeMode.stretch}
-            style={[GlobalStyle.image, styles.resultImage]}
-            source={{
-              uri: item.profile_photo,
-              priority: FastImage.priority.normal,
-            }}
-          />
-        ) : (
-          <ProfileImageDefault width={normalize(24)} height={normalize(24)} />
-        )}
+      <View style={styles.resultImage}>
+        <Avatar
+          style={{ width: '100%', height: '100%' }}
+          path={item.profile_photo}
+          size="64x64"
+        />
       </View>
     )
   }
@@ -55,29 +43,14 @@ const SearchResults = ({
 
     return (
       <View style={styles.searchResultItemImage}>
-        {(() => {
-          if (item.cover_photos?.length) {
-            return (
-              <FastImage
-                resizeMode={FastImage.resizeMode.stretch}
-                style={[GlobalStyle.image, styles.resultImage]}
-                source={{
-                  uri: item.cover_photos[0],
-                  priority: FastImage.priority.normal,
-                }}
-              />
-            )
-          } else {
-            switch (item.type?.toLowerCase()) {
-              case 'service':
-                return <DefaultService style={styles.resultImage} {...size} />
-              case 'need':
-                return <DefaultNeed style={styles.resultImage} {...size} />
-              default:
-                return <DefaultSell style={styles.resultImage} {...size} />
-            }
-          }
-        })()}
+        <PostImage
+          resizeMode="stretch"
+          style={styles.resultImage}
+          path={item.cover_photos?.[0]}
+          size="32x32"
+          postType={item.type?.toLowerCase()}
+          {...size}
+        />
       </View>
     )
   }

@@ -53,22 +53,16 @@ const LikedPostsScreen = ({ navigation, route }) => {
   }
 
   const handlePostPress = post => {
-    const params = {
-      data: post,
-      viewing: true,
-      created: false,
-      edited: false,
-    }
-    if (user?.uid === post.uid)
-      navigation.navigate('Post', {
-        screen: 'SinglePostView',
-        params,
-      })
-    else
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
-        params: { ...params, othersView: true },
-      })
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: {
+        data: post,
+        viewing: true,
+        created: false,
+        edited: false,
+        othersView: user?.uid !== post.uid,
+      },
+    })
   }
 
   const handleUserPress = _user => {

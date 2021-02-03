@@ -62,7 +62,7 @@ const TransparentHeader = ({
             return await generateDynamicLink({
               type: 'profile',
               params: { uid: type === 'own' ? ownUserInfo.uid : userInfo.uid },
-              social: getPreviewLinkData({
+              social: await getPreviewLinkData({
                 type: 'user',
                 data: type === 'own' ? ownUserInfo : userInfo,
               }),
@@ -73,7 +73,7 @@ const TransparentHeader = ({
             return await generateDynamicLink({
               type: 'post',
               params: { id: postId },
-              social: getPreviewLinkData({
+              social: await getPreviewLinkData({
                 type: 'post',
                 data: (await Api.getPost({ pid: postId })).data,
               }),

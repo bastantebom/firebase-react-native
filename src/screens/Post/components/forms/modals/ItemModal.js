@@ -3,16 +3,13 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
   TextInput,
-  TouchableWithoutFeedback,
   Keyboard,
   Animated,
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
 import Modal from 'react-native-modal'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { AppText, AppInput, ScreenHeaderTitle, AppButton } from '@/components'
 
@@ -22,6 +19,7 @@ import { ChevronDown, MinusSign, PlusSign } from '@/assets/images/icons'
 import { Context } from '@/context'
 import { ImageModal } from '@/screens/Post/components/ImageModal'
 import { commaSeparate } from '@/globals/Utils'
+import PostImage from '@/components/Post/post-image'
 
 const ItemModal = ({ closeModal, postType, item, postID }) => {
   const [notes, setNotes] = useState()
@@ -34,17 +32,9 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
   const [selectedTime, setSelectedTime] = useState()
   const [subtotal, setSubtotal] = useState(0)
   const [currentItem, setCurrentItem] = useState(item)
-  // const [deleteCurrentCartPrompt, showDeleteCurrentCartPrompt] = useState(false)
   const [imageModal, showImageModal] = useState(false)
 
-  const {
-    userCart,
-    setUserCart,
-    setCurrentPost,
-    deleteCurrentOrderModal,
-    currentPostOrder,
-    showDeleteCurrentOrderModal,
-  } = useContext(Context)
+  const { userCart, setUserCart, setCurrentPost } = useContext(Context)
 
   const [animatedPadding] = useState(new Animated.Value(0))
 
@@ -259,14 +249,15 @@ const ItemModal = ({ closeModal, postType, item, postID }) => {
             paddingHorizontal: 20,
           }}>
           <View style={styles.itemWrapper}>
-            {currentItem?.image?.substring(0, 8) === 'https://' && (
+            {currentItem?.image?.length && (
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => showImageModal(true)}>
                 <View style={styles.imageWrapper}>
-                  <Image
+                  <PostImage
                     style={styles.image}
-                    source={{ uri: currentItem.image }}
+                    path={item.image}
+                    postType={postData?.type?.toLowerCase()}
                   />
                 </View>
               </TouchableOpacity>
