@@ -74,19 +74,12 @@ const SetNewPasswordScreen = props => {
         <AppText textStyle="display5">Reset your password?</AppText>
 
         <AppText textStyle="body2">
-          User ID:
           <AppText textStyle="body3"> {login}</AppText>
         </AppText>
 
         <AppText textStyle="body2" customStyle={{ marginTop: 24 }}>
-          In order to protect your account make sure your password
-        </AppText>
-
-        <AppText textStyle="body2" customStyle={{ marginTop: 24 }}>
-          • Has more than 7 characters
-        </AppText>
-        <AppText textStyle="body2">
-          • Contains text and special characters
+          Create a strong password to protect your account (minimum of 8
+          characters).
         </AppText>
 
         <View style={{ marginTop: 32 }}>
