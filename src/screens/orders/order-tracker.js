@@ -365,7 +365,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         },
       })
 
-      if (!response.success) throw new Error(error.message)
+      if (!response.success) throw new Error(response.message)
     } catch (error) {
       console.log(error)
       Alert('Error', 'Oops, something went wrong')

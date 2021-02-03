@@ -205,7 +205,7 @@ const BasketModal = ({
       uid: user.uid,
       body: {
         post_id: postData?.id,
-        price: Number(offerData?.price),
+        price: offerData?.price,
         message: offerData?.message,
       },
     }
