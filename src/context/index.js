@@ -282,12 +282,6 @@ export const ContextProvider = ({ children }) => {
     setShowButtons(false)
   }
 
-  const fetchPosts = getPostsParams => {
-    PostService.getPosts(getPostsParams).then(res => {
-      setPosts(res.data)
-    })
-  }
-
   const initNotifications = async uid => {
     if (!uid) return
     let unsubscribe = firestore()
@@ -387,7 +381,6 @@ export const ContextProvider = ({ children }) => {
         setShowButtons,
         posts,
         setPosts,
-        // fetchPosts,
         deleteNotif,
         setDeleteNotif,
         imageCount,

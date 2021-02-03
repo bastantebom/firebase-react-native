@@ -37,6 +37,7 @@ import PaymentsStack from '@/screens/payments'
 import OrdersStack from '@/screens/orders'
 import url from 'url'
 import Api from '@/services/Api'
+import _ from 'lodash'
 
 import {
   Post,
@@ -387,14 +388,41 @@ function ProfileStackScreen() {
 }
 
 const TabStack = props => {
-  const [activityNotification, setActivityNotification] = useState(true)
+  const [groupNotifications, setGroupNotifications] = useState([])
   const [profileNotification] = useState(false)
-  const { closePostButtons, notificationsList, initNotifications } = useContext(
-    Context
-  )
+  const {
+    closePostButtons,
+    notificationsList,
+    initNotifications,
+    initChats,
+    chatList,
+  } = useContext(Context)
   const { user } = useContext(UserContext)
-  const newNotificationIndicator =
-    notificationsList?.filter(notif => !notif?.read).length > 0
+
+  const assembleNotification = () => {
+    let postGroup = []
+    let idGroup = []
+
+    const filtered = notificationsList.filter(el => el)
+    const allPending = filtered?.filter(notif => notif?.status === 'pending')
+    const restStatus = filtered?.filter(notif => notif?.status !== 'pending')
+    if (allPending.length)
+      postGroup = _.groupBy(allPending, notif => notif.postId)
+
+    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif?.id)
+    let combinedGroup = { ...postGroup, ...idGroup }
+
+    let tempNotifList = []
+
+    for (const [key, notification] of Object.entries(combinedGroup)) {
+      tempNotifList.push(notification)
+    }
+
+    tempNotifList = tempNotifList.sort(
+      (a, b) => b[0].date._seconds - a[0].date._seconds
+    )
+    setGroupNotifications(tempNotifList)
+  }
 
   useEffect(() => {
     if (user) {
@@ -402,6 +430,15 @@ const TabStack = props => {
       return () => unsubscribe
     }
   }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    if (notificationsList && isMounted) {
+      initChats(user?.uid)
+      assembleNotification()
+    }
+    return () => (isMounted = false)
+  }, [notificationsList])
 
   const tabBarOptions = {
     style: {
@@ -480,7 +517,9 @@ const TabStack = props => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                {newNotificationIndicator && (
+                {(groupNotifications.filter(notif => !notif[0].read).length >
+                  0 ||
+                  chatList.filter(chat => !chat.read).length > 0) && (
                   <View
                     style={{
                       position: 'absolute',
