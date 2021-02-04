@@ -217,7 +217,16 @@ const Ongoing = ({ sortCategory }) => {
           contentContainerStyle={{
             paddingHorizontal: normalize(16),
             paddingBottom: normalize(25),
-          }}>
+          }}
+          refreshControl={
+            <RefreshControl
+              style={{ zIndex: 1 }}
+              refreshing={isRefreshing}
+              titleColor="#2E3034"
+              tintColor="#2E3034"
+              onRefresh={handleRefresh}
+            />
+          }>
           <View style={styles.emptyState}>
             {sortCategory.value === 'all' ? (
               <NoPost />

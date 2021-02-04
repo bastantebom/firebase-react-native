@@ -54,6 +54,7 @@ const DismissKeyboard = ({ children, isFocused }) => {
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'LocationSearchMapScreen'>} param0 */
 const LocationSearchMapScreen = ({ navigation, route }) => {
   const { address, onValueChange } = route.params
+
   Geocoder.init(Config.apiKey)
   const [mapCoords, setMapCoords] = useState({})
   const [addressData, setAddressData] = useState({})
@@ -163,16 +164,19 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
 
   const currentLocation = async () => {
     try {
-      const { latitude, longitude } = await getCurrentPosition()
+      let { latitude, longitude } = await getCurrentPosition()
+      if (!latitude || !longitude) {
+        latitude = address.latitude
+        longitude = address.longitude
+      }
       setMapCoords({
         lat: latitude,
         lng: longitude,
       })
-
+      setRangeValue(5)
       handleRegionChange({ latitude, longitude })
 
       setMapInitialized(true)
-      setRangeValue(5)
     } catch (error) {
       console.log(error, 'error')
     }
