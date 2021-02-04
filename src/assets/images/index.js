@@ -54,6 +54,7 @@ import EmptyPayout from './empty-payout.svg'
 import SuccessPayout from './success-payout.svg'
 
 //Post status
+import DashboardEmptyState from './dashboard-empty-state'
 import Cancelled from './post-status/cancelled.svg'
 import ServiceCompleted from './post-status/completed1.svg'
 import OrderCompleted from './post-status/completed2.svg'
@@ -143,6 +144,7 @@ export const Status = {
 
 export const Images = {
   CameraImage,
+  DashboardEmptyState,
   Doctor,
   PaymentFailed,
   PaymentSuccess,

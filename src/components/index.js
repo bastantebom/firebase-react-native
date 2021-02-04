@@ -47,6 +47,8 @@ import Divider from './Divider'
 import PriceDisplay from './Price/Price'
 import HorizontalView from './HorizontalView/HorizontalView'
 
+import HyperLink from './HyperLink'
+
 export {
   PriceDisplay,
   Divider,
@@ -90,4 +92,5 @@ export {
   LikedPosts,
   ArchivedPosts,
   HorizontalView,
+  HyperLink,
 }

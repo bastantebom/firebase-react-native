@@ -27,6 +27,7 @@ import VerifyNotification from './components/verify-account-notification'
 import LinearGradient from 'react-native-linear-gradient'
 import SearchToolbar from './components/search-toolbar'
 import SearchResults from './components/search-results'
+import EmptyState from './components/empty-state'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
 const SEARCH_USER_TOOLBAR_HEIGHT = 120
@@ -490,24 +491,29 @@ const DashboardScreen = ({ navigation }) => {
               />
             )}
 
-            <Posts
-              currentLocation={locationData}
-              posts={posts}
-              onPostPress={handlePostPress}
-              onUserPress={handleUserPress}
-              onLikePress={handleLikePress}
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-              onEndReached={handleOnEndReached}
-              isLoadingMoreItems={isLoadingMoreItems}
-              contentContainerStyle={{
-                paddingTop: getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT,
-              }}
-              progressViewOffset={
-                getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
-              }
-              showsVerticalScrollIndicator={false}
-            />
+            {Object.values(posts).filter(post => !post.$hasError).length &&
+            totalPages !== Infinity ? (
+              <Posts
+                currentLocation={locationData}
+                posts={posts}
+                onPostPress={handlePostPress}
+                onUserPress={handleUserPress}
+                onLikePress={handleLikePress}
+                refreshing={isRefreshing}
+                onRefresh={handleRefresh}
+                onEndReached={handleOnEndReached}
+                isLoadingMoreItems={isLoadingMoreItems}
+                contentContainerStyle={{
+                  paddingTop: getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT,
+                }}
+                progressViewOffset={
+                  getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
+                }
+                showsVerticalScrollIndicator={false}
+              />
+            ) : (
+              <EmptyState />
+            )}
           </View>
         </View>
         <WhiteOpacity />
