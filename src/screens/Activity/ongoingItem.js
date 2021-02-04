@@ -117,15 +117,35 @@ const OngoingItem = ({ route, navigation }) => {
     setPending(pending => [...pending, ...done])
   }
 
+  const getSorted = async orderData => {
+    let sortedOrders = {}
+    for (const [key, orders] of Object.entries(orderData)) {
+      sortedOrders[`${key}`] = orders.sort(
+        (a, b) => b.date._seconds - a.date._seconds
+      )
+    }
+    return sortedOrders
+  }
+
   const callAllOngoing = async () => {
-    await Promise.all([
-      initOngoing(orders?.pending),
-      initOngoing(orders?.confirmed),
-      initOngoing(orders?.paid),
-      initOngoing(orders?.delivering),
-      initOngoing(orders?.pickup),
-      initOngoing(orders?.completed),
-    ])
+    const responseOrders = await Api.getOrders({
+      uid: user?.uid,
+      pid: postData.id,
+    })
+    if (responseOrders.success) {
+      let sortedOrders = responseOrders.data
+      if (Object.keys(sortedOrders).length) {
+        sortedOrders = await getSorted(responseOrders.data)
+        await Promise.all([
+          initOngoing(sortedOrders?.pending),
+          initOngoing(sortedOrders?.confirmed),
+          initOngoing(sortedOrders?.paid),
+          initOngoing(sortedOrders?.delivering),
+          initOngoing(sortedOrders?.pickup),
+          initOngoing(sortedOrders?.completed),
+        ])
+      }
+    }
     setIsPendingLoading(false)
   }
 
