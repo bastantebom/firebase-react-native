@@ -53,7 +53,7 @@ const DashboardScreen = ({ navigation }) => {
     sort: 'recent',
     type: [],
     page: 0,
-    limit: 5,
+    limit: 10,
   })
 
   const [locationData, setLocationData] = useState({

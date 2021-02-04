@@ -69,7 +69,7 @@
     "react-native-fluid-animations": "^0.1.1",
     "react-native-fluid-transitions": "^0.1.1",
     "react-native-geocoding": "^0.4.0",
-    "react-native-geolocation-service": "^5.1.1",
+    "react-native-geolocation-service": "^5.2.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-get-random-values": "^1.5.1",
     "react-native-gifted-chat": "^0.16.3",
