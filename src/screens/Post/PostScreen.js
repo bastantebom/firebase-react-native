@@ -30,6 +30,7 @@ const PostScreen = ({ togglePostModal, ...props }) => {
     setImageCount,
     setImageCurrent,
     setLibImages,
+    setCameraImage,
   } = useContext(Context)
 
   const cancelModalToggle = () => {
@@ -44,6 +45,7 @@ const PostScreen = ({ togglePostModal, ...props }) => {
       setImageCount(0)
       setImageCurrent('')
       setLibImages([])
+      setCameraImage([])
       props.navigation.goBack()
     }
 

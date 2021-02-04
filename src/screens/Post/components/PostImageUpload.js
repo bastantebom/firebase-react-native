@@ -44,9 +44,8 @@ export const PostImageUpload = ({ data }) => {
   } = useContext(Context)
 
   const [showPickerModal, setShowPickerModal] = useState(false)
-  const [initialUploadedPhotos, setInitialUploadedPhotos] = useState(
-    currentData?.cover_photos
-  )
+
+  const [photoSet, setPhotoSet] = useState(currentData?.cover_photos)
 
   const requestPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -88,18 +87,19 @@ export const PostImageUpload = ({ data }) => {
   }
 
   const handleRemove = async image => {
-    if (initialUploadedPhotos.length > 0) {
-      const newCoverPhoto = initialUploadedPhotos.filter(item => item !== image)
+    if (photoSet) {
+      const newCoverPhoto = coverPhoto.filter(item => item !== image)
+      setPhotoSet(newCoverPhoto)
       setCoverPhoto(newCoverPhoto)
 
       const newLibImage = libImages.filter(item => item !== image)
       setLibImages(newLibImage)
-    } else {
-      const newCoverPhoto = coverPhoto.filter(item => item !== image)
-      setCoverPhoto(newCoverPhoto)
     }
 
-    if (!initialUploadedPhotos > 0) {
+    const newCoverPhoto = coverPhoto.filter(item => item !== image)
+    setCoverPhoto(newCoverPhoto)
+
+    if (!photoSet) {
       const newCameraImage = cameraImage.filter(item => item !== image)
       setCameraImage(newCameraImage)
 
@@ -151,7 +151,7 @@ export const PostImageUpload = ({ data }) => {
         <PostCamera
           cancel={cancelCamera}
           next={continueCamera}
-          data={initialUploadedPhotos}
+          data={photoSet}
         />
       ),
     },
@@ -162,15 +162,11 @@ export const PostImageUpload = ({ data }) => {
         <Library
           cancel={cancelUploadPhoto}
           next={continueUploadPhoto}
-          data={initialUploadedPhotos}
+          data={photoSet}
         />
       ),
     },
   ]
-
-  useEffect(() => {
-    setInitialUploadedPhotos(coverPhoto)
-  }, [coverPhoto])
 
   return (
     <>

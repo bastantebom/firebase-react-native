@@ -107,10 +107,8 @@ const PostForm = ({
 
   useEffect(() => {
     if (activeScreen === 'need') setActiveForm(needForm)
-    if (activeScreen === 'sell' || activeScreen === 'sell')
-      setActiveForm(sellForm)
-    if (activeScreen === 'need' || activeScreen === 'service')
-      setActiveForm(serviceForm)
+    if (activeScreen === 'sell') setActiveForm(sellForm)
+    if (activeScreen === 'service') setActiveForm(serviceForm)
   }, [activeScreen])
 
   const [activeForm, setActiveForm] = useState(sellForm)

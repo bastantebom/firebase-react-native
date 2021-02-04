@@ -26,6 +26,7 @@ const EditPostScreen = ({ route, navigation }) => {
     setImageCount,
     setImageCurrent,
     setLibImages,
+    setCameraImage,
   } = useContext(Context)
 
   const cancelModalToggle = () => {
@@ -40,6 +41,7 @@ const EditPostScreen = ({ route, navigation }) => {
       setImageCount(0)
       setImageCurrent('')
       setLibImages([])
+      setCameraImage([])
       setTimeout(() => {
         togglePostModal?.()
       }, 200)
