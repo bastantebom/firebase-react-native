@@ -785,7 +785,7 @@ const SinglePostView = props => {
           <TouchableWithoutFeedback key={path} onPress={togglePostImageModal}>
             <PostImage
               path={path}
-              size={'375x157'}
+              size={'512x512'}
               postType={postData?.type?.toLowerCase()}
               type="image"
             />
