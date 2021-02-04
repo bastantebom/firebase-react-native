@@ -505,6 +505,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   }
 
   const renderShowDetailsToggle = () => {
+    if (orderData.status === 'pending') return null
+
     const history = orderStatusHistory?.slice?.(0, -1) || []
 
     return (

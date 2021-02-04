@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Text, StyleSheet, Dimensions } from 'react-native'
+import { ScrollView, View, Text, StyleSheet, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { Context } from '@/context'
@@ -15,29 +15,31 @@ const EmptyState = () => {
   const { user } = useContext(UserContext)
 
   return (
-    <View style={styles.container}>
-      <Images.DashboardEmptyState style={styles.image} />
-      <View style={styles.textWrapper}>
-        <Text style={styles.title}>No Buzz in your area yet</Text>
-        <Text style={styles.description}>
-          Things will get busy soon! For now, start posting and keep sharing
-          Servbees to friends.
-        </Text>
-      </View>
-      <View style={styles.buttonParentWrapper}>
-        <View style={styles.buttonWrapper}>
-          <AppButton
-            customStyle={styles.createButton}
-            text={'Create Post'}
-            type="primary"
-            height="lg"
-            onPress={() =>
-              user ? setShowButtons(true) : navigation.navigate('Post')
-            }
-          />
+    <ScrollView>
+      <View style={styles.container}>
+        <Images.DashboardEmptyState style={styles.image} />
+        <View style={styles.textWrapper}>
+          <Text style={styles.title}>No Buzz in your area yet</Text>
+          <Text style={styles.description}>
+            Things will get busy soon! For now, start posting and keep sharing
+            Servbees to friends.
+          </Text>
+        </View>
+        <View style={styles.buttonParentWrapper}>
+          <View style={styles.buttonWrapper}>
+            <AppButton
+              customStyle={styles.createButton}
+              text={'Create Post'}
+              type="primary"
+              height="lg"
+              onPress={() =>
+                user ? setShowButtons(true) : navigation.navigate('Post')
+              }
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
