@@ -358,7 +358,6 @@ const DashboardScreen = ({ navigation }) => {
     debounce(async (search, searchType) => {
       setNoResults(false)
       if (!search.length) return setSearchResults([])
-
       setIsSearching(true)
       try {
         const response = await Api[
@@ -429,7 +428,10 @@ const DashboardScreen = ({ navigation }) => {
               right: 0,
               height: Animated.add(
                 translateY,
-                getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
+                getSearchToolbarHeight() +
+                  (searchResults.length || noResults
+                    ? 0
+                    : FILTER_TOOLBAR_HEIGHT)
               ),
               zIndex: 4,
             }}>
@@ -454,21 +456,23 @@ const DashboardScreen = ({ navigation }) => {
                 setSearchResults={setSearchResults}
               />
             </Animated.View>
-            <Animated.View
-              style={{
-                height: FILTER_TOOLBAR_HEIGHT,
-                transform: [{ translateY }],
-                paddingTop: 8,
-              }}>
-              <LocationSearch
-                onValueChange={handleLocationChange}
-                onTypeFilterPress={handleTypeFilterPress}
-                onSortFilterPress={handleSortFilterPress}
-                filters={filters}
-                location={locationData}
-                onLocationSearchPress={handleLocationSearchPress}
-              />
-            </Animated.View>
+            {(!searchResults.length || noResults) && (
+              <Animated.View
+                style={{
+                  height: FILTER_TOOLBAR_HEIGHT,
+                  transform: [{ translateY }],
+                  paddingTop: 8,
+                }}>
+                <LocationSearch
+                  onValueChange={handleLocationChange}
+                  onTypeFilterPress={handleTypeFilterPress}
+                  onSortFilterPress={handleSortFilterPress}
+                  filters={filters}
+                  location={locationData}
+                  onLocationSearchPress={handleLocationSearchPress}
+                />
+              </Animated.View>
+            )}
           </AnimatedLinearGradient>
 
           <View style={{ position: 'relative' }}>
