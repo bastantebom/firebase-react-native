@@ -215,6 +215,7 @@ const ActivitiesCard = ({ info }) => {
                         flex: 1,
                         paddingLeft: 8,
                         paddingRight: 4,
+                        fontSize: 12
                       }}>
                       {info.name}
                     </AppText>

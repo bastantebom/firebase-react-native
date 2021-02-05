@@ -22,7 +22,7 @@ const PriceInput = ({ style, label, ...props }) => {
           borderRadius: 4,
           paddingVertical: 4,
           paddingHorizontal: 16,
-          borderColor: Colors.neutralGray,
+          borderColor: Colors.neutralGray
         },
         style,
       ]}>
@@ -44,6 +44,7 @@ const constantStyles = {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(19),
     letterSpacing: 0.5,
+    minWidth: '10%',
     textAlign: 'right',
   },
 }

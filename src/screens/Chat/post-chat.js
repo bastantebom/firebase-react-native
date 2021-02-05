@@ -30,6 +30,7 @@ import {
   Search,
   TrashWhite,
   HorizontalWhiteEllipsis,
+  BlueDot
 } from '@/assets/images/icons'
 import ChatOptions from './components/ChatOptions'
 import MultiChatOptions from './components/MultiChatOptions'
@@ -316,7 +317,10 @@ const PostChat = ({ route }) => {
               postType={post?.type?.toLowerCase()}
             />
           </View>
-          <AppText textStyle="body2" customStyle={{ marginLeft: normalize(8) }}>
+          <AppText 
+            textStyle="body2" 
+            numberOfLines={1} 
+            customStyle={{ marginLeft: normalize(8), flex: 1 }}>
             {post.postData.title}
           </AppText>
         </View>

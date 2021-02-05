@@ -81,25 +81,25 @@ const Onboarding = ({ navigation, illustration }) => {
 
   const [slideInfo] = useState([
     {
-      illustration: <IllustOne width={width} height={width * 0.8} />,
+      illustration: <IllustOne width={width} height={width * 0.80} />,
       title: 'Welcome to Servbees!',
       description:
         'Go and Raket, Benta, and Search with your friendly neighborhood Pagkakakita-App!',
     },
     {
-      illustration: <IllustTwo width={width} height={width * 0.8} />,
+      illustration: <IllustTwo width={width} height={width * 0.80} />,
       title: 'Discover and Buy',
       description:
         'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
     },
     {
-      illustration: <IllustThree width={width} height={width * 0.8} />,
+      illustration: <IllustThree width={width} height={width * 0.80} />,
       title: 'Offer and Sell',
       description:
         'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
     },
     {
-      illustration: <IllustFour width={width} height={width * 0.8} />,
+      illustration: <IllustFour width={width} height={width * 0.80} />,
       title: 'Join a Hive',
       description:
         'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
