@@ -1,5 +1,12 @@
 import React, { useContext } from 'react'
-import { ScrollView, View, Text, StyleSheet, Dimensions } from 'react-native'
+import {
+  ScrollView,
+  RefreshControl,
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { Context } from '@/context'
@@ -8,14 +15,23 @@ import { Images } from '@/assets/images'
 import { normalize } from '@/globals'
 import { AppButton } from '@/components'
 
-const EmptyState = () => {
+const EmptyState = ({ handleRefresh, isRefreshing }) => {
   const navigation = useNavigation()
 
   const { setShowButtons } = useContext(Context)
   const { user } = useContext(UserContext)
 
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          progressViewOffset={150}
+          titleColor="#2E3034"
+          tintColor="#2E3034"
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
+        />
+      }>
       <View style={styles.container}>
         <Images.DashboardEmptyState style={styles.image} />
         <View style={styles.textWrapper}>
@@ -46,7 +62,7 @@ const EmptyState = () => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    height: Dimensions.get('screen').height,
+    height: normalize(Dimensions.get('window').height - 85),
   },
   image: {
     marginBottom: normalize(20),

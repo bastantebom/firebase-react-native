@@ -512,7 +512,10 @@ const DashboardScreen = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
               />
             ) : (
-              <EmptyState />
+              <EmptyState
+                handleRefresh={handleRefresh}
+                isRefreshing={isRefreshing}
+              />
             )}
           </View>
         </View>
