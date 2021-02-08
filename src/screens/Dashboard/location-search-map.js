@@ -197,50 +197,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
           <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
             <View
               style={{ height: isFocused ? normalize(130) : normalize(200) }}>
-              <View style={styles.textInputWrapper}>
-                <TouchableOpacity
-                  onPress={navigation.goBack}
-                  activeOpacity={0.7}
-                  style={{
-                    top: normalize(30),
-                    position: 'absolute',
-                    left: 16,
-                  }}>
-                  <HeaderBackGray
-                    width={normalize(24)}
-                    height={normalize(24)}
-                  />
-                </TouchableOpacity>
-                <GooglePlacesInput
-                  onResultsClick={handleLocationSearchChange}
-                  onClearInput={() => {}}
-                  currentValue={addressData.full_address}
-                  onInputFocus={onInputFocus}
-                  customListViewStyle={{
-                    top: normalize(80),
-                    marginLeft: normalize(0),
-                    marginRight: normalize(0),
-                    paddingLeft: 16,
-                    paddingRight: 32,
-                    height: Dimensions.get('window').height - normalize(155),
-                    width: Dimensions.get('window').width,
-                    left: normalize(-42),
-                    backgroundColor: Colors.neutralsZirconLight,
-                  }}
-                  customTextInputStyle={{
-                    borderWidth: 0,
-                    borderRadius: 40,
-                    height: normalize(55),
-                    paddingLeft: normalize(50),
-                  }}
-                  customIconStyle={{
-                    left: normalize(25),
-                    top: normalize(23),
-                  }}
-                  placeholder="Search Your Location"
-                  debounce={1500}
-                />
-              </View>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => currentLocation()}
@@ -304,6 +260,46 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               <CloseLight />
             </TouchableOpacity>
           </View>
+          <View style={styles.textInputWrapper}>
+            <TouchableOpacity
+              onPress={navigation.goBack}
+              activeOpacity={0.7}
+              style={{
+                top: normalize(30),
+                position: 'absolute',
+                left: 16,
+              }}>
+              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+            </TouchableOpacity>
+            <GooglePlacesInput
+              onResultsClick={handleLocationSearchChange}
+              onClearInput={() => {}}
+              currentValue={addressData.full_address}
+              onInputFocus={onInputFocus}
+              customListViewStyle={{
+                top: normalize(30),
+                marginLeft: normalize(0),
+                marginRight: normalize(0),
+                paddingLeft: 16,
+                paddingRight: 32,
+                width: Dimensions.get('window').width,
+                left: normalize(-42),
+                backgroundColor: Colors.neutralsZirconLight,
+              }}
+              customTextInputStyle={{
+                borderWidth: 0,
+                borderRadius: 40,
+                height: normalize(55),
+                paddingLeft: normalize(50),
+              }}
+              customIconStyle={{
+                left: normalize(25),
+                top: normalize(23),
+              }}
+              placeholder="Search Your Location"
+              debounce={1500}
+            />
+          </View>
           <MapComponent
             latitude={mapCoords.lat}
             longitude={mapCoords.lng}
@@ -343,6 +339,7 @@ const styles = StyleSheet.create({
     elevation: 100,
   },
   textInputWrapper: {
+    top: normalize(40),
     width: '100%',
     position: 'absolute',
     paddingLeft: normalize(42),
