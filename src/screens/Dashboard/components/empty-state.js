@@ -5,7 +5,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
@@ -61,8 +60,7 @@ const EmptyState = ({ handleRefresh, isRefreshing }) => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    height: normalize(Dimensions.get('window').height - 85),
+    marginTop: normalize(120),
   },
   image: {
     marginBottom: normalize(20),
