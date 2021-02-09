@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -53,56 +53,49 @@ const OngoingItem = ({ route, navigation }) => {
     const done = await Promise.all(
       orderedList.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })
-        if (getUserResponse.success) {
-          const {
-            profile_photo,
-            display_name,
-            full_name,
-          } = getUserResponse.data
+        if (!getUserResponse.success) return {}
+        const { profile_photo, display_name, full_name } = getUserResponse.data
+        const room = await firestore()
+          .collection('chat_rooms')
+          .where('post_id', '==', order.post_id)
+          .where('members', '==', {
+            [user?.uid]: true,
+            [order.buyer_id]: true,
+          })
+          .get()
+        let roomChat = []
+        if (!room.docs.length) return {}
 
-          const room = await firestore()
-            .collection('chat_rooms')
-            .where('post_id', '==', order.post_id)
-            .where('members', '==', {
-              [user?.uid]: true,
-              [order.buyer_id]: true,
-            })
-            .get()
-          let roomChat = []
-          if (room.docs.length) {
-            let channel = room.docs[0].data()
-            roomChatRef = await firestore()
-              .collection('chat_rooms')
-              .doc(channel.id)
-              .collection('messages')
-              .orderBy('createdAt', 'desc')
-              .get()
+        let channel = room.docs[0].data()
+        roomChatRef = await firestore()
+          .collection('chat_rooms')
+          .doc(channel.id)
+          .collection('messages')
+          .orderBy('createdAt', 'desc')
+          .get()
 
-            if (roomChatRef.docs.length) {
-              roomChatRef.docs.map(chat => {
-                roomChat.push(chat.data())
-              })
-            }
-          }
-          roomChats = [...roomChats, ...roomChat]
+        if (roomChatRef.docs.length) {
+          roomChatRef.docs.map(chat => {
+            roomChat.push(chat.data())
+          })
+        }
 
-          return {
-            profilePhoto: profile_photo,
-            customer: display_name ? display_name : full_name,
-            customerUID: order.buyer_id,
-            cardType: order.status,
-            amount: order.total_price
-              ? order.total_price
-              : order.items[0].price,
-            timeStamp: order.date._seconds,
-            paymentMode: order.payment_method,
-            orderID: order.id,
-            numOfItems: order.items?.length ? order.items?.length : 0,
-            postId: order.post_id,
-            type: postData.type,
-            chat: roomChat,
-          }
-        } else return {}
+        roomChats = [...roomChats, ...roomChat]
+
+        return {
+          profilePhoto: profile_photo,
+          customer: display_name || full_name,
+          customerUID: order.buyer_id,
+          cardType: order.status,
+          amount: order.total_price ? order.total_price : order.items[0].price,
+          timeStamp: order.date._seconds,
+          paymentMode: order.payment_method,
+          orderID: order.id,
+          numOfItems: order.items?.length || 0,
+          postId: order.post_id,
+          type: postData.type,
+          chat: roomChat,
+        }
       })
     )
 
@@ -127,7 +120,19 @@ const OngoingItem = ({ route, navigation }) => {
     return sortedOrders
   }
 
-  const callAllOngoing = async () => {
+  const callInitOngoing = useCallback(async () => {
+    await Promise.all([
+      initOngoing(orders?.pending),
+      initOngoing(orders?.confirmed),
+      initOngoing(orders?.paid),
+      initOngoing(orders?.delivering),
+      initOngoing(orders?.pickup),
+      initOngoing(orders?.completed),
+    ])
+    setIsPendingLoading(false)
+  }, [])
+
+  const callAllOngoing = useCallback(async () => {
     const responseOrders = await Api.getOrders({
       uid: user?.uid,
       pid: postData.id,
@@ -147,7 +152,7 @@ const OngoingItem = ({ route, navigation }) => {
       }
     }
     setIsPendingLoading(false)
-  }
+  }, [])
 
   const handleChatPress = async (members, postId) => {
     let channel
@@ -218,7 +223,7 @@ const OngoingItem = ({ route, navigation }) => {
     let isMounted = true
     if (isMounted) {
       setIsPendingLoading(true)
-      callAllOngoing()
+      callInitOngoing()
     }
     return () => (isMounted = false)
   }, [orders])

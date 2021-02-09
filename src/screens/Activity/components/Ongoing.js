@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -11,7 +11,6 @@ import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
 import Api from '@/services/Api'
-import PostService from '@/services/Post/PostService'
 
 import { AppText, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
@@ -33,40 +32,30 @@ const Ongoing = ({ sortCategory }) => {
       if (!ownOrdersResponse.data.length) return true
       let ownOrderData = await Promise.all(
         ownOrdersResponse.data.map(async order => {
-          if (
-            order.status !== 'completed' &&
-            order.status !== 'cancelled' &&
-            order.status !== 'declined'
-          ) {
-            const getPostResponse = await Api.getPost({
-              pid: order.post_id,
-            })
-            const getUserReponse = await Api.getUser({
-              uid: order.seller_id || user?.uid,
-            })
-            if (!getPostResponse.success) {
-              return true
-            }
-            if (getPostResponse.success && getUserReponse.success) {
-              const {
-                full_name,
-                display_name,
-                profile_photo,
-              } = getUserReponse.data
+          if (['completed', 'cancelled', 'declined'].includes(order.status))
+            return true
 
-              return {
-                profilePhoto: profile_photo,
-                name: display_name || full_name,
-                cardType: 'own',
-                status: order.status,
-                time: order.date._seconds,
-                orderID: order.id,
-                payment: order.payment_method,
-                price: order.total_price,
-                postData: getPostResponse.data,
-              }
-            }
-          } else return
+          const getPostResponse = await Api.getPost({
+            pid: order.post_id,
+          })
+          const getUserReponse = await Api.getUser({
+            uid: order.seller_id || user?.uid,
+          })
+          if (!getPostResponse.success || !getUserReponse.success) {
+            return true
+          }
+          const { full_name, display_name, profile_photo } = getUserReponse.data
+          return {
+            profilePhoto: profile_photo,
+            name: display_name || full_name,
+            cardType: 'own',
+            status: order.status,
+            time: order.date._seconds,
+            orderID: order.id,
+            payment: order.payment_method,
+            price: order.total_price,
+            postData: getPostResponse.data,
+          }
         })
       )
       ownOrderData = ownOrderData.filter(el => el)
@@ -78,44 +67,40 @@ const Ongoing = ({ sortCategory }) => {
   }
 
   const initSellerOrders = async () => {
-    const getOwnPostResponse = await PostService.getUserPosts({
+    const getOwnPostResponse = await Api.getUserPosts({
       uid: user?.uid,
     })
-    if (getOwnPostResponse.success) {
-      if (!getOwnPostResponse.data) return true
-      let sellerOrderData = await Promise.all(
-        getOwnPostResponse.data.map(async post => {
-          const responseOrders = await Api.getOrders({
-            uid: user?.uid,
-            pid: post.id,
-          })
-          if (responseOrders.success) {
-            const { full_name, display_name, profile_photo } = userInfo
-            let latestTimeStampOrder = post.date_posted._seconds
-            let sortedOrders = responseOrders.data
-            if (Object.keys(sortedOrders).length) {
-              latestTimeStampOrder = await getLatest(responseOrders.data)
-              sortedOrders = await getSorted(responseOrders.data)
-            }
-
-            return {
-              profilePhoto: profile_photo,
-              name: display_name || full_name,
-              cardType: 'seller',
-              time: latestTimeStampOrder,
-              cover_photos: post.cover_photos,
-              orders: sortedOrders,
-              postData: post,
-            }
-          } else return true
+    if (!getOwnPostResponse.success) return true
+    let sellerOrderData = await Promise.all(
+      getOwnPostResponse.data.map(async post => {
+        const responseOrders = await Api.getOrders({
+          uid: user?.uid,
+          pid: post.id,
         })
-      )
+        if (!responseOrders.success) return true
+        const { full_name, display_name, profile_photo } = userInfo
+        let latestTimeStampOrder = post.date_posted._seconds
+        let sortedOrders = responseOrders.data
 
-      setOnGoing(onGoing =>
-        [...onGoing, ...sellerOrderData].sort((a, b) => b.time - a.time)
-      )
-      return true
-    }
+        if (Object.keys(sortedOrders).length) {
+          sortedOrders = await getSorted(responseOrders.data)
+          latestTimeStampOrder = await getLatest(responseOrders.data)
+        }
+        return {
+          profilePhoto: profile_photo,
+          name: display_name || full_name,
+          cardType: 'seller',
+          time: latestTimeStampOrder,
+          orders: sortedOrders,
+          postData: post,
+        }
+      })
+    )
+
+    setOnGoing(onGoing =>
+      [...onGoing, ...sellerOrderData].sort((a, b) => b.time - a.time)
+    )
+    return true
   }
 
   const getLatest = async orderData => {
@@ -138,10 +123,10 @@ const Ongoing = ({ sortCategory }) => {
     return sortedOrders
   }
 
-  const callAllOrders = async () => {
+  const callAllOrders = useCallback(async () => {
     await Promise.all([initOwnOrders(), initSellerOrders()])
     setIsLoading(false)
-  }
+  }, [])
 
   const handleRefresh = async () => {
     setIsLoading(true)
