@@ -239,27 +239,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               </PaddingView>
             </View>
           </LinearGradient>
-          <View
-            style={[
-              styles.mapInstruction,
-              {
-                display: instructionVisible ? 'flex' : 'none',
-                position: instructionVisible ? 'absolute' : 'relative',
-                top: isFocused ? normalize(140) : normalize(200),
-              },
-            ]}>
-            <PushPin width={normalize(22)} height={normalize(22)} />
-            <AppText
-              textStyle="body2"
-              color={Colors.neutralsWhite}
-              customStyle={{ flex: 1, marginHorizontal: 14 }}>
-              Set your location and drag the Buzzy Pin to the exact area you
-              want to explore.
-            </AppText>
-            <TouchableOpacity onPress={() => setInstructionVisible(false)}>
-              <CloseLight />
-            </TouchableOpacity>
-          </View>
           <View style={styles.textInputWrapper}>
             <TouchableOpacity
               onPress={navigation.goBack}
@@ -277,7 +256,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               currentValue={addressData.full_address}
               onInputFocus={onInputFocus}
               customListViewStyle={{
-                top: normalize(30),
+                top: normalize(75),
                 marginLeft: normalize(0),
                 marginRight: normalize(0),
                 paddingLeft: 16,
@@ -300,6 +279,28 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               debounce={1500}
             />
           </View>
+          <View
+            style={[
+              styles.mapInstruction,
+              {
+                display: instructionVisible ? 'flex' : 'none',
+                position: instructionVisible ? 'absolute' : 'relative',
+                top: isFocused ? normalize(140) : normalize(200),
+              },
+            ]}>
+            <PushPin width={normalize(22)} height={normalize(22)} />
+            <AppText
+              textStyle="body2"
+              color={Colors.neutralsWhite}
+              customStyle={{ flex: 1, marginHorizontal: 14 }}>
+              Set your location and drag the Buzzy Pin to the exact area you
+              want to explore.
+            </AppText>
+            <TouchableOpacity onPress={() => setInstructionVisible(false)}>
+              <CloseLight />
+            </TouchableOpacity>
+          </View>
+
           <MapComponent
             latitude={mapCoords.lat}
             longitude={mapCoords.lng}
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
     elevation: 100,
   },
   textInputWrapper: {
-    top: normalize(40),
+    top: Dimensions.get('window').height > 850 ? normalize(32) : normalize(12),
     width: '100%',
     position: 'absolute',
     paddingLeft: normalize(42),
