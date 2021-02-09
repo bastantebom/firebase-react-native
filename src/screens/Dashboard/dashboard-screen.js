@@ -243,7 +243,7 @@ const DashboardScreen = ({ navigation }) => {
 
   const getDeferredData = post => {
     return Promise.all([
-      Api.getUser({ uid: post.uid }).then(response => {
+      Api.getDashboardUser({ uid: post.uid }).then(response => {
         setPosts(posts => ({
           ...posts,
           [post.id]: {

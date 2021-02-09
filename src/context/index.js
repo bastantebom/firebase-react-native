@@ -1,6 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react'
-import NetInfo from '@react-native-community/netinfo'
-import { PostService } from '@/services'
+import React, { createContext, useState, useEffect } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 import _ from 'lodash'
@@ -26,7 +24,6 @@ export const ContextProvider = ({ children }) => {
 
   const [imageCurrent, setImageCurrent] = useState('')
   const [postCameraImage, setPostCameraImage] = useState([])
-  const [isInternetReachable, setIsInternetReachable] = useState(false)
   const [needsRefresh, setNeedsRefresh] = useState(true)
 
   // Post Images states
@@ -45,77 +42,6 @@ export const ContextProvider = ({ children }) => {
   const [results, setResults] = useState([])
   const [page, setPage] = useState(0)
 
-  const [filters, setFilters] = useState({
-    limit: 5,
-    page: 0,
-    search: undefined,
-    radius: undefined,
-    lat: undefined,
-    lon: undefined,
-    city: undefined,
-    type: undefined,
-    sort: undefined,
-  })
-
-  useEffect(() => {
-    ;(async () => {
-      // setIsLoading(true);
-      const result = await PostService.getPosts(filters)
-
-      if (filters.page) {
-        setPosts(prev => [...prev, ...result.data])
-      } else {
-        setPosts(result.data)
-      }
-      setRefresh(false)
-      setIsLoading(false)
-    })()
-  }, [filters])
-
-  const handleSearch = async value => {
-    const result = await PostService.getPosts({
-      limit: 10,
-      page: 0,
-      search: value,
-    })
-    setResults(result.data)
-    console.log('###################')
-    console.log(result.data)
-    setPage(0)
-  }
-
-  const handleSearchUser = async value => {
-    const result = await PostService.searchUsers({
-      limit: 10,
-      page: 0,
-      search: value,
-    })
-    setResults(result.data)
-    console.log('###################')
-    console.log(result.data)
-    setPage(0)
-  }
-
-  const handleOnEndReach = async value => {
-    const results = await PostService.getPosts({
-      limit: 10,
-      page: page + 1,
-      search: value,
-    })
-    setResults(prev => [...prev, ...results.data])
-    setPage(page + 1)
-  }
-
-  const handleOnUserEndReach = async value => {
-    const results = await PostService.searchUsers({
-      limit: 10,
-      page: page + 1,
-      search: value,
-    })
-    setResults(prev => [...prev, ...results.data])
-    setPage(page + 1)
-  }
-
   // Added Items (multiple)
   const [items, setItems] = useState([])
   const [itemId, setItemId] = useState(1)
@@ -126,25 +52,8 @@ export const ContextProvider = ({ children }) => {
 
   const [notificationsList, setNotificationsList] = useState([])
   const [userCart, setUserCart] = useState([])
-  const [currentPostOrder, setCurrentPostOrder] = useState()
   const [deleteCurrentOrderModal, showDeleteCurrentOrderModal] = useState(false)
   const [chatList, setChatList] = useState([])
-
-  const setCurrentPost = postID => {
-    if (currentPostOrder === null) {
-      setCurrentPostOrder(postID)
-      return false
-    }
-
-    if (postID === currentPostOrder) {
-      return false
-    }
-
-    if (postID !== currentPostOrder) {
-      setCurrentPostOrder(postID)
-      return true
-    }
-  }
 
   const getItemsByCategory = cat => {
     const result = [
@@ -358,7 +267,6 @@ export const ContextProvider = ({ children }) => {
   return (
     <Context.Provider
       value={{
-        currentPostOrder,
         deleteItemsByCategory,
         editCategory,
         items,
@@ -389,7 +297,6 @@ export const ContextProvider = ({ children }) => {
         setImageCurrent,
         locationFilter,
         setLocationFilter,
-        isInternetReachable,
         userPosts,
         setUserPosts,
         otherUserPosts,
@@ -414,10 +321,6 @@ export const ContextProvider = ({ children }) => {
         setResults,
         page,
         setPage,
-        handleSearch,
-        handleSearchUser,
-        handleOnEndReach,
-        handleOnUserEndReach,
         refreshFollowerList,
         setRefreshFollowerList,
         deliveryMethod,
@@ -431,13 +334,10 @@ export const ContextProvider = ({ children }) => {
         initNotifications,
         userCart,
         setUserCart,
-        filters,
-        setFilters,
         isLoading,
         setIsLoading,
         refresh,
         setRefresh,
-        setCurrentPost,
         deleteCurrentOrderModal,
         showDeleteCurrentOrderModal,
         initChats,
