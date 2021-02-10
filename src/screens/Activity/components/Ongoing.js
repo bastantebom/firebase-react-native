@@ -29,11 +29,11 @@ const Ongoing = ({ sortCategory }) => {
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
     if (ownOrdersResponse.success) {
-      if (!ownOrdersResponse.data.length) return true
+      if (!ownOrdersResponse.data.length) return
       let ownOrderData = await Promise.all(
         ownOrdersResponse.data.map(async order => {
           if (['completed', 'cancelled', 'declined'].includes(order.status))
-            return true
+            return
 
           const getPostResponse = await Api.getPost({
             pid: order.post_id,
@@ -41,9 +41,7 @@ const Ongoing = ({ sortCategory }) => {
           const getUserReponse = await Api.getUser({
             uid: order.seller_id || user?.uid,
           })
-          if (!getPostResponse.success || !getUserReponse.success) {
-            return true
-          }
+          if (!getPostResponse.success || !getUserReponse.success) return
           const { full_name, display_name, profile_photo } = getUserReponse.data
           return {
             profilePhoto: profile_photo,
@@ -58,7 +56,7 @@ const Ongoing = ({ sortCategory }) => {
           }
         })
       )
-      ownOrderData = ownOrderData.filter(el => el)
+
       setOnGoing(onGoing =>
         [...onGoing, ...ownOrderData].sort((a, b) => b.time - a.time)
       )
@@ -70,14 +68,15 @@ const Ongoing = ({ sortCategory }) => {
     const getOwnPostResponse = await Api.getUserPosts({
       uid: user?.uid,
     })
-    if (!getOwnPostResponse.success) return true
+    if (!getOwnPostResponse.success) return
     let sellerOrderData = await Promise.all(
       getOwnPostResponse.data.map(async post => {
         const responseOrders = await Api.getOrders({
           uid: user?.uid,
           pid: post.id,
         })
-        if (!responseOrders.success) return true
+        if (!responseOrders.success) return
+
         const { full_name, display_name, profile_photo } = userInfo
         let latestTimeStampOrder = post.date_posted._seconds
         let sortedOrders = responseOrders.data
@@ -86,6 +85,7 @@ const Ongoing = ({ sortCategory }) => {
           sortedOrders = await getSorted(responseOrders.data)
           latestTimeStampOrder = await getLatest(responseOrders.data)
         }
+
         return {
           profilePhoto: profile_photo,
           name: display_name || full_name,

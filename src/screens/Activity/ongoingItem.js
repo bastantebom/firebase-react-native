@@ -53,7 +53,7 @@ const OngoingItem = ({ route, navigation }) => {
     const done = await Promise.all(
       orderedList.map(async (order, index) => {
         const getUserResponse = await Api.getUser({ uid: order.buyer_id })
-        if (!getUserResponse.success) return {}
+        if (!getUserResponse.success) return
         const { profile_photo, display_name, full_name } = getUserResponse.data
         const room = await firestore()
           .collection('chat_rooms')
@@ -64,22 +64,22 @@ const OngoingItem = ({ route, navigation }) => {
           })
           .get()
         let roomChat = []
-        if (!room.docs.length) return {}
 
-        let channel = room.docs[0].data()
-        roomChatRef = await firestore()
-          .collection('chat_rooms')
-          .doc(channel.id)
-          .collection('messages')
-          .orderBy('createdAt', 'desc')
-          .get()
+        if (room.docs.length) {
+          let channel = room.docs[0].data()
+          roomChatRef = await firestore()
+            .collection('chat_rooms')
+            .doc(channel.id)
+            .collection('messages')
+            .orderBy('createdAt', 'desc')
+            .get()
 
-        if (roomChatRef.docs.length) {
-          roomChatRef.docs.map(chat => {
-            roomChat.push(chat.data())
-          })
+          if (roomChatRef.docs.length) {
+            roomChatRef.docs.map(chat => {
+              roomChat.push(chat.data())
+            })
+          }
         }
-
         roomChats = [...roomChats, ...roomChat]
 
         return {
