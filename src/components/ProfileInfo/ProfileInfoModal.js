@@ -37,7 +37,7 @@ import ImageApi from '@/services/image-api'
 import { isUrl } from '@/globals/Utils'
 
 function ProfileInfoModal(props) {
-  const { profileViewType = 'other', uid } = props.route?.params
+  const { profileViewType = 'profile', uid } = props.route?.params
 
   const navigation = useNavigation()
   const { user, signOut } = useContext(UserContext)
@@ -58,7 +58,7 @@ function ProfileInfoModal(props) {
   const [addFollowers, setAddFollowers] = useState(null)
 
   const [offsetHeight, setOffsetHeight] = useState(0)
-  const [coverPhotoUrl, setCoverPhotoUrl] = useState()
+  const [coverPhotoUrl, setCoverPhotoUrl] = useState(null)
 
   const toggleQR = () => setQR(!QR)
 
@@ -108,13 +108,12 @@ function ProfileInfoModal(props) {
     setCoverPhotoUrl(null)
     const path = otherUserInfo.cover_photo
     if (!path) return
-
     if (isUrl(path)) setCoverPhotoUrl(path)
     else if (path) {
       const url =
         (await ImageApi.getUrl({ path, size: '375x157' })) ||
         (await ImageApi.getUrl({ path }))
-      setSource(url)
+      setCoverPhotoUrl(url)
     }
   }
 
@@ -330,7 +329,7 @@ function ProfileInfoModal(props) {
           setOffsetHeight(layout.height)
         }}>
         <TransparentHeader
-          type={headerState}
+          type="other"
           ellipsisState={ellipsisState}
           toggleEllipsisState={toggleEllipsisState}
           toggleFollowing={toggleFollowing}
@@ -420,6 +419,7 @@ function ProfileInfoModal(props) {
             backFunction={() => navigation.goBack()}
             userInfo={otherUserInfo}
             userID={uid}
+            coverPhotoUrl={coverPhotoUrl}
           />
         </Animated.View>
       </>
@@ -458,12 +458,12 @@ function ProfileInfoModal(props) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
         parallaxHeight={offsetHeight ? offsetHeight : normalize(425.9)}
-        headerHeight={scrollPosition < 100 ? 0 : normalize(60)}
+        headerHeight={scrollPosition < 100 ? 0 : normalize(90)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -473,7 +473,7 @@ function ProfileInfoModal(props) {
           }
         )}
         snapToEdge={false}
-        transparentHeader={scrollPosition < 300 ? true : false}
+        transparentHeader={scrollPosition < 228 ? true : false}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl
@@ -512,7 +512,7 @@ function ProfileInfoModal(props) {
           borderBottomColor: Colors.neutralGray,
           borderBottomWidth: normalize(10),
         }}></StickyParallaxHeader>
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -70,7 +70,7 @@ const ProfileInfo = ({ profileData }) => {
             textStyle="subtitle1"
             color={Colors.primaryMidnightBlue}
             customStyle={{ marginRight: 8 }}>
-            {display_name ? display_name : full_name}
+            {display_name || full_name}
           </AppText>
           <VerifiedBadge size={15} />
         </View>
@@ -167,7 +167,11 @@ const ProfileInfo = ({ profileData }) => {
       <Divider
         style={[
           GlobalStyle.dividerStyle,
-          { marginVertical: normalize(16), backgroundColor: Colors.neutralsZircon, height: normalize(4) },
+          {
+            marginVertical: normalize(16),
+            backgroundColor: Colors.neutralsZircon,
+            height: normalize(4),
+          },
         ]}
       />
       <Modal

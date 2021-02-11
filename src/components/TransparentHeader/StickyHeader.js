@@ -11,13 +11,8 @@ import Modal from 'react-native-modal'
 import Share from 'react-native-share'
 import { useNavigation } from '@react-navigation/native'
 
-import { AppText, HexagonBorder } from '@/components'
-import {
-  EllipsisMenu,
-  QRScreen,
-  PostEllipsis,
-  OtherPostEllipsis,
-} from './components'
+import { AppText, CacheableImage, HexagonBorder } from '@/components'
+import { QRScreen, PostEllipsis, OtherPostEllipsis } from './components'
 import {
   HeaderBack,
   HeaderFollowing,
@@ -30,10 +25,11 @@ import {
   HeaderFollowBlack,
   HeaderEllipsisGray,
 } from '@/assets/images/icons'
-import { normalize, GlobalStyle } from '@/globals'
-import Colors from '@/globals/Colors'
+import { normalize, GlobalStyle, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
-import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
+import { generateDynamicLink, getPreviewLinkData, isUrl } from '@/globals/Utils'
+import { ProfileHeaderDefault } from '@/assets/images'
+import LinearGradient from 'react-native-linear-gradient'
 
 const StickyHeader = ({
   toggleEllipsisState,
@@ -51,6 +47,7 @@ const StickyHeader = ({
   postTitle,
   postId,
   isFollowing,
+  coverPhotoUrl,
 }) => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
@@ -247,31 +244,52 @@ const StickyHeader = ({
     )
   }
 
-  if (type === 'own') {
+  if (type === 'profile') {
     return (
       <>
-        <SafeAreaView>
-          <View style={styles.profileStickyHeader}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '60%',
-              }}>
-              <View style={styles.profileImageWrapper}>
-                <HexagonBorder
-                  size={40}
-                  path={profile_photo}
-                  dimensions="64x64"
-                />
-              </View>
-              <AppText
-                textStyle="subtitle2"
-                color={Colors.primaryMidnightBlue}
-                numberOfLines={1}
-                customStyle={{ paddingLeft: normalize(45) }}>
-                {name}
-              </AppText>
+        <View
+          style={{
+            bottom: 0,
+            height: normalize(33),
+            width: '100%',
+          }}>
+          <LinearGradient
+            colors={['rgba(255,255,255, 0)', 'rgba(255,255,255, 0)']}>
+            {coverPhotoUrl && userInfo.cover_photo && isUrl(coverPhotoUrl) ? (
+              <CacheableImage
+                source={{ uri: coverPhotoUrl }}
+                style={{ width: normalize(375), height: normalize(158) }}
+              />
+            ) : (
+              <ProfileHeaderDefault
+                width={normalize(375 * 1.2)}
+                height={normalize(158 * 1.2)}
+              />
+            )}
+          </LinearGradient>
+        </View>
+        <View style={styles.profileStickyHeader}>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '60%',
+            }}>
+            <View style={styles.profileImageWrapper}>
+              <HexagonBorder
+                size={40}
+                path={profile_photo}
+                dimensions="64x64"
+              />
             </View>
+            <AppText
+              textStyle="subtitle2"
+              color={Colors.primaryMidnightBlue}
+              numberOfLines={1}
+              customStyle={{ paddingLeft: normalize(45) }}>
+              {name}
+            </AppText>
+          </View>
+          {user?.uid === userInfo?.uid ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -300,52 +318,8 @@ const StickyHeader = ({
                 </View>
               </TouchableOpacity>
             </View>
-          </View>
-        </SafeAreaView>
-
-        <Modal
-          isVisible={QR}
-          animationIn="slideInUp"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <QRScreen toggleQR={toggleQR} />
-        </Modal>
-      </>
-    )
-  }
-
-  if (type === 'other') {
-    return (
-      <>
-        <SafeAreaView>
-          <View style={styles.profileStickyHeader}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '60%',
-              }}>
-              <View style={styles.profileImageWrapper}>
-                <HexagonBorder
-                  size={40}
-                  path={profile_photo}
-                  dimensions="64x64"
-                />
-              </View>
-              <AppText
-                textStyle="subtitle2"
-                color={Colors.primaryMidnightBlue}
-                numberOfLines={1}
-                customStyle={{ paddingLeft: normalize(40) }}>
-                {name}
-              </AppText>
-            </View>
-            {user ? (
+          ) : (
+            user && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -388,37 +362,22 @@ const StickyHeader = ({
                   </View>
                 </TouchableOpacity>
               </View>
-            ) : null}
-          </View>
-        </SafeAreaView>
+            )
+          )}
+        </View>
 
         <Modal
-          isVisible={ellipsisState}
+          isVisible={QR}
           animationIn="slideInUp"
-          animationInTiming={250}
-          animationOut="slideOutDown"
-          animationOutTiming={200}
-          onSwipeComplete={toggleEllipsisState}
-          swipeDirection="down"
+          animationInTiming={450}
+          animationOut="slideOutLeft"
+          animationOutTiming={450}
           style={{
-            justifyContent: 'flex-end',
             margin: 0,
-          }}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              onPress={() => {
-                toggleEllipsisState()
-              }}>
-              <View style={{ flex: 1, backgroundColor: 'black' }} />
-            </TouchableWithoutFeedback>
-          }>
-          <EllipsisMenu
-            toggleEllipsisState={toggleEllipsisState}
-            userInfo={userInfo}
-            userID={userID}
-            toggleFollowing={toggleFollowing}
-            isFollowing={isFollowing}
-          />
+            backgroundColor: 'white',
+            height: Dimensions.get('window').height,
+          }}>
+          <QRScreen toggleQR={toggleQR} />
         </Modal>
       </>
     )
@@ -453,9 +412,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingHorizontal: 16,
-    paddingVertical: normalize(17.5),
+    paddingVertical: normalize(16),
     backgroundColor: Colors.neutralsWhite,
     alignItems: 'center',
+    borderBottomColor: Colors.neutralGray,
+    borderBottomWidth: normalize(4),
+    borderTopLeftRadius: normalize(18),
+    borderTopWidth: normalize(1),
+    borderTopColor: Colors.neutralsZirconLight,
+    borderTopRightRadius: normalize(18),
   },
 })
 

@@ -192,8 +192,8 @@ const Post = ({
       <PostHeader
         post={post}
         liked={post.likes?.includes(user?.uid)}
-        onAvatarPress={() => onUserPress?.(post.user)}
-        onNamePress={() => onUserPress?.(post.user)}
+        onAvatarPress={() => onUserPress?.(post)}
+        onNamePress={() => onUserPress?.(post)}
         onLikePress={() => onLikePress?.(post)}
         renderLike={renderLike}
       />

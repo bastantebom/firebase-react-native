@@ -528,13 +528,9 @@ const SinglePostView = props => {
 
   const [scrollY] = useState(new Animated.Value(0))
 
-  // useEffect(() => {
-  //   setData(itemsByCategory)
-  // }, [])
-
   const HEADER_MAX_HEIGHT = normalize(248)
   const HEADER_MIN_HEIGHT = normalize(80)
-  const HEADER_INITIAL_HEIGHT = normalize(50)
+  const HEADER_INITIAL_HEIGHT = normalize(90)
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
 
   const headerHeight = scrollY.interpolate({
@@ -808,7 +804,8 @@ const SinglePostView = props => {
             <View
               style={{
                 paddingHorizontal: normalize(15),
-                paddingVertical: normalize(25),
+                paddingBottom: normalize(25),
+                paddingTop: normalize(35),
               }}>
               <View
                 style={{
@@ -1145,7 +1142,7 @@ const SinglePostView = props => {
                 <></>
               )}
               <TouchableOpacity
-                style={{ marginRight: email ? 8 : 0 }}
+                style={{ marginRight: email ? 8 : 4 }}
                 activeOpacity={0.7}
                 onPress={handleChatPress}>
                 <View style={styles.contactButtonContainer}>
@@ -1298,9 +1295,8 @@ const SinglePostView = props => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <>
       {isDataLoading ? <ActivityIndicator /> : <SinglePostContent />}
-
       <Modal
         isVisible={deleteCurrentOrderModal}
         animationIn="zoomIn"
@@ -1479,7 +1475,7 @@ const SinglePostView = props => {
           }}
         />
       </Modal>
-    </SafeAreaView>
+    </>
   )
 }
 

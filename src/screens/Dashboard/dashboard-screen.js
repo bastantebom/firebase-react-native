@@ -114,13 +114,13 @@ const DashboardScreen = ({ navigation }) => {
     })
   }
 
-  const handleUserPress = _user => {
-    if (user?.uid === _user.uid) {
+  const handleUserPress = post => {
+    if (user?.uid === post.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: _user.uid },
+        params: { uid: post.uid },
       })
     }
   }

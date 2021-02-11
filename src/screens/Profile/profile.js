@@ -40,7 +40,7 @@ import ImageApi from '@/services/image-api'
 import { isUrl } from '@/globals/Utils'
 
 const ProfileScreen = ({
-  profileViewType = 'own',
+  profileViewType = 'profile',
   backFunction,
   navigation,
 }) => {
@@ -69,10 +69,6 @@ const ProfileScreen = ({
   const [offsetHeight, setOffsetHeight] = useState(0)
 
   const [headerState, setHeaderState] = useState(profileViewType)
-
-  const changeHeaderHandler = () => {
-    headerState === 'own' ? setHeaderState('other') : setHeaderState('own')
-  }
 
   const toggleQR = () => {
     setQR(!QR)
@@ -392,7 +388,7 @@ const ProfileScreen = ({
         </Notification>
         <View>
           <TransparentHeader
-            type={headerState}
+            type="own"
             ellipsisState={ellipsisState}
             toggleEllipsisState={toggleEllipsisState}
             toggleFollowing={toggleFollowing}
@@ -492,6 +488,7 @@ const ProfileScreen = ({
           backFunction={backFunction}
           triggerNotify={triggerNotify}
           userInfo={userInfo}
+          coverPhotoUrl={coverPhotoUrl}
         />
       </Animated.View>
     )
@@ -530,7 +527,7 @@ const ProfileScreen = ({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <>
       <StickyParallaxHeader
         foreground={renderForeground()}
         header={renderHeader()}
@@ -541,7 +538,7 @@ const ProfileScreen = ({
             ? normalize(574.857)
             : normalize(479.23)
         }
-        headerHeight={scrollPosition < 100 ? 0 : normalize(60)}
+        headerHeight={scrollPosition < 100 ? 0 : normalize(90)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -551,7 +548,7 @@ const ProfileScreen = ({
           }
         )}
         snapToEdge={false}
-        transparentHeader={scrollPosition < 300 ? true : false}
+        transparentHeader={scrollPosition < 228 ? true : false}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl
@@ -573,18 +570,22 @@ const ProfileScreen = ({
         }}
         tabTextContainerActiveStyle={{
           borderBottomColor: Colors.secondaryRoyalBlue,
-          borderBottomWidth: 2,
+          borderBottomWidth: normalize(4),
         }}
         tabsContainerStyle={{
           height: normalize(50),
           width: Dimensions.get('window').width + normalize(18) * 2,
           backgroundColor: Colors.neutralsWhite,
+          borderBottomColor: Colors.neutralGray,
+          borderBottomWidth: normalize(4),
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
+          borderBottomColor: Colors.neutralGray,
+          borderBottomWidth: normalize(10),
         }}></StickyParallaxHeader>
       <WhiteOpacity />
-    </SafeAreaView>
+    </>
   )
 }
 
