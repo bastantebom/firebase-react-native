@@ -346,7 +346,7 @@ const MapComponent = ({
             <PinBee width={normalize(38)} height={normalize(38)} />
           </TouchableOpacity>
         ) : (
-          <MapMarker width={normalize(48)} height={normalize(48)} />
+          <PinBee width={normalize(38)} height={normalize(38)} />
         )}
       </View>
     </View>

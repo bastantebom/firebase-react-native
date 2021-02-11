@@ -95,15 +95,15 @@ const TransparentHeader = ({
             flex: 1,
             position: 'absolute',
             zIndex: 1,
-            backgroundColor: 'transparent',
+            backgroundColor: 'transparent'
           }}>
           <View
             style={{
               justifyContent: 'space-between',
               flexDirection: 'row',
-              paddingHorizontal: 16,
+              paddingHorizontal: normalize(16),
               width: Dimensions.get('window').width,
-              paddingTop: 4,
+              paddingTop: normalize(15),
             }}>
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
@@ -198,9 +198,9 @@ const TransparentHeader = ({
             style={{
               justifyContent: 'space-between',
               flexDirection: 'row',
-              paddingHorizontal: 16,
+              paddingHorizontal: normalize(16),
               width: Dimensions.get('window').width,
-              paddingTop: 4,
+              paddingTop: normalize(15),
             }}>
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
@@ -275,7 +275,7 @@ const TransparentHeader = ({
               flexDirection: 'row',
               paddingHorizontal: 16,
               width: Dimensions.get('window').width,
-              paddingTop: 4,
+              paddingTop: 15,
             }}>
             <View></View>
 
@@ -334,7 +334,7 @@ const TransparentHeader = ({
               flexDirection: 'row',
               paddingHorizontal: 16,
               width: Dimensions.get('window').width,
-              paddingTop: 4,
+              paddingTop: normalize(15),
             }}>
             <View>
               <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>

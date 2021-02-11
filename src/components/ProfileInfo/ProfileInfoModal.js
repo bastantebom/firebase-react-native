@@ -493,18 +493,24 @@ function ProfileInfoModal(props) {
         tabTextContainerStyle={{
           flexGrow: 1,
           left: normalize(-18),
+          borderBottomColor: 'transparent',
+          borderBottomWidth: normalize(4),
         }}
         tabTextContainerActiveStyle={{
           borderBottomColor: Colors.secondaryRoyalBlue,
-          borderBottomWidth: 2,
+          borderBottomWidth: normalize(4),
         }}
         tabsContainerStyle={{
           height: normalize(50),
           width: Dimensions.get('window').width + normalize(18) * 2,
           backgroundColor: Colors.neutralsWhite,
+          borderBottomColor: Colors.neutralGray,
+          borderBottomWidth: normalize(4),
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
+          borderBottomColor: Colors.neutralGray,
+          borderBottomWidth: normalize(10),
         }}></StickyParallaxHeader>
     </SafeAreaView>
   )
@@ -596,7 +602,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textAlign: 'center',
     letterSpacing: normalize(2),
-    width: '50%',
+    alignItems: 'center',
     flexGrow: 1,
+    paddingHorizontal: normalize(10),
   },
 })

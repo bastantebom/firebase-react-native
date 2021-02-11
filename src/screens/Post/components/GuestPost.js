@@ -58,10 +58,10 @@ export const GuestPost = () => {
             textStyle="display5"
             customStyle={styles.textStyle}
             color={Colors.primaryMidnightBlue}>
-            Offer services, sell goods, find what you need
+            Offer services, sell goods, {"\n"} find what you need
           </AppText>
           <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-            Post your offers, side gigs, and more! Find what you need in your
+            Post your offers, side gigs, and more! Find {"\n"} what you need in your
             community.{' '}
           </AppText>
           <TouchableOpacity

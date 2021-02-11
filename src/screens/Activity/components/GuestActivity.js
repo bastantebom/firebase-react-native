@@ -22,11 +22,10 @@ const GuestActivity = () => {
           textStyle="display5"
           customStyle={styles.textStyle}
           color={Colors.primaryMidnightBlue}>
-          Easily track all your activity
+          Easily track all {"\n"} your activity
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          Notifications, receipts, transaction records, and updates—organized in
-          one place.
+          Offer services, sell goods, {"\n"} find what you need
         </AppText>
         <TouchableOpacity
           style={{

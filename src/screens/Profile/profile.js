@@ -616,8 +616,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textAlign: 'center',
     letterSpacing: normalize(2),
-    width: '50%',
     flexGrow: 1,
+    paddingHorizontal: normalize(10),
   },
 })
 

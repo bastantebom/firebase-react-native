@@ -146,7 +146,7 @@ const ProfileInfo = ({ profileData }) => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            marginBottom: 16,
+            marginBottom: normalize(10),
           }}>
           <BeeJoinedTime width={normalize(16)} height={normalize(16)} />
           <AppText
@@ -164,6 +164,12 @@ const ProfileInfo = ({ profileData }) => {
           </AppText>
         </View>
       </View>
+      <Divider
+        style={[
+          GlobalStyle.dividerStyle,
+          { marginVertical: normalize(16), backgroundColor: Colors.neutralsZircon, height: normalize(4) },
+        ]}
+      />
       <Modal
         isVisible={history}
         animationIn="slideInRight"

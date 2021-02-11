@@ -61,10 +61,10 @@ export const GuestProfile = () => {
             textStyle="display5"
             customStyle={styles.textStyle}
             color={Colors.primaryMidnightBlue}>
-            Join the bustling Servbees community
+            Join the bustling {"\n"} Servbees community
           </AppText>
           <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-            Be a Buzzybee and connect, hustle, and earn—all on your own terms.
+            Offer services, sell goods, {"\n"} find what you need
           </AppText>
           <TouchableOpacity
             style={{

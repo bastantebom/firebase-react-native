@@ -88,21 +88,7 @@ const Onboarding = ({ navigation, illustration }) => {
     },
     {
       illustration: <IllustTwo width={width} height={width * 0.80} />,
-      title: 'Discover and Buy',
-      description:
-        'Looking for something in particular? Discover nearby options and get the best deals for goods and services.',
-    },
-    {
-      illustration: <IllustThree width={width} height={width * 0.80} />,
-      title: 'Offer and Sell',
-      description:
-        'Ready to be a Buzzybee? Offer your services and products to those near you. Find customers easily!',
-    },
-    {
-      illustration: <IllustFour width={width} height={width * 0.80} />,
       title: 'Join a Hive',
-      description:
-        'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
     },
   ])
 
@@ -207,7 +193,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryMidnightBlue,
   },
   swiperHolder: {
-    flex: 1,
+    position: 'relative',
+    flex: 1
   },
   slideHolder: {
     alignItems: 'center',
@@ -231,7 +218,8 @@ const styles = StyleSheet.create({
     height: 5,
     marginLeft: normalize(5.5),
     marginRight: normalize(5.5),
-    bottom: height > 700 ? height * 0.3 : height * 0.18,
+    // bottom: height * 0.2,
+    bottom: height > 700 ? height * 0.2 : height * 0.1,
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
