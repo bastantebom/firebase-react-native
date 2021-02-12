@@ -567,6 +567,8 @@ const ProfileScreen = ({
         tabTextContainerStyle={{
           flexGrow: 1,
           left: normalize(-18),
+          borderBottomColor: 'transparent',
+          borderBottomWidth: normalize(4),
         }}
         tabTextContainerActiveStyle={{
           borderBottomColor: Colors.secondaryRoyalBlue,
@@ -575,9 +577,7 @@ const ProfileScreen = ({
         tabsContainerStyle={{
           height: normalize(50),
           width: Dimensions.get('window').width + normalize(18) * 2,
-          backgroundColor: Colors.neutralsWhite,
-          borderBottomColor: Colors.neutralGray,
-          borderBottomWidth: normalize(4),
+          backgroundColor: Colors.neutralsWhite
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
