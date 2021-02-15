@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  FlatList,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
@@ -137,6 +138,8 @@ const Ongoing = ({ sortCategory }) => {
     setIsRefreshing(false)
   }
 
+  const renderItem = ({ item }) => <ActivitiesCard info={item} />
+
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
@@ -243,48 +246,53 @@ const Ongoing = ({ sortCategory }) => {
         </ScrollView>
       ) : (
         !isLoading && (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                style={{ zIndex: 1 }}
-                refreshing={isRefreshing}
-                titleColor="#2E3034"
-                tintColor="#2E3034"
-                onRefresh={handleRefresh}
-              />
-            }>
-            <View style={{ paddingTop: normalize(15) }}>
-              <View style={{ paddingHorizontal: normalize(15) }}>
-                {onGoing.filter(post =>
-                  sortCategory.value === 'all'
-                    ? post
-                    : post.cardType === sortCategory.value
-                ).length && (
-                  <AppText
-                    textStyle="eyebrow1"
-                    customStyle={{
-                      color: '#91919C',
-                      paddingTop: normalize(15),
-                    }}>
-                    NEW
-                  </AppText>
-                )}
-              </View>
-              {onGoing
-                .filter(post =>
-                  sortCategory.value === 'all'
-                    ? post
-                    : post.cardType === sortCategory.value
-                )
-                .map((info, i) => {
-                  return (
-                    <View key={i}>
-                      <ActivitiesCard info={info} />
-                    </View>
-                  )
-                })}
+          <>
+            <View style={{ paddingHorizontal: normalize(15) }}>
+              {onGoing.filter(post =>
+                sortCategory.value === 'all'
+                  ? post
+                  : post.cardType === sortCategory.value
+              ).length && (
+                <AppText
+                  textStyle="eyebrow1"
+                  customStyle={{
+                    color: '#91919C',
+                    paddingTop: normalize(15),
+                  }}>
+                  NEW
+                </AppText>
+              )}
             </View>
-          </ScrollView>
+
+            <FlatList
+              data={onGoing.filter(post =>
+                sortCategory.value === 'all'
+                  ? post
+                  : post.cardType === sortCategory.value
+              )}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              ListFooterComponent={
+                <View
+                  style={{
+                    alignItems: 'center',
+                    marginTop: 8,
+                    marginBottom: 24,
+                  }}>
+                  {isLoading ? <ActivityIndicator /> : <AppText></AppText>}
+                </View>
+              }
+              refreshControl={
+                <RefreshControl
+                  style={{ zIndex: 1 }}
+                  refreshing={isRefreshing}
+                  titleColor="#2E3034"
+                  tintColor="#2E3034"
+                  onRefresh={handleRefresh}
+                />
+              }
+            />
+          </>
         )
       )}
     </SafeAreaView>
