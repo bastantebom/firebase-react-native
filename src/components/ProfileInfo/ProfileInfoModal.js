@@ -463,7 +463,7 @@ function ProfileInfoModal(props) {
         foreground={renderForeground()}
         header={renderHeader()}
         parallaxHeight={offsetHeight ? offsetHeight : normalize(425.9)}
-        headerHeight={scrollPosition < 100 ? 0 : normalize(90)}
+        headerHeight={scrollPosition < 100 ? 0 : normalize(115)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -473,7 +473,7 @@ function ProfileInfoModal(props) {
           }
         )}
         snapToEdge={false}
-        transparentHeader={scrollPosition < 228 ? true : false}
+        transparentHeader={scrollPosition < 250 ? true : false}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl

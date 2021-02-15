@@ -29,7 +29,6 @@ import { normalize, GlobalStyle, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { generateDynamicLink, getPreviewLinkData, isUrl } from '@/globals/Utils'
 import { ProfileHeaderDefault } from '@/assets/images'
-import LinearGradient from 'react-native-linear-gradient'
 
 const StickyHeader = ({
   toggleEllipsisState,
@@ -250,11 +249,10 @@ const StickyHeader = ({
         <View
           style={{
             bottom: 0,
-            height: normalize(33),
+            height: normalize(56),
             width: '100%',
           }}>
-          <LinearGradient
-            colors={['rgba(255,255,255, 0)', 'rgba(255,255,255, 0)']}>
+          <View>
             {coverPhotoUrl && userInfo.cover_photo && isUrl(coverPhotoUrl) ? (
               <CacheableImage
                 source={{ uri: coverPhotoUrl }}
@@ -266,7 +264,7 @@ const StickyHeader = ({
                 height={normalize(158 * 1.2)}
               />
             )}
-          </LinearGradient>
+          </View>
         </View>
         <View style={styles.profileStickyHeader}>
           <View

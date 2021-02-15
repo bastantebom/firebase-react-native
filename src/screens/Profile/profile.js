@@ -538,7 +538,7 @@ const ProfileScreen = ({
             ? normalize(574.857)
             : normalize(479.23)
         }
-        headerHeight={scrollPosition < 100 ? 0 : normalize(90)}
+        headerHeight={scrollPosition < 100 ? 0 : normalize(115)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -548,7 +548,7 @@ const ProfileScreen = ({
           }
         )}
         snapToEdge={false}
-        transparentHeader={scrollPosition < 228 ? true : false}
+        transparentHeader={scrollPosition < 250 ? true : false}
         onEndReached={getMorePost}
         refreshControl={
           <RefreshControl
@@ -577,7 +577,7 @@ const ProfileScreen = ({
         tabsContainerStyle={{
           height: normalize(50),
           width: Dimensions.get('window').width + normalize(18) * 2,
-          backgroundColor: Colors.neutralsWhite
+          backgroundColor: Colors.neutralsWhite,
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
