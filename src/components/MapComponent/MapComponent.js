@@ -33,6 +33,9 @@ const MapComponent = ({
   scrollEnabled = true,
 }) => {
   const circleRef = useRef(null)
+  const circleRefInner = useRef(null)
+  const circleRefMiddle = useRef(null)
+  const circleRefOuter = useRef(null)
   const mapViewRef = useRef(null)
 
   const [newLat, setNewLat] = useState(latitude)
@@ -131,16 +134,26 @@ const MapComponent = ({
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
-      setTimeout(() => {
-        if (circleRef.current) {
-          circleRef.current.setNativeProps({
-            strokeColor: 'rgba(255,212,0,.1)',
-            fillColor: 'rgba(255,212,0,.1)',
-          })
-        }
-      }, 100)
+      if (
+        circleRefInner.current &&
+        circleRefMiddle.current &&
+        circleRefOuter.current
+      ) {
+        circleRefInner.current.setNativeProps({
+          strokeColor: 'rgba(255,212,0,.1)',
+          fillColor: 'rgba(255,212,0,.1)',
+        })
+        circleRefMiddle.current.setNativeProps({
+          strokeColor: 'rgba(255,212,0,.1)',
+          fillColor: 'rgba(255,212,0,.1)',
+        })
+        circleRefOuter.current.setNativeProps({
+          strokeColor: 'rgba(255,212,0,.1)',
+          fillColor: 'rgba(255,212,0,.1)',
+        })
+      }
     }
-  }, [])
+  }, [newLat])
 
   useEffect(() => {
     if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng)) {
@@ -306,7 +319,7 @@ const MapComponent = ({
                   strokeWidth={1}
                   strokeColor={'rgba(255,212,0,.1)'}
                   fillColor={'rgba(255,212,0,.1)'}
-                  ref={circleRef}
+                  ref={circleRefInner}
                 />
                 <Circle
                   center={{
@@ -317,7 +330,7 @@ const MapComponent = ({
                   strokeWidth={1}
                   strokeColor={'rgba(255,212,0,.1)'}
                   fillColor={'rgba(255,212,0,.1)'}
-                  ref={circleRef}
+                  ref={circleRefMiddle}
                 />
               </>
             )}
@@ -330,7 +343,7 @@ const MapComponent = ({
               strokeWidth={1}
               strokeColor={'rgba(255,212,0,.18)'}
               fillColor={'rgba(255,212,0,.18)'}
-              ref={circleRef}
+              ref={circleRefOuter}
             />
           </View>
         ) : null}
