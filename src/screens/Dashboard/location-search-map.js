@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     elevation: 100,
   },
   textInputWrapper: {
-    top: Dimensions.get('window').height > 850 ? normalize(32) : normalize(12),
+    top: Dimensions.get('window').height > 780 ? normalize(32) : normalize(12),
     width: '100%',
     position: 'absolute',
     paddingLeft: normalize(42),
