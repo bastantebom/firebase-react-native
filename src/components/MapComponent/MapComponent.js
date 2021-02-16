@@ -156,18 +156,16 @@ const MapComponent = ({
   }, [newLat])
 
   useEffect(() => {
-    if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng)) {
-      setTimeout(() => {
-        mapViewRef.current.animateToRegion(
-          {
-            latitude: parseFloat(reCenter.lat),
-            longitude: parseFloat(reCenter.lng),
-            latitudeDelta: customDelta || Config.latitudeDelta,
-            longitudeDelta: customDelta || Config.longitudeDelta,
-          },
-          2000
-        )
-      }, 100)
+    if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng) && radius !== 101) {
+      mapViewRef.current.animateToRegion(
+        {
+          latitude: parseFloat(reCenter.lat),
+          longitude: parseFloat(reCenter.lng),
+          latitudeDelta: customDelta || Config.latitudeDelta,
+          longitudeDelta: customDelta || Config.longitudeDelta,
+        },
+        2000
+      )
     }
   }, [reCenter])
 
@@ -231,7 +229,7 @@ const MapComponent = ({
 
   useEffect(() => {
     if (withRadius) {
-      if (isMapReady && radius >= 1) {
+      if (isMapReady && radius >= 1 && radius < 101) {
         mapViewRef.current.fitToCoordinates(points, {
           animated: true,
         })
@@ -248,7 +246,9 @@ const MapComponent = ({
           latitudeDelta: 15,
           longitudeDelta: 15,
         }
-        mapViewRef.current.animateToRegion(centralCoordinates, 2000)
+        setTimeout(() => {
+          mapViewRef.current.animateToRegion(centralCoordinates, 2000)
+        }, 200)
       }
       if (radius < 1) {
         let centralCoordinates = {
@@ -257,6 +257,7 @@ const MapComponent = ({
           latitudeDelta: Config.latitudeDelta,
           longitudeDelta: Config.longitudeDelta,
         }
+
         mapViewRef.current.animateToRegion(centralCoordinates, 2000)
       }
     }
