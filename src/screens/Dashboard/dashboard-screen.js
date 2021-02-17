@@ -8,6 +8,7 @@ import {
   Dimensions,
   Animated,
   TouchableWithoutFeedback,
+  Platform,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import LinearGradient from 'react-native-linear-gradient'
@@ -500,6 +501,7 @@ const DashboardScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    marginTop: Platform.OS === 'ios' ? normalize(38) : 0,
   },
   scrollView: {
     marginTop: normalize(130),

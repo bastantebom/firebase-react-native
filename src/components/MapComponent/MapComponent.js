@@ -132,7 +132,7 @@ const MapComponent = ({
     },
   ]
 
-  useEffect(() => {
+  const reDrawRadius = () => {
     if (Platform.OS === 'ios') {
       if (
         circleRefInner.current &&
@@ -140,20 +140,17 @@ const MapComponent = ({
         circleRefOuter.current
       ) {
         circleRefInner.current.setNativeProps({
-          strokeColor: 'rgba(255,212,0,.1)',
           fillColor: 'rgba(255,212,0,.1)',
         })
         circleRefMiddle.current.setNativeProps({
-          strokeColor: 'rgba(255,212,0,.1)',
           fillColor: 'rgba(255,212,0,.1)',
         })
         circleRefOuter.current.setNativeProps({
-          strokeColor: 'rgba(255,212,0,.1)',
           fillColor: 'rgba(255,212,0,.1)',
         })
       }
     }
-  }, [newLat])
+  }
 
   useEffect(() => {
     if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng) && radius !== 101) {
@@ -233,16 +230,22 @@ const MapComponent = ({
         mapViewRef.current.fitToCoordinates(points, {
           animated: true,
         })
+        reDrawRadius()
       }
     }
   }, [radius, isMapReady])
 
   useEffect(() => {
     if (withRadius) {
-      if (radius === 101 && isMapReady) {
+      if (
+        radius === 101 &&
+        isMapReady &&
+        !isNaN(reCenter.lat) &&
+        !isNaN(reCenter.lng)
+      ) {
         let centralCoordinates = {
-          latitude: 12.879721, //central point of ph
-          longitude: 121.774017,
+          latitude: reCenter.lat,
+          longitude: reCenter.lng,
           latitudeDelta: 15,
           longitudeDelta: 15,
         }
@@ -301,7 +304,7 @@ const MapComponent = ({
               }}
               radius={customDelta ? 200 : 500}
               strokeWidth={1}
-              strokeColor={'rgba(255, 212, 0, 1)'}
+              strokeColor={'rgba(255, 212, 0, .1)'}
               fillColor={'rgba(255, 212, 0, 0.18)'}
               ref={circleRef}
             />
@@ -342,7 +345,7 @@ const MapComponent = ({
               }}
               radius={(radius * 1000) / 4}
               strokeWidth={1}
-              strokeColor={'rgba(255,212,0,.18)'}
+              strokeColor={'rgba(255,212,0,.1)'}
               fillColor={'rgba(255,212,0,.18)'}
               ref={circleRefOuter}
             />

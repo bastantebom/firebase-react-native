@@ -245,6 +245,7 @@ const SinglePostView = props => {
   }, [props])
 
   useEffect(() => {
+    if (!user) return
     const subscriber = firestore()
       .collection('orders')
       .where('buyer_id', '==', user?.uid)
@@ -1111,7 +1112,7 @@ const SinglePostView = props => {
           />
         </Modal>
 
-        {othersView && (
+        {othersView && user && (
           <SafeAreaView
             style={{
               flexDirection: 'row',
