@@ -1,16 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import { AppText, AppButton, PaddingView } from '@/components'
+import { AppText } from '@/components'
 import { Colors, normalize } from '@/globals'
 
-import IllustHive from '@/assets/images/hive-img1.svg'
 import { ScrollView } from 'react-native-gesture-handler'
 import { OnboardingIllustration2 } from '@/assets/images'
+import { Context } from '@/context'
 
 const GuestActivity = () => {
   const navigation = useNavigation()
+  const { openSlider, setAuthType } = useContext(Context)
 
   return (
     <SafeAreaView style={{ flexGrow: 1 }}>
@@ -22,10 +23,10 @@ const GuestActivity = () => {
           textStyle="display5"
           customStyle={styles.textStyle}
           color={Colors.primaryMidnightBlue}>
-          Easily track all {"\n"} your activity
+          Easily track all {'\n'} your activity
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          Offer services, sell goods, {"\n"} find what you need
+          Offer services, sell goods, {'\n'} find what you need
         </AppText>
         <TouchableOpacity
           style={{
@@ -37,7 +38,10 @@ const GuestActivity = () => {
             borderRadius: 3,
             maxWidth: normalize(250),
           }}
-          onPress={() => {}}>
+          onPress={() => {
+            setAuthType('signup')
+            openSlider()
+          }}>
           <AppText textStyle="body1medium">Join Now</AppText>
         </TouchableOpacity>
       </ScrollView>
