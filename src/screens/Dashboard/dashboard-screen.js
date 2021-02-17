@@ -1,45 +1,50 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react'
-import Modal from 'react-native-modal'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
-  View,
   StyleSheet,
-  TouchableWithoutFeedback,
+  View,
   SafeAreaView,
+  ScrollView,
+  RefreshControl,
+  Dimensions,
   Animated,
+  TouchableWithoutFeedback,
 } from 'react-native'
-
-import { WhiteOpacity } from '@/components'
-import Filters from './components/filters'
-
-import { normalize } from '@/globals'
-import { UserContext } from '@/context/UserContext'
-
-import LocationSearch from './components/LocationSearch'
-
-import AsyncStorage from '@react-native-community/async-storage'
-import Api from '@/services/Api'
-import Posts from './components/posts'
-
-import { cloneDeep, debounce } from 'lodash'
-import { getCurrentPosition, getLocationData } from '@/globals/Utils'
-import VerifyNotification from './components/verify-account-notification'
-
+import Modal from 'react-native-modal'
 import LinearGradient from 'react-native-linear-gradient'
+import AsyncStorage from '@react-native-community/async-storage'
+import { debounce } from 'lodash'
+
+import { UserContext } from '@/context/UserContext'
+import { normalize } from '@/globals'
+import { getCurrentPosition, getLocationData } from '@/globals/Utils'
+import NewsFeed from '@/screens/Dashboard/components/Newsfeed/index'
+import SkeletonLoader from '@/screens/Dashboard/components/Newsfeed/skeleton-loader'
+import EmptyState from './components/empty-state'
+import VerifyNotification from './components/verify-account-notification'
+import LocationSearch from './components/LocationSearch'
 import SearchToolbar from './components/search-toolbar'
 import SearchResults from './components/search-results'
-import EmptyState from './components/empty-state'
+import Filters from './components/filters'
+import Api from '@/services/Api'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
 const SEARCH_USER_TOOLBAR_HEIGHT = 120
 const FILTER_TOOLBAR_HEIGHT = 65
-
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
 const DashboardScreen = ({ navigation }) => {
   const { user, userInfo, userStatus } = useContext(UserContext)
-  const [searchValue, setSearchValue] = useState('')
-  const [isFiltersVisible, setIsFiltersVisible] = useState(false)
+  const [filters, setFilters] = useState({
+    sort: 'recent',
+    type: [],
+    page: 0,
+    limit: 10,
+  })
+  const [locationData, setLocationData] = useState({
+    latitude: null,
+    longitude: null,
+  })
   const [
     shouldShowVerifyNotification,
     setShouldShowVerifyNotification,
@@ -48,138 +53,130 @@ const DashboardScreen = ({ navigation }) => {
     isVerifyNotificationVisible,
     setIsVerifyNotificationVisible,
   ] = useState(false)
-
-  const [filters, setFilters] = useState({
-    sort: 'recent',
-    type: [],
-    page: 0,
-    limit: 10,
-  })
-
-  const [locationData, setLocationData] = useState({
-    latitude: null,
-    longitude: null,
-  })
-
-  const [searchBarFocused, setSearchBarFocused] = useState(false)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const [posts, setPosts] = useState([])
   const [totalPages, setTotalPages] = useState(Infinity)
-
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [isLoadingMoreItems, setIsLoadingMoreItems] = useState(false)
-  const [posts, setPosts] = useState({})
+  const [isRereshing, setIsRefreshing] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [noMorePost, setNoMorePost] = useState(false)
 
   const [isSearching, setIsSearching] = useState(false)
+  const [searchType, setSearchType] = useState('post')
   const [searchResults, setSearchResults] = useState([])
   const [noResults, setNoResults] = useState(false)
-  const [searchType, setSearchType] = useState('post')
+  const [searchValue, setSearchValue] = useState('')
+  const [searchBarFocused, setSearchBarFocused] = useState(false)
+
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false)
 
   const loadPosts = async filters => {
-    setIsRefreshing(true)
     try {
       const params = filters
-
       const response = await Api.getPosts(params)
       if (!response.success) throw new Error(response.message)
 
-      const newPosts = response.data
-        .map(post => ({ ...post, $isLoading: true }))
-        .reduce(
-          (_posts, post) => ({
-            ..._posts,
-            [post.id]: post,
-          }),
-          {}
-        )
+      const newPosts = await Promise.all(
+        response.data.map(async post => {
+          const { likes } = await Api.getPostLikes({ pid: post.id })
+          post.likes = likes
+          return post
+        })
+      )
+
+      if (filters.page === 0) setIsInitialLoad(false)
 
       setTotalPages(response.total_pages)
-      setPosts(posts => (!filters.page ? newPosts : { ...posts, ...newPosts }))
+      setPosts(posts => (!filters.page ? newPosts : [...posts, ...newPosts]))
+      setIsLoading(false)
+      setIsRefreshing(false)
+      if (!response.data.length) setNoMorePost(true)
     } catch (error) {
-      console.log(error)
+      console.error(error)
+      alert(error.message || 'There was an error getting dashboard posts')
     }
-
-    setIsLoadingMoreItems(false)
-    setIsRefreshing(false)
-  }
-
-  const handlePostPress = post => {
-    navigation.navigate('NBTScreen', {
-      screen: 'OthersPost',
-      params: {
-        data: post,
-        viewing: true,
-        created: false,
-        edited: false,
-        othersView: user?.uid !== post.uid,
-      },
-    })
-  }
-
-  const handleUserPress = post => {
-    if (user?.uid === post.uid) {
-      navigation.navigate('TabStack', { screen: 'You' })
-    } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: post.uid },
-      })
-    }
-  }
-
-  const handleLikePress = async post => {
-    const oldLikes = cloneDeep(post.likes)
-    const newLikes = cloneDeep(post.likes)
-
-    const liked = post.likes?.includes(user.uid)
-    if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
-    else newLikes.push(user.uid)
-
-    setPosts(posts => ({
-      ...posts,
-      [post.id]: {
-        ...posts[post.id],
-        likes: newLikes,
-      },
-    }))
-
-    try {
-      const response = await Api[liked ? 'unlikePost' : 'likePost']({
-        pid: post.id,
-      })
-
-      if (!response.success) throw new Error(response.message)
-    } catch (error) {
-      console.log(error.message || error)
-
-      setPosts(posts => ({
-        ...posts,
-        [post.id]: {
-          ...posts[post.id],
-          likes: oldLikes,
-        },
-      }))
-    }
-  }
-
-  const handleApplyFilters = newFilters =>
-    setFilters(filters => ({ ...filters, ...newFilters, page: 0 }))
-
-  const handleRefresh = () => {
-    if (isRefreshing) return
-    setIsRefreshing(true)
-    setFilters(filters => ({
-      ...filters,
-      page: 0,
-    }))
   }
 
   const handleOnEndReached = () => {
-    if (isLoadingMoreItems || isRefreshing) return
+    if (isLoading || noMorePost) return
 
-    setIsLoadingMoreItems(true)
+    setIsLoading(true)
     setFilters(filters => ({
       ...filters,
       page: filters.page >= totalPages ? filters.page : filters.page + 1,
     }))
+  }
+
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize,
+  }) => {
+    const paddingToBottom = Dimensions.get('window').height + 800
+    return (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    )
+  }
+
+  useEffect(() => {
+    loadPosts(filters)
+  }, [filters])
+
+  useEffect(() => {
+    AsyncStorage.getItem('hide-verify-notification').then(hidden => {
+      setShouldShowVerifyNotification(hidden !== 'true')
+    })
+    ;(async () => {
+      if (!locationData?.latitude || !locationData?.longitude) {
+        const { latitude, longitude } = await getCurrentPosition()
+        const addressData = await getLocationData({ latitude, longitude })
+        setLocationData({
+          ...addressData,
+        })
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    const { latitude, longitude, radius } = locationData
+
+    if (latitude === null || longitude === null || !radius) return
+    setIsRefreshing(true)
+    setFilters(filters => ({
+      ...filters,
+      lat: latitude,
+      lon: longitude,
+      radius,
+    }))
+  }, [locationData])
+
+  useEffect(() => {
+    handleSearch(searchValue, searchType)
+  }, [searchValue])
+
+  useEffect(() => {
+    setSearchResults([])
+    handleSearch(searchValue, searchType)
+  }, [searchType])
+
+  useEffect(() => {
+    if (!userStatus?.verified) return
+    const isVerified = Object.values(userStatus?.verified).every(
+      status => status === 'completed'
+    )
+    setIsVerifyNotificationVisible(
+      !!user && !isVerified && shouldShowVerifyNotification
+    )
+  }, [userStatus, shouldShowVerifyNotification])
+
+  const scrollY = new Animated.Value(0)
+  const diffClampNode = Animated.diffClamp(scrollY, 0, SEARCH_TOOLBAR_HEIGHT)
+  const translateY = Animated.multiply(diffClampNode, -1)
+
+  const getSearchToolbarHeight = () => {
+    return searchType === 'user'
+      ? SEARCH_USER_TOOLBAR_HEIGHT
+      : SEARCH_TOOLBAR_HEIGHT
   }
 
   const handleLocationChange = async ({ latitude, longitude, radius }) => {
@@ -228,132 +225,6 @@ const DashboardScreen = ({ navigation }) => {
     })
   }
 
-  const handleTypeFilterPress = type => {
-    const newFilters = filters
-    const index = filters.type.indexOf(type)
-    if (~index) newFilters.type.splice(index, 1)
-    else newFilters.type.push(type)
-
-    setFilters(filters => ({ ...filters, ...newFilters, page: 0 }))
-  }
-
-  const handleSortFilterPress = sort => {
-    setFilters(filters => ({ ...filters, sort, page: 0 }))
-  }
-
-  const getDeferredData = post => {
-    return Promise.all([
-      Api.getDashboardUser({ uid: post.uid }).then(response => {
-        setPosts(posts => ({
-          ...posts,
-          [post.id]: {
-            ...posts[post.id],
-            user: response.data,
-          },
-        }))
-      }),
-      Api.getPostLikes({ pid: post.id }).then(response => {
-        setPosts(posts => ({
-          ...posts,
-          [post.id]: {
-            ...posts[post.id],
-            likes: response.likes,
-          },
-        }))
-      }),
-    ])
-      .then(() => {
-        setPosts(posts => ({
-          ...posts,
-          [post.id]: {
-            ...posts[post.id],
-            $isLoading: false,
-          },
-        }))
-      })
-      .catch(() => {
-        setPosts(posts => ({
-          ...posts,
-          [post.id]: {
-            ...posts[post.id],
-            $hasErrors: true,
-          },
-        }))
-      })
-  }
-
-  useEffect(() => {
-    Object.values(posts)
-      .filter(post => !post.$promise)
-      .forEach(post => {
-        setPosts(posts => ({
-          ...posts,
-          [post.id]: {
-            ...posts[post.id],
-            $promise: getDeferredData(post),
-          },
-        }))
-      })
-  }, [posts])
-
-  useEffect(() => {
-    loadPosts(filters)
-  }, [filters])
-
-  useEffect(() => {
-    const { latitude, longitude, radius } = locationData
-
-    if (latitude === null || longitude === null || !radius) return
-    setIsRefreshing(true)
-    setFilters(filters => ({
-      ...filters,
-      lat: latitude,
-      lon: longitude,
-      radius,
-    }))
-  }, [locationData])
-
-  useEffect(() => {
-    AsyncStorage.getItem('hide-verify-notification').then(hidden => {
-      setShouldShowVerifyNotification(hidden !== 'true')
-    })
-    ;(async () => {
-      if (!locationData?.latitude || !locationData?.longitude) {
-        const { latitude, longitude } = await getCurrentPosition()
-        const addressData = await getLocationData({ latitude, longitude })
-        setLocationData({
-          ...addressData,
-        })
-      }
-    })()
-  }, [])
-
-  useEffect(() => {
-    if (!userStatus?.verified) return
-    const isVerified = Object.values(userStatus?.verified).every(
-      status => status === 'completed'
-    )
-    setIsVerifyNotificationVisible(
-      !!user && !isVerified && shouldShowVerifyNotification
-    )
-  }, [userStatus, shouldShowVerifyNotification])
-
-  const scrollY = new Animated.Value(0)
-
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: false }
-  )
-
-  const diffClampNode = Animated.diffClamp(scrollY, 0, SEARCH_TOOLBAR_HEIGHT)
-  const translateY = Animated.multiply(diffClampNode, -1)
-
-  const getSearchToolbarHeight = () => {
-    return searchType === 'user'
-      ? SEARCH_USER_TOOLBAR_HEIGHT
-      : SEARCH_TOOLBAR_HEIGHT
-  }
-
   const handleSearch = useCallback(
     debounce(async (search, searchType) => {
       setNoResults(false)
@@ -386,24 +257,83 @@ const DashboardScreen = ({ navigation }) => {
         Api.getUser({ uid: data.uid }),
         Api.getPostLikes({ pid: data.id }),
       ])
+
       handlePostPress({ ...data, user: user.data, likes: likes.data })
     } else {
       handleUserPress(data)
     }
   }
 
-  useEffect(() => {
-    handleSearch(searchValue, searchType)
-  }, [searchValue])
+  const handlePostPress = post => {
+    navigation.navigate('NBTScreen', {
+      screen: 'OthersPost',
+      params: {
+        data: post,
+        viewing: true,
+        created: false,
+        edited: false,
+        othersView: user?.uid !== post.uid,
+      },
+    })
+  }
 
-  useEffect(() => {
-    setSearchResults([])
-    handleSearch(searchValue, searchType)
-  }, [searchType])
+  const handleUserPress = post => {
+    if (user?.uid === post.uid) {
+      navigation.navigate('TabStack', { screen: 'You' })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: { uid: post.uid },
+      })
+    }
+  }
+
+  const handleLikePress = async post => {
+    const currentPosts = [...posts]
+    let liked = false
+
+    currentPosts.forEach(item => {
+      if (item.id === post.id) {
+        if (post.likes?.includes(user.uid)) {
+          post.likes.splice(user.uid, 1)
+          liked = true
+        } else post.likes.push(user.uid)
+      }
+    })
+
+    setPosts(currentPosts)
+
+    try {
+      const response = await Api[liked ? 'unlikePost' : 'likePost']({
+        pid: post.id,
+      })
+      if (!response.success) throw new Error(response.message)
+    } catch (error) {
+      console.log(error.message || error)
+      setPosts(posts)
+    }
+  }
+
+  const handleTypeFilterPress = type => {
+    const newFilters = filters
+    const index = filters.type.indexOf(type)
+    if (~index) newFilters.type.splice(index, 1)
+    else newFilters.type.push(type)
+
+    setFilters(filters => ({ ...filters, ...newFilters, page: 0 }))
+  }
+
+  const handleSortFilterPress = sort => {
+    setFilters(filters => ({ ...filters, sort, page: 0 }))
+  }
+
+  const handleApplyFilters = newFilters => {
+    setFilters(filters => ({ ...filters, ...newFilters, page: 0 }))
+  }
 
   return (
     <>
-      <SafeAreaView style={styles.safeAreaContainer}>
+      <SafeAreaView style={styles.safeArea}>
         {isVerifyNotificationVisible && (
           <VerifyNotification
             onPress={() => {
@@ -418,113 +348,126 @@ const DashboardScreen = ({ navigation }) => {
           />
         )}
 
-        <View style={styles.container}>
-          <AnimatedLinearGradient
-            colors={['#ECEFF8', '#F8F9FC']}
+        <AnimatedLinearGradient
+          colors={['#ECEFF8', '#F8F9FC']}
+          style={{
+            position: 'absolute',
+            top: isVerifyNotificationVisible && !searchBarFocused ? 110 : 0,
+            left: 0,
+            right: 0,
+            height: Animated.add(
+              translateY,
+              getSearchToolbarHeight() +
+                (searchResults.length || noResults ? 0 : FILTER_TOOLBAR_HEIGHT)
+            ),
+            zIndex: 4,
+          }}>
+          <Animated.View
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: Animated.add(
-                translateY,
-                getSearchToolbarHeight() +
-                  (searchResults.length || noResults
-                    ? 0
-                    : FILTER_TOOLBAR_HEIGHT)
-              ),
-              zIndex: 4,
+              height: getSearchToolbarHeight(),
+              transform: [{ translateY }],
+              zIndex: 5,
+              alignItems: 'center',
+              flexDirection: 'row',
             }}>
+            <SearchToolbar
+              value={searchValue}
+              onValueChange={setSearchValue}
+              onFocus={() => setSearchBarFocused(true)}
+              onFiltersPress={() => setIsFiltersVisible(true)}
+              onBackPress={() => setSearchBarFocused(false)}
+              searchType={searchType}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              setSearchType={setSearchType}
+              setSearchResults={setSearchResults}
+            />
+          </Animated.View>
+          {(!searchResults.length || noResults) && (
             <Animated.View
               style={{
-                height: getSearchToolbarHeight(),
+                height: FILTER_TOOLBAR_HEIGHT,
                 transform: [{ translateY }],
-                zIndex: 5,
-                alignItems: 'center',
-                flexDirection: 'row',
+                paddingTop: 8,
               }}>
-              <SearchToolbar
-                value={searchValue}
-                onValueChange={setSearchValue}
-                onFocus={() => setSearchBarFocused(true)}
-                onFiltersPress={() => setIsFiltersVisible(true)}
-                onBackPress={() => setSearchBarFocused(false)}
-                searchType={searchType}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-                setSearchType={setSearchType}
-                setSearchResults={setSearchResults}
+              <LocationSearch
+                onValueChange={handleLocationChange}
+                onTypeFilterPress={handleTypeFilterPress}
+                onSortFilterPress={handleSortFilterPress}
+                filters={filters}
+                location={locationData}
+                onLocationSearchPress={handleLocationSearchPress}
               />
             </Animated.View>
-            {(!searchResults.length || noResults) && (
-              <Animated.View
-                style={{
-                  height: FILTER_TOOLBAR_HEIGHT,
-                  transform: [{ translateY }],
-                  paddingTop: 8,
-                }}>
-                <LocationSearch
-                  onValueChange={handleLocationChange}
-                  onTypeFilterPress={handleTypeFilterPress}
-                  onSortFilterPress={handleSortFilterPress}
-                  filters={filters}
-                  location={locationData}
-                  onLocationSearchPress={handleLocationSearchPress}
-                />
-              </Animated.View>
-            )}
-          </AnimatedLinearGradient>
+          )}
+        </AnimatedLinearGradient>
 
-          <View style={{ position: 'relative' }}>
-            {searchBarFocused && (
-              <SearchResults
-                containerStyle={{
-                  position: 'absolute',
-                  top: getSearchToolbarHeight(),
-                  zIndex: 1000000,
-                }}
-                isLoading={isSearching}
-                data={searchResults}
-                noResults={noResults}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-                onResultPress={handleSearchResultPress}
-                setSearchType={setSearchType}
-                searchType={searchType}
-                setSearchResults={setSearchResults}
-              />
-            )}
+        {searchBarFocused && (
+          <SearchResults
+            containerStyle={{
+              position: 'absolute',
+              top: getSearchToolbarHeight(),
+              zIndex: 1000000,
+            }}
+            isLoading={isSearching}
+            data={searchResults}
+            noResults={noResults}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            onResultPress={handleSearchResultPress}
+            setSearchType={setSearchType}
+            searchType={searchType}
+            setSearchResults={setSearchResults}
+          />
+        )}
 
-            {Object.values(posts).filter(post => !post.$hasError).length &&
-            totalPages !== Infinity ? (
-              <Posts
-                currentLocation={locationData}
-                posts={posts}
-                onPostPress={handlePostPress}
-                onUserPress={handleUserPress}
-                onLikePress={handleLikePress}
-                refreshing={isRefreshing}
-                onRefresh={handleRefresh}
-                onEndReached={handleOnEndReached}
-                isLoadingMoreItems={isLoadingMoreItems}
-                contentContainerStyle={{
-                  paddingTop: getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT,
+        <ScrollView
+          style={styles.scrollView}
+          onScroll={({ nativeEvent }) => {
+            if (isCloseToBottom(nativeEvent)) handleOnEndReached()
+          }}
+          scrollEventThrottle={400}
+          refreshControl={
+            <RefreshControl
+              progressViewOffset={20}
+              refreshing={isRereshing}
+              titleColor="#2E3034"
+              tintColor="#2E3034"
+              title="Refreshing"
+              onRefresh={() => {
+                setNoMorePost(false)
+                setIsRefreshing(true)
+                setFilters({
+                  ...filters,
+                  page: 0,
+                })
+              }}
+            />
+          }>
+          <View
+            style={{
+              paddingBottom: normalize([isVerifyNotificationVisible ? 120 : 0]),
+            }}>
+            <SkeletonLoader isLoading={isInitialLoad || isRereshing} />
+
+            {posts.length && totalPages !== Infinity ? (
+              <NewsFeed
+                props={{
+                  Api,
+                  noMorePost,
+                  posts,
+                  setPosts,
+                  locationData,
+                  handleLikePress,
                 }}
-                progressViewOffset={
-                  getSearchToolbarHeight() + FILTER_TOOLBAR_HEIGHT
-                }
-                showsVerticalScrollIndicator={false}
               />
             ) : (
-              <EmptyState
-                handleRefresh={handleRefresh}
-                isRefreshing={isRefreshing}
-              />
+              <EmptyState />
             )}
           </View>
-        </View>
-        <WhiteOpacity />
+        </ScrollView>
       </SafeAreaView>
+
       <Modal
         isVisible={isFiltersVisible}
         animationIn="slideInRight"
@@ -555,12 +498,11 @@ const DashboardScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  safeAreaContainer: {
+  safeArea: {
     flex: 1,
   },
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
+  scrollView: {
+    marginTop: normalize(130),
   },
 })
 
