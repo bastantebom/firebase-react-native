@@ -3,13 +3,24 @@ import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 
 import { Colors, normalize } from '@/globals'
 
-const SkeletonLoader = ({ isLoading }) => {
+const SkeletonLoader = ({ isLoading, type }) => {
   return (
     <SkeletonContent
       isLoading={isLoading}
-      layout={skeletonLoaderStyles}></SkeletonContent>
+      layout={
+        type === 'liked' ? skeletonLoaderLiked : skeletonLoaderStyles
+      }></SkeletonContent>
   )
 }
+
+const skeletonLoaderLiked = [
+  {
+    height: normalize(26),
+    width: normalize(26),
+    borderRadius: normalize(32 / 2),
+    overflow: 'hidden',
+  },
+]
 
 const skeletonLoaderStyles = [
   {

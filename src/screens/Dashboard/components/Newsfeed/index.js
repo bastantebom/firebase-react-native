@@ -10,7 +10,6 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import { Divider } from 'react-native-paper'
 import { getDistance } from 'geolib'
-import { cloneDeep } from 'lodash'
 
 import { UserContext } from '@/context/UserContext'
 import { commaSeparate } from '@/globals/Utils'
@@ -144,20 +143,26 @@ const NewsFeed = ({ props }) => {
                 </View>
               </View>
               <View>
-                <TouchableOpacity
-                  activeOpacity={1}
-                  onPress={() => {
-                    handleLikePress(post)
-                  }}>
-                  {post?.likes?.includes(user?.uid) ? (
-                    <Icons.LikeColored
-                      width={normalize(24)}
-                      height={normalize(24)}
-                    />
-                  ) : (
-                    <Icons.Like width={normalize(24)} height={normalize(24)} />
-                  )}
-                </TouchableOpacity>
+                <SkeletonLoader type="liked" isLoading={post.$likedLoader} />
+                {!post.$likedLoader && (
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {
+                      handleLikePress(post)
+                    }}>
+                    {post?.likes?.includes(user?.uid) ? (
+                      <Icons.LikeColored
+                        width={normalize(24)}
+                        height={normalize(24)}
+                      />
+                    ) : (
+                      <Icons.Like
+                        width={normalize(24)}
+                        height={normalize(24)}
+                      />
+                    )}
+                  </TouchableOpacity>
+                )}
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -242,8 +247,10 @@ const NewsFeed = ({ props }) => {
           </View>
         )
       })}
-      {noMorePost && (
+      {noMorePost ? (
         <Text style={styles.noMorePost}>No More Posts Available</Text>
+      ) : (
+        <ActivityIndicator style={styles.activeIndicator} />
       )}
     </>
   )
@@ -357,6 +364,9 @@ const styles = StyleSheet.create({
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(14),
     textAlign: 'center',
+  },
+  activeIndicator: {
+    paddingVertical: normalize(20),
   },
 })
 

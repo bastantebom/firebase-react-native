@@ -74,23 +74,19 @@ const DashboardScreen = ({ navigation }) => {
     try {
       const params = filters
       const response = await Api.getPosts(params)
+
+      response.data.forEach(post => (post.$likedLoader = true))
+
       if (!response.success) throw new Error(response.message)
-
-      const newPosts = await Promise.all(
-        response.data.map(async post => {
-          const { likes } = await Api.getPostLikes({ pid: post.id })
-          post.likes = likes
-          return post
-        })
-      )
-
       if (filters.page === 0) setIsInitialLoad(false)
+      if (!response.data.length) setNoMorePost(true)
 
       setTotalPages(response.total_pages)
-      setPosts(posts => (!filters.page ? newPosts : [...posts, ...newPosts]))
+      setPosts(posts =>
+        !filters.page ? response.data : [...posts, ...response.data]
+      )
       setIsLoading(false)
       setIsRefreshing(false)
-      if (!response.data.length) setNoMorePost(true)
     } catch (error) {
       console.error(error)
       alert(error.message || 'There was an error getting dashboard posts')
@@ -112,12 +108,30 @@ const DashboardScreen = ({ navigation }) => {
     contentOffset,
     contentSize,
   }) => {
-    const paddingToBottom = Dimensions.get('window').height + 800
+    const paddingToBottom = 200
     return (
       layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom
     )
   }
+
+  useEffect(() => {
+    ;(async () => {
+      const newPosts = [...posts.filter(post => post.$likedLoader)]
+      if (!!newPosts.length && !noMorePost) {
+        await Promise.all(
+          newPosts.map(async post => {
+            const { likes } = await Api.getPostLikes({ pid: post.id })
+            post.likes = likes
+            post.$likedLoader = false
+          })
+        )
+        setPosts(
+          !filters.page ? newPosts : [...new Set([...posts, ...newPosts])]
+        )
+      }
+    })()
+  }, [posts])
 
   useEffect(() => {
     loadPosts(filters)
@@ -445,27 +459,22 @@ const DashboardScreen = ({ navigation }) => {
               }}
             />
           }>
-          <View
-            style={{
-              paddingBottom: normalize([isVerifyNotificationVisible ? 120 : 0]),
-            }}>
-            <SkeletonLoader isLoading={isInitialLoad || isRereshing} />
+          <SkeletonLoader isLoading={isInitialLoad || isRereshing} />
 
-            {posts.length && totalPages !== Infinity ? (
-              <NewsFeed
-                props={{
-                  Api,
-                  noMorePost,
-                  posts,
-                  setPosts,
-                  locationData,
-                  handleLikePress,
-                }}
-              />
-            ) : (
-              <EmptyState />
-            )}
-          </View>
+          {posts.length && totalPages !== Infinity ? (
+            <NewsFeed
+              props={{
+                Api,
+                noMorePost,
+                posts,
+                setPosts,
+                locationData,
+                handleLikePress,
+              }}
+            />
+          ) : (
+            <EmptyState />
+          )}
         </ScrollView>
       </SafeAreaView>
 
