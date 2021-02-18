@@ -37,7 +37,7 @@ const FilterSlider = ({ close, onApply, filters: _filters }) => {
 
   const postTypes = [
     {
-      label: 'Services',
+      label: 'Service',
       value: 'service',
       icon: <FilterServices />,
     },
@@ -47,7 +47,7 @@ const FilterSlider = ({ close, onApply, filters: _filters }) => {
       icon: <FilterSeller />,
     },
     {
-      label: 'Needs',
+      label: 'Need',
       value: 'need',
       icon: <FilterNeeds />,
     },

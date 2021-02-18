@@ -80,6 +80,11 @@ const NewsFeed = ({ props }) => {
     return temp
   }
 
+  const postTypeLabel = {
+    sell: 'Selling',
+    need: 'Need',
+    service: 'Service',
+  }
   return (
     <>
       {posts.map((post, index) => {
@@ -135,9 +140,7 @@ const NewsFeed = ({ props }) => {
                             ? Colors.contentOcean
                             : Colors.secondaryMountainMeadow,
                       }}>
-                      {`${post.type.slice(0, 1).toUpperCase()}${post.type.slice(
-                        1
-                      )}`}
+                      {postTypeLabel[post.type]}
                     </Text>
                   </View>
                 </View>

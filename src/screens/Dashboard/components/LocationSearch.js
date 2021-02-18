@@ -57,7 +57,7 @@ const LocationSearch = ({
 
   const postTypes = [
     {
-      label: 'Services',
+      label: 'Service',
       value: 'service',
       icon: <FilterServices width={normalize(20)} height={normalize(20)} />,
       iconActive: (
@@ -75,7 +75,7 @@ const LocationSearch = ({
       color: Colors.secondaryRoyalBlue,
     },
     {
-      label: 'Needs',
+      label: 'Need',
       value: 'need',
       icon: <FilterNeeds width={normalize(20)} height={normalize(20)} />,
       iconActive: (
