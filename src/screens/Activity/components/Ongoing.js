@@ -29,25 +29,27 @@ const Ongoing = ({ sortCategory }) => {
 
   const initOwnOrders = async () => {
     const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
+    if (!ownOrdersResponse.success) return
     if (ownOrdersResponse.success) {
-      if (!ownOrdersResponse.data.length) return
       let ownOrderData = await Promise.all(
         ownOrdersResponse.data.map(async order => {
-          if (['completed', 'cancelled', 'declined'].includes(order.status))
-            return
-
           const getPostResponse = await Api.getPost({
             pid: order.post_id,
           })
           const getUserReponse = await Api.getUser({
             uid: order.seller_id || user?.uid,
           })
+
           if (!getPostResponse.success || !getUserReponse.success) return
           const { full_name, display_name, profile_photo } = getUserReponse.data
           return {
             profilePhoto: profile_photo,
             name: display_name || full_name,
-            cardType: 'own',
+            cardType: ['completed', 'cancelled', 'declined'].includes(
+              order.status
+            )
+              ? 'past'
+              : 'own',
             status: order.status,
             time: order.date._seconds,
             orderID: order.id,
@@ -57,11 +59,11 @@ const Ongoing = ({ sortCategory }) => {
           }
         })
       )
-
       setOnGoing(onGoing =>
         [...onGoing, ...ownOrderData].sort((a, b) => b.time - a.time)
       )
-      return true
+
+      return
     }
   }
 
@@ -101,7 +103,8 @@ const Ongoing = ({ sortCategory }) => {
     setOnGoing(onGoing =>
       [...onGoing, ...sellerOrderData].sort((a, b) => b.time - a.time)
     )
-    return true
+
+    return
   }
 
   const getLatest = async orderData => {
@@ -152,107 +155,109 @@ const Ongoing = ({ sortCategory }) => {
   return (
     <SafeAreaView>
       <TransitionIndicator loading={isLoading} />
-      {!onGoing.filter(post =>
-        sortCategory.value === 'all'
-          ? post
-          : post.cardType === sortCategory.value
-      ).length &&
-      !isLoading &&
-      sortCategory.value === 'past' ? (
-        <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <IllustActivity width={normalize(250)} height={normalize(200)} />
-            <AppText
-              textStyle="display5"
-              color={Colors.primaryMidnightBlue}
-              customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
-              Start buzzing on Servbees!
-            </AppText>
-            <View style={styles.descHolder}>
-              <AppText
-                customStyle={{
-                  textAlign: 'center',
-                }}
-                textStyle="body2">
-                Get busy with more projects, buying and selling items, boosting
-                your online business or just browsing what’s new in your
-                neighborhood.
-              </AppText>
-            </View>
-            <TouchableOpacity
-              style={{
-                paddingVertical: normalize(10),
-                paddingHorizontal: normalize(20),
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                backgroundColor: '#FFD400',
-                borderRadius: 3,
-              }}
-              onPress={() => navigation.navigate('dashboard')}>
-              <AppText textStyle="button3">Explore Postings Near You</AppText>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      ) : !onGoing.filter(post =>
+      {!isLoading &&
+        sortCategory.value === 'past' &&
+        onGoing.filter(post =>
           sortCategory.value === 'all'
             ? post
             : post.cardType === sortCategory.value
-        ).length &&
-        !isLoading &&
-        sortCategory.value !== 'past' ? (
-        <ScrollView
-          contentContainerStyle={{
-            paddingHorizontal: normalize(16),
-            paddingBottom: normalize(25),
-          }}
-          refreshControl={
-            <RefreshControl
-              style={{ zIndex: 1 }}
-              refreshing={isRefreshing}
-              titleColor="#2E3034"
-              tintColor="#2E3034"
-              onRefresh={handleRefresh}
-            />
-          }>
-          <View style={styles.emptyState}>
-            {sortCategory.value === 'all' ? (
-              <NoPost />
-            ) : sortCategory.value === 'own' ? (
-              <NoReview />
-            ) : (
-              <NoInfo />
-            )}
-            <AppText
-              textStyle="display6"
-              customStyle={{
-                marginBottom: normalize(4),
-                marginTop: normalize(15),
-              }}>
-              {sortCategory.value === 'all'
-                ? `No activities yet`
-                : sortCategory.value === 'own'
-                ? `No orders yet`
-                : `No offers yet`}
-            </AppText>
-            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-              {sortCategory.value === 'all'
-                ? `Start checking what you can offer and discover the best deals in your area.`
-                : sortCategory.value === 'own'
-                ? `Keep on posting about your products to attract orders, Buzzybee!`
-                : `Getting projects starts by making offers, Buzzybee! `}
-            </AppText>
-          </View>
-        </ScrollView>
-      ) : (
-        !isLoading && (
+        ).length < 1 && (
+          <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <IllustActivity width={normalize(250)} height={normalize(200)} />
+              <AppText
+                textStyle="display5"
+                color={Colors.primaryMidnightBlue}
+                customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
+                Start buzzing on Servbees!
+              </AppText>
+              <View style={styles.descHolder}>
+                <AppText
+                  customStyle={{
+                    textAlign: 'center',
+                  }}
+                  textStyle="body2">
+                  Get busy with more projects, buying and selling items,
+                  boosting your online business or just browsing what’s new in
+                  your neighborhood.
+                </AppText>
+              </View>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: normalize(10),
+                  paddingHorizontal: normalize(20),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  backgroundColor: '#FFD400',
+                  borderRadius: 3,
+                }}
+                onPress={() => navigation.navigate('dashboard')}>
+                <AppText textStyle="button3">Explore Postings Near You</AppText>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        )}
+      {!isLoading &&
+        sortCategory.value !== 'past' &&
+        onGoing.filter(post =>
+          sortCategory.value === 'all'
+            ? post
+            : post.cardType === sortCategory.value
+        ).length < 1 && (
+          <ScrollView
+            contentContainerStyle={{
+              paddingHorizontal: normalize(16),
+              paddingBottom: normalize(25),
+            }}
+            refreshControl={
+              <RefreshControl
+                style={{ zIndex: 1 }}
+                refreshing={isRefreshing}
+                titleColor="#2E3034"
+                tintColor="#2E3034"
+                onRefresh={handleRefresh}
+              />
+            }>
+            <View style={styles.emptyState}>
+              {sortCategory.value === 'all' ? (
+                <NoPost />
+              ) : sortCategory.value === 'own' ? (
+                <NoReview />
+              ) : (
+                <NoInfo />
+              )}
+              <AppText
+                textStyle="display6"
+                customStyle={{
+                  marginBottom: normalize(4),
+                  marginTop: normalize(15),
+                }}>
+                {sortCategory.value === 'all'
+                  ? `No activities yet`
+                  : sortCategory.value === 'own'
+                  ? `No orders yet`
+                  : `No offers yet`}
+              </AppText>
+              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+                {sortCategory.value === 'all'
+                  ? `Start checking what you can offer and discover the best deals in your area.`
+                  : sortCategory.value === 'own'
+                  ? `Keep on posting about your products to attract orders, Buzzybee!`
+                  : `Getting projects starts by making offers, Buzzybee! `}
+              </AppText>
+            </View>
+          </ScrollView>
+        )}
+      {!isLoading &&
+        onGoing.filter(post =>
+          sortCategory.value === 'all'
+            ? post
+            : post.cardType === sortCategory.value
+        ).length > 0 && (
           <>
             <View style={{ paddingHorizontal: normalize(15) }}>
-              {onGoing.filter(post =>
-                sortCategory.value === 'all'
-                  ? post
-                  : post.cardType === sortCategory.value
-              ).length && (
+              {
                 <AppText
                   textStyle="eyebrow1"
                   customStyle={{
@@ -261,7 +266,7 @@ const Ongoing = ({ sortCategory }) => {
                   }}>
                   NEW
                 </AppText>
-              )}
+              }
             </View>
 
             <FlatList
@@ -293,8 +298,7 @@ const Ongoing = ({ sortCategory }) => {
               }
             />
           </>
-        )
-      )}
+        )}
     </SafeAreaView>
   )
 }

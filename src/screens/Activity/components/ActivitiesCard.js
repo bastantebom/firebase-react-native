@@ -50,7 +50,7 @@ const ActivitiesCard = ({ info }) => {
         !orders?.completed?.length)
     )
       return Colors.secondaryDarkTangerine
-    if (cardType === 'own' && status === 'completed')
+    if (['own', 'past'].includes(cardType) && status === 'completed')
       return Colors.secondaryRoyalBlue
     if (
       cardType === 'seller' &&
@@ -62,16 +62,20 @@ const ActivitiesCard = ({ info }) => {
       orders?.completed?.length
     )
       return Colors.secondaryRoyalBlue
-    if (cardType === 'own' && status === 'declined') return Colors.red
-    if (cardType === 'own' && status === 'cancelled') return Colors.red
+    if (['own', 'past'].includes(cardType) && status === 'declined')
+      return Colors.red
+    if (['own', 'past'].includes(cardType) && status === 'cancelled')
+      return Colors.red
     return 'red'
   }
 
   const getStatusLabel = () => {
     if (cardType === 'own' && status === 'pending')
       return 'Awaiting confirmation'
-    if (cardType === 'own' && status === 'declined') return 'Declined'
-    if (cardType === 'own' && status === 'cancelled') return 'Cancelled'
+    if (['own', 'past'].includes(cardType) && status === 'declined')
+      return 'Declined'
+    if (['own', 'past'].includes(cardType) && status === 'cancelled')
+      return 'Cancelled'
     if (cardType === 'own' && status === 'confirmed' && payment !== 'cash')
       return 'Awaiting Payment'
     if (cardType === 'own' && status === 'paid' && payment !== 'cash')
@@ -117,7 +121,8 @@ const ActivitiesCard = ({ info }) => {
       orders?.completed?.length
     )
       return 'Completed'
-    if (cardType === 'own' && status === 'completed') return 'Completed'
+    if (['own', 'past'].includes(cardType) && status === 'completed')
+      return 'Completed'
   }
 
   const timeAgo = time => {
@@ -215,7 +220,7 @@ const ActivitiesCard = ({ info }) => {
                         flex: 1,
                         paddingLeft: 8,
                         paddingRight: 4,
-                        fontSize: 12
+                        fontSize: 12,
                       }}>
                       {info.name}
                     </AppText>
