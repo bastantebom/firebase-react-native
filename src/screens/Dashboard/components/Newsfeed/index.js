@@ -143,8 +143,9 @@ const NewsFeed = ({ props }) => {
                 </View>
               </View>
               <View>
-                <SkeletonLoader type="liked" isLoading={post.$likedLoader} />
-                {!post.$likedLoader && (
+                {post.$likedLoader ? (
+                  <SkeletonLoader type="liked" isLoading={true} />
+                ) : (
                   <TouchableOpacity
                     activeOpacity={1}
                     onPress={() => {
