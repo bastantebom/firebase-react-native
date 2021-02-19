@@ -186,13 +186,23 @@ const CreditCardScreen = ({ navigation, route }) => {
           payment_method_id: paymentMethodId,
         },
       })
+
       if (!response.success) {
         throw new Error(response.message)
       }
       status = 'success'
     } catch (error) {
+      await Api.updateOrder({
+        uid: userInfo.uid,
+        id: orderData.id,
+        body: { status: 'payment failed' },
+      })
+      await Api.updateOrder({
+        uid: userInfo.uid,
+        id: orderData.id,
+        body: { status: 'confirmed' },
+      })
       console.log(error, error.message)
-      Alert.alert('Error', 'Oops, something went wrong.')
     }
 
     navigation.navigate('payment-status', { status, amount: totalPrice })
