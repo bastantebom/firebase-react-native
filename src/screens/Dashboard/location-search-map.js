@@ -83,7 +83,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
     onValueChange({
       latitude,
       longitude,
-      radius: rangeValue === 101 ? 0 : rangeValue * 1000,
+      radius: rangeValue === 101 ? 101 : rangeValue * 1000,
     })
     navigation.goBack()
   }
@@ -166,8 +166,8 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
     try {
       let { latitude, longitude } = await getCurrentPosition()
       if (!latitude || !longitude) {
-        latitude = address.latitude
-        longitude = address.longitude
+        latitude = 14.585322
+        longitude = 120.983207
       }
       setMapCoords({
         lat: latitude,
@@ -310,8 +310,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
             radius={rangeValue}
             radiusMarker
             customMapStyle={[]}
-            scrollEnabled={rangeValue !== 101}
-            zoomEnabled={rangeValue !== 101}
           />
           <View style={styles.buttonWrapper}>
             <AppButton

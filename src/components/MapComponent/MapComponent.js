@@ -139,32 +139,26 @@ const MapComponent = ({
         circleRefMiddle.current &&
         circleRefOuter.current
       ) {
-        circleRefInner.current.setNativeProps({
-          fillColor: 'rgba(255,212,0,.1)',
-        })
-        circleRefMiddle.current.setNativeProps({
-          fillColor: 'rgba(255,212,0,.1)',
-        })
-        circleRefOuter.current.setNativeProps({
-          fillColor: 'rgba(255,212,0,.1)',
+        setTimeout(() => {
+          circleRefInner.current.setNativeProps({
+            strokeColor: 'rgba(255, 212, 0, .1)',
+            fillColor: 'rgba(255,212,0,.1)',
+          })
+          circleRefMiddle.current.setNativeProps({
+            strokeColor: 'rgba(255, 212, 0, .1)',
+            fillColor: 'rgba(255,212,0,.1)',
+          })
+          circleRefOuter.current.setNativeProps(
+            {
+              strokeColor: 'rgba(255, 212, 0, .1)',
+              fillColor: 'rgba(255,212,0,.1)',
+            },
+            200
+          )
         })
       }
     }
   }
-
-  useEffect(() => {
-    if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng) && radius !== 101) {
-      mapViewRef.current.animateToRegion(
-        {
-          latitude: parseFloat(reCenter.lat),
-          longitude: parseFloat(reCenter.lng),
-          latitudeDelta: customDelta || Config.latitudeDelta,
-          longitudeDelta: customDelta || Config.longitudeDelta,
-        },
-        2000
-      )
-    }
-  }, [reCenter])
 
   const onRegionChangeComplete = region => {
     onRegionChange(region)
@@ -236,6 +230,20 @@ const MapComponent = ({
   }, [radius, isMapReady])
 
   useEffect(() => {
+    if (!isNaN(reCenter.lat) && !isNaN(reCenter.lng) && radius !== 101) {
+      mapViewRef.current.animateToRegion(
+        {
+          latitude: parseFloat(reCenter.lat),
+          longitude: parseFloat(reCenter.lng),
+          latitudeDelta: customDelta || Config.latitudeDelta,
+          longitudeDelta: customDelta || Config.longitudeDelta,
+        },
+        2000
+      )
+    }
+  }, [reCenter])
+
+  useEffect(() => {
     if (withRadius) {
       if (
         radius === 101 &&
@@ -264,7 +272,7 @@ const MapComponent = ({
         mapViewRef.current.animateToRegion(centralCoordinates, 2000)
       }
     }
-  }, [radius, isMapReady])
+  }, [radius, isMapReady, reCenter])
 
   /*********** DASHBOARD LOCATION ***************/
 
@@ -312,7 +320,7 @@ const MapComponent = ({
         ) : null}
         {withRadius && isMapReady && radius < 100 ? (
           <View>
-            {radius === 1 ? null : (
+            {radius === 101 ? null : (
               <>
                 <Circle
                   center={{
