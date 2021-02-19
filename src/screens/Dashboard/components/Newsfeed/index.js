@@ -186,7 +186,7 @@ const NewsFeed = ({ props }) => {
               <View style={styles.postImageContainer}>
                 <PostImage
                   path={post.cover_photos?.[0]}
-                  size="120x120"
+                  size="124x124"
                   postType={post.type}
                 />
               </View>

@@ -55,6 +55,7 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
         )?.url ||
         (await ImageApi.getUrl({ path, size })) ||
         (await ImageApi.getUrl({ path }))
+
       setSource({ uri })
     }
   }
