@@ -37,7 +37,7 @@ const Post = ({
         <View style={styles.postImageContainer}>
           <PostImage
             path={post.cover_photos?.[0]}
-            size="124x124"
+            size="128x128"
             postType={post.type}
           />
         </View>

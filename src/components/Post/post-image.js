@@ -3,12 +3,18 @@ import { GlobalStyle } from '@/globals'
 import { isUrl } from '@/globals/Utils'
 import ImageApi from '@/services/image-api'
 import React, { useEffect, useState } from 'react'
-import { Image } from 'react-native'
+import { Image, PixelRatio } from 'react-native'
 import FastImage from 'react-native-fast-image'
 
 const sizeProps = {
   width: '100%',
   height: '100%',
+}
+
+const pow2ceil = n => {
+  let p = 2
+  while ((n >>= 1)) p <<= 1
+  return p
 }
 
 const DefaultPostThumbnail = ({ type }) => {
@@ -49,10 +55,23 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
   const handlePathChange = async path => {
     if (isUrl(path)) setSource({ uri: path })
     else if (path) {
+      const _size = size
+        ? size
+            .split('x')
+            .map(PixelRatio.getPixelSizeForLayoutSize)
+            .map(pow2ceil)
+            .join('x')
+        : null
+
       const uri =
+        ImageApi.pathUrls.find(
+          pathUrl =>
+            pathUrl.path === ImageApi.getThumbnailPath({ path, size: _size })
+        )?.url ||
         ImageApi.pathUrls.find(
           pathUrl => pathUrl.path === ImageApi.getThumbnailPath({ path, size })
         )?.url ||
+        (await ImageApi.getUrl({ path, size: _size })) ||
         (await ImageApi.getUrl({ path, size })) ||
         (await ImageApi.getUrl({ path }))
 
