@@ -1,15 +1,18 @@
 import React from 'react'
+import { ScrollView } from 'react-native'
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 
 import { Colors, normalize } from '@/globals'
 
 const SkeletonLoader = ({ isLoading, type }) => {
   return (
-    <SkeletonContent
-      isLoading={isLoading}
-      layout={
-        type === 'liked' ? skeletonLoaderLiked : skeletonLoaderStyles
-      }></SkeletonContent>
+    <ScrollView>
+      <SkeletonContent
+        isLoading={isLoading}
+        layout={
+          type === 'liked' ? skeletonLoaderLiked : skeletonLoaderStyles
+        }></SkeletonContent>
+    </ScrollView>
   )
 }
 

@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   StyleSheet,
+  Text,
   View,
   SafeAreaView,
   ScrollView,
   RefreshControl,
-  Dimensions,
+  ActivityIndicator,
   Animated,
   TouchableWithoutFeedback,
+  FlatList,
   Platform,
 } from 'react-native'
 import Modal from 'react-native-modal'
@@ -436,46 +438,80 @@ const DashboardScreen = ({ navigation }) => {
           />
         )}
 
-        <ScrollView
-          style={styles.scrollView}
-          onScroll={({ nativeEvent }) => {
-            if (isCloseToBottom(nativeEvent)) handleOnEndReached()
-          }}
-          scrollEventThrottle={400}
-          refreshControl={
-            <RefreshControl
-              progressViewOffset={20}
-              refreshing={isRereshing}
-              titleColor="#2E3034"
-              tintColor="#2E3034"
-              title="Refreshing"
-              onRefresh={() => {
-                setNoMorePost(false)
-                setIsRefreshing(true)
-                setFilters({
-                  ...filters,
-                  page: 0,
-                })
-              }}
-            />
-          }>
+        <View
+          style={{
+            marginTop: normalize([posts.length ? 130 : 0]),
+          }}>
           <SkeletonLoader isLoading={isInitialLoad || isRereshing} />
 
           {posts.length && totalPages !== Infinity ? (
-            <NewsFeed
-              props={{
-                Api,
-                noMorePost,
-                posts,
-                setPosts,
-                locationData,
-                handleLikePress,
-              }}
+            <FlatList
+              keyExtractor={item => item.id}
+              data={posts}
+              onEndReached={handleOnEndReached}
+              ListFooterComponent={
+                noMorePost ? (
+                  <Text style={styles.noMorePost}>No More Posts Available</Text>
+                ) : (
+                  <ActivityIndicator style={styles.activeIndicator} />
+                )
+              }
+              refreshControl={
+                <RefreshControl
+                  progressViewOffset={20}
+                  refreshing={isRereshing}
+                  titleColor="#2E3034"
+                  tintColor="#2E3034"
+                  title="Refreshing"
+                  onRefresh={() => {
+                    setNoMorePost(false)
+                    setIsRefreshing(true)
+                    setFilters({
+                      ...filters,
+                      page: 0,
+                    })
+                  }}
+                />
+              }
+              renderItem={({ item }) => (
+                <NewsFeed
+                  props={{
+                    Api,
+                    item,
+                    setPosts,
+                    locationData,
+                    handleLikePress,
+                  }}
+                />
+              )}
             />
           ) : (
-            <EmptyState />
+            <ScrollView
+              onScroll={({ nativeEvent }) => {
+                if (isCloseToBottom(nativeEvent)) handleOnEndReached()
+              }}
+              scrollEventThrottle={400}
+              refreshControl={
+                <RefreshControl
+                  progressViewOffset={20}
+                  refreshing={isRereshing}
+                  titleColor="#2E3034"
+                  tintColor="#2E3034"
+                  title="Refreshing"
+                  onRefresh={() => {
+                    setNoMorePost(false)
+                    setIsRefreshing(true)
+                    setFilters({
+                      ...filters,
+                      page: 0,
+                    })
+                  }}
+                />
+              }>
+              <EmptyState />
+            </ScrollView>
           )}
-        </ScrollView>
+        </View>
       </SafeAreaView>
 
       <Modal
@@ -509,11 +545,16 @@ const DashboardScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
     marginTop: Platform.OS === 'ios' ? normalize(38) : 0,
   },
-  scrollView: {
-    marginTop: normalize(130),
+  noMorePost: {
+    paddingVertical: normalize(20),
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(14),
+    textAlign: 'center',
+  },
+  activeIndicator: {
+    paddingVertical: normalize(20),
   },
 })
 
