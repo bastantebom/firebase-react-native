@@ -1,14 +1,6 @@
-import React, {
-  useRef,
-  createRef,
-  useState,
-  useEffect,
-  useContext,
-} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
-  Image,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
@@ -19,40 +11,31 @@ import {
 } from 'react-native'
 import Swiper from 'react-native-swiper'
 import Modal from 'react-native-modal'
-import BottomSheet from 'reanimated-bottom-sheet'
-
-import {
-  AppText,
-  AppButton,
-  AppViewContainer,
-  BottomSheetHeader,
-} from '@/components'
-
+import { AppText, AppButton, BottomSheetHeader } from '@/components'
 import Colors from '@/globals/Colors'
 import Login from '@/screens/Authentication/Login/login'
 import SignUp from '@/screens/Authentication/SignUp/SignUp'
-
 import PolygonStatic from '@/assets/images/polygon-static.svg'
 import IllustOne from '@/assets/images/onboarding-img1.svg'
 import IllustTwo from '@/assets/images/onboarding-img2.svg'
 import IllustThree from '@/assets/images/onboarding-img3.svg'
 import IllustFour from '@/assets/images/onboarding-img4.svg'
-
+import { getVersion, getBuildNumber } from 'react-native-device-info'
 import { Context } from '@/context'
 import { normalize } from '@/globals'
 
-const height = Dimensions.get('window').height
-const width = Dimensions.get('window').width
+const height = normalize(Dimensions.get('window').height)
+const width = normalize(Dimensions.get('window').width)
 
-const Onboarding = ({ navigation, illustration }) => {
+const Onboarding = ({ navigation }) => {
   const {
-    sliderState,
-    closeSlider,
     authType,
     setAuthType,
     authenticationSheet,
     showAuthenticationSheet,
   } = useContext(Context)
+
+  const [version, setVersion] = useState('1.0.3')
 
   const RenderContent = () => {
     if (authType === 'signup') {
@@ -106,6 +89,17 @@ const Onboarding = ({ navigation, illustration }) => {
     },
   ])
 
+  const getVersionAndBuildNumber = () => {
+    const buildNumber = getBuildNumber()
+    const versionNumber = getVersion()
+    const versionBuild = `${versionNumber} (${buildNumber})`
+    setVersion(versionBuild)
+  }
+
+  useEffect(() => {
+    getVersionAndBuildNumber()
+  }, [])
+
   return (
     <>
       <View style={styles.contentHolder}>
@@ -148,7 +142,7 @@ const Onboarding = ({ navigation, illustration }) => {
         </View>
         <View style={styles.btnHolder}>
           <AppButton
-            text="Login"
+            text="Log in"
             type="tertiary"
             size="sm"
             height="xl"
@@ -159,7 +153,7 @@ const Onboarding = ({ navigation, illustration }) => {
             }}
           />
           <AppButton
-            text="Sign Up"
+            text="Sign up"
             size="sm"
             height="xl"
             borderColor="primary"
@@ -169,6 +163,13 @@ const Onboarding = ({ navigation, illustration }) => {
               showAuthenticationSheet(true)
             }}
           />
+        </View>
+        <View style={styles.appVersion}>
+          <AppText
+            textStyle="captionConstant"
+            color={Colors.primaryCornflowerBlue}>
+            {`v${version} Beta`}
+          </AppText>
         </View>
       </View>
 
@@ -208,7 +209,8 @@ const styles = StyleSheet.create({
   },
   swiperHolder: {
     position: 'relative',
-    flex: 1
+    height: height * 0.7,
+    flex: 1,
   },
   slideHolder: {
     alignItems: 'center',
@@ -228,12 +230,11 @@ const styles = StyleSheet.create({
   dot: {
     margin: 0,
     zIndex: 5,
-    width: 5,
-    height: 5,
+    width: normalize(5),
+    height: normalize(5),
     marginLeft: normalize(5.5),
     marginRight: normalize(5.5),
-    // bottom: height * 0.2,
-    bottom: height > 700 ? height * 0.2 : height * 0.1,
+    top: height > 680 ? normalize(-40) : normalize(-10),
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
@@ -242,23 +243,27 @@ const styles = StyleSheet.create({
   },
   bgImageHolder: {
     position: 'absolute',
-    top: -50,
-    width: width,
+    width: width * 0.9,
+    top: height > 680 ? normalize(-110) : normalize(-38),
   },
   text: {
     textAlign: 'center',
     lineHeight: 23.76,
   },
   btnHolder: {
-    position: 'absolute',
-    top: height * 0.85,
-    flex: 1,
+    height: height * 0.15,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignContent: 'center',
+    alignItems: 'flex-end',
     width: '100%',
-    paddingHorizontal: 30,
+    paddingHorizontal: normalize(30),
     backgroundColor: 'transparent',
+  },
+  appVersion: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: normalize(height * 0.05),
+    width: '100%',
   },
 })
 

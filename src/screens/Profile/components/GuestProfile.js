@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  createRef,
-  useState,
-  useEffect,
-  useContext,
-} from 'react'
+import React, { useContext } from 'react'
 import Modal from 'react-native-modal'
 import {
   View,
@@ -14,19 +8,10 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native'
-import {
-  AppText,
-  AppButton,
-  PaddingView,
-  BottomSheetHeader,
-} from '@/components'
-import {
-  OnboardingIllustration4,
-  OnboardingIllustration3,
-} from '@/assets/images'
+import { AppText, BottomSheetHeader } from '@/components'
+import { OnboardingIllustration4 } from '@/assets/images'
 import SignUp from '@/screens/Authentication/SignUp/SignUp'
 import Login from '@/screens/Authentication/Login/login'
-import BottomSheet from 'reanimated-bottom-sheet'
 
 import { Colors, normalize } from '@/globals'
 import { Context } from '@/context'
@@ -61,10 +46,10 @@ export const GuestProfile = () => {
             textStyle="display5"
             customStyle={styles.textStyle}
             color={Colors.primaryMidnightBlue}>
-            Join the bustling {"\n"} Servbees community
+            Join the bustling {'\n'} Servbees community
           </AppText>
           <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-            Offer services, sell goods, {"\n"} find what you need
+            Be a Buzzybee and connect, hustle, and earn—all on your own terms.
           </AppText>
           <TouchableOpacity
             style={{

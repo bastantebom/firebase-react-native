@@ -26,7 +26,8 @@ const GuestActivity = () => {
           Easily track all {'\n'} your activity
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          Offer services, sell goods, {'\n'} find what you need
+          Notifications, receipts, transaction records, and updates—organized in
+          one place.
         </AppText>
         <TouchableOpacity
           style={{

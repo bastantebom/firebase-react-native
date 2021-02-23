@@ -22,8 +22,8 @@ const Hive = () => {
           Create your own Hive soon!
         </AppText>
         <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-          With Hive, you can group your customers and {"\n"} friends to send exclusive
-          updates and enjoy {"\n"} easier transactions.
+          With Hive, you can group your customers and friends to send exclusive
+          updates and enjoy easier transactions.
         </AppText>
         <TouchableOpacity
           style={{

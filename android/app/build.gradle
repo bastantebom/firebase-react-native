@@ -212,7 +212,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation project(path: ':@react-native-picker_picker')
-
+    
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

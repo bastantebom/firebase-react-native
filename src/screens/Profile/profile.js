@@ -538,7 +538,7 @@ const ProfileScreen = ({
             ? normalize(574.857)
             : normalize(479.23)
         }
-        headerHeight={scrollPosition < 100 ? 0 : normalize(115)}
+        headerHeight={scrollPosition < 100 ? 0 : normalize(116)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],

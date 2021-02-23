@@ -249,7 +249,7 @@ const StickyHeader = ({
         <View
           style={{
             bottom: 0,
-            height: normalize(56),
+            height: normalize(57),
             width: '100%',
           }}>
           <View>
