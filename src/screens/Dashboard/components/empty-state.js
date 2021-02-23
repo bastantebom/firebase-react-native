@@ -21,48 +21,43 @@ const EmptyState = ({ handleRefresh, isRefreshing }) => {
   const { user } = useContext(UserContext)
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl
-          progressViewOffset={150}
-          titleColor="#2E3034"
-          tintColor="#2E3034"
-          refreshing={isRefreshing}
-          onRefresh={handleRefresh}
-        />
-      }>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.imageWrapper}>
         <Images.DashboardEmptyState style={styles.image} />
-        <View style={styles.textWrapper}>
-          <Text style={styles.title}>No Buzz in your area yet</Text>
-          <Text style={styles.description}>
-            Things will get busy soon! For now, start posting and keep sharing
-            Servbees to friends.
-          </Text>
-        </View>
-        <View style={styles.buttonParentWrapper}>
-          <View style={styles.buttonWrapper}>
-            <AppButton
-              customStyle={styles.createButton}
-              text={'Create Post'}
-              type="primary"
-              height="lg"
-              onPress={() =>
-                user ? setShowButtons(true) : navigation.navigate('Post')
-              }
-            />
-          </View>
+      </View>
+      <View style={styles.textWrapper}>
+        <Text style={styles.title}>No Buzz in your area yet</Text>
+        <Text style={styles.description}>
+          Things will get busy soon! For now, start posting and keep sharing
+          Servbees to friends.
+        </Text>
+      </View>
+      <View style={styles.buttonParentWrapper}>
+        <View style={styles.buttonWrapper}>
+          <AppButton
+            customStyle={styles.createButton}
+            text={'Create Post'}
+            type="primary"
+            height="lg"
+            onPress={() =>
+              user ? setShowButtons(true) : navigation.navigate('Post')
+            }
+          />
         </View>
       </View>
-    </ScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     marginTop: normalize(120),
+    paddingBottom: normalize(80),
   },
-  image: {
+  imageWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: normalize(40),
     marginBottom: normalize(20),
   },
   textWrapper: {

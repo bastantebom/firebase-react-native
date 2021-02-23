@@ -105,18 +105,6 @@ const DashboardScreen = ({ navigation }) => {
     }))
   }
 
-  const isCloseToBottom = ({
-    layoutMeasurement,
-    contentOffset,
-    contentSize,
-  }) => {
-    const paddingToBottom = 200
-    return (
-      layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom
-    )
-  }
-
   useEffect(() => {
     ;(async () => {
       const newPosts = [...posts.filter(post => post.$likedLoader)]
@@ -487,13 +475,10 @@ const DashboardScreen = ({ navigation }) => {
             />
           ) : (
             <ScrollView
-              onScroll={({ nativeEvent }) => {
-                if (isCloseToBottom(nativeEvent)) handleOnEndReached()
-              }}
               scrollEventThrottle={400}
               refreshControl={
                 <RefreshControl
-                  progressViewOffset={20}
+                  progressViewOffset={150}
                   refreshing={isRereshing}
                   titleColor="#2E3034"
                   tintColor="#2E3034"
