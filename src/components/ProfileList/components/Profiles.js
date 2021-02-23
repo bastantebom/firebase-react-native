@@ -8,7 +8,6 @@ import { FollowersEmpty, FollowingEmpty } from '@/assets/images'
 import { normalize, Colors } from '@/globals'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Api from '@/services/Api'
-import TransitionIndicator from '@/components/TransitionIndicator/TransitionIndicator'
 
 const Profiles = ({
   data,
@@ -17,7 +16,6 @@ const Profiles = ({
   toggleProfileList,
   followCount,
   viewUserInfo,
-  isLoading,
 }) => {
   const { user } = useContext(UserContext)
   const { setRefreshFollowerList } = useContext(Context)
@@ -71,6 +69,7 @@ const Profiles = ({
               customStyle={{
                 marginTop: normalize(50),
                 marginBottom: normalize(8),
+                textAlign: 'center',
               }}>
               {type === 'followers'
                 ? `${viewUserInfo.full_name} has no followers yet`
