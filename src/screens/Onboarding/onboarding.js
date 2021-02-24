@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     height: normalize(5),
     marginLeft: normalize(5.5),
     marginRight: normalize(5.5),
-    top: height > 680 ? normalize(-40) : normalize(-10),
+    bottom: normalize(0),
     backgroundColor: Colors.neutralsWhite,
     borderRadius: 100,
   },
@@ -243,8 +243,8 @@ const styles = StyleSheet.create({
   },
   bgImageHolder: {
     position: 'absolute',
-    width: width * 0.9,
-    top: height > 680 ? normalize(-110) : normalize(-38),
+    width: width,
+    bottom: normalize(30),
   },
   text: {
     textAlign: 'center',

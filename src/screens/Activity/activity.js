@@ -38,6 +38,7 @@ const Activity = () => {
     label: 'All Activities',
     value: 'all',
     description: 'These are all your activities',
+    icon: <Icons.AllActivities />,
   })
 
   const navigation = useNavigation()
@@ -117,9 +118,10 @@ const Activity = () => {
               alignItems: 'center',
             }}
             onPress={() => setActivitySort(true)}>
+            <View>{sortCategory.icon}</View>
             <AppText
               textStyle="body3"
-              customStyle={{ marginRight: normalize(8) }}>
+              customStyle={{ marginHorizontal: normalize(8) }}>
               {sortCategory.label}
             </AppText>
             <ChevronDown width={normalize(24)} height={normalize(24)} />

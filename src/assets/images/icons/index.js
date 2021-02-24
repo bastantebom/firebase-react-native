@@ -327,6 +327,11 @@ import ServicePost from './service-post.svg'
 import SellPost from './sell-post.svg'
 import NeedPost from './need-post.svg'
 
+import AllActivities from './activities-sort/all-activities.svg'
+import MyOffers from './activities-sort/my-offers.svg'
+import MyOrders from './activities-sort/my-orders.svg'
+import Past from './activities-sort/past.svg'
+
 export {
   Trash,
   MOCalendar,
@@ -643,4 +648,8 @@ export const Icons = {
   SellPost,
   NeedPost,
   ServicePost,
+  MyOffers,
+  MyOrders,
+  AllActivities,
+  Past,
 }

@@ -249,10 +249,15 @@ const StickyHeader = ({
         <View
           style={{
             bottom: 0,
-            height: normalize(57),
+            height: normalize(58),
             width: '100%',
           }}>
-          <View>
+          <View
+            style={{
+              height: normalize(70),
+              overflow: 'hidden',
+              backgroundColor: Colors.neutralsZirconLight,
+            }}>
             {coverPhotoUrl && userInfo.cover_photo && isUrl(coverPhotoUrl) ? (
               <CacheableImage
                 source={{ uri: coverPhotoUrl }}

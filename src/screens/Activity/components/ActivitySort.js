@@ -2,6 +2,7 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import { AppText } from '@/components'
 import { normalize, Colors } from '@/globals'
+import { Icons } from '@/assets/images/icons'
 
 const ActivitySort = ({ choice, close }) => {
   const choices = [
@@ -9,22 +10,26 @@ const ActivitySort = ({ choice, close }) => {
       label: 'All Activities',
       value: 'all',
       description: 'Offers, orders, and past transactions in one place',
+      icon: <Icons.AllActivities />,
     },
     {
       label: 'My Offers',
       value: 'seller',
       description:
         'Keep track of your posts, items for sale, and services offered',
+      icon: <Icons.MyOffers />,
     },
     {
-      label: 'My orders',
+      label: 'My Orders',
       value: 'own',
       description: "Check for updates on items and services you've availed",
+      icon: <Icons.MyOrders />,
     },
     {
       label: 'Past',
       value: 'past',
       description: 'Review all completed, cancelled, and declined transactions',
+      icon: <Icons.Past />,
     },
   ]
 
@@ -44,9 +49,16 @@ const ActivitySort = ({ choice, close }) => {
 
       {choices.map((option, i) => {
         return (
-          <View key={i}>
+          <View
+            key={i}
+            style={{
+              flexDirection: 'row',
+              alignContent: 'flex-start',
+              paddingVertical: normalize(16),
+            }}>
+            <View>{option.icon}</View>
             <TouchableOpacity
-              style={{ paddingVertical: normalize(16) }}
+              style={{ marginLeft: normalize(12) }}
               onPress={() => onSortSelect(option)}>
               <AppText
                 textStyle="body1medium"
