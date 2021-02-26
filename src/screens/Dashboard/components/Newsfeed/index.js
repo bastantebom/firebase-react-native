@@ -225,7 +225,7 @@ const NewsFeed = ({ props }) => {
           </View>
           {post.type !== 'need' && (
             <View style={styles.deliveryMethodContainer}>
-              <Icons.TransportationBox
+              <Icons.DeliveryVanBlue
                 width={normalize(16)}
                 height={normalize(16)}
               />

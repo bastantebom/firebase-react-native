@@ -47,8 +47,11 @@ import JarHeartWhite from '@/assets/images/icons/jar-heart-white.svg'
 import Like from '@/assets/images/icons/like.svg'
 import LikeHeader from '@/assets/images/icons/like-header.svg'
 import LikeColored from '@/assets/images/icons/like-colored.svg'
+import LikeDark from '@/assets/images/icons/like-dark.svg'
 import ChevronRightWhite from '@/assets/images/icons/chevron-right-white.svg'
 import ChevronRightGray from '@/assets/images/icons/chevron-right-gray.svg'
+import SearchDark from '@/assets/images/icons/search-dark.svg'
+import DeliveryVanBlue from './delivery-van-blue.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
@@ -524,6 +527,7 @@ export {
   FollowUnfollow,
   Like,
   LikeColored,
+  LikeDark,
   ChevronRightWhite,
   ChevronRightGray,
   Search,
@@ -552,6 +556,7 @@ export {
   TrashWhite,
   HorizontalWhiteEllipsis,
   InfoSmall,
+  SearchDark
 }
 
 export const Icons = {
@@ -652,4 +657,5 @@ export const Icons = {
   MyOrders,
   AllActivities,
   Past,
+  DeliveryVanBlue
 }

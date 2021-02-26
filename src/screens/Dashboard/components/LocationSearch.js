@@ -14,7 +14,7 @@ import {
   FilterServicesWhite,
   FilterSellerWhite,
   FilterNeedsWhite,
-  NavigationPinAlt,
+  NavigationPinRed,
   SortRecent,
   FilterServices,
   FilterSeller,
@@ -91,7 +91,7 @@ const LocationSearch = ({
       value: 'recent',
       icon: (
         <SortRecent
-          color="#CACBCC"
+          color="#91919C"
           width={normalize(20)}
           height={normalize(20)}
         />
@@ -100,7 +100,7 @@ const LocationSearch = ({
         <SortRecent
           color={
             getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#CACBCC'
+              ? '#515057'
               : getColorByBackground(Colors.primarySalomie)
           }
           width={normalize(20)}
@@ -114,7 +114,7 @@ const LocationSearch = ({
       value: 'nearest',
       icon: (
         <SortNearest
-          color="#CACBCC"
+          color="#91919C"
           width={normalize(20)}
           height={normalize(20)}
         />
@@ -123,7 +123,7 @@ const LocationSearch = ({
         <SortNearest
           color={
             getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#CACBCC'
+              ? '#515057'
               : getColorByBackground(Colors.primarySalomie)
           }
           width={normalize(20)}
@@ -137,7 +137,7 @@ const LocationSearch = ({
       value: 'price_desc',
       icon: (
         <SortHighLow
-          color="#CACBCC"
+          color="#91919C"
           width={normalize(20)}
           height={normalize(20)}
         />
@@ -146,7 +146,7 @@ const LocationSearch = ({
         <SortHighLow
           color={
             getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#CACBCC'
+              ? '#515057'
               : getColorByBackground(Colors.primarySalomie)
           }
           width={normalize(20)}
@@ -160,7 +160,7 @@ const LocationSearch = ({
       value: 'price_asc',
       icon: (
         <SortHighLow
-          color="#CACBCC"
+          color="#91919C"
           width={normalize(20)}
           height={normalize(20)}
         />
@@ -169,7 +169,7 @@ const LocationSearch = ({
         <SortHighLow
           color={
             getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#CACBCC'
+              ? '#515057'
               : getColorByBackground(Colors.primarySalomie)
           }
           width={normalize(20)}
@@ -204,10 +204,10 @@ const LocationSearch = ({
                 flex: 1,
                 flexDirection: 'row',
               }}>
-              <NavigationPinAlt
-                style={{ marginRight: normalize(12) }}
-                width={normalize(24)}
-                height={normalize(24)}
+              <NavigationPinRed
+                style={{ marginRight: normalize(8) }}
+                width={normalize(28)}
+                height={normalize(28)}
               />
               <View
                 style={{

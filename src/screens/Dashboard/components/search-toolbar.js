@@ -1,4 +1,4 @@
-import { FilterDark, HeaderBackGray, Like } from '@/assets/images/icons'
+import { FilterDark, HeaderBackGray, LikeDark, SearchDark } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useRef, useState } from 'react'
@@ -203,6 +203,7 @@ const SearchToolbar = ({
               theme={theme}
               inputStyle={styles.input}
               placeholderTextColor={Colors.contentPlaceholder}
+              icon={() => <SearchDark width={normalize(24)} height={normalize(24)} />}
               style={[
                 styles.search,
                 {
@@ -227,7 +228,7 @@ const SearchToolbar = ({
             }}>
             <TouchableOpacity activeOpacity={0.7} onPress={onFiltersPress}>
               <View style={styles.circleButton}>
-                <FilterDark width={normalize(18)} height={normalize(18)} />
+                <FilterDark width={normalize(24)} height={normalize(24)} />
               </View>
             </TouchableOpacity>
 
@@ -235,7 +236,7 @@ const SearchToolbar = ({
               activeOpacity={0.7}
               onPress={() => navigation.navigate('liked-posts')}>
               <View style={styles.circleButton}>
-                <Like width={normalize(18)} height={normalize(18)} />
+                <LikeDark width={normalize(30)} height={normalize(30)} />
               </View>
             </TouchableOpacity>
           </Animated.View>
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: normalize(40),
     height: normalize(50),
     flex: 1,
+    paddingLeft: normalize(5),
   },
   circleButton: {
     width: normalize(52),
