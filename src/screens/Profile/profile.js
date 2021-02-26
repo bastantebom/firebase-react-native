@@ -5,7 +5,7 @@ import {
   Dimensions,
   Animated,
   RefreshControl,
-  SafeAreaView,
+  Platform,
 } from 'react-native'
 
 import {
@@ -26,14 +26,14 @@ import { normalize, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context/index'
 
-import { MoreInfo } from './Tabs'
+import { MoreInfo, UserPostEmpty } from './Tabs'
 import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
 import { VerificationStatus } from './components'
 import { CircleTick, Warning } from '@/assets/images/icons'
 
 import Posts from '@/screens/Dashboard/components/posts'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 
 import Api from '@/services/Api'
 import ImageApi from '@/services/image-api'
@@ -88,9 +88,6 @@ const ProfileScreen = ({
 
   const toggleHives = () => {
     setVisibleHives(!visibleHives)
-  }
-  const toggleConnections = () => {
-    setVisibleFollowing(!visibleFollowing)
   }
 
   const toggleProfileList = () => {
@@ -497,7 +494,7 @@ const ProfileScreen = ({
   const profileTabs = [
     {
       title: 'Posts',
-      content: (
+      content: !isEmpty(userPosts) ? (
         <Posts
           posts={userPosts}
           onPostPress={handlePostPress}
@@ -506,6 +503,8 @@ const ProfileScreen = ({
           showsVerticalScrollIndicator={false}
           scrollEnabled={false}
         />
+      ) : (
+        <UserPostEmpty userInfo={userInfo} />
       ),
     },
     {
@@ -582,7 +581,7 @@ const ProfileScreen = ({
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
           borderBottomColor: Colors.neutralGray,
-          borderBottomWidth: normalize(10),
+          flex: 1,
         }}></StickyParallaxHeader>
       <WhiteOpacity />
     </>
@@ -608,7 +607,12 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: normalize(160),
     height: normalize(160),
-    top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
+    top:
+      Platform.OS === 'android'
+        ? -Dimensions.get('window').height * 0.1
+        : Dimensions.get('window').height > 850
+        ? '-17%'
+        : '-21%',
     paddingLeft: normalize(24),
   },
   tabTextStyle: {

@@ -159,44 +159,42 @@ const MoreInfo = ({ profileInfo }) => {
       {hasInfo ? (
         <WithInfo />
       ) : (
-        <ScrollView>
-          <View style={styles.container}>
-            <View style={styles.imageWrapper}>
-              <NoInfo width={normalize(140)} height={normalize(140)} />
-            </View>
-            <View style={styles.copyWrapper}>
-              <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
-                {userInfo?.uid === uid
-                  ? 'Complete your profile'
-                  : `No additional information about ${
-                      display_name ? display_name : full_name
-                    }`}
-              </AppText>
-              {userInfo?.uid === uid && (
-                <AppText
-                  textStyle="body2"
-                  color={Colors.profileLink}
-                  customStyle={styles.centerCopy}>
-                  Additional information about you will be posted here.
-                </AppText>
-              )}
-            </View>
+        <View style={styles.container}>
+          <View style={styles.imageWrapper}>
+            <NoInfo width={normalize(140)} height={normalize(140)} />
+          </View>
+          <View style={styles.copyWrapper}>
+            <AppText textStyle="subtitle1" customStyle={styles.centerCopy}>
+              {userInfo?.uid === uid
+                ? 'Complete your profile'
+                : `No additional information about ${
+                    display_name ? display_name : full_name
+                  }`}
+            </AppText>
             {userInfo?.uid === uid && (
-              <View style={styles.linksWrapper}>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('NBTScreen', {
-                      screen: 'Verification',
-                    })
-                  }}>
-                  <AppText textStyle="body1" color={Colors.contentOcean}>
-                    Complete your profile
-                  </AppText>
-                </TouchableOpacity>
-              </View>
+              <AppText
+                textStyle="body2"
+                color={Colors.profileLink}
+                customStyle={styles.centerCopy}>
+                Additional information about you will be posted here.
+              </AppText>
             )}
           </View>
-        </ScrollView>
+          {userInfo?.uid === uid && (
+            <View style={styles.linksWrapper}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('NBTScreen', {
+                    screen: 'Verification',
+                  })
+                }}>
+                <AppText textStyle="body1" color={Colors.contentOcean}>
+                  Complete your profile
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       )}
     </>
   )
@@ -209,7 +207,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.emptyStateBackground,
     padding: normalize(16),
-    height: Dimensions.get('window').height - normalize(110),
   },
   imageWrapper: {
     marginBottom: normalize(16),

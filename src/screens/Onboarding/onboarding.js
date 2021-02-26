@@ -254,9 +254,10 @@ const styles = StyleSheet.create({
     height: height * 0.15,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     width: '100%',
     paddingHorizontal: normalize(30),
+    paddingTop: normalize(height * 0.05),
     backgroundColor: 'transparent',
   },
   appVersion: {

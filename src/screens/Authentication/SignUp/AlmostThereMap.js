@@ -114,7 +114,6 @@ const AlmostThereMap = route => {
               longitude={route?.route?.params.longitude}
               reCenter={mapCoords}
               onRegionChange={handleRegionChange}
-              withCurrentMarker={true}
             />
             <View style={styles.buttonWrapper}>
               <AppButton

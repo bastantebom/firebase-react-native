@@ -273,7 +273,7 @@ const TransparentHeader = ({
             style={{
               justifyContent: 'space-between',
               flexDirection: 'row',
-              paddingHorizontal: 16,
+              padding: 16,
               width: Dimensions.get('window').width,
             }}>
             <View></View>
@@ -331,7 +331,7 @@ const TransparentHeader = ({
             style={{
               justifyContent: 'space-between',
               flexDirection: 'row',
-              paddingHorizontal: 16,
+              padding: normalize(16),
               width: Dimensions.get('window').width,
             }}>
             <View>

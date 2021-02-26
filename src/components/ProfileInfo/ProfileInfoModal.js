@@ -26,12 +26,12 @@ import { normalize, Colors } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context/index'
 
-import { MoreInfo } from '@/screens/Profile/Tabs'
+import { MoreInfo, UserPostEmpty } from '@/screens/Profile/Tabs'
 import ProfileInfo from '@/screens/Profile/components/ProfileInfo'
 import StickyHeader from '../TransparentHeader/StickyHeader'
 
-import Posts from '@/screens/Dashboard//components/posts'
-import { cloneDeep } from 'lodash'
+import Posts from '@/screens/Dashboard/components/posts'
+import { cloneDeep, isEmpty } from 'lodash'
 import Api from '@/services/Api'
 import ImageApi from '@/services/image-api'
 import { isUrl } from '@/globals/Utils'
@@ -133,8 +133,6 @@ function ProfileInfoModal(props) {
   const [fetchMore, setFetchMore] = useState(false)
   const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
   const [refresh, setRefresh] = useState(false)
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [totalPages, setTotalPages] = useState(Infinity)
 
   const getMorePost = async () => {
     try {
@@ -429,7 +427,7 @@ function ProfileInfoModal(props) {
   const profileTabs = [
     {
       title: 'Posts',
-      content: (
+      content: !isEmpty(otherUserPosts) ? (
         <Posts
           posts={otherUserPosts}
           onPostPress={handlePostPress}
@@ -437,6 +435,8 @@ function ProfileInfoModal(props) {
           isLoadingMoreItems={isDataLoading}
           showsVerticalScrollIndicator={false}
         />
+      ) : (
+        <UserPostEmpty userInfo={otherUserInfo} />
       ),
     },
     {
