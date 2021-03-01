@@ -16,10 +16,11 @@ import {
   FilterNeedsWhite,
   NavigationPinRed,
   SortRecent,
-  FilterServices,
-  FilterSeller,
-  FilterNeeds,
   SortHighLow,
+  SortLowHigh,
+  FilterNeedsGray,
+  FilterSellerGray,
+  FilterServicesGray,
 } from '@/assets/images/icons'
 
 import Config from '@/services/Config'
@@ -59,7 +60,7 @@ const LocationSearch = ({
     {
       label: 'Service',
       value: 'service',
-      icon: <FilterServices width={normalize(20)} height={normalize(20)} />,
+      icon: <FilterServicesGray width={normalize(20)} height={normalize(20)} />,
       iconActive: (
         <FilterServicesWhite width={normalize(20)} height={normalize(20)} />
       ),
@@ -68,7 +69,7 @@ const LocationSearch = ({
     {
       label: 'Selling',
       value: 'sell',
-      icon: <FilterSeller width={normalize(20)} height={normalize(20)} />,
+      icon: <FilterSellerGray width={normalize(20)} height={normalize(20)} />,
       iconActive: (
         <FilterSellerWhite width={normalize(20)} height={normalize(20)} />
       ),
@@ -77,7 +78,7 @@ const LocationSearch = ({
     {
       label: 'Need',
       value: 'need',
-      icon: <FilterNeeds width={normalize(20)} height={normalize(20)} />,
+      icon: <FilterNeedsGray width={normalize(20)} height={normalize(20)} />,
       iconActive: (
         <FilterNeedsWhite width={normalize(20)} height={normalize(20)} />
       ),
@@ -133,7 +134,7 @@ const LocationSearch = ({
       color: Colors.primarySalomie,
     },
     {
-      label: 'Price High to low',
+      label: 'Price: High to low',
       value: 'price_desc',
       icon: (
         <SortHighLow
@@ -156,17 +157,17 @@ const LocationSearch = ({
       color: Colors.primarySalomie,
     },
     {
-      label: 'Price Low to High',
+      label: 'Price: Low to High',
       value: 'price_asc',
       icon: (
-        <SortHighLow
+        <SortLowHigh
           color="#91919C"
           width={normalize(20)}
           height={normalize(20)}
         />
       ),
       iconActive: (
-        <SortHighLow
+        <SortLowHigh
           color={
             getColorByBackground(Colors.primarySalomie) === '#fff'
               ? '#515057'

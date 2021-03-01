@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   },
   in: {
     paddingLeft: normalize(4),
-    color: Colors.contentPlaceholder,
+    color: Colors.neutralsMischka,
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(12),
     lineHeight: normalize(18),

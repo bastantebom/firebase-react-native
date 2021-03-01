@@ -85,6 +85,9 @@ import FilterServices from './filter-services.svg'
 import FilterNeedsWhite from './filter-needs-white.svg'
 import FilterSellerWhite from './filter-seller-white.svg'
 import FilterServicesWhite from './filter-services-white.svg'
+import FilterNeedsGray from './filter-needs-gray.svg'
+import FilterSellerGray from './filter-seller-gray.svg'
+import FilterServicesGray from './filter-services-gray.svg'
 
 import SortHighLow from './sort-high-low.svg'
 import SortLowHigh from './sort-low-high.svg'
@@ -414,6 +417,9 @@ export {
   FilterNeedsWhite,
   FilterSellerWhite,
   FilterServicesWhite,
+  FilterNeedsGray,
+  FilterSellerGray,
+  FilterServicesGray,
   Filter,
   JarHeart,
   JarHeartColored,
