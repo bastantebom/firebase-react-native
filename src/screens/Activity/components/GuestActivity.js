@@ -25,7 +25,12 @@ const GuestActivity = () => {
           color={Colors.primaryMidnightBlue}>
           Easily track all {'\n'} your activity
         </AppText>
-        <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+        <AppText
+          textStyle="body2"
+          customStyle={{
+            textAlign: 'center',
+            paddingHorizontal: normalize(10),
+          }}>
           Notifications, receipts, transaction records, and updates—organized in
           one place.
         </AppText>

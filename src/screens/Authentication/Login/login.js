@@ -43,7 +43,7 @@ function Divider() {
   )
 }
 
-function Login() {
+function Login({ setNotificationMessage }) {
   const navigation = useNavigation()
 
   const [emailAddress, setEmailAddress] = useState('')
@@ -102,7 +102,11 @@ function Login() {
         },
       })
 
-      if (!response.success) throw new Error(response.message)
+      if (!response.success)
+        setNotificationMessage(
+          "Oh no! We can't find an account with these details. Please try again."
+        )
+
       if (response.custom_token) {
         await auth().signInWithCustomToken(response.custom_token)
         closeSlider()

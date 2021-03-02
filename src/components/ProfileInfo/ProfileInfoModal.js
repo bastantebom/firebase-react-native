@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   Dimensions,
   Animated,
   RefreshControl,
@@ -38,7 +37,6 @@ import { isUrl } from '@/globals/Utils'
 
 function ProfileInfoModal(props) {
   const { profileViewType = 'profile', uid } = props.route?.params
-
   const navigation = useNavigation()
   const { user, signOut } = useContext(UserContext)
   const { needsRefresh } = useContext(Context)
@@ -592,7 +590,14 @@ const styles = StyleSheet.create({
   profileImageWrapper: {
     width: '40%',
     height: normalize(160),
-    top: Dimensions.get('window').height > 850 ? '-17%' : '-21%',
+    top:
+      Platform.OS === 'android'
+        ? -Dimensions.get('window').height * 0.1
+        : Dimensions.get('window').height > 850
+        ? '-17%'
+        : Dimensions.get('window').height > 660
+        ? '-21%'
+        : '-28%',
     paddingLeft: normalize(24),
   },
 

@@ -11,7 +11,12 @@ import {
 } from 'react-native'
 import Swiper from 'react-native-swiper'
 import Modal from 'react-native-modal'
-import { AppText, AppButton, BottomSheetHeader } from '@/components'
+import {
+  AppText,
+  AppButton,
+  BottomSheetHeader,
+  Notification,
+} from '@/components'
 import Colors from '@/globals/Colors'
 import Login from '@/screens/Authentication/Login/login'
 import SignUp from '@/screens/Authentication/SignUp/SignUp'
@@ -23,9 +28,10 @@ import IllustFour from '@/assets/images/onboarding-img4.svg'
 import { getVersion, getBuildNumber } from 'react-native-device-info'
 import { Context } from '@/context'
 import { normalize } from '@/globals'
+import { Icons } from '@/assets/images/icons'
 
-const height = normalize(Dimensions.get('window').height)
-const width = normalize(Dimensions.get('window').width)
+const height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
 
 const Onboarding = ({ navigation }) => {
   const {
@@ -36,13 +42,14 @@ const Onboarding = ({ navigation }) => {
   } = useContext(Context)
 
   const [version, setVersion] = useState('1.0.3')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   const RenderContent = () => {
     if (authType === 'signup') {
       return <SignUp />
     }
     if (authType === 'login') {
-      return <Login />
+      return <Login setNotificationMessage={setNotificationMessage} />
     }
   }
 
@@ -102,10 +109,33 @@ const Onboarding = ({ navigation }) => {
 
   return (
     <>
+      <View
+        style={{
+          flex: 1,
+          position: 'absolute',
+          zIndex: 10,
+          width: width,
+          paddingTop: normalize(40),
+        }}>
+        {notificationMessage && (
+          <Notification
+            type="danger"
+            icon={<Icons.Warning />}
+            onClose={() => setNotificationMessage(null)}
+            animationOptions={{ height: normalize(85) }}>
+            <AppText
+              textStyle="body2"
+              customStyle={{ marginLeft: 14 }}
+              color={Colors.neutralsWhite}>
+              {notificationMessage}
+            </AppText>
+          </Notification>
+        )}
+      </View>
       <View style={styles.contentHolder}>
-        <Animated.View style={styles.bgImageHolder}>
+        <View style={styles.bgImageHolder}>
           <PolygonStatic width={width} height={height} />
-        </Animated.View>
+        </View>
         <TouchableOpacity
           onPress={() => navigation.push('TabStack')}
           style={styles.link}>
@@ -151,6 +181,7 @@ const Onboarding = ({ navigation }) => {
               setAuthType('login')
               showAuthenticationSheet(true)
             }}
+            customStyle={{ height: normalize(50) }}
           />
           <AppButton
             text="Sign up"
@@ -162,6 +193,7 @@ const Onboarding = ({ navigation }) => {
               setAuthType('signup')
               showAuthenticationSheet(true)
             }}
+            customStyle={{ height: normalize(50) }}
           />
         </View>
         <View style={styles.appVersion}>
@@ -182,8 +214,11 @@ const Onboarding = ({ navigation }) => {
         style={{ margin: 0, justifyContent: 'flex-end' }}
         customBackdrop={
           <TouchableWithoutFeedback
-            onPress={() => showAuthenticationSheet(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
+            onPress={() => {
+              showAuthenticationSheet(false)
+              setNotificationMessage(null)
+            }}>
+            <View style={{ flex: 1 }} />
           </TouchableWithoutFeedback>
         }>
         <View
@@ -205,6 +240,7 @@ const styles = StyleSheet.create({
   contentHolder: {
     position: 'relative',
     flex: 1,
+    height: '100%',
     backgroundColor: Colors.primaryMidnightBlue,
   },
   swiperHolder: {
@@ -243,7 +279,6 @@ const styles = StyleSheet.create({
   },
   bgImageHolder: {
     position: 'absolute',
-    width: width,
     bottom: normalize(30),
   },
   text: {

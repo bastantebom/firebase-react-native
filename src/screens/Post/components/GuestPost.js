@@ -60,7 +60,12 @@ export const GuestPost = () => {
             color={Colors.primaryMidnightBlue}>
             Offer services, sell goods, {'\n'} find what you need
           </AppText>
-          <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+          <AppText
+            textStyle="body2"
+            customStyle={{
+              textAlign: 'center',
+              paddingHorizontal: normalize(10),
+            }}>
             Post your offers, side gigs, and more! Find what you need in your
             community.
           </AppText>

@@ -21,7 +21,12 @@ const Hive = () => {
           color={Colors.primaryMidnightBlue}>
           Create your own Hive soon!
         </AppText>
-        <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+        <AppText
+          textStyle="body2"
+          customStyle={{
+            textAlign: 'center',
+            paddingHorizontal: normalize(10),
+          }}>
           With Hive, you can group your customers and friends to send exclusive
           updates and enjoy easier transactions.
         </AppText>

@@ -48,7 +48,12 @@ export const GuestProfile = () => {
             color={Colors.primaryMidnightBlue}>
             Join the bustling {'\n'} Servbees community
           </AppText>
-          <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+          <AppText
+            textStyle="body2"
+            customStyle={{
+              textAlign: 'center',
+              paddingHorizontal: normalize(25),
+            }}>
             Be a Buzzybee and connect, hustle, and earn—all on your own terms.
           </AppText>
           <TouchableOpacity

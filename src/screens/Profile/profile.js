@@ -51,7 +51,6 @@ const ProfileScreen = ({
     needsRefresh,
     setNeedsRefresh,
   } = useContext(Context)
-
   const [userPosts, setUserPosts] = useState({})
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
@@ -612,7 +611,9 @@ const styles = StyleSheet.create({
         ? -Dimensions.get('window').height * 0.1
         : Dimensions.get('window').height > 850
         ? '-17%'
-        : '-21%',
+        : Dimensions.get('window').height > 660
+        ? '-21%'
+        : '-28%',
     paddingLeft: normalize(24),
   },
   tabTextStyle: {
