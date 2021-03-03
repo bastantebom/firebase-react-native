@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: Colors.emptyStateBackground,
+    backgroundColor: Colors.neutralsWhite,
     padding: normalize(16),
   },
   imageWrapper: {

@@ -113,9 +113,13 @@ function Login({ setNotificationMessage }) {
       }
     } catch (error) {
       if (error.message === 'Invalid credentials')
-        Alert.alert('Error', error.message)
+        setNotificationMessage(error.message)
 
-      console.log(error.message || error)
+      if (error.message === 'Network request failed')
+        setNotificationMessage(
+          'No internet connection. Make sure that Wi-Fi or mobile data is turn on, then try again'
+        )
+      console.log(error.message)
     }
     setPassword('')
     setIsLoading(false)

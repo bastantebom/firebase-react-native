@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.emptyStateBackground,
+    backgroundColor: Colors.neutralsWhite,
     padding: normalize(16),
   },
   imageWrapper: {
