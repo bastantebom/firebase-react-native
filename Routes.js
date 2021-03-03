@@ -608,9 +608,9 @@ export default Routes = () => {
       Animated.timing(containerOpacity, {
         toValue: 1,
         duration: 750,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start()
-    }, 2500)
+    }, 2700)
   }, [])
 
   const handleDynamicLink = async link => {

@@ -20,12 +20,12 @@ const SplashScreenComponent = () => {
       Animated.timing(copyrightOpacity, {
         toValue: 1,
         duration: 2200,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(containerOpacity, {
         toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
+        duration: 500,
+        useNativeDriver: true,
       }),
     ]).start()
   }, [])
@@ -42,11 +42,13 @@ const SplashScreenComponent = () => {
     <Animated.View style={[styles.container, fadingAnimationStyle]}>
       <SafeAreaView style={styles.safeArea}>
         <LottieView
-          source={require('./assets/Servbees-splash.json')}
+          source={require('./assets/servbees-splash-tm.json')}
           autoPlay
         />
         <Animated.View style={[styles.textContainer, copyrightAnimationStyle]}>
-          <AppText textStyle="body2">© Copyright Servbees 2021.</AppText>
+          <AppText textStyle="body2">
+            © Copyright Servbees {new Date().getFullYear()}.
+          </AppText>
           <AppText textStyle="body2">All rights reserved</AppText>
           <AppText
             textStyle="metadata"
