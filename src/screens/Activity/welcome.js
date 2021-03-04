@@ -3,7 +3,7 @@ import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { AppText, ScreenHeaderTitle } from '@/components'
-import { WelcomeServbees } from '@/assets/images'
+import IllustHive from '@/assets/images/hive-img1.svg'
 import { normalize } from '@/globals'
 
 const Welcome = () => {
@@ -13,7 +13,7 @@ const Welcome = () => {
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
       <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
       <View style={styles.contentWrapper}>
-        <WelcomeServbees />
+        <IllustHive />
         <AppText textStyle="display5">Welcome to Servbees</AppText>
         <AppText textStyle="body2">
           Get busy connecting with Buzzybees in your community, selling
@@ -34,7 +34,7 @@ const Welcome = () => {
           onPress={() => {
             navigation.navigate('dashboard')
           }}>
-          <AppText textStyle="button2">Go to Dashboard</AppText>
+          <AppText textStyle="button2">Explore Postings Near You</AppText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

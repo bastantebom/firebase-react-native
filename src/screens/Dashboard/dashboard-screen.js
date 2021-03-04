@@ -439,7 +439,9 @@ const DashboardScreen = ({ navigation }) => {
               onEndReached={handleOnEndReached}
               ListFooterComponent={
                 noMorePost ? (
-                  <Text style={styles.noMorePost}>No More Posts Available</Text>
+                  <Text style={styles.noMorePost}>
+                    You've seen all posts available.
+                  </Text>
                 ) : (
                   <ActivityIndicator style={styles.activeIndicator} />
                 )

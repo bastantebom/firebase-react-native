@@ -11,25 +11,31 @@ export const UserContextProvider = ({ children }) => {
   const [providerData, setProviderData] = useState({})
   const [token, setToken] = useState(null)
   const [userStatus, setUserStatus] = useState({})
+  const [unavailableNetwork, setUnavailableNetwork] = useState(false)
 
   let unsubscribe
   async function onAuthStateChanged(user) {
-    if (user) {
-      const { uid, displayName, email, providerData } = user
-      setProviderData(providerData)
-      setUser({
-        uid: uid,
-        displayName: displayName,
-        email: email,
-        date_joined: new Date(user.metadata.creationTime).getTime(),
-      })
+    try {
+      if (user) {
+        const { uid, displayName, email, providerData } = user
+        setProviderData(providerData)
+        setUser({
+          uid: uid,
+          displayName: displayName,
+          email: email,
+          date_joined: new Date(user.metadata.creationTime).getTime(),
+        })
 
-      unsubscribe = unsubscribe?.()
-      const idToken = await auth().currentUser.getIdToken(true)
-      await AsyncStorage.setItem('token', idToken)
-      await AsyncStorage.setItem('uid', user.uid)
-      await AsyncStorage.setItem('token-timestamp', Date.now().toString())
-      setToken(idToken)
+        unsubscribe = unsubscribe?.()
+        const idToken = await auth().currentUser.getIdToken(true)
+        await AsyncStorage.setItem('token', idToken)
+        await AsyncStorage.setItem('uid', user.uid)
+        await AsyncStorage.setItem('token-timestamp', Date.now().toString())
+        setToken(idToken)
+      }
+    } catch (error) {
+      if (error.message.includes('auth/network-request-failed'))
+        setUnavailableNetwork(true)
     }
   }
 
@@ -111,6 +117,7 @@ export const UserContextProvider = ({ children }) => {
         token,
         providerData,
         updateUserStatus,
+        unavailableNetwork,
       }}>
       {children}
     </UserContext.Provider>

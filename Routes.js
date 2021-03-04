@@ -13,9 +13,6 @@ import BellActive from '@/assets/images/icons/bell-active.svg'
 import Hive from '@/assets/images/icons/hive.svg'
 import HiveActive from '@/assets/images/icons/hive-active.svg'
 
-import { useNavigation } from '@react-navigation/native'
-import { PostService } from '@/services'
-
 //screens
 import { Onboarding } from '@/screens/Onboarding'
 import DashboardStack from '@/screens/Dashboard'
@@ -37,6 +34,7 @@ import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
 import PaymentsStack from '@/screens/payments'
 import OrdersStack from '@/screens/orders'
+import UnavailableNetwork from '@/screens/Dashboard/components/unavailable-network'
 import url from 'url'
 import Api from '@/services/Api'
 import _ from 'lodash'
@@ -55,7 +53,7 @@ import {
 import { PostScreen } from '@/screens/Post'
 import { GuestPost } from '@/screens/Post/components/GuestPost'
 
-import { ProfileInfoModal, SinglePostOthersView, AppText } from '@/components'
+import { ProfileInfoModal } from '@/components'
 import { Past } from '@/screens/Activity'
 import { Notifications } from '@/screens/Activity'
 import { Badge } from '@/screens/Activity'
@@ -185,6 +183,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="invite-friends"
         component={InviteFriendsScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="unavailable-network"
+        component={UnavailableNetwork}
       />
     </NoBottomTabScreenStack.Navigator>
   )
@@ -596,9 +598,14 @@ const TabStack = props => {
 }
 
 export default Routes = () => {
-  const { signOut, token, userInfo, userStatus, updateUserStatus } = useContext(
-    UserContext
-  )
+  const {
+    signOut,
+    token,
+    userInfo,
+    userStatus,
+    updateUserStatus,
+    unavailableNetwork,
+  } = useContext(UserContext)
   const { addresses } = userInfo
 
   const [containerOpacity] = useState(new Animated.Value(0))
@@ -607,6 +614,11 @@ export default Routes = () => {
     opacity: containerOpacity,
     flex: 1,
   }
+
+  if (unavailableNetwork)
+    navigate('NBTScreen', {
+      screen: 'unavailable-network',
+    })
 
   useEffect(() => {
     setTimeout(() => {

@@ -80,6 +80,8 @@ import PaymentFailed from './payment-failed.svg'
 import PaymentSuccess from './payment-success.svg'
 import IllustActivity from './activity-img1.svg'
 
+import NoInternet from './no-internet.svg'
+
 export {
   Guide,
   Category,
@@ -148,4 +150,5 @@ export const Images = {
   Doctor,
   PaymentFailed,
   PaymentSuccess,
+  NoInternet,
 }
