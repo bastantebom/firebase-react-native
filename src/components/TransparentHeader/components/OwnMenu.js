@@ -23,6 +23,7 @@ import {
   LikedPostMenu,
   ContactUs,
   Notifications,
+  InviteFriendsMenu,
 } from '@/assets/images/icons'
 
 import {
@@ -31,7 +32,6 @@ import {
   HiddenPost,
   LikedPost,
   ArchivedPost,
-  InviteFriends,
   ContactServbees,
   FaqScreen,
   NotificationSettings,
@@ -45,7 +45,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   const [hiddenPost, setHiddenPost] = useState(false)
   const [likePost, setLikePost] = useState(false)
   const [archivedPost, setArchivedPost] = useState(false)
-  const [inviteFriends, setInviteFriends] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
   const [notifications, setNotifications] = useState(false)
@@ -60,7 +59,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   const toggleArchivedPost = () => setArchivedPost(!archivedPost)
   const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
-  const toggleInviteFriends = () => setInviteFriends(!inviteFriends)
 
   const handleChangePasswordPress = () => {
     navigation.navigate('NBTScreen', { screen: 'change-password' })
@@ -88,6 +86,17 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
       onPress: () => setHiddenPost(true),
       icon: () => <HidePost width={normalize(20)} height={normalize(20)} />,
       hidden: true,
+    },
+    {
+      label: 'Invite Friends',
+      onPress: () => {
+        navigation.navigate('NBTScreen', {
+          screen: 'invite-friends',
+        })
+      },
+      icon: () => (
+        <InviteFriendsMenu width={normalize(20)} height={normalize(20)} />
+      ),
     },
   ]
 
@@ -361,20 +370,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <ArchivedPost toggleArchivedPost={toggleArchivedPost} />
-      </Modal>
-
-      <Modal
-        isVisible={inviteFriends}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <InviteFriends toggleInviteFriends={toggleInviteFriends} />
       </Modal>
 
       <Modal

@@ -27,6 +27,7 @@ import PayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/Payout
 import ChangePayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/ChangePayoutMethod'
 import PayoutDetailsScreen from '@/screens/Profile/components/PayoutMethod/PayoutDetails'
 import PayoutSuccessScreen from '@/screens/Profile/components/PayoutMethod/SuccessScreen'
+import InviteFriendsScreen from '@/screens/Profile/invite-friends'
 
 import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import ChangePasswordScreen from '@/screens/Profile/change-password'
@@ -181,6 +182,10 @@ function NoBottomTabScreens() {
         component={EditProfileScreen}
       />
       <NoBottomTabScreenStack.Screen name="basket" component={Basket} />
+      <NoBottomTabScreenStack.Screen
+        name="invite-friends"
+        component={InviteFriendsScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
   )
 }

@@ -8,7 +8,6 @@ import BlockList from './Account/BlockList.js'
 import HiddenPost from './Account/HiddenPost.js'
 import LikedPost from './Account/LikedPost.js'
 import ArchivedPost from './Account/ArchivedPost.js'
-import InviteFriends from './Account/InviteFriends.js'
 
 import ChangePassword from './ChangePassword/ChangePassword.js'
 
@@ -36,11 +35,9 @@ export {
   BlockList,
   HiddenPost,
   LikedPost,
-  ChangePassword,
   AddAddress,
   Gender,
   ArchivedPost,
-  InviteFriends,
   ContactServbees,
   FaqScreen,
   UpdateTempScreen,
