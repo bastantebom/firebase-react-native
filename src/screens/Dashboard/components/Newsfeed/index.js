@@ -79,11 +79,24 @@ const NewsFeed = ({ props }) => {
     return temp
   }
 
+  const GetDeliveryIcon = ({ post }) => {
+    if (getDeliveryMethod(post).some(method => method === 'delivery')) {
+      return <Icons.DeliveryVanBlue /> 
+    } else if (getDeliveryMethod(post).some(method => method === 'appointment')) {
+      return <Icons.Appointment />
+    } else if (getDeliveryMethod(post).some(method => method === 'walk-in')) {
+      return <Icons.WalkIn />
+    } else {
+      return <Icons.MyOffers /> 
+    }
+  }
+
   const postTypeLabel = {
     sell: 'Selling',
     need: 'Need',
     service: 'Service',
   }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -225,10 +238,7 @@ const NewsFeed = ({ props }) => {
           </View>
           {post.type !== 'need' && (
             <View style={styles.deliveryMethodContainer}>
-              <Icons.DeliveryVanBlue
-                width={normalize(16)}
-                height={normalize(16)}
-              />
+              <GetDeliveryIcon post={post} style={styles.icon}/>
               <AppText
                 textStyle="eyebrow2"
                 customStyle={styles.deliveryMethodText}>
@@ -338,6 +348,7 @@ const styles = StyleSheet.create({
   },
   deliveryMethodContainer: {
     flexDirection: 'row',
+    alignItems: 'center'
   },
   deliveryMethodText: {
     marginLeft: 4,
@@ -348,6 +359,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutralsZircon,
     width: '100%',
   },
+  icon: {
+    width: normalize(16),
+    height: normalize(16),
+  }
 })
 
 export default NewsFeed

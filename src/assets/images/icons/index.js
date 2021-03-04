@@ -52,6 +52,8 @@ import ChevronRightWhite from '@/assets/images/icons/chevron-right-white.svg'
 import ChevronRightGray from '@/assets/images/icons/chevron-right-gray.svg'
 import SearchDark from '@/assets/images/icons/search-dark.svg'
 import DeliveryVanBlue from './delivery-van-blue.svg'
+import WalkIn from './walk-in.svg'
+import Appointment from './appointment.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
@@ -663,5 +665,7 @@ export const Icons = {
   MyOrders,
   AllActivities,
   Past,
-  DeliveryVanBlue
+  DeliveryVanBlue,
+  WalkIn,
+  Appointment
 }
