@@ -439,9 +439,7 @@ const DashboardScreen = ({ navigation }) => {
               onEndReached={handleOnEndReached}
               ListFooterComponent={
                 noMorePost ? (
-                  <Text style={styles.noMorePost}>
-                    You've seen all posts available.
-                  </Text>
+                  <Text style={styles.noMorePost}>No new buzz right now.</Text>
                 ) : (
                   <ActivityIndicator style={styles.activeIndicator} />
                 )
@@ -537,8 +535,9 @@ const styles = StyleSheet.create({
   noMorePost: {
     paddingVertical: normalize(20),
     fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(14),
+    fontSize: normalize(12),
     textAlign: 'center',
+    color: '#A8AAB7',
   },
   activeIndicator: {
     paddingVertical: normalize(20),
