@@ -33,6 +33,7 @@ import TermsOfUse from '@/screens/Authentication/SignUp/components/TermsOfUse'
 import Api from '@/services/Api'
 
 const SignUp = props => {
+  const { setNotificationMessage } = props
   const [formData, setFormData] = useState({
     login: '',
     name: '',
@@ -156,6 +157,11 @@ const SignUp = props => {
     } catch (error) {
       if (error.message === 'Account already exist')
         Alert.alert('Oops', `This ${signUpMethod} is already registered`)
+
+      if (error.message === 'Network request failed')
+        setNotificationMessage(
+          'No internet connection. Make sure that Wi-Fi or mobile data is turn on, then try again'
+        )
 
       console.log(error.message || error)
     }

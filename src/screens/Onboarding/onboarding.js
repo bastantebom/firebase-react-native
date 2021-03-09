@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import Swiper from 'react-native-swiper'
 import Modal from 'react-native-modal'
+import NetInfo from '@react-native-community/netinfo'
 import {
   AppText,
   AppButton,
@@ -46,7 +47,7 @@ const Onboarding = ({ navigation }) => {
 
   const RenderContent = () => {
     if (authType === 'signup') {
-      return <SignUp />
+      return <SignUp setNotificationMessage={setNotificationMessage} />
     }
     if (authType === 'login') {
       return <Login setNotificationMessage={setNotificationMessage} />
@@ -105,6 +106,18 @@ const Onboarding = ({ navigation }) => {
 
   useEffect(() => {
     getVersionAndBuildNumber()
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      if (state.isInternetReachable === false)
+        navigation.navigate('NBTScreen', {
+          screen: 'unavailable-network',
+        })
+    })
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   return (

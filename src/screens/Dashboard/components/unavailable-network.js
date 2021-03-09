@@ -1,11 +1,17 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native'
+import NetInfo from '@react-native-community/netinfo'
 
 import { Images } from '@/assets/images'
-import { normalize } from '@/globals'
+import { normalize, Colors } from '@/globals'
 import { AppButton, AppText } from '@/components'
 
 const UnavailableNetwork = ({ navigation }) => {
+  const handleReload = () => {
+    NetInfo.fetch().then(state => {
+      if (state.isInternetReachable === true) navigation.goBack()
+    })
+  }
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
@@ -24,14 +30,24 @@ const UnavailableNetwork = ({ navigation }) => {
             text={'Reload'}
             type="primary"
             height="lg"
-            onPress={() => navigation.goBack()}
+            onPress={handleReload}
           />
         </View>
       </View>
       <View style={styles.footerCopy}>
-        <AppText textStyle="body2">
-          Need help? Contact support@servbees.com
+        <AppText textStyle="body2" customStyle={styles.footerText}>
+          Need help? Contact{' '}
         </AppText>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL(
+              'mailto:support@servbees.com?subject=Support Needed'
+            )
+          }>
+          <AppText textStyle="body2" color={Colors.contentOcean}>
+            support@servbees.com
+          </AppText>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -78,11 +94,15 @@ const styles = StyleSheet.create({
     marginBottom: normalize(27),
   },
   footerCopy: {
-    flex: 2,
+    flex: 1,
     justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingVertical: normalize(56),
+    alignItems: 'flex-end',
     paddingHorizontal: normalize(27),
+    paddingVertical: normalize(56),
+    flexDirection: 'row',
+  },
+  footerText: {
+    flexWrap: 'wrap',
   },
 })
 
