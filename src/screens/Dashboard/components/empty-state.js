@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import {
   ScrollView,
-  RefreshControl,
+  TouchableOpacity,
   View,
   Text,
   StyleSheet,
@@ -11,14 +11,34 @@ import { useNavigation } from '@react-navigation/native'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 import { Images } from '@/assets/images'
-import { normalize } from '@/globals'
-import { AppButton } from '@/components'
+import { normalize, Colors } from '@/globals'
+import { AppButton, AppText } from '@/components'
+import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
+import Share from 'react-native-share'
 
 const EmptyState = ({ handleRefresh, isRefreshing }) => {
   const navigation = useNavigation()
 
   const { setShowButtons } = useContext(Context)
-  const { user } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
+
+  const handleInvite = async () => {
+    try {
+      const url = await (async () => {
+        return await generateDynamicLink({
+          type: 'download',
+          social: await getPreviewLinkData({
+            type: 'invite',
+            data: userInfo,
+          }),
+        })
+      })()
+
+      await Share.open({ url })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -26,7 +46,7 @@ const EmptyState = ({ handleRefresh, isRefreshing }) => {
         <Images.DashboardEmptyState style={styles.image} />
       </View>
       <View style={styles.textWrapper}>
-        <Text style={styles.title}>No Buzz in your area yet</Text>
+        <Text style={styles.title}>No buzz in your area yet</Text>
         <Text style={styles.description}>
           Things will get busy soon! For now, start posting and keep sharing
           Servbees to friends.
@@ -44,6 +64,14 @@ const EmptyState = ({ handleRefresh, isRefreshing }) => {
             }
           />
         </View>
+      </View>
+      <View style={styles.inviteFriendsLink}>
+        <AppText textStyle="body2">or </AppText>
+        <TouchableOpacity onPress={handleInvite}>
+          <AppText textStyle="body2medium" color={Colors.contentOcean}>
+            Invite Friends
+          </AppText>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -88,6 +116,12 @@ const styles = StyleSheet.create({
   },
   createButton: {
     marginBottom: normalize(27),
+  },
+  inviteFriendsLink: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 
