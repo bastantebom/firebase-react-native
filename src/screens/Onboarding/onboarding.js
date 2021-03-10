@@ -2,13 +2,13 @@ import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   Dimensions,
   Animated,
   Easing,
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import Swiper from 'react-native-swiper'
 import Modal from 'react-native-modal'
 import NetInfo from '@react-native-community/netinfo'
