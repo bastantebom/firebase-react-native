@@ -369,13 +369,11 @@ export const getPreviewLinkData = async ({ type, data }) => {
   }
 
   const getInviteContent = () => {
-    const name = data.display_name || data.full_name
-    return `Wazzup? Join your kai-bee-gan ${name} and explore Servbees today! Bee ready to raket, benta, search and more on this friendly neighborhood pagkakakita-App.\n\n Download here: https://app.servbees.com/download`
+    return `Wazzup, kai-bee-gan? Be a part of Servbees and easily buy and sell items, offer services, and find great deals within your area. \r\n\r\n Join for free at https://app.servbees.com/download`
   }
 
   if (type === 'user') {
     const name = data.display_name || data.full_name
-
     return {
       socialTitle: `${name} is on Servbees, your friendly neighborhood Pagkakakita-App`,
       socialImageLink:
@@ -401,8 +399,9 @@ export const getPreviewLinkData = async ({ type, data }) => {
       socialDescription: getPostDescription(),
     }
   } else if (type === 'invite') {
+    const name = data.display_name || data.full_name
     return {
-      socialTitle: `Servbees, your friendly neighborhood Pagkakakita-App invitation`,
+      socialTitle: `${name} invited you to join Servbees`,
       socialDescription: getInviteContent(),
     }
   }
