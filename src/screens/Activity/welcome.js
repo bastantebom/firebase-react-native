@@ -26,7 +26,6 @@ const Welcome = () => {
           style={{
             marginTop: normalize(20),
             paddingVertical: normalize(10),
-            paddingHorizontal: normalize(60),
             alignItems: 'center',
             backgroundColor: '#FFD400',
             borderRadius: 3,

@@ -627,7 +627,7 @@ export default Routes = () => {
         duration: 750,
         useNativeDriver: true,
       }).start()
-    }, 2700)
+    }, 2500)
   }, [])
 
   const handleDynamicLink = async link => {

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   footerCopy: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'flex-end',
     paddingHorizontal: normalize(27),
     paddingVertical: normalize(56),
