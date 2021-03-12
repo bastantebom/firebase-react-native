@@ -21,6 +21,7 @@ import {
   SortNearest,
   Icons,
 } from '@/assets/images/icons'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 /**
  * @param {object} param0
@@ -98,10 +99,10 @@ const FilterSlider = ({ close, onApply, filters: _filters }) => {
     <View
       style={{
         backgroundColor: 'white',
-        height: Dimensions.get('window').height,
+        flex: 1,
       }}>
-      <ScrollView style={{ paddingTop: 24 }}>
-        <AppViewContainer marginSize={3}>
+      <ScrollView style={{ paddingTop: 24, flex: 1 }}>
+        <TouchableOpacity activeOpacity={1} style={{ padding: normalize(24) }}>
           <View style={{ flexDirection: 'row', marginBottom: normalize(16) }}>
             <View style={{ flex: 1 }}>
               <AppText textStyle="subtitle1">Filter & Sort</AppText>
@@ -179,7 +180,7 @@ const FilterSlider = ({ close, onApply, filters: _filters }) => {
               />
             ))}
           </View>
-        </AppViewContainer>
+        </TouchableOpacity>
       </ScrollView>
       <View style={styles.filterActions}>
         <TouchableOpacity onPress={resetFilters}>

@@ -506,7 +506,7 @@ const DashboardScreen = ({ navigation }) => {
         animationInTiming={300}
         animationOutTiming={250}
         onSwipeComplete={() => setIsFiltersVisible(false)}
-        swipeDirection="right"
+        propagateSwipe={true}
         style={{
           justifyContent: 'flex-end',
           margin: 0,
@@ -516,8 +516,7 @@ const DashboardScreen = ({ navigation }) => {
           <TouchableWithoutFeedback onPress={() => setIsFiltersVisible(false)}>
             <View style={{ flex: 1, backgroundColor: 'black' }} />
           </TouchableWithoutFeedback>
-        }
-        onDrag>
+        }>
         <Filters
           close={() => setIsFiltersVisible(false)}
           onApply={handleApplyFilters}
