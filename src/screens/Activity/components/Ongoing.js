@@ -1,322 +1,141 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React from 'react'
 import {
-  SafeAreaView,
-  ScrollView,
   View,
-  TouchableOpacity,
+  Text,
   StyleSheet,
-  RefreshControl,
   FlatList,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import { UserContext } from '@/context/UserContext'
-import { Context } from '@/context'
-import Api from '@/services/Api'
 
-import { AppText, TransitionIndicator } from '@/components'
 import { normalize, Colors } from '@/globals'
-import { IllustActivity, NoReview, NoPost, NoInfo } from '@/assets/images'
-import ActivitiesCard from './ActivitiesCard'
+import { NoReview, NoPost, NoInfo } from '@/assets/images'
 
-const Ongoing = ({ sortCategory }) => {
-  const { initChats } = useContext(Context)
-  const navigation = useNavigation()
-  const { user, userInfo } = useContext(UserContext)
+import { AppText } from '@/components'
+import ActivitiesCard from '@/screens/Activity/components/ActivitiesCard'
 
-  const [onGoing, setOnGoing] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isRefreshing, setIsRefreshing] = useState(false)
-
-  const initOwnOrders = async () => {
-    const ownOrdersResponse = await Api.getOwnOrders({ uid: user?.uid })
-    if (!ownOrdersResponse.success) return
-    if (ownOrdersResponse.success) {
-      let ownOrderData = await Promise.all(
-        ownOrdersResponse.data.map(async order => {
-          const getPostResponse = await Api.getPost({
-            pid: order.post_id,
-          })
-          const getUserReponse = await Api.getUser({
-            uid: order.seller_id || user?.uid,
-          })
-
-          if (!getPostResponse.success || !getUserReponse.success) return
-          const { full_name, display_name, profile_photo } = getUserReponse.data
-          return {
-            profilePhoto: profile_photo,
-            name: display_name || full_name,
-            cardType: ['completed', 'cancelled', 'declined'].includes(
-              order.status
-            )
-              ? 'past'
-              : 'own',
-            status: order.status,
-            time: order.date._seconds,
-            orderID: order.id,
-            payment: order.payment_method,
-            price: order.total_price,
-            postData: getPostResponse.data,
-          }
-        })
-      )
-      setOnGoing(onGoing =>
-        [...onGoing, ...ownOrderData].sort((a, b) => b.time - a.time)
-      )
-
-      return
+const Ongoing = ({
+  sort,
+  activities,
+  isLoading,
+  isRereshing,
+  setIsRereshing,
+  loadMoreActivities,
+  noMoreActivities,
+}) => {
+  const renderEmptyIcon = () => {
+    switch (sort.value) {
+      case 'all':
+        return <NoPost />
+      case 'my offers':
+      case 'my orders':
+      case 'past':
+        return <NoReview />
+      default:
+        return <NoInfo />
     }
   }
 
-  const initSellerOrders = async () => {
-    const getOwnPostResponse = await Api.getUserPosts({
-      uid: user?.uid,
-    })
-    if (!getOwnPostResponse.success) return
-    let sellerOrderData = await Promise.all(
-      getOwnPostResponse.data.map(async post => {
-        const responseOrders = await Api.getOrders({
-          uid: user?.uid,
-          pid: post.id,
-        })
-        if (!responseOrders.success) return
-
-        const { full_name, display_name, profile_photo } = userInfo
-        let latestTimeStampOrder = post.date_posted._seconds
-        let sortedOrders = responseOrders.data
-
-        if (Object.keys(sortedOrders).length) {
-          sortedOrders = await getSorted(responseOrders.data)
-          latestTimeStampOrder = await getLatest(responseOrders.data)
-        }
-
-        return {
-          profilePhoto: profile_photo,
-          name: display_name || full_name,
-          cardType: 'seller',
-          time: latestTimeStampOrder,
-          orders: sortedOrders,
-          postData: post,
-        }
-      })
-    )
-
-    setOnGoing(onGoing =>
-      [...onGoing, ...sellerOrderData].sort((a, b) => b.time - a.time)
-    )
-
-    return
-  }
-
-  const getLatest = async orderData => {
-    const timeStampList = []
-    for (const [key, orders] of Object.entries(orderData)) {
-      orders.map(order => {
-        timeStampList.push(order.date._seconds)
-      })
+  const renderEmptyHeadingText = () => {
+    switch (sort.value) {
+      case 'all':
+        return 'No activities yet'
+      case 'my offers':
+        return 'No offers yet'
+      case 'my orders':
+        return 'No orders yet'
+      case 'past':
+        return 'No past orders yet'
+      default:
+        return ''
     }
-    return Math.max(...timeStampList)
   }
 
-  const getSorted = async orderData => {
-    let sortedOrders = {}
-    for (const [key, orders] of Object.entries(orderData)) {
-      sortedOrders[`${key}`] = orders.sort(
-        (a, b) => b.date._seconds - a.date._seconds
-      )
+  const renderEmptyBodyText = () => {
+    switch (sort.value) {
+      case 'all':
+        return 'Start checking what you can offer and discover the best deals in your area.'
+      case 'my offers':
+      case 'my orders':
+        return 'Keep on posting about your products to attract orders, Buzzybee!'
+      default:
+        return 'Getting projects starts by making offers, Buzzybee!'
     }
-    return sortedOrders
   }
 
-  const callAllOrders = useCallback(async () => {
-    await Promise.all([initOwnOrders(), initSellerOrders()])
-    setIsLoading(false)
-  }, [])
-
-  const handleRefresh = async () => {
-    setIsLoading(true)
-    setIsRefreshing(true)
-    setOnGoing([])
-    await initChats(user?.uid)
-    await callAllOrders()
-    setIsRefreshing(false)
-  }
-
-  const renderItem = ({ item }) => <ActivitiesCard info={item} />
-
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      setIsLoading(true)
-      callAllOrders()
+  const renderFooterContent = () => {
+    if (activities.length >= 10 && !noMoreActivities) {
+      return <ActivityIndicator style={styles.activeIndicator} />
     }
-    return () => (isMounted = false)
-  }, [])
+  }
 
   return (
-    <SafeAreaView>
-      <TransitionIndicator loading={isLoading} />
-      {!isLoading &&
-        sortCategory.value === 'past' &&
-        onGoing.filter(post =>
-          sortCategory.value === 'all'
-            ? post
-            : post.cardType === sortCategory.value
-        ).length < 1 && (
-          <ScrollView contentContainerStyle={{ padding: normalize(15) }}>
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <IllustActivity width={normalize(250)} height={normalize(200)} />
-              <AppText
-                textStyle="display5"
-                color={Colors.primaryMidnightBlue}
-                customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
-                Start buzzing on Servbees!
-              </AppText>
-              <View style={styles.descHolder}>
-                <AppText
-                  customStyle={{
-                    textAlign: 'center',
-                  }}
-                  textStyle="body2">
-                  Get busy with more projects, buying and selling items,
-                  boosting your online business or just browsing what’s new in
-                  your neighborhood.
-                </AppText>
-              </View>
-              <TouchableOpacity
-                style={{
-                  paddingVertical: normalize(10),
-                  paddingHorizontal: normalize(20),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  backgroundColor: '#FFD400',
-                  borderRadius: 3,
-                }}
-                onPress={() => navigation.navigate('dashboard')}>
-                <AppText textStyle="button3">Explore Postings Near You</AppText>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        )}
-      {!isLoading &&
-        sortCategory.value !== 'past' &&
-        onGoing.filter(post =>
-          sortCategory.value === 'all'
-            ? post
-            : post.cardType === sortCategory.value
-        ).length < 1 && (
-          <ScrollView
-            contentContainerStyle={{
-              paddingHorizontal: normalize(16),
-              paddingBottom: normalize(25),
-            }}
-            refreshControl={
-              <RefreshControl
-                style={{ zIndex: 1 }}
-                refreshing={isRefreshing}
-                titleColor="#2E3034"
-                tintColor="#2E3034"
-                onRefresh={handleRefresh}
-              />
-            }>
-            <View style={styles.emptyState}>
-              {sortCategory.value === 'all' ? (
-                <NoPost />
-              ) : sortCategory.value === 'own' ? (
-                <NoReview />
-              ) : (
-                <NoInfo />
-              )}
-              <AppText
-                textStyle="display6"
-                customStyle={{
-                  marginBottom: normalize(4),
-                  marginTop: normalize(15),
-                }}>
-                {sortCategory.value === 'all'
-                  ? `No activities yet`
-                  : sortCategory.value === 'own'
-                  ? `No orders yet`
-                  : `No offers yet`}
-              </AppText>
-              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-                {sortCategory.value === 'all'
-                  ? `Start checking what you can offer and discover the best deals in your area.`
-                  : sortCategory.value === 'own'
-                  ? `Keep on posting about your products to attract orders, Buzzybee!`
-                  : `Getting projects starts by making offers, Buzzybee! `}
-              </AppText>
-            </View>
-          </ScrollView>
-        )}
-      {!isLoading &&
-        onGoing.filter(post =>
-          sortCategory.value === 'all'
-            ? post
-            : post.cardType === sortCategory.value
-        ).length > 0 && (
-          <>
-            <View style={{ paddingHorizontal: normalize(15) }}>
-              {
-                <AppText
-                  textStyle="eyebrow1"
-                  customStyle={{
-                    color: '#91919C',
-                    paddingTop: normalize(15),
-                  }}>
-                  NEW
-                </AppText>
-              }
-            </View>
+    <View style={styles.activityWrapper}>
+      <FlatList
+        keyExtractor={item => item.post.id}
+        data={activities}
+        renderItem={({ item }) => <ActivitiesCard item={item} />}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          if (activities.length >= 10) loadMoreActivities()
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRereshing}
+            titleColor="#2E3034"
+            tintColor="#2E3034"
+            title="Refreshing"
+            onRefresh={() => setIsRereshing(true)}
+          />
+        }
+        ListFooterComponent={renderFooterContent()}
+      />
 
-            <FlatList
-              data={onGoing.filter(post =>
-                sortCategory.value === 'all'
-                  ? post
-                  : post.cardType === sortCategory.value
-              )}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-              ListFooterComponent={
-                <View
-                  style={{
-                    alignItems: 'center',
-                    marginTop: 8,
-                    marginBottom: 24,
-                  }}>
-                  {isLoading ? <ActivityIndicator /> : <AppText></AppText>}
-                </View>
-              }
-              refreshControl={
-                <RefreshControl
-                  style={{ zIndex: 1 }}
-                  refreshing={isRefreshing}
-                  titleColor="#2E3034"
-                  tintColor="#2E3034"
-                  onRefresh={handleRefresh}
-                />
-              }
-            />
-          </>
-        )}
-    </SafeAreaView>
+      {!activities.length && !isLoading && (
+        <View style={styles.emptyState}>
+          {renderEmptyIcon()}
+
+          <AppText textStyle="display6" customStyle={styles.emptyHeaderText}>
+            {renderEmptyHeadingText()}
+          </AppText>
+
+          <AppText textStyle="body2" customStyle={styles.emptyBodyText}>
+            {renderEmptyBodyText()}
+          </AppText>
+        </View>
+      )}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  descHolder: {
-    paddingTop: normalize(10),
-    paddingBottom: normalize(25),
+  activityWrapper: {
+    paddingTop: normalize(15),
+    paddingBottom: normalize(35),
+    paddingHorizontal: normalize(15),
   },
   emptyState: {
-    backgroundColor: Colors.neutralsWhite,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: normalize(8),
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    flex: 1,
     padding: normalize(16),
+    backgroundColor: Colors.neutralsWhite,
+  },
+  emptyHeaderText: {
+    marginBottom: normalize(4),
+    marginTop: normalize(15),
+  },
+  emptyBodyText: {
+    textAlign: 'center',
+  },
+  activeIndicator: {
+    paddingTop: normalize(10),
+    paddingBottom: normalize(50),
+  },
+  noMorePost: {
+    paddingVertical: normalize(20),
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(12),
+    textAlign: 'center',
+    color: '#A8AAB7',
   },
 })
 

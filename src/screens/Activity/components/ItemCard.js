@@ -1,224 +1,219 @@
-import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { AppText } from '@/components'
+import React from 'react'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { formatNumber } from 'react-native-currency-input'
+import { useNavigation } from '@react-navigation/native'
 
-import {
-  normalize,
-  Colors,
-  fullDateFormat,
-  timeOnly,
-  timePassedShort,
-} from '@/globals'
+import moment from 'moment'
 
 import { ChatBlue, Verified, ChatEmpty } from '@/assets/images/icons'
+import { normalize, Colors, timePassedShort } from '@/globals'
+import { AppText } from '@/components'
 
-import { commaSeparate } from '@/globals/Utils'
-import { UserContext } from '@/context/UserContext'
-import _ from 'lodash'
 import Avatar from '@/components/Avatar/avatar'
-const ItemCard = ({ item, handleChatPress, onPress }) => {
-  const { user } = useContext(UserContext)
-  const unRead =
-    item?.chat[0]?.uid !== user?.uid &&
-    !item?.chat[0]?.read &&
-    !_.isEmpty(item?.chat)
 
-  const timeAgo = time => {
+const ItemCard = ({ items }) => {
+  const navigation = useNavigation()
+
+  const getItemQuantity = order => {
+    if (order.offer) return 1
+
+    return order.items.length
+  }
+
+  const getTimeAgo = time => {
     if (time <= 60) {
       return 'Just now'
     }
     return timePassedShort(time)
   }
 
-  const chatPress = () => {
-    const members = {
-      [item.customerUID]: true,
-      [user?.uid]: true,
+  const getPaymentMethod = paymentMethod => {
+    switch (paymentMethod) {
+      case 'cash':
+        return 'COD'
+      case 'card':
+        return 'Visa / Mastercard'
+      case 'gcash':
+        return 'GCash'
+      case 'grabpay':
+        return 'GrabPay'
+      case 'paypal':
+        return 'Paypal'
     }
-    handleChatPress(members, item.postId)
   }
 
-  const renderChatCopy = () => {
-    return _.isEmpty(item.chat)
-      ? 'No messages yet'
-      : item?.chat[0].uid === user?.uid
-      ? 'You replied'
-      : item?.chat?.filter(chat => !chat.read).length > 1
-      ? `${item.chat.length} new messages`
-      : item?.chat?.filter(chat => chat.read).length > 1 && item?.chat[0].read
-      ? `${item.chat.length} messages`
-      : `${item.customer.split(' ')[0]} sent you a message`
+  const getTotalAmount = order => {
+    let totalAmount = 0
+
+    if (order.offer) return order.offer
+
+    order.items.forEach(item => (totalAmount += parseInt(item.price)))
+
+    return totalAmount
   }
 
   return (
     <>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => onPress(item.postId, item.orderID)}>
-        <View style={styles.card}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-            }}>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={styles.userInfoImageContainer}>
-                <View style={styles.avatar}>
+      {items.map((item, index) => (
+        <View key={index} style={styles.card}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('orders', {
+                screen: 'order-tracker',
+                params: {
+                  orderID: item.id,
+                },
+              })
+            }>
+            <View style={styles.userDetailsWrapper}>
+              <View style={styles.userDetails}>
+                <View style={styles.avatarWrapper}>
                   <Avatar
-                    style={{ height: '100%', width: '100%' }}
-                    path={item.profilePhoto}
+                    style={styles.avatar}
+                    path={item.user.profile_photo}
                     size="64x64"
                   />
                 </View>
-              </View>
-              <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <AppText
-                    textStyle="caption2"
-                    customStyle={{ marginRight: normalize(5) }}>
-                    {item.customer}
+                <View style={styles.userTextWrapper}>
+                  <AppText textStyle="caption2" customStyle={styles.userName}>
+                    {item.user.name || 'N/A'}
                   </AppText>
-                  {item.verified && (
-                    <Verified width={normalize(12)} height={normalize(12)} />
-                  )}
-                </View>
-                <View style={{ flexDirection: 'row' }}>
-                  <AppText textStyle="metadata">
-                    {fullDateFormat(item.timeStamp * 1000)}
-                  </AppText>
-                  <AppText customStyle={{ marginHorizontal: normalize(5) }}>
-                    •
-                  </AppText>
-                  <AppText textStyle="metadata">
-                    {timeOnly(item.timeStamp * 1000)}
+                  <AppText textStyle="metadata" customStyle={styles.orderDate}>
+                    {moment
+                      .unix(item.date._seconds)
+                      .format('MMMM D, YYYY • h:mmA')}
                   </AppText>
                 </View>
               </View>
-            </View>
-            {item.new ? (
-              <View style={styles.badge}>
-                <AppText
-                  textStyle="metadata"
-                  color={Colors.secondaryMountainMeadow}>
-                  New
-                </AppText>
-              </View>
-            ) : (
               <AppText textStyle="metadata">
-                {timeAgo(Date.now() / 1000 - item.timeStamp)}
+                {getTimeAgo(Date.now() / 1000 - item.date._seconds)}
               </AppText>
-            )}
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: normalize(10),
-            }}>
-            <AppText textStyle="body2medium">
-              ₱{commaSeparate(item.amount)}
-            </AppText>
-            {item.type !== 'need' && (
-              <>
-                <AppText textStyle="caption" color={Colors.contentPlaceholder}>
-                  {' '}
-                  — via{' '}
-                </AppText>
-                <AppText
-                  textStyle="caption2"
-                  customStyle={{ textTransform: 'capitalize' }}>
-                  {item.paymentMode}
-                </AppText>
-              </>
-            )}
-          </View>
-          {item.type === 'sell' && (
-            <AppText textStyle="caption">
-              No. of items: {item.numOfItems}
-            </AppText>
-          )}
-          {item.type === 'service' && (
-            <AppText textStyle="caption">
-              No. of services: {item.numOfItems}
-            </AppText>
-          )}
+            </View>
 
-          <TouchableOpacity onPress={chatPress}>
-            <View
-              style={{
-                backgroundColor: unRead
-                  ? Colors.secondarySolitude
-                  : Colors.neutralsZirconLight,
-                borderRadius: 4,
-                padding: normalize(8),
-                marginTop: normalize(8),
-              }}>
-              <View style={{ flexDirection: 'row' }}>
-                {unRead ? <ChatBlue /> : <ChatEmpty />}
-                <AppText
-                  textStyle="caption"
-                  color={
-                    unRead ? Colors.contentOcean : Colors.contentPlaceholder
-                  }
-                  customStyle={{ marginLeft: normalize(6) }}>
-                  {renderChatCopy()}
-                </AppText>
-              </View>
-              <View
-                style={{
-                  marginTop: normalize(4),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+            <View style={styles.paymentDetails}>
+              <AppText
+                textStyle="body2medium"
+                customStyle={styles.paymentFontSize}>
+                ₱
+                {formatNumber(item.total_price || getTotalAmount(item), {
+                  separator: '.',
+                  precision: 2,
+                  delimiter: ',',
+                })}
+              </AppText>
+              <AppText
+                textStyle="caption"
+                color={Colors.contentPlaceholder}
+                customStyle={styles.paymentFontSize}>
+                {` — via `}
+              </AppText>
+              <AppText
+                textStyle="caption2"
+                customStyle={{
+                  ...styles.paymentFontSize,
+                  textTransform: 'capitalize',
                 }}>
-                <AppText
-                  textStyle="caption2"
-                  customStyle={{ width: '80%' }}
-                  numberOfLines={1}>
-                  {item?.chat[0]?.text}
-                </AppText>
-                <AppText
-                  textStyle="metadata"
-                  customStyle={{ textAlign: 'right' }}
-                  color={Colors.contentPlaceholder}>
-                  {timeAgo(
-                    Date.now() / 1000 - item?.chat[0]?.created_at?._seconds
-                  )}
-                </AppText>
-              </View>
+                {getPaymentMethod(item.payment_method)}
+              </AppText>
+            </View>
+
+            <AppText textStyle="caption">
+              No. of items: {getItemQuantity(item)}
+            </AppText>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.chatTextWrapper}>
+            <View style={styles.chatCountWrapper}>
+              <ChatBlue />
+              <AppText
+                textStyle="caption"
+                color={Colors.contentOcean}
+                customStyle={{ marginLeft: normalize(6) }}>
+                2 new messages
+              </AppText>
+            </View>
+            <View style={styles.chatText}>
+              <AppText
+                textStyle="caption2"
+                customStyle={{ width: '80%' }}
+                numberOfLines={1}>
+                Oks lang!
+              </AppText>
+              <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
+                1s
+              </AppText>
             </View>
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      ))}
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  avatar: {
-    height: normalize(35),
-    width: normalize(35),
-  },
   card: {
     padding: normalize(10),
     marginVertical: normalize(10),
     borderWidth: 1,
     borderColor: '#DADCE0',
-    borderRadius: 8,
+    borderRadius: normalize(8),
   },
-  userInfoImageContainer: {
+  avatar: {
     height: normalize(35),
     width: normalize(35),
-    borderRadius: normalize(35 / 2),
-    overflow: 'hidden',
+  },
+  avatarWrapper: {
+    height: normalize(35),
+    width: normalize(35),
     marginRight: normalize(10),
+    borderRadius: normalize(100),
+    overflow: 'hidden',
+  },
+  userDetailsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: normalize(10),
+  },
+  userDetails: {
+    flexDirection: 'row',
+  },
+  userTextWrapper: {
+    justifyContent: 'space-evenly',
+  },
+  userName: {
+    marginRight: normalize(5),
+    fontSize: normalize(14),
+  },
+  orderDate: {
+    fontSize: normalize(12),
   },
   badge: {
     paddingVertical: normalize(2),
     paddingHorizontal: normalize(12),
+    height: normalize(20),
     borderRadius: 22,
     backgroundColor: '#DCF7F1',
+  },
+  paymentDetails: {
+    flexDirection: 'row',
+    marginBottom: normalize(10),
+  },
+  paymentFontSize: {
+    fontSize: normalize(14),
+  },
+  chatTextWrapper: {
+    backgroundColor: Colors.secondarySolitude,
+    borderRadius: 4,
+    padding: normalize(8),
+    marginTop: normalize(8),
+  },
+  chatCountWrapper: {
+    flexDirection: 'row',
+    marginBottom: normalize(7),
+  },
+  chatText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 })
 

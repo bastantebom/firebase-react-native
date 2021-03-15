@@ -1,129 +1,41 @@
-import React from 'react'
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
-
+import React, { useContext, useState, useEffect } from 'react'
+import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { formatNumber } from 'react-native-currency-input'
 import { useNavigation } from '@react-navigation/native'
+
+import { UserContext } from '@/context/UserContext'
+import Api from '@/services/Api'
 
 import { Colors, normalize, timePassedShort } from '@/globals'
 import { AppText, MarginView } from '@/components'
 import { Icons } from '@/assets/images/icons'
-import { commaSeparate } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
+import SkeletonLoader from '@/screens/Activity/components/skeleton-loader'
 
-const ActivitiesCard = ({ info }) => {
+const ActivitiesCard = ({ item }) => {
   const navigation = useNavigation()
-  const {
-    status,
-    profilePhoto,
-    orders,
-    cardType,
-    postData,
-    orderID,
-    payment,
-  } = info
+  const { user } = useContext(UserContext)
 
-  const statusBackground = () => {
-    if (cardType === 'own' && status === 'pending')
-      return Colors.neutralsMischka
-    if (cardType === 'own' && payment !== 'cash') return Colors.neutralsMischka
-    if (
-      cardType === 'own' &&
-      status === 'confirmed' &&
-      postData.type === 'sell'
-    )
-      return Colors.secondaryDarkTangerine
-    if (
-      cardType === 'own' &&
-      status === 'confirmed' &&
-      ['service', 'need'].includes(postData.type)
-    )
-      return Colors.secondaryLavenderBlue
-    if (cardType === 'own' && ['delivering', 'pickup'].includes(status))
-      return Colors.secondaryDarkTangerine
-    if (
-      cardType === 'seller' &&
-      (orders?.confirmed?.length ||
-        orders?.pending?.length ||
-        orders?.paid?.length ||
-        orders?.delivering?.length ||
-        orders?.pickup?.length ||
-        !orders?.completed?.length)
-    )
-      return Colors.secondaryDarkTangerine
-    if (['own', 'past'].includes(cardType) && status === 'completed')
-      return Colors.secondaryRoyalBlue
-    if (
-      cardType === 'seller' &&
-      !orders?.confirmed?.length &&
-      !orders?.pending?.length &&
-      !orders?.paid?.length &&
-      !orders?.delivering?.length &&
-      !orders?.pickup?.length &&
-      orders?.completed?.length
-    )
-      return Colors.secondaryRoyalBlue
-    if (['own', 'past'].includes(cardType) && status === 'declined')
-      return Colors.red
-    if (['own', 'past'].includes(cardType) && status === 'cancelled')
-      return Colors.red
-    return 'red'
-  }
+  const [orderLoader, setOrderLoader] = useState(true)
+  const [activity, setActivity] = useState(item)
 
-  const getStatusLabel = () => {
-    if (cardType === 'own' && status === 'pending')
-      return 'Awaiting confirmation'
-    if (['own', 'past'].includes(cardType) && status === 'declined')
-      return 'Declined'
-    if (['own', 'past'].includes(cardType) && status === 'cancelled')
-      return 'Cancelled'
-    if (cardType === 'own' && status === 'confirmed' && payment !== 'cash')
-      return 'Awaiting Payment'
-    if (cardType === 'own' && status === 'paid' && payment !== 'cash')
-      return 'Payment Processing'
-    if (
-      cardType === 'own' &&
-      status === 'confirmed' &&
-      postData.type === 'sell'
-    )
-      return 'Ongoing'
-    if (
-      cardType === 'own' &&
-      status === 'confirmed' &&
-      postData.type === 'service'
-    )
-      return 'Scheduled'
-    if (
-      cardType === 'own' &&
-      status === 'confirmed' &&
-      postData.type === 'need'
-    )
-      return 'Confirmed'
-    if (cardType === 'own' && ['delivering', 'pickup'].includes(status))
-      return `Ready for ${status === `pickup` ? `Pickup` : `Delivery`}`
-    if (
-      cardType === 'seller' &&
-      (orders?.confirmed?.length ||
-        orders?.pending?.length ||
-        orders?.paid?.length ||
-        orders?.delivering?.length ||
-        orders?.pickup?.length ||
-        !orders?.completed?.length)
-    )
-      return 'Ongoing'
+  useEffect(() => {
+    ;(async () => {
+      if (!activity.orders) {
+        let currentActivity = { ...activity }
+        const { data } = await Api.getOrders({
+          uid: user.uid,
+          pid: item.post.id,
+        })
 
-    if (
-      cardType === 'seller' &&
-      !orders?.confirmed?.length &&
-      !orders?.pending?.length &&
-      !orders?.paid?.length &&
-      !orders?.delivering?.length &&
-      !orders?.pickup?.length &&
-      orders?.completed?.length
-    )
-      return 'Completed'
-    if (['own', 'past'].includes(cardType) && status === 'completed')
-      return 'Completed'
-  }
+        currentActivity.orders = data
+        setActivity(currentActivity)
+      }
+
+      setOrderLoader(false)
+    })()
+  }, [])
 
   const timeAgo = time => {
     if (time <= 60) {
@@ -132,207 +44,263 @@ const ActivitiesCard = ({ info }) => {
     return timePassedShort(time)
   }
 
-  const getTotalAvailed = () => {
-    const confirmed = orders?.confirmed ? orders?.confirmed?.length : 0
-    const delivering = orders?.delivering ? orders?.delivering?.length : 0
-    const pickup = orders?.pickup ? orders?.pickup?.length : 0
-    const completed = orders?.completed ? orders?.completed?.length : 0
-    const paid = orders?.paid ? orders?.paid?.length : 0
-
-    return confirmed + delivering + pickup + completed + paid
+  const getOrderIcon = type => {
+    switch (type) {
+      case 'sell':
+        return <Icons.SellPost />
+      case 'service':
+        return <Icons.ServicePost />
+      default:
+        return <Icons.NeedPost />
+    }
   }
 
-  const PostIcon = () => {
-    return postData?.type === 'sell' ? (
-      <Icons.SellPost />
-    ) : postData?.type === 'service' ? (
-      <Icons.ServicePost />
-    ) : (
-      <Icons.NeedPost />
+  const setStatusBackground = () => {
+    const label = setStatusLabel()
+
+    if (
+      label === 'Ongoing' ||
+      label === 'Ready for Pickup' ||
+      label === 'Ready for Delivery' ||
+      label === 'Scheduled'
+    )
+      return Colors.secondaryDarkTangerine
+    else if (label === 'Completed') return Colors.secondaryRoyalBlue
+    else if (label === 'Declined' || label === 'Cancelled') return Colors.red
+    else if (
+      label === 'Awating Confirmation ' ||
+      label === 'Awating Payment' ||
+      label === 'Payment Processing'
+    )
+      return Colors.neutralsMischka
+  }
+
+  const setStatusLabel = () => {
+    if (activity.post.uid === user.uid) {
+      if (!activity.orders.length) return 'Ongoing'
+
+      if (
+        activity.orders.some(
+          order => order.status === 'pending' || order.status === 'confirmed'
+        )
+      )
+        return 'Ongoing'
+
+      if (activity.orders.some(order => order.status === 'declined'))
+        return 'Completed'
+    } else {
+      if (activity.orders.some(order => order.status === 'pending'))
+        return 'Awating Confirmation'
+      else if (activity.orders.some(order => order.status === 'confirmed'))
+        return 'Awating Payment'
+      else if (
+        activity.orders.some(order => order.status === 'payment processing')
+      )
+        return 'Payment Processing'
+      else if (activity.orders.some(order => order.status === 'paid'))
+        return 'Ready for Delivery/Pickup'
+      else if (activity.orders.some(order => order.status === 'delivering'))
+        return 'Delivering'
+      else if (activity.orders.some(order => order.status === 'completed'))
+        return 'Completed'
+      else if (activity.orders.some(order => order.status === 'declined'))
+        return 'Declined'
+    }
+
+    return 'N/A'
+  }
+
+  const setOrders = () => {
+    if (activity.post.uid !== user.uid) {
+      let totalPrice = 0
+      activity.post.items.forEach(
+        post => (totalPrice = totalPrice + parseInt(post.price))
+      )
+
+      return ` ₱${formatNumber(totalPrice, {
+        separator: '.',
+        precision: 2,
+        delimiter: ',',
+      })}`
+    }
+
+    const orderCounts = []
+    activity.orders.forEach(order => {
+      if (!orderCounts.some(count => count.status === order.status)) {
+        orderCounts.push({
+          status: order.status,
+          count: 1,
+        })
+      } else {
+        const count = orderCounts.filter(count => count.status === order.status)
+        count[0].count += 1
+      }
+    })
+    return orderCounts.map(
+      count =>
+        ` ${count.count} ${count.status === 'pending' ? 'requests' : 'availed'}`
     )
   }
 
   return (
-    <>
-      <ScrollView>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() =>
-            cardType === 'seller'
-              ? navigation.navigate('NBTScreen', {
-                  screen: 'OngoingItem',
-                  params: { info },
-                })
-              : navigation.navigate('orders', {
-                  screen: 'order-tracker',
-                  params: {
-                    post: postData,
-                    orderID,
-                  },
-                })
-          }>
-          <MarginView
-            marginSize={2}
-            style={{
-              padding: 12,
-              borderRadius: 8,
-              backgroundColor: info.unread ? '#F2F7FF' : 'white',
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.06,
-              shadowRadius: 8,
-              elevation: 4,
-            }}>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={styles.postImageContainer}>
-                <PostImage
-                  path={postData?.cover_photos?.[0]}
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => {
+        if (item.post.uid === user.uid) {
+          navigation.navigate('NBTScreen', {
+            screen: 'OngoingItem',
+            params: {
+              item: activity,
+            },
+          })
+        } else {
+          navigation.navigate('orders', {
+            screen: 'order-tracker',
+            params: {
+              orderID: item.orders[0].id,
+            },
+          })
+        }
+      }}>
+      <MarginView marginSize={1} style={styles.marginView}>
+        <View style={styles.postImageContainer}>
+          <PostImage
+            path={activity.post.cover_photos[0]}
+            size="64x64"
+            postType={activity.post.type}
+          />
+        </View>
+
+        <View style={styles.infoWrapper}>
+          <View style={styles.userInfoWrapper}>
+            <View style={styles.userInfo}>
+              <View style={styles.avatar}>
+                <Avatar
+                  style={{ height: '100%', width: '100%' }}
+                  path={activity?.sellerInfo?.profile_photo}
                   size="64x64"
-                  postType={postData?.type}
                 />
               </View>
-
-              <View style={{ paddingLeft: 12, flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                  }}>
-                  <View style={styles.userInfoImageContainer}>
-                    <View style={styles.avatar}>
-                      <Avatar
-                        style={{ height: '100%', width: '100%' }}
-                        path={profilePhoto}
-                        size="64x64"
-                      />
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      flex: 1,
-                    }}>
-                    <AppText
-                      textStyle="body3"
-                      customStyle={{
-                        flex: 1,
-                        paddingLeft: 8,
-                        paddingRight: 4,
-                        fontSize: 12,
-                      }}>
-                      {info.name}
-                    </AppText>
-                    <AppText
-                      textStyle="captionConstant"
-                      color={Colors.contentPlaceholder}>
-                      {timeAgo(Date.now() / 1000 - info.time)}
-                    </AppText>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                  }}>
-                  <View
-                    style={{
-                      backgroundColor: statusBackground(),
-                      borderRadius: 20,
-                      paddingHorizontal: 8,
-                      alignSelf: 'flex-start',
-                      marginVertical: 8,
-                      marginRight: 3,
-                    }}>
-                    <AppText textStyle="metadata" color={'white'}>
-                      {getStatusLabel()}
-                    </AppText>
-                  </View>
-                  {info.date && (
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={{ marginHorizontal: 2 }}>
-                      {info.date}
-                    </AppText>
-                  )}
-                  {info.price &&
-                    (postData?.type === 'service' ||
-                      postData?.type === 'sell') && (
-                      <AppText textStyle="metadata">
-                        • ₱{commaSeparate(info.price)}
-                      </AppText>
-                    )}
-                  {cardType === 'seller' &&
-                    postData?.type !== 'need' &&
-                    (orders?.confirmed ||
-                      orders?.delivering ||
-                      orders?.pickup ||
-                      orders?.completed) && (
-                      <AppText
-                        textStyle="metadata"
-                        customStyle={{ marginHorizontal: 2 }}>
-                        {getTotalAvailed()} availed
-                      </AppText>
-                    )}
-
-                  {postData?.type === 'need' && cardType === 'seller' && (
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={{ marginHorizontal: 2 }}>
-                      {getTotalAvailed()} offers
-                    </AppText>
-                  )}
-                  {cardType === 'seller' && orders?.pending && (
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={{ marginHorizontal: 2 }}>
-                      {orders?.pending?.length} pending request
-                    </AppText>
-                  )}
-                </View>
-                <View style={{ flexDirection: 'row' }}>
-                  <PostIcon />
-                  <AppText
-                    textStyle="caption2"
-                    numberOfLines={1}
-                    customStyle={{ marginLeft: normalize(4) }}>
-                    {postData?.title}
-                  </AppText>
-                </View>
-                {info.reply && (
-                  <AppText textStyle="caption" numberOfLines={1}>
-                    {info.reply}
-                  </AppText>
-                )}
-              </View>
+              <AppText textStyle="body3" customStyle={styles.username}>
+                {activity?.sellerInfo?.name}
+              </AppText>
             </View>
-          </MarginView>
-        </TouchableOpacity>
-      </ScrollView>
-    </>
+            <AppText
+              textStyle="captionConstant"
+              color={Colors.contentPlaceholder}>
+              {timeAgo(Date.now() / 1000 - activity.post.date_posted._seconds)}
+            </AppText>
+          </View>
+
+          <View style={styles.statusWrapper}>
+            {orderLoader ? (
+              <View style={styles.loaderWrapper}>
+                <SkeletonLoader isLoading={orderLoader} />
+              </View>
+            ) : (
+              <>
+                <View
+                  style={{
+                    ...styles.statusText,
+                    backgroundColor: setStatusBackground(),
+                  }}>
+                  <AppText textStyle="metadata" color={'white'}>
+                    {setStatusLabel()}
+                  </AppText>
+                </View>
+                <AppText textStyle="metadata">{setOrders()}</AppText>
+              </>
+            )}
+          </View>
+
+          <View style={styles.orderTitle}>
+            {getOrderIcon(activity.post.type)}
+            <AppText
+              textStyle="caption2"
+              numberOfLines={1}
+              customStyle={{ marginLeft: normalize(4) }}>
+              {activity.post.title}
+            </AppText>
+          </View>
+        </View>
+      </MarginView>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  avatar: {
-    height: normalize(20),
-    width: normalize(20),
+  marginView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: normalize(12),
+    borderRadius: 8,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 4,
   },
   postImageContainer: {
-    width: normalize(64),
+    marginRight: normalize(10),
+    width: '25%',
     height: normalize(72),
     borderRadius: 8,
     overflow: 'hidden',
   },
-  userInfoImageContainer: {
-    height: normalize(20),
-    width: normalize(20),
-    borderRadius: normalize(20 / 2),
+  infoWrapper: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '71%',
+  },
+  userInfoWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  username: {
+    paddingLeft: normalize(8),
+    paddingRight: normalize(4),
+    fontSize: normalize(12),
+  },
+  avatar: {
+    height: normalize(25),
+    width: normalize(25),
+    borderRadius: normalize(100),
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: Colors.neutralsZirconLight,
+  },
+  orderTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+    paddingRight: normalize(40),
+  },
+  statusWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  statusText: {
+    alignSelf: 'flex-start',
+    borderRadius: normalize(100),
+    paddingHorizontal: normalize(8),
+    marginVertical: normalize(8),
+    marginRight: normalize(3),
+  },
+  loaderWrapper: {
+    alignSelf: 'flex-start',
+    marginVertical: normalize(8),
+    marginRight: normalize(3),
   },
 })
 

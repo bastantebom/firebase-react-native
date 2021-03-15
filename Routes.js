@@ -75,7 +75,6 @@ import {
   NotificationDot,
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
-import { groupBy } from 'lodash'
 
 const defaultScreenOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -144,6 +143,7 @@ function NoBottomTabScreens() {
         name="OngoingItem"
         component={OngoingItem}
       />
+      <NoBottomTabScreenStack.Screen name="Past" component={Past} />
       <NoBottomTabScreenStack.Screen name="report" component={ReportScreen} />
       <NoBottomTabScreenStack.Screen
         name="change-password"
@@ -280,57 +280,15 @@ function ProfileStackScreen() {
   }
 }
 
-const TabStack = props => {
-  const [groupNotifications, setGroupNotifications] = useState([])
-  const [profileNotification] = useState(false)
-  const {
-    notificationsList,
-    initNotifications,
-    initChats,
-    chatList,
-  } = useContext(Context)
-  const { user } = useContext(UserContext)
+const TabStack = () => {
+  const { closePostButtons } = useContext(Context)
+  const { userInfo } = useContext(UserContext)
 
-  const assembleNotification = () => {
-    let postGroup = []
-    let idGroup = []
-
-    const filtered = notificationsList.filter(el => el)
-    const allPending = filtered?.filter(notif => notif?.status === 'pending')
-    const restStatus = filtered?.filter(notif => notif?.status !== 'pending')
-    if (allPending.length)
-      postGroup = groupBy(allPending, notif => notif.postId)
-
-    if (restStatus.length) idGroup = groupBy(restStatus, notif => notif?.id)
-    let combinedGroup = { ...postGroup, ...idGroup }
-
-    let tempNotifList = []
-
-    for (const [key, notification] of Object.entries(combinedGroup)) {
-      tempNotifList.push(notification)
-    }
-
-    tempNotifList = tempNotifList.sort(
-      (a, b) => b[0].date._seconds - a[0].date._seconds
-    )
-    setGroupNotifications(tempNotifList)
-  }
+  const [hasUnreadActivity, setHasUnreadActivity] = useState(false)
 
   useEffect(() => {
-    if (user) {
-      let unsubscribe = initNotifications(user?.uid)
-      return () => unsubscribe
-    }
-  }, [])
-
-  useEffect(() => {
-    let isMounted = true
-    if (notificationsList && isMounted) {
-      initChats(user?.uid)
-      assembleNotification()
-    }
-    return () => (isMounted = false)
-  }, [notificationsList])
+    setHasUnreadActivity(userInfo.has_unread_activity)
+  }, [userInfo])
 
   const tabBarOptions = {
     style: {
@@ -408,9 +366,7 @@ const TabStack = props => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                {(groupNotifications.filter(notif => !notif[0].read).length >
-                  0 ||
-                  chatList.filter(chat => !chat.read).length > 0) && (
+                {hasUnreadActivity && (
                   <View
                     style={{
                       position: 'absolute',
@@ -424,6 +380,7 @@ const TabStack = props => {
                     />
                   </View>
                 )}
+
                 <View
                   style={{
                     position: 'relative',
@@ -452,20 +409,6 @@ const TabStack = props => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                {profileNotification && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 3,
-                      right: 1,
-                      zIndex: 2,
-                    }}>
-                    <NotificationDot
-                      width={normalize(11)}
-                      height={normalize(11)}
-                    />
-                  </View>
-                )}
                 <View
                   style={{
                     position: 'relative',

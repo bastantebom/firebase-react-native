@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { AppText } from '@/components'
 import { normalize, Colors } from '@/globals'
 import { Icons } from '@/assets/images/icons'
 
-const ActivitySort = ({ choice, close }) => {
+const ActivitySort = ({ setSort, close }) => {
   const choices = [
     {
       label: 'All Activities',
@@ -14,14 +14,14 @@ const ActivitySort = ({ choice, close }) => {
     },
     {
       label: 'My Offers',
-      value: 'seller',
+      value: 'my offers',
       description:
         'Keep track of your posts, items for sale, and services offered',
       icon: <Icons.MyOffers />,
     },
     {
       label: 'My Orders',
-      value: 'own',
+      value: 'my orders',
       description: "Check for updates on items and services you've availed",
       icon: <Icons.MyOrders />,
     },
@@ -34,7 +34,7 @@ const ActivitySort = ({ choice, close }) => {
   ]
 
   const onSortSelect = item => {
-    choice(item)
+    setSort(item)
     close()
   }
 

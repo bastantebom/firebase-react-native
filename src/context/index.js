@@ -1,7 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
-import firestore from '@react-native-firebase/firestore'
-import Api from '@/services/Api'
-import _ from 'lodash'
+import { flatten } from 'lodash'
 
 export const Context = createContext()
 
@@ -50,10 +48,10 @@ export const ContextProvider = ({ children }) => {
 
   const [deliveryMethod, setDeliveryMethod] = useState('delivery')
 
-  const [notificationsList, setNotificationsList] = useState([])
+  // const [notificationsList, setNotificationsList] = useState([])
   const [userCart, setUserCart] = useState([])
   const [deleteCurrentOrderModal, showDeleteCurrentOrderModal] = useState(false)
-  const [chatList, setChatList] = useState([])
+  // const [chatList, setChatList] = useState([])
 
   const [basket, setBasket] = useState({})
 
@@ -145,10 +143,6 @@ export const ContextProvider = ({ children }) => {
     setNotificationState('close')
   }
 
-  const initNotifications = async uid => {
-    return
-  }
-
   const initChats = async uid => {
     if (!uid) return
     const roomRef = await firestore()
@@ -170,7 +164,7 @@ export const ContextProvider = ({ children }) => {
         })
       })
     )
-    chats = _.flatten(chats.filter(e => e))
+    chats = flatten(chats.filter(e => e))
 
     setChatList(chats)
   }
@@ -235,9 +229,6 @@ export const ContextProvider = ({ children }) => {
         setLikedPosts,
         archivedPosts,
         setArchivedPosts,
-        notificationsList,
-        setNotificationsList,
-        initNotifications,
         userCart,
         setUserCart,
         isLoading,
@@ -246,8 +237,6 @@ export const ContextProvider = ({ children }) => {
         setRefresh,
         deleteCurrentOrderModal,
         showDeleteCurrentOrderModal,
-        initChats,
-        chatList,
         setItems,
         basket,
         setBasket,
