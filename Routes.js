@@ -5,7 +5,7 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { View, Animated, Linking, Platform } from 'react-native'
+import { View, Animated } from 'react-native'
 import SplashScreenComponent from './SplashScreen'
 
 import Bell from '@/assets/images/icons/bell.svg'
@@ -37,23 +37,11 @@ import OrdersStack from '@/screens/orders'
 import UnavailableNetwork from '@/screens/Dashboard/components/unavailable-network'
 import url from 'url'
 import Api from '@/services/Api'
-import _ from 'lodash'
+import CreatePostPopup from '@/screens/Post/components/create-post-popup'
 
-import {
-  Post,
-  SinglePostView,
-  AddItemScreen,
-  AddedItemPreviewScreen,
-  EditItemScreen,
-  PostExpiryScreen,
-  ShippingMethodScreen,
-  PaymentMethodScreen,
-  EditPostScreen,
-} from '@/screens/Post'
-import { PostScreen } from '@/screens/Post'
-import { GuestPost } from '@/screens/Post/components/GuestPost'
+import PostStack from '@/screens/Post'
 
-import { ProfileInfoModal } from '@/components'
+import ProfileInfoModal from '@/components/ProfileInfo/ProfileInfoModal'
 import { Past } from '@/screens/Activity'
 import { Notifications } from '@/screens/Activity'
 import { Badge } from '@/screens/Activity'
@@ -65,7 +53,6 @@ import GuestActivity from '@/screens/Activity/components/GuestActivity'
 
 import ChatHouse from '@/screens/Chat/chat-house'
 import PostChat from '@/screens/Chat/post-chat'
-import Basket from '@/screens/orders/basket'
 
 import {
   AlmostThere,
@@ -88,6 +75,7 @@ import {
   NotificationDot,
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
+import { groupBy } from 'lodash'
 
 const defaultScreenOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -100,12 +88,9 @@ export function navigate(name, params) {
 }
 
 const HiveStack = createStackNavigator()
-const PostStack = createStackNavigator()
 const ActivityStack = createStackNavigator()
 const ProfileStack = createStackNavigator()
 const Tab = createBottomTabNavigator()
-const CreatePostStack = createStackNavigator()
-const EditPostStack = createStackNavigator()
 const WelcomeStack = createStackNavigator()
 const BadgeStack = createStackNavigator()
 const VerifiedStack = createStackNavigator()
@@ -124,18 +109,7 @@ function NoBottomTabScreens() {
         component={ProfileInfoModal}
       />
       <NoBottomTabScreenStack.Screen name="Chat" component={ChatScreen} />
-      <NoBottomTabScreenStack.Screen
-        name="OthersPost"
-        component={SinglePostView}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="CreatePost"
-        component={CreatePostStackScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="EditPost"
-        component={EditPostStackScreen}
-      />
+      <NoBottomTabScreenStack.Screen name="posts" component={PostStack} />
       <NoBottomTabScreenStack.Screen
         name="Welcome"
         component={WelcomeStackScreen}
@@ -179,7 +153,6 @@ function NoBottomTabScreens() {
         name="edit-profile"
         component={EditProfileScreen}
       />
-      <NoBottomTabScreenStack.Screen name="basket" component={Basket} />
       <NoBottomTabScreenStack.Screen
         name="invite-friends"
         component={InviteFriendsScreen}
@@ -235,99 +208,12 @@ function NotVerifiedStackScreen() {
   )
 }
 
-function EditPostStackScreen() {
-  return (
-    <EditPostStack.Navigator
-      headerMode="none"
-      screenOptions={defaultScreenOptions}>
-      <EditPostStack.Screen
-        name="CreatePostScreen"
-        component={EditPostScreen}
-      />
-      <EditPostStack.Screen name="AddItemScreen" component={AddItemScreen} />
-      <EditPostStack.Screen name="EditItemScreen" component={EditItemScreen} />
-      <EditPostStack.Screen
-        name="AddedItemPreviewScreen"
-        component={AddedItemPreviewScreen}
-      />
-      <EditPostStack.Screen
-        name="PostExpiryScreen"
-        component={PostExpiryScreen}
-      />
-      <EditPostStack.Screen
-        name="ShippingMethodScreen"
-        component={ShippingMethodScreen}
-      />
-      <EditPostStack.Screen
-        name="PaymentMethodScreen"
-        component={PaymentMethodScreen}
-      />
-      <EditPostStack.Screen name="Chat" component={ChatScreen} />
-    </EditPostStack.Navigator>
-  )
-}
-
-function CreatePostStackScreen() {
-  return (
-    <CreatePostStack.Navigator
-      headerMode="none"
-      screenOptions={defaultScreenOptions}>
-      <CreatePostStack.Screen name="CreatePostScreen" component={PostScreen} />
-      <CreatePostStack.Screen name="AddItemScreen" component={AddItemScreen} />
-      <CreatePostStack.Screen
-        name="EditItemScreen"
-        component={EditItemScreen}
-      />
-      <CreatePostStack.Screen
-        name="AddedItemPreviewScreen"
-        component={AddedItemPreviewScreen}
-      />
-      <CreatePostStack.Screen
-        name="PostExpiryScreen"
-        component={PostExpiryScreen}
-      />
-      <CreatePostStack.Screen
-        name="ShippingMethodScreen"
-        component={ShippingMethodScreen}
-      />
-      <CreatePostStack.Screen
-        name="PaymentMethodScreen"
-        component={PaymentMethodScreen}
-      />
-      <CreatePostStack.Screen name="Chat" component={ChatScreen} />
-    </CreatePostStack.Navigator>
-  )
-}
-
 function HiveStackScreen() {
   return (
     <HiveStack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
       <HiveStack.Screen name="Hive" component={Hives} />
     </HiveStack.Navigator>
   )
-}
-
-function PostStackScreen({ navigation }) {
-  const { user } = useContext(UserContext)
-  if (user) {
-    return (
-      <PostStack.Navigator
-        headerMode="none"
-        screenOptions={defaultScreenOptions}>
-        <PostStack.Screen name="PostScreen" component={PostScreen} />
-        <PostStack.Screen name="SinglePostView" component={SinglePostView} />
-        <PostStack.Screen name="Chat" component={ChatScreen} />
-      </PostStack.Navigator>
-    )
-  } else {
-    return (
-      <PostStack.Navigator
-        headerMode="none"
-        screenOptions={defaultScreenOptions}>
-        <PostStack.Screen name="PostScreen" component={GuestPost} />
-      </PostStack.Navigator>
-    )
-  }
 }
 
 function ActivityStackScreen() {
@@ -398,7 +284,6 @@ const TabStack = props => {
   const [groupNotifications, setGroupNotifications] = useState([])
   const [profileNotification] = useState(false)
   const {
-    closePostButtons,
     notificationsList,
     initNotifications,
     initChats,
@@ -414,9 +299,9 @@ const TabStack = props => {
     const allPending = filtered?.filter(notif => notif?.status === 'pending')
     const restStatus = filtered?.filter(notif => notif?.status !== 'pending')
     if (allPending.length)
-      postGroup = _.groupBy(allPending, notif => notif.postId)
+      postGroup = groupBy(allPending, notif => notif.postId)
 
-    if (restStatus.length) idGroup = _.groupBy(restStatus, notif => notif?.id)
+    if (restStatus.length) idGroup = groupBy(restStatus, notif => notif?.id)
     let combinedGroup = { ...postGroup, ...idGroup }
 
     let tempNotifList = []
@@ -483,7 +368,6 @@ const TabStack = props => {
             )
             return <>{icon}</>
           },
-          tabBarOnPress: closePostButtons,
         }}
       />
       <Tab.Screen
@@ -501,10 +385,10 @@ const TabStack = props => {
         }}
       />
       <Tab.Screen
-        name="Post"
-        component={PostStackScreen}
+        name="posts"
+        component={PostStack}
         options={{
-          tabBarButton: () => <Post />,
+          tabBarButton: () => <CreatePostPopup />,
         }}
       />
       <Tab.Screen
@@ -659,13 +543,12 @@ export default Routes = () => {
         post.user = user
 
         navigation.navigate('NBTScreen', {
-          screen: 'OthersPost',
+          screen: 'posts',
           params: {
-            data: post,
-            viewing: true,
-            created: false,
-            edited: false,
-            othersView: post.uid !== userInfo?.uid,
+            screen: 'published-post',
+            params: {
+              post,
+            },
           },
         })
       }

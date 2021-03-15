@@ -8,7 +8,6 @@
 import Back from './back.svg'
 
 //  notification
-import CircleTick from '@/assets/images/icons/circle-tick.svg'
 import Warning from '@/assets/images/icons/warning.svg'
 import CircleTickWhite from './circle-tick-white.svg'
 
@@ -29,6 +28,7 @@ import Google from '@/assets/images/icons/google.svg'
 // navigation/maps
 import NavigationArrow from '@/assets/images/icons/navigation-arrow.svg'
 import NavigationPin from '@/assets/images/icons/navigation-pin.svg'
+import Navigation from '@/assets/images/icons/navigation.svg'
 import NavigationPinRed from '@/assets/images/icons/navigation-pin-red.svg'
 import MapMarker from '@/assets/images/icons/pinbee_marker.svg'
 import NavigationArrowAlt from '@/assets/images/icons/navigation-arrow-alt.svg'
@@ -52,8 +52,6 @@ import ChevronRightWhite from '@/assets/images/icons/chevron-right-white.svg'
 import ChevronRightGray from '@/assets/images/icons/chevron-right-gray.svg'
 import SearchDark from '@/assets/images/icons/search-dark.svg'
 import DeliveryVanBlue from './delivery-van-blue.svg'
-import WalkIn from './walk-in.svg'
-import Appointment from './appointment.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
@@ -99,7 +97,11 @@ import SortNearest from './sort-nearest.svg'
 import SortCondition from './star-condition.svg'
 
 import CheckboxCheck from './checkbox-check.svg'
+import CheckboxActive from './checkbox-active.svg'
+import CheckboxInactive from './checkbox-inactive.svg'
 import RadioDot from './radiobutton-dot.svg'
+import RadioInactive from './radio-inactive.svg'
+import RadioActive from './radio-active.svg'
 
 import HeaderBack from './header-back.svg'
 import HeaderBackGray from './header-back-gray.svg'
@@ -233,7 +235,6 @@ import LoginApple from './login_Apple03.svg'
 import PayoutWallet from './payout-wallet.svg'
 
 import CircleAdd from './circle-add.svg'
-import VerticalEllipsis from './VerticalEllipsis.svg'
 
 //Calendar
 import CalendarArrowLeft from '@/assets/images/icons/calendar-arrow-left.svg'
@@ -263,7 +264,7 @@ import GreenTick from './green-tick.svg'
 import Send from './send.svg'
 import Note from './note.svg'
 import AudioVideo from './audio-video.svg'
-import Cash from './icon-cash.svg'
+import Cash from './cash.svg'
 import CreditCard from './icon-credit.svg'
 import GCash from './icon-gcash.svg'
 import GrabPay from './icon-grabpay.svg'
@@ -295,8 +296,9 @@ import MoreOptions from './more-options.svg'
 import Draft from './Draft.svg'
 import Notes from './Notes.svg'
 import Clock from './Clock.svg'
+import Pencil from './pencil.svg'
+import Page from './page.svg'
 import MOCalendar from './MO-Calendar.svg'
-import Trash from './Trash.svg'
 import TrashWhite from './trash-white.svg'
 
 import RoundEllipsisBlue from './round-ellipsis.svg'
@@ -339,6 +341,46 @@ import AllActivities from './activities-sort/all-activities.svg'
 import MyOffers from './activities-sort/my-offers.svg'
 import MyOrders from './activities-sort/my-orders.svg'
 import Past from './activities-sort/past.svg'
+import CashPayment from './cash-payment.svg'
+import CashPaymentActive from './cash-payment-active.svg'
+import CardPayment from './card-payment.svg'
+import CardPaymentActive from './card-payment-active.svg'
+import CardDisabled from './card-disabled.svg'
+import GCashPayment from './gcash-payment.svg'
+import GCashPaymentActive from './gcash-payment-active.svg'
+import GCashDisabled from './gcash-disabled.svg'
+import GrabPayPayment from './grabpay-payment.svg'
+import GrabPayPaymentActive from './grabpay-payment-active.svg'
+import GrabPayDisabled from './grabpay-disabled.svg'
+import PayPalPayment from './paypal-payment.svg'
+import PayPalPaymentActive from './paypal-payment-active.svg'
+import PayPalPaymentDisabled from './paypal-payment-disabled.svg'
+import DisabledPayment from './disabled-payment.svg'
+import VerticalEllipsis from './vertical-ellipsis.svg'
+import PostTypeSell from './post-type-sell.svg'
+import PostTypeService from './post-type-service.svg'
+import PostTypeNeed from './post-type-need.svg'
+import Truck from './truck.svg'
+import Appointment from './appointment.svg'
+import Store from './store.svg'
+import Call from './call.svg'
+import CameraRotateOff from './camera-rotate-off.svg'
+import CameraFlashOff from './camera-flash-off.svg'
+import CameraRotateOn from './camera-rotate-on.svg'
+import CameraFlashOn from './camera-flash-on.svg'
+import CircleBlock from './circle-block.svg'
+import InfoCircle from './info-circle'
+import Pickup from './pickup.svg'
+import Clip from './clip.svg'
+import CircleHide from './circle-hide.svg'
+import CircleTick from './circle-tick.svg'
+import Trash from './trash.svg'
+import File from './file.svg'
+import Summary from './summary.svg'
+import Minus from './minus.svg'
+import Plus from './plus.svg'
+import Report from './report.svg'
+import LikeActive from './like-active.svg'
 
 export {
   Trash,
@@ -442,7 +484,6 @@ export {
   TransportationBox,
   UserAlt,
   UserAltActive,
-  CircleTick,
   Close,
   CloseDark,
   CloseLight,
@@ -564,10 +605,14 @@ export {
   TrashWhite,
   HorizontalWhiteEllipsis,
   InfoSmall,
-  SearchDark
+  SearchDark,
 }
 
 export const Icons = {
+  AllActivities,
+  AllActivities,
+  Appointment,
+  Appointment,
   ArrowRight,
   Avatar: ProfileImageDefault,
   Back,
@@ -581,30 +626,60 @@ export const Icons = {
   BasketSchedule,
   BasketSummary,
   BasketWalkIn,
+  Calendar,
+  Call,
   Camera,
+  CameraFlashOff,
+  CameraFlashOn,
+  CameraRotateOff,
+  CameraRotateOn,
   Card,
+  CardDisabled,
+  CardPayment,
+  CardPaymentActive,
   CartDot,
+  Cash,
+  CashPayment,
+  CashPaymentActive,
   Chat,
   ChatGray,
   CheckActive,
+  CheckboxActive,
+  CheckboxCheck,
+  CheckboxInactive,
   CheckInactive,
+  ChevronDown,
   ChevronRight,
   ChevronRightGray,
   CircleAdd,
+  CircleBlock,
+  CircleHide,
   CircleTick,
   CircleTickWhite,
+  Clip,
+  Clock,
   Close,
   CloseDark,
   CloseLight,
   ContactTelephone,
+  DeliveryVanBlue,
+  DeliveryVanBlue,
   Direction,
+  DisabledPayment,
   Eye,
+  File,
   FillUp,
   Flash,
   FlashOff,
   Flip,
   FolderAdd,
   GCashActive,
+  GCashDisabled,
+  GCashPayment,
+  GCashPaymentActive,
+  GrabPayDisabled,
+  GrabPayPayment,
+  GrabPayPaymentActive,
   HeaderBack,
   HeaderEllipsis,
   HeaderFollow,
@@ -613,18 +688,39 @@ export const Icons = {
   HeaderQR,
   Id,
   Info,
+  InfoCircle,
   InfoSmall,
   JarHeartWhite,
   Like,
+  LikeActive,
   LikeColored,
   LikeHeader,
   Lock,
   MegaPhone,
+  Minus,
   Mobile,
   More,
+  MyOffers,
+  MyOffers,
+  MyOrders,
+  MyOrders,
+  Navigation,
   NavigationPin,
+  NavigationPinAlt,
+  NeedPost,
+  NeedPost,
+  NeedPost,
+  Page,
+  Past,
+  Past,
   PayoutWallet,
   PaypalActive,
+  PayPalPayment,
+  PayPalPaymentActive,
+  PayPalPaymentDisabled,
+  Pencil,
+  Pickup,
+  Plus,
   PostAppointment,
   PostCalendar,
   PostCash,
@@ -633,21 +729,40 @@ export const Icons = {
   PostInfo,
   PostInfoRed,
   PostNavigation,
+  PostNeed,
   PostNeedGray,
   PostNeedGreen,
   PostNote,
   PostParcel,
   PostParcelBlue,
   PostSchedule,
+  PostSell,
+  PostService,
   PostServiceGray,
   PostServiceRed,
   PostTool,
+  PostTypeNeed,
+  PostTypeSell,
+  PostTypeService,
+  RadioActive,
+  RadioInactive,
+  Report,
   RoundEllipsisBlue,
   Search,
+  SellPost,
+  SellPost,
+  SellPost,
   SendMessage,
+  ServicePost,
+  ServicePost,
+  ServicePost,
   Share,
   ShoppingCart,
+  Store,
+  Summary,
   TransportationBox,
+  Trash,
+  Truck,
   UploadId,
   Verified,
   VerifiedProfile,
@@ -655,17 +770,8 @@ export const Icons = {
   VerifyEmail,
   VerifyNumber,
   VerifyTick,
+  VerticalEllipsis,
   WalletGray,
   Warning,
   WelcomeNotif,
-  SellPost,
-  NeedPost,
-  ServicePost,
-  MyOffers,
-  MyOrders,
-  AllActivities,
-  Past,
-  DeliveryVanBlue,
-  WalkIn,
-  Appointment
 }

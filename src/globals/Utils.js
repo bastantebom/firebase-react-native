@@ -12,6 +12,7 @@ import Config from '@/services/Config'
 import firebase from '@react-native-firebase/app'
 import axios from 'axios'
 import ImageApi from '@/services/image-api'
+import { formatNumber } from 'react-native-currency-input'
 
 // const FIREBASE_API_KEY = firebase.app().options.apiKey
 const FIREBASE_API_KEY = 'AIzaSyDMknlgnSUy46tevw-jAixdIegnE4yiPCQ'
@@ -49,10 +50,7 @@ export const timePassed = seconds => {
   return
 }
 
-export const isUrl = str =>
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi.test(
-    str
-  )
+export const isUrl = str => !!str && /\w+:(\/?\/?)[^\s]+/gi.test(str)
 
 export const timePassedShort = seconds => {
   seconds = Number(seconds)
@@ -337,15 +335,30 @@ export const generateDynamicLink = async ({
 
 export const getPreviewLinkData = async ({ type, data }) => {
   const getPostPrice = post => {
-    const prices = post.price_range
-      ? [post.price_range.min, post.price_range.max]
-      : post.items.map(item => +(item.price || 0))
+    const prices = [
+      ...new Set(
+        post.budget
+          ? [post.budget.minimum, post.budget.maximum]
+          : post?.items?.map(item => item.price)
+      ),
+    ]
 
-    return prices.length === 1
-      ? `₱${commaSeparate(prices[0])}`
-      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
-          Math.max(...prices)
-        )}`
+    const price =
+      prices.length === 1
+        ? `₱${formatNumber(prices[0], {
+            separator: '.',
+            precision: 2,
+            delimiter: ',',
+          })}`
+        : `₱${formatNumber(Math.min(...prices), {
+            separator: '.',
+            precision: 2,
+            delimiter: ',',
+          })} - ₱${formatNumber(Math.max(...prices), {
+            separator: '.',
+            precision: 2,
+            delimiter: ',',
+          })}`
   }
 
   const getPostTitle = () => {
@@ -377,10 +390,11 @@ export const getPreviewLinkData = async ({ type, data }) => {
     return {
       socialTitle: `${name} is on Servbees, your friendly neighborhood Pagkakakita-App`,
       socialImageLink:
-        (await ImageApi.getUrl({
-          path: data.profile_photo,
-          size: '1200x630',
-        })) ||
+        (data.profile_photo &&
+          (await ImageApi.getUrl({
+            path: data.profile_photo,
+            size: '1200x630',
+          }))) ||
         (await ImageApi.getUrl({ path: data.profile_photo })) ||
         data.profile_photo,
     }
@@ -388,14 +402,15 @@ export const getPreviewLinkData = async ({ type, data }) => {
     return {
       socialTitle: getPostTitle(),
       socialImageLink:
-        (await ImageApi.getUrl({
+        data.cover_photos[0] &&
+        ((await ImageApi.getUrl({
           path: data.cover_photos[0],
           size: '1200x630',
         })) ||
-        (await ImageApi.getUrl({
-          path: data.cover_photos[0],
-        })) ||
-        data.cover_photos[0],
+          (await ImageApi.getUrl({
+            path: data.cover_photos[0],
+          })) ||
+          data.cover_photos[0]),
       socialDescription: getPostDescription(),
     }
   } else if (type === 'invite') {
@@ -405,4 +420,26 @@ export const getPreviewLinkData = async ({ type, data }) => {
       socialDescription: getInviteContent(),
     }
   }
+}
+
+/**
+ * @param {number} size icon size
+ */
+export const iconSize = size => ({
+  height: normalize(size),
+  width: normalize(size),
+})
+
+/**
+ * @param {Date} date
+ * @returns {string}
+ */
+export const parseTime = date => {
+  const hour = date.getHours()
+  const minute = date.getMinutes()
+
+  return `${((hour % 12 || 12) + '').padStart(2, '0')}:${(minute + '').padStart(
+    2,
+    '0'
+  )} ${hour >= 12 ? 'PM' : 'AM'}`
 }

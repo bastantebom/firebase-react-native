@@ -29,6 +29,7 @@ import SearchToolbar from './components/search-toolbar'
 import SearchResults from './components/search-results'
 import Filters from './components/filters'
 import Api from '@/services/Api'
+import { Context } from '@/context'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
 const SEARCH_USER_TOOLBAR_HEIGHT = 120
@@ -38,6 +39,9 @@ const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
 const DashboardScreen = ({ navigation }) => {
   const { user, userInfo, userStatus } = useContext(UserContext)
+  const { dashboardNeedsRefresh, setDashboardNeedsRefresh } = useContext(
+    Context
+  )
   const [filters, setFilters] = useState({
     sort: 'recent',
     type: [],
@@ -174,6 +178,20 @@ const DashboardScreen = ({ navigation }) => {
     )
   }, [userStatus, shouldShowVerifyNotification])
 
+  const handleOnFocus = () => {
+    if (dashboardNeedsRefresh) {
+      handleOnRefresh()
+      setDashboardNeedsRefresh(false)
+    }
+  }
+
+  useEffect(() => {
+    navigation.addListener('focus', handleOnFocus)
+    return () => {
+      navigation.removeListener('focus', handleOnFocus)
+    }
+  }, [dashboardNeedsRefresh, navigation])
+
   const scrollY = new Animated.Value(0)
   const diffClampNode = Animated.diffClamp(scrollY, 0, SEARCH_TOOLBAR_HEIGHT)
   const translateY = Animated.multiply(diffClampNode, -1)
@@ -234,6 +252,7 @@ const DashboardScreen = ({ navigation }) => {
     debounce(async (search, searchType) => {
       setNoResults(false)
       if (!search.length) return setSearchResults([])
+
       setIsSearching(true)
       try {
         const response = await Api[
@@ -271,13 +290,10 @@ const DashboardScreen = ({ navigation }) => {
 
   const handlePostPress = post => {
     navigation.navigate('NBTScreen', {
-      screen: 'OthersPost',
+      screen: 'posts',
       params: {
-        data: post,
-        viewing: true,
-        created: false,
-        edited: false,
-        othersView: user?.uid !== post.uid,
+        screen: 'published-post',
+        params: { post },
       },
     })
   }
@@ -334,6 +350,15 @@ const DashboardScreen = ({ navigation }) => {
 
   const handleApplyFilters = newFilters => {
     setFilters(filters => ({ ...filters, ...newFilters, page: 0 }))
+  }
+
+  const handleOnRefresh = () => {
+    setNoMorePost(false)
+    setIsRefreshing(true)
+    setFilters({
+      ...filters,
+      page: 0,
+    })
   }
 
   return (
@@ -429,6 +454,7 @@ const DashboardScreen = ({ navigation }) => {
         <View
           style={{
             marginTop: normalize([posts.length ? 130 : 0]),
+            paddingBottom: normalize(isVerifyNotificationVisible ? 230 : 0),
           }}>
           <SkeletonLoader isLoading={isInitialLoad || isRereshing} />
 
@@ -451,14 +477,7 @@ const DashboardScreen = ({ navigation }) => {
                   titleColor="#2E3034"
                   tintColor="#2E3034"
                   title="Refreshing"
-                  onRefresh={() => {
-                    setNoMorePost(false)
-                    setIsRefreshing(true)
-                    setFilters({
-                      ...filters,
-                      page: 0,
-                    })
-                  }}
+                  onRefresh={handleOnRefresh}
                 />
               }
               renderItem={({ item }) => (

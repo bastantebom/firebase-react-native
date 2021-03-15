@@ -87,7 +87,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
         setTemp('')
         setButtonState(true)
         triggerNotification(
-          // 'Temperature has been',
           'Temperature has been updated successfully!',
           'success'
         )
@@ -147,7 +146,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 <Icons.CircleTickWhite />
               )
             }>
-            <View style={{ marginLeft: 15, marginTop: 18 }}>
+            <View style={{ marginLeft: 15, marginTop: 10 }}>
               {notificationMessage}
             </View>
           </Notification>

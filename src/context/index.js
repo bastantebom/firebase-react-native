@@ -6,12 +6,12 @@ import _ from 'lodash'
 export const Context = createContext()
 
 export const ContextProvider = ({ children }) => {
+  const [dashboardNeedsRefresh, setDashboardNeedsRefresh] = useState(false)
   const [sliderState, setSliderState] = useState('')
   const [authenticationSheet, showAuthenticationSheet] = useState(false)
 
   const [notificationState, setNotificationState] = useState('')
   const [authType, setAuthType] = useState('')
-  const [showButtons, setShowButtons] = useState()
   const [deleteNotif, setDeleteNotif] = useState(true)
 
   const [posts, setPosts] = useState([])
@@ -55,45 +55,7 @@ export const ContextProvider = ({ children }) => {
   const [deleteCurrentOrderModal, showDeleteCurrentOrderModal] = useState(false)
   const [chatList, setChatList] = useState([])
 
-  const getItemsByCategory = cat => {
-    const result = [
-      ...items
-        .reduce(
-          (
-            r,
-            { categoryName, description, itemImage, price, title, itemId, name }
-          ) => {
-            r.has(categoryName) ||
-              r.set(categoryName, {
-                categoryName,
-                items: [],
-              })
-
-            r.get(categoryName).items.push({
-              description,
-              itemImage,
-              price,
-              title,
-              itemId,
-              categoryName,
-              name,
-            })
-
-            return r
-          },
-          new Map()
-        )
-        .values(),
-    ]
-
-    let filteredItems = result.filter(category => {
-      if (category.categoryName === cat) {
-        return category
-      }
-    })
-
-    return filteredItems[0]?.items
-  }
+  const [basket, setBasket] = useState({})
 
   const editCategory = (newCategoryName, oldCategoryName) => {
     let itemArray = items.slice()
@@ -183,59 +145,8 @@ export const ContextProvider = ({ children }) => {
     setNotificationState('close')
   }
 
-  const openPostButtons = () => {
-    setShowButtons(true)
-  }
-
-  const closePostButtons = () => {
-    setShowButtons(false)
-  }
-
   const initNotifications = async uid => {
-    if (!uid) return
-    let unsubscribe = firestore()
-      .collection('activities')
-      .doc(uid)
-      .collection('notifications')
-      .orderBy('date', 'desc')
-      .onSnapshot(async snap => {
-        if (!snap) return
-        const allNotifications = await Promise.all(
-          snap.docs.map(async doc => {
-            let snapData = doc.data()
-            if (['order', 'payment'].includes(snapData.type)) {
-              const orderResponse = (
-                await firestore().doc(`orders/${snapData.order_id}`).get()
-              ).data()
-
-              snapData = {
-                ...snapData,
-                buyerId:
-                  orderResponse?.seller_id === uid
-                    ? orderResponse?.buyer_id
-                    : orderResponse?.seller_id,
-                postId: orderResponse?.post_id,
-                orderId: snapData.order_id,
-              }
-            }
-            const response = await Api.getUser({
-              uid: snapData.follower_uid || snapData.buyerId || uid,
-            })
-            if (response.success)
-              return {
-                profilePhoto: response.data.profile_photo,
-                name: response.data.display_name
-                  ? response.data.display_name
-                  : response.data.full_name,
-                isFollowing: response.data.is_following,
-                ...snapData,
-              }
-          })
-        )
-
-        setNotificationsList(allNotifications)
-      })
-    return unsubscribe
+    return
   }
 
   const initChats = async uid => {
@@ -272,7 +183,6 @@ export const ContextProvider = ({ children }) => {
         items,
         addItem,
         editItem,
-        getItemsByCategory,
         authenticationSheet,
         showAuthenticationSheet,
         sliderState,
@@ -283,10 +193,6 @@ export const ContextProvider = ({ children }) => {
         closeNotification,
         authType,
         setAuthType,
-        openPostButtons,
-        closePostButtons,
-        showButtons,
-        setShowButtons,
         posts,
         setPosts,
         deleteNotif,
@@ -343,6 +249,10 @@ export const ContextProvider = ({ children }) => {
         initChats,
         chatList,
         setItems,
+        basket,
+        setBasket,
+        dashboardNeedsRefresh,
+        setDashboardNeedsRefresh,
       }}>
       {children}
     </Context.Provider>

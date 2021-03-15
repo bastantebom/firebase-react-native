@@ -19,7 +19,7 @@ import PostImage from '@/components/Post/post-image'
 
 const { width, height } = Dimensions.get('window')
 
-export const ImageModal = ({ close, data }) => {
+export const ImageModal = ({ close, data, selectedIndex }) => {
   const Pagination = ({
     size,
     paginationIndex,
@@ -88,6 +88,7 @@ export const ImageModal = ({ close, data }) => {
         <SwiperFlatList
           paginationActiveColor={Colors.primaryYellow}
           showPagination
+          index={selectedIndex}
           PaginationComponent={Pagination}>
           {data.map((path, i) => {
             return (
@@ -103,8 +104,8 @@ export const ImageModal = ({ close, data }) => {
                   <PostImage
                     path={path}
                     style={{
-                      minHeight: 450,
-                      width: width - 15,
+                      minHeight: normalize(450),
+                      width: '100%',
                     }}
                     resizeMode="contain"
                   />

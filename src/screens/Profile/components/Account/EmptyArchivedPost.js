@@ -11,8 +11,6 @@ import { useNavigation } from '@react-navigation/native'
 
 // create a component
 const EmptyArchivedPost = ({ isLoading }) => {
-  const { openPostButtons } = useContext(Context)
-  const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>

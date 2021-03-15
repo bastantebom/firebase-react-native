@@ -1,9 +1,9 @@
-import React, { useRef, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete';
-import Global from '@/services/Config';
-import { Colors, normalize } from '@/globals';
-import { NavigationPinAlt } from '@/assets/images/icons';
+import React, { useRef, useEffect } from 'react'
+import { View, StyleSheet } from 'react-native'
+import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete'
+import Global from '@/services/Config'
+import { Colors, normalize } from '@/globals'
+import { NavigationPinAlt } from '@/assets/images/icons'
 
 const GooglePlacesInput = ({
   onResultsClick,
@@ -17,17 +17,16 @@ const GooglePlacesInput = ({
   customContainerStyle,
   customTextInputStyle,
   customIconStyle,
-  placeholder = "Enter street address or city",
+  placeholder = 'Enter street address or city',
   debounce = 0,
 }) => {
-
-  const placesRef = useRef(null);
+  const placesRef = useRef(null)
 
   useEffect(() => {
     if (currentValue) {
-      placesRef.current.setAddressText(currentValue);
+      placesRef.current.setAddressText(currentValue)
     }
-  }, [currentValue]);
+  }, [currentValue])
 
   return (
     <View style={styles.textInputWrapper}>
@@ -44,14 +43,14 @@ const GooglePlacesInput = ({
         onPress={(data, details = null) => {
           //let coordinates = data.geometry.location;
           //alert('asdsds');
-          onResultsClick(details.description);
+          onResultsClick(details.description)
 
           //sendCoordinates(coordinates, {data, details});
         }}
         listViewDisplayed={false}
-        onFail={(error) => console.error(error)}
+        onFail={error => console.error(error)}
         textInputProps={{
-          onChangeText: (value) => onClearInput(value),
+          onChangeText: value => onClearInput?.(value),
           onFocus: onInputFocus,
         }}
         styles={{
@@ -59,7 +58,7 @@ const GooglePlacesInput = ({
             paddingBottom: 50,
 
             flex: 1,
-            ...customContainerStyle
+            ...customContainerStyle,
           },
           listView: {
             color: Colors.contentEbony, //To see where exactly the list is
@@ -70,7 +69,7 @@ const GooglePlacesInput = ({
             backgroundColor: Colors.neutralsWhite,
             marginLeft: normalize(10),
             marginRight: normalize(10),
-            ...customListViewStyle
+            ...customListViewStyle,
           },
           textInputContainer: {
             backgroundColor: 'rgba(0,0,0,0)',
@@ -87,7 +86,7 @@ const GooglePlacesInput = ({
             fontSize: 16,
             height: 54,
             color: Colors.contentEbony,
-            ...customTextInputStyle
+            ...customTextInputStyle,
           },
           predefinedPlacesDescription: {
             color: Colors.contentEbony,
@@ -100,8 +99,8 @@ const GooglePlacesInput = ({
         debounce={debounce}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   textInputWrapper: {
@@ -117,6 +116,6 @@ const styles = StyleSheet.create({
     zIndex: 101,
     elevation: 101,
   },
-});
+})
 
-export default GooglePlacesInput;
+export default GooglePlacesInput

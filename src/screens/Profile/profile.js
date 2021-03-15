@@ -13,7 +13,6 @@ import {
   HexagonBorder,
   TransparentHeader,
   ProfileLinks,
-  WhiteOpacity,
   Notification,
   CacheableImage,
   StickyHeader,
@@ -30,7 +29,7 @@ import { MoreInfo, UserPostEmpty } from './Tabs'
 import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
 import { VerificationStatus } from './components'
-import { CircleTick, Warning } from '@/assets/images/icons'
+import { CircleTick, Icons, Warning } from '@/assets/images/icons'
 
 import Posts from '@/screens/Dashboard/components/posts'
 import { cloneDeep, isEmpty } from 'lodash'
@@ -110,13 +109,12 @@ const ProfileScreen = ({
 
   const handlePostPress = post => {
     navigation.navigate('NBTScreen', {
-      screen: 'OthersPost',
+      screen: 'posts',
       params: {
-        data: post,
-        viewing: true,
-        created: false,
-        edited: false,
-        othersView: user?.uid !== post.uid,
+        screen: 'published-post',
+        params: {
+          post,
+        },
       },
     })
   }
@@ -315,8 +313,8 @@ const ProfileScreen = ({
   }
 
   const handleLikePress = async post => {
-    const oldLikes = cloneDeep(post.likes)
-    const newLikes = cloneDeep(post.likes)
+    const oldLikes = cloneDeep(post.likes || [])
+    const newLikes = cloneDeep(post.likes || [])
 
     const liked = post.likes?.includes(user.uid)
     if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)
@@ -379,7 +377,13 @@ const ProfileScreen = ({
             position: 'absolute',
             top: normalize(30),
           }}
-          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          icon={
+            notificationType === 'danger' ? (
+              <Warning />
+            ) : (
+              <Icons.CircleTick style={{ color: Colors.primaryMidnightBlue }} />
+            )
+          }>
           {notificationMessage}
         </Notification>
         <View>
@@ -582,7 +586,6 @@ const ProfileScreen = ({
           borderBottomColor: Colors.neutralGray,
           flex: 1,
         }}></StickyParallaxHeader>
-      <WhiteOpacity />
     </>
   )
 }

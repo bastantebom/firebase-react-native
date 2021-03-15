@@ -15,6 +15,7 @@ import { UserContext } from '@/context/UserContext'
 import { AppText, TransitionIndicator, Notification } from '@/components'
 import Api from '@/services/Api'
 import { CircleTick, Warning } from '@/assets/images/icons'
+import Colors from '@/globals/Colors'
 
 const VerifyAccount = ({
   login,
@@ -206,7 +207,13 @@ const VerifyAccount = ({
         <Notification
           type={notificationType}
           onClose={() => setIsNotificationVisible(false)}
-          icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+          icon={
+            notificationType === 'danger' ? (
+              <Warning />
+            ) : (
+              <CircleTick style={{ color: Colors.primaryMidnightBlue }} />
+            )
+          }>
           <View style={{ marginLeft: 15, marginTop: 10 }}>
             {notificationMessage}
           </View>

@@ -19,6 +19,7 @@ const Avatar = ({ path, size, ...props }) => {
       const uri =
         (await ImageApi.getUrl({ path, size })) ||
         (await ImageApi.getUrl({ path }))
+
       setSource({ uri })
     }
   }

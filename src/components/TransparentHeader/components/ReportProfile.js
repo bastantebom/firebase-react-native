@@ -128,7 +128,9 @@ const ReportUser = ({ toggleReportUser, username, userID }) => {
             flex: 1,
             padding: 24,
           }}>
-          <Notification type={notificationType} icon={<CircleTick />}>
+          <Notification
+            type={notificationType}
+            icon={<CircleTick style={{ color: Colors.primaryMidnightBlue }} />}>
             {notificationMessage}
           </Notification>
           <ScreenHeaderTitle

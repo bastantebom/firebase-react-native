@@ -64,7 +64,6 @@ const AddAddressScreen = ({ navigation, route }) => {
   const onSubmit = route.params?.onSubmit || (() => {})
 
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false)
-  const [isMapModalVisible, setIsMapModalVisible] = useState(false)
 
   const handleRemove = () => {
     setIsConfirmModalVisible(true)
@@ -72,11 +71,17 @@ const AddAddressScreen = ({ navigation, route }) => {
 
   const handleMapLocationChange = location => {
     setAddressData({ ...addressData, ...address, ...location })
-    setIsMapModalVisible(false)
   }
 
   const handleSubmit = () => {
     onSubmit(address, addressData)
+  }
+
+  const showMapLocation = () => {
+    navigation.navigate('map-location', {
+      address: addressData,
+      onSelect: handleMapLocationChange,
+    })
   }
 
   return (
@@ -103,13 +108,13 @@ const AddAddressScreen = ({ navigation, route }) => {
         />
 
         <View style={{ flex: 1, position: 'relative' }}>
-          <TouchableOpacity onPress={() => setIsMapModalVisible(true)}>
+          <TouchableOpacity onPress={showMapLocation}>
             <FloatingAppInput
               value={addressData.full_address.replace(/(.{24})..+/, '$1...')}
               label="Address"
               editable={false}
               customStyle={{ marginBottom: normalize(16) }}
-              onPress={() => setIsMapModalVisible(true)}
+              onPress={showMapLocation}
             />
             <View
               style={{
@@ -163,7 +168,7 @@ const AddAddressScreen = ({ navigation, route }) => {
         </View>
       </View>
 
-      <Modal
+      {/* <Modal
         isVisible={isMapModalVisible}
         animationIn="slideInRight"
         animationInTiming={280}
@@ -180,7 +185,7 @@ const AddAddressScreen = ({ navigation, route }) => {
           address={addressData}
           onChange={handleMapLocationChange}
         />
-      </Modal>
+      </Modal> */}
 
       <Modal
         isVisible={isConfirmModalVisible}

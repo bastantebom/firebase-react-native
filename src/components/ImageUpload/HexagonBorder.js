@@ -14,6 +14,7 @@ const HexagonBorder = ({ path, size, dimensions }) => {
       const uri =
         (await ImageApi.getUrl({ path, size: dimensions })) ||
         (await ImageApi.getUrl({ path }))
+
       setSource({ uri })
     }
   }

@@ -54,13 +54,10 @@ const LikedPostsScreen = ({ navigation, route }) => {
 
   const handlePostPress = post => {
     navigation.navigate('NBTScreen', {
-      screen: 'OthersPost',
+      screen: 'posts',
       params: {
-        data: post,
-        viewing: true,
-        created: false,
-        edited: false,
-        othersView: user?.uid !== post.uid,
+        screen: 'published-post',
+        params: { post },
       },
     })
   }

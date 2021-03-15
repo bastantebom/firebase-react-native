@@ -21,6 +21,7 @@ import EmailVerificationScreen from './email-verification'
 import PhoneVerificationScreen from './phone-verification'
 import VerifyCodeScreen from './verify-code'
 import IdVerificationScreen from './id-verification'
+import MapLocationScreen from './map-location'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Verification'>} param0 */
 const VerificationScreen = ({ navigation }) => {
@@ -285,6 +286,11 @@ const VerificationStack = () => {
       <Stack.Screen
         name="add-address"
         component={AddAddressScreen}
+        options={defaultScreenOptions}
+      />
+      <Stack.Screen
+        name="map-location"
+        component={MapLocationScreen}
         options={defaultScreenOptions}
       />
       <Stack.Screen

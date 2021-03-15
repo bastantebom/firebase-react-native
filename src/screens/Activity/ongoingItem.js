@@ -328,7 +328,11 @@ const OngoingItem = ({ route, navigation }) => {
                   {pendingPayment ? (
                     <ChevronUp width={normalize(16)} height={normalize(16)} />
                   ) : (
-                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                    <ChevronDown
+                      style={{ color: Colors.icon }}
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
                   )}
                 </TouchableOpacity>
                 {pendingPayment && (
@@ -386,7 +390,11 @@ const OngoingItem = ({ route, navigation }) => {
                   {requests ? (
                     <ChevronUp width={normalize(16)} height={normalize(16)} />
                   ) : (
-                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                    <ChevronDown
+                      style={{ color: Colors.icon }}
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
                   )}
                 </TouchableOpacity>
                 {requests && (
@@ -449,7 +457,11 @@ const OngoingItem = ({ route, navigation }) => {
                   {ongoing ? (
                     <ChevronUp width={normalize(16)} height={normalize(16)} />
                   ) : (
-                    <ChevronDown width={normalize(16)} height={normalize(16)} />
+                    <ChevronDown
+                      style={{ color: Colors.icon }}
+                      width={normalize(16)}
+                      height={normalize(16)}
+                    />
                   )}
                 </TouchableOpacity>
                 {ongoing && (
@@ -519,6 +531,7 @@ const OngoingItem = ({ route, navigation }) => {
                           />
                         ) : (
                           <ChevronDown
+                            style={{ color: Colors.icon }}
                             width={normalize(16)}
                             height={normalize(16)}
                           />
@@ -582,6 +595,7 @@ const OngoingItem = ({ route, navigation }) => {
                           />
                         ) : (
                           <ChevronDown
+                            style={{ color: Colors.icon }}
                             width={normalize(16)}
                             height={normalize(16)}
                           />
@@ -632,6 +646,7 @@ const OngoingItem = ({ route, navigation }) => {
                       <ChevronUp width={normalize(16)} height={normalize(16)} />
                     ) : (
                       <ChevronDown
+                        style={{ color: Colors.icon }}
                         width={normalize(16)}
                         height={normalize(16)}
                       />

@@ -60,7 +60,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
   }, [navigation])
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.wrapper}>
       <ScreenHeaderTitle close={navigation.goBack} paddingSize={3} />
       <View style={styles.contentWrapper}>
         <View style={styles.content}>
@@ -85,7 +85,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  wrapper: {
     flex: 1,
   },
   buttonWrapper: {

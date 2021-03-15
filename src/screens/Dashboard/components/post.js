@@ -12,6 +12,7 @@ import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 import { commaSeparate } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
+import { formatNumber } from 'react-native-currency-input'
 
 /**
  * @param {object} param0
@@ -46,17 +47,29 @@ const Post = ({
   }
 
   const getPrice = () => {
-    const prices = post.price_range
-      ? [post.price_range.min, post.price_range.max]
-      : post.items.map(
-          item => parseFloat((item.price + '').replace(/,/g, '')) || 0
-        )
+    const prices = [
+      ...new Set(
+        post.budget
+          ? [post.budget.minimum, post.budget.maximum]
+          : post.items?.map(item => item.price)
+      ),
+    ]
 
     return prices.length === 1
-      ? `₱${commaSeparate(prices[0])}`
-      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
-          Math.max(...prices)
-        )}`
+      ? `₱${formatNumber(prices[0], {
+          separator: '.',
+          precision: 2,
+          delimiter: ',',
+        })}`
+      : `₱${formatNumber(Math.min(...prices), {
+          separator: '.',
+          precision: 2,
+          delimiter: ',',
+        })} - ₱${formatNumber(Math.max(...prices), {
+          separator: '.',
+          precision: 2,
+          delimiter: ',',
+        })}`
   }
 
   const renderDeliveryMethods = () => {
@@ -358,8 +371,8 @@ const PostSkeleton = ({ children, isLoading }) => {
       layout={[
         {
           flexDirection: 'row',
-          padding: 16,
-          paddingBottom: 8,
+          padding: normalize(16),
+          paddingBottom: normalize(8),
           children: [
             {
               height: normalize(32),
@@ -368,13 +381,13 @@ const PostSkeleton = ({ children, isLoading }) => {
               overflow: 'hidden',
             },
             {
-              marginLeft: 8,
+              marginLeft: normalize(8),
               justifyContent: 'center',
               children: [
                 {
                   width: normalize(100),
                   height: normalize(14),
-                  marginBottom: 4,
+                  marginBottom: normalize(4),
                 },
                 {
                   width: normalize(150),
@@ -386,9 +399,9 @@ const PostSkeleton = ({ children, isLoading }) => {
         },
         {
           flexDirection: 'row',
-          paddingHorizontal: 16,
-          paddingBottom: 16,
-          borderBottomWidth: 1,
+          paddingHorizontal: normalize(16),
+          paddingBottom: normalize(16),
+          borderBottomWidth: normalize(1),
           borderBottomColor: Colors.neutralsZircon,
 
           children: [
@@ -397,32 +410,32 @@ const PostSkeleton = ({ children, isLoading }) => {
               height: normalize(126),
             },
             {
-              paddingLeft: 8,
+              paddingLeft: normalize(8),
               children: [
                 {
                   width: normalize(213),
                   height: normalize(21),
-                  marginBottom: 8,
+                  marginBottom: normalize(8),
                 },
                 {
                   width: normalize(40),
                   height: normalize(18),
-                  marginBottom: 8,
+                  marginBottom: normalize(8),
                 },
                 {
                   width: normalize(213),
                   height: normalize(1),
-                  marginVertical: 8,
+                  marginVertical: normalize(8),
                 },
                 {
                   width: normalize(180),
                   height: normalize(21),
-                  marginBottom: 8,
+                  marginBottom: normalize(8),
                 },
                 {
                   width: normalize(140),
                   height: normalize(21),
-                  marginBottom: 8,
+                  marginBottom: normalize(8),
                 },
               ],
             },

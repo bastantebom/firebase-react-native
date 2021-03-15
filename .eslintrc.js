@@ -6,6 +6,7 @@ module.exports = {
     'no-catch-shadow': 0,
     'prefer-const': 'error',
     'no-var': 'error',
+    'no-unused-var': 0,
     'prettier/prettier': [
       'error',
       {},

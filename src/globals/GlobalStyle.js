@@ -1,5 +1,6 @@
-import {StyleSheet} from 'react-native';
-import {Colors} from '@/globals';
+import { StyleSheet } from 'react-native'
+import { Colors } from '@/globals'
+import { normalize } from './Utils'
 
 const GlobalStyle = StyleSheet.create({
   rowCenter: {
@@ -11,7 +12,6 @@ const GlobalStyle = StyleSheet.create({
     width: undefined,
     height: undefined,
   },
-
   marginLeft1: {
     marginLeft: 8,
   },
@@ -28,6 +28,6 @@ const GlobalStyle = StyleSheet.create({
     backgroundColor: Colors.neutralsGainsboro,
     width: '100%',
   },
-});
+})
 
-export default GlobalStyle;
+export default GlobalStyle

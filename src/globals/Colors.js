@@ -45,6 +45,7 @@ export default {
   promoCopy: '#393B4D',
 
   checkboxBorderDefault: '#91919C',
+  icon: '#91919C',
   checkboxBorderActive: '#F7A80F',
 
   red: '#EF5350',
@@ -55,4 +56,6 @@ export default {
 
   switchDisable: '#CACBCC',
   link: '#3781FC',
+  ServbeesYellow: '#FFD400',
+  Gainsboro: '#EAEBEB',
 }

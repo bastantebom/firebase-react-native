@@ -328,7 +328,11 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity>
-          <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
+          <VerticalEllipsis
+            style={{ color: Colors.primaryMidnightBlue }}
+            height={normalize(24)}
+            width={normalize(24)}
+          />
         </TouchableOpacity>
       </View>
       {post?.id && (
@@ -342,8 +346,7 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
           </View>
           <AppText
             textStyle="caption2"
-            customStyle={{ marginLeft: normalize(6), marginTop: normalize(3), flex: 1 }}
-            numberOfLines={1}>
+            customStyle={{ marginLeft: normalize(6), marginTop: normalize(3) }}>
             {post?.title}
           </AppText>
         </View>

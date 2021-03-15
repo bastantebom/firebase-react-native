@@ -1,12 +1,8 @@
-// for SVG images only
-
-// big icons
 import Location from './location.svg'
 import ResetPassword from './reset-password.svg'
 import Verify from './verify.svg'
 import VerifySms from './verify-sms.svg'
 
-// illustrations
 import OnboardingIllustration1 from './onboarding-img1.svg'
 import OnboardingIllustration2 from './onboarding-img2.svg'
 import OnboardingIllustration3 from './onboarding-img3.svg'
@@ -38,6 +34,7 @@ import InviteFriend from './InviteFriends.svg'
 import ContactUsImg from './ContactUsImg.svg'
 import ContactUsBee from './contact-bee.svg'
 import ContactSuccess from './contact-success.svg'
+import PaymentFees from './payment-fees.svg'
 
 import BodyTemp from './Body-Temp.svg'
 
@@ -81,6 +78,12 @@ import PaymentSuccess from './payment-success.svg'
 import IllustActivity from './activity-img1.svg'
 
 import NoInternet from './no-internet.svg'
+import Capture from './capture.svg'
+import PoliceBeebo from './police-beebo.svg'
+import PinBee from './pin-bee.svg'
+import ReportPost from './report-post.svg'
+import ReportSuccess from './report-success.svg'
+import Post from './post.svg'
 
 export {
   Guide,
@@ -146,9 +149,16 @@ export const Status = {
 
 export const Images = {
   CameraImage,
+  Capture,
   DashboardEmptyState,
   Doctor,
-  PaymentFailed,
-  PaymentSuccess,
   NoInternet,
+  PaymentFailed,
+  PaymentFees,
+  PaymentSuccess,
+  PinBee,
+  PoliceBeebo,
+  ReportPost,
+  ReportSuccess,
+  Post,
 }

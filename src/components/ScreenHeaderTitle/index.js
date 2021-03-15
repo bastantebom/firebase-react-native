@@ -94,7 +94,11 @@ const ScreenHeaderTitle = ({
             onPress={openOptions}
             activeOpacity={0.7}
             style={{ position: 'absolute', right: 0 }}>
-            <VerticalEllipsis height={normalize(24)} width={normalize(24)} />
+            <VerticalEllipsis
+              style={{ color: Colors.primaryMidnightBlue }}
+              height={normalize(24)}
+              width={normalize(24)}
+            />
           </TouchableOpacity>
         )}
 

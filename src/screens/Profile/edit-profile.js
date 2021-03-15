@@ -675,7 +675,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.wrapper}>
       <TransitionIndicator loading={isLoading} />
       <ScreenHeaderTitle
         paddingSize={3}
@@ -740,7 +740,7 @@ const EditProfileScreen = ({ navigation, route }) => {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  wrapper: {
     flex: 1,
     backgroundColor: '#fff',
   },

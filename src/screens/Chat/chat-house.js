@@ -328,7 +328,11 @@ const ChatHouse = () => {
             customStyle={{ marginRight: normalize(8) }}>
             {sortCategory.label}
           </AppText>
-          <ChevronDown width={normalize(20)} height={normalize(20)} />
+          <ChevronDown
+            style={{ color: Colors.icon }}
+            width={normalize(20)}
+            height={normalize(20)}
+          />
         </TouchableOpacity>
       </View>
       <ScrollView

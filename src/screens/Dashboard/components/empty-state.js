@@ -1,11 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  ScrollView,
-  TouchableOpacity,
-  View,
-  Text,
-  StyleSheet,
-} from 'react-native'
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { Context } from '@/context'
@@ -16,7 +10,7 @@ import { AppButton, AppText } from '@/components'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 import Share from 'react-native-share'
 
-const EmptyState = ({ handleRefresh, isRefreshing }) => {
+const EmptyState = () => {
   const navigation = useNavigation()
 
   const { setShowButtons } = useContext(Context)

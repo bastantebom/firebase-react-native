@@ -78,13 +78,12 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     }
 
     navigation.navigate('NBTScreen', {
-      screen: 'OthersPost',
+      screen: 'posts',
       params: {
-        data,
-        viewing: true,
-        created: false,
-        edited: false,
-        othersView: user?.uid !== uid,
+        screen: 'published-post',
+        params: {
+          post: data,
+        },
       },
     })
   }
@@ -119,7 +118,11 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
               {likePost ? (
                 <LikeColored width={normalize(20)} height={normalize(20)} />
               ) : (
-                <Like width={normalize(20)} height={normalize(20)} />
+                <Like
+                  style={{ color: Colors.icon }}
+                  width={normalize(20)}
+                  height={normalize(20)}
+                />
               )}
             </TouchableOpacity>
           </View>

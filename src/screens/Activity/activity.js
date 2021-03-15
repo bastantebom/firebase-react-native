@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { useNavigation } from '@react-navigation/native'
-import { AppText, WhiteOpacity } from '@/components'
+import { AppText } from '@/components'
 import { Colors, normalize } from '@/globals'
 
 import Ongoing from './components/Ongoing'
@@ -124,7 +124,11 @@ const Activity = () => {
               customStyle={{ marginHorizontal: normalize(8) }}>
               {sortCategory.label}
             </AppText>
-            <ChevronDown width={normalize(24)} height={normalize(24)} />
+            <ChevronDown
+              style={{ color: Colors.icon }}
+              width={normalize(24)}
+              height={normalize(24)}
+            />
           </TouchableOpacity>
           <View style={{ flexDirection: 'row' }}>
             <View>
@@ -237,7 +241,6 @@ const Activity = () => {
         onDrag>
         <FilterSlider close={() => setIsFiltersVisible(false)} />
       </Modal>
-      <WhiteOpacity />
     </SafeAreaView>
   )
 }

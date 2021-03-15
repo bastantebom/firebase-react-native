@@ -65,10 +65,11 @@ export const UserContextProvider = ({ children }) => {
   }, [userInfo])
 
   useEffect(() => {
-    if (token && !userStatus.verified) updateUserStatus()
+    if (token && userInfo.uid && !userStatus.verified) updateUserStatus()
   }, [token])
 
   const updateUserStatus = async () => {
+    if (!userInfo.uid) return
     try {
       if (token && !(await AsyncStorage.getItem('token')))
         await AsyncStorage.setItem('token', token)
@@ -79,7 +80,9 @@ export const UserContextProvider = ({ children }) => {
           ...userStatus,
           ...(response.status || {}),
         })
-    } catch {}
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const fetch = () => {

@@ -100,7 +100,11 @@ const SearchBarWithFilter = ({
               activeOpacity={0.7}
               onPress={() => navigation.navigate('liked-posts')}>
               <View style={styles.circleButton}>
-                <Like width={normalize(20)} height={normalize(20)} />
+                <Like
+                  style={{ color: Colors.icon }}
+                  width={normalize(20)}
+                  height={normalize(20)}
+                />
               </View>
             </TouchableOpacity>
           </View>

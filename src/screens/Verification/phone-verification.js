@@ -1,25 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   TouchableOpacity,
   View,
   StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  StatusBar,
+  Text,
 } from 'react-native'
-import {
-  AppText,
-  AppButton,
-  FloatingAppInput,
-  TransitionIndicator,
-} from '@/components'
+import { TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
 import { HeaderBackGray } from '@/assets/images/icons'
-import { VF } from '@/components/AppInput'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
-import Validator from '@/components/AppInput/Validator'
+import TextInput from '@/components/textinput'
+import Button from '@/components/Button'
+import typography from '@/globals/typography'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'PhoneVerification'>} param0 */
 const PhoneVerificationScreen = ({ navigation }) => {
@@ -29,14 +25,11 @@ const PhoneVerificationScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(userInfo.phone_number || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handlePhoneNumberChange = async _phoneNumber => {
+  const handlePhoneNumberChange = _phoneNumber => {
     setPhoneNumber(_phoneNumber)
-    try {
-      await VF.MobileNumberValidator(_phoneNumber)
-      setError('')
-    } catch (_error) {
-      setError(_error)
-    }
+    setError(
+      /^\d{10}$/.test(_phoneNumber) ? '' : 'Please put a valid mobile number.'
+    )
   }
 
   const handleSubmit = async () => {
@@ -45,7 +38,7 @@ const PhoneVerificationScreen = ({ navigation }) => {
       const response = await Api.changeLogin({
         uid: user.uid,
         body: {
-          phone_number: phoneNumber,
+          phone_number: phoneNumber.replace(/\s/g, ''),
         },
       })
 
@@ -66,7 +59,8 @@ const PhoneVerificationScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={styles.wrapper}>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <TransitionIndicator loading={isSubmitting} />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={{ padding: normalize(24) }}>
@@ -78,59 +72,75 @@ const PhoneVerificationScreen = ({ navigation }) => {
                 style={{ position: 'absolute', left: 0 }}>
                 <HeaderBackGray width={normalize(24)} height={normalize(24)} />
               </TouchableOpacity>
-              <AppText textStyle="body3">&nbsp;</AppText>
             </View>
             <>
-              <View style={{ flex: 1 }}>
-                <AppText textStyle="body1" customStyle={{ marginBottom: 8 }}>
+              <View style={{ flex: 1, marginTop: normalize(24) }}>
+                <Text style={[typography.body1, typography.medium]}>
                   Add and verify mobile number
-                </AppText>
-                <AppText textStyle="body2" color={Colors.contentPlaceholder}>
-                  We'll use this number for notifications, transaction updates,
-                  and login help
-                </AppText>
-                <Validator
-                  style={{ marginBottom: normalize(16) }}
-                  errorState={{
-                    message: error,
-                    shown: error.length,
-                  }}>
-                  <FloatingAppInput
+                </Text>
+                <Text style={[typography.body2, { marginTop: normalize(8) }]}>
+                  We’ll use this number for notifications, transaction updates,
+                  and log in help.
+                </Text>
+                <View style={[styles.formGroup, { marginTop: normalize(36) }]}>
+                  <TextInput
                     value={phoneNumber}
                     selectTextOnFocus={false}
+                    placeholder="Mobile Number"
                     onChangeText={handlePhoneNumberChange}
-                    label="Mobile Number"
-                    customStyle={{ marginTop: normalize(35) }}
                     keyboardType="phone-pad"
-                    returnKeyType={'done'}
-                  />
-                </Validator>
+                    returnKeyType="done"
+                    message={error}
+                    maxLength={10}
+                    messageStyle={{
+                      color: Colors.secondaryBrinkPink,
+                    }}
+                    containerStyle={[
+                      error.length
+                        ? { borderColor: Colors.secondaryBrinkPink }
+                        : {},
+                    ]}
+                    inputStyle={{
+                      marginLeft: normalize(40),
+                    }}>
+                    <Text
+                      style={[
+                        typography.body1,
+                        {
+                          color: Colors.icon,
+                          position: 'absolute',
+                          top: normalize(14.5),
+                          left: normalize(16),
+                        },
+                      ]}>
+                      +63
+                    </Text>
+                  </TextInput>
+                </View>
               </View>
-              <AppButton
-                text="Verify"
+              <Button
+                label="Verify"
                 type="primary"
-                height="xl"
-                disabled={error.length}
-                customStyle={{
-                  ...styles.customButtonStyle,
-                  ...(error.length
-                    ? {
-                        backgroundColor: Colors.buttonDisable,
-                        borderColor: Colors.buttonDisable,
-                      }
-                    : {}),
-                }}
+                size="huge"
+                disalbed={!!error.length}
                 onPress={handleSubmit}
               />
             </>
           </View>
         </View>
       </TouchableWithoutFeedback>
-    </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: '#fff',
+    marginTop: Platform.select({
+      ios: 0,
+      android: StatusBar.currentHeight - 2,
+    }),
+  },
   modalHeader: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -144,6 +154,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  formGroup: {
+    marginBottom: normalize(16),
   },
 })
 

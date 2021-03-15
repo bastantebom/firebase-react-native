@@ -255,20 +255,17 @@ function ProfileInfoModal(props) {
 
   const handlePostPress = post => {
     navigation.navigate('NBTScreen', {
-      screen: 'OthersPost',
+      screen: 'posts',
       params: {
-        data: post,
-        viewing: true,
-        created: false,
-        edited: false,
-        othersView: user?.uid !== post.uid,
+        screen: 'published-post',
+        params: { post },
       },
     })
   }
 
   const handleLikePress = async post => {
-    const oldLikes = cloneDeep(post.likes)
-    const newLikes = cloneDeep(post.likes)
+    const oldLikes = cloneDeep(post.likes || [])
+    const newLikes = cloneDeep(post.likes || [])
 
     const liked = post.likes?.includes(user.uid)
     if (liked) newLikes.splice(newLikes.indexOf(user.uid), 1)

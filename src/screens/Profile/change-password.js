@@ -143,7 +143,7 @@ const ChangePasswordScreen = ({ navigation }) => {
   }, [formData])
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.wrapper}>
       <TransitionIndicator loading={isLoading} />
       {!!notificationMessage && (
         <Notification
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     right: normalize(16),
     top: normalize(14),
   },
-  safeArea: {
+  wrapper: {
     flex: 1,
   },
 })

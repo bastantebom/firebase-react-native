@@ -10,14 +10,14 @@ import {
   ScreenHeaderTitle,
   TransitionIndicator,
 } from '@/components'
-import Post from '@/screens/Dashboard/components/post'
+import openMap from 'react-native-open-maps'
 import {
   Alert,
   LayoutAnimation,
   Platform,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -27,21 +27,7 @@ import {
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
 import { capitalize } from 'lodash'
-import {
-  CashActive,
-  CircleTickWhite,
-  CreditCardActive,
-  GCashActive,
-  GrabPayActive,
-  Icons,
-  LocationContactUs,
-  MasterCardActive,
-  PaypalActive,
-  PostBox,
-  PostCash,
-  PostNote,
-  VisaActive,
-} from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 import { View } from 'native-base'
 import Svg, { Circle, Line } from 'react-native-svg'
 import getStatusData from './utils/order-statuses'
@@ -54,9 +40,14 @@ import CancelOrderModal from './modals/cancel-order'
 import DeclineOrderModal from './modals/decline-order'
 
 import moment from 'moment'
-import { commaSeparate } from '@/globals/Utils'
+import { commaSeparate, iconSize, parseTime } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
+import { formatNumber } from 'react-native-currency-input'
+import typography from '@/globals/typography'
+import PostCard from '../Post/components/post-card'
+import utilStyles from '@/globals/util-styles'
+import { format } from 'date-fns'
 
 if (
   Platform.OS === 'android' &&
@@ -132,8 +123,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const newUserType = orderData.seller_id === user.uid ? 'seller' : 'buyer'
     const newTitle = getTitle()
     const newTotal = (orderData?.items || []).reduce(
-      (total, item) =>
-        total + parseFloat((item.price + '').replace(/,/g, '')) * item.quantity,
+      (total, item) => total + item.price * (item.quantity || 1),
       0
     )
 
@@ -169,13 +159,15 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           case 'pending':
           case 'ongoing':
           case 'confirmed':
-            return 'Status'
+            return 'Order Status'
           case 'cancelled':
           case 'completed':
             return capitalize(status)
           default:
             return 'Service Request'
         }
+      } else if (post.type === 'need') {
+        return 'Offer Summary'
       } else return 'Order Request'
     } else if (userType === 'seller') {
       if (post.type === 'sell') {
@@ -223,13 +215,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         }
       }
 
-      if (!attachedPost && data.attachedPostId) {
+      if (typeof data.attached_post === 'string') {
         const response = await Api.getPost({
-          pid: data.attachedPostId,
+          pid: data.attached_post,
         })
         const getUserResponse = await Api.getUser({
           uid: response.data.uid,
         })
+
         setAttachedPost({ ...response.data, user: getUserResponse.data })
       }
 
@@ -275,14 +268,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         setPost(post => ({ ...post, user }))
       }
 
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersPost',
+      navigation.push('NBTScreen', {
+        screen: 'posts',
         params: {
-          data,
-          viewing: true,
-          created: false,
-          edited: false,
-          othersView: user?.uid !== post.uid,
+          screen: 'published-post',
+          params: {
+            post: data,
+          },
         },
       })
     } catch (error) {
@@ -420,12 +412,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           {renderOrderStatusHistory()}
           <View style={[styleUtils.row, styleUtils.alignCenter]}>
             {renderStatusIndicator(orderData.status)}
-            <Text style={[styles.activeStatusText, { color }]}>
+            <Text
+              style={[
+                typography.body1,
+                typography.medium,
+                styles.activeStatusText,
+                { color },
+              ]}>
               {orderStatus?.title}
             </Text>
           </View>
           <Text
-            style={styles.statusDescription}
+            style={[typography.body2, styles.statusDescription]}
             numberOfLines={statusHistoryVisible ? null : 2}>
             {orderStatus?.message}
           </Text>
@@ -522,7 +520,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           })
           setStatusHistoryVisible(!statusHistoryVisible)
         }}>
-        <Text style={styles.buttonLink}>
+        <Text style={[typography.caption, typography.link]}>
           {statusHistoryVisible ? 'Hide' : 'Show'} details
         </Text>
       </TouchableOpacity>
@@ -624,109 +622,121 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
   const renderDeliverySection = () => {
     if (post.type === 'need') return
+
+    const shipToLabel =
+      orderData.shipping_method === 'delivery' && post.type === 'sell'
+        ? 'Deliver to'
+        : orderData.shipping_method === 'pickup' && post.type === 'sell'
+        ? 'Pickup at'
+        : post.type === 'service' && orderData.status !== 'ongoing'
+        ? 'Service at'
+        : post.type === 'service' && orderData.status === 'ongoing'
+        ? 'Servicing at'
+        : ''
+
+    const shipTo = orderData?.buyerData?.addresses.find(
+      address => address.default
+    )
+
+    const handleOnViewMapPress = ({ latitude, longitude }) => {
+      openMap({
+        latitude,
+        longitude,
+        provider: Platform.OS === 'ios' ? 'apple' : 'google',
+      })
+    }
+
     return (
       <View style={styles.section}>
         <View style={styles.deliverFrom}>
-          <LocationContactUs
-            style={styles.sectionIcon}
-            width={normalize(18)}
-            height={normalize(18)}
-          />
+          <Icons.Navigation style={styles.sectionIcon} {...iconSize(16)} />
           <View style={styles.sectionInfo}>
-            {['pickup', 'delivery'].includes(orderData.delivery_method) && (
-              <AppText textStyle="body1">
-                From{' '}
-                <AppText textStyle="body1medium">
-                  {orderData?.sellerData?.display_name ||
-                    orderData?.sellerData?.full_name}
-                </AppText>
-              </AppText>
-            )}
-
-            <AppText
-              textStyle="body2"
-              customStyle={{ marginTop: normalize(7) }}>
-              {post?.store_details?.location?.full_address}
-            </AppText>
+            <Text style={typography.body1}>
+              From{' '}
+              <Text style={typography.medium}>
+                {orderData?.sellerData?.display_name ||
+                  orderData?.sellerData?.full_name}
+              </Text>
+            </Text>
+            <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+              {post?.location?.full_address}{' '}
+              <Text style={{ color: Colors.neutralsIron }}> • </Text>
+              <Text
+                style={[typography.medium, typography.link]}
+                onPress={() =>
+                  handleOnViewMapPress({
+                    latitude: post?.location?.latitude,
+                    longitude: post?.location?.longitude,
+                  })
+                }>
+                View Map
+              </Text>
+            </Text>
           </View>
         </View>
-        {
-          <View
-            style={[
-              styles.deliverTo,
-              {
-                paddingTop: normalize(10),
-                borderTopWidth: 1,
-              },
-            ]}>
-            <PostBox
-              style={styles.sectionIcon}
-              width={normalize(18)}
-              height={normalize(18)}
-            />
-            <View style={{ marginLeft: normalize(10), maxWidth: '90%' }}>
-              <AppText
-                textStyle="body1"
-                customStyle={{ marginRight: normalize(5) }}>
-                {orderData.delivery_method === 'delivery' &&
-                post.type === 'sell'
-                  ? 'Deliver to'
-                  : orderData.delivery_method === 'pickup' &&
-                    post.type === 'sell'
-                  ? 'Pickup at'
-                  : post.type === 'service' && orderData.status !== 'ongoing'
-                  ? 'Service at'
-                  : post.type === 'service' && orderData.status === 'ongoing'
-                  ? 'Servicing at'
-                  : null}
-                &nbsp;
-                <AppText textStyle="body1medium">
-                  {orderData?.buyerData?.addresses.find(
-                    address => address.default
-                  ).name
-                    ? orderData?.buyerData?.addresses.find(
-                        address => address.default
-                      ).name
-                    : 'Home (default)'}
-                </AppText>
-              </AppText>
-              <AppText
-                textStyle="body2"
-                customStyle={{ marginTop: normalize(7) }}>
-                {
-                  orderData?.buyerData?.addresses.find(
-                    address => address.default
-                  ).full_address
-                }
-              </AppText>
+        <View>
+          <View style={[styles.deliverTo]}>
+            {post.type === 'service' ? (
+              <Icons.Truck style={styles.sectionIcon} {...iconSize(16)} />
+            ) : (
+              <Icons.Navigation style={styles.sectionIcon} {...iconSize(16)} />
+            )}
+            <View style={styles.sectionInfo}>
+              <Text style={typography.body1}>
+                {shipToLabel}{' '}
+                <Text style={typography.medium}>
+                  {shipTo?.name || 'Home (Default)'}
+                </Text>
+              </Text>
+              <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+                {shipTo?.full_address}
+                <Text style={{ color: Colors.neutralsIron }}> • </Text>
+                <Text
+                  style={[typography.medium, typography.link]}
+                  onPress={() =>
+                    handleOnViewMapPress({
+                      latitude: shipTo?.latitude,
+                      latitude: shipTo?.latitude,
+                    })
+                  }>
+                  View Map
+                </Text>
+              </Text>
             </View>
           </View>
-        }
+        </View>
       </View>
     )
   }
 
-  const renderScheduleSection = () => {
+  const renderOfferSection = () => {
+    if (post.type !== 'need') return
+
     return (
-      post.type === 'service' &&
-      orderData.schedule && (
-        <View style={styles.section}>
-          <View style={styleUtils.row}>
-            <PostCash width={normalize(20)} height={normalize(20)} />
-            <View style={styles.sectionInfo}>
-              <AppText textStyle="body1medium">
-                Service requested on{' '}
-                {moment(orderData?.schedule).format('MMMM D, YYYY')}
-              </AppText>
-              <AppText
-                textStyle="body2"
-                customStyle={{ marginTop: normalize(7) }}>
-                at {moment(orderData?.schedule).format('h:mm a')}
-              </AppText>
-            </View>
+      <View style={styles.section}>
+        <View style={{ flexDirection: 'row' }}>
+          <Icons.Cash style={styles.sectionIcon} {...iconSize(20)} />
+          <View style={styles.sectionInfo}>
+            <Text style={[typography.body1narrow, typography.medium]}>
+              {userType === 'seller' ? 'Offer' : 'Your Offer'}
+            </Text>
           </View>
         </View>
-      )
+
+        <Text
+          style={[
+            typography.body1narrow,
+            typography.medium,
+            { marginTop: normalize(12) },
+          ]}>
+          ₱
+          {formatNumber(orderData.offer, {
+            separator: '.',
+            precision: 2,
+            delimiter: ',',
+          })}
+        </Text>
+      </View>
     )
   }
 
@@ -734,73 +744,53 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const paymentMethods = {
       cash: {
         label: 'Cash on Delivery / Pick up',
-        icon: () => <CashActive />,
+        icon: <Icons.CashPaymentActive />,
       },
       card: {
         label: 'Visa / Mastercard',
-        icon: () => <CreditCardActive />,
+        icon: <Icons.CardPaymentActive />,
       },
       gcash: {
         label: 'GCash',
-        icon: () => <GCashActive />,
+        icon: <Icons.GCashPaymentActive />,
       },
       grabpay: {
         label: 'GrabPay',
-        icon: () => <GrabPayActive />,
+        icon: <Icons.GrabPayPaymentActive />,
       },
       paypal: {
         label: 'PayPal',
-        icon: () => <PaypalActive />,
-      },
-      visa: {
-        label: 'Visa',
-        icon: () => <VisaActive />,
-      },
-      mastercard: {
-        label: 'MasterCard',
-        icon: () => <MasterCardActive />,
+        icon: <Icons.GrabPayPaymentActive />,
       },
     }
 
     return (
       <View style={styles.section}>
         <View style={{ flexDirection: 'row' }}>
-          <PostCash
-            style={styles.sectionIcon}
-            width={normalize(18)}
-            height={normalize(18)}
-          />
+          <Icons.Cash style={styles.sectionIcon} {...iconSize(16)} />
           <View style={styles.sectionInfo}>
-            <AppText textStyle="body1medium">
-              {post.type !== 'need'
-                ? 'Payment Method'
-                : userType === 'seller'
-                ? 'Offer'
-                : 'Your offer'}
-            </AppText>
+            <Text style={[typography.body1narrow, typography.medium]}>
+              Payment Method
+            </Text>
           </View>
         </View>
 
-        {['service', 'sell'].includes(post.type) && (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 16,
-            }}>
-            {paymentMethods[orderData.payment_method]?.icon()}
-            <AppText
-              textStyle={'body2medium'}
-              customStyle={{ marginLeft: normalize(10) }}>
-              {paymentMethods[orderData.payment_method]?.label}
-            </AppText>
-          </View>
-        )}
-        {post.type === 'need' && (
-          <AppText textStyle="body2" customStyle={{ marginTop: normalize(7) }}>
-            {commaSeparate(orderData?.price)}
-          </AppText>
-        )}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 16,
+          }}>
+          {paymentMethods[orderData.payment_method]?.icon}
+          <Text
+            style={[
+              typography.body2,
+              typography.medium,
+              { marginLeft: normalize(10) },
+            ]}>
+            {paymentMethods[orderData.payment_method]?.label}
+          </Text>
+        </View>
       </View>
     )
   }
@@ -810,28 +800,19 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
     return (
       <View style={styles.section}>
-        <View style={[styleUtils.row]}>
-          <PostNote
-            style={styles.sectionIcon}
-            width={normalize(18)}
-            height={normalize(18)}
+        <View style={utilStyles.row}>
+          <Icons.Summary
+            style={{ marginTop: normalize(4) }}
+            {...iconSize(16)}
           />
-          <AppText
-            textStyle="body1medium"
-            customStyle={{
-              marginLeft: normalize(8),
-              marginBottom: normalize(7),
-            }}>
-            Order Summary
-          </AppText>
+          <View style={[styles.sectionInfo, { marginBottom: normalize(24) }]}>
+            <Text style={[typography.body1narrow, typography.medium]}>
+              {`${post.type === 'sell' ? 'Order' : 'Booking'} Summary`}
+            </Text>
+          </View>
         </View>
 
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: Colors.neutralGray,
-            paddingBottom: normalize(10),
-          }}>
+        <View style={styles.summary}>
           {(orderData.items || []).map((item, index, arr) => {
             return (
               <View
@@ -843,30 +824,44 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     : { paddingBottom: normalize(10) },
                 ]}>
                 <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
-                  {post.type === 'sell' && (
-                    <AppText
-                      textStyle="body1"
-                      color={Colors.secondaryLavenderBlue}
-                      customStyle={{ marginRight: normalize(10) }}>
-                      {item.quantity}x
-                    </AppText>
-                  )}
+                  <Text style={[typography.body1, styles.itemQuantity]}>
+                    {item.quantity || 1}x
+                  </Text>
                   <View>
-                    <AppText textStyle="body1medium">
+                    <Text style={[typography.body2, typography.medium]}>
                       {item.name || post.title}
-                    </AppText>
+                    </Text>
                     {item.note && (
-                      <AppText textStyle="caption">{item.note}</AppText>
+                      <Text
+                        style={[typography.body2, { marginTop: normalize(4) }]}>
+                        {item.note}
+                      </Text>
+                    )}
+                    {(item.schedule || orderData.schedule) && (
+                      <Text
+                        style={[typography.body2, { marginTop: normalize(4) }]}>
+                        {format(
+                          new Date(item.schedule || orderData.schedule),
+                          `MMMM dd, yyyy 'at' '${parseTime(
+                            new Date(item.schedule || orderData.schedule)
+                          )}'`
+                        )}
+                      </Text>
                     )}
                   </View>
                 </View>
-                <AppText textStyle="body1" color={Colors.contentPlaceholder}>
+                <Text
+                  style={[
+                    typography.body2,
+                    { color: Colors.contentPlaceholder },
+                  ]}>
                   ₱
-                  {commaSeparate(
-                    parseFloat((item.price + '').replace(/,/, '')) *
-                      item.quantity
-                  )}
-                </AppText>
+                  {formatNumber(item.price, {
+                    separator: '.',
+                    precision: 2,
+                    delimiter: ',',
+                  })}
+                </Text>
               </View>
             )
           })}
@@ -875,12 +870,17 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingTop: normalize(10),
+            paddingTop: normalize(16),
           }}>
-          <AppText textStyle="body1medium">Total</AppText>
-          <AppText textStyle="body1medium">
-            ₱{commaSeparate(totalPrice)}
-          </AppText>
+          <Text style={[typography.body1narrow, typography.medium]}>Total</Text>
+          <Text style={[typography.body1narrow, typography.medium]}>
+            ₱
+            {formatNumber(totalPrice, {
+              separator: '.',
+              precision: 2,
+              delimiter: ',',
+            })}
+          </Text>
         </View>
       </View>
     )
@@ -898,11 +898,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 paddingBottom: normalize(10),
               }}>
               <View style={styleUtils.row}>
-                <PostNote
-                  style={styles.sectionIcon}
-                  width={normalize(20)}
-                  height={normalize(20)}
-                />
+                <Icons.Page style={{ color: Colors.icon }} {...iconSize(20)} />
                 <View style={styles.sectionInfo}>
                   <AppText textStyle="body1medium">Order Notes</AppText>
                 </View>
@@ -924,27 +920,25 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             <View style={styles.section}>
               <View style={styleUtils.row}>
                 {post.type === 'need' ? (
-                  <PostNote
-                    style={styles.sectionIcon}
-                    width={normalize(18)}
-                    height={normalize(18)}
+                  <Icons.Page
+                    style={{ color: Colors.icon }}
+                    {...iconSize(20)}
                   />
                 ) : (
-                  <PostCash
-                    style={styles.sectionIcon}
-                    width={normalize(24)}
-                    height={normalize(24)}
+                  <Icons.Cash
+                    style={{ color: Colors.icon }}
+                    {...iconSize(20)}
                   />
                 )}
                 <View style={styles.sectionInfo}>
-                  <AppText textStyle="body1medium">Message</AppText>
-                  <AppText
-                    textStyle="body2"
-                    customStyle={{ marginTop: normalize(7) }}>
-                    {orderData?.message}
-                  </AppText>
+                  <Text style={[typography.body1narrow, typography.medium]}>
+                    Message
+                  </Text>
                 </View>
               </View>
+              <Text style={[typography.body2, { marginTop: normalize(12) }]}>
+                {orderData.message}
+              </Text>
             </View>
           )}
       </>
@@ -952,9 +946,22 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   }
 
   const renderAttachedPost = () => {
+    const handleOnAttachedPostPress = () => {
+      navigation.push('NBTScreen', {
+        screen: 'posts',
+        params: {
+          screen: 'published-post',
+          params: {
+            post: orderData.attached_post,
+          },
+        },
+      })
+    }
+
     return (
       post.type === 'need' &&
-      attachedPost && (
+      !!orderData.attached_post?.id &&
+      !!attachedPost && (
         <View style={[styles.section, { padding: 0, borderWidth: 0 }]}>
           <View style={{ flexDirection: 'row' }}>
             <Icons.SendMessage
@@ -969,9 +976,16 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               <AppText textStyle="body1medium">Attached Post</AppText>
             </View>
           </View>
-          <View style={[styles.section, { padding: 0, margin: 0 }]}>
-            <Post data={attachedPost} renderLike={() => {}}></Post>
-          </View>
+          <PostCard
+            post={attachedPost}
+            containerStyle={{
+              padding: normalize(12),
+              borderColor: Colors.neutralsZircon,
+              borderWidth: normalize(1),
+              borderRadius: normalize(8),
+            }}
+            onCardPress={handleOnAttachedPostPress}
+          />
         </View>
       )
     )
@@ -979,17 +993,23 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
   const renderActionButtons = () => {
     return (
-      <>
+      <View>
+        <LinearGradient
+          style={{
+            height: normalize(20),
+            width: '100%',
+            position: 'absolute',
+            top: normalize(-20),
+            zIndex: 1,
+          }}
+          colors={['transparent', 'rgba(65,65,65,0.05)']}
+          locations={[0, 1]}
+          pointerEvents="none"
+        />
         {userType === 'buyer' && (
           <>
             {orderData.status === 'pending' && (
               <>
-                <View
-                  style={{
-                    backgroundColor: 'rgba(164, 167, 175, 0.1)',
-                    height: 5,
-                  }}
-                />
                 <View
                   style={{
                     flexDirection: 'row',
@@ -1214,136 +1234,135 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             )}
           </>
         )}
-      </>
+      </View>
     )
   }
 
   return (
-    <SafeAreaView style={styles.wrapper}>
-      <View style={styles.headerBackground} />
-      <TransitionIndicator loading={isLoading} />
-      <ScreenHeaderTitle
-        close={navigation.goBack}
-        title={title}
-        paddingSize={3}
+    <>
+      <StatusBar
+        translucent={true}
+        barStyle="dark-content"
+        backgroundColor="#EDF0F8"
       />
-      {notificationMessage && (
-        <Notification
-          onClose={() => setNotificationMessage(null)}
-          type="success"
-          icon={<CircleTickWhite />}>
-          <AppText
-            textStyle="body2"
-            customStyle={{ marginLeft: 14 }}
-            color={Colors.neutralsWhite}>
-            {notificationMessage}
-          </AppText>
-        </Notification>
-      )}
+      <View style={styles.wrapper}>
+        <View style={styles.headerBackground} />
+        <TransitionIndicator loading={isLoading} />
+        <ScreenHeaderTitle
+          close={navigation.goBack}
+          title={title}
+          paddingSize={3}
+        />
+        {notificationMessage && (
+          <Notification
+            onClose={() => setNotificationMessage(null)}
+            type="success"
+            icon={<Icons.CircleTick style={{ color: '#fff' }} />}>
+            <AppText
+              textStyle="body2"
+              customStyle={{ marginLeft: 14 }}
+              color={Colors.neutralsWhite}>
+              {notificationMessage}
+            </AppText>
+          </Notification>
+        )}
 
-      <ScrollView
-        style={styles.scrollWrapper}
-        refreshControl={
-          <RefreshControl
-            style={{ zIndex: 1 }}
-            refreshing={isRefreshing}
-            titleColor="#2E3034"
-            tintColor="#2E3034"
-            onRefresh={handleRefresh}
+        <ScrollView
+          style={styles.scrollWrapper}
+          refreshControl={
+            <RefreshControl
+              style={{ zIndex: 1 }}
+              refreshing={isRefreshing}
+              titleColor="#2E3034"
+              tintColor="#2E3034"
+              onRefresh={handleRefresh}
+            />
+          }>
+          {renderStatusSection()}
+          {renderMessageSection()}
+          {renderDeliverySection()}
+          {renderOfferSection()}
+          {renderNotesSection()}
+          {renderPaymentMethodSection()}
+          {renderSummarySection()}
+          {renderAttachedPost()}
+        </ScrollView>
+
+        {renderActionButtons()}
+
+        <Modal
+          isVisible={cancelModalVisible}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={250}
+          animationOutTiming={200}
+          style={styles.modal}
+          swipeDirection="down"
+          onSwipeComplete={() => setCancelModalVisible(false)}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              style={{ flex: 1 }}
+              onPress={() => setCancelModalVisible(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <BottomSheetHeader />
+          <CancelOrderModal
+            onCancelPress={handleCancel}
+            onBackPress={() => setCancelModalVisible(false)}
+            cancelText={
+              post.type === 'sell'
+                ? 'Cancel Order'
+                : post.type === 'service'
+                ? 'Cancel Request'
+                : 'Cancel'
+            }
           />
-        }>
-        {renderStatusSection()}
-        {renderMessageSection()}
-        {renderDeliverySection()}
-        {renderScheduleSection()}
-        {renderPaymentMethodSection()}
-        {renderSummarySection()}
-        {renderNotesSection()}
-        {renderAttachedPost()}
-      </ScrollView>
+        </Modal>
 
-      {renderActionButtons()}
-
-      <Modal
-        isVisible={cancelModalVisible}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        animationInTiming={250}
-        animationOutTiming={200}
-        style={styles.modal}
-        swipeDirection="down"
-        onSwipeComplete={() => setCancelModalVisible(false)}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            style={{ flex: 1 }}
-            onPress={() => setCancelModalVisible(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <BottomSheetHeader />
-        <CancelOrderModal
-          onCancelPress={handleCancel}
-          onBackPress={() => setCancelModalVisible(false)}
-          cancelText={
-            post.type === 'sell'
-              ? 'Cancel Order'
-              : post.type === 'service'
-              ? 'Cancel Request'
-              : 'Cancel'
-          }
-        />
-      </Modal>
-
-      <Modal
-        isVisible={declineModalVisible}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        animationInTiming={250}
-        animationOutTiming={200}
-        style={styles.modal}
-        swipeDirection="down"
-        onSwipeComplete={() => setDeclineModalVisible(false)}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            style={{ flex: 1 }}
-            onPress={() => setDeclineModalVisible(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <BottomSheetHeader />
-        <DeclineOrderModal
-          onDeclinePress={handleDecline}
-          onBackPress={() => setDeclineModalVisible(false)}
-        />
-      </Modal>
-    </SafeAreaView>
+        <Modal
+          isVisible={declineModalVisible}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={250}
+          animationOutTiming={200}
+          style={styles.modal}
+          swipeDirection="down"
+          onSwipeComplete={() => setDeclineModalVisible(false)}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              style={{ flex: 1 }}
+              onPress={() => setDeclineModalVisible(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <BottomSheetHeader />
+          <DeclineOrderModal
+            onDeclinePress={handleDecline}
+            onBackPress={() => setDeclineModalVisible(false)}
+          />
+        </Modal>
+      </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   activeStatusText: {
-    fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(14),
-    letterSpacing: 0.25,
-    lineHeight: normalize(21),
     marginLeft: normalize(16),
   },
   avatarImageWrapper: {
     borderRadius: 35 / 2,
   },
-  buttonLink: {
-    color: Colors.contentOcean,
-    fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(12),
-    letterSpacing: 1.25,
-  },
   deliverFrom: {
     flexDirection: 'row',
-    paddingBottom: normalize(10),
+    paddingBottom: normalize(16),
+    borderBottomColor: Colors.Gainsboro,
+    borderBottomWidth: normalize(1),
   },
   deliverTo: {
-    borderTopColor: Colors.neutralGray,
     flexDirection: 'row',
+    paddingTop: normalize(10),
   },
   gradient: {
     backgroundColor: 'transparent',
@@ -1446,7 +1465,8 @@ const styles = StyleSheet.create({
     padding: normalize(16),
   },
   sectionIcon: {
-    marginTop: normalize(3),
+    marginTop: normalize(4),
+    color: Colors.icon,
   },
   sectionInfo: {
     marginLeft: normalize(8),
@@ -1457,11 +1477,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   statusDescription: {
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(12),
-    lineHeight: normalize(21),
     marginTop: normalize(2),
-    letterSpacing: 0.4,
     color: Colors.contentPlaceholder,
   },
   statusIndicator: {
@@ -1492,6 +1508,20 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
+    backgroundColor: '#fff',
+    marginTop: Platform.select({
+      ios: 0,
+      android: StatusBar.currentHeight - 2,
+    }),
+  },
+  itemQuantity: {
+    color: Colors.contentPlaceholder,
+    marginRight: normalize(10),
+  },
+  summary: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.Gainsboro,
+    paddingBottom: normalize(16),
   },
 })
 

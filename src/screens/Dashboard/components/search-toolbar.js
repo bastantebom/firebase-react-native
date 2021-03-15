@@ -1,4 +1,9 @@
-import { FilterDark, HeaderBackGray, LikeDark, SearchDark } from '@/assets/images/icons'
+import {
+  FilterDark,
+  HeaderBackGray,
+  LikeDark,
+  SearchDark,
+} from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useRef, useState } from 'react'
@@ -203,7 +208,9 @@ const SearchToolbar = ({
               theme={theme}
               inputStyle={styles.input}
               placeholderTextColor={Colors.contentPlaceholder}
-              icon={() => <SearchDark width={normalize(24)} height={normalize(24)} />}
+              icon={() => (
+                <SearchDark width={normalize(24)} height={normalize(24)} />
+              )}
               style={[
                 styles.search,
                 {

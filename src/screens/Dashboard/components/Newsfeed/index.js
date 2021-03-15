@@ -11,7 +11,7 @@ import { Divider } from 'react-native-paper'
 import { getDistance } from 'geolib'
 
 import { UserContext } from '@/context/UserContext'
-import { commaSeparate } from '@/globals/Utils'
+import { commaSeparate, iconSize } from '@/globals/Utils'
 import { Colors, normalize, timePassedShort } from '@/globals'
 
 import { Icons } from '@/assets/images/icons'
@@ -19,6 +19,8 @@ import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
 import SkeletonLoader from '@/screens/Dashboard/components/Newsfeed/skeleton-loader'
+import typography from '@/globals/typography'
+import { formatNumber } from 'react-native-currency-input'
 
 /** @param {Object} param0 */
 const NewsFeed = ({ props }) => {
@@ -28,21 +30,37 @@ const NewsFeed = ({ props }) => {
   const { user } = useContext(UserContext)
 
   const getPrice = post => {
-    const prices = post.price_range
-      ? [post.price_range.min, post.price_range.max]
-      : post.items.map(
-          item => parseFloat((item.price + '').replace(/,/g, '')) || 0
-        )
+    const prices = [
+      ...new Set(
+        post.budget
+          ? [post.budget.minimum, post.budget.maximum]
+          : post?.items?.map(item =>
+              typeof item.price === 'string'
+                ? parseFloat(item.price.replace(/,/g, ''))
+                : item.price
+            )
+      ),
+    ]
 
     return prices.length === 1
-      ? `₱${commaSeparate(prices[0])}`
-      : `₱${commaSeparate(Math.min(...prices))} - ₱${commaSeparate(
-          Math.max(...prices)
-        )}`
+      ? `₱${formatNumber(prices[0], {
+          separator: '.',
+          precision: 2,
+          delimiter: ',',
+        })}`
+      : `₱${formatNumber(Math.min(...prices), {
+          separator: '.',
+          precision: 2,
+          delimiter: ',',
+        })} - ₱${formatNumber(Math.max(...prices), {
+          separator: '.',
+          precision: 2,
+          delimiter: ',',
+        })}`
   }
 
   const getPostDistance = (post, currentLocation) => {
-    const { latitude, longitude } = post.store_details?.location || {}
+    const { latitude, longitude } = post.location || {}
     const distanceInMeters =
       currentLocation?.latitude &&
       currentLocation?.longitude &&
@@ -59,58 +77,110 @@ const NewsFeed = ({ props }) => {
     return distance
   }
 
-  const getDeliveryMethod = post => {
-    const methods = post.delivery_methods || {}
-    const objectArray = Object.entries(methods)
-    const temp = []
-
-    objectArray.forEach(([key, value]) => {
-      if (value.value) {
-        if (post.type === 'service') {
-          if (key === 'delivery') {
-            temp.push('walk-in')
-          } else {
-            temp.push('appointment')
-          }
-        } else temp.push(key)
-      }
-    })
-
-    return temp
-  }
-
-  const GetDeliveryIcon = ({ post }) => {
-    if (getDeliveryMethod(post).some(method => method === 'delivery')) {
-      return <Icons.DeliveryVanBlue /> 
-    } else if (getDeliveryMethod(post).some(method => method === 'appointment')) {
-      return <Icons.Appointment />
-    } else if (getDeliveryMethod(post).some(method => method === 'walk-in')) {
-      return <Icons.WalkIn />
-    } else {
-      return <Icons.MyOffers /> 
-    }
-  }
-
   const postTypeLabel = {
     sell: 'Selling',
     need: 'Need',
     service: 'Service',
   }
 
+  const handleOnPostPress = post => {
+    if (!user?.uid) {
+      navigation.navigate('TabStack', {
+        screen: 'posts',
+        params: {
+          screen: 'guest-post',
+        },
+      })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'posts',
+        params: {
+          screen: 'published-post',
+          params: {
+            id: post.id,
+            uid: post.uid,
+          },
+        },
+      })
+    }
+  }
+
+  const handleOnUserPress = () => {
+    if (!user?.uid) {
+      navigation.navigate('TabStack', {
+        screen: 'posts',
+        params: {
+          screen: 'guest-post',
+        },
+      })
+    } else {
+      if (user?.uid === post?.uid) {
+        navigation.navigate('TabStack', { screen: 'You' })
+      } else {
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersProfile',
+          params: { uid: post?.uid },
+        })
+      }
+    }
+  }
+
+  const renderShippingMethods = () => {
+    if (post.type === 'need') return null
+
+    const renderIcon = () => {
+      const iconProps = {
+        style: { color: Colors.secondaryLavenderBlue },
+        ...iconSize(16),
+      }
+      if (post.shipping_methods?.delivery) {
+        return <Icons.Truck {...iconProps} />
+      } else if (post.shipping_methods?.pickup) {
+        return <Icons.Pickup {...iconProps} />
+      } else if (post.booking_methods?.appointment) {
+        return <Icons.Appointment {...iconProps} />
+      } else if (post.booking_methods?.walkin) {
+        return <Icons.Store {...iconProps} />
+      }
+    }
+
+    const shippingMethodLabels = {
+      pickup: 'Pick up',
+      delivery: 'Delivery',
+    }
+
+    const bookingMethodLabels = {
+      walkin: 'Walk-in',
+      appointment: 'By Appointment',
+    }
+
+    const label = (() => {
+      if (post.type === 'sell')
+        return Object.keys(post.shipping_methods || {})
+          .map(method => shippingMethodLabels[method])
+          .join(' and ')
+      else if (post.type === 'service')
+        return Object.keys(post.booking_methods || {})
+          .map(method => bookingMethodLabels[method])
+          .join(' and ')
+    })()
+
+    return (
+      <View style={styles.deliveryMethodContainer}>
+        {renderIcon()}
+        <Text style={[typography.eyebrow, styles.deliveryMethodLabel]}>
+          {label}
+        </Text>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.postHeaderContainer}
-        onPress={() => {
-          if (user?.uid === post?.uid) {
-            navigation.navigate('TabStack', { screen: 'You' })
-          } else {
-            navigation.navigate('NBTScreen', {
-              screen: 'OthersProfile',
-              params: { uid: post?.uid },
-            })
-          }
-        }}>
+        activeOpacity={0.7}
+        onPress={handleOnUserPress}>
         <View style={styles.userInfo}>
           <View style={styles.avatarContainer}>
             <Avatar
@@ -159,7 +229,7 @@ const NewsFeed = ({ props }) => {
             <SkeletonLoader type="liked" isLoading={true} />
           ) : (
             <TouchableOpacity
-              activeOpacity={1}
+              activeOpacity={0.7}
               onPress={() => {
                 handleLikePress(post)
               }}>
@@ -169,7 +239,11 @@ const NewsFeed = ({ props }) => {
                   height={normalize(24)}
                 />
               ) : (
-                <Icons.Like width={normalize(24)} height={normalize(24)} />
+                <Icons.Like
+                  style={{ color: Colors.icon }}
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
               )}
             </TouchableOpacity>
           )}
@@ -177,18 +251,8 @@ const NewsFeed = ({ props }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.postContainer}
-        onPress={() =>
-          navigation.navigate('NBTScreen', {
-            screen: 'OthersPost',
-            params: {
-              data: post,
-              viewing: true,
-              created: false,
-              edited: false,
-              othersView: user?.uid !== post.uid,
-            },
-          })
-        }>
+        activeOpacity={0.7}
+        onPress={() => handleOnPostPress(post)}>
         <View style={styles.postImageContainer}>
           <PostImage
             path={post.cover_photos?.[0]}
@@ -198,9 +262,11 @@ const NewsFeed = ({ props }) => {
         </View>
         <View style={styles.postDetailsContainer}>
           <View style={{ width: '100%' }}>
-            <AppText numberOfLines={2} customStyle={styles.postTitle}>
+            <Text
+              style={[typography.body2, styles.postTitle]}
+              numberOfLines={2}>
               {post.title}
-            </AppText>
+            </Text>
             <AppText
               customStyle={styles.postPrice}
               color={Colors.secondaryMountainMeadow}>
@@ -215,12 +281,16 @@ const NewsFeed = ({ props }) => {
                 width={normalize(16)}
                 height={normalize(16)}
               />
-              <AppText
-                textStyle="eyebrow2"
-                color={Colors.contentPlaceholder}
-                customStyle={{ marginLeft: 4 }}>
-                {post.store_details.location.city || 'N/A'}
-              </AppText>
+              <Text
+                style={[
+                  typography.eyebrow,
+                  {
+                    marginLeft: normalize(4),
+                    color: Colors.contentPlaceholder,
+                  },
+                ]}>
+                {post.location?.city || 'N/A'}
+              </Text>
             </View>
             <View style={styles.postDistance}>
               <Icons.Direction
@@ -228,26 +298,19 @@ const NewsFeed = ({ props }) => {
                 width={normalize(16)}
                 height={normalize(16)}
               />
-              <AppText
-                textStyle="eyebrow2"
-                color={Colors.contentPlaceholder}
-                customStyle={{ marginLeft: 4 }}>
+              <Text
+                style={[
+                  typography.eyebrow,
+                  {
+                    marginLeft: normalize(4),
+                    color: Colors.contentPlaceholder,
+                  },
+                ]}>
                 {getPostDistance(post, locationData)}
-              </AppText>
+              </Text>
             </View>
           </View>
-          {post.type !== 'need' && (
-            <View style={styles.deliveryMethodContainer}>
-              <GetDeliveryIcon post={post} style={styles.icon}/>
-              <AppText
-                textStyle="eyebrow2"
-                customStyle={styles.deliveryMethodText}>
-                {getDeliveryMethod(post).length
-                  ? getDeliveryMethod(post).join(' and ')
-                  : 'not set'}
-              </AppText>
-            </View>
-          )}
+          {renderShippingMethods()}
         </View>
       </TouchableOpacity>
       <Divider style={styles.divider} />
@@ -328,8 +391,6 @@ const styles = StyleSheet.create({
   },
   postTitle: {
     marginBottom: normalize(5),
-    fontFamily: 'RoundedMplus1c-Regular',
-    fontSize: normalize(15),
   },
   postPrice: {
     marginBottom: normalize(10),
@@ -348,12 +409,11 @@ const styles = StyleSheet.create({
   },
   deliveryMethodContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
-  deliveryMethodText: {
+  deliveryMethodLabel: {
     marginLeft: 4,
-    color: Colors.contentEbony,
-    textTransform: 'capitalize',
+    color: Colors.contentPlaceholder,
   },
   divider: {
     backgroundColor: Colors.neutralsZircon,
@@ -362,7 +422,7 @@ const styles = StyleSheet.create({
   icon: {
     width: normalize(16),
     height: normalize(16),
-  }
+  },
 })
 
 export default NewsFeed

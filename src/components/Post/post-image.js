@@ -28,7 +28,7 @@ const DefaultPostThumbnail = ({ type }) => {
   }
 }
 
-const DefaultPostImage = ({ type }) => {
+export const DefaultPostImage = ({ type }) => {
   const defaultImages = {
     need: require('@/assets/images/cover-need.png'),
     sell: require('@/assets/images/cover-sell.png'),
@@ -85,7 +85,7 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
 
   return isUrl(source?.uri) ? (
     <FastImage
-      resizeMode={FastImage.resizeMode.cover}
+      resizeMode="cover"
       source={source}
       style={sizeProps}
       {...props}

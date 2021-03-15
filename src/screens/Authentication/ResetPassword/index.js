@@ -149,7 +149,13 @@ const ResetPassword = ({ navigation }) => {
           <Notification
             type={notificationType}
             animationOptions={{ height: 90 }}
-            icon={notificationType === 'danger' ? <Warning /> : <CircleTick />}>
+            icon={
+              notificationType === 'danger' ? (
+                <Warning />
+              ) : (
+                <CircleTick style={{ color: Colors.primaryMidnightBlue }} />
+              )
+            }>
             {notificationMessage}
           </Notification>
         </SafeAreaView>

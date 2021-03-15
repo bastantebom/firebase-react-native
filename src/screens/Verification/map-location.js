@@ -14,8 +14,36 @@ import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
 import { normalize } from '@/globals'
 import { getCurrentPosition } from '@/globals/Utils'
 
-const MapLocation = ({ back, address, onChange = () => {} }) => {
+/**
+ * @typedef {Object} Address
+ * @property {string} name
+ * @property {string} details
+ * @property {string} notes
+ * @property {string} full_address
+ * @property {boolean} default
+ * @property {number} latitude
+ * @property {number} longitude
+ * @property {string} city
+ * @property {string} province
+ * @property {string} country
+ */
+
+/**
+ * @typedef {Object} MapLocationScreen
+ * @property {Address} address
+ * @property {function} onSelect
+ * @property {string} title
+ */
+
+/**
+ * @typedef {Object} RootProps
+ * @property {MapLocationScreen} MapLocationScreen
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'MapLocationScreen'>} param0 */
+const MapLocationScreen = ({ navigation, route }) => {
   Geocoder.init(Config.apiKey)
+  const { onSelect, address, title } = route.params
 
   const [addressData, setAddressData] = useState(address)
   const [mapInitialized, setMapInitialized] = useState(false)
@@ -97,17 +125,17 @@ const MapLocation = ({ back, address, onChange = () => {} }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <PaddingView paddingSize={3}>
+      <View style={{ padding: normalize(24) }}>
         <View style={styles.modalHeader}>
           <TouchableOpacity
-            onPress={back}
+            onPress={navigation.goBack}
             activeOpacity={0.7}
             style={{ position: 'absolute', left: 0 }}>
             <HeaderBackGray width={normalize(24)} height={normalize(24)} />
           </TouchableOpacity>
-          <AppText textStyle="body3">Select location</AppText>
+          <AppText textStyle="body3">{title || 'Select Location'}</AppText>
         </View>
-      </PaddingView>
+      </View>
 
       {!mapInitialized ? (
         <View style={[styles.loader]}>
@@ -131,11 +159,12 @@ const MapLocation = ({ back, address, onChange = () => {} }) => {
           />
           <View style={styles.buttonWrapper}>
             <AppButton
-              text="Apply"
+              text="Confirm"
               type="primary"
               height="xl"
               onPress={() => {
-                onChange({ ...addressData })
+                onSelect({ ...addressData })
+                navigation.goBack()
               }}
             />
           </View>
@@ -178,4 +207,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default MapLocation
+export default MapLocationScreen

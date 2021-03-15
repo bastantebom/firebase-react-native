@@ -26,7 +26,7 @@ const ChatOptions = ({ close, deleteMessage }) => {
         </AppText>
       </TouchableOpacity>
       <TouchableOpacity style={styles.optionWrapper} onPress={deleteMessage}>
-        <Trash />
+        <Trash style={{ color: Colors.secondaryBrinkPink }} />
         <AppText
           textStyle="body2"
           customStyle={{ marginLeft: normalize(10) }}

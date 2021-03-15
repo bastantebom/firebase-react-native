@@ -1,7 +1,13 @@
 import { Colors, normalize } from '@/globals'
+import PostCard from '@/screens/Post/components/post-card'
 import React, { useState } from 'react'
-import { ActivityIndicator, Animated, FlatList, View } from 'react-native'
-import Post from './post'
+import {
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  StyleSheet,
+  View,
+} from 'react-native'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 
@@ -42,17 +48,15 @@ const Posts = ({
     ) : null
   }
 
-  const renderPost = ({ item }) =>
-    !item.$hasErrors ? (
-      <Post
-        data={item}
-        isLoading={!!item.$isLoading}
-        onPress={onPostPress}
-        onUserPress={onUserPress}
-        onLikePress={onLikePress}
-        currentLocation={currentLocation}
-      />
-    ) : null
+  const renderPost = ({ item }) => (
+    <PostCard
+      containerStyle={styles.post}
+      post={item}
+      onUserPress={onUserPress}
+      onPostPress={onPostPress}
+      onLikePress={onLikePress}
+    />
+  )
 
   return (
     <AnimatedFlatList
@@ -69,5 +73,11 @@ const Posts = ({
     />
   )
 }
+
+const styles = StyleSheet.create({
+  post: {
+    padding: normalize(16),
+  },
+})
 
 export default Posts

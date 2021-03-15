@@ -221,17 +221,18 @@ const Onboarding = ({ navigation }) => {
       <Modal
         isVisible={authenticationSheet}
         animationIn="slideInUp"
-        animationInTiming={450}
+        animationInTiming={200}
         animationOut="slideOutDown"
-        animationOutTiming={450}
+        animationOutTiming={180}
         style={{ margin: 0, justifyContent: 'flex-end' }}
         customBackdrop={
           <TouchableWithoutFeedback
+            style={{ flex: 1 }}
             onPress={() => {
               showAuthenticationSheet(false)
               setNotificationMessage(null)
             }}>
-            <View style={{ flex: 1 }} />
+            <View style={{ flex: 1, backgroundColor: '#000a' }} />
           </TouchableWithoutFeedback>
         }>
         <View
