@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native'
 import Modal from 'react-native-modal'
 
@@ -34,53 +35,59 @@ const activity = ({ navigation }) => {
   const [noMoreActivities, setNoMoreActivities] = useState(false)
 
   const loadActivities = async ({ isMoreActivities, lastItemId }) => {
-    if (sort.value === 'all') {
-      const { data } = await Api.getActivities({ lastItemId })
+    try {
+      if (sort.value === 'all') {
+        const { data } = await Api.getActivities({ lastItemId })
 
-      if (!data.length) setNoMoreActivities(true)
-      else setLastItemId(data[data.length - 1].id)
+        if (!data.length) setNoMoreActivities(true)
+        else setLastItemId(data[data.length - 1].id)
 
-      groupActivities(isMoreActivities, data)
-    } else if (sort.value === 'my offers') {
-      const { data } = await Api.getOwnPosts({ lastItemId })
+        groupActivities(isMoreActivities, data)
+      } else if (sort.value === 'my offers') {
+        const { data } = await Api.getOwnPosts({ lastItemId })
 
-      if (!data.length) setNoMoreActivities(true)
+        if (!data.length) setNoMoreActivities(true)
 
-      const groupedData = data
-        .map(post => {
-          return {
-            post: { ...post },
-            sellerInfo: {
-              profile_photo: userInfo.profile_photo,
-              name: userInfo.display_name || userInfo.full_name,
-            },
-          }
-        })
-        .sort(
-          (a, b) => b.post.date_posted._seconds - a.post.date_posted._seconds
+        const groupedData = data
+          .map(post => {
+            return {
+              post: { ...post },
+              sellerInfo: {
+                profile_photo: userInfo.profile_photo,
+                name: userInfo.display_name || userInfo.full_name,
+              },
+            }
+          })
+          .sort(
+            (a, b) => b.post.date_posted._seconds - a.post.date_posted._seconds
+          )
+
+        if (!!data.length) setLastItemId(data[data.length - 1].id)
+
+        setActivities(
+          isMoreActivities ? [...activities, ...groupedData] : groupedData
         )
+      } else if (sort.value === 'my orders') {
+        const { data } = await Api.getOwnOrders({
+          lastItemId,
+          uid: user.uid,
+        })
 
-      if (!!data.length) setLastItemId(data[data.length - 1].id)
-      setActivities(
-        isMoreActivities ? [...activities, ...groupedData] : groupedData
-      )
-    } else if (sort.value === 'my orders') {
-      const { data } = await Api.getOwnOrders({
-        lastItemId,
-        uid: user.uid,
-      })
+        if (!data.length) setNoMoreActivities(true)
+        else setLastItemId(data[data.length - 1].id)
 
-      if (!data.length) setNoMoreActivities(true)
-      else setLastItemId(data[data.length - 1].id)
+        groupActivities(isMoreActivities, data)
+      } else if (sort.value === 'past') {
+        const { data } = await Api.getPastActivities({ lastItemId })
 
-      groupActivities(isMoreActivities, data)
-    } else if (sort.value === 'past') {
-      const { data } = await Api.getPastActivities({ lastItemId })
+        if (!data.length) setNoMoreActivities(true)
+        else setLastItemId(data[data.length - 1].id)
 
-      if (!data.length) setNoMoreActivities(true)
-      else setLastItemId(data[data.length - 1].id)
-
-      groupActivities(isMoreActivities, data)
+        groupActivities(isMoreActivities, data)
+      }
+    } catch (error) {
+      console.log(error.message)
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
 
     setIsLoading(false)
@@ -228,8 +235,8 @@ const activity = ({ navigation }) => {
 
       <Modal
         isVisible={activitySort}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
         animationInTiming={200}
         animationOutTiming={180}
         style={{ margin: 0, justifyContent: 'flex-end' }}

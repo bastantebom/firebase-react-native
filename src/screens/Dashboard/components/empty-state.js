@@ -13,7 +13,7 @@ import Share from 'react-native-share'
 const EmptyState = () => {
   const navigation = useNavigation()
 
-  const { setShowButtons } = useContext(Context)
+  const { setCreatePostPopupVisible } = useContext(Context)
   const { user, userInfo } = useContext(UserContext)
 
   const handleInvite = async () => {
@@ -54,7 +54,13 @@ const EmptyState = () => {
             type="primary"
             height="lg"
             onPress={() =>
-              user ? setShowButtons(true) : navigation.navigate('Post')
+              user
+                ? setCreatePostPopupVisible(true)
+                : navigation.navigate('posts', {
+                    params: {
+                      screen: 'guest-post',
+                    },
+                  })
             }
           />
         </View>

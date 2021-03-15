@@ -24,13 +24,16 @@ import {
 } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
 import LinearGradient from 'react-native-linear-gradient'
+import { Context } from '@/context'
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 const CreatePostPopup = ({}) => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
+  const { createPostPopupVisible, setCreatePostPopupVisible } = useContext(
+    Context
+  )
 
-  const [isOpen, setIsOpen] = useState(false)
   const rotateValue = useRef(new Animated.Value(0)).current
 
   const rotate = rotateValue.interpolate({
@@ -40,17 +43,22 @@ const CreatePostPopup = ({}) => {
 
   useEffect(() => {
     Animated.timing(rotateValue, {
-      toValue: isOpen ? 1 : 0,
+      toValue: createPostPopupVisible ? 1 : 0,
       duration: 150,
       easing: Easing.linear,
       useNativeDriver: true,
     }).start()
-  }, [isOpen])
+  }, [createPostPopupVisible])
 
   const handlePress = () => {
-    if (!user) return navigation.navigate('posts')
+    if (!user)
+      return navigation.navigate('posts', {
+        params: {
+          screen: 'guest-post',
+        },
+      })
 
-    setIsOpen(!isOpen)
+    setCreatePostPopupVisible(!createPostPopupVisible)
   }
 
   const handleButtonPress = type => {
@@ -107,7 +115,7 @@ const CreatePostPopup = ({}) => {
                 {
                   paddingBottom: normalize(3.5),
                   transform: [{ translateY: -2 }],
-                  color: isOpen
+                  color: createPostPopupVisible
                     ? Colors.primaryMidnightBlue
                     : Colors.contentPlaceholder,
                 },
@@ -119,7 +127,7 @@ const CreatePostPopup = ({}) => {
       </View>
 
       <Modal
-        isVisible={isOpen}
+        isVisible={createPostPopupVisible}
         animationOutTiming={10}
         animationInTiming={10}
         animationIn="fadeIn"
@@ -135,7 +143,7 @@ const CreatePostPopup = ({}) => {
           </TouchableWithoutFeedback>
         }>
         <PopupButtons
-          close={() => setIsOpen(false)}
+          close={() => setCreatePostPopupVisible(false)}
           onButtonPress={handleButtonPress}
         />
       </Modal>

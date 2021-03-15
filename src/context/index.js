@@ -23,6 +23,7 @@ export const ContextProvider = ({ children }) => {
   const [imageCurrent, setImageCurrent] = useState('')
   const [postCameraImage, setPostCameraImage] = useState([])
   const [needsRefresh, setNeedsRefresh] = useState(true)
+  const [createPostPopupVisible, setCreatePostPopupVisible] = useState(false)
 
   // Post Images states
   const [imageCount, setImageCount] = useState(0)
@@ -242,6 +243,8 @@ export const ContextProvider = ({ children }) => {
         setBasket,
         dashboardNeedsRefresh,
         setDashboardNeedsRefresh,
+        createPostPopupVisible,
+        setCreatePostPopupVisible,
       }}>
       {children}
     </Context.Provider>
