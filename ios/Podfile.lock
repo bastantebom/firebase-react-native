@@ -448,13 +448,13 @@ PODS:
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
-  - Permission-Camera (2.2.2):
+  - Permission-Camera (3.0.1):
     - RNPermissions
-  - Permission-MediaLibrary (2.2.2):
+  - Permission-MediaLibrary (3.0.1):
     - RNPermissions
-  - Permission-Microphone (2.2.2):
+  - Permission-Microphone (3.0.1):
     - RNPermissions
-  - Permission-PhotoLibrary (2.2.2):
+  - Permission-PhotoLibrary (3.0.1):
     - RNPermissions
   - PromisesObjC (1.2.12)
   - RCTRequired (0.62.2)
@@ -793,7 +793,7 @@ PODS:
     - TOCropViewController
   - RNKeychain (6.2.0):
     - React
-  - RNPermissions (2.2.2):
+  - RNPermissions (3.0.1):
     - React-Core
   - RNReanimated (1.13.2):
     - React-Core
@@ -846,10 +846,10 @@ DEPENDENCIES:
   - GoogleMaps
   - lottie-ios (from `../node_modules/lottie-ios`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
-  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera.podspec`)
-  - Permission-MediaLibrary (from `../node_modules/react-native-permissions/ios/MediaLibrary.podspec`)
-  - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone.podspec`)
-  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary.podspec`)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
+  - Permission-MediaLibrary (from `../node_modules/react-native-permissions/ios/MediaLibrary`)
+  - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
+  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -977,13 +977,13 @@ EXTERNAL SOURCES:
   lottie-react-native:
     :path: "../node_modules/lottie-react-native"
   Permission-Camera:
-    :path: "../node_modules/react-native-permissions/ios/Camera.podspec"
+    :path: "../node_modules/react-native-permissions/ios/Camera"
   Permission-MediaLibrary:
-    :path: "../node_modules/react-native-permissions/ios/MediaLibrary.podspec"
+    :path: "../node_modules/react-native-permissions/ios/MediaLibrary"
   Permission-Microphone:
-    :path: "../node_modules/react-native-permissions/ios/Microphone.podspec"
+    :path: "../node_modules/react-native-permissions/ios/Microphone"
   Permission-PhotoLibrary:
-    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary.podspec"
+    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -1152,10 +1152,10 @@ SPEC CHECKSUMS:
   lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
-  Permission-Camera: 5d2aaf95592660b6dcb5e8d1d90ed5d0156cad02
-  Permission-MediaLibrary: e94e0a30ec5edc18b14e9df10fc78d5bb592a8ca
-  Permission-Microphone: a0e56790d61392c31627df33328fef079ad46fa8
-  Permission-PhotoLibrary: 8227a6ed9f6a971537afe63742d54f5f23a38fe2
+  Permission-Camera: b2e50546c095139bb1264be9c34c796332340d32
+  Permission-MediaLibrary: 468eee83eb186823bb55b7252626539e0e4a2d97
+  Permission-Microphone: bcdaaa22af6217b86fad0843413a238b9413f2d6
+  Permission-PhotoLibrary: 29a07bdd077ae760363f73ab52d22a7b88cbd781
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCTRequired: cec6a34b3ac8a9915c37e7e4ad3aa74726ce4035
   RCTTypeSafety: 93006131180074cffa227a1075802c89a49dd4ce
@@ -1211,7 +1211,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: ccf71ee4b6cfd324fd788a41e457e2043838c0d9
   RNImageCropPicker: 54e5ea3d0e298ed51e1441a2fa0a0e7c90ee256d
   RNKeychain: b8e0711b959a19c5b057d1e970d3c83d159b6da5
-  RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
+  RNPermissions: 4c8a37b4dde50f1f152bf8cd08c4a43d2355829e
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 3d682bcaba69a4f8e55543d90818704f34338db1
   RNShare: fed99fd743f80ca255903c1da46fc9a6430efab6
@@ -1223,6 +1223,6 @@ SPEC CHECKSUMS:
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 25681b57d9881bb6574474c2371b50bae51e8061
+PODFILE CHECKSUM: 10beb55571dfb0ec174d4770a1743a2ad951cc2a
 
 COCOAPODS: 1.9.3
