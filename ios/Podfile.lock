@@ -646,7 +646,7 @@ PODS:
     - React
   - react-native-geolocation (2.0.2):
     - React
-  - react-native-geolocation-service (5.1.1):
+  - react-native-geolocation-service (5.2.0):
     - React
   - react-native-get-random-values (1.5.1):
     - React-Core
@@ -1170,7 +1170,7 @@ SPEC CHECKSUMS:
   react-native-cameraroll: 60ba0068826eab1c8d43146191bafd4363ea58a7
   react-native-fbsdk: 00c15d138bba6d4efa628670886fc58cec858c19
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
-  react-native-geolocation-service: f33626f1ae12381ca2ae60f98b2f5edd676bf95a
+  react-native-geolocation-service: 7c9436da6dfdecd9526c62eac62ea2bc3f0cc8ea
   react-native-get-random-values: 41f0c91ac0da870e47b307e07752e9e54bc2dc7e
   react-native-google-maps: 0a989abda71059db2caa98b9dacca7a8f38a47d0
   react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705

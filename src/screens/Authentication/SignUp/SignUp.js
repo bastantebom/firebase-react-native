@@ -436,11 +436,11 @@ const SignUp = props => {
                 customStyle={{
                   ...styles.customButtonStyle,
                   backgroundColor: !canSubmit
-                    ? AppColor.buttonDisable
+                    ? AppColor.Gainsboro
                     : AppColor.primaryYellow,
 
                   borderColor: !canSubmit
-                    ? AppColor.buttonDisable
+                    ? AppColor.Gainsboro
                     : AppColor.primaryYellow,
                 }}
                 onPress={signUp}

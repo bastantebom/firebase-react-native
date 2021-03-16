@@ -10,7 +10,7 @@ import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
 
 const UserPostEmpty = ({ userInfo }) => {
-  const { openPostButtons } = useContext(Context)
+  const { setCreatePostPopupVisible } = useContext(Context)
   const { user } = useContext(UserContext)
   const { display_name, full_name, uid } = userInfo
   const navigation = useNavigation()
@@ -46,7 +46,7 @@ const UserPostEmpty = ({ userInfo }) => {
           <AppText textStyle="body1" customStyle={styles.copySpacing}>
             or
           </AppText>
-          <TouchableOpacity onPress={openPostButtons}>
+          <TouchableOpacity onPress={() => setCreatePostPopupVisible(true)}>
             <AppText textStyle="body1" color={Colors.contentOcean}>
               Post
             </AppText>
