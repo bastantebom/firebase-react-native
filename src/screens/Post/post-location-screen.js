@@ -141,6 +141,7 @@ const PostLocationScreen = ({ navigation, route }) => {
             <GooglePlacesAutocomplete
               ref={searchInputRef}
               placeholder="Enter street address or city"
+              placeholderTextColor={Colors.contentPlaceholder}
               query={{
                 key: GooglePlacesAPIKey,
                 language: 'en',
@@ -216,7 +217,8 @@ const PostLocationScreen = ({ navigation, route }) => {
             style={[styles.linkWrapper, styles.searchFromMapWrapper]}
             activeOpacity={0.7}
             onPress={handleSearchFromMapPress}>
-            <Text style={[typography.link, styles.searchFromMap]}>
+            <Text
+              style={[typography.body2, typography.link, styles.searchFromMap]}>
               Search from map
             </Text>
           </TouchableOpacity>

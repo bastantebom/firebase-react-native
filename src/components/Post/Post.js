@@ -27,10 +27,8 @@ const Post = ({ data, type, isLoading, toggleLikePost, toggleMenu }) => {
     date_posted,
     available,
     payment_method,
-    store_details: {
-      schedule,
-      location: { city, province, country },
-    },
+    schedule,
+    location: { city, province, country },
     title,
     username,
     delivery_methods,

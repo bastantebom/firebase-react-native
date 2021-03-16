@@ -24,6 +24,7 @@ import SelectPostScreen from './select-post'
 import WebviewScreen from './webview-screen'
 import ReportPostScreen from './report-post-screen'
 import GuestPostScreen from './guest-post-screen'
+import HiddenPostsScreen from './hidden-posts'
 
 const PostStack = () => {
   const Stack = createStackNavigator()
@@ -142,6 +143,11 @@ const PostStack = () => {
       <Stack.Screen
         name="guest-post"
         component={GuestPostScreen}
+        options={defaultScreenOptions}
+      />
+      <Stack.Screen
+        name="hidden-posts"
+        component={HiddenPostsScreen}
         options={defaultScreenOptions}
       />
     </Stack.Navigator>

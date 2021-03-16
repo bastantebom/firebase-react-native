@@ -51,8 +51,9 @@ const CreatePostPopup = ({}) => {
   }, [createPostPopupVisible])
 
   const handlePress = () => {
-    if (!user)
-      return navigation.navigate('posts', {
+    if (!user?.uid)
+      return navigation.navigate('TabStack', {
+        screen: 'posts',
         params: {
           screen: 'guest-post',
         },

@@ -29,8 +29,6 @@ import {
 import {
   About,
   BlockList,
-  HiddenPost,
-  LikedPost,
   ArchivedPost,
   ContactServbees,
   FaqScreen,
@@ -42,8 +40,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   const { providerData, signOut } = useContext(UserContext)
   const [about, setAbout] = useState(false)
   const [blockUser, setBlockUser] = useState(false)
-  const [hiddenPost, setHiddenPost] = useState(false)
-  const [likePost, setLikePost] = useState(false)
   const [archivedPost, setArchivedPost] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
@@ -54,8 +50,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
 
   const toggleAbout = () => setAbout(!about)
   const toggleBlockedUser = () => setBlockUser(!blockUser)
-  const toggleHiddenPost = () => setHiddenPost(!hiddenPost)
-  const toggleLikePost = () => setLikePost(!likePost)
   const toggleArchivedPost = () => setArchivedPost(!archivedPost)
   const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
@@ -67,7 +61,11 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   const accountMenuItems = [
     {
       label: 'Liked Posts',
-      onPress: () => setLikePost(true),
+      onPress: () => {
+        navigation.navigate('NBTScreen', {
+          screen: 'liked-posts',
+        })
+      },
       icon: () => (
         <LikedPostMenu width={normalize(20)} height={normalize(20)} />
       ),
@@ -83,7 +81,14 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
     },
     {
       label: 'Hidden Posts',
-      onPress: () => setHiddenPost(true),
+      onPress: () => {
+        navigation.navigate('NBTScreen', {
+          screen: 'posts',
+          params: {
+            screen: 'hidden-posts',
+          },
+        })
+      },
       icon: () => <HidePost width={normalize(20)} height={normalize(20)} />,
       hidden: true,
     },
@@ -327,35 +332,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <BlockList toggleBlockedUser={toggleBlockedUser} />
-      </Modal>
-
-      <Modal
-        isVisible={hiddenPost}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <HiddenPost toggleHiddenPost={toggleHiddenPost} />
-      </Modal>
-
-      <Modal
-        isVisible={likePost}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        {/* <LikedPost toggleMenu={close} toggleLikePost={toggleLikePost} /> */}
-        <LikedPost toggleLikePost={toggleLikePost} />
       </Modal>
 
       <Modal

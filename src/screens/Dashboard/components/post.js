@@ -126,9 +126,9 @@ const Post = ({
   }
 
   const renderLocation = () => {
-    const city = post.store_details?.location?.city
+    const city = post.location?.city
 
-    const { latitude, longitude } = post.store_details?.location || {}
+    const { latitude, longitude } = post.location || {}
     const distanceInMeters =
       currentLocation?.latitude &&
       currentLocation?.longitude &&

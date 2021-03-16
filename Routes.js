@@ -16,6 +16,7 @@ import HiveActive from '@/assets/images/icons/hive-active.svg'
 //screens
 import { Onboarding } from '@/screens/Onboarding'
 import DashboardStack from '@/screens/Dashboard'
+import LikedPostsScreen from '@/screens/Dashboard/liked-posts-screen'
 import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
 import OwnMenuScreen from '@/components/TransparentHeader/components/OwnMenu'
@@ -160,6 +161,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="unavailable-network"
         component={UnavailableNetwork}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="liked-posts"
+        component={LikedPostsScreen}
       />
     </NoBottomTabScreenStack.Navigator>
   )

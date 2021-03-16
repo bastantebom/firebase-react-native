@@ -295,7 +295,11 @@ const ImagePickerScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            style={styles.backButton}
+            disabled={!selectedItems.length}
+            style={[
+              styles.backButton,
+              !selectedItems.length ? { opacity: 0.5 } : {},
+            ]}
             activeOpacity={0.7}
             onPress={handleOnNextPress}>
             <Text style={[typography.button3, typography.link]}>Next</Text>

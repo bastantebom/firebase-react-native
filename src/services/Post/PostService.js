@@ -17,7 +17,7 @@ const getPosts = async payload => {
     data: await Promise.all(
       data.map(async post => ({
         ...post,
-        price: post.is_multiple ? '' : post?.items[0]?.price,
+        price: post.is_multiple ? '' : post?.items?.[0]?.price,
         user: (await ProfileInfoService.getUser(post.uid)).data,
         likers: (await getLikers(post.id)).likes,
       }))
@@ -61,7 +61,7 @@ const getUserPosts = async payload => {
     data: await Promise.all(
       data.map(async post => ({
         ...post,
-        price: post.is_multiple ? '' : post?.items[0]?.price,
+        price: post.is_multiple ? '' : post?.items?.[0]?.price,
         user: (await ProfileInfoService.getUser(post.uid)).data,
       }))
     ),
@@ -83,7 +83,7 @@ const getLikedPosts = async payload => {
     data: await Promise.all(
       filteredData.map(async post => ({
         ...post,
-        price: post?.is_multiple ? '' : post?.items[0].price,
+        price: post?.is_multiple ? '' : post?.items?.[0].price,
         user: (await ProfileInfoService.getUser(post?.uid)).data,
       }))
     ),
@@ -105,7 +105,7 @@ const getArchivedPosts = async payload => {
     data: await Promise.all(
       filteredData.map(async post => ({
         ...post,
-        price: post.is_multiple ? '' : post?.items[0]?.price,
+        price: post.is_multiple ? '' : post?.items?.[0]?.price,
         user: (await ProfileInfoService.getUser(post.uid)).data,
       }))
     ),

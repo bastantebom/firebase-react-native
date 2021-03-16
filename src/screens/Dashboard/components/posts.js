@@ -48,15 +48,16 @@ const Posts = ({
     ) : null
   }
 
-  const renderPost = ({ item }) => (
-    <PostCard
-      containerStyle={styles.post}
-      post={item}
-      onUserPress={onUserPress}
-      onPostPress={onPostPress}
-      onLikePress={onLikePress}
-    />
-  )
+  const renderPost = ({ item }) =>
+    !!item.$isLoading ? null : (
+      <PostCard
+        containerStyle={styles.post}
+        post={item}
+        onUserPress={onUserPress}
+        onPostPress={onPostPress}
+        onLikePress={onLikePress}
+      />
+    )
 
   return (
     <AnimatedFlatList

@@ -45,7 +45,7 @@ const TextField = ({
     new Animated.Value(
       props.multiline &&
       props.numberOfLines &&
-      (value.length || props.placeholder?.length)
+      (value?.length || props.placeholder?.length)
         ? 8
         : 11
     )
@@ -56,7 +56,7 @@ const TextField = ({
   const handleFocus = () => {
     const toValue = normalize(props.multiline && props.numberOfLines ? 8 : 0)
 
-    if (!value.length && !props.placeholder?.length) {
+    if (!value?.length && !props.placeholder?.length) {
       Animated.parallel([
         Animated.timing(labelPosition, {
           toValue,
@@ -74,11 +74,11 @@ const TextField = ({
     const toValue = normalize(
       props.multiline &&
         props.numberOfLines &&
-        (value.length || props.placeholder?.length)
+        (value?.length || props.placeholder?.length)
         ? 8
         : 11
     )
-    if (!value.length && !props.placeholder?.length) {
+    if (!value?.length && !props.placeholder?.length) {
       Animated.parallel([
         Animated.timing(labelPosition, {
           toValue,
@@ -106,9 +106,9 @@ const TextField = ({
     labelStyle = {
       ...labelStyle,
       marginTop: normalize(
-        value.length && !props.placeholder?.length
+        value?.length && !props.placeholder?.length
           ? 0
-          : !props.placeholder?.length && !value.length
+          : !props.placeholder?.length && !value?.length
           ? 0
           : 8
       ),

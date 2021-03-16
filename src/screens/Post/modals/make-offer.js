@@ -3,7 +3,11 @@ import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import React, { useContext, useEffect, useState } from 'react'
 import {
+  Dimensions,
+  Keyboard,
+  Platform,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -18,6 +22,8 @@ import { iconSize } from '@/globals/Utils'
 import { Context } from '@/context'
 import PostImage from '@/components/Post/post-image'
 
+const { height } = Dimensions.get('screen')
+
 /**
  * @param {object} props
  * @property {{minimum: number, maximum: number}} budget
@@ -26,6 +32,7 @@ import PostImage from '@/components/Post/post-image'
  **/
 const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
   const { basket, setBasket } = useContext(Context)
+  const [keyboardHeight, setKeyboardHeight] = useState(0)
 
   const budgetLabel = `₱${formatNumber(budget.minimum, {
     separator: '.',
@@ -41,8 +48,38 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
     return basket.offer <= budget.maximum && basket.offer >= budget.minimum
   }
 
+  const onKeyboardShowHandler = e => {
+    setKeyboardHeight(e.endCoordinates.height)
+  }
+
+  const onKeyboardHideHandler = () => {
+    setKeyboardHeight(0)
+  }
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', onKeyboardShowHandler)
+    Keyboard.addListener('keyboardDidHide', onKeyboardHideHandler)
+
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', onKeyboardShowHandler)
+      Keyboard.removeListener('keyboardDidHide', onKeyboardHideHandler)
+    }
+  }, [])
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          maxHeight:
+            height -
+            keyboardHeight -
+            Platform.select({
+              ios: 0,
+              android: StatusBar.currentHeight,
+            }),
+        },
+      ]}>
       <BottomSheetHeader />
 
       <View style={styles.titleWrapper}>

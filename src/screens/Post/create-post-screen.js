@@ -1751,6 +1751,7 @@ const styles = StyleSheet.create({
   },
   postTypeCardTitle: {
     color: '#fff',
+    flexWrap: 'wrap',
   },
   postTypeCardDescription: {
     color: '#fff',
