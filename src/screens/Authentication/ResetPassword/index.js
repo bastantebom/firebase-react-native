@@ -22,26 +22,17 @@ import {
 
 import ResetPasswordLock from '@/assets/images/reset-password.svg'
 
-import {
-  CircleTick,
-  Close,
-  HeaderBackGray,
-  Warning,
-} from '@/assets/images/icons'
-
-import ForgotPasswordService from '@/services/ForgotPassword'
+import { CircleTickWhite, HeaderBackGray, Warning } from '@/assets/images/icons'
 import Api from '@/services/Api'
 
 import styles from './resetPassword.scss'
-
-import { Context } from '@/context'
 import { Colors, normalize } from '@/globals'
 
 const ResetPassword = ({ navigation }) => {
   const [email, setEmail] = useState('')
 
-  const [notificationMessage, setNotificationMessage] = useState()
-  const [notificationType, setNotificationType] = useState()
+  const [notificationMessage, setNotificationMessage] = useState('')
+  const [notificationType, setNotificationType] = useState('success')
 
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [buttonState, setButtonState] = useState('dark')
@@ -93,7 +84,6 @@ const ResetPassword = ({ navigation }) => {
     }
 
     const response = await Api.forgotPassword(parameters)
-
     setButtonLoading(false)
     setButtonDisabled(false)
     closeNotificationTimer()
@@ -127,7 +117,7 @@ const ResetPassword = ({ navigation }) => {
     }
   }
 
-  async function sendEmail() {
+  const sendEmail = async () => {
     const msg = await sendResetPasswordEmail()
     setNotificationMessage(msg)
     showNotif(true)
@@ -153,7 +143,9 @@ const ResetPassword = ({ navigation }) => {
               notificationType === 'danger' ? (
                 <Warning />
               ) : (
-                <CircleTick style={{ color: Colors.primaryMidnightBlue }} />
+                <CircleTickWhite
+                  style={{ color: Colors.primaryMidnightBlue }}
+                />
               )
             }>
             {notificationMessage}
