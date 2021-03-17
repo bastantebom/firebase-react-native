@@ -17,6 +17,7 @@ import { formatNumber } from 'react-native-currency-input'
 import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal'
 import CategoryOptionsModal from './modals/category-options'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {object} PostItem
@@ -206,10 +207,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

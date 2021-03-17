@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {object} Category
@@ -153,10 +154,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     flex: 1,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

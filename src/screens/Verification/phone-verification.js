@@ -16,6 +16,7 @@ import { UserContext } from '@/context/UserContext'
 import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import typography from '@/globals/typography'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'PhoneVerification'>} param0 */
 const PhoneVerificationScreen = ({ navigation }) => {
@@ -136,10 +137,7 @@ const PhoneVerificationScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight(),
   },
   modalHeader: {
     justifyContent: 'center',

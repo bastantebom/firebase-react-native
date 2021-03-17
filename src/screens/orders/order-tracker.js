@@ -48,6 +48,7 @@ import typography from '@/globals/typography'
 import PostCard from '../Post/components/post-card'
 import utilStyles from '@/globals/util-styles'
 import { format } from 'date-fns'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 if (
   Platform.OS === 'android' &&
@@ -1509,10 +1510,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   itemQuantity: {
     color: Colors.contentPlaceholder,

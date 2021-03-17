@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native'
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const GooglePlacesAPIKey = 'AIzaSyCu10vZtdRHmJ7bxnebSSj7u1LFeMV4GUs'
 
@@ -268,10 +269,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: Colors.neutralsZirconLight,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight(),
   },
   scrollView: {
     backgroundColor: 'red',

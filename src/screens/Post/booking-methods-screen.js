@@ -18,6 +18,7 @@ import {
   StatusBar,
 } from 'react-native'
 import { iconSize } from '@/globals/Utils'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 if (
   Platform.OS === 'android' &&
@@ -228,10 +229,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

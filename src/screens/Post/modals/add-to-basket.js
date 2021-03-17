@@ -11,7 +11,6 @@ import TextInput from '@/components/textinput'
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Text,
   Keyboard,
@@ -21,6 +20,7 @@ import { Context } from '@/context'
 import cloneDeep from 'lodash.clonedeep'
 import { format } from 'date-fns'
 import CustomDatePicker from '../components/custom-date-picker'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (

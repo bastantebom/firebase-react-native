@@ -1,9 +1,8 @@
 import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
-import { GlobalStyle } from '@/globals'
 import { isUrl } from '@/globals/Utils'
 import ImageApi from '@/services/image-api'
 import React, { useEffect, useState } from 'react'
-import { Image, PixelRatio } from 'react-native'
+import { PixelRatio } from 'react-native'
 import FastImage from 'react-native-fast-image'
 
 const sizeProps = {
@@ -28,14 +27,20 @@ const DefaultPostThumbnail = ({ type }) => {
   }
 }
 
-export const DefaultPostImage = ({ type }) => {
+export const DefaultPostImage = ({ type, ...props }) => {
   const defaultImages = {
     need: require('@/assets/images/cover-need.png'),
     sell: require('@/assets/images/cover-sell.png'),
     service: require('@/assets/images/cover-service.png'),
   }
 
-  return <Image style={GlobalStyle.image} source={defaultImages[type]} />
+  return (
+    <FastImage
+      resizeMode="cover"
+      source={defaultImages[type]}
+      style={{ height: '100%', width: '100%' }}
+    />
+  )
 }
 
 /**

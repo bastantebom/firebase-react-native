@@ -12,6 +12,7 @@ import {
   Text,
   View,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const GuestPostScreen = () => {
   const { setAuthType, openSlider } = useContext(Context)
@@ -62,10 +63,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   content: {
     flex: 1,

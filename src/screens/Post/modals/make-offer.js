@@ -21,6 +21,7 @@ import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import { Context } from '@/context'
 import PostImage from '@/components/Post/post-image'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const { height } = Dimensions.get('screen')
 
@@ -74,10 +75,7 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
           maxHeight:
             height -
             keyboardHeight -
-            Platform.select({
-              ios: 0,
-              android: StatusBar.currentHeight,
-            }),
+            getStatusBarHeight()
         },
       ]}>
       <BottomSheetHeader />

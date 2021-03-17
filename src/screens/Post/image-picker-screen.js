@@ -26,6 +26,7 @@ import { Icons } from '@/assets/images/icons'
 import LinearGradient from 'react-native-linear-gradient'
 import pluralize from 'pluralize'
 import Svg, { Path } from 'react-native-svg'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const { width, height } = Dimensions.get('window')
 
@@ -405,10 +406,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

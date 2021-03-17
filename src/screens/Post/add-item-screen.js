@@ -21,6 +21,7 @@ import Button from '@/components/Button'
 import Modal from 'react-native-modal'
 import CategoriesModal from './modals/categories'
 import { iconSize } from '@/globals/Utils'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {object} Category
@@ -421,10 +422,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: Colors.neutralsZirconLight,
     flex: 1,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
 })
 

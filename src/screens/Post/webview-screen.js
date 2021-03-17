@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { WebView } from 'react-native-webview'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {object} WebviewScreenProps
@@ -64,10 +65,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

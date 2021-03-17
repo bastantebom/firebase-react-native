@@ -19,6 +19,7 @@ import {
   View,
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const { height } = Dimensions.get('window')
 
@@ -244,10 +245,7 @@ const CoverPhotoCameraScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

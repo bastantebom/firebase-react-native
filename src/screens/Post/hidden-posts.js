@@ -11,6 +11,7 @@ import {
   View,
   Text,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {Object} HiddenPostsScreenProps
@@ -57,10 +58,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     flex: 1,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight(),
   },
   titleWrapper: {
     alignItems: 'center',

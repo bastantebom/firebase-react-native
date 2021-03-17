@@ -13,6 +13,7 @@ import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {object} Category
@@ -97,10 +98,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   backButton: {
     padding: normalize(16),

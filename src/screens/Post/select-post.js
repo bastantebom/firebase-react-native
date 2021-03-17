@@ -18,6 +18,7 @@ import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import PostCard from './components/post-card'
 import PostCardSkeleton from './components/post-card-skeleton'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 if (
   Platform.OS === 'android' &&
@@ -194,10 +195,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

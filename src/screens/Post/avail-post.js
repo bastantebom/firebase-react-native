@@ -28,6 +28,7 @@ import { UserContext } from '@/context/UserContext'
 import Loader from '@/components/loader'
 import { CommonActions } from '@react-navigation/native'
 import ChangeShippingMethodModal from './modals/change-shipping-method'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 
@@ -1015,10 +1016,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   header: {
     flexDirection: 'row',

@@ -7,7 +7,6 @@ import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
 import {
   Keyboard,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -15,6 +14,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -116,10 +116,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     flex: 1,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
 })
 

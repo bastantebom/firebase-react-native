@@ -42,6 +42,7 @@ import ImageApi from '@/services/image-api'
 import Api from '@/services/Api'
 import Loader from '@/components/loader'
 import { Context } from '@/context'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const { width } = Dimensions.get('window')
 
@@ -1686,10 +1687,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: Colors.neutralsZirconLight,
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',
@@ -1720,7 +1718,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     width: (width - normalize(36)) / 3,
-    height: normalize(70),
+    height: normalize(Platform.select({ ios: 75, android: 70 })),
     borderRadius: normalize(8),
     paddingHorizontal: normalize(16),
     alignItems: 'center',

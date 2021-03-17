@@ -3,6 +3,7 @@ import {
   Alert,
   Animated,
   Dimensions,
+  Image,
   KeyboardAvoidingView,
   LayoutAnimation,
   Linking,
@@ -49,6 +50,8 @@ import firestore from '@react-native-firebase/firestore'
 import ConfirmResetBasketModal from './modals/confirm-reset-basket'
 import ConfirmModal from './modals/confirm'
 import Q from 'q'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import FastImage from 'react-native-fast-image'
 
 if (
   Platform.OS === 'android' &&
@@ -578,13 +581,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
     if (
       !post.current ||
       !user.current ||
-      !(
-        contentHeight -
-          (headerHeight -
-            gap +
-            Platform.select({ android: StatusBar.currentHeight, ios: 0 })) >
-        height
-      )
+      !(contentHeight - (headerHeight - gap + getStatusBarHeight()) > height)
     )
       return null
     const translateY = scrollY.interpolate({
@@ -2192,7 +2189,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
     <View style={{ flex: 1 }}>
       <StatusBar
         translucent={true}
-        barStyle="light-content"
+        barStyle="dark-content"
         backgroundColor="transparent"
       />
       <Loader visible={isLoading} />
@@ -2204,7 +2201,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         style={[styles.wrapper]}
         onScroll={onScroll}
         bounces={false}
-        scrollEventThrottle={32}
+        scrollEventThrottle={16}
         overScrollMode="never"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -2214,11 +2211,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         <View
           style={[
             styles.content,
-            contentHeight -
-              (headerHeight -
-                gap +
-                Platform.select({ android: StatusBar.currentHeight, ios: 0 })) >
-            height
+            contentHeight - (headerHeight - gap + getStatusBarHeight()) > height
               ? { minHeight: height }
               : {},
           ]}>
@@ -2268,13 +2261,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: normalize(
-      12 +
-        Platform.select({
-          ios: 0,
-          android: StatusBar.currentHeight,
-        })
-    ),
+    top: normalize(12 + getStatusBarHeight()),
     left: normalize(16),
   },
   headerIcon: {
@@ -2288,13 +2275,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-end',
     zIndex: 6,
-    paddingTop: normalize(
-      12 +
-        Platform.select({
-          ios: 0,
-          android: StatusBar.currentHeight,
-        })
-    ),
+    paddingTop: normalize(12 + getStatusBarHeight()),
   },
   headerButtonGroup: {
     flexDirection: 'row',
@@ -2461,7 +2442,6 @@ const styles = StyleSheet.create({
   previewModeLabel: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'red',
     justifyContent: 'center',
     paddingVertical: normalize(4),
     paddingHorizontal: normalize(12),
@@ -2471,13 +2451,7 @@ const styles = StyleSheet.create({
   previewModeLabelWrapper: {
     position: 'absolute',
     width: '100%',
-    top: normalize(
-      12 +
-        Platform.select({
-          ios: 0,
-          android: StatusBar.currentHeight,
-        })
-    ),
+    top: normalize(12 + getStatusBarHeight()),
     flexDirection: 'row',
     justifyContent: 'center',
     zIndex: 10,

@@ -17,6 +17,7 @@ import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import Api from '@/services/Api'
 import Loader from '@/components/loader'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
  * @typedef {object} ReportPostScreenProps
@@ -212,10 +213,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.select({
-      ios: 0,
-      android: StatusBar.currentHeight - 2,
-    }),
+    marginTop: getStatusBarHeight()
   },
   content: {
     padding: normalize(24),
