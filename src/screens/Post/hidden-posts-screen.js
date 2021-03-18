@@ -1,34 +1,42 @@
+import { Icons } from '@/assets/images/icons'
+import { UserContext } from '@/context/UserContext'
+import { Colors } from '@/globals'
+import typography from '@/globals/typography'
+import { iconSize, normalize } from '@/globals/Utils'
 import React, { useContext, useEffect, useState } from 'react'
 import {
-  View,
-  ActivityIndicator,
-  Text,
-  StyleSheet,
+  Platform,
   StatusBar,
   TouchableOpacity,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  Alert,
 } from 'react-native'
-import Posts from './components/posts'
-import { Colors, normalize } from '@/globals'
-import Api from '@/services/Api'
-import { UserContext } from '@/context/UserContext'
-import EmptyLikePost from '@/screens/Profile/components/Account/EmptyLikedPosts'
-import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import { Icons } from '@/assets/images/icons'
-import { iconSize } from '@/globals/Utils'
+import EmptyLikePost from '@/screens/Profile/components/Account/EmptyLikedPosts'
+import Posts from '@/screens/Dashboard/components/posts'
+import Api from '@/services/Api'
+import PostCard from './components/post-card'
+import Button from '@/components/Button'
+import utilStyles from '@/globals/util-styles'
+import { format } from 'date-fns'
+import { Context } from '@/context'
 
 /**
- * @typedef {Object} LikedPostsProps
+ * @typedef {Object} HiddenPostsScreenProps
  */
 
 /**
  * @typedef {Object} RootProps
- * @property {LikedPostsProps} LikedPosts
+ * @property {HiddenPostsScreenProps} HiddenPostsScreen
  **/
 
-/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'LikedPosts'>} param0 */
-const LikedPostsScreen = ({ navigation, route }) => {
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'HiddenPostsScreen'>} param0 */
+const HiddenPostsScreen = ({ navigation, route }) => {
   const { user } = useContext(UserContext)
+  const { setDashboardNeedsRefresh } = useContext(Context)
 
   const [posts, setPosts] = useState({})
   const [lastId, setLastId] = useState(null)
@@ -36,13 +44,14 @@ const LikedPostsScreen = ({ navigation, route }) => {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
   const [hasMorePosts, setHasMorePosts] = useState(true)
+  const [unhidingPosts, setUnhidingPosts] = useState([])
 
   const loadPosts = async () => {
     setIsLoading(true)
     try {
       const params = { uid: user.uid, limit: 5 }
       if (lastId) params.lastId = lastId
-      const response = await Api.getLikedPosts(params)
+      const response = await Api.getHiddenPosts(params)
       if (!response.success) throw new Error(response.message)
 
       const newPosts = response.data
@@ -100,6 +109,30 @@ const LikedPostsScreen = ({ navigation, route }) => {
     loadPosts()
   }
 
+  const handleOnUnhidePress = async item => {
+    if (unhidingPosts.includes(item.id)) return
+    setUnhidingPosts(ids => [...ids, item.id])
+
+    try {
+      const response = await Api.unhidePost({ pid: item.id })
+      if (!response.success) throw new Error(response.message)
+
+      setPosts(posts => {
+        delete posts[item.id]
+        if (!Object.entries(posts).length) setIsEmpty(true)
+        return posts
+      })
+      setDashboardNeedsRefresh(true)
+    } catch (error) {
+      console.log(error.message)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+    setUnhidingPosts(ids => {
+      ids.splice(ids.indexOf(item.id))
+      return ids
+    })
+  }
+
   const getDeferredData = post => {
     return Api.getUser({ uid: post.uid })
       .then(response => {
@@ -107,7 +140,6 @@ const LikedPostsScreen = ({ navigation, route }) => {
           ...posts,
           [post.id]: {
             ...posts[post.id],
-            likes: [user.uid],
             user: response.data,
           },
         }))
@@ -121,7 +153,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
           },
         }))
       })
-      .catch(() => {
+      .catch(error => {
         setPosts(posts => ({
           ...posts,
           [post.id]: {
@@ -159,6 +191,50 @@ const LikedPostsScreen = ({ navigation, route }) => {
     ) : null
   }
 
+  const renderPost = ({ item }) => (
+    <View style={styles.postCardWrapper}>
+      <View
+        style={[
+          utilStyles.row,
+          utilStyles.justifySpaceBetween,
+          utilStyles.alignCenter,
+          { paddingHorizontal: normalize(16), paddingVertical: normalize(8) },
+        ]}>
+        <Text
+          style={[
+            typography.caption,
+            { color: Colors.contentPlaceholder, flex: 1 },
+          ]}>
+          {!!item.date_posted && (
+            <>
+              {'Posted on '}
+              {format(
+                new Date(item.date_posted._seconds * 1000),
+                'MMMM dd, yyyy'
+              )}
+            </>
+          )}
+        </Text>
+        <Button
+          onPress={() => handleOnUnhidePress(item)}
+          size="small"
+          style={styles.unhideButton}>
+          {unhidingPosts.includes(item.id) ? (
+            <ActivityIndicator size="small" color={Colors.contentEbony} />
+          ) : (
+            <Text style={[typography.medium, typography.caption]}>Unhide</Text>
+          )}
+        </Button>
+      </View>
+      <PostCard
+        containerStyle={styles.post}
+        post={item}
+        onUserPress={handleUserPress}
+        onPostPress={() => handlePostPress(item)}
+      />
+    </View>
+  )
+
   useEffect(() => {
     Object.values(posts)
       .filter(post => !post.$promise)
@@ -190,20 +266,23 @@ const LikedPostsScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
             <Text style={[typography.body2, typography.medium]}>
-              Liked Posts
+              Hidden Posts
             </Text>
           </View>
         </View>
-        <Posts
-          posts={posts}
-          isLoading={isLoading}
-          refreshing={isRefreshing}
-          onRefresh={handleRefresh}
-          onUserPress={handleUserPress}
-          onPostPress={handlePostPress}
-          renderFooter={renderFooter}
-          onEndReached={handleOnEndReached}
-        />
+        <View style={styles.content}>
+          <Posts
+            posts={posts}
+            isLoading={isLoading}
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            onUserPress={handleUserPress}
+            onPostPress={handlePostPress}
+            renderFooter={renderFooter}
+            onEndReached={handleOnEndReached}
+            renderPost={renderPost}
+          />
+        </View>
       </View>
     </>
   )
@@ -218,7 +297,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   wrapper: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsZircon,
     flex: 1,
     marginTop: getStatusBarHeight(),
   },
@@ -236,8 +315,26 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  post: {
+    padding: normalize(16),
+  },
+  unhideButton: {
+    borderWidth: normalize(1),
+    borderRadius: normalize(4),
+    borderColor: Colors.contentEbony,
+    width: normalize(105),
+    height: normalize(32),
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  postCardWrapper: {
+    marginBottom: normalize(8),
     backgroundColor: '#fff',
+    borderRadius: normalize(8),
+    paddingBottom: normalize(8),
   },
 })
 
-export default LikedPostsScreen
+export default HiddenPostsScreen

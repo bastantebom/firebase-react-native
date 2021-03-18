@@ -90,7 +90,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
         })
       },
       icon: () => <HidePost width={normalize(20)} height={normalize(20)} />,
-      hidden: true,
     },
     {
       label: 'Invite Friends',

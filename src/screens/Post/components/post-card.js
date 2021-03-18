@@ -17,6 +17,7 @@ import { formatNumber } from 'react-native-currency-input'
  * @property {function} props.onUserPress
  * @property {function} props.onPostPress
  * @property {function} props.onCardPress
+ * @property {import('react-native').StyleProp<import('react-native').ViewStyle>} props.thumbnailStyle
  * @property {import('react-native').StyleProp<import('react-native').ViewStyle>} props.containerStyle
  */
 const PostCard = React.memo(
@@ -54,7 +55,7 @@ const PostCard = React.memo(
             style={styles.avatarWrapper}>
             <Avatar
               style={{ height: '100%', width: '100%' }}
-              path={post.user.profile_photo}
+              path={post.user?.profile_photo}
               size="64x64"
             />
           </TouchableOpacity>
@@ -65,9 +66,9 @@ const PostCard = React.memo(
               activeOpacity={0.7}
               style={[utilStyles.row, utilStyles.alignCenter]}>
               <Text style={[typography.caption, typography.medium]}>
-                {post.user.full_name}
+                {post.user?.full_name}
               </Text>
-              {!!post.user.account_verified && (
+              {!!post.user?.account_verified && (
                 <Icons.Verified style={styles.verifiedIcon} {...iconSize(16)} />
               )}
             </TouchableOpacity>

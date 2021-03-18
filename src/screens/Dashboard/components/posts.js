@@ -12,12 +12,13 @@ import {
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 
 /**
- * @param {object} param0
- * @param {() => void} param0.onPostPress
- * @param {() => void} param0.onUserPress
- * @param {() => void} param0.onLikePress
- * @param {() => void} param0.onEndReached
- * @param {boolean} param0.isLoadingMoreItems
+ * @param {object} props
+ * @param {() => void} props.onPostPress
+ * @param {() => void} props.onUserPress
+ * @param {() => void} props.onLikePress
+ * @param {() => void} props.onEndReached
+ * @param {() => React.Component} props.renderFooter
+ * @param {boolean} props.isLoading
  */
 const Posts = ({
   posts,
@@ -25,7 +26,7 @@ const Posts = ({
   onUserPress,
   onLikePress,
   onEndReached,
-  isLoadingMoreItems,
+  isLoading,
   currentLocation,
   ...props
 }) => {
@@ -37,7 +38,9 @@ const Posts = ({
   }
 
   const renderFooter = () => {
-    return isLoadingMoreItems ? (
+    return props.renderFooter ? (
+      props.renderFooter()
+    ) : isLoading ? (
       <View
         style={{
           alignItems: 'center',
@@ -49,18 +52,21 @@ const Posts = ({
   }
 
   const renderPost = ({ item }) =>
-    !!item.$isLoading ? null : (
+    item.$isLoading ? null : props.renderPost ? (
+      props.renderPost({ item })
+    ) : (
       <PostCard
         containerStyle={styles.post}
         post={item}
         onUserPress={onUserPress}
-        onPostPress={onPostPress}
+        onPostPress={() => onPostPress(item)}
         onLikePress={onLikePress}
       />
     )
 
   return (
     <AnimatedFlatList
+      contentContainerStyle={{ flexGrow: 1 }}
       scrollEventThrottle={16}
       data={Object.values(posts)}
       renderItem={renderPost}

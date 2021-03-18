@@ -24,7 +24,7 @@ import SelectPostScreen from './select-post'
 import WebviewScreen from './webview-screen'
 import ReportPostScreen from './report-post-screen'
 import GuestPostScreen from './guest-post-screen'
-import HiddenPostsScreen from './hidden-posts'
+import HiddenPostsScreen from './hidden-posts-screen'
 
 const PostStack = () => {
   const Stack = createStackNavigator()

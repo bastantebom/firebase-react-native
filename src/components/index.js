@@ -10,7 +10,6 @@ import {
   Posts,
   PostFilter,
   UserPosts,
-  LikedPosts,
   ArchivedPosts,
 } from '@/components/Post'
 import Reviews from '@/components/Review/Reviews'
@@ -79,7 +78,6 @@ export {
   FloatingAppInput,
   OfflineNotice,
   RangeSlider,
-  LikedPosts,
   ArchivedPosts,
   HorizontalView,
   HyperLink,
