@@ -20,6 +20,7 @@ import {
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { PERMISSIONS, check, request, RESULTS } from 'react-native-permissions'
 
 const { height } = Dimensions.get('window')
 
@@ -107,6 +108,13 @@ const CoverPhotoCameraScreen = ({ navigation, route }) => {
 
         if (result['android.permission.CAMERA'] === 'granted')
           setCameraReady(true)
+      } else if (Platform.OS === 'ios') {
+        const [cameraResult] = await Promise.all([
+          request(PERMISSIONS.IOS.CAMERA),
+          request(PERMISSIONS.IOS.PHOTO_LIBRARY),
+        ])
+
+        if (cameraResult === RESULTS.GRANTED) setCameraReady(true)
       }
 
       const result = await CameraRoll.getPhotos({
@@ -245,7 +253,7 @@ const CoverPhotoCameraScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',
