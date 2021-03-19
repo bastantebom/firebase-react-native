@@ -277,7 +277,9 @@ const CreatePostScreen = ({ navigation, route }) => {
         navigation.goBack()
       },
       disablePaymongo:
-        postType !== 'need' && !formData.isMultiple && formData.price < 100,
+        postType === 'need'
+          ? formData.budget.maximum < 100
+          : !formData.isMultiple && formData.price < 100,
     })
   }
 
@@ -984,12 +986,19 @@ const CreatePostScreen = ({ navigation, route }) => {
           <PriceInput
             value={formData.budget.maximum}
             priceLabel="Maximum"
-            onChangeText={maximum =>
+            onChangeText={maximum => {
+              if (maximum < 100) {
+                setPaymentMethods(
+                  paymentMethods.filter(
+                    method => !['gcash', 'card', 'grabpay'].includes(method)
+                  )
+                )
+              }
               setFormData(data => ({
                 ...data,
                 budget: { ...formData.budget, maximum },
               }))
-            }
+            }}
             placeholder="0.00"
           />
         </View>
