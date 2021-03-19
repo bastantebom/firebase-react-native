@@ -1091,7 +1091,6 @@ const PublishedPostScreen = ({ navigation, route }) => {
           ]}
           enabled
           keyboardVerticalOffset={Platform.select({
-            ios: normalize(40),
             android: -StatusBar.currentHeight,
           })}
           behavior="padding">

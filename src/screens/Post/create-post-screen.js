@@ -107,7 +107,9 @@ const CreatePostScreen = ({ navigation, route }) => {
         }
       : {}
   )
-  const [bookingMethods, setBookingMethods] = useState({})
+  const [bookingMethods, setBookingMethods] = useState(
+    existingData?.booking_methods || {}
+  )
   const [paymentMethods, setPaymentMethods] = useState(
     existingData?.payment_methods || []
   )
