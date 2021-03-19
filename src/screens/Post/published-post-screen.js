@@ -137,7 +137,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
   const [imageModalImages, setImageModalImages] = useState([])
   const [imageModalSelectedIndex, setImageModalSelectedIndex] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
-  const mounted = useRef(false)
+  const mounted = useRef(true)
 
   const [
     postDescriptionModalVisible,
@@ -208,24 +208,26 @@ const PublishedPostScreen = ({ navigation, route }) => {
 
     if (id && !post.current) promises.push(getPostData())
     if (uid && !user.current) promises.push(getUserData())
-
+    let listener
     if (!preview && id) {
-      const promise = firestore()
-        .collection('orders')
-        .where('post_id', '==', id)
-        .get()
-        .then(snap => {
-          if (!mounted.current) return
-          const order = snap.docs?.[0]?.data?.()
-          if (order) setExistingOrder(order)
-        })
-
-      promises.push(promise)
+      const promise = new Promise(resolve => {
+        listener = firestore()
+          .collection('orders')
+          .where('post_id', '==', id)
+          .where('status', '==', 'pending')
+          .onSnapshot(snap => {
+            if (!mounted.current) return
+            const order = snap?.docs?.[0]?.data?.()
+            if (order) setExistingOrder(order)
+            resolve()
+          })
+        promises.push(promise)
+      })
     }
 
     setIsLoading(true)
     Promise.all(promises).finally(() => {
-      if (mounted.current) return
+      if (!mounted.current) return
       setIsLoading(false)
     })
 
@@ -248,6 +250,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
     return () => {
       mounted.current = false
       scrollY.removeAllListeners()
+      listener?.()
     }
   }, [])
 
