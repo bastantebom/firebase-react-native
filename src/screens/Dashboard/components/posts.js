@@ -51,9 +51,9 @@ const Posts = ({
     ) : null
   }
 
-  const renderPost = ({ item }) =>
+  const renderPost = ({ item, index }) =>
     item.$isLoading ? null : props.renderPost ? (
-      props.renderPost({ item })
+      props.renderPost({ item, index })
     ) : (
       <PostCard
         containerStyle={styles.post}

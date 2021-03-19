@@ -29,40 +29,42 @@ import Drawer from './modals/drawer'
 import { Images } from '@/assets/images'
 
 /**
- * @typedef {Object} HiddenPostsScreenProps
+ * @typedef {Object} ArchivedPostsScreenProps
  */
 
 /**
  * @typedef {Object} RootProps
- * @property {HiddenPostsScreenProps} HiddenPostsScreen
+ * @property {ArchivedPostsScreenProps} ArchivedPostsScreen
  **/
 
-/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'HiddenPostsScreen'>} param0 */
-const HiddenPostsScreen = ({ navigation, route }) => {
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'ArchivedPostsScreen'>} param0 */
+const ArchivedPostsScreen = ({ navigation, route }) => {
   const { user } = useContext(UserContext)
   const { setDashboardNeedsRefresh } = useContext(Context)
 
   const [posts, setPosts] = useState({})
-  const [lastId, setLastId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
   const [hasMorePosts, setHasMorePosts] = useState(true)
-  const [unhidingPosts, setUnhidingPosts] = useState([])
+  const [unarchivingPosts, setUnarchivingPosts] = useState([])
   const [confirmModalCallback, setConfirmModalCallback] = useState(() => {})
   const [confirmModalVisible, setConfirmModalVisible] = useState(false)
   const [statusModalVisible, setStatusModalVisible] = useState(false)
   const [drawerContent, setDrawerContent] = useState(null)
+  const [currentPage, setCurrentPage] = useState(0)
 
   const loadPosts = async (options = {}) => {
     setIsLoading(true)
     try {
-      const params = { uid: user.uid, limit: 5 }
-      const { lastId } = options
-      if (lastId) params.lastId = lastId
-      const response = await Api.getHiddenPosts(params)
-      if (!response.success) throw new Error(response.message)
+      const params = {
+        uid: user.uid,
+        limit: 5,
+        ...options,
+      }
 
+      const response = await Api.getArchivedPosts(params)
+      if (!response.data) throw new Error(response.message)
       const newPosts = response.data
         .filter(post => !!post)
         .map(post => ({ ...post, $isLoading: true }))
@@ -74,9 +76,11 @@ const HiddenPostsScreen = ({ navigation, route }) => {
           {}
         )
 
-      setIsEmpty(!lastId && !response.data.length)
-      setHasMorePosts(!(lastId && !response.data.length))
-      setLastId(response.data.slice(-1)[0]?.id)
+      setIsEmpty(!response.total_posts)
+      setHasMorePosts(
+        response.total_pages > options.page + 1 && !!response.total_posts
+      )
+      setCurrentPage(response.page)
       setPosts(posts => ({ ...posts, ...newPosts }))
     } catch (error) {
       console.log(error.message)
@@ -106,26 +110,26 @@ const HiddenPostsScreen = ({ navigation, route }) => {
   }
 
   const handleRefresh = async () => {
-    setLastId(null)
     setIsRefreshing(true)
     setPosts({})
     setHasMorePosts(true)
-    await loadPosts()
+    await loadPosts({ page: 0 })
     setIsRefreshing(false)
   }
 
   const handleOnEndReached = () => {
     if (isLoading || !hasMorePosts) return
-    loadPosts({ lastId })
+    setCurrentPage(currentPage + 1)
+    loadPosts({ page: currentPage + 1 })
   }
 
-  const handleOnUnhidePress = item => {
-    if (unhidingPosts.includes(item.id)) return
+  const handleOnUnarchive = item => {
+    if (unarchivingPosts.includes(item.id)) return
     setConfirmModalCallback(() => async () => {
-      setUnhidingPosts(ids => [...ids, item.id])
+      setUnarchivingPosts(ids => [...ids, item.id])
       setConfirmModalVisible(false)
       try {
-        const response = await Api.unhidePost({ pid: item.id })
+        const response = await Api.unarchivePost({ pid: item.id })
         if (!response.success) throw new Error(response.message)
 
         setPosts(posts => {
@@ -151,7 +155,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
           />
         )
       }
-      setUnhidingPosts(ids => {
+      setUnarchivingPosts(ids => {
         ids.splice(ids.indexOf(item.id))
         return ids
       })
@@ -184,7 +188,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
           onConfirm={confirmModalCallback}
           close={() => setConfirmModalVisible(false)}
           message="Show this post on your profile and feed again. "
-          title="Unhide post?"
+          title="Unarchive post?"
         />
       </Modal>
     )
@@ -248,7 +252,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
   }
 
   const renderFooter = () => {
-    return !hasMorePosts ? (
+    return !hasMorePosts && !isEmpty ? (
       <Text
         style={[
           typography.caption,
@@ -283,7 +287,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
             typography.medium,
             { marginTop: normalize(16) },
           ]}>
-          No hidden posts yet
+          You haven’t archived any posts yet
         </Text>
         <Text
           style={[
@@ -291,8 +295,8 @@ const HiddenPostsScreen = ({ navigation, route }) => {
             typography.textCenter,
             { color: Colors.contentPlaceholder, marginTop: normalize(8) },
           ]}>
-          You can easily view all the posts that you’ve hidden here once
-          available.
+          We're keeping your archived posts safe and ready for republishing
+          anytime.
         </Text>
       </View>
     ) : null
@@ -328,14 +332,14 @@ const HiddenPostsScreen = ({ navigation, route }) => {
             )}
           </Text>
           <Button
-            onPress={() => handleOnUnhidePress(item)}
+            onPress={() => handleOnUnarchive(item)}
             size="small"
-            style={styles.unhideButton}>
-            {unhidingPosts.includes(item.id) ? (
+            style={styles.postCardButton}>
+            {unarchivingPosts.includes(item.id) ? (
               <ActivityIndicator size="small" color={Colors.contentEbony} />
             ) : (
               <Text style={[typography.medium, typography.caption]}>
-                Unhide
+                Unarchive
               </Text>
             )}
           </Button>
@@ -386,7 +390,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
             <Text style={[typography.body2, typography.medium]}>
-              Hidden Posts
+              Archived Posts
             </Text>
           </View>
         </View>
@@ -442,7 +446,7 @@ const ResponseStatus = ({ status, close }) => (
         { marginTop: normalize(4) },
       ]}>
       {status === 'success'
-        ? 'Post has been unhidden and is now visible to you.'
+        ? 'Post has been unarchived and is now published'
         : 'An error occurred. Please try again.'}
     </Text>
     <Button
@@ -489,7 +493,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: normalize(8),
     borderBottomStartRadius: normalize(8),
   },
-  unhideButton: {
+  postCardButton: {
     borderWidth: normalize(1),
     borderRadius: normalize(4),
     borderColor: Colors.contentEbony,
@@ -516,4 +520,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default HiddenPostsScreen
+export default ArchivedPostsScreen

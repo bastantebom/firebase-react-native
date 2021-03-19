@@ -84,6 +84,9 @@ import PinBee from './pin-bee.svg'
 import ReportPost from './report-post.svg'
 import ReportSuccess from './report-success.svg'
 import Post from './post.svg'
+import Success from './success.svg'
+import Error from './error.svg'
+import NoPosts from './no-posts.svg'
 
 export {
   Guide,
@@ -152,13 +155,17 @@ export const Images = {
   Capture,
   DashboardEmptyState,
   Doctor,
+  Error,
   NoInternet,
+  NoPosts,
   PaymentFailed,
   PaymentFees,
   PaymentSuccess,
   PinBee,
   PoliceBeebo,
+  Post,
   ReportPost,
   ReportSuccess,
-  Post,
+  Success,
+  Verify,
 }

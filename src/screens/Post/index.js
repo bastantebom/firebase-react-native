@@ -25,6 +25,7 @@ import WebviewScreen from './webview-screen'
 import ReportPostScreen from './report-post-screen'
 import GuestPostScreen from './guest-post-screen'
 import HiddenPostsScreen from './hidden-posts-screen'
+import ArchivedPostsScreen from './archived-posts-screen'
 
 const PostStack = () => {
   const Stack = createStackNavigator()
@@ -148,6 +149,11 @@ const PostStack = () => {
       <Stack.Screen
         name="hidden-posts"
         component={HiddenPostsScreen}
+        options={defaultScreenOptions}
+      />
+      <Stack.Screen
+        name="archived-posts"
+        component={ArchivedPostsScreen}
         options={defaultScreenOptions}
       />
     </Stack.Navigator>

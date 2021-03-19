@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import Modal from 'react-native-modal'
-import { Icons } from '@/assets/images/icons'
+import { ArchivePostMenu, Icons } from '@/assets/images/icons'
 
 import { AppText, PaddingView, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -29,7 +29,6 @@ import {
 import {
   About,
   BlockList,
-  ArchivedPost,
   ContactServbees,
   FaqScreen,
   NotificationSettings,
@@ -40,7 +39,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   const { providerData, signOut } = useContext(UserContext)
   const [about, setAbout] = useState(false)
   const [blockUser, setBlockUser] = useState(false)
-  const [archivedPost, setArchivedPost] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
   const [notifications, setNotifications] = useState(false)
@@ -50,7 +48,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
 
   const toggleAbout = () => setAbout(!about)
   const toggleBlockedUser = () => setBlockUser(!blockUser)
-  const toggleArchivedPost = () => setArchivedPost(!archivedPost)
   const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
 
@@ -78,6 +75,20 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
         })
       },
       icon: () => <MenuEdit width={normalize(20)} height={normalize(20)} />,
+    },
+    {
+      label: 'Archived Posts',
+      onPress: () => {
+        navigation.navigate('NBTScreen', {
+          screen: 'posts',
+          params: {
+            screen: 'archived-posts',
+          },
+        })
+      },
+      icon: () => (
+        <ArchivePostMenu width={normalize(20)} height={normalize(20)} />
+      ),
     },
     {
       label: 'Hidden Posts',
@@ -331,20 +342,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <BlockList toggleBlockedUser={toggleBlockedUser} />
-      </Modal>
-
-      <Modal
-        isVisible={archivedPost}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <ArchivedPost toggleArchivedPost={toggleArchivedPost} />
       </Modal>
 
       <Modal

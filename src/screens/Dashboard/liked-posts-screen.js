@@ -16,6 +16,7 @@ import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
+import { Images } from '@/assets/images'
 
 /**
  * @typedef {Object} LikedPostsProps
@@ -144,7 +145,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
             paddingVertical: normalize(16),
           },
         ]}>
-        No new buzz right now
+        No more posts
       </Text>
     ) : isLoading ? (
       <View
@@ -155,7 +156,44 @@ const LikedPostsScreen = ({ navigation, route }) => {
         <ActivityIndicator color={Colors.contentOcean} />
       </View>
     ) : isEmpty ? (
-      <EmptyLikePost />
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: normalize(24),
+        }}>
+        <Images.NoPosts {...iconSize(140)} />
+        <Text
+          style={[
+            typography.subtitle1,
+            typography.medium,
+            { marginTop: normalize(16) },
+          ]}>
+          You have no liked posts yet
+        </Text>
+        <Text
+          style={[
+            typography.body2,
+            typography.textCenter,
+            { color: Colors.contentPlaceholder, marginTop: normalize(8) },
+          ]}>
+          Browse through and discover nearby services and products.
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('dashboard')}
+          activeOpacity={0.7}>
+          <Text
+            style={[
+              typography.body2,
+              typography.medium,
+              typography.link,
+              { marginTop: normalize(16) },
+            ]}>
+            Explore Postings
+          </Text>
+        </TouchableOpacity>
+      </View>
     ) : null
   }
 
@@ -203,6 +241,11 @@ const LikedPostsScreen = ({ navigation, route }) => {
           onPostPress={handlePostPress}
           renderFooter={renderFooter}
           onEndReached={handleOnEndReached}
+          ListFooterComponentStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            marginBottom: normalize(128),
+          }}
         />
       </View>
     </>

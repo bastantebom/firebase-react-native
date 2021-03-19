@@ -3,7 +3,6 @@ import {
   Alert,
   Animated,
   Dimensions,
-  Image,
   KeyboardAvoidingView,
   LayoutAnimation,
   Linking,
