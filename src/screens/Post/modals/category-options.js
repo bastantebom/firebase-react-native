@@ -1,5 +1,6 @@
 import { Icons } from '@/assets/images/icons'
 import { BottomSheetHeader } from '@/components'
+import Button from '@/components/Button'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
@@ -16,6 +17,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 const CategoryOptionsModal = ({
   onEditCategoryPress,
   onRemoveCategoryPress,
+  close,
   canEdit = true,
   canRemove = true,
 }) => {
@@ -75,6 +77,9 @@ const CategoryOptionsModal = ({
           )
         })}
       </View>
+      <View style={styles.buttonsWrapper}>
+        <Button label="Cancel" type="disabled" onPress={close} />
+      </View>
     </View>
   )
 }
@@ -101,7 +106,7 @@ const styles = StyleSheet.create({
   },
   options: {
     paddingHorizontal: normalize(24),
-    marginBottom: normalize(24),
+    marginBottom: normalize(8),
   },
   option: {
     flexDirection: 'row',
@@ -110,6 +115,10 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     marginLeft: normalize(8),
+  },
+  buttonsWrapper: {
+    paddingHorizontal: normalize(24),
+    paddingBottom: normalize(16),
   },
 })
 

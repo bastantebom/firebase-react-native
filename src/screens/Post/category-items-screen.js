@@ -151,6 +151,7 @@ const CategoryItemsScreen = ({ navigation, route }) => {
           onEditCategoryPress={handleOnEditCategoryPress}
           onRemoveCategoryPress={handleOnRemoveCategoryPress}
           canRemove={category !== 'Others'}
+          close={() => setOptionsModalVisible(false)}
         />
       </Modal>
     )
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',
