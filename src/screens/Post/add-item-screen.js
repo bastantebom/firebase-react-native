@@ -338,10 +338,6 @@ const AddItemScreen = ({ navigation, route }) => {
         </View>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          keyboardVerticalOffset={Platform.select({
-            ios: normalize(40),
-            android: 0,
-          })}
           behavior={Platform.select({ ios: 'padding', android: null })}>
           <ScrollView>
             {renderCategoriesSection()}
@@ -422,7 +418,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: Colors.neutralsZirconLight,
     flex: 1,
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
 })
 

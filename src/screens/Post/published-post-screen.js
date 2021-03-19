@@ -50,7 +50,6 @@ import ConfirmResetBasketModal from './modals/confirm-reset-basket'
 import ConfirmModal from './modals/confirm'
 import Q from 'q'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import FastImage from 'react-native-fast-image'
 
 if (
   Platform.OS === 'android' &&
@@ -297,7 +296,10 @@ const PublishedPostScreen = ({ navigation, route }) => {
           message: '',
           attachedPost: null,
         })
-      setMakeOfferModalVisible(true)
+
+      setTimeout(() => {
+        setMakeOfferModalVisible(true)
+      }, 256)
     } else if (post.current.type === 'sell') {
       if (basket.postId !== post.current.id || shouldReset) {
         const newBasket = {
@@ -1108,10 +1110,13 @@ const PublishedPostScreen = ({ navigation, route }) => {
   const renderAddToBasketModal = () => {
     const handleOnAskResetBasket = async () => {
       const deferred = Q.defer()
-      setConfirmResetBasketVisible(true)
+      setAddToBasketModalVisible(false)
+      setTimeout(() => {
+        setConfirmResetBasketVisible(true)
+      }, 256)
       setResetBasketDeferred(deferred)
 
-      return await deferred.promise
+      return deferred.promise
     }
 
     return (
@@ -1142,7 +1147,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           }}
           enabled
           keyboardVerticalOffset={Platform.select({
-            ios: normalize(40),
+            ios: 0,
             android: -StatusBar.currentHeight,
           })}
           behavior="padding">

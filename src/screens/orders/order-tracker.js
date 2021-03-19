@@ -761,7 +761,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       },
       paypal: {
         label: 'PayPal',
-        icon: <Icons.GrabPayPaymentActive />,
+        icon: <Icons.PayPalPaymentActive />,
       },
     }
 
@@ -1510,7 +1510,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   itemQuantity: {
     color: Colors.contentPlaceholder,

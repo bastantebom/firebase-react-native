@@ -1429,10 +1429,6 @@ const CreatePostScreen = ({ navigation, route }) => {
         </View>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          keyboardVerticalOffset={Platform.select({
-            ios: normalize(40),
-            android: 0,
-          })}
           behavior={Platform.select({ ios: 'padding', android: null })}>
           <ScrollView>
             <PostTypeCards onCardPress={setPostType} postType={postType} />
