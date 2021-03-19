@@ -86,9 +86,9 @@ const signInWithProvider = async provider => {
     if (!response.success && response.message !== 'Account already exist')
       throw new Error(response.message)
   } catch (error) {
-    if (~error.message?.indexOf('already exist'))
-      Alert.alert('Error', error.message.slice(error.message.indexOf(']') + 1))
     console.log(error)
+    if (~error.message?.indexOf('already exist'))
+      throw new Error(error.message.slice(error.message.indexOf(']') + 1))
   }
 }
 
