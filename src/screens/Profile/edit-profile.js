@@ -628,17 +628,17 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.inputWrapper}>
-          <View pointerEvents="none">
-            <AppInput
-              value={formData.gender}
-              label="Gender"
-              debounce={false}
-              error={errors.gender?.length}
-              customLabelStyle={
-                errors.gender?.length ? { color: Colors.red } : {}
-              }
-            />
-          </View>
+          <AppInput
+            value={formData.gender}
+            label="Gender"
+            debounce={false}
+            error={errors.gender?.length}
+            customLabelStyle={
+              errors.gender?.length ? { color: Colors.red } : {}
+            }
+            onTouchStart={() => setIsGenderModalVisible(true)}
+          />
+
           <TouchableOpacity
             style={styles.inputButton}
             onPress={() => setIsGenderModalVisible(true)}>

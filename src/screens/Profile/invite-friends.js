@@ -11,17 +11,19 @@ const InviteFriends = ({ navigation }) => {
   const { userInfo } = useContext(UserContext)
   const handleSendInvite = async () => {
     try {
+      const socialPreview = await getPreviewLinkData({
+        type: 'invite',
+        data: userInfo,
+      })
       const url = await (async () => {
         return await generateDynamicLink({
           type: 'download',
-          social: await getPreviewLinkData({
-            type: 'invite',
-            data: userInfo,
-          }),
+          social: socialPreview,
         })
       })()
 
-      await Share.open({ url })
+      const message = `${socialPreview.socialTitle}\r\n\r\n${socialPreview.socialDescription}`
+      await Share.open({ url, message })
     } catch (error) {
       console.log(error)
     }

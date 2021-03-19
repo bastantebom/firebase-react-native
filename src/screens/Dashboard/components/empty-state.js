@@ -18,17 +18,19 @@ const EmptyState = () => {
 
   const handleInvite = async () => {
     try {
+      const socialPreview = await getPreviewLinkData({
+        type: 'invite',
+        data: userInfo,
+      })
       const url = await (async () => {
         return await generateDynamicLink({
           type: 'download',
-          social: await getPreviewLinkData({
-            type: 'invite',
-            data: userInfo,
-          }),
+          social: socialPreview,
         })
       })()
 
-      await Share.open({ url })
+      const message = `${socialPreview.socialTitle}\r\n\r\n${socialPreview.socialDescription}`
+      await Share.open({ url, message })
     } catch (error) {
       console.log(error)
     }
@@ -65,14 +67,16 @@ const EmptyState = () => {
           />
         </View>
       </View>
-      <View style={styles.inviteFriendsLink}>
-        <AppText textStyle="body2">or </AppText>
-        <TouchableOpacity onPress={handleInvite}>
-          <AppText textStyle="body2medium" color={Colors.contentOcean}>
-            Invite Friends
-          </AppText>
-        </TouchableOpacity>
-      </View>
+      {user && (
+        <View style={styles.inviteFriendsLink}>
+          <AppText textStyle="body2">or </AppText>
+          <TouchableOpacity onPress={handleInvite}>
+            <AppText textStyle="body2medium" color={Colors.contentOcean}>
+              Invite Friends
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   )
 }
