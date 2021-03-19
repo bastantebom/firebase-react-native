@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native'
 
 import {
@@ -186,19 +187,34 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                   Why we’re asking this?
                 </AppText>
               </TouchableOpacity>
-              <FloatingAppInput
-                value={temp}
-                label="Body Temperature"
-                keyboardType="number-pad"
-                returnKeyType={'done'}
-                customStyle={{ marginTop: 16 }}
-                onChangeText={temp => {
-                  onTempChangeHandler(temp)
-                }}
-                onInputFocus={() => {
-                  setCopyGuide(true)
-                }}
-              />
+              <View style={styles.inputWrapper}>
+                <FloatingAppInput
+                  value={temp}
+                  label="Body Temperature"
+                  keyboardType="number-pad"
+                  returnKeyType={'done'}
+                  customStyle={[
+                    { marginTop: normalize(8) },
+                    temp > 37.5 && styles.errorField,
+                  ]}
+                  onChangeText={temp => {
+                    onTempChangeHandler(temp)
+                  }}
+                  onInputFocus={() => {
+                    setCopyGuide(true)
+                  }}
+                />
+                {temp > 37.5 && (
+                  <View style={styles.clearInput}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setTemp('')
+                      }}>
+                      <Icons.ErrorInput />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
               {copyGuide ? (
                 <AppText
                   textStyle="captionConstant"
@@ -253,5 +269,21 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  errorField: {
+    borderColor: Colors.errColor,
+    borderWidth: 1,
+  },
+  inputWrapper: {
+    position: 'relative',
+    marginTop: normalize(16),
+  },
+  clearInput: {
+    position: 'absolute',
+    right: normalize(16),
+    top: normalize(14),
+  },
+})
 
 export default UpdateTemp

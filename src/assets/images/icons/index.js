@@ -381,6 +381,7 @@ import Minus from './minus.svg'
 import Plus from './plus.svg'
 import Report from './report.svg'
 import LikeActive from './like-active.svg'
+import ErrorInput from './error-input.svg'
 
 export {
   Trash,
@@ -774,4 +775,5 @@ export const Icons = {
   WalletGray,
   Warning,
   WelcomeNotif,
+  ErrorInput,
 }
