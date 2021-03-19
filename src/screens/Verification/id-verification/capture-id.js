@@ -140,7 +140,7 @@ const CaptureIdCameraFooter = ({ idType, onTakePicture }) => {
         textStyle="body2"
         customStyle={{ fontSize: normalize(14), lineHeight: normalize(21) }}
         color={Colors.contentPlaceholder}>
-        Make sure that your ID fits within the yellow border
+        Make sure that your ID fits within the yellow border.
       </AppText>
 
       <View

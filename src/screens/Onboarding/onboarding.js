@@ -75,7 +75,7 @@ const Onboarding = ({ navigation }) => {
       illustration: <IllustOne width={width} height={height * 0.4} />,
       title: 'Welcome to Servbees!',
       description:
-        'Go and Raket, Benta, and Search with your friendly neighborhood Pagkakakita-App!',
+        'Find and offer items and services within your community. Go and raket, benta, search!',
     },
     {
       illustration: <IllustTwo width={width} height={height * 0.4} />,
@@ -93,7 +93,7 @@ const Onboarding = ({ navigation }) => {
       illustration: <IllustFour width={width} height={height * 0.4} />,
       title: 'Join a Hive',
       description:
-        'Join our Hives to connect with people with the same interests and needs. Create your own Hives to organize your offers!',
+        'Create your own Hives to organize your offers or connect with people with the same interests and needs.',
     },
   ])
 
