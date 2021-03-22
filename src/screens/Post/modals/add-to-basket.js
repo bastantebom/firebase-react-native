@@ -164,6 +164,7 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
                 minutes={['00', '30', '00']}
                 initDate={initDate}
                 onDateSelected={handleOnDateSelected}
+                minimumDate={new Date()}
               />
             )}
 
