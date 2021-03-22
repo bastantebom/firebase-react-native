@@ -756,7 +756,7 @@ const AvailPostScreen = ({ navigation, route }) => {
     return (
       <View style={styles.section}>
         <View style={styles.sectionLabel}>
-          <Icons.Cash style={styles.labelIcon} {...iconSize(16)} />
+          <Icons.Page style={styles.labelIcon} {...iconSize(16)} />
           <Text
             style={[
               typography.body1narrow,

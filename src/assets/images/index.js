@@ -87,6 +87,7 @@ import Post from './post.svg'
 import Success from './success.svg'
 import Error from './error.svg'
 import NoPosts from './no-posts.svg'
+import Image from './image.svg'
 
 export {
   Guide,
@@ -168,4 +169,5 @@ export const Images = {
   ReportSuccess,
   Success,
   Verify,
+  Image,
 }

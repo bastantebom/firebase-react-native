@@ -227,7 +227,6 @@ const PublishedPostScreen = ({ navigation, route }) => {
 
     setIsLoading(true)
     Promise.all(promises).finally(() => {
-      if (!mounted.current) return
       setIsLoading(false)
     })
 
@@ -551,7 +550,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
                 )}
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.headerButton}
+                style={[styles.headerButton, { marginRight: 0 }]}
                 activeOpacity={0.7}
                 onPress={() => setMenuDrawerVisible(true)}>
                 <Icons.VerticalEllipsis
@@ -1771,7 +1770,14 @@ const PublishedPostScreen = ({ navigation, route }) => {
                     }}
                     activeOpacity={0.7}
                     onPress={handleOnReadMoreDescriptionPress}>
-                    <Text style={typography.link}>Read more</Text>
+                    <Text
+                      style={[
+                        typography.body2,
+                        typography.medium,
+                        typography.link,
+                      ]}>
+                      Read more
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -1951,7 +1957,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
     setIsLoading(true)
     try {
       if (!userInfo?.uid) {
-        setIsLoading(true)
+        setIsLoading(false)
         return
       }
       const snapshot = await firestore()

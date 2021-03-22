@@ -11,11 +11,6 @@ import typography from '@/globals/typography'
 
 const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
   const navigation = useNavigation()
-
-  const imageSize = {
-    width: normalize(56),
-    height: normalize(56),
-  }
   const showImagePicker = async () => {
     navigation.navigate('cover-photo-camera', {
       onSubmit: onChange,
@@ -45,7 +40,11 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
               activeOpacity={0.7}
               onPress={showImagePicker}>
               <View style={styles.uploadDropBoxContent}>
-                <Images.CameraImage {...imageSize} />
+                {!multiple ? (
+                  <Images.Image {...iconSize(56)} />
+                ) : (
+                  <Images.CameraImage {...iconSize(56)} />
+                )}
                 <Text style={styles.uploadLabel}>
                   {label
                     ? label
@@ -102,7 +101,10 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
             style={styles.linkWrapper}
             activeOpacity={0.7}
             onPress={showCoverPhotoGuidelines}>
-            <Text style={typography.link}>Cover Photo Guidelines</Text>
+            <Text
+              style={[typography.body2, typography.medium, typography.link]}>
+              Cover Photo Guidelines
+            </Text>
           </TouchableOpacity>
         </>
       )}

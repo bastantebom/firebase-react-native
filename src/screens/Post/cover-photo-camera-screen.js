@@ -196,7 +196,7 @@ const CoverPhotoCameraScreen = ({ navigation, route }) => {
         <View style={styles.cameraActionsWrapper}>
           <View>
             <Text style={[typography.body1, { marginBottom: normalize(8) }]}>
-              Take a photo of your products
+              Take a photo
             </Text>
             <Text style={typography.caption}>
               Make sure the image is clear and adheres to our Community
