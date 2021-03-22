@@ -5,7 +5,7 @@ import {
   ScreenHeaderTitle,
   TransitionIndicator,
 } from '@/components'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import {
   Alert,
   Image,
@@ -24,6 +24,7 @@ import ImagePicker from 'react-native-image-crop-picker'
 import { Colors, normalize } from '@/globals'
 import { Images } from '@/assets/images'
 import { UserContext } from '@/context/UserContext'
+import { debounce } from 'lodash'
 import Svg, {
   ClipPath,
   Defs,
@@ -60,6 +61,8 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [currentProfilePhoto, setCurrentProfilePhoto] = useState(null)
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
   const [isGenderModalVisible, setIsGenderModalVisible] = useState(false)
+  const [isValidUsername, setIsValidUsername] = useState(true)
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false)
 
   const [formData, setFormData] = useState({
     displayName: '',
@@ -175,6 +178,25 @@ const EditProfileScreen = ({ navigation, route }) => {
   const hasErrors = errors => {
     return Object.values(errors).some(error => error.length)
   }
+
+  const handleValidateUsername = useCallback(
+    debounce(async username => {
+      setIsCheckingUsername(true)
+      try {
+        const validateUsernameResponse = await Api.validateUsername({
+          body: {
+            username,
+          },
+        })
+        if (!validateUsernameResponse.success) setIsValidUsername(false)
+        setIsValidUsername(validateUsernameResponse.valid)
+      } catch (error) {
+        setIsValidUsername(false)
+      }
+      setIsCheckingUsername(false)
+    }, 200),
+    []
+  )
 
   const handleSubmit = async () => {
     if (hasErrors(checkErrors(false))) return
@@ -430,19 +452,32 @@ const EditProfileScreen = ({ navigation, route }) => {
             value={formData.username}
             label="Username"
             onChangeText={username => {
+              handleValidateUsername(username)
               setFormData(data => ({ ...data, username }))
               setDirtyStates([...new Set([...dirtyStates, 'username'])])
             }}
             onBlurInput={() => {
               setDirtyStates([...new Set([...dirtyStates, 'username'])])
             }}
-            error={errors.username.length}
-            customLabelStyle={
-              errors.username.length ? { color: Colors.red } : {}
+            error={
+              errors.username.length ||
+              (!isValidUsername && !isCheckingUsername)
             }
+            customLabelStyle={
+              errors.username.length ||
+              (!isValidUsername && !isCheckingUsername)
+                ? { color: Colors.red }
+                : {}
+            }
+            autoCapitalize="none"
+            autoCorrect={false}
             debounce={false}
           />
-          <Text style={styles.errorMessage}>{errors.username}</Text>
+          <Text style={styles.errorMessage}>
+            {!isValidUsername && !isCheckingUsername
+              ? 'Username is already taken.'
+              : errors.username}
+          </Text>
         </View>
       </>
     )
@@ -657,16 +692,18 @@ const EditProfileScreen = ({ navigation, route }) => {
           text="Save"
           type="primary"
           height="xl"
-          disabled={hasErrors(errors)}
+          disabled={hasErrors(errors) || !isValidUsername || isCheckingUsername}
           customStyle={{
             ...styles.customButtonStyle,
-            backgroundColor: hasErrors(errors)
-              ? Colors.buttonDisable
-              : Colors.primaryYellow,
+            backgroundColor:
+              hasErrors(errors) || !isValidUsername || isCheckingUsername
+                ? Colors.buttonDisable
+                : Colors.primaryYellow,
 
-            borderColor: hasErrors(errors)
-              ? Colors.buttonDisable
-              : Colors.primaryYellow,
+            borderColor:
+              hasErrors(errors) || !isValidUsername || isCheckingUsername
+                ? Colors.buttonDisable
+                : Colors.primaryYellow,
           }}
           onPress={handleSubmit}
         />

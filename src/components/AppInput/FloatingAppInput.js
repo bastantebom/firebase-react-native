@@ -30,7 +30,6 @@ const FloatingAppInput = props => {
   } = props
 
   const [internalValue, setInternalValue] = useState(value)
-
   const [verified, setVerified] = useState(false)
   const [showValidationError, setShowValidationError] = useState(false)
   const [validationError, setValidationError] = useState()
@@ -206,9 +205,11 @@ const FloatingAppInput = props => {
     ],
   }
 
-  const activeBorderColor =
-    props.customStyle[1]?.borderColor ||
-    (isActive ? Colors.contentOcean : Colors.neutralGray)
+  const activeBorderColor = props?.customStyle
+    ? props?.customStyle[1]?.borderColor
+    : isActive
+    ? Colors.contentOcean
+    : Colors.neutralGray
   const activeTextColor = isActive
     ? Colors.contentOcean
     : Colors.contentPlaceholder
