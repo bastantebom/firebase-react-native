@@ -887,14 +887,14 @@ const AvailPostScreen = ({ navigation, route }) => {
     return (
       <>
         <View style={styles.info}>
-          <Icons.Info style={styles.infoIcon} {...iconSize(16)} />
+          <Icons.InfoCircle style={styles.infoIcon} {...iconSize(16)} />
           <Text style={styles.infoLabel}>
             Please wait for the seller to confirm your order before proceeding
             with the payment.
           </Text>
         </View>
         <View style={styles.info}>
-          <Icons.Info style={styles.infoIcon} {...iconSize(16)} />
+          <Icons.InfoCircle style={styles.infoIcon} {...iconSize(16)} />
           <Text style={styles.infoLabel}>
             By continuing, you are agreeing to our{' '}
             <Text style={typography.link} onPress={handleOnPrivacyPolicyPress}>

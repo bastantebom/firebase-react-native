@@ -215,6 +215,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           .collection('orders')
           .where('post_id', '==', id)
           .where('status', '==', 'pending')
+          .where('buyer_id', '==', userInfo.uid)
           .onSnapshot(snap => {
             if (!mounted.current) return
             const order = snap?.docs?.[0]?.data?.()
