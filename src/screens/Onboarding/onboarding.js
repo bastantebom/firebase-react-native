@@ -232,7 +232,7 @@ const Onboarding = ({ navigation }) => {
               showAuthenticationSheet(false)
               setNotificationMessage(null)
             }}>
-            <View style={{ flex: 1, backgroundColor: '#000a' }} />
+            <View style={{ flex: 1 }} />
           </TouchableWithoutFeedback>
         }>
         <View

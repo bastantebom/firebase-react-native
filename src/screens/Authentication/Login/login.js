@@ -14,9 +14,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { AppButton, AppText } from '@/components'
 import Colors from '@/globals/Colors'
 import AppViewContainer from '@/components/AppViewContainer/AppViewContainer'
-
 import { AppInput, Validator, valueHandler } from '@/components/AppInput'
-
 import {
   HeaderCloseGray,
   EyeDark,
@@ -183,7 +181,7 @@ function Login({ setNotificationMessage }) {
                 <View style={{ position: 'relative' }}>
                   <AppInput
                     label="Password"
-                    onChangeText={password =>
+                    onChangeText={password => {
                       valueHandler(
                         password,
                         'password',
@@ -192,10 +190,6 @@ function Login({ setNotificationMessage }) {
                         setErrors,
                         setPassword
                       )
-                    }
-                    secureTextEntry={!isVisible ? true : false}
-                    value={password}
-                    onKeyPress={() => {
                       setErrors({
                         ...errors,
                         password: {
@@ -204,6 +198,8 @@ function Login({ setNotificationMessage }) {
                         },
                       })
                     }}
+                    secureTextEntry={!isVisible ? true : false}
+                    value={password}
                   />
                   <View style={styles.passwordToggle}>
                     <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
@@ -225,7 +221,15 @@ function Login({ setNotificationMessage }) {
                 text="Log In"
                 type="primary"
                 height="xl"
-                customStyle={styles.customLogin}
+                customStyle={{
+                  ...styles.customLogin,
+                  backgroundColor: !enabled
+                    ? Colors.Gainsboro
+                    : Colors.primaryYellow,
+                  borderColor: !enabled
+                    ? Colors.Gainsboro
+                    : Colors.primaryYellow,
+                }}
                 onPress={() => {
                   handleLogin()
                 }}
