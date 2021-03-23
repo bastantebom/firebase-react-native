@@ -899,7 +899,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
                 setConfirmModalVisible(true)
                 setConfirmModalTitle('Archive Post?')
                 setConfirmModalMessage(
-                  '"Hide your post from your profile and republish anytime you want. All active orders will still be processed."'
+                  'Hide your post from your profile and republish anytime you want. All active orders will still be processed.'
                 )
                 setConfirmModalCallback(() => handleOnArchivePost)
               },
@@ -2202,7 +2202,10 @@ const PublishedPostScreen = ({ navigation, route }) => {
     <View style={{ flex: 1 }}>
       <StatusBar
         translucent={true}
-        barStyle="dark-content"
+        barStyle={Platform.select({
+          ios: 'dark-content',
+          android: 'light-content',
+        })}
         backgroundColor="transparent"
       />
       <Loader visible={isLoading} />

@@ -1,8 +1,9 @@
 import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
+import { Colors } from '@/globals'
 import { isUrl } from '@/globals/Utils'
 import ImageApi from '@/services/image-api'
 import React, { useEffect, useState } from 'react'
-import { PixelRatio } from 'react-native'
+import { ActivityIndicator, PixelRatio, StyleSheet, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 
 const sizeProps = {
@@ -56,6 +57,7 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
         ? ImageApi.pathUrls.find(pathUrl => pathUrl.path === path)?.url
         : null,
   })
+  const [isLoading, setIsLoading] = useState(true)
 
   const handlePathChange = async path => {
     if (isUrl(path)) setSource({ uri: path })
@@ -89,17 +91,38 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
   }, [path])
 
   return isUrl(source?.uri) ? (
-    <FastImage
-      resizeMode="cover"
-      source={source}
-      style={sizeProps}
-      {...props}
-    />
+    <>
+      {isLoading && (
+        <View style={styles.loader}>
+          <ActivityIndicator color={Colors.contentOcean} size="large" />
+        </View>
+      )}
+      <FastImage
+        resizeMode="cover"
+        source={source}
+        style={{ ...sizeProps, zIndex: 1 }}
+        onLoadStart={() => setIsLoading(true)}
+        onLoadEnd={() => setIsLoading(false)}
+        {...props}
+      />
+    </>
   ) : type === 'thumbnail' ? (
     <DefaultPostThumbnail type={postType} />
   ) : (
     <DefaultPostImage type={postType} />
   )
 }
+
+const styles = StyleSheet.create({
+  loader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 
 export default PostImage
