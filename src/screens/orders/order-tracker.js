@@ -407,6 +407,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const color = ['declined', 'cancelled'].includes(orderData.status)
       ? Colors.secondaryBrinkPink
       : Colors.primaryMidnightBlue
+
+    const orderStatus = post.type
+      ? getStatusData({
+          userType,
+          type: post.type,
+          status: orderData.status,
+        })
+      : {}
     return (
       <>
         <View style={styles.statusInfo}>
