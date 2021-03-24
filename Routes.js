@@ -286,14 +286,7 @@ function ProfileStackScreen() {
 }
 
 const TabStack = () => {
-  const { closePostButtons } = useContext(Context)
-  const { userInfo } = useContext(UserContext)
-
-  const [hasUnreadActivity, setHasUnreadActivity] = useState(false)
-
-  useEffect(() => {
-    setHasUnreadActivity(userInfo.has_unread_activity)
-  }, [userInfo])
+  const { counts } = useContext(UserContext)
 
   const tabBarOptions = {
     style: {
@@ -371,7 +364,7 @@ const TabStack = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                {hasUnreadActivity && (
+                {!!counts.chat || !!counts.notification ? (
                   <View
                     style={{
                       position: 'absolute',
@@ -384,6 +377,8 @@ const TabStack = () => {
                       height={normalize(11)}
                     />
                   </View>
+                ) : (
+                  <></>
                 )}
 
                 <View

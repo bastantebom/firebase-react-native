@@ -22,6 +22,7 @@ const Ongoing = ({
   setIsRereshing,
   loadMoreActivities,
   noMoreActivities,
+  data,
 }) => {
   const renderEmptyIcon = () => {
     switch (sort.value) {
@@ -77,7 +78,7 @@ const Ongoing = ({
         renderItem={({ item }) => <ActivitiesCard item={item} />}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
-          if (activities.length >= 10) loadMoreActivities()
+          if (data.length >= 10) loadMoreActivities()
         }}
         refreshControl={
           <RefreshControl

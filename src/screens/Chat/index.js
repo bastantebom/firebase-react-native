@@ -77,13 +77,10 @@ const ChatScreen = ({ route, navigation }) => {
   const [postDetail, setPostDetail] = useState({})
 
   const handleSend = useCallback(async (messages = []) => {
-    const chatsRef = firestore()
-      .collection('chat_rooms')
-      .doc(channel.id)
-      .collection('messages')
+    const chatsRef = firestore().collection('chat_rooms').doc(channel.id)
 
-    await Promise.all(
-      messages.map(async message => {
+    await Promise.all([
+      ...messages.map(async message => {
         const created_at = firestore.Timestamp.fromDate(message.createdAt)
         const messageData = {
           ...message,
@@ -93,9 +90,14 @@ const ChatScreen = ({ route, navigation }) => {
           read: false,
         }
         delete messageData.user
-        await chatsRef.add(messageData)
-      })
-    )
+        await chatsRef.collection('messages').add(messageData)
+      }),
+      (async () => {
+        await chatsRef.update({
+          latest_chat_time: firestore.Timestamp.fromDate(new Date()),
+        })
+      })(),
+    ])
   })
 
   const init = async () => {

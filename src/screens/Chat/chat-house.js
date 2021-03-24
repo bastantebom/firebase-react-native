@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import {
   StyleSheet,
+  FlatList,
   View,
   TouchableOpacity,
   SafeAreaView,
@@ -11,506 +12,318 @@ import {
   TextInput,
   Dimensions,
   RefreshControl,
+  Text,
 } from 'react-native'
-import firestore from '@react-native-firebase/firestore'
-
 import { useNavigation } from '@react-navigation/native'
+
 import { UserContext } from '@/context/UserContext'
-import { Context } from '@/context'
+
+import { normalize, Colors, timePassedShort } from '@/globals'
+import { AppText, ScreenHeaderTitle, MarginView } from '@/components'
+
+import PostImage from '@/components/Post/post-image'
+import Avatar from '@/components/Avatar/avatar'
+
+import { Icons, ChatEmpty, ChatBlue, BlueDot } from '@/assets/images/icons'
 import Api from '@/services/Api'
-import PostService from '@/services/Post/PostService'
-import Modal from 'react-native-modal'
-import _ from 'lodash'
-
-import { normalize, Colors } from '@/globals'
-import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
-import {
-  BlueDot,
-  ChatBlue,
-  ChevronDown,
-  Search,
-  ChatEmpty,
-} from '@/assets/images/icons'
-
-import { NoPost, NoInfo, NoReview, IllustActivity } from '@/assets/images'
-
-import ChatSort from './components/ChatSort'
-import ChatHouseCard from './components/ChatHouseCard'
-
-const { width } = Dimensions.get('window')
-const PADDING = 16
-const SEARCH_FULL_WIDTH = width - PADDING * 2
-const SEARCH_SHRINK_WIDTH = normalize(45)
 
 const ChatHouse = () => {
   const navigation = useNavigation()
+  const { userInfo } = useContext(UserContext)
 
-  const [chatSort, setChatSort] = useState(false)
-  const [sortCategory, setSortCategory] = useState({
-    label: 'All Messages',
-    value: 'all',
-    description: 'These are all your messages',
-  })
+  const [chatRooms, setChatRooms] = useState({})
+  const [lastId, setLastId] = useState(null)
 
-  const [isSearchFocused, setIsSearchFocused] = useState(false)
-  const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
-  const [cancelPosition] = useState(new Animated.Value(0))
-  const [opacity] = useState(new Animated.Value(0))
-  const { user } = useContext(UserContext)
-  const { initChats } = useContext(Context)
-  const [postChats, setPostChats] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isRefreshing, setIsRefreshing] = useState(false)
+  const loadPosts = async () => {
+    try {
+      const params = {}
+      if (lastId) params.lastItemId = lastId
 
-  const initSellerOrders = async () => {
-    const getOwnPostResponse = await PostService.getUserPosts({
-      uid: user?.uid,
-    })
-    if (getOwnPostResponse.success) {
-      let sellerOrderData = await Promise.all(
-        getOwnPostResponse.data.map(async post => {
-          const roomsSnapshot = await firestore()
-            .collection('chat_rooms')
-            .where('post_id', '==', post.id)
-            .get()
+      const response = await Api.getAllMessages(params)
 
-          let chatsList = await Promise.all(
-            roomsSnapshot.docs.map(async room => {
-              const chatRef = await firestore()
-                .collection('chat_rooms')
-                .doc(room.id)
-                .collection('messages')
-                .where('uid', '!=', user?.uid)
-                .get()
+      if (!response.success) throw new Error(response.message)
 
-              return chatRef.docs.map(chatDoc => {
-                return chatDoc.data()
-              })
-            })
-          )
+      const newChatRooms = response.data
+        .filter(chatRoom => !!chatRoom)
+        .map(chatRoom => ({ ...chatRoom, $isLoading: true }))
+        .reduce(
+          (_chatRooms, chatRoom) => ({
+            ..._chatRooms,
+            [chatRoom.id]: chatRoom,
+          }),
+          {}
+        )
 
-          chatsList = _.flatten(chatsList).sort(
-            (a, b) => b.created_at._seconds - a.created_at._seconds
-          )
-          let latestTimeStampOrder = post.date_posted._seconds
-          if (chatsList.length)
-            latestTimeStampOrder = await getLatest(chatsList)
+      setLastId(response.data.slice(-1)[0]?.id)
 
-          return {
-            cardType: 'seller',
-            time: latestTimeStampOrder,
-            chats: chatsList,
-            postData: post,
-          }
-        })
-      )
-      sellerOrderData = sellerOrderData.filter(el => el)
-      setPostChats(postChats =>
-        [...postChats, ...sellerOrderData].sort((a, b) => b.time - a.time)
-      )
-      return
+      setChatRooms(chatRooms => ({ ...chatRooms, ...newChatRooms }))
+    } catch (error) {
+      console.error(error.message)
     }
   }
 
-  const inquiriesMessage = async postIdStack => {
-    const roomRef = await firestore()
-      .collection('chat_rooms')
-      .where(`members.${user?.uid}`, '==', true)
-      .get()
-    let inquiries = await Promise.all(
-      roomRef.docs.map(async room => {
-        if (!room.data().post_id) return
-        const existId = postIdStack.indexOf(room.data().post_id)
-        if (~existId) return
-        postIdStack.push(room.data().post_id)
-        const getPostResponse = await Api.getPost({
-          pid: room.data().post_id,
-        })
-        if (
-          !getPostResponse.success ||
-          getPostResponse?.data?.uid === user?.uid
-        )
-          return
-        const otherUser = Object.keys(room.data().members).filter(
-          uid => uid != user?.uid
-        )
-        const getUserReponse = await Api.getUser({
-          uid: otherUser[0] || user?.uid,
-        })
-        if (!getUserReponse.success) return
-        const { full_name, display_name, profile_photo } = getUserReponse.data
-        let roomChat = {}
-        const chatRef = await firestore()
-          .collection('chat_rooms')
-          .doc(room.id)
-          .collection('messages')
-          .orderBy('createdAt', 'desc')
-          .get()
+  const getDeferredData = async chatRoom => {
+    await Promise.all([
+      Api.getChatCounts({ pid: chatRoom.post_id }).then(response => {
+        setChatRooms(chatRooms => ({
+          ...chatRooms,
+          [chatRoom.id]: {
+            ...chatRooms[chatRoom.id],
+            chat_counts: response.data,
+          },
+        }))
+      }),
+      Api.getPost({ pid: chatRoom.post_id }).then(response => {
+        setChatRooms(chatRooms => ({
+          ...chatRooms,
+          [chatRoom.id]: {
+            ...chatRooms[chatRoom.id],
+            post: response.data,
+          },
+        }))
+      }),
+      Api.getLatestChat({ pid: chatRoom.post_id }).then(response => {
+        setChatRooms(chatRooms => ({
+          ...chatRooms,
+          [chatRoom.id]: {
+            ...chatRooms[chatRoom.id],
+            latest_chat: response.data,
+          },
+        }))
+      }),
+      (() => {
+        const sellerId = Object.getOwnPropertyNames(chatRoom.members).filter(
+          member => member !== userInfo.uid
+        )[0]
 
-        if (chatRef.docs.length) {
-          roomChat = {
-            ...chatRef.docs[0].data(),
-          }
-          return {
-            profilePhoto: profile_photo,
-            seller: full_name,
-            storeName: display_name || full_name,
-            cardType: 'own',
-            time: roomChat?.created_at?._seconds,
-            postData: getPostResponse.data,
-            chats: roomChat,
-          }
-        }
+        Api.getUser({ uid: sellerId }).then(response => {
+          setChatRooms(chatRooms => ({
+            ...chatRooms,
+            [chatRoom.id]: {
+              ...chatRooms[chatRoom.id],
+              seller_info: response.data,
+            },
+          }))
+        })
+      })(),
+    ])
+      .then(() => {
+        setChatRooms(chatRooms => ({
+          ...chatRooms,
+          [chatRoom.id]: {
+            ...chatRooms[chatRoom.id],
+            $isLoading: false,
+          },
+        }))
       })
-    )
-
-    inquiries = _.flatten(inquiries.filter(e => e))
-    setPostChats(postChats =>
-      [...postChats, ...inquiries].sort((a, b) => b.time - a.time)
-    )
-    return
-  }
-
-  const callAllPosts = async () => {
-    let postIdStack = []
-    await Promise.all([inquiriesMessage(postIdStack), initSellerOrders()])
-    setIsLoading(false)
-  }
-
-  const getLatest = async chats => {
-    const timeStampList = []
-    chats.map(chat => {
-      timeStampList.push(chat.created_at._seconds)
-    })
-    return Math.max(...timeStampList)
-  }
-
-  const handleRefresh = async () => {
-    setIsLoading(true)
-    setIsRefreshing(true)
-    setPostChats([])
-    await initChats(user?.uid)
-    await callAllPosts()
-    setIsRefreshing(false)
+      .catch(() => {
+        setChatRooms(chatRooms => ({
+          ...chatRooms,
+          [chatRoom.id]: {
+            ...chatRooms[chatRoom.id],
+            $hasErrors: true,
+          },
+        }))
+      })
   }
 
   useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      setIsLoading(true)
-      callAllPosts()
-    }
-    return () => (isMounted = false)
+    Object.values(chatRooms)
+      .filter(chatRoom => !chatRoom.$promise)
+      .forEach(chatRoom => {
+        setChatRooms(chatRooms => ({
+          ...chatRooms,
+          [chatRoom.id]: {
+            ...chatRooms[chatRoom.id],
+            $promise: getDeferredData(chatRoom),
+          },
+        }))
+      })
+  }, [chatRooms])
+
+  useEffect(() => {
+    loadPosts()
   }, [])
 
-  const onFocus = () => {
-    Animated.parallel([
-      Animated.timing(inputLength, {
-        toValue: SEARCH_FULL_WIDTH,
-        duration: 250,
-        useNativeDriver: false,
-      }),
-      Animated.timing(cancelPosition, {
-        toValue: 16,
-        duration: 400,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 250,
-        useNativeDriver: true,
-      }),
-    ]).start()
-    setIsSearchFocused(true)
-  }
-
-  const onBlur = () => {
-    Animated.parallel([
-      Animated.timing(inputLength, {
-        toValue: SEARCH_SHRINK_WIDTH,
-        duration: 250,
-        useNativeDriver: false,
-      }),
-      Animated.timing(cancelPosition, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: true,
-      }),
-    ]).start()
-    setIsSearchFocused(false)
-  }
-
-  const handleSearchPress = () => {
-    if (!isSearchFocused) {
-      onFocus()
-    } else {
-      onBlur()
-    }
-  }
-
-  const getSortSelected = choice => {
-    setSortCategory(choice)
-  }
-
-  const handleChatPress = async (members, postId) => {
-    let channel
-    try {
-      if (!user?.uid) return
-      const snapshot = await firestore()
-        .collection('chat_rooms')
-        .where('members', '==', members)
-        .where('post_id', '==', postId)
-        .get()
-
-      if (!snapshot.docs.length) {
-        const ref = firestore().collection('chat_rooms')
-        const { id } = await ref.add({
-          members: members,
-          post_id: postId,
-        })
-
-        await ref.doc(id).update({ id })
-        channel = (await ref.doc(id).get()).data()
-      } else {
-        channel = snapshot.docs[0].data()
-      }
-
-      navigation.navigate('NBTScreen', {
-        screen: 'Chat',
-        params: {
-          user,
-          channel,
-        },
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const renderSearch = () => {
+  const renderItem = ({ item }) => {
     return (
-      <Animated.View style={[styles.search, { width: inputLength }]}>
-        <TextInput
-          onBlur={onBlur}
-          onFocus={onFocus}
-          style={{
-            fontFamily: 'RoundedMplus1c-Regular',
-            fontSize: normalize(14),
-            paddingRight: normalize(25),
-          }}
-        />
-        <TouchableOpacity
-          style={[styles.searchIcon]}
-          onPress={handleSearchPress}>
-          <Search width={normalize(20)} height={normalize(20)} />
-        </TouchableOpacity>
-      </Animated.View>
+      <View style={styles.postWrapper}>
+        <View style={styles.imageWrapper}>
+          <View style={styles.postImageContainer}>
+            <PostImage
+              style={styles.postImage}
+              path={item?.post?.cover_photos[0]}
+              size="64x64"
+              postType={item?.post?.type}
+            />
+          </View>
+          {item?.post?.uid !== userInfo.uid && (
+            <View style={styles.avatar}>
+              <Avatar
+                style={{ height: '100%', width: '100%' }}
+                path={item?.seller_info?.profile_photo}
+                size="64x64"
+              />
+            </View>
+          )}
+        </View>
+        <View style={styles.infoWrapper}>
+          <View style={styles.chatTitle}>
+            <AppText textStyle="body3" customStyle={styles.username}>
+              {item?.post?.title}
+            </AppText>
+            <AppText
+              textStyle="captionConstant"
+              color={Colors.contentPlaceholder}
+              customStyle={styles.timeago}>
+              {timePassedShort(
+                Date.now() / 1000 - item.latest_chat_time._seconds
+              )}
+            </AppText>
+          </View>
+          <View style={styles.chatsWrapper}>{renderDetails(item)}</View>
+        </View>
+      </View>
     )
   }
 
+  const renderDetails = item => {
+    if (item?.post?.uid === userInfo.uid)
+      return (
+        <>
+          <ChatBlue style={styles.chatIcon} />
+          <AppText color={'#3781FC'}>
+            4 New in {item?.chat_counts?.messages} chats
+          </AppText>
+        </>
+      )
+    else
+      return (
+        <View style={styles.chatInfoWrapper}>
+          <Text
+            style={{
+              color: '#515057',
+              fontWeight: !item?.latest_chat?.read ? 'bold' : 'normal',
+            }}>
+            {item?.latest_chat?.uid === userInfo.uid
+              ? 'You'
+              : item?.seller_info?.full_name.split(' ')[0]}
+            : {item?.latest_chat?.text}
+          </Text>
+          {!item?.latest_chat?.read && <BlueDot />}
+        </View>
+      )
+  }
+
   return (
-    <SafeAreaView style={styles.parent}>
-      <TransitionIndicator loading={isLoading} />
+    <View>
       <ScreenHeaderTitle
+        close={() => navigation.goBack()}
         title="All Chats"
         paddingSize={3}
-        close={() => navigation.goBack()}
       />
-      <View style={styles.chatHeader}>
-        <TouchableOpacity style={styles.sort} onPress={() => setChatSort(true)}>
-          <AppText
-            textStyle="body3"
-            customStyle={{ marginRight: normalize(8) }}>
-            {sortCategory.label}
+      <View style={styles.bodyWrapper}>
+        <TouchableOpacity style={styles.sortWrapper}>
+          <AppText textStyle="body3" customStyle={styles.sortText}>
+            All Messages
           </AppText>
-          <ChevronDown
-            style={{ color: Colors.icon }}
-            width={normalize(20)}
-            height={normalize(20)}
+          <Icons.ChevronDown
+            style={{ color: 'black' }}
+            width={normalize(24)}
+            height={normalize(24)}
           />
         </TouchableOpacity>
+
+        <FlatList
+          data={Object.values(chatRooms)}
+          keyExtractor={item => item.id}
+          renderItem={renderItem}
+        />
       </View>
-      <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: normalize(16),
-          paddingBottom: normalize(25),
-        }}
-        refreshControl={
-          <RefreshControl
-            style={{ zIndex: 1 }}
-            refreshing={isRefreshing}
-            titleColor="#2E3034"
-            tintColor="#2E3034"
-            onRefresh={handleRefresh}
-          />
-        }>
-        {postChats
-          .filter(post =>
-            sortCategory.value === 'all'
-              ? post
-              : post.cardType === sortCategory.value
-          )
-          .map((post, i) => {
-            return (
-              <View key={i} style={{ marginBottom: normalize(15) }}>
-                <ChatHouseCard
-                  post={post}
-                  handleChatPress={handleChatPress}
-                  navigation={navigation}
-                />
-              </View>
-            )
-          })}
-        {!postChats.filter(post =>
-          sortCategory.value === 'all'
-            ? post
-            : post.cardType === sortCategory.value
-        ).length &&
-          sortCategory.value !== 'past' &&
-          !isLoading && (
-            <View style={styles.emptyState}>
-              {sortCategory.value === 'all' ? (
-                <NoPost />
-              ) : sortCategory.value === 'own' ? (
-                <NoReview />
-              ) : (
-                <NoInfo />
-              )}
-              <AppText
-                textStyle="display6"
-                customStyle={{
-                  marginBottom: normalize(4),
-                  marginTop: normalize(15),
-                }}>
-                {sortCategory.value === 'all'
-                  ? `No activities yet`
-                  : sortCategory.value === 'own'
-                  ? `No orders yet`
-                  : `No offers yet`}
-              </AppText>
-              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-                {sortCategory.value === 'all'
-                  ? `Start checking what you can offer and discover the best deals in your area.`
-                  : sortCategory.value === 'own'
-                  ? `Keep on posting about your products to attract orders, Buzzybee!`
-                  : `Getting projects starts by making offers, Buzzybee! `}
-              </AppText>
-            </View>
-          )}
-        {!postChats.filter(post =>
-          sortCategory.value === 'all'
-            ? post
-            : post.cardType === sortCategory.value
-        ).length &&
-          sortCategory.value === 'past' &&
-          !isLoading && (
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <IllustActivity width={normalize(250)} height={normalize(200)} />
-              <AppText
-                textStyle="display5"
-                color={Colors.primaryMidnightBlue}
-                customStyle={{ textAlign: 'center', marginTop: normalize(10) }}>
-                Get active and productive, buzzbee!
-              </AppText>
-              <View style={styles.descHolder}>
-                <AppText
-                  customStyle={{
-                    textAlign: 'center',
-                  }}
-                  textStyle="body2">
-                  Get busy with more projects, buying and selling items,
-                  boosting your online business or just browsing what’s new in
-                  your neighborhood.
-                </AppText>
-              </View>
-              <TouchableOpacity
-                style={{
-                  paddingVertical: normalize(10),
-                  paddingHorizontal: normalize(20),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  backgroundColor: '#FFD400',
-                  borderRadius: 3,
-                  marginTop: normalize(8),
-                }}
-                onPress={() => navigation.navigate('dashboard')}>
-                <AppText textStyle="button3">Explore Postings Near You</AppText>
-              </TouchableOpacity>
-            </View>
-          )}
-      </ScrollView>
-      <Modal
-        isVisible={chatSort}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback onPress={() => setChatSort(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <ChatSort close={() => setChatSort(false)} choice={getSortSelected} />
-      </Modal>
-    </SafeAreaView>
+    </View>
   )
 }
 
-export default ChatHouse
-
 const styles = StyleSheet.create({
-  parent: { flex: 1, backgroundColor: 'white' },
-  chatHeader: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingBottom: normalize(20),
+  bodyWrapper: {
     paddingHorizontal: normalize(16),
+    paddingBottom: normalize(245),
+    marginTop: normalize(15),
+  },
+  sortWrapper: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: normalize(30),
+  },
+  sortText: {
+    marginRight: normalize(8),
+  },
+  postWrapper: {
+    flexDirection: 'row',
     marginBottom: normalize(20),
   },
-  sort: {
+  infoWrapper: {
+    width: '75%',
+  },
+  imageWrapper: {
+    marginRight: normalize(10),
+    width: '22%',
+    height: normalize(72),
+  },
+  postImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+  },
+  postImageContainer: {
+    overflow: 'hidden',
+  },
+  username: {
+    fontSize: normalize(14),
+  },
+  timeago: {
+    fontSize: normalize(12),
+  },
+  chatsWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: normalize(15),
   },
-  icon: {
-    width: normalize(64),
-    height: normalize(64),
-    borderRadius: 8,
-    marginRight: normalize(15),
+  chatIcon: {
+    marginRight: normalize(5),
   },
-  search: {
-    height: normalize(45),
-    paddingHorizontal: normalize(16),
-    position: 'absolute',
-    right: 16,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: Colors.neutralGray,
-    backgroundColor: 'white',
+  chatTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: normalize(10),
   },
-  searchIcon: {
-    position: 'absolute',
-    zIndex: 999,
-    top: 13,
-    right: 12,
-  },
-  emptyState: {
-    backgroundColor: Colors.neutralsWhite,
-    justifyContent: 'center',
+  chatInfoWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: normalize(8),
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    flex: 1,
-    padding: normalize(16),
+    width: '100%',
+  },
+  avatar: {
+    position: 'absolute',
+    bottom: normalize(-10),
+    right: normalize(-10),
+
+    height: normalize(30),
+    width: normalize(30),
+
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 4,
+
+    borderRadius: normalize(100),
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
 })
+
+export default ChatHouse

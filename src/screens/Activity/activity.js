@@ -20,7 +20,7 @@ import { Icons } from '@/assets/images/icons'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Activity'>} param0 */
 const activity = ({ navigation }) => {
-  const { user, userInfo } = useContext(UserContext)
+  const { user, userInfo, counts } = useContext(UserContext)
 
   const [activitySort, setActivitySort] = useState(false)
   const [sort, setSort] = useState({
@@ -33,6 +33,7 @@ const activity = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [isRereshing, setIsRereshing] = useState(false)
   const [noMoreActivities, setNoMoreActivities] = useState(false)
+  const [data, setData] = useState([])
 
   const loadActivities = async ({ isMoreActivities, lastItemId }) => {
     try {
@@ -47,6 +48,7 @@ const activity = ({ navigation }) => {
         const { data } = await Api.getOwnPosts({ lastItemId })
 
         if (!data.length) setNoMoreActivities(true)
+        setData(data)
 
         const groupedData = data
           .map(post => {
@@ -111,32 +113,32 @@ const activity = ({ navigation }) => {
     loadActivities({ isMoreActivities: true, lastItemId })
   }
 
-  const groupActivities = (isMoreActivities, data) => {
+  const groupActivities = (isMoreActivities, _activities) => {
+    setData(_activities)
     const groupedData = []
-    data.forEach(order => {
-      if (!groupedData.some(data => data.post.post_id === order.post_id)) {
+
+    _activities.forEach(activity => {
+      if (groupedData.some(data => data.post.id === activity.post_id)) {
+        delete activity.post
+
+        groupedData.forEach(data => {
+          if (data.post.id === activity.post_id) {
+            data.orders.push(activity)
+            return
+          }
+        })
+      } else {
         const currentActivity = {
-          post: order.post,
+          post: activity.post,
           sellerInfo: {
             profile_photo: userInfo.profile_photo,
             name: userInfo.display_name || userInfo.full_name,
           },
         }
 
-        delete order.post
-
-        currentActivity.orders = [order]
+        delete activity.post
+        currentActivity.orders = [activity]
         groupedData.push(currentActivity)
-      } else {
-        delete order.post
-
-        groupedData.forEach(data => {
-          if (data.post.post_id === order.post_id) {
-            data.orders.push(order)
-
-            return
-          }
-        })
       }
     })
 
@@ -181,19 +183,17 @@ const activity = ({ navigation }) => {
                 })
               }>
               <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
-              {/* {chatList.some(chat => !chat.read) && (
-            <View
-              style={{
-                ...styles.notifDot,
-                paddingHorizontal: normalize([
-                  chatList.filter(chat => !chat.read).length > 9 ? 2 : 6,
-                ]),
-              }}>
-              <AppText textStyle="eyebrow1" color={Colors.neutralsWhite}>
-                {chatList.filter(chat => !chat.read).length}
-              </AppText>
-            </View>
-          )} */}
+              {!!counts.chat && (
+                <View
+                  style={{
+                    ...styles.notifDot,
+                    paddingHorizontal: normalize([counts.chat > 9 ? 2 : 6]),
+                  }}>
+                  <AppText textStyle="eyebrow1" color={Colors.neutralsWhite}>
+                    {counts.chat}
+                  </AppText>
+                </View>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.chatWrapper}
@@ -203,16 +203,16 @@ const activity = ({ navigation }) => {
                 })
               }>
               <Icons.MegaPhone width={normalize(20)} height={normalize(20)} />
-              {!!userInfo.notification_count && (
+              {!!counts.notification && (
                 <View
                   style={{
                     ...styles.notifDot,
                     paddingHorizontal: normalize([
-                      userInfo.notification_count > 9 ? 2 : 6,
+                      counts.notification > 9 ? 2 : 6,
                     ]),
                   }}>
                   <AppText textStyle="eyebrow1" color={Colors.neutralsWhite}>
-                    {userInfo.notification_count}
+                    {counts.notification}
                   </AppText>
                 </View>
               )}
@@ -223,6 +223,7 @@ const activity = ({ navigation }) => {
         <View>
           <Ongoing
             activities={activities}
+            data={data}
             sort={sort}
             isLoading={isLoading}
             isRereshing={isRereshing}

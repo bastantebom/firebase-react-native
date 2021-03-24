@@ -144,32 +144,6 @@ export const ContextProvider = ({ children }) => {
     setNotificationState('close')
   }
 
-  const initChats = async uid => {
-    if (!uid) return
-    const roomRef = await firestore()
-      .collection('chat_rooms')
-      .where(`members.${uid}`, '==', true)
-      .get()
-    let chats = await Promise.all(
-      roomRef.docs.map(async room => {
-        if (!room.data().post_id) return
-        const chatRef = await firestore()
-          .collection('chat_rooms')
-          .doc(room.id)
-          .collection('messages')
-          .where('uid', '!=', uid)
-          .get()
-
-        return chatRef.docs.map(chatDoc => {
-          return chatDoc.data()
-        })
-      })
-    )
-    chats = flatten(chats.filter(e => e))
-
-    setChatList(chats)
-  }
-
   return (
     <Context.Provider
       value={{

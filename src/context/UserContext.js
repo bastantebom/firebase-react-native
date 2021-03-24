@@ -12,6 +12,7 @@ export const UserContextProvider = ({ children }) => {
   const [token, setToken] = useState(null)
   const [userStatus, setUserStatus] = useState({})
   const [unavailableNetwork, setUnavailableNetwork] = useState(false)
+  const [counts, setCounts] = useState({})
 
   let unsubscribe
   async function onAuthStateChanged(user) {
@@ -108,6 +109,16 @@ export const UserContextProvider = ({ children }) => {
     }
   }
 
+  useEffect(() => {
+    if (user)
+      return firestore()
+        .collection('counts')
+        .doc(user.uid)
+        .onSnapshot(doc => {
+          setCounts(doc.data())
+        })
+  }, [user])
+
   return (
     <UserContext.Provider
       value={{
@@ -121,6 +132,7 @@ export const UserContextProvider = ({ children }) => {
         providerData,
         updateUserStatus,
         unavailableNetwork,
+        counts,
       }}>
       {children}
     </UserContext.Provider>
