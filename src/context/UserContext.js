@@ -115,7 +115,7 @@ export const UserContextProvider = ({ children }) => {
         .collection('counts')
         .doc(user.uid)
         .onSnapshot(doc => {
-          setCounts(doc.data())
+          setCounts(doc.data() || {})
         })
   }, [user])
 

@@ -21,7 +21,7 @@
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/cameraroll": "^4.0.0",
     "@react-native-community/clipboard": "^1.4.0",
-    "@react-native-community/datetimepicker": "^3.4.0",
+    "@react-native-community/datetimepicker": "3.0.9",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/google-signin": "^4.0.3",
     "@react-native-community/image-editor": "^2.3.0",

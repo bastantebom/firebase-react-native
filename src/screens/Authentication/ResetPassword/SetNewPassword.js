@@ -3,6 +3,7 @@ import { View, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 
 import { AppText, FloatingAppInput, TransitionIndicator } from '@/components'
 import { CommonActions, useNavigation } from '@react-navigation/native'
+import { isEmail } from '@/globals/Utils'
 
 import Api from '@/services/Api'
 
@@ -36,9 +37,16 @@ const SetNewPasswordScreen = props => {
 
   const submitHandler = async () => {
     setIsLoading(true)
+
     try {
+      let formattedLogin = login.trim()
+      if (!isEmail(formattedLogin)) {
+        formattedLogin = /^(\+639)\d{9}$/.test(formattedLogin)
+          ? formattedLogin
+          : `+${formattedLogin}`
+      }
       const response = await Api.resetPassword({
-        body: { token, login, password: newPassword },
+        body: { token, login: formattedLogin, password: newPassword },
       })
 
       if (!response.success) throw new Error(response.message)
