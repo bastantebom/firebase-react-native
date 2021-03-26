@@ -614,6 +614,7 @@ const EditProfileScreen = ({ navigation, route }) => {
             error={errors.email.length}
             customLabelStyle={errors.email.length ? { color: Colors.red } : {}}
             debounce={false}
+            keyboardType={'email-address'}
           />
           <Text style={styles.errorMessage}>{errors.email}</Text>
         </View>
@@ -634,19 +635,20 @@ const EditProfileScreen = ({ navigation, route }) => {
               errors.phoneNumber.length ? { color: Colors.red } : {}
             }
             debounce={false}
+            keyboardType={'phone-pad'}
           />
           <Text style={styles.errorMessage}>{errors.phoneNumber}</Text>
         </View>
 
         <View style={styles.inputWrapper}>
-          <View pointerEvents="none">
-            <AppInput
-              value={formData.birthDate}
-              label="Birthday"
-              customStyle={{ marginBottom: normalize(16) }}
-              debounce={false}
-            />
-          </View>
+          <AppInput
+            value={formData.birthDate}
+            label="Birthday"
+            customStyle={{ marginBottom: normalize(16) }}
+            debounce={false}
+            onTouchStart={() => setIsDatePickerVisible(!isDatePickerVisible)}
+            editable={false}
+          />
           <TouchableOpacity
             style={styles.inputButton}
             onPress={() => setIsDatePickerVisible(!isDatePickerVisible)}>
@@ -672,6 +674,7 @@ const EditProfileScreen = ({ navigation, route }) => {
               errors.gender?.length ? { color: Colors.red } : {}
             }
             onTouchStart={() => setIsGenderModalVisible(true)}
+            editable={false}
           />
 
           <TouchableOpacity
