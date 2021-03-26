@@ -16,12 +16,13 @@ import {
   TransparentHeader,
   ProfileLinks,
   CacheableImage,
+  Divider,
 } from '@/components'
 
 import StickyParallaxHeader from 'react-native-sticky-parallax-header'
 
 import { ProfileHeaderDefault } from '@/assets/images'
-import { normalize, Colors } from '@/globals'
+import { normalize, Colors, GlobalStyle } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context/index'
 
@@ -375,6 +376,16 @@ function ProfileInfoModal(props) {
         <View style={{ backgroundColor: Colors.primaryYellow }}>
           <LoadingUserInfo isLoading={isDataLoading}>
             <ProfileInfo profileData={otherUserInfo} />
+            <Divider
+              style={[
+                GlobalStyle.dividerStyle,
+                {
+                  marginVertical: normalize(16),
+                  backgroundColor: Colors.neutralsZircon,
+                  height: normalize(4),
+                },
+              ]}
+            />
           </LoadingUserInfo>
         </View>
       </View>

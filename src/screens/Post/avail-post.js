@@ -1190,6 +1190,7 @@ const styles = StyleSheet.create({
   infoIcon: {
     color: Colors.icon,
     marginRight: normalize(10),
+    transform: [{ rotate: '180deg' }],
   },
   infoLabel: {
     flex: 1,

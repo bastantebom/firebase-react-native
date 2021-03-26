@@ -17,6 +17,7 @@ import {
   CloseLight,
   HeaderBackGray,
   NavigationArrowAlt,
+  NavigationPinRed,
   PushPin,
 } from '@/assets/images/icons'
 import Config from '@/services/Config'
@@ -248,7 +249,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
                 position: 'absolute',
                 left: 16,
               }}>
-              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+              <HeaderBackGray width={normalize(26)} height={normalize(26)} />
             </TouchableOpacity>
             <GooglePlacesInput
               onResultsClick={handleLocationSearchChange}
@@ -263,8 +264,14 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
                 paddingRight: 32,
                 width: Dimensions.get('window').width,
                 left: normalize(-42),
-                backgroundColor: Colors.neutralsZirconLight,
+                backgroundColor: 'white',
               }}
+              customIcon={
+                <NavigationPinRed
+                  width={normalize(24)}
+                  height={normalize(24)}
+                />
+              }
               customTextInputStyle={{
                 borderWidth: 0,
                 borderRadius: 40,
@@ -317,6 +324,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               type="primary"
               height="xl"
               onPress={saveRefineLocation}
+              customStyle={{ display: isFocused ? 'none' : 'flex' }}
             />
           </View>
         </SafeAreaView>
@@ -334,7 +342,6 @@ const styles = StyleSheet.create({
     bottom: 24,
     padding: 24,
     alignItems: 'stretch',
-    zIndex: 100,
     elevation: 100,
   },
   textInputWrapper: {

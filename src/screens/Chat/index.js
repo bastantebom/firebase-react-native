@@ -21,9 +21,12 @@ import { Colors, normalize, GlobalStyle } from '@/globals'
 import {
   AudioVideo,
   HeaderBackGray,
+  HeaderBack,
+  Back,
   ProfileImageDefault,
   SendMessage,
   VerticalEllipsis,
+  Icons,
 } from '@/assets/images/icons'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
@@ -32,6 +35,7 @@ import { TransitionIndicator, CacheableImage, AppText } from '@/components'
 import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
+import typography from '@/globals/typography'
 
 /**
  * @typedef {Object} ChatChannel
@@ -301,7 +305,11 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
     <>
       <View style={styles.chatWrapper}>
         <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
-          <HeaderBackGray style={styles.backButton} />
+          <Icons.Back
+            style={styles.backButton}
+            width={normalize(24)}
+            height={normalize(24)}
+          />
         </TouchableOpacity>
         <View
           style={{
@@ -316,7 +324,9 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
               />
             </View>
             <View>
-              <Text style={styles.headerContentName}>@{user.username}</Text>
+              <Text style={[styles.headerContentName, typography.body2]}>
+                @{user.username}
+              </Text>
               {showActiveStatus ? (
                 <Text
                   style={[
@@ -329,13 +339,13 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <VerticalEllipsis
             style={{ color: Colors.primaryMidnightBlue }}
             height={normalize(24)}
             width={normalize(24)}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {post?.id && (
         <View style={styles.postDetails}>
@@ -431,8 +441,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   backButton: {
-    width: normalize(24),
-    height: normalize(24),
     marginRight: normalize(16),
   },
   composerWrapper: {

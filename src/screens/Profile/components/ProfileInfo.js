@@ -164,16 +164,6 @@ const ProfileInfo = ({ profileData }) => {
           </AppText>
         </View>
       </View>
-      <Divider
-        style={[
-          GlobalStyle.dividerStyle,
-          {
-            marginVertical: normalize(16),
-            backgroundColor: Colors.neutralsZircon,
-            height: normalize(4),
-          },
-        ]}
-      />
       <Modal
         isVisible={history}
         animationIn="slideInRight"

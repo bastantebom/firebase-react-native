@@ -19,7 +19,7 @@ const SplashScreenComponent = () => {
     Animated.sequence([
       Animated.timing(copyrightOpacity, {
         toValue: 1,
-        duration: 2200,
+        duration: 7000,
         useNativeDriver: true,
       }),
       Animated.timing(containerOpacity, {

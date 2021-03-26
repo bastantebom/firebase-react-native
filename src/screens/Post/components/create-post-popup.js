@@ -371,6 +371,7 @@ const styles = StyleSheet.create({
   },
   plusIcon: {
     position: 'absolute',
+    paddingTop: 2,
   },
   exampleHolder: {
     flex: 1,

@@ -36,7 +36,7 @@ const VerifyNotifictaion = ({ onPress, onClose }) => {
               community.
             </AppText>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <AppText textStyle="body2" color={Colors.neutralsWhite}>
+              <AppText textStyle="body2medium" color={Colors.neutralsWhite}>
                 Get bee-rified
               </AppText>
               <Icons.ChevronRight

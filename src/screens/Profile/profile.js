@@ -16,12 +16,13 @@ import {
   Notification,
   CacheableImage,
   StickyHeader,
+  Divider,
 } from '@/components'
 
 import StickyParallaxHeader from 'react-native-sticky-parallax-header'
 
 import { ProfileHeaderDefault } from '@/assets/images'
-import { normalize, Colors } from '@/globals'
+import { normalize, Colors, GlobalStyle } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context/index'
 
@@ -439,6 +440,7 @@ const ProfileScreen = ({
             />
           </View>
           <ProfileInfo profileData={userInfo} />
+          <View style={{ marginBottom: normalize(8) }} />
 
           {!userInfo.account_verified ? (
             <VerificationStatus statusPercentage={statusPercentage} />
@@ -448,11 +450,22 @@ const ProfileScreen = ({
             style={{
               flexDirection: 'row',
               backgroundColor: Colors.neutralsWhite,
-              paddingHorizontal: 24,
-              paddingVertical: 8,
+              paddingHorizontal: normalize(24),
+              paddingVertical: normalize(16),
             }}>
             <ProfileButtons />
           </View>
+
+          <Divider
+            style={[
+              GlobalStyle.dividerStyle,
+              {
+                marginVertical: normalize(8),
+                backgroundColor: Colors.neutralsZircon,
+                height: normalize(4),
+              },
+            ]}
+          />
         </View>
       </View>
     )

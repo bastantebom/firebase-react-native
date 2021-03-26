@@ -71,7 +71,7 @@ const ContactUs = ({ toggleContactUs }) => {
         style={{
           flex: 1,
         }}>
-        <ScreenHeaderTitle iconSize={0} title="Contact Us" paddingSize={3} />
+        <ScreenHeaderTitle title="Contact Us" paddingSize={3} />
         <PaddingView paddingSize={3}>
           <View
             style={{
@@ -82,6 +82,7 @@ const ContactUs = ({ toggleContactUs }) => {
               <ContactSuccess />
               <AppText
                 textStyle="body1medium"
+                color={Colors.primaryMidnightBlue}
                 customStyle={{
                   marginTop: normalize(32),
                   marginBottom: normalize(8),

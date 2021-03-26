@@ -42,8 +42,9 @@ const Welcome = ({ item, unreadNotification }) => {
         </View>
         <View style={styles.captionWrapper}>
           <AppText textStyle="caption">
-            Welcome to Servbees, Buzzybee! Explore what you can do on Servbees
-            and create your first post today.
+            Welcome to Servbees! Create your first post today to sell a product,
+            offer a service, or just find what you’re looking for nearby. This
+            is your first step to building your own business!
           </AppText>
         </View>
       </View>
@@ -69,10 +70,6 @@ const styles = StyleSheet.create({
   },
   avatarHolder: {
     marginRight: normalize(15),
-    width: normalize(35),
-    height: normalize(35),
-    borderRadius: normalize(35 / 2),
-    overflow: 'hidden',
   },
   captionWrapper: {
     flexDirection: 'row',
