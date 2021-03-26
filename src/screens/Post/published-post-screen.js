@@ -50,6 +50,7 @@ import ConfirmResetBasketModal from './modals/confirm-reset-basket'
 import ConfirmModal from './modals/confirm'
 import Q from 'q'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import Toast from '@/components/toast'
 
 if (
   Platform.OS === 'android' &&
@@ -404,6 +405,15 @@ const PublishedPostScreen = ({ navigation, route }) => {
     setImageModalVisible(true)
   }
 
+  const handleOnArchivePress = () => {
+    setConfirmModalVisible(true)
+    setConfirmModalTitle('Archive Post?')
+    setConfirmModalMessage(
+      'Hide your post from your profile and republish anytime you want. All active orders will still be processed.'
+    )
+    setConfirmModalCallback(() => handleOnArchivePost)
+  }
+
   const handleOnArchivePost = async () => {
     setIsLoading(true)
     setConfirmModalVisible(false)
@@ -411,10 +421,55 @@ const PublishedPostScreen = ({ navigation, route }) => {
       const response = await Api.archivePost({ pid: post.current.id })
       if (!response.success) throw new Error(response.message)
       setDashboardNeedsRefresh(true)
+      setIsLoading(false)
+      Toast.show({
+        content: (
+          <View>
+            <Text
+              style={[typography.body2, { color: Colors.contentPlaceholder }]}>
+              Post archived.{' '}
+              <Text
+                style={[typography.medium, typography.link]}
+                onPress={() =>
+                  navigation.navigate('NBTScreen', {
+                    screen: 'posts',
+                    params: {
+                      screen: 'archived-posts',
+                    },
+                  })
+                }>
+                View Archives
+              </Text>
+            </Text>
+          </View>
+        ),
+        type: 'success',
+        dismissible: true,
+        screenId: 'dashboard',
+        timeout: 5000,
+      })
       navigation.goBack()
     } catch (error) {
-      Alert.alert('Error', 'Oops, something went wrong')
       console.log(error.message)
+      Toast.show({
+        content: (
+          <View>
+            <Text
+              style={[typography.body2, { color: Colors.contentPlaceholder }]}>
+              There was an error archiving your post.{' '}
+              <Text
+                style={[typography.medium, typography.link]}
+                onPress={handleOnArchivePress}>
+                Try again
+              </Text>
+              .
+            </Text>
+          </View>
+        ),
+        type: 'error',
+        dismissible: true,
+        screenId: 'published-post',
+      })
     }
     setMenuDrawerVisible(false)
     setIsLoading(false)
@@ -895,14 +950,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
                   {...iconSize(24)}
                 />
               ),
-              onPress: () => {
-                setConfirmModalVisible(true)
-                setConfirmModalTitle('Archive Post?')
-                setConfirmModalMessage(
-                  'Hide your post from your profile and republish anytime you want. All active orders will still be processed.'
-                )
-                setConfirmModalCallback(() => handleOnArchivePost)
-              },
+              onPress: () => handleOnArchivePress(),
             },
             // {
             //   key: 'delete',
@@ -2200,6 +2248,12 @@ const PublishedPostScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ flex: 1 }}>
+      <Toast
+        containerStyle={{
+          marginTop: getStatusBarHeight() + normalize(8),
+        }}
+        ref={ref => Toast.setRef(ref, 'published-post')}
+      />
       <StatusBar
         translucent={true}
         barStyle={Platform.select({

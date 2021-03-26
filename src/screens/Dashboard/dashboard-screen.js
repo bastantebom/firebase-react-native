@@ -30,6 +30,7 @@ import SearchResults from './components/search-results'
 import Filters from './components/filters'
 import Api from '@/services/Api'
 import { Context } from '@/context'
+import Toast from '@/components/toast'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
 const SEARCH_USER_TOOLBAR_HEIGHT = 120
@@ -52,14 +53,8 @@ const DashboardScreen = ({ navigation }) => {
     latitude: null,
     longitude: null,
   })
-  const [
-    shouldShowVerifyNotification,
-    setShouldShowVerifyNotification,
-  ] = useState(false)
-  const [
-    isVerifyNotificationVisible,
-    setIsVerifyNotificationVisible,
-  ] = useState(false)
+  const [shouldShowVerifyToast, setShouldShowVerifyToast] = useState(false)
+  const [isVerifyToastVisible, setIsVerifyToastVisible] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [posts, setPosts] = useState([])
   const [totalPages, setTotalPages] = useState(Infinity)
@@ -133,7 +128,7 @@ const DashboardScreen = ({ navigation }) => {
 
   useEffect(() => {
     AsyncStorage.getItem('hide-verify-notification').then(hidden => {
-      setShouldShowVerifyNotification(hidden !== 'true')
+      setShouldShowVerifyToast(hidden !== 'true')
     })
     ;(async () => {
       if (!locationData?.latitude || !locationData?.longitude) {
@@ -173,10 +168,8 @@ const DashboardScreen = ({ navigation }) => {
     const isVerified = Object.values(userStatus?.verified).every(
       status => status === 'completed'
     )
-    setIsVerifyNotificationVisible(
-      !!user && !isVerified && shouldShowVerifyNotification
-    )
-  }, [userStatus, shouldShowVerifyNotification])
+    setIsVerifyToastVisible(!!user && !isVerified && shouldShowVerifyToast)
+  }, [userStatus, shouldShowVerifyToast])
 
   const handleOnFocus = () => {
     if (dashboardNeedsRefresh) {
@@ -363,8 +356,12 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <>
+      <Toast
+        containerStyle={{ marginTop: normalize(16) }}
+        ref={ref => Toast.setRef(ref, 'dashboard')}
+      />
       <SafeAreaView style={styles.safeArea}>
-        {isVerifyNotificationVisible && (
+        {isVerifyToastVisible && (
           <VerifyNotification
             onPress={() => {
               navigation.navigate('NBTScreen', {
@@ -373,7 +370,7 @@ const DashboardScreen = ({ navigation }) => {
             }}
             onClose={() => {
               AsyncStorage.setItem('hide-verify-notification', 'true')
-              setIsVerifyNotificationVisible(false)
+              setIsVerifyToastVisible(false)
             }}
           />
         )}
@@ -382,7 +379,7 @@ const DashboardScreen = ({ navigation }) => {
           colors={['#ECEFF8', '#F8F9FC']}
           style={{
             position: 'absolute',
-            top: isVerifyNotificationVisible && !searchBarFocused ? 110 : 0,
+            top: isVerifyToastVisible && !searchBarFocused ? 110 : 0,
             left: 0,
             right: 0,
             height: Animated.add(
@@ -454,7 +451,7 @@ const DashboardScreen = ({ navigation }) => {
         <View
           style={{
             marginTop: normalize([posts.length ? 130 : 0]),
-            paddingBottom: normalize(isVerifyNotificationVisible ? 230 : 0),
+            paddingBottom: normalize(isVerifyToastVisible ? 230 : 0),
           }}>
           <SkeletonLoader isLoading={isInitialLoad || isRereshing} />
 
