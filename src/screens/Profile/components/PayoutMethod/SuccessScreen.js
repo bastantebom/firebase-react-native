@@ -1,11 +1,40 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { View, SafeAreaView } from 'react-native'
 
-import { ScreenHeaderTitle, AppText, AppButton } from '@/components'
+import { ScreenHeaderTitle, AppText } from '@/components'
 import { normalize } from '@/globals'
 import { SuccessPayout } from '@/assets/images'
+import { CommonActions, useFocusEffect } from '@react-navigation/native'
+import Button from '@/components/Button'
 
 const Success = ({ navigation }) => {
+  const backPressHandler = event => {
+    if (navigation.isFocused()) {
+      event.preventDefault()
+      const state = navigation.dangerouslyGetState()
+      const index = state.routes.findIndex(
+        route => route.name === 'payout-method'
+      )
+
+      navigation.removeListener('beforeRemove', backPressHandler)
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [...state.routes.slice(0, index), { name: 'payout-method' }],
+        })
+      )
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.removeListener('beforeRemove', backPressHandler)
+      navigation.addListener('beforeRemove', backPressHandler)
+
+      return () => navigation.removeListener('beforeRemove', backPressHandler)
+    }, [navigation])
+  )
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
@@ -32,13 +61,7 @@ const Success = ({ navigation }) => {
               method.
             </AppText>
           </View>
-          <AppButton
-            onPress={() => {
-              navigation.navigate('Profile')
-            }}
-            text="Okay"
-            type="primary"
-          />
+          <Button label="Okay" type="primary" onPress={navigation.goBack} />
         </View>
       </View>
     </SafeAreaView>

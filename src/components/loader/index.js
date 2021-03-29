@@ -7,13 +7,14 @@ import Modal from 'react-native-modal'
  * @param {object} props
  * @property {boolean} props.visible
  */
-const Loader = ({ visible }) => {
+const Loader = ({ visible, ...props }) => {
   return (
     <Modal
-      style={styles.wrapper}
+      style={[styles.wrapper, props.style]}
       isVisible={visible}
       statusBarTranslucent={true}
-      animationIn="fadeIn">
+      animationIn="fadeIn"
+      animationOut="fadeOut">
       <View style={styles.spinnerWrapper}>
         <ActivityIndicator animating color={Colors.link} size="large" />
       </View>
