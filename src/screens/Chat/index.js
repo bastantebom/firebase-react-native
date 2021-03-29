@@ -98,6 +98,7 @@ const ChatScreen = ({ route, navigation }) => {
       }),
       (async () => {
         await chatsRef.update({
+          has_messages: true,
           latest_chat_time: firestore.Timestamp.fromDate(new Date()),
         })
       })(),

@@ -73,6 +73,8 @@ const ActivitiesCard = ({ item }) => {
       label === 'Payment Processing'
     )
       return Colors.neutralsMischka
+
+    return Colors.neutralsMischka
   }
 
   const setStatusLabel = () => {

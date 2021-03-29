@@ -11,8 +11,8 @@ import { normalize, Colors } from '@/globals'
 import { AppText, ScreenHeaderTitle } from '@/components'
 import { Icons, ChevronDown, ChevronUp, PostClock } from '@/assets/images/icons'
 
-import ActivitiesCard from './components/ActivitiesCard'
-import ItemCard from '@/screens/Activity/components/ItemCard'
+import ActivitiesCard from './components/card'
+import ItemCard from '@/screens/Activity/components/item-card'
 
 const OngoingItem = ({ route, navigation }) => {
   const { item } = route.params

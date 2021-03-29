@@ -13,8 +13,10 @@ import {
   Dimensions,
   RefreshControl,
   Text,
+  Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import Modal from 'react-native-modal'
 
 import { UserContext } from '@/context/UserContext'
 
@@ -23,6 +25,7 @@ import { AppText, ScreenHeaderTitle, MarginView } from '@/components'
 
 import PostImage from '@/components/Post/post-image'
 import Avatar from '@/components/Avatar/avatar'
+import ChatSort from './components/ChatSort'
 
 import { Icons, ChatEmpty, ChatBlue, BlueDot } from '@/assets/images/icons'
 import Api from '@/services/Api'
@@ -31,10 +34,31 @@ const ChatHouse = () => {
   const navigation = useNavigation()
   const { userInfo } = useContext(UserContext)
 
-  const [chatRooms, setChatRooms] = useState({})
-  const [lastId, setLastId] = useState(null)
+  const [sort, setSort] = useState({
+    label: 'All Messages',
+    value: 'all',
+    description: 'These are all your messages',
+  })
 
-  const loadPosts = async () => {
+  const [items, setItems] = useState({})
+  const [lastId, setLastId] = useState(null)
+  const [sortModal, setSortModal] = useState(false)
+
+  const loadPosts = () => {
+    setLastId(null)
+    setItems({})
+
+    switch (sort.value) {
+      case 'all':
+        return loadAllMessages()
+      case 'own posts':
+        return loadOwnPosts()
+      default:
+        return loadAllMessages()
+    }
+  }
+
+  const loadAllMessages = async () => {
     try {
       const params = {}
       if (lastId) params.lastItemId = lastId
@@ -43,84 +67,122 @@ const ChatHouse = () => {
 
       if (!response.success) throw new Error(response.message)
 
-      const newChatRooms = response.data
-        .filter(chatRoom => !!chatRoom)
-        .map(chatRoom => ({ ...chatRoom, $isLoading: true }))
+      const newItems = response.data
+        .filter(item => !!item)
+        .map(item => ({
+          post_id: item.post_id,
+          chat_room: item,
+          $isLoading: true,
+        }))
         .reduce(
-          (_chatRooms, chatRoom) => ({
-            ..._chatRooms,
-            [chatRoom.id]: chatRoom,
+          (_items, item) => ({
+            ..._items,
+            [item.id]: item,
           }),
           {}
         )
 
       setLastId(response.data.slice(-1)[0]?.id)
 
-      setChatRooms(chatRooms => ({ ...chatRooms, ...newChatRooms }))
+      setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message || 'error on getting all messages data')
     }
   }
 
-  const getDeferredData = async chatRoom => {
-    await Promise.all([
-      Api.getChatCounts({ pid: chatRoom.post_id }).then(response => {
-        setChatRooms(chatRooms => ({
-          ...chatRooms,
-          [chatRoom.id]: {
-            ...chatRooms[chatRoom.id],
+  const loadOwnPosts = async () => {
+    try {
+      const params = {}
+      if (lastId) params.lastItemId = lastId
+
+      const response = await Api.getOwnPosts(params)
+
+      if (!response.success) throw new Error(response.message)
+
+      const newItems = response.data
+        .filter(item => !!item)
+        .map(item => ({
+          post_id: item.id,
+          post: item,
+          $isLoading: true,
+        }))
+        .reduce(
+          (_items, item) => ({
+            ..._items,
+            [item.post_id]: item,
+          }),
+          {}
+        )
+
+      response.data.forEach(item => console.log(item.id))
+
+      console.log(newItems)
+      // setLastId(response.data.slice(-1)[0]?.id)
+
+      // setItems(items => ({ ...items, ...newItems }))
+    } catch (error) {
+      console.error(error.message || 'error on getting own posts chat data')
+    }
+  }
+
+  const getDeferredData = async item => {
+    return await Promise.all([
+      Api.getChatCounts({ pid: item.post_id }).then(response => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
             chat_counts: response.data,
           },
         }))
       }),
-      Api.getPost({ pid: chatRoom.post_id }).then(response => {
-        setChatRooms(chatRooms => ({
-          ...chatRooms,
-          [chatRoom.id]: {
-            ...chatRooms[chatRoom.id],
+      Api.getPost({ pid: item.post_id }).then(response => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
             post: response.data,
           },
         }))
       }),
-      Api.getLatestChat({ pid: chatRoom.post_id }).then(response => {
-        setChatRooms(chatRooms => ({
-          ...chatRooms,
-          [chatRoom.id]: {
-            ...chatRooms[chatRoom.id],
+      Api.getLatestChat({ pid: item.post_id }).then(response => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
             latest_chat: response.data,
           },
         }))
       }),
       (() => {
-        const sellerId = Object.getOwnPropertyNames(chatRoom.members).filter(
-          member => member !== userInfo.uid
-        )[0]
-
-        Api.getUser({ uid: sellerId }).then(response => {
-          setChatRooms(chatRooms => ({
-            ...chatRooms,
-            [chatRoom.id]: {
-              ...chatRooms[chatRoom.id],
-              seller_info: response.data,
-            },
-          }))
-        })
+        //   const sellerId = Object.keys(chatRoom.members).filter(
+        //     member => member !== userInfo.uid
+        //   )[0]
+        //   Api.getUser({ uid: sellerId }).then(response => {
+        //     setChatRooms(chatRooms => ({
+        //       ...chatRooms,
+        //       [chatRoom.id]: {
+        //         ...chatRooms[chatRoom.id],
+        //         seller_info: response.data,
+        //       },
+        //     }))
+        //   })
       })(),
     ])
       .then(() => {
-        setChatRooms(chatRooms => ({
-          ...chatRooms,
-          [chatRoom.id]: {
-            ...chatRooms[chatRoom.id],
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
             $isLoading: false,
           },
         }))
       })
       .catch(() => {
-        setChatRooms(chatRooms => ({
-          ...chatRooms,
-          [chatRoom.id]: {
-            ...chatRooms[chatRoom.id],
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
             $hasErrors: true,
           },
         }))
@@ -128,26 +190,37 @@ const ChatHouse = () => {
   }
 
   useEffect(() => {
-    Object.values(chatRooms)
-      .filter(chatRoom => !chatRoom.$promise)
-      .forEach(chatRoom => {
-        setChatRooms(chatRooms => ({
-          ...chatRooms,
-          [chatRoom.id]: {
-            ...chatRooms[chatRoom.id],
-            $promise: getDeferredData(chatRoom),
+    Object.values(items)
+      .filter(item => !item.$promise)
+      .forEach(item => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
+            $promise: getDeferredData(item),
           },
         }))
       })
-  }, [chatRooms])
+  }, [items])
 
   useEffect(() => {
     loadPosts()
   }, [])
 
+  useEffect(() => {
+    loadPosts()
+  }, [sort])
+
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.postWrapper}>
+      <TouchableOpacity
+        style={styles.postWrapper}
+        onPress={() => {
+          navigation.navigate('NBTScreen', {
+            screen: 'PostChat',
+            params: { post: item?.post },
+          })
+        }}>
         <View style={styles.imageWrapper}>
           <View style={styles.postImageContainer}>
             <PostImage
@@ -177,27 +250,39 @@ const ChatHouse = () => {
               color={Colors.contentPlaceholder}
               customStyle={styles.timeago}>
               {timePassedShort(
-                Date.now() / 1000 - item.latest_chat_time._seconds
+                Date.now() / 1000 - item?.chat_room?.latest_chat_time?._seconds
               )}
             </AppText>
           </View>
           <View style={styles.chatsWrapper}>{renderDetails(item)}</View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
   const renderDetails = item => {
-    if (item?.post?.uid === userInfo.uid)
-      return (
-        <>
-          <ChatBlue style={styles.chatIcon} />
-          <AppText color={'#3781FC'}>
-            4 New in {item?.chat_counts?.messages} chats
-          </AppText>
-        </>
-      )
-    else
+    if (item?.post?.uid === userInfo.uid) {
+      if (!!item?.chat_counts?.new_messages) {
+        return (
+          <>
+            <ChatBlue style={styles.chatIcon} />
+            <AppText color={'#3781FC'}>
+              {item?.chat_counts?.new_messages} New in{' '}
+              {item?.chat_counts?.messages} chats
+            </AppText>
+          </>
+        )
+      } else {
+        return (
+          <>
+            <ChatEmpty style={styles.chatIcon} />
+            <AppText color={'#515057'}>
+              {item?.chat_counts?.messages} chats
+            </AppText>
+          </>
+        )
+      }
+    } else {
       return (
         <View style={styles.chatInfoWrapper}>
           <Text
@@ -213,19 +298,23 @@ const ChatHouse = () => {
           {!item?.latest_chat?.read && <BlueDot />}
         </View>
       )
+    }
   }
 
   return (
-    <View>
+    <SafeAreaView>
       <ScreenHeaderTitle
         close={() => navigation.goBack()}
         title="All Chats"
+        iconSize={normalize(16)}
         paddingSize={3}
       />
       <View style={styles.bodyWrapper}>
-        <TouchableOpacity style={styles.sortWrapper}>
+        <TouchableOpacity
+          style={styles.sortWrapper}
+          onPress={() => setSortModal(true)}>
           <AppText textStyle="body3" customStyle={styles.sortText}>
-            All Messages
+            {sort.label}
           </AppText>
           <Icons.ChevronDown
             style={{ color: 'black' }}
@@ -235,16 +324,43 @@ const ChatHouse = () => {
         </TouchableOpacity>
 
         <FlatList
-          data={Object.values(chatRooms)}
-          keyExtractor={item => item.id}
+          data={Object.values(items)}
+          keyExtractor={item => item.post_id}
           renderItem={renderItem}
         />
       </View>
-    </View>
+
+      <Modal
+        isVisible={sortModal}
+        style={styles.modal}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        animationInTiming={200}
+        animationOutTiming={180}
+        swipeDirection="down"
+        propagateSwipe
+        statusBarTranslucent={true}
+        onBackButtonPress={() => setSortModal(false)}
+        customBackdrop={
+          <TouchableWithoutFeedback onPress={() => setSortModal(false)}>
+            <View style={styles.modalBackdrop} />
+          </TouchableWithoutFeedback>
+        }>
+        <ChatSort close={() => setSortModal(false)} choice={setSort} />
+      </Modal>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
   bodyWrapper: {
     paddingHorizontal: normalize(16),
     paddingBottom: normalize(245),

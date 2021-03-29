@@ -50,7 +50,7 @@ import { Welcome } from '@/screens/Activity'
 import { Verified } from '@/screens/Activity'
 import { NotVerified } from '@/screens/Activity'
 import { OngoingItem } from '@/screens/Activity'
-import GuestActivity from '@/screens/Activity/components/GuestActivity'
+import GuestActivity from '@/screens/Activity/components/guest-activity'
 
 import ChatHouse from '@/screens/Chat/chat-house'
 import PostChat from '@/screens/Chat/post-chat'

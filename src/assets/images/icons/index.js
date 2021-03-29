@@ -211,6 +211,11 @@ import Search from './search.svg'
 import PlusCircle from '@/assets/images/icons/plus-circle.svg'
 import NotVerified from '@/assets/images/icons/not-verified.svg'
 import VerifiedIllustration from '@/assets/images/icons/verified-illustration.svg'
+import PostChat from '@/assets/images/icons/post-chat.svg'
+import AllChat from '@/assets/images/icons/all-chats.svg'
+import OwnPostsChats from '@/assets/images/icons/own-posts-chats.svg'
+import OrdersChats from '@/assets/images/icons/orders-chats.svg'
+import PastsChats from '@/assets/images/icons/pasts-chats.svg'
 
 //OWN MENU ICONS
 import HidePost from './hide-post.svg'
@@ -612,6 +617,7 @@ export {
 export const Icons = {
   AllActivities,
   AllActivities,
+  AllChat,
   Appointment,
   Appointment,
   ArrowRight,
@@ -711,9 +717,12 @@ export const Icons = {
   NeedPost,
   NeedPost,
   NeedPost,
+  OrdersChats,
+  OwnPostsChats,
   Page,
   Past,
   Past,
+  PastsChats,
   PayoutWallet,
   PaypalActive,
   PayPalPayment,
@@ -725,6 +734,7 @@ export const Icons = {
   PostAppointment,
   PostCalendar,
   PostCash,
+  PostChat,
   PostClock,
   PostDelivery,
   PostInfo,

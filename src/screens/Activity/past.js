@@ -1,7 +1,7 @@
 import React from 'react'
 import { SafeAreaView, View, StyleSheet, ScrollView } from 'react-native'
 
-import ItemCard from '@/screens/Activity/components/ItemCard'
+import ItemCard from '@/screens/Activity/components/item-card'
 
 import { ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
