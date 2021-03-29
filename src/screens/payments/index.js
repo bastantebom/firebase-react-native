@@ -9,6 +9,7 @@ import PaypalScreen from './paypal'
 import PaymentWebView from './payment-webview'
 import PaymentStatusScreen from './status'
 import CreditCardScreen from './credit-card'
+import CardAuthenticationScreen from './card-authentication'
 
 const PaymentsStack = () => {
   const Stack = createStackNavigator()
@@ -50,6 +51,11 @@ const PaymentsStack = () => {
       <Stack.Screen
         name="card"
         component={CreditCardScreen}
+        options={defaultScreenOptions}
+      />
+      <Stack.Screen
+        name="card-authentication"
+        component={CardAuthenticationScreen}
         options={defaultScreenOptions}
       />
     </Stack.Navigator>

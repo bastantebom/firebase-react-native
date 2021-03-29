@@ -67,7 +67,7 @@
     "react-native-dash": "^0.0.11",
     "react-native-debounce-input": "^1.0.5",
     "react-native-device-info": "^8.0.1",
-    "react-native-dotenv": "^2.4.3",
+    "react-native-dotenv": "^2.5.3",
     "react-native-fast-image": "^8.3.2",
     "react-native-fbsdk": "^3.0.0",
     "react-native-fluid-animations": "^0.1.1",

@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import {
   Dimensions,
   Keyboard,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StatusBar,
@@ -72,10 +73,7 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
       style={[
         styles.container,
         {
-          maxHeight:
-            height -
-            keyboardHeight -
-            getStatusBarHeight()
+          maxHeight: height - keyboardHeight - getStatusBarHeight(),
         },
       ]}>
       <BottomSheetHeader />
@@ -89,104 +87,110 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
         </Text>
         <Text style={typography.subtitle1}>{budgetLabel}</Text>
       </View>
-      <ScrollView style={styles.content}>
-        <View style={styles.formGroup}>
-          <PriceInput
-            value={basket.offer}
-            priceLabel="You are offering"
-            onChangeText={offer =>
-              setBasket(basket => ({
-                ...basket,
-                offer,
-              }))
-            }
-            containerStyle={[
-              basket.offer < budget.minimum || basket.offer > budget.maximum
-                ? {
-                    borderColor: Colors.secondaryBrinkPink,
-                    marginBottom: normalize(16),
-                  }
-                : {},
-            ]}
-            message={
-              basket.offer < budget.minimum
-                ? 'Uh-oh please make a better offer. '
-                : basket.offer > budget.maximum
-                ? "Oops it's a little out of budget. "
-                : ''
-            }
-            messageStyle={{
-              color: Colors.secondaryBrinkPink,
-            }}
-            placeholder="0.00"
-          />
-        </View>
-        <View style={styles.formGroup}>
-          <TextInput
-            placeholder="Some text here saying they could add more information about their offer"
-            label="Message (Optional)"
-            value={basket.message}
-            multiline
-            numberOfLines={5}
-            onChangeText={message =>
-              setBasket(basket => ({ ...basket, message }))
-            }
-          />
-        </View>
-        <View style={[styles.divider, { marginBottom: normalize(8) }]} />
-        <View>
-          <Text style={[typography.body1, { marginBottom: normalize(3) }]}>
-            <Text style={typography.medium}>You can also send your post</Text>
-            <Text> (Optional)</Text>
-          </Text>
-          <Text style={[typography.body2, { marginBottom: normalize(16) }]}>
-            If you posted about this product/service, send it along with your
-            offer.{' '}
-          </Text>
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[
-              styles.attachedPostWrapper,
-              {
-                borderColor: !basket.attachedPost
-                  ? Colors.neutralGray
-                  : Colors.contentEbony,
-              },
-            ]}
-            onPress={onAttachPostPress}>
-            {basket.attachedPost ? (
-              <View style={styles.attachedPost}>
-                <View style={styles.thumbnailWrapper}>
-                  <PostImage
-                    path={basket.attachedPost.cover_photos?.[0]}
-                    size="64x64"
-                    postType={basket.attachedPost.type}
-                  />
-                </View>
-                <Text style={typography.body2} numberOfLine={2}>
-                  {basket.attachedPost.title}
-                </Text>
-              </View>
-            ) : (
-              <View>
-                <Text
-                  style={[
-                    typography.body2,
-                    { color: Colors.contentPlaceholder },
-                  ]}>
-                  Send a Post
-                </Text>
-                <Text style={typography.body1}>Select one from your posts</Text>
-              </View>
-            )}
-            <Icons.ChevronRight
-              style={{ color: Colors.icon }}
-              {...iconSize(24)}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.select({ ios: 'padding', android: null })}>
+        <ScrollView style={styles.content}>
+          <View style={styles.formGroup}>
+            <PriceInput
+              value={basket.offer}
+              priceLabel="You are offering"
+              onChangeText={offer =>
+                setBasket(basket => ({
+                  ...basket,
+                  offer,
+                }))
+              }
+              containerStyle={[
+                basket.offer < budget.minimum || basket.offer > budget.maximum
+                  ? {
+                      borderColor: Colors.secondaryBrinkPink,
+                      marginBottom: normalize(16),
+                    }
+                  : {},
+              ]}
+              message={
+                basket.offer < budget.minimum
+                  ? 'Uh-oh please make a better offer. '
+                  : basket.offer > budget.maximum
+                  ? "Oops it's a little out of budget. "
+                  : ''
+              }
+              messageStyle={{
+                color: Colors.secondaryBrinkPink,
+              }}
+              placeholder="0.00"
             />
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+          </View>
+          <View style={styles.formGroup}>
+            <TextInput
+              placeholder="Some text here saying they could add more information about their offer"
+              label="Message (Optional)"
+              value={basket.message}
+              multiline
+              numberOfLines={5}
+              onChangeText={message =>
+                setBasket(basket => ({ ...basket, message }))
+              }
+            />
+          </View>
+          <View style={[styles.divider, { marginBottom: normalize(8) }]} />
+          <View>
+            <Text style={[typography.body1, { marginBottom: normalize(3) }]}>
+              <Text style={typography.medium}>You can also send your post</Text>
+              <Text> (Optional)</Text>
+            </Text>
+            <Text style={[typography.body2, { marginBottom: normalize(16) }]}>
+              If you posted about this product/service, send it along with your
+              offer.{' '}
+            </Text>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[
+                styles.attachedPostWrapper,
+                {
+                  borderColor: !basket.attachedPost
+                    ? Colors.neutralGray
+                    : Colors.contentEbony,
+                },
+              ]}
+              onPress={onAttachPostPress}>
+              {basket.attachedPost ? (
+                <View style={styles.attachedPost}>
+                  <View style={styles.thumbnailWrapper}>
+                    <PostImage
+                      path={basket.attachedPost.cover_photos?.[0]}
+                      size="64x64"
+                      postType={basket.attachedPost.type}
+                    />
+                  </View>
+                  <Text style={typography.body2} numberOfLine={2}>
+                    {basket.attachedPost.title}
+                  </Text>
+                </View>
+              ) : (
+                <View>
+                  <Text
+                    style={[
+                      typography.body2,
+                      { color: Colors.contentPlaceholder },
+                    ]}>
+                    Send a Post
+                  </Text>
+                  <Text style={typography.body1}>
+                    Select one from your posts
+                  </Text>
+                </View>
+              )}
+              <Icons.ChevronRight
+                style={{ color: Colors.icon }}
+                {...iconSize(24)}
+              />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <View style={styles.buttonWrapper}>
         <Button

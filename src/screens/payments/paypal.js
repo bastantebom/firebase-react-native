@@ -137,29 +137,6 @@ const PaypalScreen = ({ navigation, route }) => {
           </View>
 
           <View>
-            <View style={{ flexDirection: 'row' }}>
-              <AppCheckbox
-                Icon=""
-                label=""
-                value={terms}
-                valueChangeHandler={setTerms}
-                style={{
-                  paddingLeft: 0,
-                  marginRight: 5,
-                  paddingTop: 0,
-                  backgroundColor: 'transparent',
-                }}
-              />
-              <AppText
-                textStyle="body2"
-                customStyle={{
-                  maxWidth: '90%',
-                  paddingBottom: 20,
-                }}>
-                Check here to indicate that you have read and agree to
-                Paymongo/Servbees’s Privacy Notice before providing your details
-              </AppText>
-            </View>
             <AppButton
               text="Proceed"
               type="primary"

@@ -71,6 +71,7 @@ const TextField = ({
   }
 
   const handleBlur = () => {
+    onBlur?.()
     const toValue = normalize(
       props.multiline &&
         props.numberOfLines &&
