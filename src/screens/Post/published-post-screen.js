@@ -427,7 +427,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           <View>
             <Text
               style={[typography.body2, { color: Colors.contentPlaceholder }]}>
-              Post archived.{' '}
+              Post has ben successfully archived.{' '}
               <Text
                 style={[typography.medium, typography.link]}
                 onPress={() =>
@@ -438,7 +438,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
                     },
                   })
                 }>
-                View Archives
+                View Archived Posts
               </Text>
             </Text>
           </View>
