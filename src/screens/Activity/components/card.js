@@ -73,8 +73,6 @@ const ActivitiesCard = ({ item }) => {
       label === 'Payment Processing'
     )
       return Colors.neutralsMischka
-
-    return Colors.neutralsMischka
   }
 
   const setStatusLabel = () => {
@@ -202,10 +200,12 @@ const ActivitiesCard = ({ item }) => {
             ) : (
               <>
                 <View
-                  style={{
-                    ...styles.statusText,
-                    backgroundColor: setStatusBackground(),
-                  }}>
+                  style={[
+                    styles.statusText,
+                    {
+                      backgroundColor: setStatusBackground(),
+                    },
+                  ]}>
                   <AppText textStyle="metadata" color={'white'}>
                     {setStatusLabel()}
                   </AppText>

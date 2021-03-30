@@ -1719,21 +1719,21 @@ const PublishedPostScreen = ({ navigation, route }) => {
     if (post.current.shipping_methods?.delivery?.courier) {
       shippingMethods.push({
         label: 'Delivery',
-        icon: <Icons.Truck style={{ color: Colors.icon }} {...iconSize(16)} />,
+        icon: <Icons.Truck style={{ color: Colors.icon }} {...iconSize(18)} />,
         notes: post.current.shipping_methods.delivery.courier.notes || '',
       })
     }
     if (post.current.shipping_methods?.delivery?.own_delivery) {
       shippingMethods.push({
         label: 'Delivery',
-        icon: <Icons.Truck style={{ color: Colors.icon }} {...iconSize(16)} />,
+        icon: <Icons.Truck style={{ color: Colors.icon }} {...iconSize(18)} />,
         notes: post.current.shipping_methods.delivery.own_delivery.notes || '',
       })
     }
     if (post.current.shipping_methods?.pickup) {
       shippingMethods.push({
         label: 'Pickup',
-        icon: <Icons.Pickup style={{ color: Colors.icon }} {...iconSize(16)} />,
+        icon: <Icons.Pickup style={{ color: Colors.icon }} {...iconSize(18)} />,
         notes: post.current.shipping_methods.pickup.notes || '',
       })
     }
@@ -1776,7 +1776,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             {...iconSize(18)}
           />
           <View>
-            <Text style={[typography.body1]}>
+            <Text style={[typography.body1, { maxWidth: '95%' }]}>
               {post.current.location?.full_address}
             </Text>
             <TouchableOpacity
@@ -1869,10 +1869,18 @@ const PublishedPostScreen = ({ navigation, route }) => {
                     ),
                   },
                 ]}>
-                <Icons.Truck
-                  style={[styles.postInfoIcon, { marginTop: normalize(2) }]}
-                  {...iconSize(18)}
-                />
+                {post.current.shipping_methods?.delivery?.own_delivery ||
+                post.current.shipping_methods?.delivery?.courier ? (
+                  <Icons.Truck
+                    style={[styles.postInfoIcon, { marginTop: normalize(2) }]}
+                    {...iconSize(18)}
+                  />
+                ) : (
+                  <Icons.Pickup
+                    style={[styles.postInfoIcon, { marginTop: normalize(2) }]}
+                    {...iconSize(18)}
+                  />
+                )}
                 <View style={{ flex: 1 }}>
                   <Text style={typography.body1}>
                     Available for{' '}

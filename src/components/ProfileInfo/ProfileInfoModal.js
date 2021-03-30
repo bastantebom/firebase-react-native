@@ -494,29 +494,28 @@ function ProfileInfoModal(props) {
         tabs={profileTabs}
         tabTextStyle={styles.tabTextStyle}
         tabTextActiveStyle={{
-          color: Colors.secondaryRoyalBlue,
+          color: Colors.contentOcean,
         }}
         tabTextContainerStyle={{
           flexGrow: 1,
-          left: normalize(-18),
           borderBottomColor: 'transparent',
           borderBottomWidth: normalize(4),
         }}
         tabTextContainerActiveStyle={{
-          borderBottomColor: Colors.secondaryRoyalBlue,
+          borderBottomColor: Colors.contentOcean,
           borderBottomWidth: normalize(4),
+          borderRadius: 2,
         }}
         tabsContainerStyle={{
-          height: normalize(50),
+          height: normalize(40),
           width: Dimensions.get('window').width + normalize(18) * 2,
-          backgroundColor: Colors.neutralsWhite,
-          borderBottomColor: Colors.neutralGray,
-          borderBottomWidth: normalize(4),
+          backgroundColor: 'white',
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
-          borderBottomColor: Colors.neutralGray,
-          borderBottomWidth: normalize(10),
+          flex: 1,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: 'black',
         }}></StickyParallaxHeader>
     </View>
   )

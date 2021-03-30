@@ -224,6 +224,10 @@ const renderBubble = props => {
     <Bubble
       {...props}
       renderMessageText={renderMessageText}
+      textStyle={{
+        left: { ...typography.body2, color: Colors.neutralsWhite },
+        right: { ...typography.body2, color: Colors.neutralsWhite },
+      }}
       wrapperStyle={{
         left: { ...styles.bubble, ...styles.bubbleLeft },
         right: { ...styles.bubble, ...styles.bubbleRight },
@@ -257,6 +261,7 @@ const renderInputToolbar = props => {
         fontSize: normalize(16),
         lineHeight: normalize(24),
         margin: 0,
+        ...typography.body2,
       }}
     />
   )
@@ -306,7 +311,7 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
     <>
       <View style={styles.chatWrapper}>
         <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
-          <Icons.Back
+          <HeaderBackGray
             style={styles.backButton}
             width={normalize(24)}
             height={normalize(24)}
@@ -421,6 +426,7 @@ const styles = StyleSheet.create({
   headerContentName: {
     fontSize: normalize(14),
     lineHeight: normalize(21),
+    marginLeft: normalize(5),
   },
   headerContentStatus: {
     fontSize: normalize(8),
