@@ -248,36 +248,6 @@ export const getLocationData = async ({ latitude, longitude }) => {
   }
 }
 
-/**
- * @param {number} num
- * @returns {string}
- */
-export const commaSeparate = (num = '') => {
-  const amount = parseFloat((num + '').replace(/[^0-9\.\-]+/g, '')).toFixed(2)
-
-  return isNaN(amount)
-    ? '0'
-    : amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-}
-
-/**
- * @param {string} str
- */
-export const formatPrice = str => {
-  const price = commaSeparate(str + '')
-  const amount = parseFloat(price.replace(/,/g, ''))
-
-  if (amount >= 1000000) return commaSeparate(999999)
-  else if (
-    (amount >= 1000 && !str.endsWith('.')) ||
-    str.split('.')[1]?.length > 2
-  )
-    return price
-  else if (amount > 1000 && str.endsWith('.')) return `${price}.`
-
-  return str.replace(/[^0-9\.]+/g, '')
-}
-
 export const isEmpty = obj => {
   for (var key in obj) {
     if (obj.hasOwnProperty(key)) return false

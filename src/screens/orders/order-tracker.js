@@ -40,7 +40,7 @@ import CancelOrderModal from './modals/cancel-order'
 import DeclineOrderModal from './modals/decline-order'
 
 import moment from 'moment'
-import { commaSeparate, iconSize, parseTime } from '@/globals/Utils'
+import { iconSize, parseTime } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
 import { formatNumber } from 'react-native-currency-input'
@@ -1058,7 +1058,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   onPress={() => handlePayment(orderData.payment_method)}>
                   <AppText textStyle="body2medium">Continue to Payment</AppText>
                   <AppText textStyle="body2">
-                    ₱{commaSeparate(totalPrice)}
+                    ₱
+                    {formatNumber(totalPrice, {
+                      separator: '.',
+                      precision: 2,
+                      delimiter: ',',
+                    })}
                   </AppText>
                 </TouchableOpacity>
               )}

@@ -112,8 +112,7 @@ const ActivitiesCard = ({ item }) => {
 
   const setOrders = () => {
     if (activity.post.uid !== user.uid) {
-      let totalPrice = 0
-      activity.post.items.forEach(
+      let totalPrice = (activity.post.items || []).forEach(
         post => (totalPrice = totalPrice + parseInt(post.price))
       )
 

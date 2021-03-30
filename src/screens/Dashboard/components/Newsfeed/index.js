@@ -11,7 +11,7 @@ import { Divider } from 'react-native-paper'
 import { getDistance } from 'geolib'
 
 import { UserContext } from '@/context/UserContext'
-import { commaSeparate, iconSize } from '@/globals/Utils'
+import { iconSize } from '@/globals/Utils'
 import { Colors, normalize, timePassedShort } from '@/globals'
 
 import { Icons } from '@/assets/images/icons'

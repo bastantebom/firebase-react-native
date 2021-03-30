@@ -11,7 +11,7 @@ import {
 
 import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
-import { commaSeparate } from '@/globals/Utils'
+import { formatNumber } from 'react-native-currency-input'
 
 /**
  * @typedef {object} GCashProps
@@ -26,12 +26,10 @@ import { commaSeparate } from '@/globals/Utils'
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'GCash'>} param0 */
 const GCashScreen = ({ navigation, route }) => {
   const { orderData } = route.params
-  const [terms, setTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const totalPrice = orderData.items.reduce(
-    (total, item) =>
-      total + +(parseFloat((item.price + '').replace(/,/, '')) * item.quantity),
+  const totalPrice = (orderData?.items || []).reduce(
+    (total, item) => total + item.price * (item.quantity || 1),
     0
   )
 
@@ -96,7 +94,12 @@ const GCashScreen = ({ navigation, route }) => {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <AppText textStyle="display6">
-                  ₱{commaSeparate(totalPrice)}
+                  ₱
+                  {formatNumber(totalPrice, {
+                    separator: '.',
+                    precision: 2,
+                    delimiter: ',',
+                  })}
                 </AppText>
                 <AppText textStyle="caption">Amount</AppText>
               </View>
@@ -116,24 +119,12 @@ const GCashScreen = ({ navigation, route }) => {
             </AppText>
           </View>
 
-          <View>
-            <AppButton
-              text="Proceed"
-              type="primary"
-              disabled={!terms || isLoading}
-              onPress={handleSubmit}
-              customStyle={{
-                backgroundColor:
-                  !terms || isLoading
-                    ? Colors.neutralsZirconLight
-                    : Colors.primaryYellow,
-                borderColor:
-                  !terms || isLoading
-                    ? Colors.neutralsZirconLight
-                    : Colors.primaryYellow,
-              }}
-            />
-          </View>
+          <Button
+            type={isLoading ? 'disabled' : 'primary'}
+            disabled={isLoading}
+            label="Proceed"
+            onPress={handleSubmit}
+          />
         </View>
       </SafeAreaView>
     </>

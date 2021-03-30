@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, SafeAreaView, StyleSheet, Alert } from 'react-native'
 import Api from '@/services/Api'
 import {
-  AppButton,
-  AppCheckbox,
   AppText,
   PaddingView,
   ScreenHeaderTitle,
@@ -12,7 +10,8 @@ import {
 
 import { Colors, normalize } from '@/globals'
 import { LogoPaypal } from '@/assets/images'
-import { commaSeparate } from '@/globals/Utils'
+import { formatNumber } from 'react-native-currency-input'
+import Button from '@/components/Button'
 
 /**
  * @typedef {object} PaypalProps
@@ -28,12 +27,10 @@ import { commaSeparate } from '@/globals/Utils'
 const PaypalScreen = ({ navigation, route }) => {
   const { orderData } = route.params
 
-  const [terms, setTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const totalPrice = orderData.items.reduce(
-    (total, item) =>
-      total + +(parseFloat((item.price + '').replace(/,/, '')) * item.quantity),
+  const totalPrice = (orderData?.items || []).reduce(
+    (total, item) => total + item.price * (item.quantity || 1),
     0
   )
 
@@ -45,9 +42,9 @@ const PaypalScreen = ({ navigation, route }) => {
         paypalItems.push({
           name: item.title,
           sku: item.title,
-          price: `${item.price.replace(',', '')}`,
+          price: item.price,
           currency: 'PHP',
-          quantity: item.quantity,
+          quantity: item.quantity || 1,
         })
       )
 
@@ -116,7 +113,12 @@ const PaypalScreen = ({ navigation, route }) => {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <AppText textStyle="display6">
-                  ₱{commaSeparate(totalPrice)}
+                  ₱
+                  {formatNumber(totalPrice, {
+                    separator: '.',
+                    precision: 2,
+                    delimiter: ',',
+                  })}
                 </AppText>
                 <AppText textStyle="caption">Amount</AppText>
               </View>
@@ -136,22 +138,12 @@ const PaypalScreen = ({ navigation, route }) => {
             </AppText>
           </View>
 
-          <View>
-            <AppButton
-              text="Proceed"
-              type="primary"
-              disabled={!terms}
-              onPress={handleSubmit}
-              customStyle={{
-                backgroundColor: !terms
-                  ? Colors.neutralsZirconLight
-                  : Colors.primaryYellow,
-                borderColor: !terms
-                  ? Colors.neutralsZirconLight
-                  : Colors.primaryYellow,
-              }}
-            />
-          </View>
+          <Button
+            type={isLoading ? 'disabled' : 'primary'}
+            disabled={isLoading}
+            label="Proceed"
+            onPress={handleSubmit}
+          />
         </PaddingView>
       </SafeAreaView>
     </>

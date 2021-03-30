@@ -1,10 +1,10 @@
 import { Images } from '@/assets/images'
 import { AppButton, ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
-import { commaSeparate } from '@/globals/Utils'
 import { CommonActions } from '@react-navigation/native'
 import React, { useEffect } from 'react'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { formatNumber } from 'react-native-currency-input'
 
 /**
  * @typedef {object} PaymentStatusProps
@@ -24,9 +24,12 @@ const PaymentStatusScreen = ({ navigation, route }) => {
   const statusInfo = {
     success: {
       title: 'Payment Successful',
-      description: `Your payment of ₱${commaSeparate(
-        amount
-      )} was successfuly completed.`,
+      description: `Your payment of ₱
+      ${formatNumber(amount, {
+        separator: '.',
+        precision: 2,
+        delimiter: ',',
+      })} was successfuly completed.`,
       buttonText: 'Back',
       image: () => <Images.PaymentSuccess />,
     },

@@ -5,13 +5,6 @@ import AppText from '@/components/AppText/AppText'
 import { AppViewContainer, PaddingView } from '@/components/AppViewContainer'
 import { HexagonBorder, ProfileImageUpload } from '@/components/ImageUpload'
 import { Notification } from '@/components/Notification'
-import {
-  Post,
-  Posts,
-  PostFilter,
-  UserPosts,
-  ArchivedPosts,
-} from '@/components/Post'
 import Reviews from '@/components/Review/Reviews'
 import Switch from '@/components/Switch/Switch'
 import AppRadio from '@/components/AppRadio/Radio'
@@ -47,7 +40,6 @@ export {
   PriceDisplay,
   Divider,
   CacheableImage,
-  UserPosts,
   ProfileInfo,
   ScreenHeaderTitle,
   ProfileList,
@@ -59,11 +51,8 @@ export {
   PaddingView,
   Notification,
   AppButton,
-  Posts,
   HexagonBorder,
   ProfileImageUpload,
-  Post,
-  PostFilter,
   Switch,
   AppRadio,
   AppCheckbox,
@@ -78,7 +67,6 @@ export {
   FloatingAppInput,
   OfflineNotice,
   RangeSlider,
-  ArchivedPosts,
   HorizontalView,
   HyperLink,
 }
