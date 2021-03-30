@@ -1072,6 +1072,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           menuItems={menuItems}
           close={() => setMenuDrawerVisible(false)}
         />
+        {renderConfirmModal()}
       </Modal>
     )
   }
@@ -2318,7 +2319,6 @@ const PublishedPostScreen = ({ navigation, route }) => {
       {renderMakeOfferModal()}
       {renderAddToBasketModal()}
       {renderConfirmResetBasketModal()}
-      {renderConfirmModal()}
       {!preview && renderButtons()}
       {preview && renderPublishButton()}
     </View>
