@@ -230,6 +230,8 @@ const CoverPhotoCameraScreen = ({ navigation, route }) => {
                   <Image
                     style={styles.storageThumbnail}
                     resizeMethod="resize"
+                    width="100%"
+                    height="100%"
                     source={storageThumbnail}
                   />
                 ) : (

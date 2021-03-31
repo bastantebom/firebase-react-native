@@ -20,8 +20,8 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { Icons } from '@/assets/images/icons'
 import LinearGradient from 'react-native-linear-gradient'
 import pluralize from 'pluralize'
@@ -67,8 +67,10 @@ const ImageItem = React.memo(
         activeOpacity={0.7}
         onPress={() => onPress(item)}>
         <SelectedMarker index={selectedIndex} showIndex={multiple} />
-        <FastImage
+        <Image
           style={styles.thumbnail}
+          height="100%"
+          width="100%"
           resizeMethod="resize"
           source={{ uri: item.node.image.uri, priority: 'normal' }}
         />
@@ -90,8 +92,10 @@ class AlbumItem extends PureComponent {
 
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={() => onPress(item)}>
-        <FastImage
+        <Image
           style={styles.albumThumbnail}
+          width={width / 2 - normalize(24)}
+          height={width / 2 - normalize(24)}
           resizeMethod="resize"
           source={{ uri: item.thumbnail, priority: 'normal' }}
         />
@@ -332,9 +336,11 @@ const ImagePickerScreen = ({ navigation, route }) => {
               </LinearGradient>
 
               {!!activeItem && (
-                <FastImage
+                <Image
                   style={styles.previewImage}
                   resizeMethod="resize"
+                  width="100%"
+                  height="100%"
                   source={{
                     uri: activeItem.node.image.uri,
                     priority: 'normal',
