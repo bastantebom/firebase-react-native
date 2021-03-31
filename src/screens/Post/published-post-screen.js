@@ -584,7 +584,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             <Icons.Back style={styles.headerIcon} {...iconSize(22)} />
           </TouchableOpacity>
 
-          {!preview && (
+          {!preview && userInfo?.uid && (
             <View style={styles.headerButtonGroup}>
               <TouchableOpacity
                 style={styles.headerButton}
@@ -688,7 +688,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             )}
           </View>
 
-          {!preview && (
+          {!preview && userInfo?.uid && (
             <>
               <TouchableOpacity
                 style={styles.secondaryHeaderButton}
@@ -2003,7 +2003,8 @@ const PublishedPostScreen = ({ navigation, route }) => {
         !basket.items?.length) ||
       (post.current.is_multiple &&
         basket.postId &&
-        basket.postId !== post.current.id)
+        basket.postId !== post.current.id) ||
+      !userInfo?.uid
     )
       return false
 
@@ -2056,7 +2057,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
     if (!post.current || userInfo.uid === post.current.uid) return null
 
     const handleOnCallPress = () => {
-      Linking.openURL(`tel:${user.current?.phone_number}`)
+      Linking.openURL(`tel:${user?.current?.phone_number}`)
     }
 
     const disabledStyle = { opacity: 0.5 }
@@ -2166,7 +2167,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         />
 
         <View style={styles.buttonsWrapper}>
-          {!!post.current.display_contact && user.current.phone_number && (
+          {!!post.current.display_contact && user?.current?.phone_number && (
             <Button
               style={{ marginRight: normalize(16) }}
               type="primary-outline"
@@ -2177,7 +2178,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             </Button>
           )}
           <Button
-            disabled={preview}
+            disabled={preview || !userInfo?.uid}
             disabledStyle={disabledStyle}
             style={{ marginRight: normalize(16) }}
             type="primary-outline"

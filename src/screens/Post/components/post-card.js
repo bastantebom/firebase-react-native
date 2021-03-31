@@ -114,7 +114,7 @@ const PostCard = React.memo(
             style={styles.likeButton}
             activeOpacity={0.7}
             onPress={() => onLikePress(post)}>
-            {!post.likes?.includes?.(user.uid) ? (
+            {!post.likes?.includes?.(user?.uid) ? (
               <Icons.Like style={{ color: Colors.icon }} {...iconSize(24)} />
             ) : (
               <Icons.LikeActive

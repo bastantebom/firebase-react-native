@@ -168,6 +168,8 @@ function Login({ setNotificationMessage }) {
                 onChangeText={emailAddress => setEmailAddress(emailAddress)}
                 value={emailAddress}
                 keyboardType={'email-address'}
+                autoCompleteType="off"
+                autoCorrect={false}
               />
               <Validator
                 style={{ marginBottom: normalize(16) }}
@@ -199,6 +201,7 @@ function Login({ setNotificationMessage }) {
                       })
                     }}
                     secureTextEntry={!isVisible ? true : false}
+                    textContentType="none"
                     value={password}
                   />
                   <View style={styles.passwordToggle}>

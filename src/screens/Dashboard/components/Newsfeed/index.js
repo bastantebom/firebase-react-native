@@ -84,44 +84,26 @@ const NewsFeed = ({ props }) => {
   }
 
   const handleOnPostPress = post => {
-    if (!user?.uid) {
-      navigation.navigate('TabStack', {
-        screen: 'posts',
+    navigation.navigate('NBTScreen', {
+      screen: 'posts',
+      params: {
+        screen: 'published-post',
         params: {
-          screen: 'guest-post',
+          id: post.id,
+          uid: post.uid,
         },
-      })
-    } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'posts',
-        params: {
-          screen: 'published-post',
-          params: {
-            id: post.id,
-            uid: post.uid,
-          },
-        },
-      })
-    }
+      },
+    })
   }
 
   const handleOnUserPress = () => {
-    if (!user?.uid) {
-      navigation.navigate('TabStack', {
-        screen: 'posts',
-        params: {
-          screen: 'guest-post',
-        },
-      })
+    if (user?.uid === post?.uid) {
+      navigation.navigate('TabStack', { screen: 'You' })
     } else {
-      if (user?.uid === post?.uid) {
-        navigation.navigate('TabStack', { screen: 'You' })
-      } else {
-        navigation.navigate('NBTScreen', {
-          screen: 'OthersProfile',
-          params: { uid: post?.uid },
-        })
-      }
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: { uid: post?.uid },
+      })
     }
   }
 
