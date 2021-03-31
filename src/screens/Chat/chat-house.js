@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Text,
   Alert,
+  RefreshControl,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
@@ -37,17 +38,20 @@ const ChatHouse = () => {
   })
 
   const [items, setItems] = useState({})
-  const lastId = useRef(null)
   const [sortModal, setSortModal] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const lastId = useRef(null)
 
-  const loadPosts = () => {
+  const loadPosts = async () => {
     if (sort.value === 'all') {
-      loadAllMessages()
+      await loadAllMessages()
     } else if (sort.value === 'own posts') {
-      loadOwnPosts()
+      await loadOwnPosts()
     } else if (sort.value === 'orders') {
-      loadOwnOrders()
+      await loadOwnOrders()
     }
+
+    setIsRefreshing(false)
   }
 
   const loadAllMessages = async () => {
@@ -327,19 +331,6 @@ const ChatHouse = () => {
         })
       )
 
-    if (!item.latest_chat)
-      promises.push(
-        Api.getLatestChat({ pid: item.post_id }).then(response => {
-          setItems(items => ({
-            ...items,
-            [item.post_id]: {
-              ...items[item.post_id],
-              latest_chat: response.data,
-            },
-          }))
-        })
-      )
-
     return await Promise.all(promises)
       .then(() => {
         setItems(items => ({
@@ -407,6 +398,18 @@ const ChatHouse = () => {
 
     loadPosts()
   }, [sort])
+
+  const handleRefresh = () => {
+    setIsRefreshing(true)
+    setItems({})
+    lastId.current = null
+
+    loadPosts()
+  }
+
+  const handleLoadMore = () => {
+    if (Object.values(items).length >= 10) loadPosts()
+  }
 
   const renderItem = ({ item }) => {
     return (
@@ -546,6 +549,18 @@ const ChatHouse = () => {
             data={Object.values(items)}
             keyExtractor={item => item.post_id}
             renderItem={renderItem}
+            onEndReachedThreshold={0.5}
+            onEndReached={handleLoadMore}
+            refreshControl={
+              <RefreshControl
+                progressViewOffset={20}
+                refreshing={isRefreshing}
+                titleColor="#2E3034"
+                tintColor="#2E3034"
+                title="Refreshing"
+                onRefresh={handleRefresh}
+              />
+            }
           />
         </View>
       </View>

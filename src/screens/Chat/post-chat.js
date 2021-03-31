@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   FlatList,
+  RefreshControl,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -26,6 +27,7 @@ const PostChat = ({ route }) => {
   const { user, userInfo } = useContext(UserContext)
 
   const [items, setItems] = useState({})
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const lastId = useRef(null)
 
   const getPostChats = async () => {
@@ -59,6 +61,8 @@ const PostChat = ({ route }) => {
       console.error(error.message)
       Alert.alert('Error', 'Oops, something went wrong.')
     }
+
+    setIsRefreshing(false)
   }
 
   const getDeferredData = async item => {
@@ -127,6 +131,18 @@ const PostChat = ({ route }) => {
         }))
       })
   }, [items])
+
+  const handleRefresh = () => {
+    setIsRefreshing(true)
+    setItems({})
+    lastId.current = null
+
+    getPostChats()
+  }
+
+  const handleLoadMore = () => {
+    if (Object.values(items).length >= 10) getPostChats()
+  }
 
   const renderItem = ({ item }) => {
     return (
@@ -200,6 +216,18 @@ const PostChat = ({ route }) => {
             data={Object.values(items)}
             keyExtractor={item => item.id}
             renderItem={renderItem}
+            onEndReachedThreshold={0.5}
+            onEndReached={handleLoadMore}
+            refreshControl={
+              <RefreshControl
+                progressViewOffset={20}
+                refreshing={isRefreshing}
+                titleColor="#2E3034"
+                tintColor="#2E3034"
+                title="Refreshing"
+                onRefresh={handleRefresh}
+              />
+            }
           />
         </View>
       </View>
