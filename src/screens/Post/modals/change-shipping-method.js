@@ -46,8 +46,8 @@ const ChangeShippingMethodModal = ({ close, post }) => {
 
   const handleOnConfirmPress = () => {
     const newBasket = { ...basket, schedule }
-    if (post.type === 'sell') basket.shippingMethod = method
-    else if (post.type === 'service') basket.bookingMethod = method
+    if (post.type === 'sell') newBasket.shippingMethod = method
+    else if (post.type === 'service') newBasket.bookingMethod = method
 
     setBasket(newBasket)
     close()
