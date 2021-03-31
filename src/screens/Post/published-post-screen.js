@@ -2036,6 +2036,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             [user.current.uid]: true,
           },
           post_id: post.current.id,
+          buyer_id: userInfo.uid,
         })
 
         await ref.doc(id).update({ id })

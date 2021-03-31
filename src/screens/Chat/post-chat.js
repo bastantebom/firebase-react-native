@@ -1,703 +1,217 @@
-// import React, { useState, useEffect, useContext } from 'react'
-// import {
-//   StyleSheet,
-//   View,
-//   TouchableOpacity,
-//   SafeAreaView,
-//   ScrollView,
-//   Animated,
-//   TextInput,
-//   Dimensions,
-//   TouchableWithoutFeedback,
-//   RefreshControl,
-// } from 'react-native'
-// import { useNavigation } from '@react-navigation/native'
-// import { RectButton } from 'react-native-gesture-handler'
-// import Swipeable from 'react-native-gesture-handler/Swipeable'
-// import Modal from 'react-native-modal'
-// import firestore from '@react-native-firebase/firestore'
-// import { UserContext } from '@/context/UserContext'
-// import { flatten } from 'lodash'
-// import { normalize, Colors, GlobalStyle, timePassedShort } from '@/globals'
-// import {
-//   AppCheckbox,
-//   AppText,
-//   ScreenHeaderTitle,
-//   TransitionIndicator,
-// } from '@/components'
-// import { NoPost } from '@/assets/images'
-// import {
-//   Search,
-//   TrashWhite,
-//   HorizontalWhiteEllipsis,
-// } from '@/assets/images/icons'
-// import ChatOptions from './components/ChatOptions'
-// import MultiChatOptions from './components/MultiChatOptions'
-// import Api from '@/services/Api'
-// import Avatar from '@/components/Avatar/avatar'
-// import PostImage from '@/components/Post/post-image'
-
-// const { width } = Dimensions.get('window')
-// const PADDING = 16
-// const SEARCH_FULL_WIDTH = width - PADDING * 2
-// const SEARCH_SHRINK_WIDTH = normalize(45)
-
-// const PostChat = ({ route }) => {
-//   const post = route?.params?.post
-//   const navigation = useNavigation()
-//   const [roomsChats, setRoomsChats] = useState([])
-//   const [isLoading, setIsLoading] = useState(false)
-//   const [isRefreshing, setIsRefreshing] = useState(false)
-//   const { user } = useContext(UserContext)
-
-//   const getAllRooms = async () => {
-//     const roomsRef = await firestore()
-//       .collection('chat_rooms')
-//       .where('post_id', '==', post.postData.id)
-//       .get()
-
-//     let allChats = await Promise.all(
-//       roomsRef.docs.map(async room => {
-//         let chats = []
-//         const members = room.data().members
-//         const chatRef = await firestore()
-//           .collection('chat_rooms')
-//           .doc(room.id)
-//           .collection('messages')
-//           .orderBy('createdAt', 'desc')
-//           .get()
-
-//         if (chatRef.docs[0]) {
-//           const userData =
-//             (await Api.getUser({ uid: chatRef.docs[0].data().uid })).data || {}
-//           const { full_name, profile_photo, uid } = userData
-
-//           chatRef.docs.map(chatDoc => {
-//             chats.push(chatDoc.data())
-//           })
-
-//           const currentChats = {
-//             chats,
-//             full_name,
-//             profile_photo,
-//             members,
-//             uid,
-//             roomId: room.id,
-//           }
-
-//           return currentChats
-//         }
-//       })
-//     )
-//     allChats = flatten(allChats.filter(e => e))
-//     setRoomsChats(roomsChats => [...roomsChats, ...allChats])
-//     setIsLoading(false)
-//   }
-
-//   const handleRefresh = async () => {
-//     setIsLoading(true)
-//     setIsRefreshing(true)
-//     setRoomsChats([])
-//     await getAllRooms()
-//     setIsRefreshing(false)
-//   }
-
-//   useEffect(() => {
-//     let isMounted = true
-//     if (isMounted && post) {
-//       setIsLoading(true)
-//       getAllRooms()
-//     }
-//     return () => (isMounted = false)
-//   }, [post])
-
-//   const [filters, setFilters] = useState({
-//     type: [],
-//   })
-
-//   const [multipleSelect, setMultipleSelect] = useState(false)
-//   const [showCancelModal, setShowCancelModal] = useState(false)
-//   const [showChatOptions, setShowChatOptions] = useState(false)
-//   const [showMultiChatOptions, setShowMultiChatOptions] = useState(false)
-//   const [isSearchFocused, setIsSearchFocused] = useState(false)
-//   const [inputLength] = useState(new Animated.Value(SEARCH_SHRINK_WIDTH))
-//   const [cancelPosition] = useState(new Animated.Value(0))
-//   const [opacity] = useState(new Animated.Value(0))
-
-//   const cancelModalToggle = () => {
-//     setShowCancelModal(!showCancelModal)
-//   }
-
-//   const onFocus = () => {
-//     Animated.parallel([
-//       Animated.timing(inputLength, {
-//         toValue: SEARCH_FULL_WIDTH,
-//         duration: 250,
-//         useNativeDriver: false,
-//       }),
-//       Animated.timing(cancelPosition, {
-//         toValue: 16,
-//         duration: 400,
-//         useNativeDriver: false,
-//       }),
-//       Animated.timing(opacity, {
-//         toValue: 1,
-//         duration: 250,
-//         useNativeDriver: true,
-//       }),
-//     ]).start()
-//     setIsSearchFocused(true)
-//   }
-
-//   const onBlur = () => {
-//     Animated.parallel([
-//       Animated.timing(inputLength, {
-//         toValue: SEARCH_SHRINK_WIDTH,
-//         duration: 250,
-//         useNativeDriver: false,
-//       }),
-//       Animated.timing(cancelPosition, {
-//         toValue: 0,
-//         duration: 250,
-//         useNativeDriver: false,
-//       }),
-//       Animated.timing(opacity, {
-//         toValue: 0,
-//         duration: 250,
-//         useNativeDriver: true,
-//       }),
-//     ]).start()
-//     setIsSearchFocused(false)
-//   }
-
-//   const handleSearchPress = () => {
-//     if (!isSearchFocused) {
-//       onFocus()
-//     } else {
-//       onBlur()
-//     }
-//   }
-
-//   const handleChatPress = async (members, postId) => {
-//     let channel
-//     try {
-//       if (!user?.uid) return
-//       const snapshot = await firestore()
-//         .collection('chat_rooms')
-//         .where('members', '==', members)
-//         .where('post_id', '==', postId)
-//         .get()
-
-//       if (!snapshot.docs.length) {
-//         const ref = firestore().collection('chat_rooms')
-//         const { id } = await ref.add({
-//           members: {
-//             [user.uid]: true,
-//             [otherUID]: true,
-//           },
-//           post_id: postId,
-//         })
-
-//         await ref.doc(id).update({ id })
-//         channel = (await ref.doc(id).get()).data()
-//       } else {
-//         channel = snapshot.docs[0].data()
-//       }
-
-//       navigation.navigate('NBTScreen', {
-//         screen: 'Chat',
-//         params: {
-//           user,
-//           channel,
-//         },
-//       })
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
-
-//   const renderRightActions = dragX => {
-//     const trans = dragX.interpolate({
-//       inputRange: [0, 1, 1, 1],
-//       outputRange: [100, 1, -1, 0],
-//     })
-//     return (
-//       <Animated.View
-//         style={[
-//           styles.swipeout,
-//           {
-//             transform: [{ translateX: trans }],
-//           },
-//         ]}>
-//         <RectButton
-//           style={[
-//             styles.swipeOption,
-//             { backgroundColor: Colors.primaryMidnightBlue },
-//           ]}
-//           onPress={() => setShowChatOptions(true)}>
-//           <HorizontalWhiteEllipsis />
-//         </RectButton>
-
-//         <RectButton
-//           onPress={cancelModalToggle}
-//           style={[
-//             styles.swipeOption,
-//             { backgroundColor: Colors.secondaryBrinkPink },
-//           ]}>
-//           <View>
-//             <TrashWhite />
-//           </View>
-//         </RectButton>
-//       </Animated.View>
-//     )
-//   }
-
-//   const getOption = option => {
-//     setMultipleSelect(option)
-//   }
-
-//   const timeAgo = time => {
-//     if (time <= 60) {
-//       return 'Just now'
-//     }
-//     return timePassedShort(time)
-//   }
-
-//   const renderSearch = () => {
-//     return (
-//       <Animated.View style={[styles.search, { width: inputLength }]}>
-//         <TextInput
-//           onBlur={onBlur}
-//           onFocus={onFocus}
-//           style={{
-//             fontFamily: 'RoundedMplus1c-Regular',
-//             fontSize: normalize(14),
-//             paddingRight: normalize(25),
-//           }}
-//         />
-//         <TouchableOpacity
-//           style={[styles.searchIcon]}
-//           onPress={handleSearchPress}>
-//           <Search width={normalize(20)} height={normalize(20)} />
-//         </TouchableOpacity>
-//       </Animated.View>
-//     )
-//   }
-
-//   return (
-//     <SafeAreaView style={styles.parent}>
-//       <TransitionIndicator loading={isLoading} />
-//       <ScreenHeaderTitle
-//         title="Post Chats"
-//         iconSize={multipleSelect ? 0 : normalize(16)}
-//         paddingSize={3}
-//         close={() => navigation.goBack()}
-//       />
-//       {multipleSelect && (
-//         <View
-//           style={{
-//             position: 'absolute',
-//             top: normalize(25),
-//             left: normalize(16),
-//           }}>
-//           <TouchableOpacity onPress={() => setMultipleSelect(false)}>
-//             <AppText textStyle="button3" color={Colors.red}>
-//               Cancel
-//             </AppText>
-//           </TouchableOpacity>
-//         </View>
-//       )}
-//       <View style={styles.postChatHeader}>
-//         <View style={{ flexDirection: 'row', paddingTop: normalize(15) }}>
-//           <View style={styles.postImageContainer}>
-//             <PostImage
-//               size="32x32"
-//               path={post?.cover_photos?.[0]}
-//               postType={post?.type?.toLowerCase()}
-//             />
-//           </View>
-//           <AppText textStyle="body2" customStyle={{ marginLeft: normalize(8) }}>
-//             {post.postData.title}
-//           </AppText>
-//         </View>
-//       </View>
-//       <ScrollView
-//         contentContainerStyle={{ paddingBottom: normalize(25) }}
-//         refreshControl={
-//           <RefreshControl
-//             style={{ zIndex: 1 }}
-//             refreshing={isRefreshing}
-//             titleColor="#2E3034"
-//             tintColor="#2E3034"
-//             onRefresh={handleRefresh}
-//           />
-//         }>
-//         {roomsChats.length ? (
-//           <View>
-//             {roomsChats.map((chat, i) => {
-//               return (
-//                 <Swipeable renderRightActions={renderRightActions} key={i}>
-//                   <AppCheckbox
-//                     style={{
-//                       flexDirection: 'row-reverse',
-//                       paddingRight: normalize(16),
-//                       paddingLeft: normalize(8),
-//                       display: multipleSelect ? 'flex' : 'none',
-//                     }}
-//                     containerStyle={{
-//                       flexDirection: 'row',
-//                       alignItems: 'center',
-//                     }}
-//                     checkboxStyle={{ borderRadius: 50, borderWidth: 2 }}
-//                     value={filters.type.includes(chat.id)}
-//                     valueChangeHandler={value => {
-//                       const currentSelectedChats = filters.type
-//                       if (value) currentSelectedChats.push(chat.id)
-//                       else
-//                         currentSelectedChats.splice(
-//                           filters.type.indexOf(chat.id),
-//                           1
-//                         )
-//                       setFilters(filters => ({
-//                         ...filters,
-//                         type: [...new Set(currentSelectedChats)],
-//                       }))
-//                     }}
-//                     round>
-//                     <View style={{ marginBottom: normalize(15), flex: 1 }}>
-//                       <TouchableOpacity
-//                         activeOpacity={0.7}
-//                         onPress={() =>
-//                           han1ChatPress(chat?.members, post.postData.id)
-//                         }
-//                         style={{
-//                           flexDirection: 'row',
-//                           paddingHorizontal: normalize(16),
-//                         }}>
-//                         <View style={styles.icon}>
-//                           <Avatar
-//                             path={chat.profile_photo}
-//                             size="64x64"
-//                             style={{
-//                               height: '100%',
-//                               width: '100%',
-//                             }}
-//                           />
-//                         </View>
-//                         <View style={{ flex: 1 }}>
-//                           <View
-//                             style={{
-//                               flexDirection: 'row',
-//                               justifyContent: 'space-between',
-//                             }}>
-//                             <AppText
-//                               textStyle="caption2"
-//                               customStyle={{
-//                                 paddingRight: 15,
-//                                 width: '80%',
-//                                 marginBottom: normalize(4),
-//                               }}
-//                               numberOfLines={1}>
-//                               {chat.uid === user?.uid
-//                                 ? 'You'
-//                                 : chat.full_name.split(' ')[0]}
-//                             </AppText>
-//                             <AppText
-//                               textStyle="metadata"
-//                               color={Colors.contentPlaceholder}>
-//                               {timeAgo(
-//                                 Date.now() / 1000 -
-//                                   chat.chats[0].created_at._seconds
-//                               )}
-//                             </AppText>
-//                           </View>
-//                           <View
-//                             style={{
-//                               flexDirection: 'row',
-//                               alignItems: 'center',
-//                               justifyContent: 'space-between',
-//                             }}>
-//                             <AppText
-//                               textStyle={
-//                                 !chat.chats[0].read && chat.uid !== user?.uid
-//                                   ? 'caption2'
-//                                   : 'caption'
-//                               }
-//                               customStyle={{ width: '90%' }}
-//                               numberOfLines={2}>
-//                               {chat.chats[0].text}
-//                             </AppText>
-//                             {!chat.chats[0].read && chat.uid !== user?.uid && (
-//                               <BlueDot />
-//                             )}
-//                           </View>
-//                         </View>
-//                       </TouchableOpacity>
-//                     </View>
-//                   </AppCheckbox>
-//                 </Swipeable>
-//               )
-//             })}
-//           </View>
-//         ) : (
-//           !isLoading && (
-//             <View style={styles.emptyState}>
-//               <NoPost />
-//               <AppText
-//                 textStyle="display6"
-//                 customStyle={{
-//                   marginBottom: normalize(4),
-//                   marginTop: normalize(15),
-//                 }}>
-//                 Bee Patient
-//               </AppText>
-//               <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-//                 Keep posting and soon your messages will be buzzing.
-//               </AppText>
-//             </View>
-//           )
-//         )}
-//       </ScrollView>
-//       <View
-//         style={{
-//           display: multipleSelect ? 'flex' : 'none',
-//           flexDirection: 'row',
-//           justifyContent: 'space-between',
-//           paddingVertical: normalize(24),
-//           paddingHorizontal: normalize(35),
-//         }}>
-//         <TouchableOpacity>
-//           <AppText textStyle="button3">Mark as Read</AppText>
-//         </TouchableOpacity>
-//         <TouchableOpacity>
-//           <AppText textStyle="button3" color={Colors.red}>
-//             Delete
-//           </AppText>
-//         </TouchableOpacity>
-//       </View>
-//       <Modal
-//         isVisible={showChatOptions}
-//         animationIn="slideInUp"
-//         animationInTiming={450}
-//         animationOut="slideOutDown"
-//         animationOutTiming={450}
-//         style={{ margin: 0, justifyContent: 'flex-end' }}
-//         customBackdrop={
-//           <TouchableWithoutFeedback onPress={() => setShowChatOptions(false)}>
-//             <View style={{ flex: 1, backgroundColor: 'black' }} />
-//           </TouchableWithoutFeedback>
-//         }>
-//         <ChatOptions
-//           close={() => setShowChatOptions(false)}
-//           deleteMessage={cancelModalToggle}
-//         />
-//       </Modal>
-//       <Modal
-//         isVisible={showMultiChatOptions}
-//         animationIn="slideInUp"
-//         animationInTiming={450}
-//         animationOut="slideOutDown"
-//         animationOutTiming={450}
-//         style={{ margin: 0, justifyContent: 'flex-end' }}
-//         customBackdrop={
-//           <TouchableWithoutFeedback
-//             onPress={() => setShowMultiChatOptions(false)}>
-//             <View style={{ flex: 1, backgroundColor: 'black' }} />
-//           </TouchableWithoutFeedback>
-//         }>
-//         <MultiChatOptions
-//           close={() => setShowMultiChatOptions(false)}
-//           options={getOption}
-//         />
-//       </Modal>
-//       <Modal
-//         isVisible={showCancelModal}
-//         animationIn="bounceIn"
-//         animationInTiming={450}
-//         animationOut="bounceOut"
-//         animationOutTiming={450}
-//         style={{
-//           margin: 0,
-//           alignItems: 'center',
-//           justifyContent: 'center',
-//         }}
-//         customBackdrop={
-//           <TouchableWithoutFeedback onPress={cancelModalToggle}>
-//             <View style={{ flex: 1, backgroundColor: 'black' }} />
-//           </TouchableWithoutFeedback>
-//         }>
-//         <View
-//           style={{
-//             backgroundColor: 'white',
-//             height: normalize(300),
-//             width: normalize(300),
-//             alignItems: 'center',
-//             justifyContent: 'center',
-//             padding: 16,
-//           }}>
-//           <AppText textStyle="display6" customStyle={{ marginBottom: 16 }}>
-//             Delete Message?
-//           </AppText>
-
-//           <AppText
-//             textStyle="caption"
-//             customStyle={{ textAlign: 'center', marginBottom: normalize(15) }}>
-//             Are you sure you want to delete this message?
-//           </AppText>
-
-//           <TouchableOpacity
-//             onPress={cancelModalToggle}
-//             style={{
-//               backgroundColor: Colors.yellow2,
-//               paddingVertical: 14,
-//               width: '100%',
-//               alignItems: 'center',
-//               marginBottom: 16,
-//               borderRadius: 4,
-//             }}>
-//             <AppText textStyle="button2">Delete</AppText>
-//           </TouchableOpacity>
-
-//           <TouchableOpacity
-//             onPress={cancelModalToggle}
-//             style={{
-//               paddingVertical: 14,
-//               width: '100%',
-//               alignItems: 'center',
-//             }}>
-//             <AppText textStyle="button2" color={Colors.contentOcean}>
-//               Cancel
-//             </AppText>
-//           </TouchableOpacity>
-//         </View>
-//       </Modal>
-//     </SafeAreaView>
-//   )
-// }
-
-// export default PostChat
-
-// const styles = StyleSheet.create({
-//   parent: { flex: 1, backgroundColor: 'white' },
-//   postChatHeader: {
-//     flexDirection: 'row',
-//     width: '100%',
-//     justifyContent: 'space-between',
-//     paddingBottom: normalize(20),
-//     paddingHorizontal: normalize(16),
-//     alignItems: 'center',
-//     marginBottom: normalize(20),
-//   },
-//   icon: {
-//     width: normalize(50),
-//     height: normalize(50),
-//     borderRadius: normalize(50 / 2),
-//     overflow: 'hidden',
-//     marginRight: normalize(15),
-//   },
-//   search: {
-//     height: normalize(45),
-//     paddingHorizontal: normalize(16),
-//     position: 'absolute',
-//     right: 16,
-//     borderRadius: 100,
-//     borderWidth: 1,
-//     borderColor: Colors.neutralGray,
-//     backgroundColor: 'white',
-//   },
-//   searchIcon: {
-//     position: 'absolute',
-//     zIndex: 999,
-//     top: 13,
-//     right: 12,
-//   },
-//   swipeout: {
-//     width: normalize(140),
-//     flexDirection: 'row',
-//     backgroundColor: 'red',
-//   },
-//   swipeOption: {
-//     flex: 1,
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   postImageContainer: {
-//     width: normalize(24),
-//     height: normalize(24),
-//     borderRadius: normalize(24 / 2),
-//     overflow: 'hidden',
-//   },
-//   emptyState: {
-//     backgroundColor: Colors.neutralsWhite,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: normalize(8),
-//     borderTopLeftRadius: 8,
-//     borderTopRightRadius: 8,
-//     flex: 1,
-//     padding: normalize(16),
-//   },
-// })
-
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import {
   StyleSheet,
   View,
+  StatusBar,
   Text,
   TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Animated,
-  TextInput,
-  Dimensions,
-  TouchableWithoutFeedback,
-  RefreshControl,
+  Alert,
+  FlatList,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-import {
-  AppCheckbox,
-  AppText,
-  ScreenHeaderTitle,
-  TransitionIndicator,
-} from '@/components'
+import { UserContext } from '@/context/UserContext'
+import { ScreenHeaderTitle } from '@/components'
 import { normalize, Colors, timePassedShort } from '@/globals'
-import { Icons } from '@/assets/images/icons'
+import utilStyles from '@/globals/util-styles'
+import { BlueDot, Icons } from '@/assets/images/icons'
 
 import Avatar from '@/components/Avatar/avatar'
+import Api from '@/services/Api'
 
 const PostChat = ({ route }) => {
   const post = route?.params?.post
   const navigation = useNavigation()
+  const { user, userInfo } = useContext(UserContext)
+
+  const [items, setItems] = useState({})
+  const lastId = useRef(null)
+
+  const getPostChats = async () => {
+    try {
+      const params = { pid: post.id }
+      if (lastId.current) params.lastItemId = lastId.current
+
+      const response = await Api.getPostChats(params)
+
+      if (!response.success) throw new Error(response.message)
+
+      const newItems = response.data
+        .filter(item => !!item)
+        .map(item => ({
+          id: item.id,
+          chat_room: item,
+          $isLoading: true,
+        }))
+        .reduce(
+          (_items, item) => ({
+            ..._items,
+            [item.id]: item,
+          }),
+          {}
+        )
+
+      lastId.current = response.data.slice(-1)[0]?.id
+
+      setItems(items => ({ ...items, ...newItems }))
+    } catch (error) {
+      console.error(error.message)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  const getDeferredData = async item => {
+    return await Promise.all([
+      (() => {
+        const buyerId = Object.keys(item.chat_room.members).filter(
+          member => member !== userInfo.uid
+        )[0]
+        Api.getUser({ uid: buyerId }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.id]: {
+              ...items[item.id],
+              buyer_info: response.data,
+            },
+          }))
+        })
+      })(),
+      Api.getLatestPostChat({ chatId: item.id }).then(response => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
+            latest_chat: response.data,
+          },
+        }))
+      }),
+    ])
+      .then(() => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
+            $isLoading: false,
+          },
+        }))
+      })
+      .catch(() => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
+            $hasErrors: true,
+          },
+        }))
+      })
+  }
 
   useEffect(() => {
-    console.log(post)
+    lastId.current = null
+    setItems({})
+
+    getPostChats()
   }, [])
 
+  useEffect(() => {
+    Object.values(items)
+      .filter(item => !item.$promise)
+      .forEach(item => {
+        setItems(items => ({
+          ...items,
+          [item.id]: {
+            ...items[item.id],
+            $promise: getDeferredData(item),
+          },
+        }))
+      })
+  }, [items])
+
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Chat', { user, channel: item.chat_room })
+        }
+        style={[
+          styles.item,
+          utilStyles.row,
+          utilStyles.justifySpaceBetween,
+          styles.itemWrapper,
+        ]}>
+        <View style={styles.avatar}>
+          <Avatar
+            path={item?.buyer_info?.profile_photo}
+            size="64x64"
+            style={styles.avatarImage}
+          />
+        </View>
+        <View style={styles.info}>
+          <View style={[utilStyles.row, styles.name]}>
+            <Text style={styles.nameText}>{item?.buyer_info?.full_name}</Text>
+            <Text style={styles.timeAgo}>
+              {timePassedShort(
+                Date.now() / 1000 - item?.latest_chat?.created_at?._seconds
+              )}
+            </Text>
+          </View>
+          <View style={[utilStyles.row, utilStyles.alignCenter]}>
+            <Text
+              style={[
+                styles.latestChat,
+                {
+                  color: !item?.latest_chat?.read
+                    ? Colors.contentEbony
+                    : Colors.contentPlaceholder,
+                  fontWeight:
+                    !item?.latest_chat?.read &&
+                    item?.latest_chat?.uid !== userInfo.uid
+                      ? 'bold'
+                      : 'normal',
+                },
+              ]}>
+              {item?.latest_chat?.text}
+            </Text>
+            {!item?.latest_chat?.read && <BlueDot style={styles.blueDot} />}
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
   return (
-    <SafeAreaView>
-      <ScreenHeaderTitle
-        title="Post Chats"
-        paddingSize={3}
-        close={() => navigation.goBack()}
-      />
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <ScreenHeaderTitle
+          title="Post Chats"
+          paddingSize={3}
+          close={() => navigation.goBack()}
+        />
 
-      <View style={{ ...styles.postTitleWrapper, ...styles.flexRow }}>
-        <Icons.PostChat style={styles.postTitleIcon} />
-        <AppText textStyle="body1" customStyle={styles.postTitle}>
-          {post.title}
-        </AppText>
+        <View style={[utilStyles.row, styles.postTitleWrapper]}>
+          <Icons.PostChat style={styles.postTitleIcon} />
+          <Text style={styles.postTitle}>{post.title}</Text>
+        </View>
+
+        <View style={styles.contentWrapper}>
+          <FlatList
+            data={Object.values(items)}
+            keyExtractor={item => item.id}
+            renderItem={renderItem}
+          />
+        </View>
       </View>
-
-      <View></View>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  flexRow: {
-    flexDirection: 'row',
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
+    backgroundColor: '#fff',
   },
   postTitleWrapper: {
     paddingVertical: normalize(10),
@@ -708,6 +222,47 @@ const styles = StyleSheet.create({
   },
   postTitle: {
     fontSize: normalize(14),
+  },
+  contentWrapper: {
+    flex: 1,
+    paddingTop: normalize(20),
+    paddingHorizontal: normalize(20),
+  },
+  itemWrapper: {
+    marginBottom: normalize(20),
+  },
+  item: {
+    height: normalize(58),
+  },
+  avatar: {
+    width: '18%',
+    borderRadius: normalize(100),
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: normalize(100),
+  },
+  info: {
+    paddingLeft: normalize(10),
+    width: '82%',
+  },
+  timeAgo: {
+    marginLeft: 'auto',
+  },
+  name: {
+    marginBottom: normalize(3),
+  },
+  nameText: {
+    paddingRight: normalize(40),
+    color: Colors.contentEbony,
+  },
+  blueDot: {
+    marginLeft: 'auto',
+  },
+  latestChat: {
+    paddingRight: normalize(40),
   },
 })
 

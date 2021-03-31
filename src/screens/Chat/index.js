@@ -2,10 +2,9 @@ import React, { useState, useCallback, useEffect, useContext } from 'react'
 import {
   View,
   StyleSheet,
-  Image,
   Text,
-  SafeAreaView,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native'
 import {
   GiftedChat,
@@ -17,22 +16,13 @@ import {
   Send,
 } from 'react-native-gifted-chat'
 import Video from 'react-native-video'
-import { Colors, normalize, GlobalStyle } from '@/globals'
-import {
-  AudioVideo,
-  HeaderBackGray,
-  HeaderBack,
-  Back,
-  ProfileImageDefault,
-  SendMessage,
-  VerticalEllipsis,
-  Icons,
-} from '@/assets/images/icons'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { Colors, normalize } from '@/globals'
+import { AudioVideo, HeaderBackGray, SendMessage } from '@/assets/images/icons'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
-import { TransitionIndicator, CacheableImage, AppText } from '@/components'
-import { DefaultSell, DefaultService, DefaultNeed } from '@/assets/images'
+import { TransitionIndicator, AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
 import typography from '@/globals/typography'
@@ -179,32 +169,35 @@ const ChatScreen = ({ route, navigation }) => {
   }, [members])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <TransitionIndicator
-        loading={isLoading}
-        backdropStyle={{ backgroundColor: '#fff' }}
-      />
-      <ChatHeader
-        user={messagingUser}
-        navigation={navigation}
-        post={postDetail}
-      />
-      <GiftedChat
-        messages={messages}
-        messagesContainerStyle={styles.messagesContainer}
-        onSend={messages => handleSend(messages)}
-        renderMessageVideo={renderMessageVideo}
-        showUserAvatar={true}
-        renderTime={() => null}
-        renderActions={() => null}
-        renderInputToolbar={renderInputToolbar}
-        renderMessage={renderMessage}
-        user={currentUser}
-        alwaysShowSend={true}
-        minInputToolbarHeight={normalize(93)}
-        renderSend={renderSend}
-      />
-    </SafeAreaView>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <TransitionIndicator
+          loading={isLoading}
+          backdropStyle={{ backgroundColor: '#fff' }}
+        />
+        <ChatHeader
+          user={messagingUser}
+          navigation={navigation}
+          post={postDetail}
+        />
+        <GiftedChat
+          messages={messages}
+          messagesContainerStyle={styles.messagesContainer}
+          onSend={messages => handleSend(messages)}
+          renderMessageVideo={renderMessageVideo}
+          showUserAvatar={true}
+          renderTime={() => null}
+          renderActions={() => null}
+          renderInputToolbar={renderInputToolbar}
+          renderMessage={renderMessage}
+          user={currentUser}
+          alwaysShowSend={true}
+          minInputToolbarHeight={normalize(93)}
+          renderSend={renderSend}
+        />
+      </View>
+    </>
   )
 }
 
@@ -345,13 +338,6 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
             </View>
           </TouchableOpacity>
         </View>
-        {/* <TouchableOpacity>
-          <VerticalEllipsis
-            style={{ color: Colors.primaryMidnightBlue }}
-            height={normalize(24)}
-            width={normalize(24)}
-          />
-        </TouchableOpacity> */}
       </View>
       {post?.id && (
         <View style={styles.postDetails}>
@@ -396,6 +382,11 @@ class CustomInputToolbar extends InputToolbar {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
+    backgroundColor: '#fff',
+  },
   inputToolbarContent: {
     flexDirection: 'row',
     alignItems: 'flex-end',

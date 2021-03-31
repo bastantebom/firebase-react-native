@@ -1,38 +1,34 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import {
   StyleSheet,
   FlatList,
   View,
   TouchableOpacity,
-  SafeAreaView,
+  StatusBar,
   TouchableWithoutFeedback,
-  Image,
-  ScrollView,
-  Animated,
-  TextInput,
-  Dimensions,
-  RefreshControl,
   Text,
   Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { UserContext } from '@/context/UserContext'
 
 import { normalize, Colors, timePassedShort } from '@/globals'
-import { AppText, ScreenHeaderTitle, MarginView } from '@/components'
+import utilStyles from '@/globals/util-styles'
+import { AppText, ScreenHeaderTitle } from '@/components'
 
 import PostImage from '@/components/Post/post-image'
 import Avatar from '@/components/Avatar/avatar'
-import ChatSort from './components/ChatSort'
+import ChatSort from './components/sort-modal'
 
 import { Icons, ChatEmpty, ChatBlue, BlueDot } from '@/assets/images/icons'
 import Api from '@/services/Api'
 
 const ChatHouse = () => {
   const navigation = useNavigation()
-  const { userInfo } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
 
   const [sort, setSort] = useState({
     label: 'All Messages',
@@ -41,27 +37,23 @@ const ChatHouse = () => {
   })
 
   const [items, setItems] = useState({})
-  const [lastId, setLastId] = useState(null)
+  const lastId = useRef(null)
   const [sortModal, setSortModal] = useState(false)
 
   const loadPosts = () => {
-    setLastId(null)
-    setItems({})
-
-    switch (sort.value) {
-      case 'all':
-        return loadAllMessages()
-      case 'own posts':
-        return loadOwnPosts()
-      default:
-        return loadAllMessages()
+    if (sort.value === 'all') {
+      loadAllMessages()
+    } else if (sort.value === 'own posts') {
+      loadOwnPosts()
+    } else if (sort.value === 'orders') {
+      loadOwnOrders()
     }
   }
 
   const loadAllMessages = async () => {
     try {
       const params = {}
-      if (lastId) params.lastItemId = lastId
+      if (lastId.current) params.lastItemId = lastId.current
 
       const response = await Api.getAllMessages(params)
 
@@ -70,6 +62,7 @@ const ChatHouse = () => {
       const newItems = response.data
         .filter(item => !!item)
         .map(item => ({
+          id: item.id,
           post_id: item.post_id,
           chat_room: item,
           $isLoading: true,
@@ -77,23 +70,23 @@ const ChatHouse = () => {
         .reduce(
           (_items, item) => ({
             ..._items,
-            [item.id]: item,
+            [item.post_id]: item,
           }),
           {}
         )
 
-      setLastId(response.data.slice(-1)[0]?.id)
-
+      lastId.current = response.data.slice(-1)[0]?.id
       setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
       console.error(error.message || 'error on getting all messages data')
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
   }
 
   const loadOwnPosts = async () => {
     try {
       const params = {}
-      if (lastId) params.lastItemId = lastId
+      if (lastId.current) params.lastItemId = lastId.current
 
       const response = await Api.getOwnPosts(params)
 
@@ -114,61 +107,190 @@ const ChatHouse = () => {
           {}
         )
 
-      response.data.forEach(item => console.log(item.id))
+      lastId.current = response.data.slice(-1)[0]?.id
 
-      console.log(newItems)
-      // setLastId(response.data.slice(-1)[0]?.id)
-
-      // setItems(items => ({ ...items, ...newItems }))
+      setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
       console.error(error.message || 'error on getting own posts chat data')
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
   }
 
-  const getDeferredData = async item => {
-    return await Promise.all([
-      Api.getChatCounts({ pid: item.post_id }).then(response => {
+  const loadOwnOrders = async () => {
+    try {
+      const params = {}
+      if (lastId.current) params.lastItemId = lastId.current
+
+      const response = await Api.getOrdersChat(params)
+
+      if (!response.success) throw new Error(response.message)
+
+      const newItems = response.data
+        .filter(item => !!item)
+        .map(item => ({
+          id: item.id,
+          post_id: item.post_id,
+          chat_room: item,
+          $isLoading: true,
+        }))
+        .reduce(
+          (_items, item) => ({
+            ..._items,
+            [item.id]: item,
+          }),
+          {}
+        )
+
+      lastId.current = response.data.slice(-1)[0]?.id
+      setItems(items => ({ ...items, ...newItems }))
+    } catch (error) {
+      console.error(error.message || 'error on getting own posts chat data')
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  const getDeferredAllMessagesData = async item => {
+    const promises = []
+
+    if (!item.chat_counts)
+      promises.push(
+        Api.getChatCounts({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              chat_counts: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.post)
+      promises.push(
+        Api.getPost({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              post: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.latest_chat)
+      promises.push(
+        Api.getLatestPostChat({ chatId: item.id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              latest_chat: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.seller_info && sort.value !== 'own posts') {
+      const sellerId = Object.keys(item.chat_room.members).filter(
+        member => member !== userInfo.uid
+      )[0]
+
+      promises.push(
+        Api.getUser({ uid: sellerId }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              seller_info: response.data,
+            },
+          }))
+        })
+      )
+    }
+
+    return await Promise.all(promises)
+      .then(() => {
         setItems(items => ({
           ...items,
-          [item.id]: {
-            ...items[item.id],
-            chat_counts: response.data,
+          [item.post_id]: {
+            ...items[item.post_id],
+            $isLoading: false,
           },
         }))
-      }),
-      Api.getPost({ pid: item.post_id }).then(response => {
+      })
+      .catch(() => {
         setItems(items => ({
           ...items,
-          [item.id]: {
-            ...items[item.id],
-            post: response.data,
+          [item.post_id]: {
+            ...items[item.post_id],
+            $hasErrors: true,
           },
         }))
-      }),
-      Api.getLatestChat({ pid: item.post_id }).then(response => {
-        setItems(items => ({
-          ...items,
-          [item.id]: {
-            ...items[item.id],
-            latest_chat: response.data,
-          },
-        }))
-      }),
-      (() => {
-        //   const sellerId = Object.keys(chatRoom.members).filter(
-        //     member => member !== userInfo.uid
-        //   )[0]
-        //   Api.getUser({ uid: sellerId }).then(response => {
-        //     setChatRooms(chatRooms => ({
-        //       ...chatRooms,
-        //       [chatRoom.id]: {
-        //         ...chatRooms[chatRoom.id],
-        //         seller_info: response.data,
-        //       },
-        //     }))
-        //   })
-      })(),
-    ])
+      })
+  }
+
+  const getDeferredOrdersData = async item => {
+    const promises = []
+
+    if (!item.chat_counts)
+      promises.push(
+        Api.getChatCounts({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.id]: {
+              ...items[item.id],
+              chat_counts: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.post)
+      promises.push(
+        Api.getPost({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.id]: {
+              ...items[item.id],
+              post: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.latest_chat)
+      promises.push(
+        Api.getLatestPostChat({ chatId: item.id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.id]: {
+              ...items[item.id],
+              latest_chat: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.seller_info && sort.value !== 'own posts') {
+      const sellerId = Object.keys(item.chat_room.members).filter(
+        member => member !== userInfo.uid
+      )[0]
+
+      promises.push(
+        Api.getUser({ uid: sellerId }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.id]: {
+              ...items[item.id],
+              seller_info: response.data,
+            },
+          }))
+        })
+      )
+    }
+
+    return await Promise.all(promises)
       .then(() => {
         setItems(items => ({
           ...items,
@@ -189,37 +311,120 @@ const ChatHouse = () => {
       })
   }
 
-  useEffect(() => {
-    Object.values(items)
-      .filter(item => !item.$promise)
-      .forEach(item => {
+  const getDeferredPostData = async item => {
+    const promises = []
+
+    if (!item.chat_counts)
+      promises.push(
+        Api.getChatCounts({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              chat_counts: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.latest_chat)
+      promises.push(
+        Api.getLatestChat({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              latest_chat: response.data,
+            },
+          }))
+        })
+      )
+
+    return await Promise.all(promises)
+      .then(() => {
         setItems(items => ({
           ...items,
-          [item.id]: {
-            ...items[item.id],
-            $promise: getDeferredData(item),
+          [item.post_id]: {
+            ...items[item.post_id],
+            $isLoading: false,
           },
         }))
       })
+      .catch(() => {
+        setItems(items => ({
+          ...items,
+          [item.post_id]: {
+            ...items[item.post_id],
+            $hasErrors: true,
+          },
+        }))
+      })
+  }
+
+  useEffect(() => {
+    if (sort.value === 'all') {
+      Object.values(items)
+        .filter(item => !item.$promise)
+        .forEach(item => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              $promise: getDeferredAllMessagesData(item),
+            },
+          }))
+        })
+    } else if (sort.value === 'orders') {
+      Object.values(items)
+        .filter(item => !item.$promise)
+        .forEach(item => {
+          setItems(items => ({
+            ...items,
+            [item.id]: {
+              ...items[item.id],
+              $promise: getDeferredOrdersData(item),
+            },
+          }))
+        })
+    } else if (sort.value === 'own posts') {
+      Object.values(items)
+        .filter(item => !item.$promise)
+        .forEach(item => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              $promise: getDeferredPostData(item),
+            },
+          }))
+        })
+    }
   }, [items])
 
   useEffect(() => {
-    loadPosts()
-  }, [])
+    lastId.current = null
+    setItems({})
 
-  useEffect(() => {
     loadPosts()
   }, [sort])
 
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        style={styles.postWrapper}
+        style={[
+          utilStyles.row,
+          utilStyles.justifySpaceBetween,
+          styles.postWrapper,
+        ]}
         onPress={() => {
-          navigation.navigate('NBTScreen', {
-            screen: 'PostChat',
-            params: { post: item?.post },
-          })
+          if (item.post.uid === userInfo.uid) {
+            navigation.navigate('NBTScreen', {
+              screen: 'PostChat',
+              params: { post: item.post },
+            })
+          } else {
+            navigation.navigate('Chat', { user, channel: item.chat_room })
+          }
         }}>
         <View style={styles.imageWrapper}>
           <View style={styles.postImageContainer}>
@@ -242,19 +447,19 @@ const ChatHouse = () => {
         </View>
         <View style={styles.infoWrapper}>
           <View style={styles.chatTitle}>
-            <AppText textStyle="body3" customStyle={styles.username}>
-              {item?.post?.title}
-            </AppText>
+            <Text style={styles.username}>{item?.post?.title}</Text>
             <AppText
               textStyle="captionConstant"
               color={Colors.contentPlaceholder}
               customStyle={styles.timeago}>
               {timePassedShort(
-                Date.now() / 1000 - item?.chat_room?.latest_chat_time?._seconds
+                Date.now() / 1000 - item?.latest_chat?.created_at?._seconds
               )}
             </AppText>
           </View>
-          <View style={styles.chatsWrapper}>{renderDetails(item)}</View>
+          <View style={[utilStyles.row, utilStyles.alignCenter]}>
+            {renderDetails(item)}
+          </View>
         </View>
       </TouchableOpacity>
     )
@@ -266,68 +471,83 @@ const ChatHouse = () => {
         return (
           <>
             <ChatBlue style={styles.chatIcon} />
-            <AppText color={'#3781FC'}>
+            <Text style={{ color: '#3781FC' }}>
               {item?.chat_counts?.new_messages} New in{' '}
               {item?.chat_counts?.messages} chats
-            </AppText>
+            </Text>
           </>
         )
       } else {
         return (
           <>
             <ChatEmpty style={styles.chatIcon} />
-            <AppText color={'#515057'}>
-              {item?.chat_counts?.messages} chats
-            </AppText>
+            <Text style={{ color: '#515057' }}>
+              {`${item?.chat_counts?.messages || 0} ${
+                item?.chat_counts?.messages ? 'chats' : 'chat'
+              }`}
+            </Text>
           </>
         )
       }
     } else {
       return (
-        <View style={styles.chatInfoWrapper}>
+        <>
           <Text
-            style={{
-              color: '#515057',
-              fontWeight: !item?.latest_chat?.read ? 'bold' : 'normal',
-            }}>
+            numberOfLines={2}
+            style={[
+              styles.recentChat,
+              {
+                fontWeight:
+                  !item?.latest_chat?.read &&
+                  item?.latest_chat?.uid !== userInfo.uid
+                    ? 'bold'
+                    : 'normal',
+              },
+            ]}>
             {item?.latest_chat?.uid === userInfo.uid
               ? 'You'
               : item?.seller_info?.full_name.split(' ')[0]}
             : {item?.latest_chat?.text}
           </Text>
-          {!item?.latest_chat?.read && <BlueDot />}
-        </View>
+          {!item?.latest_chat?.read &&
+            item?.latest_chat?.uid !== userInfo.uid && (
+              <BlueDot style={{ marginLeft: 'auto' }} />
+            )}
+        </>
       )
     }
   }
 
   return (
-    <SafeAreaView>
-      <ScreenHeaderTitle
-        close={() => navigation.goBack()}
-        title="All Chats"
-        iconSize={normalize(16)}
-        paddingSize={3}
-      />
-      <View style={styles.bodyWrapper}>
-        <TouchableOpacity
-          style={styles.sortWrapper}
-          onPress={() => setSortModal(true)}>
-          <AppText textStyle="body3" customStyle={styles.sortText}>
-            {sort.label}
-          </AppText>
-          <Icons.ChevronDown
-            style={{ color: 'black' }}
-            width={normalize(24)}
-            height={normalize(24)}
-          />
-        </TouchableOpacity>
-
-        <FlatList
-          data={Object.values(items)}
-          keyExtractor={item => item.post_id}
-          renderItem={renderItem}
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <ScreenHeaderTitle
+          close={() => navigation.goBack()}
+          title="All Chats"
+          iconSize={normalize(16)}
+          paddingSize={3}
         />
+        <View style={styles.bodyWrapper}>
+          <TouchableOpacity
+            style={[styles.sortWrapper, utilStyles.row, utilStyles.alignCenter]}
+            onPress={() => setSortModal(true)}>
+            <AppText textStyle="body3" customStyle={styles.sortText}>
+              {sort.label}
+            </AppText>
+            <Icons.ChevronDown
+              style={{ color: 'black' }}
+              width={normalize(24)}
+              height={normalize(24)}
+            />
+          </TouchableOpacity>
+
+          <FlatList
+            data={Object.values(items)}
+            keyExtractor={item => item.post_id}
+            renderItem={renderItem}
+          />
+        </View>
       </View>
 
       <Modal
@@ -348,7 +568,7 @@ const ChatHouse = () => {
         }>
         <ChatSort close={() => setSortModal(false)} choice={setSort} />
       </Modal>
-    </SafeAreaView>
+    </>
   )
 }
 
@@ -361,28 +581,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
+    backgroundColor: '#fff',
+  },
   bodyWrapper: {
     paddingHorizontal: normalize(16),
-    paddingBottom: normalize(245),
+    paddingBottom: normalize(120),
     marginTop: normalize(15),
   },
   sortWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: normalize(30),
   },
   sortText: {
     marginRight: normalize(8),
   },
   postWrapper: {
-    flexDirection: 'row',
     marginBottom: normalize(20),
   },
   infoWrapper: {
     width: '75%',
   },
   imageWrapper: {
-    marginRight: normalize(10),
     width: '22%',
     height: normalize(72),
   },
@@ -400,10 +621,6 @@ const styles = StyleSheet.create({
   timeago: {
     fontSize: normalize(12),
   },
-  chatsWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   chatIcon: {
     marginRight: normalize(5),
   },
@@ -411,12 +628,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: normalize(10),
-  },
-  chatInfoWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
   },
   avatar: {
     position: 'absolute',
@@ -439,6 +650,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: '#fff',
+  },
+  recentChat: {
+    paddingRight: normalize(50),
+    color: '#515057',
   },
 })
 

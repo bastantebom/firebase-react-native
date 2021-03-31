@@ -23,8 +23,8 @@ const ChatSort = ({ choice, close }) => {
       icon: <Icons.OwnPostsChats />,
     },
     {
-      label: 'My Orders',
-      value: 'own orders',
+      label: 'Orders',
+      value: 'orders',
       description:
         'Messages to other Seller or Service Bees for your orders and bookings.',
       icon: <Icons.OrdersChats />,
