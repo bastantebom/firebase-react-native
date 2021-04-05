@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
-import { ActivityIndicator, SafeAreaView, View } from 'react-native'
+import React from 'react'
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native'
 import { WebView } from 'react-native-webview'
+import { AppText, ScreenHeaderTitle } from '@/components'
+import { Colors, normalize } from '@/globals'
 
-import { ScreenHeaderTitle } from '@/components'
-
-import { normalize, Colors } from '@/globals'
 const TermsOfUse = ({ onClose }) => {
-  const [isLoading, setIsLoading] = useState(false)
-
-  console.log(isLoading)
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle close={onClose} title="Terms of Use" paddingSize={3} />
@@ -22,8 +23,31 @@ const TermsOfUse = ({ onClose }) => {
           </View>
         )}
       />
+      <View style={styles.buttonWrapper}>
+        <TouchableOpacity onPress={onClose}>
+          <View style={styles.button}>
+            <AppText textStyle="body2medium">Agree</AppText>
+          </View>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  buttonWrapper: {
+    padding: normalize(24),
+    height: normalize(60),
+  },
+
+  button: {
+    height: normalize(49),
+    borderColor: Colors.primaryMidnightBlue,
+    borderWidth: 1,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+})
 
 export default TermsOfUse
