@@ -100,8 +100,7 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
             style={styles.linkWrapper}
             activeOpacity={0.7}
             onPress={showCoverPhotoGuidelines}>
-            <Text
-              style={[typography.body2, typography.medium, typography.link]}>
+            <Text style={[typography.caption, typography.link]}>
               Cover Photo Guidelines
             </Text>
           </TouchableOpacity>
