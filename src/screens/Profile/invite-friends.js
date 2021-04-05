@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet, SafeAreaView } from 'react-native'
+import { View, StyleSheet, SafeAreaView, Share } from 'react-native'
 import { ScreenHeaderTitle, AppText, AppButton } from '@/components'
 import { InviteFriend } from '@/assets/images'
 import { normalize, Colors } from '@/globals'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
-import Share from 'react-native-share'
 import { UserContext } from '@/context/UserContext'
 
 const InviteFriends = ({ navigation }) => {
@@ -23,7 +22,7 @@ const InviteFriends = ({ navigation }) => {
       })()
 
       const message = `${socialPreview.socialTitle}\r\n\r\n${socialPreview.socialDescription}`
-      await Share.open({ url, message })
+      await Share.share({ url, message })
     } catch (error) {
       console.log(error)
     }

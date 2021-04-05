@@ -352,7 +352,7 @@ export const getPreviewLinkData = async ({ type, data }) => {
   }
 
   const getInviteContent = () => {
-    return `Wazzup, kai-bee-gan? Be a part of Servbees and easily buy and sell items, offer services, and find great deals within your area. \r\n\r\n Join for free at https://app.servbees.com/download`
+    return `Wazzup, kai-bee-gan? Be a part of Servbees and easily buy and sell items, offer services, and find great deals within your area. \r\n\r\nJoin for free at `
   }
 
   if (type === 'user') {
