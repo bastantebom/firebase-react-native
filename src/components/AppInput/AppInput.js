@@ -26,6 +26,7 @@ const FloatingAppInput = ({
   debounce = true,
   customLabelStyle,
   error,
+  inputStyle,
   ...props
 }) => {
   const [labelPosition] = useState(new Animated.Value(0))
@@ -141,7 +142,7 @@ const FloatingAppInput = ({
           <TextInput
             minLength={0}
             value={value}
-            style={styles.floatingInput}
+            style={[styles.floatingInput, inputStyle]}
             underlineColorAndroid="transparent"
             onFocus={onFocusInput}
             onBlur={onBlurInput}

@@ -641,15 +641,20 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.inputWrapper}>
-          <AppInput
-            value={formData.birthDate}
-            label="Birthday"
-            customStyle={{ marginBottom: normalize(16) }}
-            debounce={false}
-            onTouchStart={() => setIsDatePickerVisible(!isDatePickerVisible)}
-            editable={false}
-          />
           <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => setIsDatePickerVisible(!isDatePickerVisible)}>
+            <AppInput
+              value={formData.birthDate}
+              label="Birthday"
+              debounce={false}
+              onTouchStart={() => setIsDatePickerVisible(!isDatePickerVisible)}
+              editable={false}
+              inputStyle={{ color: Colors.contentEbony }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
             style={styles.inputButton}
             onPress={() => setIsDatePickerVisible(!isDatePickerVisible)}>
             <Calendar height={normalize(24)} width={normalize(24)} />
@@ -665,20 +670,25 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.inputWrapper}>
-          <AppInput
-            value={formData.gender}
-            label="Gender"
-            debounce={false}
-            error={errors.gender?.length}
-            customLabelStyle={
-              errors.gender?.length ? { color: Colors.red } : {}
-            }
-            onTouchStart={() => setIsGenderModalVisible(true)}
-            editable={false}
-          />
-
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => setIsGenderModalVisible(true)}>
+            <AppInput
+              value={formData.gender}
+              label="Gender"
+              debounce={false}
+              error={errors.gender?.length}
+              customLabelStyle={
+                errors.gender?.length ? { color: Colors.red } : {}
+              }
+              onTouchStart={() => setIsGenderModalVisible(true)}
+              editable={false}
+              inputStyle={{ color: Colors.contentEbony }}
+            />
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.inputButton}
+            activeOpacity={1}
             onPress={() => setIsGenderModalVisible(true)}>
             <ArrowDown height={normalize(24)} width={normalize(24)} />
           </TouchableOpacity>
