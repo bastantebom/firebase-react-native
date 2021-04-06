@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
+  Alert,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -14,6 +15,7 @@ import { Icons, ChevronDown, ChevronUp, PostClock } from '@/assets/images/icons'
 
 import ActivitiesCard from './components/card'
 import ItemCard from '@/screens/Activity/components/item-card'
+import Api from '@/services/Api'
 
 const OngoingItem = ({ route, navigation }) => {
   const { item } = route.params
@@ -23,8 +25,9 @@ const OngoingItem = ({ route, navigation }) => {
     requests: false,
     ongoing: false,
   })
+  const [chats, setChats] = useState({})
 
-  useEffect(() => {
+  const handleAccordionOnLoad = () => {
     if (
       item.orders.some(
         order => order.status === 'confirmed' && order.payment_method !== 'cash'
@@ -40,6 +43,32 @@ const OngoingItem = ({ route, navigation }) => {
     )
       setAccordion({ ...accordion, requests: true })
     else setAccordion({ ...accordion, ongoing: true })
+  }
+
+  const getChatData = async () => {
+    try {
+      item.orders.forEach(async order => {
+        const response = await Api.getLatestOrderChat({ uid: order.buyer_id })
+
+        if (!response.success) throw new Error(response.message)
+
+        setChats(chats => ({
+          ...chats,
+          [order.id]: {
+            chatRoom: response.chat_room,
+            data: response.data,
+          },
+        }))
+      })
+    } catch (error) {
+      console.error(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  useEffect(() => {
+    handleAccordionOnLoad()
+    getChatData()
   }, [])
 
   return (
@@ -172,6 +201,7 @@ const OngoingItem = ({ route, navigation }) => {
                     (order.status === 'confirmed' &&
                       order.payment_method === 'cash')
                 )}
+                chats={chats}
               />
             )}
           </View>

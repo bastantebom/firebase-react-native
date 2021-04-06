@@ -1,17 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { formatNumber } from 'react-native-currency-input'
 import { useNavigation } from '@react-navigation/native'
 
 import moment from 'moment'
 
-import { ChatBlue, Verified, ChatEmpty } from '@/assets/images/icons'
+import { UserContext } from '@/context/UserContext'
+import { ChatBlue } from '@/assets/images/icons'
 import { normalize, Colors, timePassedShort } from '@/globals'
 import { AppText } from '@/components'
 
 import Avatar from '@/components/Avatar/avatar'
 
-const ItemCard = ({ items }) => {
+const ItemCard = ({ items, chats }) => {
+  const { user } = useContext(UserContext)
   const navigation = useNavigation()
 
   const getItemQuantity = order => {
@@ -122,28 +124,40 @@ const ItemCard = ({ items }) => {
             </AppText>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.chatTextWrapper}>
-            <View style={styles.chatCountWrapper}>
-              <ChatBlue />
-              <AppText
-                textStyle="caption"
-                color={Colors.contentOcean}
-                customStyle={{ marginLeft: normalize(6) }}>
-                2 new messages
-              </AppText>
-            </View>
-            <View style={styles.chatText}>
-              <AppText
-                textStyle="caption2"
-                customStyle={{ width: '80%' }}
-                numberOfLines={1}>
-                Oks lang!
-              </AppText>
-              <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
-                1s
-              </AppText>
-            </View>
-          </TouchableOpacity>
+          {!!chats[item.id]?.data?.length && (
+            <TouchableOpacity
+              style={styles.chatTextWrapper}
+              onPress={() =>
+                navigation.navigate('Chat', {
+                  user,
+                  channel: chats[item.id]?.chatRoom[0],
+                })
+              }>
+              <View style={styles.chatCountWrapper}>
+                <ChatBlue />
+                <AppText
+                  textStyle="caption"
+                  color={Colors.contentOcean}
+                  customStyle={{ marginLeft: normalize(6) }}>
+                  {chats[item.id]?.data?.length} new messages
+                </AppText>
+              </View>
+              <View style={styles.chatText}>
+                <AppText
+                  textStyle="caption2"
+                  customStyle={{ width: '80%' }}
+                  numberOfLines={1}>
+                  {chats[item.id]?.data[0]?.text}
+                </AppText>
+                <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
+                  {getTimeAgo(
+                    Date.now() / 1000 -
+                      chats[item.id]?.data[0]?.created_at?._seconds
+                  )}
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
       ))}
     </>
