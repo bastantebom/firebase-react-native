@@ -124,7 +124,7 @@ const ItemCard = ({ items, chats }) => {
             </AppText>
           </TouchableOpacity>
 
-          {!!chats[item.id]?.data?.length && (
+          {!!chats?.[item.id]?.data?.length && (
             <TouchableOpacity
               style={styles.chatTextWrapper}
               onPress={() =>
