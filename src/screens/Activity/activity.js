@@ -442,12 +442,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   contentWrapper: {
+    flex: 1,
     paddingTop: normalize(25),
-    paddingBottom: normalize(110),
     paddingHorizontal: normalize(16),
     marginTop: getStatusBarHeight(),
     height: Dimensions.get('window').height,
-
     backgroundColor: 'white',
   },
   headerWrapper: {

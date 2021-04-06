@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   View,
   TouchableOpacity,
   StyleSheet,
+  StatusBar,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { normalize, Colors } from '@/globals'
 import { AppText, ScreenHeaderTitle } from '@/components'
@@ -42,7 +43,8 @@ const OngoingItem = ({ route, navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <ScrollView>
         <View style={styles.headerWrapper}>
           <ScreenHeaderTitle
@@ -257,19 +259,17 @@ const OngoingItem = ({ route, navigation }) => {
           <AppText customStyle={styles.pastText}>Past Orders</AppText>
         </TouchableOpacity>
       )}
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-  },
   headerWrapper: {
     backgroundColor: '#fff',
     borderBottomLeftRadius: normalize(15),
     borderBottomRightRadius: normalize(15),
     paddingBottom: normalize(15),
+    marginTop: getStatusBarHeight(),
   },
   headerText: {
     textTransform: 'none',

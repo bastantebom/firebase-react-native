@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   Text,
   View,
   StyleSheet,
   RefreshControl,
-  ActivityIndicator,
+  StatusBar,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+
 import { groupBy } from 'lodash'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { normalize } from '@/globals'
@@ -192,96 +193,98 @@ const Notifications = () => {
   }
 
   return (
-    <SafeAreaView style={styles.contentWrapper}>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <TransitionIndicator loading={isLoading} />
-      <ScreenHeaderTitle
-        close={() => navigation.goBack()}
-        title="Notifications"
-        paddingSize={3}
-      />
-      <View
-        style={{
-          paddingHorizontal: normalize(15),
-          paddingBottom: normalize(90),
-        }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Calendar
-            height={normalize(20)}
-            width={normalize(20)}
-            style={{ marginRight: 10 }}
-          />
-          <AppText textStyle="body3">Today</AppText>
-        </View>
-
-        <ScrollView
-          onScroll={({ nativeEvent }) => {
-            if (isCloseToBottom(nativeEvent)) loadMoreNotifiations()
-          }}
-          scrollEventThrottle={400}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRereshing}
-              titleColor="#2E3034"
-              tintColor="#2E3034"
-              title="Refreshing"
-              onRefresh={() => {
-                setNoMoreNorifications(false)
-                setIsRereshing(true)
-                loadNotifications({ isLoadMore: false })
-              }}
+      <View style={styles.contentWrapper}>
+        <ScreenHeaderTitle
+          close={() => navigation.goBack()}
+          title="Notifications"
+          paddingSize={3}
+        />
+        <View
+          style={{
+            paddingHorizontal: normalize(15),
+            paddingBottom: normalize(90),
+          }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Calendar
+              height={normalize(20)}
+              width={normalize(20)}
+              style={{ marginRight: 10 }}
             />
-          }>
-          {!!newNotifications.length && (
-            <AppText
-              textStyle="eyebrow1"
-              customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
-              NEW
-            </AppText>
-          )}
+            <AppText textStyle="body3">Today</AppText>
+          </View>
 
-          {newNotifications.map(notification => {
-            return (
-              <View key={notification[0].id}>
-                {notification.length === 1
-                  ? renderCard(notification[0])
-                  : renderGroupedNotification(notification)}
-              </View>
-            )
-          })}
+          <ScrollView
+            onScroll={({ nativeEvent }) => {
+              if (isCloseToBottom(nativeEvent)) loadMoreNotifiations()
+            }}
+            scrollEventThrottle={400}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRereshing}
+                titleColor="#2E3034"
+                tintColor="#2E3034"
+                title="Refreshing"
+                onRefresh={() => {
+                  setNoMoreNorifications(false)
+                  setIsRereshing(true)
+                  loadNotifications({ isLoadMore: false })
+                }}
+              />
+            }>
+            {!!newNotifications.length && (
+              <AppText
+                textStyle="eyebrow1"
+                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                NEW
+              </AppText>
+            )}
 
-          {!!earlierNotifications.length && (
-            <AppText
-              textStyle="eyebrow1"
-              customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
-              EARLIER
-            </AppText>
-          )}
+            {newNotifications.map(notification => {
+              return (
+                <View key={notification[0].id}>
+                  {notification.length === 1
+                    ? renderCard(notification[0])
+                    : renderGroupedNotification(notification)}
+                </View>
+              )
+            })}
 
-          {earlierNotifications.map(notification => {
-            return (
-              <View key={notification[0].id}>
-                {notification.length === 1
-                  ? renderCard(notification[0])
-                  : renderGroupedNotification(notification)}
-              </View>
-            )
-          })}
+            {!!earlierNotifications.length && (
+              <AppText
+                textStyle="eyebrow1"
+                customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
+                EARLIER
+              </AppText>
+            )}
 
-          {!noMoreNotifications ? (
-            <ActivityIndicator style={styles.activeIndicator} />
-          ) : (
-            <Text style={styles.noMorePost}>No new buzz right now.</Text>
-          )}
-        </ScrollView>
+            {earlierNotifications.map(notification => {
+              return (
+                <View key={notification[0].id}>
+                  {notification.length === 1
+                    ? renderCard(notification[0])
+                    : renderGroupedNotification(notification)}
+                </View>
+              )
+            })}
+
+            {noMoreNotifications && (
+              <Text style={styles.noMorePost}>No new buzz right now.</Text>
+            )}
+          </ScrollView>
+        </View>
       </View>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
-    backgroundColor: 'white',
+    marginTop: getStatusBarHeight(),
+    backgroundColor: '#fff',
   },
   activeIndicator: {
     paddingVertical: normalize(20),

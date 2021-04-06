@@ -73,21 +73,27 @@ const ActivitiesCard = ({ item }) => {
       label === 'Payment Processing'
     )
       return Colors.neutralsMischka
+
+    return Colors.neutralsMischka
   }
 
   const setStatusLabel = () => {
     if (activity.post.uid === user.uid) {
-      if (!activity.orders.length) return 'Ongoing'
+      const orderStatus = setOrders()
 
-      if (
-        activity.orders.some(
-          order => order.status === 'pending' || order.status === 'confirmed'
-        )
-      )
-        return 'Ongoing'
+      if (activity.post.type === 'service' || activity.post.type === 'need') {
+        const hasOffers = orderStatus.map(status => status.includes('offers'))
 
-      if (activity.orders.some(order => order.status === 'declined'))
+        if (hasOffers) return 'Ongoing'
+
         return 'Completed'
+      } else if (activity.post.type === 'sell') {
+        const hasPending = orderStatus.map(status => status.includes('pending'))
+
+        if (hasPending) return 'Ongoing'
+
+        return 'Completed'
+      }
     } else {
       if (activity.orders.some(order => order.status === 'pending'))
         return 'Awating Confirmation'
@@ -112,8 +118,9 @@ const ActivitiesCard = ({ item }) => {
 
   const setOrders = () => {
     if (activity.post.uid !== user.uid) {
-      let totalPrice = (activity.post.items || []).forEach(
-        post => (totalPrice = totalPrice + parseInt(post.price))
+      const totalPrice = activity.orders[0].items.reduce(
+        (total, item) => total + item.price * (item.quantity || 1),
+        0
       )
 
       return ` ₱${formatNumber(totalPrice, {
@@ -123,21 +130,45 @@ const ActivitiesCard = ({ item }) => {
       })}`
     }
 
-    const orderCounts = []
-    activity.orders.forEach(order => {
-      if (!orderCounts.some(count => count.status === order.status)) {
-        orderCounts.push({
-          status: order.status,
-          count: 1,
-        })
-      } else {
-        const count = orderCounts.filter(count => count.status === order.status)
-        count[0].count += 1
+    const orderCounts = {}
+
+    if (activity.post.type === 'service') {
+      activity.orders.forEach(order => {
+        if (['cancelled', 'declined', 'completed'].includes(order.status)) {
+          orderCounts.availed = {
+            label: 'availed',
+            count: orderCounts?.completed?.count + 1 || 1,
+          }
+        } else {
+          orderCounts.offers = {
+            label: 'offers',
+            count: orderCounts?.offers?.count + 1 || 1,
+          }
+        }
+      })
+    } else if (activity.post.type === 'sell') {
+      activity.orders.forEach(order => {
+        if (['cancelled', 'declined', 'completed'].includes(order.status)) {
+          orderCounts.availed = {
+            label: 'availed',
+            count: orderCounts?.availed?.count + 1 || 1,
+          }
+        } else {
+          orderCounts.pending = {
+            label: 'pending request',
+            count: orderCounts?.pending?.count + 1 || 1,
+          }
+        }
+      })
+    } else {
+      orderCounts.offers = {
+        label: 'offers',
+        count: orderCounts?.offers?.count + 1 || 1,
       }
-    })
-    return orderCounts.map(
-      count =>
-        ` ${count.count} ${count.status === 'pending' ? 'requests' : 'availed'}`
+    }
+
+    return Object.values(orderCounts).map(
+      count => ` ${count.count} ${count.label}`
     )
   }
 
