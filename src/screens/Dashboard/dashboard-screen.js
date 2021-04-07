@@ -3,18 +3,18 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   ScrollView,
   RefreshControl,
   ActivityIndicator,
   Animated,
   TouchableWithoutFeedback,
   FlatList,
-  Platform,
+  StatusBar,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import LinearGradient from 'react-native-linear-gradient'
 import AsyncStorage from '@react-native-community/async-storage'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { debounce } from 'lodash'
 
 import { UserContext } from '@/context/UserContext'
@@ -360,7 +360,8 @@ const DashboardScreen = ({ navigation }) => {
         containerStyle={{ marginTop: normalize(16) }}
         ref={ref => Toast.setRef(ref, 'dashboard')}
       />
-      <SafeAreaView style={styles.safeArea}>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.safeArea}>
         {isVerifyToastVisible && (
           <VerifyNotification
             onPress={() => {
@@ -513,7 +514,7 @@ const DashboardScreen = ({ navigation }) => {
             </ScrollView>
           )}
         </View>
-      </SafeAreaView>
+      </View>
 
       <Modal
         isVisible={isFiltersVisible}
@@ -545,7 +546,7 @@ const DashboardScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    marginTop: Platform.OS === 'ios' ? normalize(38) : 0,
+    marginTop: getStatusBarHeight(),
   },
   noMorePost: {
     paddingVertical: normalize(20),
