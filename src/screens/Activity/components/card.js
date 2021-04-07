@@ -118,10 +118,11 @@ const ActivitiesCard = ({ item }) => {
 
   const setOrders = () => {
     if (activity.post.uid !== user.uid) {
-      const totalPrice = activity.orders[0].items.reduce(
-        (total, item) => total + item.price * (item.quantity || 1),
-        0
-      )
+      const totalPrice =
+        activity?.orders[0]?.items?.reduce(
+          (total, item) => total + item.price * (item.quantity || 1),
+          0
+        ) || activity.orders[0].offer
 
       return ` ₱${formatNumber(totalPrice, {
         separator: '.',
