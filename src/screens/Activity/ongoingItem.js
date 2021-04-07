@@ -82,9 +82,14 @@ const OngoingItem = ({ route, navigation }) => {
             customTitleStyle={styles.headerText}
             paddingSize={2}
             rightIcon={
-              <View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('NBTScreen', {
+                    screen: 'ChatHouse',
+                  })
+                }>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
-              </View>
+              </TouchableOpacity>
             }
           />
           <ActivitiesCard item={item} />

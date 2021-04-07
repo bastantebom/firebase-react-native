@@ -162,10 +162,12 @@ const ActivitiesCard = ({ item }) => {
         }
       })
     } else {
-      orderCounts.offers = {
-        label: 'offers',
-        count: orderCounts?.offers?.count + 1 || 1,
-      }
+      activity.orders.forEach(() => {
+        orderCounts.offers = {
+          label: 'offers',
+          count: orderCounts?.offers?.count + 1 || 1,
+        }
+      })
     }
 
     return Object.values(orderCounts).map(
