@@ -3,7 +3,14 @@ import { Colors } from '@/globals'
 import { isUrl } from '@/globals/Utils'
 import ImageApi from '@/services/image-api'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, PixelRatio, StyleSheet, View } from 'react-native'
+import {
+  ActivityIndicator,
+  PixelRatio,
+  Platform,
+  StyleSheet,
+  View,
+  Image,
+} from 'react-native'
 import FastImage from 'react-native-fast-image'
 
 const sizeProps = {
@@ -97,14 +104,28 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
           <ActivityIndicator color={Colors.contentOcean} size="large" />
         </View>
       )}
-      <FastImage
-        resizeMode="cover"
-        source={source}
-        style={{ ...sizeProps, zIndex: 1 }}
-        onLoadStart={() => setIsLoading(true)}
-        onLoadEnd={() => setIsLoading(false)}
-        {...props}
-      />
+      {Platform.select({
+        android: (
+          <FastImage
+            resizeMode="cover"
+            source={source}
+            style={{ ...sizeProps, zIndex: 1 }}
+            onLoadStart={() => setIsLoading(true)}
+            onLoadEnd={() => setIsLoading(false)}
+            {...props}
+          />
+        ),
+        ios: (
+          <Image
+            resizeMode="cover"
+            source={source}
+            style={{ ...sizeProps, zIndex: 1 }}
+            onLoadStart={() => setIsLoading(true)}
+            onLoadEnd={() => setIsLoading(false)}
+            {...props}
+          />
+        ),
+      })}
     </>
   ) : type === 'thumbnail' ? (
     <DefaultPostThumbnail type={postType} />

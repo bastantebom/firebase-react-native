@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import typography from '@/globals/typography'
+import PostImage from '@/components/Post/post-image'
 
 const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
   const navigation = useNavigation()
@@ -73,12 +74,7 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
                   onPress={() => handleOnRemovePress(uri)}>
                   <Icons.Close style={styles.removeIcon} {...iconSize(16)} />
                 </TouchableOpacity>
-                <Image
-                  style={styles.image}
-                  source={{ uri }}
-                  resizeMethod="resize"
-                  resizeMode="cover"
-                />
+                <PostImage style={styles.image} path={uri} />
               </View>
             ))}
           </ScrollView>
