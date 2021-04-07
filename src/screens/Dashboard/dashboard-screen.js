@@ -107,7 +107,7 @@ const DashboardScreen = ({ navigation }) => {
   useEffect(() => {
     ;(async () => {
       const newPosts = [...posts.filter(post => post.$likedLoader)]
-      if (!!newPosts.length && !noMorePost) {
+      if (!!newPosts.length) {
         await Promise.all(
           newPosts.map(async post => {
             const { likes } = await Api.getPostLikes({ pid: post.id })
