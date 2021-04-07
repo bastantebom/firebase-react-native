@@ -6,7 +6,6 @@ import {
   AppButton,
   AppText,
   BottomSheetHeader,
-  Notification,
   ScreenHeaderTitle,
   TransitionIndicator,
 } from '@/components'
@@ -81,7 +80,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const [userType, setUserType] = useState('')
   const [attachedPost, setAttachedPost] = useState(null)
 
-  const [notificationMessage, setNotificationMessage] = useState(null)
   const [statusHistoryVisible, setStatusHistoryVisible] = useState(false)
   const [totalPrice, setTotalPrice] = useState(0)
 
@@ -445,7 +443,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderStatusAnimation = () => {
     return (
       <View style={styles.statusAnimation}>
-        {post.type && (
+        {!!post.type && (
           <LottieView
             source={
               orderStatus.animation ||
@@ -455,7 +453,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             autoPlay
           />
         )}
-        {orderStatus.withGradient && (
+        {!!orderStatus.withGradient && (
           <>
             <LinearGradient
               style={styles.gradient}
@@ -480,7 +478,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderOrderStatusHistory = () => {
     const history = orderStatusHistory?.slice?.(0, -1) || []
     return (
-      post.id && (
+      !!post.id && (
         <View>
           {statusHistoryVisible &&
             history.map(({ status, date }) => {
@@ -841,7 +839,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     <Text style={[typography.body2, typography.medium]}>
                       {item.name || post.title}
                     </Text>
-                    {item.note && (
+                    {!!item.note && (
                       <Text
                         style={[typography.body2, { marginTop: normalize(4) }]}>
                         {item.note}
@@ -899,7 +897,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderNotesSection = () => {
     return (
       <>
-        {post.type === 'need' && orderData.notes?.length && (
+        {post.type === 'need' && !!orderData.notes?.length && (
           <View style={styles.section}>
             <View
               style={{
@@ -926,7 +924,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
         {(post.type === 'need' ||
           (post.type === 'service' && orderData.status === 'cancelled')) &&
-          orderData.message?.length && (
+          !!orderData.message?.length && (
             <View style={styles.section}>
               <View style={styleUtils.row}>
                 {post.type === 'need' ? (
@@ -1268,19 +1266,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           title={title}
           paddingSize={3}
         />
-        {notificationMessage && (
-          <Notification
-            onClose={() => setNotificationMessage(null)}
-            type="success"
-            icon={<Icons.CircleTick style={{ color: '#fff' }} />}>
-            <AppText
-              textStyle="body2"
-              customStyle={{ marginLeft: 14 }}
-              color={Colors.neutralsWhite}>
-              {notificationMessage}
-            </AppText>
-          </Notification>
-        )}
 
         <ScrollView
           style={styles.scrollWrapper}

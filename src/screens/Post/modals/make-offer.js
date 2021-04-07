@@ -88,7 +88,6 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
         <Text style={typography.subtitle1}>{budgetLabel}</Text>
       </View>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
         behavior={Platform.select({ ios: 'padding', android: null })}>
         <ScrollView style={styles.content}>
           <View style={styles.formGroup}>
@@ -209,8 +208,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: normalize(10),
     borderTopRightRadius: normalize(10),
-    minHeight: '75%',
-    height: '75%',
   },
   titleWrapper: {
     margin: normalize(16),
