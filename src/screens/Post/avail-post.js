@@ -567,7 +567,11 @@ const AvailPostScreen = ({ navigation, route }) => {
               ref={mapViewRef}
               style={styles.mapView}
               provider={PROVIDER_GOOGLE}
-              initialRegion={initialRegion}>
+              initialRegion={initialRegion}
+              pitchEnabled={false}
+              rotateEnabled={false}
+              zoomEnabled={false}
+              scrollEnabled={false}>
               <Marker
                 coordinate={{
                   latitude: location.latitude,
