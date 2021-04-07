@@ -212,7 +212,7 @@ const OngoingItem = ({ route, navigation }) => {
           </View>
         )}
 
-        {item.orders.includes(
+        {item.orders.some(
           order =>
             order.status === 'paid' ||
             order.status === 'delivering' ||
