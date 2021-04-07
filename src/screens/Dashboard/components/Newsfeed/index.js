@@ -250,6 +250,7 @@ const NewsFeed = ({ props }) => {
               {post.title}
             </Text>
             <AppText
+              textStyle="caption2"
               customStyle={styles.postPrice}
               color={Colors.secondaryMountainMeadow}>
               {getPrice(post)}

@@ -103,9 +103,7 @@ const CreatePostPopup = ({}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <View>
-                <PostBG width={normalize(40)} height={normalize(40)} />
-              </View>
+              <PostBG width={normalize(40)} height={normalize(40)} />
               <Animated.View style={[iconAnimatedStyle, styles.plusIcon]}>
                 <PostPlus width={normalize(16)} height={normalize(16)} />
               </Animated.View>
@@ -371,7 +369,7 @@ const styles = StyleSheet.create({
   },
   plusIcon: {
     position: 'absolute',
-    paddingTop: 2,
+    // paddingTop: normalize(1),
   },
   exampleHolder: {
     flex: 1,

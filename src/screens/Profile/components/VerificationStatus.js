@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import { ProgressBar } from 'react-native-paper'
 import { normalize, Colors } from '@/globals'
-import { Verified, ArrowRight } from '@/assets/images/icons'
+import { Verified, ArrowRight, Icons } from '@/assets/images/icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { AppText } from '@/components'
 import { useNavigation } from '@react-navigation/native'
@@ -46,24 +46,44 @@ const VerificationStatus = ({ statusPercentage }) => {
                   screen: 'Verification',
                 })
               }}>
-              <AppText textStyle="body1" color={Colors.primaryMidnightBlue}>
-                Get bee-rified
-              </AppText>
-              <AppText textStyle="caption" color={Colors.primaryMidnightBlue}>
+              <View
+                style={{
+                  flexDirection: 'row-reverse',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Icons.ChevronRight
+                  style={{
+                    color: Colors.primaryMidnightBlue,
+                    marginRight: normalize(8),
+                  }}
+                  width={normalize(18)}
+                  height={normalize(18)}
+                />
+                <AppText
+                  textStyle="body2medium"
+                  color={Colors.primaryMidnightBlue}
+                  customStyle={{ paddingBottom: normalize(4) }}>
+                  Get bee-rified!
+                </AppText>
+              </View>
+              <AppText textStyle="caption">
                 Safeguard your account and boost your credibility within the
                 community.
               </AppText>
             </TouchableOpacity>
-          </View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}>
-            <ArrowRight width={24} height={24} />
           </View>
         </TouchableOpacity>
 
         <ProgressBar
           progress={statusPercentage}
           color={Colors.contentOcean}
-          style={{ height: 8, borderRadius: 50, marginTop: 8 }}
+          style={{
+            backgroundColor: Colors.secondarySolitude,
+            height: 8,
+            borderRadius: 50,
+            marginTop: 8,
+          }}
         />
       </View>
     </View>

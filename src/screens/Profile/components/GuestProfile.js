@@ -1,119 +1,80 @@
 import React, { useContext } from 'react'
-import Modal from 'react-native-modal'
-import {
-  View,
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native'
-import { AppText, BottomSheetHeader } from '@/components'
-import { OnboardingIllustration4 } from '@/assets/images'
-import SignUp from '@/screens/Authentication/SignUp/SignUp'
-import Login from '@/screens/Authentication/Login/login'
-
-import { Colors, normalize } from '@/globals'
+import Button from '@/components/Button'
 import { Context } from '@/context'
-import { ScrollView } from 'react-native-gesture-handler'
-
-const { height, width } = Dimensions.get('window')
+import { Colors, normalize } from '@/globals'
+import typography from '@/globals/typography'
+import { OnboardingIllustration4 } from '@/assets/images'
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 export const GuestProfile = () => {
-  const {
-    openSlider,
-    authType,
-    setAuthType,
-    authenticationSheet,
-    showAuthenticationSheet,
-  } = useContext(Context)
-
-  const RenderContent = () => {
-    if (authType === 'signup') {
-      return <SignUp />
-    }
-    if (authType === 'login') {
-      return <Login />
-    }
+  const { setAuthType, openSlider } = useContext(Context)
+  const handleOnJoinPress = () => {
+    setAuthType('signup')
+    openSlider()
   }
 
   return (
-    <>
-      <SafeAreaView style={{ flexGrow: 1 }}>
-        <ScrollView contentContainerStyle={styles.contentWrapper}>
-          <OnboardingIllustration4 />
-          <AppText
-            textStyle="display5"
-            customStyle={styles.textStyle}
-            color={Colors.primaryMidnightBlue}>
+    <View style={styles.wrapper}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <OnboardingIllustration4
+          height={normalize(275)}
+          width={normalize(375)}
+        />
+        <View style={styles.content}>
+          <Text
+            style={[
+              typography.display5,
+              typography.textCenter,
+              { marginTop: normalize(24), color: Colors.primaryMidnightBlue },
+            ]}>
             Join the bustling {'\n'} Servbees community
-          </AppText>
-          <AppText
-            textStyle="body2"
-            customStyle={{
-              textAlign: 'center',
-              paddingHorizontal: normalize(25),
-            }}>
+          </Text>
+          <Text
+            style={[
+              typography.body2,
+              typography.textCenter,
+              { marginTop: normalize(8) },
+            ]}>
             Be a Buzzybee and connect, hustle, and earn—all on your own terms.
-          </AppText>
-          <TouchableOpacity
-            style={{
-              marginTop: normalize(24),
-              paddingVertical: 12,
-              width: '100%',
-              alignItems: 'center',
-              backgroundColor: Colors.primaryYellow,
-              borderRadius: 3,
-              maxWidth: normalize(250),
-            }}
-            onPress={() => {
-              openSlider()
-              setAuthType('signup')
-            }}>
-            <AppText textStyle="body1medium">Join Now</AppText>
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-      <Modal
-        isVisible={authenticationSheet}
-        animationIn="slideInUp"
-        animationInTiming={450}
-        animationOut="slideOutDown"
-        animationOutTiming={450}
-        style={{ margin: 0, justifyContent: 'flex-end' }}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => showAuthenticationSheet(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <View
-          style={{
-            backgroundColor: 'white',
-            height: '82%',
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}>
-          <BottomSheetHeader />
-          <RenderContent />
+          </Text>
+
+          <Button
+            style={styles.button}
+            label="Join Now"
+            type="primary"
+            onPress={handleOnJoinPress}
+          />
         </View>
-      </Modal>
-    </>
+      </ScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  contentWrapper: {
-    flexGrow: 1,
-    alignItems: 'center',
-    padding: normalize(16),
-    textAlign: 'center',
-    backgroundColor: 'white',
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+    paddingBottom: normalize(15),
   },
-  textStyle: {
-    textAlign: 'center',
-    marginTop: normalize(10),
-    marginBottom: normalize(8),
-    paddingHorizontal: normalize(15),
+  content: {
+    flex: 1,
+    paddingHorizontal: normalize(32),
+    alignItems: 'center',
+  },
+  scrollView: {
+    paddingTop: normalize(32),
+  },
+  button: {
+    width: normalize(250),
+    marginTop: normalize(24),
   },
 })

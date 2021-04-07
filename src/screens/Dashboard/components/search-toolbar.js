@@ -209,7 +209,7 @@ const SearchToolbar = ({
               inputStyle={styles.input}
               placeholderTextColor={Colors.contentPlaceholder}
               icon={() => (
-                <SearchDark width={normalize(24)} height={normalize(24)} />
+                <SearchDark width={normalize(20)} height={normalize(20)} />
               )}
               style={[
                 styles.search,
@@ -235,7 +235,7 @@ const SearchToolbar = ({
             }}>
             <TouchableOpacity activeOpacity={0.7} onPress={onFiltersPress}>
               <View style={styles.circleButton}>
-                <FilterDark width={normalize(24)} height={normalize(24)} />
+                <FilterDark width={normalize(20)} height={normalize(20)} />
               </View>
             </TouchableOpacity>
 
@@ -243,7 +243,7 @@ const SearchToolbar = ({
               activeOpacity={0.7}
               onPress={() => navigation.navigate('liked-posts')}>
               <View style={styles.circleButton}>
-                <LikeDark width={normalize(30)} height={normalize(30)} />
+                <LikeDark width={normalize(25)} height={normalize(25)} />
               </View>
             </TouchableOpacity>
           </Animated.View>

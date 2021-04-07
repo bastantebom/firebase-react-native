@@ -18,6 +18,8 @@ import {
   SortPopular,
   SortLowHigh,
   SortHighLow,
+  SortLowHighActive,
+  SortHighLowActive,
   SortNearest,
   Icons,
 } from '@/assets/images/icons'
@@ -62,24 +64,36 @@ const FilterSlider = ({ close, onApply, filters: _filters }) => {
     //   icon: <SortPopular/>
     // },
     {
+      heading: 'Sort by',
       label: 'Recent',
       value: 'recent',
       icon: <SortRecent />,
+      iconActive: <SortRecent color="#2E3034" />,
     },
     {
+      heading: '',
       label: 'Nearest',
       value: 'nearest',
       icon: <SortNearest />,
+      iconActive: <SortNearest color="#2E3034" />,
     },
     {
+      heading: 'Price',
       label: 'Price high to low',
       value: 'price_desc',
-      icon: <SortHighLow />,
+      icon: <SortHighLow width={normalize(20)} height={normalize(20)} />,
+      iconActive: (
+        <SortHighLowActive width={normalize(20)} height={normalize(20)} />
+      ),
     },
     {
+      heading: '',
       label: 'Price low to high',
       value: 'price_asc',
-      icon: <SortLowHigh />,
+      icon: <SortLowHigh width={normalize(20)} height={normalize(20)} />,
+      iconActive: (
+        <SortLowHighActive width={normalize(20)} height={normalize(20)} />
+      ),
     },
   ]
 
@@ -158,26 +172,40 @@ const FilterSlider = ({ close, onApply, filters: _filters }) => {
           </View>
 
           <View>
-            <AppText textStyle="subtitle2" customStyle={{ marginBottom: 16 }}>
-              Sort by
-            </AppText>
-            {sortValues.map(sortValue => (
-              <AppRadio
-                key={sortValue.value}
-                Icon={() => sortValue.icon}
-                label={sortValue.label}
-                name={sortValue.value}
-                value={sortValue.value === filters.sort}
-                valueChangeHandler={ticked =>
-                  ticked &&
-                  setFilters(filters => ({ ...filters, sort: sortValue.value }))
-                }
-                style={{
-                  marginBottom: normalize(16),
-                  backgroundColor:
-                    filters.sort === sortValue.value ? '#F2F4F6' : '#FBFBFB',
-                }}
-              />
+            {sortValues.map((sortValue, i) => (
+              <View key={i}>
+                <AppText
+                  textStyle="subtitle2"
+                  customStyle={{
+                    marginBottom: 16,
+                    display: sortValue.heading !== '' ? 'flex' : 'none',
+                  }}>
+                  {sortValue.heading}
+                </AppText>
+                <AppRadio
+                  key={sortValue.value}
+                  Icon={() =>
+                    filters.sort === sortValue.value
+                      ? sortValue.iconActive
+                      : sortValue.icon
+                  }
+                  label={sortValue.label}
+                  name={sortValue.value}
+                  value={sortValue.value === filters.sort}
+                  valueChangeHandler={ticked =>
+                    ticked &&
+                    setFilters(filters => ({
+                      ...filters,
+                      sort: sortValue.value,
+                    }))
+                  }
+                  style={{
+                    marginBottom: normalize(16),
+                    backgroundColor:
+                      filters.sort === sortValue.value ? '#F2F4F6' : '#FBFBFB',
+                  }}
+                />
+              </View>
             ))}
           </View>
         </TouchableOpacity>

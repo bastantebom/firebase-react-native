@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   content: {
     flex: 1,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(32),
   },
   button: {
-    width: normalize(200),
+    width: normalize(250),
     marginTop: normalize(24),
   },
 })

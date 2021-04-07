@@ -515,7 +515,7 @@ function ProfileInfoModal(props) {
           backgroundColor: Colors.neutralsWhite,
           flex: 1,
           borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: 'black',
+          borderTopColor: '#DADCE0',
         }}></StickyParallaxHeader>
     </View>
   )

@@ -88,9 +88,21 @@ import FilterServicesWhite from './filter-services-white.svg'
 import FilterNeedsGray from './filter-needs-gray.svg'
 import FilterSellerGray from './filter-seller-gray.svg'
 import FilterServicesGray from './filter-services-gray.svg'
+import FilterNearest from './filter-nearest.svg'
+import FilterNearestActive from './filter-nearest-active.svg'
+import FilterHighLow from './filter-high-low.svg'
+import FilterHighLowActive from './filter-high-low-active.svg'
+import FilterLowHigh from './filter-low-high.svg'
+import FilterLowHighActive from './filter-low-high-active.svg'
+import FilterRecent from './filter-recent.svg'
+import FilterRecentActive from './filter-recent-active.svg'
+import FilterPopular from './filter-popular.svg'
+import FilterPopularActive from './filter-popular-active.svg'
 
 import SortHighLow from './sort-high-low.svg'
 import SortLowHigh from './sort-low-high.svg'
+import SortHighLowActive from './sort-high-low-active.svg'
+import SortLowHighActive from './sort-low-high-active.svg'
 import SortPopular from './sort-popular.svg'
 import SortRecent from './sort-recent.svg'
 import SortNearest from './sort-nearest.svg'
@@ -457,6 +469,8 @@ export {
   HeaderQRGray,
   SortHighLow,
   SortLowHigh,
+  SortHighLowActive,
+  SortLowHighActive,
   SortPopular,
   SortRecent,
   SortNearest,
@@ -470,6 +484,16 @@ export {
   FilterNeedsGray,
   FilterSellerGray,
   FilterServicesGray,
+  FilterNearest,
+  FilterNearestActive,
+  FilterHighLow,
+  FilterHighLowActive,
+  FilterLowHigh,
+  FilterLowHighActive,
+  FilterRecent,
+  FilterRecentActive,
+  FilterPopular,
+  FilterPopularActive,
   Filter,
   JarHeart,
   JarHeartColored,

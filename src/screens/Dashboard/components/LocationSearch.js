@@ -10,17 +10,22 @@ import {
 import { AppText } from '@/components'
 
 import {
-  SortNearest,
   FilterServicesWhite,
   FilterSellerWhite,
   FilterNeedsWhite,
   NavigationPinRed,
   SortRecent,
-  SortHighLow,
-  SortLowHigh,
   FilterNeedsGray,
   FilterSellerGray,
   FilterServicesGray,
+  FilterNearest,
+  FilterNearestActive,
+  FilterHighLow,
+  FilterHighLowActive,
+  FilterLowHigh,
+  FilterLowHighActive,
+  FilterRecent,
+  FilterRecentActive,
 } from '@/assets/images/icons'
 
 import Config from '@/services/Config'
@@ -58,29 +63,29 @@ const LocationSearch = ({
 
   const postTypes = [
     {
-      label: 'Service',
+      label: 'Services',
       value: 'service',
-      icon: <FilterServicesGray width={normalize(20)} height={normalize(20)} />,
+      icon: <FilterServicesGray width={normalize(17)} height={normalize(17)} />,
       iconActive: (
-        <FilterServicesWhite width={normalize(20)} height={normalize(20)} />
+        <FilterServicesWhite width={normalize(17)} height={normalize(17)} />
       ),
       color: Colors.secondaryBrinkPink,
     },
     {
-      label: 'Selling',
+      label: 'Sell',
       value: 'sell',
-      icon: <FilterSellerGray width={normalize(20)} height={normalize(20)} />,
+      icon: <FilterSellerGray width={normalize(17)} height={normalize(17)} />,
       iconActive: (
-        <FilterSellerWhite width={normalize(20)} height={normalize(20)} />
+        <FilterSellerWhite width={normalize(17)} height={normalize(17)} />
       ),
       color: Colors.secondaryRoyalBlue,
     },
     {
-      label: 'Need',
+      label: 'Needs',
       value: 'need',
-      icon: <FilterNeedsGray width={normalize(20)} height={normalize(20)} />,
+      icon: <FilterNeedsGray width={normalize(17)} height={normalize(17)} />,
       iconActive: (
-        <FilterNeedsWhite width={normalize(20)} height={normalize(20)} />
+        <FilterNeedsWhite width={normalize(17)} height={normalize(17)} />
       ),
       color: Colors.secondaryMountainMeadow,
     },
@@ -90,92 +95,36 @@ const LocationSearch = ({
     {
       label: 'Recent',
       value: 'recent',
-      icon: (
-        <SortRecent
-          color="#91919C"
-          width={normalize(20)}
-          height={normalize(20)}
-        />
-      ),
+      icon: <FilterRecent width={normalize(20)} height={normalize(20)} />,
       iconActive: (
-        <SortRecent
-          color={
-            getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#515057'
-              : getColorByBackground(Colors.primarySalomie)
-          }
-          width={normalize(20)}
-          height={normalize(20)}
-        />
+        <FilterRecentActive width={normalize(20)} height={normalize(20)} />
       ),
       color: Colors.primarySalomie,
     },
     {
       label: 'Nearest',
       value: 'nearest',
-      icon: (
-        <SortNearest
-          color="#91919C"
-          width={normalize(20)}
-          height={normalize(20)}
-        />
-      ),
+      icon: <FilterNearest width={normalize(15)} height={normalize(15)} />,
       iconActive: (
-        <SortNearest
-          color={
-            getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#515057'
-              : getColorByBackground(Colors.primarySalomie)
-          }
-          width={normalize(20)}
-          height={normalize(20)}
-        />
+        <FilterNearestActive width={normalize(15)} height={normalize(15)} />
       ),
       color: Colors.primarySalomie,
     },
     {
       label: 'Price: High to low',
       value: 'price_desc',
-      icon: (
-        <SortHighLow
-          color="#91919C"
-          width={normalize(20)}
-          height={normalize(20)}
-        />
-      ),
+      icon: <FilterHighLow width={normalize(17)} height={normalize(17)} />,
       iconActive: (
-        <SortHighLow
-          color={
-            getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#515057'
-              : getColorByBackground(Colors.primarySalomie)
-          }
-          width={normalize(20)}
-          height={normalize(20)}
-        />
+        <FilterHighLowActive width={normalize(17)} height={normalize(17)} />
       ),
       color: Colors.primarySalomie,
     },
     {
       label: 'Price: Low to High',
       value: 'price_asc',
-      icon: (
-        <SortLowHigh
-          color="#91919C"
-          width={normalize(20)}
-          height={normalize(20)}
-        />
-      ),
+      icon: <FilterLowHigh width={normalize(17)} height={normalize(17)} />,
       iconActive: (
-        <SortLowHigh
-          color={
-            getColorByBackground(Colors.primarySalomie) === '#fff'
-              ? '#515057'
-              : getColorByBackground(Colors.primarySalomie)
-          }
-          width={normalize(20)}
-          height={normalize(20)}
-        />
+        <FilterLowHighActive width={normalize(17)} height={normalize(17)} />
       ),
       color: Colors.primarySalomie,
     },
@@ -270,7 +219,7 @@ const LocationSearch = ({
                   <AppText
                     textStyle="eyebrow2"
                     customStyle={{
-                      marginLeft: 5,
+                      marginLeft: 7,
                       fontFamily: 'RoundedMplus1c-Medium',
                       color: getColorByBackground(
                         filters.sort === sortValue.value
@@ -341,7 +290,7 @@ const LocationSearch = ({
                   <AppText
                     textStyle="eyebrow2"
                     customStyle={{
-                      marginLeft: 5,
+                      marginLeft: 7,
                       fontFamily: 'RoundedMplus1c-Medium',
                       color: getColorByBackground(
                         filters.sort === sortValue.value
@@ -397,7 +346,7 @@ const LocationSearch = ({
 
 const styles = StyleSheet.create({
   locationOption: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: Colors.primarySalomie,
     borderRadius: 8,
