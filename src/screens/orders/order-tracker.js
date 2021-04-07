@@ -257,6 +257,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   }
 
   const handleViewPostPress = async () => {
+    if (!user) return
     setIsLoading(true)
     const data = post
 

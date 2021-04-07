@@ -210,17 +210,18 @@ const PublishedPostScreen = ({ navigation, route }) => {
     if (id && !post.current) promises.push(getPostData())
     if (uid && !user.current) promises.push(getUserData())
     let listener
-    if (!preview && id) {
+    if (!preview && (id || post.current?.id)) {
+      setIsLoading(true)
       const promise = new Promise(resolve => {
         listener = firestore()
           .collection('orders')
-          .where('post_id', '==', id)
+          .where('post_id', '==', id || post.current.id)
           .where('status', '==', 'pending')
           .where('buyer_id', '==', userInfo.uid)
           .onSnapshot(snap => {
-            if (!mounted.current) return
             const order = snap?.docs?.[0]?.data?.()
-            if (order) setExistingOrder(order)
+            setExistingOrder(order)
+            setIsLoading(false)
             resolve()
           })
         promises.push(promise)
