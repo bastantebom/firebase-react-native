@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: normalize(10),
     borderTopRightRadius: normalize(10),
+    minHeight: '75%',
+    height: '75%',
   },
   titleWrapper: {
     margin: normalize(16),
