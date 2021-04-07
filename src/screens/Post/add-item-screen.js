@@ -130,17 +130,20 @@ const AddItemScreen = ({ navigation, route }) => {
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={handleCategoriesInputPress}>
-          <TextInput
-            inputStyle={{ color: Colors.contentEbony }}
-            label="Select Category"
-            disabled
-            filled
-            editable={false}
-            value={selectedCategory}
-            placeholderTextColor={Colors.contentEbony}
-            rightIcon={() => (
-              <Icons.ChevronDown style={{ color: Colors.icon }} />
-            )}></TextInput>
+          <View pointerEvents="none">
+            <TextInput
+              inputStyle={{ color: Colors.contentEbony }}
+              label="Select Category"
+              disabled
+              filled
+              editable={false}
+              value={selectedCategory}
+              placeholderTextColor={Colors.contentEbony}
+              rightIcon={() => (
+                <Icons.ChevronDown style={{ color: Colors.icon }} />
+              )}
+            />
+          </View>
         </TouchableOpacity>
       </View>
     )

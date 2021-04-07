@@ -172,25 +172,27 @@ const ChangeShippingMethodModal = ({ close, post }) => {
                     style={{ marginBottom: normalize(16) }}
                     activeOpacity={0.7}
                     onPress={handleOnSetSchedulePress}>
-                    <TextInput
-                      inputStyle={{ color: Colors.contentEbony }}
-                      label={basket.schedule ? 'Schedule' : 'Set Schedule'}
-                      disabled
-                      filled
-                      editable={false}
-                      value={
-                        schedule
-                          ? format(
-                              schedule,
-                              `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                            )
-                          : undefined
-                      }
-                      placeholderTextColor={Colors.contentEbony}
-                      rightIcon={() => (
-                        <Icons.ChevronDown style={{ color: Colors.icon }} />
-                      )}
-                    />
+                    <View pointerEvents="none">
+                      <TextInput
+                        inputStyle={{ color: Colors.contentEbony }}
+                        label={basket.schedule ? 'Schedule' : 'Set Schedule'}
+                        disabled
+                        filled
+                        editable={false}
+                        value={
+                          schedule
+                            ? format(
+                                schedule,
+                                `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
+                              )
+                            : undefined
+                        }
+                        placeholderTextColor={Colors.contentEbony}
+                        rightIcon={() => (
+                          <Icons.ChevronDown style={{ color: Colors.icon }} />
+                        )}
+                      />
+                    </View>
                   </TouchableOpacity>
                 )}
               </View>
@@ -219,24 +221,27 @@ const ChangeShippingMethodModal = ({ close, post }) => {
                     style={{ marginBottom: normalize(16) }}
                     activeOpacity={0.7}
                     onPress={handleOnSetSchedulePress}>
-                    <TextInput
-                      inputStyle={{ color: Colors.contentEbony }}
-                      label={basket.schedule ? 'Schedule' : 'Set Schedule'}
-                      disabled
-                      filled
-                      editable={false}
-                      value={
-                        schedule
-                          ? format(
-                              schedule,
-                              `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                            )
-                          : undefined
-                      }
-                      placeholderTextColor={Colors.contentEbony}
-                      rightIcon={() => (
-                        <Icons.ChevronDown style={{ color: Colors.icon }} />
-                      )}></TextInput>
+                    <View pointerEvents="none">
+                      <TextInput
+                        inputStyle={{ color: Colors.contentEbony }}
+                        label={basket.schedule ? 'Schedule' : 'Set Schedule'}
+                        disabled
+                        filled
+                        editable={false}
+                        value={
+                          schedule
+                            ? format(
+                                schedule,
+                                `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
+                              )
+                            : undefined
+                        }
+                        placeholderTextColor={Colors.contentEbony}
+                        rightIcon={() => (
+                          <Icons.ChevronDown style={{ color: Colors.icon }} />
+                        )}
+                      />
+                    </View>
                   </TouchableOpacity>
                 )}
               </View>
@@ -268,27 +273,35 @@ const ChangeShippingMethodModal = ({ close, post }) => {
 
                 {method === 'appointment' && (
                   <TouchableOpacity
-                    style={{ marginBottom: normalize(16) }}
+                    style={{
+                      marginBottom: normalize(16),
+                      height: normalize(54),
+                      width: '100%',
+                      zIndex: 2000,
+                    }}
                     activeOpacity={0.7}
                     onPress={handleOnSetSchedulePress}>
-                    <TextInput
-                      inputStyle={{ color: Colors.contentEbony }}
-                      label={basket.schedule ? 'Schedule' : 'Set Schedule'}
-                      disabled
-                      filled
-                      editable={false}
-                      value={
-                        schedule
-                          ? format(
-                              schedule,
-                              `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                            )
-                          : undefined
-                      }
-                      placeholderTextColor={Colors.contentEbony}
-                      rightIcon={() => (
-                        <Icons.ChevronDown style={{ color: Colors.icon }} />
-                      )}></TextInput>
+                    <View pointerEvents="none">
+                      <TextInput
+                        inputStyle={{ color: Colors.contentEbony }}
+                        label={basket.schedule ? 'Schedule' : 'Set Schedule'}
+                        disabled
+                        filled
+                        editable={false}
+                        value={
+                          schedule
+                            ? format(
+                                schedule,
+                                `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
+                              )
+                            : undefined
+                        }
+                        placeholderTextColor={Colors.contentEbony}
+                        rightIcon={() => (
+                          <Icons.ChevronDown style={{ color: Colors.icon }} />
+                        )}
+                      />
+                    </View>
                   </TouchableOpacity>
                 )}
               </View>

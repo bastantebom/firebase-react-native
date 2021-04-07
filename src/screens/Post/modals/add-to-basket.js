@@ -14,13 +14,13 @@ import {
   TouchableWithoutFeedback,
   Text,
   Keyboard,
+  TouchableOpacity,
 } from 'react-native'
 import CurrencyInput, { formatNumber } from 'react-native-currency-input'
 import { Context } from '@/context'
 import cloneDeep from 'lodash.clonedeep'
 import { format } from 'date-fns'
 import CustomDatePicker from '../components/custom-date-picker'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -261,25 +261,27 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
                 style={styles.scheduleInput}
                 activeOpacity={0.7}
                 onPress={handleOnSetSchedulePress}>
-                <TextInput
-                  inputStyle={{ color: Colors.contentEbony }}
-                  label={item.schedule ? 'Schedule' : 'Set Schedule'}
-                  disabled
-                  filled
-                  editable={false}
-                  value={
-                    schedule
-                      ? format(
-                          schedule,
-                          `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                        )
-                      : undefined
-                  }
-                  placeholderTextColor={Colors.contentEbony}
-                  rightIcon={() => (
-                    <Icons.ChevronDown style={{ color: Colors.icon }} />
-                  )}
-                />
+                <View pointerEvents="none">
+                  <TextInput
+                    inputStyle={{ color: Colors.contentEbony }}
+                    label={item.schedule ? 'Schedule' : 'Set Schedule'}
+                    disabled
+                    filled
+                    editable={false}
+                    value={
+                      schedule
+                        ? format(
+                            schedule,
+                            `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
+                          )
+                        : undefined
+                    }
+                    placeholderTextColor={Colors.contentEbony}
+                    rightIcon={() => (
+                      <Icons.ChevronDown style={{ color: Colors.icon }} />
+                    )}
+                  />
+                </View>
               </TouchableOpacity>
             )}
             {!!item.custom_requests && (

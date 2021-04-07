@@ -221,7 +221,6 @@ const PublishedPostScreen = ({ navigation, route }) => {
           .onSnapshot(snap => {
             const order = snap?.docs?.[0]?.data?.()
             setExistingOrder(order)
-            setIsLoading(false)
             resolve()
           })
         promises.push(promise)
