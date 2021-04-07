@@ -210,7 +210,8 @@ const PublishedPostScreen = ({ navigation, route }) => {
     if (id && !post.current) promises.push(getPostData())
     if (uid && !user.current) promises.push(getUserData())
     let listener
-    if (!preview && (id || post.current?.id)) {
+
+    if (!preview && (id || post.current?.id) && userInfo?.uid) {
       setIsLoading(true)
       const promise = new Promise(resolve => {
         listener = firestore()
