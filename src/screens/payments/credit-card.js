@@ -26,6 +26,7 @@ import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import { formatNumber } from 'react-native-currency-input'
 import firestore from '@react-native-firebase/firestore'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -385,7 +386,9 @@ const CreditCardScreen = ({ navigation, route }) => {
           </View>
         </View>
         <View style={styles.content}>
-          <ScrollView
+          <KeyboardAwareScrollView
+            extraHeight={40}
+            keyboardOpeningTime={50}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
             <DismissKeyboardView>
@@ -774,7 +777,7 @@ const CreditCardScreen = ({ navigation, route }) => {
                 </Button>
               </View>
             </DismissKeyboardView>
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>
       </View>
     </>
