@@ -72,7 +72,10 @@ const LikedPostsScreen = ({ navigation, route }) => {
       screen: 'posts',
       params: {
         screen: 'published-post',
-        params: { id: post.id },
+        params: {
+          id: post.id,
+          uid: post.uid,
+        },
       },
     })
   }
