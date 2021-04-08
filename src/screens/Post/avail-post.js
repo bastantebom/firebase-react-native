@@ -830,6 +830,7 @@ const AvailPostScreen = ({ navigation, route }) => {
         <Button
           style={utilStyles.row}
           type={!canSubmit() ? 'disabled' : 'primary'}
+          disabled={!canSubmit()}
           onPress={handleOnSubmit}>
           {label}
         </Button>
