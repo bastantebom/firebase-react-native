@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
 import { View, SafeAreaView, StyleSheet, Alert } from 'react-native'
 import Api from '@/services/Api'
-import {
-  AppButton,
-  AppCheckbox,
-  AppText,
-  ScreenHeaderTitle,
-  TransitionIndicator,
-} from '@/components'
+import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 
 import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
 import { formatNumber } from 'react-native-currency-input'
+import Button from '@/components/Button'
 
 /**
  * @typedef {object} GCashProps

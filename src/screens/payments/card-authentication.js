@@ -18,7 +18,7 @@ import { WebView } from 'react-native-webview'
  * @typedef {object} CardAuthenticationScreenProps
  * @property {string} uri
  * @property {string} title
- * @property {() => void} onSuccess
+ * @property {() => void} onComplete
  */
 
 /**
@@ -28,9 +28,9 @@ import { WebView } from 'react-native-webview'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'CardAuthenticationScreen'>} param0 */
 const CardAuthenticationScreen = ({ navigation, route }) => {
-  const { uri, title, onSuccess } = route.params
+  const { uri, title, onComplete } = route.params
   const handleOnMessage = event => {
-    if (event.nativeEvent.data === '3DS-authentication-complete') onSuccess()
+    if (event.nativeEvent.data === '3DS-authentication-complete') onComplete()
   }
 
   const injectedJavascript = `(function() {

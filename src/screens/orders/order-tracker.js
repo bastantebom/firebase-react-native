@@ -48,6 +48,8 @@ import PostCard from '../Post/components/post-card'
 import utilStyles from '@/globals/util-styles'
 import { format } from 'date-fns'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import base64 from 'react-native-base64'
+import axios from 'axios'
 
 if (
   Platform.OS === 'android' &&
@@ -55,6 +57,8 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
+
+const paymongoSK = base64.encode('sk_test_Hf4GQS4e8sBEzUe6a3rwyfGx')
 
 /**
  * @typedef {object} OrderTrackerProps
@@ -192,50 +196,106 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const handleRefresh = async (refresh = true) => {
     refresh ? setIsRefreshing(true) : setIsLoading(true)
     try {
-      const doc = await firestore().doc(`orders/${orderID}`).get()
-      const data = doc.data()
+      const promises = []
+      promises.push(
+        (async () => {
+          const doc = await firestore().doc(`orders/${orderID}`).get()
+          const data = doc.data()
 
-      let response = await Api.getUser({ uid: data.buyer_id })
-      data.buyerData = response.data
-      response = await Api.getUser({ uid: data.seller_id })
-      data.sellerData = response.data
+          let response = await Api.getUser({ uid: data.buyer_id })
+          data.buyerData = response.data
+          response = await Api.getUser({ uid: data.seller_id })
+          data.sellerData = response.data
 
-      let postData
-      if (!post.id) {
-        let response = await Api.getPost({ pid: data.post_id })
-        postData = response.data
-        response = await Api.getUser({ uid: postData.uid })
-        postData.user = response.data
-      } else {
-        postData = post
-        if (!postData.user) {
-          const response = await Api.getUser({ uid: postData.uid })
-          postData.user = response.data
-        }
-      }
+          let postData
+          if (!post.id) {
+            let response = await Api.getPost({ pid: data.post_id })
+            postData = response.data
+            response = await Api.getUser({ uid: postData.uid })
+            postData.user = response.data
+          } else {
+            postData = post
+            if (!postData.user) {
+              const response = await Api.getUser({ uid: postData.uid })
+              postData.user = response.data
+            }
+          }
 
-      if (typeof data.attached_post === 'string') {
-        const response = await Api.getPost({
-          pid: data.attached_post,
-        })
-        const getUserResponse = await Api.getUser({
-          uid: response.data.uid,
-        })
+          if (typeof data.attached_post === 'string') {
+            const response = await Api.getPost({
+              pid: data.attached_post,
+            })
+            const getUserResponse = await Api.getUser({
+              uid: response.data.uid,
+            })
 
-        setAttachedPost({ ...response.data, user: getUserResponse.data })
-      }
+            setAttachedPost({ ...response.data, user: getUserResponse.data })
+          }
 
-      setPost(postData)
-      setOrderData(data)
+          setPost(postData)
+          setOrderData(data)
 
-      setOrderStatus(
-        getStatusData({
-          userType: data.seller_id === user.uid ? 'seller' : 'buyer',
-          type: postData.type,
-          status: data.status,
-          paymentMethod: data.payment_method,
-        })
+          setOrderStatus(
+            getStatusData({
+              userType: data.seller_id === user.uid ? 'seller' : 'buyer',
+              type: postData.type,
+              status: data.status,
+              paymentMethod: data.payment_method,
+            })
+          )
+        })()
       )
+
+      promises.push(
+        (async () => {
+          const query = firestore()
+            .collection('payments')
+            .where('order_id', '==', orderID)
+            .where('type', '==', 'card')
+            .where('status', '==', 'processing')
+
+          const data = (await query.get()).docs[0]?.data()
+          if (!data) return
+          const { intent_id } = data
+
+          const { data: intentData } = await axios({
+            method: 'GET',
+            url: `https://api.paymongo.com/v1/payment_intents/${intent_id}`,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Basic ${paymongoSK}`,
+            },
+          })
+          const { status } = intentData.data.attributes
+
+          const paymentRef = (await query.get()).docs[0].ref
+          if (status === 'succeeded') {
+            await Promise.all([
+              paymentRef.update({ status: 'paid' }),
+              Api.updateOrder({
+                uid: user.uid,
+                id: orderID,
+                body: { status: 'paid' },
+              }),
+            ])
+          } else if (status !== 'processing') {
+            await Promise.all([
+              paymentRef.update({ status: 'failed' }),
+              Api.updateOrder({
+                uid: user.uid,
+                id: orderID,
+                body: { status: 'payment failed' },
+              }),
+            ])
+            await Api.updateOrder({
+              uid: user.uid,
+              id: orderID,
+              body: { status: 'confirmed' },
+            })
+          }
+        })()
+      )
+      await Promise.all(promises)
     } catch (error) {
       console.log(error)
       Alert.alert('Error', 'Oops, something went wrong.')

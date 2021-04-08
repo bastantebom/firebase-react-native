@@ -260,29 +260,23 @@ const CreditCardScreen = ({ navigation, route }) => {
     return !Object.values(errors).some(error => error.length)
   }
 
-  const markAsPaid = async ({
+  const createPayment = async ({
     paymentIntentId,
     paymentMethodId,
     paymentId,
+    status,
   }) => {
     const ref = firestore().collection('payments')
-    await Promise.all(
-      ref.add({
-        order_id: orderData.id,
-        intent_id: paymentIntentId,
-        method_id: paymentMethodId,
-        payment_id: paymentId,
-        uid: userInfo.uid,
-        type: 'card',
-        status: 'paid',
-        date: firestore.Timestamp.fromDate(new Date()),
-      }),
-      Api.updateOrder({
-        uid: userInfo.uid,
-        id: orderData.id,
-        body: { status: 'paid' },
-      })
-    )
+    await ref.add({
+      order_id: orderData.id,
+      intent_id: paymentIntentId,
+      method_id: paymentMethodId,
+      payment_id: paymentId,
+      uid: userInfo.uid,
+      type: 'card',
+      status,
+      date: firestore.Timestamp.fromDate(new Date()),
+    })
   }
 
   const handleSubmit = async () => {
@@ -300,11 +294,20 @@ const CreditCardScreen = ({ navigation, route }) => {
       console.log(JSON.stringify(response.data, null, 2))
       if (paymentStatus === 'succeeded') {
         const paymentId = response.data.data.attributes.payments[0].id
-        await markAsPaid({
-          paymentIntentId,
-          paymentMethodId,
-          paymentId,
-        })
+        await Promise.all([
+          createPayment({
+            paymentIntentId,
+            paymentMethodId,
+            paymentId,
+            status: 'paid',
+          }),
+          Api.updateOrder({
+            uid: userInfo.uid,
+            id: orderData.id,
+            body: { status: 'paid' },
+          }),
+        ])
+
         setIsLoading(false)
         navigation.navigate('payment-status', {
           status: 'success',
@@ -315,18 +318,67 @@ const CreditCardScreen = ({ navigation, route }) => {
         navigation.navigate('card-authentication', {
           title: 'One-Time PIN',
           uri: response.data.data.attributes.next_action.redirect.url,
-          onSuccess: async () => {
+          onComplete: async () => {
             navigation.goBack()
             const { data: intentData } = await getPaymentIntent(paymentIntentId)
-            await markAsPaid({
-              paymentIntentId,
-              paymentMethodId,
-              paymentId: intentData.data.attributes.payments[0].id,
-            })
-            navigation.navigate('payment-status', {
-              status: 'success',
-              amount: totalPrice,
-            })
+            const { status } = intentData.data.attributes
+
+            if (status === 'succeeded') {
+              await Promise.all([
+                createPayment({
+                  paymentIntentId,
+                  paymentMethodId,
+                  paymentId: intentData.data.attributes.payments[0].id,
+                  status: 'paid',
+                }),
+                Api.updateOrder({
+                  uid: userInfo.uid,
+                  id: orderData.id,
+                  body: { status: 'paid' },
+                }),
+              ])
+              navigation.navigate('payment-status', {
+                status: 'success',
+                amount: totalPrice,
+              })
+            } else if (status === 'processing') {
+              await Promise.all([
+                createPayment({
+                  paymentIntentId,
+                  paymentMethodId,
+                  paymentId: intentData.data.attributes.payments[0].id,
+                  status: 'processing',
+                }),
+                Api.updateOrder({
+                  uid: userInfo.uid,
+                  id: orderData.id,
+                  body: { status: 'payment processing' },
+                }),
+              ])
+            } else {
+              await Promise.all([
+                createPayment({
+                  paymentIntentId,
+                  paymentMethodId,
+                  paymentId: intentData.data.attributes.payments[0].id,
+                  status: 'failed',
+                }),
+                Api.updateOrder({
+                  uid: userInfo.uid,
+                  id: orderData.id,
+                  body: { status: 'payment failed' },
+                }),
+              ])
+              await Api.updateOrder({
+                uid: userInfo.uid,
+                id: orderData.id,
+                body: { status: 'confirmed' },
+              })
+              navigation.navigate('payment-status', {
+                status: 'failed',
+                amount: totalPrice,
+              })
+            }
           },
         })
         return
