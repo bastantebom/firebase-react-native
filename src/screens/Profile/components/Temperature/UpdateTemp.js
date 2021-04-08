@@ -54,7 +54,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   const onTempChangeHandler = temp => {
     const decimalRegEx = /^\d{2}\.\d{1}$|^\d{2}$/
 
-    if (temp < 40 && temp >= 35 && decimalRegEx.test(temp)) {
+    if (temp < 42 && temp >= 36.4 && decimalRegEx.test(temp)) {
       setButtonState(false)
     } else {
       setButtonState(true)
@@ -190,7 +190,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
               <View style={styles.inputWrapper}>
                 <FloatingAppInput
                   value={temp}
-                  label="Body Temperature"
+                  label="Body Temperature in °Celcius"
                   keyboardType="number-pad"
                   returnKeyType={'done'}
                   customStyle={[
@@ -219,7 +219,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 <AppText
                   textStyle="captionConstant"
                   customStyle={{ marginTop: 8 }}>
-                  Body temperature should be in °Celsius
+                  Body temperature should be within 36.4 °C - 41.0 °C
                 </AppText>
               ) : null}
             </View>
