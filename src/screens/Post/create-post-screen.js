@@ -1386,6 +1386,11 @@ const CreatePostScreen = ({ navigation, route }) => {
   }, [formData])
 
   useEffect(() => {
+    if (formData.isMultiple && formData.items.some(item => item.price < 100))
+      setPaymentMethods([...new Set([...paymentMethods, 'cash', 'paypal'])])
+  }, [formData.items, formData.isMultiple])
+
+  useEffect(() => {
     selectedCategoryRef.current = selectedCategory
   }, [selectedCategory])
 
