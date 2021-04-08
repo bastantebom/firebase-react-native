@@ -7,6 +7,7 @@ import {
   Keyboard,
   StatusBar,
   Text,
+  Alert,
 } from 'react-native'
 import { TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -39,7 +40,7 @@ const PhoneVerificationScreen = ({ navigation }) => {
       const response = await Api.changeLogin({
         uid: user.uid,
         body: {
-          phone_number: phoneNumber.replace(/\s/g, ''),
+          phone_number: `+63${phoneNumber.replace(/\s/g, '')}`,
         },
       })
 
@@ -55,6 +56,7 @@ const PhoneVerificationScreen = ({ navigation }) => {
       })
     } catch (error) {
       console.log(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
     setIsSubmitting(false)
   }
