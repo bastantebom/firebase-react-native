@@ -57,8 +57,8 @@ const VerificationStatus = ({ statusPercentage }) => {
                     color: Colors.primaryMidnightBlue,
                     marginRight: normalize(8),
                   }}
-                  width={normalize(18)}
-                  height={normalize(18)}
+                  width={normalize(16)}
+                  height={normalize(16)}
                 />
                 <AppText
                   textStyle="body2medium"

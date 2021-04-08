@@ -377,7 +377,11 @@ const DashboardScreen = ({ navigation }) => {
         )}
 
         <AnimatedLinearGradient
-          colors={['#ECEFF8', '#F8F9FC']}
+          colors={
+            searchType === 'post'
+              ? ['#ECEFF8', '#F8F9FC']
+              : ['#FFFFFF', '#FFFFFF']
+          }
           style={{
             position: 'absolute',
             top: isVerifyToastVisible && !searchBarFocused ? 110 : 0,

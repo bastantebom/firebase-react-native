@@ -183,7 +183,7 @@ const SearchToolbar = ({
                   opacity: titleOpacity,
                 },
               ]}>
-              Search User
+              Search
             </Animated.Text>
           </Animated.View>
         )}
@@ -199,24 +199,28 @@ const SearchToolbar = ({
           <Animated.View style={{ width: inputWidth, height: normalize(52) }}>
             <Searchbar
               ref={inputRef}
-              placeholder="Search..."
+              placeholder={
+                searchType === 'user'
+                  ? 'Search a name or username'
+                  : 'Search...'
+              }
               onChangeText={onValueChange}
               onFocus={handleFocus}
               value={value}
               onIconPress={() => inputRef.current.focus()}
               fontFamily={'RoundedMplus1c-Regular'}
               theme={theme}
-              inputStyle={styles.input}
               placeholderTextColor={Colors.contentPlaceholder}
-              icon={() => (
-                <SearchDark width={normalize(20)} height={normalize(20)} />
-              )}
+              inputStyle={{
+                marginLeft: searchType === 'post' ? 0 : normalize(-30),
+              }}
+              icon={() =>
+                searchType === 'post' ? (
+                  <SearchDark width={normalize(20)} height={normalize(20)} />
+                ) : null
+              }
               style={[
-                styles.search,
-                {
-                  borderColor:
-                    Colors[isFocused ? 'contentOcean' : 'neutralGray'],
-                },
+                searchType === 'post' ? styles.search : styles.searchUser,
               ]}
             />
           </Animated.View>
@@ -261,6 +265,14 @@ const styles = StyleSheet.create({
     height: normalize(50),
     flex: 1,
     paddingLeft: normalize(5),
+  },
+  searchUser: {
+    marginTop: 0,
+    elevation: 0,
+    height: normalize(50),
+    flex: 1,
+    borderColor: Colors.neutralGray,
+    borderWidth: 1,
   },
   circleButton: {
     width: normalize(52),

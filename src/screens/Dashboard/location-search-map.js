@@ -192,7 +192,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
         <SafeAreaView style={{ flex: 1 }}>
           <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>
             <View
-              style={{ height: isFocused ? normalize(130) : normalize(200) }}>
+              style={{ height: isFocused ? normalize(130) : normalize(210) }}>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => currentLocation()}
@@ -211,7 +211,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               <PaddingView
                 paddingSize={2}
                 style={{
-                  top: normalize(75),
+                  top: normalize(85),
                   display: !isFocused ? 'flex' : 'none',
                 }}>
                 <View
@@ -342,11 +342,12 @@ const styles = StyleSheet.create({
   textInputWrapper: {
     top: Dimensions.get('window').height > 780 ? normalize(32) : normalize(12),
     width: '100%',
+    height: 'auto',
     position: 'absolute',
     paddingLeft: normalize(42),
     paddingRight: 8,
     paddingTop: 8,
-    zIndex: 9999,
+    zIndex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -355,8 +356,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     left: normalize(45),
+    right: 45,
     paddingTop: 12,
-    top: normalize(75),
+    top: normalize(85),
     zIndex: 9999,
   },
   mapInstruction: {

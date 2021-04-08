@@ -117,7 +117,7 @@ const SearchResults = ({
               <View style={{ flexDirection: 'row' }}>
                 <UserCircle width={normalize(25)} height={normalize(25)} />
                 <AppText textStyle="body2" customStyle={{ marginLeft: 11 }}>
-                  Search user instead
+                  Search a user
                 </AppText>
               </View>
               <ChevronRight
