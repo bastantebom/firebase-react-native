@@ -218,7 +218,7 @@ const renderBubble = props => {
       {...props}
       renderMessageText={renderMessageText}
       textStyle={{
-        left: { ...typography.body2, color: Colors.neutralsWhite },
+        left: { ...typography.body2, color: Colors.contentEbony },
         right: { ...typography.body2, color: Colors.neutralsWhite },
       }}
       wrapperStyle={{
