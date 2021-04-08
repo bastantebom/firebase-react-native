@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   TouchableOpacity,
   View,
@@ -10,8 +10,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import Geocoder from 'react-native-geocoding'
-import Geolocation from '@react-native-community/geolocation'
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
 
 import {
   CloseLight,
@@ -64,7 +62,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
   const [instructionVisible, setInstructionVisible] = useState(true)
   const [rangeValue, setRangeValue] = useState(address.radius / 1000 || 101)
   const [isFocused, setIsFocused] = useState(false)
-
+  const isLocationSearched = useRef(false)
   const onInputFocus = () => {
     setIsFocused(true)
   }
@@ -94,9 +92,9 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
 
   const handleLocationSearchChange = async address => {
     try {
+      isLocationSearched.current = true
       const { results } = await Geocoder.from(address)
       const { lat: latitude, lng: longitude } = results[0].geometry.location
-
       setMapCoords({ lat: latitude, lng: longitude })
       const addressComponents = results[0].address_components || []
 
@@ -118,23 +116,26 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
   }
 
   const handleRegionChange = async region => {
-    const { latitude, longitude } = region
-    const { results } = await Geocoder.from(latitude, longitude)
-    const addressComponents = results[0].address_components || []
+    if (!isLocationSearched.current) {
+      const { latitude, longitude } = region
+      const { results } = await Geocoder.from(latitude, longitude)
+      const addressComponents = results[0].address_components || []
 
-    setAddressData({
-      ...addressData,
-      longitude,
-      latitude,
-      city: getLocationName(addressComponents, 'locality'),
-      province:
-        getLocationName(addressComponents, 'administrative_area_level_2') ||
-        getLocationName(addressComponents, 'administrative_area_level_1') ||
-        '',
-      country: getLocationName(addressComponents, 'country'),
-      full_address: results[0].formatted_address,
-      default: true,
-    })
+      setAddressData({
+        ...addressData,
+        longitude,
+        latitude,
+        city: getLocationName(addressComponents, 'locality'),
+        province:
+          getLocationName(addressComponents, 'administrative_area_level_2') ||
+          getLocationName(addressComponents, 'administrative_area_level_1') ||
+          '',
+        country: getLocationName(addressComponents, 'country'),
+        full_address: results[0].formatted_address,
+        default: true,
+      })
+    }
+    isLocationSearched.current = false
   }
 
   const initializeMap = async () => {
@@ -142,11 +143,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
       setMapCoords({
         lat: address.latitude,
         lng: address.longitude,
-      })
-
-      handleRegionChange({
-        latitude: address.latitude,
-        longitude: address.longitude,
       })
 
       setMapInitialized(true)
@@ -158,7 +154,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
         lat,
         lng,
       })
-      handleRegionChange({ latitude: lat, longitude: lng })
+
       setMapInitialized(true)
     }
   }
@@ -175,7 +171,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
         lng: longitude,
       })
       setRangeValue(5)
-      handleRegionChange({ latitude, longitude })
 
       setMapInitialized(true)
     } catch (error) {
