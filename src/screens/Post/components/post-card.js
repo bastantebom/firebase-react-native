@@ -50,7 +50,7 @@ const PostCard = React.memo(
         <View style={styles.postHeader}>
           <TouchableOpacity
             disabled={!onUserPress}
-            onPress={() => onUserPress?.()}
+            onPress={() => onUserPress?.(post.user)}
             activeOpacity={0.7}
             style={styles.avatarWrapper}>
             <Avatar
@@ -62,7 +62,7 @@ const PostCard = React.memo(
           <View>
             <TouchableOpacity
               disabled={!onUserPress}
-              onPress={() => onUserPress?.()}
+              onPress={() => onUserPress?.(post.user)}
               activeOpacity={0.7}
               style={[utilStyles.row, utilStyles.alignCenter]}>
               <Text style={[typography.caption, typography.medium]}>
