@@ -67,7 +67,12 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
             contentContainerStyle={{ flexGrow: 1 }}
             bounces={false}>
             {images.map(uri => (
-              <View key={uri} style={styles.imageWrapper}>
+              <View
+                key={uri}
+                style={[
+                  styles.imageWrapper,
+                  !multiple ? styles.singleImageWrapper : {},
+                ]}>
                 <TouchableOpacity
                   style={styles.removeImageButton}
                   activeOpacity={0.7}
@@ -154,6 +159,10 @@ const styles = StyleSheet.create({
     height: normalize(108),
     borderRadius: normalize(4),
     overflow: 'hidden',
+  },
+  singleImageWrapper: {
+    borderWidth: normalize(1),
+    borderColor: Colors.Gainsboro,
   },
   images: {
     marginLeft: normalize(8),
