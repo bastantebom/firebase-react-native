@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import Geocoder from 'react-native-geocoding'
-
+import AsyncStorage from '@react-native-community/async-storage'
 import {
   CloseLight,
   HeaderBackGray,
@@ -179,6 +179,9 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    AsyncStorage.getItem('hide-map-instruction').then(hidden => {
+      setInstructionVisible(hidden !== 'true')
+    })
     initializeMap()
   }, [])
 
@@ -298,7 +301,11 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               Set your location and drag the Buzzy Pin to the exact area you
               want to explore.
             </AppText>
-            <TouchableOpacity onPress={() => setInstructionVisible(false)}>
+            <TouchableOpacity
+              onPress={() => {
+                AsyncStorage.setItem('hide-map-instruction', 'true')
+                setInstructionVisible(false)
+              }}>
               <CloseLight />
             </TouchableOpacity>
           </View>
@@ -319,7 +326,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               type="primary"
               height="xl"
               onPress={saveRefineLocation}
-              customStyle={{ display: isFocused ? 'none' : 'flex' }}
             />
           </View>
         </SafeAreaView>
