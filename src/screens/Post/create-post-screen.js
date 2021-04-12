@@ -267,6 +267,18 @@ const CreatePostScreen = ({ navigation, route }) => {
   }
 
   const showPaymentMethodsScreen = () => {
+    const disabledMethods = []
+    if (
+      (postType === 'need' && formData.budget.maximum < 100) ||
+      (!formData.isMultiple && formData.price < 100)
+    )
+      disabledMethods.push('gcash', 'grabpay', 'card')
+    else if (
+      formData.isMultiple &&
+      formData.items.some(item => item.price < 100)
+    )
+      disabledMethods.push('cash', 'paypal')
+
     navigation.navigate('payment-methods', {
       data: paymentMethods,
       onSubmit: methods => {
@@ -276,10 +288,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         )
         navigation.goBack()
       },
-      disablePaymongo:
-        postType === 'need'
-          ? formData.budget.maximum < 100
-          : !formData.isMultiple && formData.price < 100,
+      disabledMethods,
     })
   }
 

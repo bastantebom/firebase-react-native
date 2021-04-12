@@ -30,7 +30,7 @@ if (
  * @typedef {object} PaymentMethodsScreenProps
  * @property {string[]} data
  * @property {function} onSubmit
- * @property {boolean} disablePaymongo
+ * @property {string[]} disabledMethods
  */
 
 /**
@@ -40,7 +40,7 @@ if (
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'PaymentMethodsScreen'>} param0 */
 const PaymentMethodsScreen = ({ navigation, route }) => {
-  const { data, onSubmit, disablePaymongo } = route.params
+  const { data, onSubmit, disabledMethods } = route.params
   const [paymentMethods, setPaymentMethods] = useState(data || [])
 
   const handleSubmit = () => {
@@ -73,13 +73,16 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
   const methods = [
     {
       renderActiveIcon: () => <Icons.CashPaymentActive />,
+      renderDisabledIcon: () => <Icons.CashPaymentActive />,
       renderInactiveIcon: () => <Icons.CashPayment />,
       label: 'Cash',
       value: 'cash',
       renderContent: () => null,
+      disabled: disabledMethods.includes('cash'),
     },
     {
       renderActiveIcon: () => <Icons.PayPalPaymentActive />,
+      renderDisabledIcon: () => <Icons.PayPalPaymentActive />,
       renderInactiveIcon: () => <Icons.PayPalPayment />,
       label: 'PayPal',
       value: 'paypal',
@@ -91,6 +94,7 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
           </Text>
         </View>
       ),
+      disabled: disabledMethods.includes('paypal'),
     },
 
     {
@@ -112,7 +116,7 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
           </Text>
         </View>
       ),
-      disabled: disablePaymongo,
+      disabled: disabledMethods.includes('gcash'),
     },
     {
       renderActiveIcon: () => <Icons.CardPaymentActive />,
@@ -134,7 +138,7 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
           </Text>
         </View>
       ),
-      disabled: disablePaymongo,
+      disabled: disabledMethods.includes('card'),
     },
     {
       renderActiveIcon: () => <Icons.GrabPayPaymentActive />,
@@ -155,7 +159,7 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
           </Text>
         </View>
       ),
-      disabled: disablePaymongo,
+      disabled: disabledMethods.includes('grabpay'),
     },
   ]
 
@@ -230,7 +234,7 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
             {methods.map(renderPaymentMethod)}
-            {disablePaymongo && (
+            {disabledMethods.includes('gcash') && (
               <View style={styles.disabledInfo}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icons.DisabledPayment />
