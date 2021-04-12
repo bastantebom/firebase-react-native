@@ -1,56 +1,57 @@
 import React from 'react'
-import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { AppText, ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
 
 import { VerifiedIllustration } from '@/assets/images/icons'
 
-const Verified = props => {
-  const navigation = useNavigation()
-  const { name } = props.route?.params?.info[0]
-
-  const badgeInfo = {
-    name: 'Wayne',
-  }
+const Verified = ({ navigation, route }) => {
+  const { name } = route.params.item
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'white' }}>
-      <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
-      <View style={styles.contentWrapper}>
-        <VerifiedIllustration />
-        <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
-          Yay, {name}! You're now bee-rified!
-        </AppText>
-        <AppText
-          textStyle="body2Dashboard"
-          customStyle={{ textAlign: 'center' }}>
-          Here's a badge for creating a buzz, and for being awesome in the
-          community. Keep unlocking those achievements.
-        </AppText>
-        <TouchableOpacity
-          style={{
-            marginTop: normalize(20),
-            paddingVertical: normalize(10),
-            paddingHorizontal: normalize(60),
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignSelf: 'center',
-            backgroundColor: '#FFD400',
-            borderRadius: 3,
-          }}
-          onPress={() => {
-            navigation.navigate('TabStack', { screen: 'You' })
-          }}>
-          <AppText textStyle="button2">View Profile</AppText>
-        </TouchableOpacity>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
+        <View style={styles.contentWrapper}>
+          <VerifiedIllustration />
+          <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
+            Yay, {name}! You're now bee-rified!
+          </AppText>
+          <AppText
+            textStyle="body2Dashboard"
+            customStyle={{ textAlign: 'center' }}>
+            Here's a badge for creating a buzz, and for being awesome in the
+            community. Keep unlocking those achievements.
+          </AppText>
+          <TouchableOpacity
+            style={{
+              marginTop: normalize(20),
+              paddingVertical: normalize(10),
+              paddingHorizontal: normalize(60),
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+              backgroundColor: '#FFD400',
+              borderRadius: 3,
+            }}
+            onPress={() => {
+              navigation.navigate('TabStack', { screen: 'You' })
+            }}>
+            <AppText textStyle="button2">View Profile</AppText>
+          </TouchableOpacity>
+        </View>
       </View>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    marginTop: getStatusBarHeight(),
+  },
   contentWrapper: {
     paddingTop: normalize(70),
     alignItems: 'center',

@@ -221,7 +221,11 @@ const ActivitiesCard = ({ item }) => {
             <AppText
               textStyle="captionConstant"
               color={Colors.contentPlaceholder}>
-              {timeAgo(Date.now() / 1000 - activity.post.date_posted._seconds)}
+              {timeAgo(
+                Date.now() / 1000 -
+                  (activity?.orders?.[0]?.date?._seconds ||
+                    activity.post.date_posted._seconds)
+              )}
             </AppText>
           </View>
 

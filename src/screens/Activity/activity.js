@@ -383,6 +383,8 @@ const Activity = ({ navigation }) => {
               renderItem={({ item }) => <ActivitiesCard item={item} />}
               onEndReachedThreshold={0.5}
               onEndReached={handleLoadMore}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
               refreshControl={
                 <RefreshControl
                   refreshing={isRefreshing}

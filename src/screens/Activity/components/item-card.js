@@ -63,7 +63,7 @@ const ItemCard = ({ items, chats }) => {
               navigation.navigate('orders', {
                 screen: 'order-tracker',
                 params: {
-                  orderID: item.order_id,
+                  orderID: item?.order_id || item?.id,
                 },
               })
             }>
