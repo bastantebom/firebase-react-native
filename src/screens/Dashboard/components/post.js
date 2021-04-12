@@ -71,7 +71,7 @@ const Post = ({
   }
 
   const renderDeliveryMethods = () => {
-    const methods = post.delivery_methods || {}
+    const methods = post.shipping_methods || {}
     const objectArray = Object.entries(methods)
 
     let temp = []

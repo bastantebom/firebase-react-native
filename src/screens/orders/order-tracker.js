@@ -1211,7 +1211,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 orderData.status === 'paid') && (
                 <View style={{ padding: normalize(16) }}>
                   <>
-                    {orderData.delivery_method === 'delivery' &&
+                    {orderData.shipping_methods === 'delivery' &&
                       ((orderData.status === 'confirmed' &&
                         orderData.payment_method === 'cash') ||
                         (orderData.status === 'paid' &&
@@ -1222,7 +1222,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                           text="Confirm for Delivery"
                         />
                       )}
-                    {orderData.delivery_method === 'pickup' &&
+                    {orderData.shipping_methods === 'pickup' &&
                       ((orderData.status === 'confirmed' &&
                         orderData.payment_method === 'cash') ||
                         (orderData.status === 'paid' &&
