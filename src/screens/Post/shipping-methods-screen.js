@@ -7,19 +7,19 @@ import typography from '@/globals/typography'
 import React, { useContext, useState } from 'react'
 import TextInput from '@/components/textinput'
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
   UIManager,
   LayoutAnimation,
   StatusBar,
+  Platform,
 } from 'react-native'
 import Checkbox from '@/components/checkbox'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 if (
   Platform.OS === 'android' &&
@@ -308,7 +308,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
             <Text style={styles.title}>Shipping Methods</Text>
           </View>
         </View>
-        <ScrollView>
+        <KeyboardAwareScrollView>
           <View style={styles.content}>
             <Text style={[typography.body1, styles.contentTitle]}>
               How do you deliver your products?
@@ -319,10 +319,10 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
 
             {renderDeliveryMethods()}
           </View>
-        </ScrollView>
-        <View style={styles.buttonWrapper}>
-          <Button label="Save" type="primary" onPress={handleSubmit} />
-        </View>
+          <View style={styles.buttonWrapper}>
+            <Button label="Save" type="primary" onPress={handleSubmit} />
+          </View>
+        </KeyboardAwareScrollView>
       </View>
     </>
   )
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',
