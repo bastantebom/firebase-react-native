@@ -121,12 +121,8 @@ function ProfileInfoModal(props) {
   }, [otherUserInfo.cover_photo])
 
   useEffect(() => {
-    let isMounted = true
-    if (isMounted && needsRefresh) {
-      refreshPosts()
-    }
-    return () => (isMounted = false)
-  }, [needsRefresh])
+    refreshPosts()
+  }, [])
 
   const [lastPID, setLastPID] = useState(0)
   const [fetchMore, setFetchMore] = useState(false)
@@ -163,7 +159,6 @@ function ProfileInfoModal(props) {
           )
 
         setOtherUserPosts(posts => ({ ...posts, ...userPosts }))
-
         setLastPID(lastPID + 1)
         setFetchMore(false)
       } else {
@@ -230,7 +225,7 @@ function ProfileInfoModal(props) {
       const res = await Api.getUserPosts(params)
       if (!res.success) throw new Error(res.message)
 
-      if (res.data) {
+      if (res.data.length) {
         const userPosts = res.data
           .map(post => ({ ...post, $isLoading: true }))
           .reduce(
@@ -242,12 +237,10 @@ function ProfileInfoModal(props) {
           )
 
         setOtherUserPosts(posts => ({ ...posts, ...userPosts }))
-
         setLastPID(1)
         setIsLoading(false)
+        setNeedsRefresh(false)
       }
-
-      setNeedsRefresh(false)
       setRefresh(false)
     } catch (err) {
       setRefresh(false)

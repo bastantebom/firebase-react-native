@@ -171,12 +171,8 @@ const ProfileScreen = ({
   }
 
   useEffect(() => {
-    let isMounted = true
-    if (isMounted && needsRefresh) {
-      refreshPosts()
-    }
-    return () => (isMounted = false)
-  }, [needsRefresh])
+    refreshPosts()
+  }, [])
 
   useEffect(() => {
     updateCoverPhotoUrl()
