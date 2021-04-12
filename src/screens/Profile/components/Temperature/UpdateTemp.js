@@ -191,7 +191,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 <FloatingAppInput
                   value={temp}
                   label="Body Temperature in °Celcius"
-                  keyboardType="number-pad"
+                  keyboardType="decimal-pad"
                   returnKeyType={'done'}
                   customStyle={[
                     { marginTop: normalize(8) },
