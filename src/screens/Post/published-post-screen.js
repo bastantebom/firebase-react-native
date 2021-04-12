@@ -1752,12 +1752,17 @@ const PublishedPostScreen = ({ navigation, route }) => {
           </Text>
           <Text style={typography.subtitle1}>{price}</Text>
         </View>
-        <View style={[utilStyles.row, utilStyles.alignCenter]}>
-          <Icons.Clock style={styles.postInfoIcon} {...iconSize(18)} />
-          <Text style={typography.body1}>
-            {formatDistanceToNow(Date.now())} ago
-          </Text>
-        </View>
+        {post.current.date_posted && (
+          <View style={[utilStyles.row, utilStyles.alignCenter]}>
+            <Icons.Clock style={styles.postInfoIcon} {...iconSize(18)} />
+            <Text style={typography.body1}>
+              {formatDistanceToNow(
+                new Date(post.current.date_posted._seconds * 1000)
+              )}{' '}
+              ago
+            </Text>
+          </View>
+        )}
         <View
           style={[
             utilStyles.row,
