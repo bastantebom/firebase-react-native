@@ -18,6 +18,7 @@ import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal'
 import CategoryOptionsModal from './modals/category-options'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { FlatList } from 'react-native-gesture-handler'
 
 /**
  * @typedef {object} PostItem
@@ -61,14 +62,14 @@ const CategoryItemsScreen = ({ navigation, route }) => {
     onEditItemPress(item)
   }
 
-  const renderItem = (item, index, arr) => {
+  const renderItem = ({ item, index }) => {
     return (
       <View
         key={index}
         style={[
           styles.item,
           { paddingTop: normalize(!index ? 0 : 24) },
-          index === arr.length - 1 ? { borderBottomWidth: 0 } : {},
+          index === items.length - 1 ? { borderBottomWidth: 0 } : {},
         ]}>
         {!!item.image && (
           <View style={styles.thumbnailWrapper}>
@@ -186,17 +187,28 @@ const CategoryItemsScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.content}>
-          {items.map(renderItem)}
-          <TouchableOpacity
-            style={[styles.linkWrapper]}
-            activeOpacity={0.7}
-            onPress={onAddItemPress}>
-            <Icons.CircleAdd style={styles.linkIcon} />
-            <Text
-              style={[typography.body2, typography.link, typography.medium]}>
-              Add {postType === 'service' ? 'a Service' : 'an Item'}
-            </Text>
-          </TouchableOpacity>
+          <FlatList
+            contentContainerStyle={{ paddingVertical: normalize(24) }}
+            data={items}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            ListFooterComponent={() => (
+              <TouchableOpacity
+                style={[styles.addItemButton, styles.linkWrapper]}
+                activeOpacity={0.7}
+                onPress={onAddItemPress}>
+                <Icons.CircleAdd style={styles.linkIcon} />
+                <Text
+                  style={[
+                    typography.body2,
+                    typography.link,
+                    typography.medium,
+                  ]}>
+                  Add {postType === 'service' ? 'a Service' : 'an Item'}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
         </View>
         {renderOptionsModal()}
       </View>
@@ -240,7 +252,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: normalize(24),
   },
   itemPrice: {
     flex: 1,
@@ -264,6 +275,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomColor: Colors.Gainsboro,
     borderBottomWidth: normalize(1),
+    marginHorizontal: normalize(24),
   },
   itemDetails: {
     flex: 1,
@@ -295,6 +307,9 @@ const styles = StyleSheet.create({
   thumbnail: {
     height: '100%',
     width: '100%',
+  },
+  addItemButton: {
+    paddingHorizontal: normalize(24),
   },
 })
 

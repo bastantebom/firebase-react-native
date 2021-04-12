@@ -59,6 +59,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 const AddItemScreen = ({ navigation, route }) => {
   const [formData, setFormData] = useState(
     route.params.item || {
+      id: Math.random().toString(36).substring(2),
       name: '',
       description: '',
       image: null,
