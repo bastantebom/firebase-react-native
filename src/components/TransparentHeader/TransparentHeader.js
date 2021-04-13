@@ -289,7 +289,9 @@ const TransparentHeader = ({
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
-                  navigation.navigate('own-menu')
+                  navigation.navigate('NBTScreen', {
+                    screen: 'own-menu',
+                  })
                 }}>
                 <View style={[styles.headerBtn, GlobalStyle.marginLeft1]}>
                   <Icons.HeaderMenu

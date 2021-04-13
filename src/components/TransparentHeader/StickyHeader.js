@@ -311,7 +311,9 @@ const StickyHeader = ({
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
-                  navigation.navigate('own-menu')
+                  navigation.navigate('NBTScreen', {
+                    screen: 'own-menu',
+                  })
                 }}>
                 <View style={GlobalStyle.marginLeft2}>
                   <HeaderMenuGray

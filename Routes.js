@@ -166,6 +166,26 @@ function NoBottomTabScreens() {
         name="liked-posts"
         component={LikedPostsScreen}
       />
+      <NoBottomTabScreenStack.Screen
+        name="own-menu"
+        component={OwnMenuScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="payout-method"
+        component={PayoutMethodScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="change-payout-method"
+        component={ChangePayoutMethodScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="payout-details"
+        component={PayoutDetailsScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="payout-success"
+        component={PayoutSuccessScreen}
+      />
     </NoBottomTabScreenStack.Navigator>
   )
 }
@@ -255,23 +275,6 @@ function ProfileStackScreen() {
         headerMode="none"
         screenOptions={defaultScreenOptions}>
         <ProfileStack.Screen name="Profile" component={ProfileScreen} />
-        <ProfileStack.Screen name="own-menu" component={OwnMenuScreen} />
-        <ProfileStack.Screen
-          name="payout-method"
-          component={PayoutMethodScreen}
-        />
-        <ProfileStack.Screen
-          name="change-payout-method"
-          component={ChangePayoutMethodScreen}
-        />
-        <ProfileStack.Screen
-          name="payout-details"
-          component={PayoutDetailsScreen}
-        />
-        <ProfileStack.Screen
-          name="payout-success"
-          component={PayoutSuccessScreen}
-        />
       </ProfileStack.Navigator>
     )
   } else {

@@ -208,7 +208,11 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
               </AppText>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('payout-method')}>
+                onPress={() =>
+                  navigation.navigate('NBTScreen', {
+                    screen: 'payout-method',
+                  })
+                }>
                 <View style={{ flexDirection: 'row', marginBottom: 16 }}>
                   <Icons.PayoutWallet
                     width={normalize(24)}
