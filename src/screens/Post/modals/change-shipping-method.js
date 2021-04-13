@@ -125,6 +125,7 @@ const ChangeShippingMethodModal = ({ close, post }) => {
               minutes={['00', '30', '00']}
               initDate={initDate}
               onDateSelected={handleOnDateSelected}
+              minimumDate={new Date()}
             />
           )}
 
