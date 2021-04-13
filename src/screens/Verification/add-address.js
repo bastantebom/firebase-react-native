@@ -115,6 +115,7 @@ const AddAddressScreen = ({ navigation, route }) => {
               editable={false}
               customStyle={{ marginBottom: normalize(16) }}
               onPress={showMapLocation}
+              onTouchStart={showMapLocation}
             />
             <View
               style={{
