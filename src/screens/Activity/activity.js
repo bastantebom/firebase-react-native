@@ -413,7 +413,9 @@ const Activity = ({ navigation }) => {
           <View style={styles.activityWrapper}>
             <FlatList
               data={Object.values(activities).sort(
-                (a, b) => b.orders[0].date._seconds - a.orders[0].date._seconds
+                (a, b) =>
+                  b?.orders?.[0]?.date?._seconds -
+                  a?.orders?.[0]?.date?._seconds
               )}
               keyExtractor={item => item.post_id}
               renderItem={({ item }) => <ActivitiesCard item={item} />}
