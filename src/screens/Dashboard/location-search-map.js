@@ -170,7 +170,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
         lat: latitude,
         lng: longitude,
       })
-      setRangeValue(5)
 
       setMapInitialized(true)
     } catch (error) {

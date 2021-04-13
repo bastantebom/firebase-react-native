@@ -235,8 +235,8 @@ const MapComponent = ({
         {
           latitude: parseFloat(reCenter.lat),
           longitude: parseFloat(reCenter.lng),
-          latitudeDelta: customDelta || Config.latitudeDelta,
-          longitudeDelta: customDelta || Config.longitudeDelta,
+          latitudeDelta: radius * 0.02,
+          longitudeDelta: radius * 0.02,
         },
         2000
       )
