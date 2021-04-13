@@ -178,11 +178,23 @@ const Activity = ({ navigation }) => {
         .map(item => ({
           post_id: item.id,
           post: item,
-          sellerInfo: {
-            profile_photo: userInfo.profile_photo,
-            name: userInfo.display_name || userInfo.full_name,
-          },
         }))
+
+      await Promise.all(
+        newItems.map(async item => {
+          const response = await Api.getOrders({
+            uid: userInfo.uid,
+            pid: item.post.id,
+          })
+
+          if (!response.success) throw new Error(response.message)
+
+          item.orders = response.data.sort(
+            (a, b) => b.date._seconds - a.date._seconds
+          )
+          return item
+        })
+      )
 
       lastId.current = response.data.slice(-1)[0]?.id
       setResDataLength(response.data.length)
@@ -400,7 +412,9 @@ const Activity = ({ navigation }) => {
         {!!Object.values(activities).length && (
           <View style={styles.activityWrapper}>
             <FlatList
-              data={Object.values(activities)}
+              data={Object.values(activities).sort(
+                (a, b) => b.orders[0].date._seconds - a.orders[0].date._seconds
+              )}
               keyExtractor={item => item.post_id}
               renderItem={({ item }) => <ActivitiesCard item={item} />}
               onEndReachedThreshold={0.5}
