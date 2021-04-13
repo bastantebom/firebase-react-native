@@ -5,6 +5,7 @@ import {
   Dimensions,
   Animated,
   RefreshControl,
+  StatusBar,
 } from 'react-native'
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo'
@@ -309,79 +310,86 @@ function ProfileInfoModal(props) {
   const [scroll] = useState(new Animated.Value(0))
   const renderForeground = () => {
     return (
-      <View
-        style={{ display: 'flex' }}
-        onLayout={event => {
-          const layout = event.nativeEvent.layout
-          setOffsetHeight(layout.height)
-        }}>
-        <TransparentHeader
-          type="other"
-          ellipsisState={ellipsisState}
-          toggleEllipsisState={toggleEllipsisState}
-          toggleFollowing={toggleFollowing}
-          following={isFollowing}
-          toggleMenu={toggleMenu}
-          menu={menu}
-          signOut={signOut}
-          toggleQR={toggleQR}
-          QR={QR}
-          backFunction={() => navigation.goBack()}
-          userInfo={otherUserInfo}
-          userID={uid}
+      <>
+        <StatusBar
+          translucent={true}
+          barStyle="dark-content"
+          backgroundColor="transparent"
         />
         <View
-          style={{
-            backgroundColor: Colors.buttonDisable,
-            height: normalize(158),
+          style={{ display: 'flex' }}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout
+            setOffsetHeight(layout.height)
           }}>
-          {otherUserInfo.cover_photo && coverPhotoUrl ? (
-            <CacheableImage
-              source={{ uri: coverPhotoUrl }}
-              style={{ width: normalize(375), height: normalize(158) }}
-            />
-          ) : (
-            <ProfileHeaderDefault
-              width={normalize(375 * 1.2)}
-              height={normalize(158 * 1.2)}
-            />
-          )}
-        </View>
-        <View style={styles.profileBasicInfo}>
-          <View style={styles.profileImageWrapper}>
-            <HexagonBorder
-              size={140}
-              path={otherUserInfo.profile_photo}
-              dimensions="256x256"
+          <TransparentHeader
+            type="other"
+            ellipsisState={ellipsisState}
+            toggleEllipsisState={toggleEllipsisState}
+            toggleFollowing={toggleFollowing}
+            following={isFollowing}
+            toggleMenu={toggleMenu}
+            menu={menu}
+            signOut={signOut}
+            toggleQR={toggleQR}
+            QR={QR}
+            backFunction={() => navigation.goBack()}
+            userInfo={otherUserInfo}
+            userID={uid}
+          />
+          <View
+            style={{
+              backgroundColor: Colors.buttonDisable,
+              height: normalize(158),
+            }}>
+            {otherUserInfo.cover_photo && coverPhotoUrl ? (
+              <CacheableImage
+                source={{ uri: coverPhotoUrl }}
+                style={{ width: normalize(375), height: normalize(158) }}
+              />
+            ) : (
+              <ProfileHeaderDefault
+                width={normalize(375 * 1.2)}
+                height={normalize(158 * 1.2)}
+              />
+            )}
+          </View>
+          <View style={styles.profileBasicInfo}>
+            <View style={styles.profileImageWrapper}>
+              <HexagonBorder
+                size={140}
+                path={otherUserInfo.profile_photo}
+                dimensions="256x256"
+              />
+            </View>
+
+            <ProfileLinks
+              toggleHives={toggleHives}
+              toggleProfileList={toggleProfileList}
+              visibleHives={visibleHives}
+              profileList={profileList}
+              userInfo={otherUserInfo}
+              addFollowers={addFollowers}
+              viewType="other-user-links"
             />
           </View>
-
-          <ProfileLinks
-            toggleHives={toggleHives}
-            toggleProfileList={toggleProfileList}
-            visibleHives={visibleHives}
-            profileList={profileList}
-            userInfo={otherUserInfo}
-            addFollowers={addFollowers}
-            viewType="other-user-links"
-          />
+          <View style={{ backgroundColor: Colors.primaryYellow }}>
+            <LoadingUserInfo isLoading={isDataLoading}>
+              <ProfileInfo profileData={otherUserInfo} />
+              <Divider
+                style={[
+                  GlobalStyle.dividerStyle,
+                  {
+                    marginVertical: normalize(16),
+                    backgroundColor: Colors.neutralsZircon,
+                    height: normalize(4),
+                  },
+                ]}
+              />
+            </LoadingUserInfo>
+          </View>
         </View>
-        <View style={{ backgroundColor: Colors.primaryYellow }}>
-          <LoadingUserInfo isLoading={isDataLoading}>
-            <ProfileInfo profileData={otherUserInfo} />
-            <Divider
-              style={[
-                GlobalStyle.dividerStyle,
-                {
-                  marginVertical: normalize(16),
-                  backgroundColor: Colors.neutralsZircon,
-                  height: normalize(4),
-                },
-              ]}
-            />
-          </LoadingUserInfo>
-        </View>
-      </View>
+      </>
     )
   }
 

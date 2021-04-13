@@ -25,6 +25,7 @@ import { Context } from '@/context'
 import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
 import Share from 'react-native-share'
 import Api from '@/services/Api'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const TransparentHeader = ({
   toggleEllipsisState,
@@ -262,12 +263,12 @@ const TransparentHeader = ({
   if (type === 'own')
     return (
       <>
-        <SafeAreaView
+        <View
           style={{
-            flex: 1,
             position: 'absolute',
             zIndex: 1,
             backgroundColor: 'transparent',
+            marginTop: getStatusBarHeight(),
           }}>
           <View
             style={{
@@ -299,7 +300,7 @@ const TransparentHeader = ({
               </TouchableOpacity>
             </View>
           </View>
-        </SafeAreaView>
+        </View>
 
         <Modal
           isVisible={QR}
@@ -320,12 +321,12 @@ const TransparentHeader = ({
   if (type === 'other')
     return (
       <>
-        <SafeAreaView
+        <View
           style={{
-            flex: 1,
             position: 'absolute',
             zIndex: 1,
             backgroundColor: 'transparent',
+            marginTop: getStatusBarHeight(),
           }}>
           <View
             style={{
@@ -394,7 +395,7 @@ const TransparentHeader = ({
               </View>
             ) : null}
           </View>
-        </SafeAreaView>
+        </View>
 
         <Modal
           isVisible={ellipsisState}

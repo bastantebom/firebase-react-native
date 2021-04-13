@@ -6,6 +6,7 @@ import {
   Animated,
   RefreshControl,
   Platform,
+  StatusBar,
 } from 'react-native'
 
 import {
@@ -13,7 +14,6 @@ import {
   HexagonBorder,
   TransparentHeader,
   ProfileLinks,
-  Notification,
   CacheableImage,
   StickyHeader,
   Divider,
@@ -30,7 +30,6 @@ import { MoreInfo, UserPostEmpty } from './Tabs'
 import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
 import { VerificationStatus } from './components'
-import { Icons, Warning } from '@/assets/images/icons'
 
 import Posts from '@/screens/Dashboard/components/posts'
 import { cloneDeep, isEmpty } from 'lodash'
@@ -45,15 +44,9 @@ const ProfileScreen = ({
   navigation,
 }) => {
   const { user, signOut, userInfo, userStatus } = useContext(UserContext)
-  const {
-    openNotification,
-    closeNotification,
-    needsRefresh,
-    setNeedsRefresh,
-  } = useContext(Context)
+  const { needsRefresh, setNeedsRefresh } = useContext(Context)
   const [userPosts, setUserPosts] = useState({})
-  const [notificationMessage, setNotificationMessage] = useState()
-  const [notificationType, setNotificationType] = useState()
+
   const [ellipsisState, setEllipsisState] = useState(false)
   const [following, setFollowing] = useState(false)
   const [menu, setMenu] = useState(false)
@@ -93,21 +86,6 @@ const ProfileScreen = ({
     setProfileList(!profileList)
   }
 
-  const triggerNotification = (message, type) => {
-    setNotificationType(type)
-    setNotificationMessage(
-      <AppText
-        textStyle="body2"
-        customStyle={
-          type === 'success' ? notificationText : notificationErrorTextStyle
-        }>
-        {message}
-      </AppText>
-    )
-    openNotification()
-    closeNotificationTimer()
-  }
-
   const handlePostPress = post => {
     navigation.navigate('NBTScreen', {
       screen: 'posts',
@@ -118,37 +96,6 @@ const ProfileScreen = ({
         },
       },
     })
-  }
-
-  const notificationErrorTextStyle = {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 12,
-    color: 'white',
-    flexWrap: 'wrap',
-  }
-
-  const notificationText = {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 12,
-    flexWrap: 'wrap',
-  }
-
-  const closeNotificationTimer = () => {
-    setTimeout(() => {
-      setNotificationType()
-      setNotificationMessage()
-      closeNotification()
-    }, 5000)
-  }
-
-  const triggerNotify = notify => {
-    if (notify) {
-      triggerNotification('Profile has been updated successfully!', 'success')
-    } else {
-      triggerNotification('Profile update Failed!', 'danger')
-    }
   }
 
   const statusPercentage =
@@ -362,108 +309,99 @@ const ProfileScreen = ({
 
   const renderForeground = () => {
     return (
-      <View
-        style={{ display: 'flex' }}
-        onLayout={event => {
-          const layout = event.nativeEvent.layout
-          setOffsetHeight(layout.height)
-        }}>
-        <Notification
-          type={notificationType}
-          containerStyle={{
-            position: 'absolute',
-            top: normalize(30),
-          }}
-          icon={
-            notificationType === 'danger' ? (
-              <Warning />
-            ) : (
-              <Icons.CircleTick style={{ color: Colors.primaryMidnightBlue }} />
-            )
-          }>
-          {notificationMessage}
-        </Notification>
-        <View>
-          <TransparentHeader
-            type="own"
-            ellipsisState={ellipsisState}
-            toggleEllipsisState={toggleEllipsisState}
-            toggleFollowing={toggleFollowing}
-            following={following}
-            toggleMenu={toggleMenu}
-            menu={menu}
-            signOut={signOut}
-            toggleQR={toggleQR}
-            QR={QR}
-            backFunction={backFunction}
-            triggerNotify={triggerNotify}
-          />
+      <>
+        <StatusBar
+          translucent={true}
+          barStyle="dark-content"
+          backgroundColor="transparent"
+        />
+        <View
+          style={{ display: 'flex' }}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout
+            setOffsetHeight(layout.height)
+          }}>
+          <View>
+            <TransparentHeader
+              type="own"
+              ellipsisState={ellipsisState}
+              toggleEllipsisState={toggleEllipsisState}
+              toggleFollowing={toggleFollowing}
+              following={following}
+              toggleMenu={toggleMenu}
+              menu={menu}
+              signOut={signOut}
+              toggleQR={toggleQR}
+              QR={QR}
+              backFunction={backFunction}
+            />
 
-          <View
-            style={{
-              backgroundColor: Colors.buttonDisable,
-              height: normalize(158),
-            }}>
-            {userInfo.cover_photo && isUrl(coverPhotoUrl) ? (
-              <CacheableImage
-                source={{ uri: coverPhotoUrl }}
-                style={{ width: normalize(375), height: normalize(158) }}
-              />
-            ) : (
-              <ProfileHeaderDefault
-                width={normalize(375 * 1.2)}
-                height={normalize(158 * 1.2)}
-              />
-            )}
-          </View>
-          <View style={styles.profileBasicInfo}>
-            <View style={styles.profileImageWrapper}>
-              <HexagonBorder
-                size={140}
-                path={userInfo.profile_photo}
-                dimensions="256x256"
+            <View
+              style={{
+                backgroundColor: Colors.buttonDisable,
+                height: normalize(158),
+              }}>
+              {userInfo.cover_photo && isUrl(coverPhotoUrl) ? (
+                <CacheableImage
+                  source={{ uri: coverPhotoUrl }}
+                  style={{ width: normalize(375), height: normalize(158) }}
+                />
+              ) : (
+                <ProfileHeaderDefault
+                  width={normalize(375 * 1.2)}
+                  height={normalize(158 * 1.2)}
+                />
+              )}
+            </View>
+            <View style={styles.profileBasicInfo}>
+              <View style={styles.profileImageWrapper}>
+                <HexagonBorder
+                  size={140}
+                  path={userInfo.profile_photo}
+                  dimensions="256x256"
+                />
+              </View>
+
+              <ProfileLinks
+                toggleHives={toggleHives}
+                toggleProfileList={toggleProfileList}
+                profileList={profileList}
+                visibleHives={visibleHives}
+                visibleFollowing={visibleFollowing}
+                userInfo={userInfo}
+                viewType="own-links"
               />
             </View>
+            <ProfileInfo profileData={userInfo} />
+            <View style={{ marginBottom: normalize(8) }} />
 
-            <ProfileLinks
-              toggleHives={toggleHives}
-              toggleProfileList={toggleProfileList}
-              profileList={profileList}
-              visibleHives={visibleHives}
-              visibleFollowing={visibleFollowing}
-              userInfo={userInfo}
-              viewType="own-links"
+            {!userInfo.account_verified ? (
+              <VerificationStatus statusPercentage={statusPercentage} />
+            ) : null}
+
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: Colors.neutralsWhite,
+                paddingHorizontal: normalize(24),
+                paddingVertical: normalize(16),
+              }}>
+              <ProfileButtons />
+            </View>
+
+            <Divider
+              style={[
+                GlobalStyle.dividerStyle,
+                {
+                  marginVertical: normalize(8),
+                  backgroundColor: Colors.neutralsZircon,
+                  height: normalize(4),
+                },
+              ]}
             />
           </View>
-          <ProfileInfo profileData={userInfo} />
-          <View style={{ marginBottom: normalize(8) }} />
-
-          {!userInfo.account_verified ? (
-            <VerificationStatus statusPercentage={statusPercentage} />
-          ) : null}
-
-          <View
-            style={{
-              flexDirection: 'row',
-              backgroundColor: Colors.neutralsWhite,
-              paddingHorizontal: normalize(24),
-              paddingVertical: normalize(16),
-            }}>
-            <ProfileButtons />
-          </View>
-
-          <Divider
-            style={[
-              GlobalStyle.dividerStyle,
-              {
-                marginVertical: normalize(8),
-                backgroundColor: Colors.neutralsZircon,
-                height: normalize(4),
-              },
-            ]}
-          />
         </View>
-      </View>
+      </>
     )
   }
 
@@ -495,7 +433,6 @@ const ProfileScreen = ({
           toggleQR={toggleQR}
           QR={QR}
           backFunction={backFunction}
-          triggerNotify={triggerNotify}
           userInfo={userInfo}
           coverPhotoUrl={coverPhotoUrl}
         />
