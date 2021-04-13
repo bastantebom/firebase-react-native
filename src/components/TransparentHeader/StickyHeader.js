@@ -282,6 +282,7 @@ const StickyHeader = ({
                 size={40}
                 path={profile_photo}
                 dimensions="64x64"
+                borderColor={Colors.primaryMidnightBlue}
               />
             </View>
             <AppText
