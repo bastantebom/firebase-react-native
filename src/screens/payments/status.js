@@ -24,8 +24,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
   const statusInfo = {
     success: {
       title: 'Payment Successful',
-      description: `Your payment of ₱
-      ${formatNumber(amount, {
+      description: `Your payment of ₱ ${formatNumber(amount, {
         separator: '.',
         precision: 2,
         delimiter: ',',
