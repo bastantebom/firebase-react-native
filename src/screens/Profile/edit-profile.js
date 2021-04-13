@@ -24,6 +24,7 @@ import ImagePicker from 'react-native-image-crop-picker'
 import { Colors, normalize } from '@/globals'
 import { Images } from '@/assets/images'
 import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 import { debounce } from 'lodash'
 import Svg, {
   ClipPath,
@@ -53,7 +54,7 @@ import ImageApi from '@/services/image-api'
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'EditProfileScreen'>} param0 */
 const EditProfileScreen = ({ navigation, route }) => {
   const { user, userInfo } = useContext(UserContext)
-
+  const { setNeedsRefresh } = useContext(Context)
   const [isLoading, setIsLoading] = useState(false)
   const [coverPhotoURI, setCoverPhotoURI] = useState(null)
   const [currentCoverPhoto, setCurrentCoverPhoto] = useState(null)
@@ -243,6 +244,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       })
       if (!response.success) throw new Error(response.message)
       setIsLoading(false)
+      setNeedsRefresh(true)
       navigation.goBack()
     } catch (error) {
       console.log(error)

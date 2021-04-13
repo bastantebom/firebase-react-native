@@ -174,7 +174,7 @@ const NewsFeed = ({ props }) => {
           <View>
             <View>
               <Text style={styles.username}>
-                {post?.user?.full_name || post?.user?.display_name}
+                {post?.user?.display_name || post?.user?.full_name}
               </Text>
               {post?.user?.account_verified && (
                 <Icons.Verified

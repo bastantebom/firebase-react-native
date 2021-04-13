@@ -30,7 +30,7 @@ import { MoreInfo, UserPostEmpty } from './Tabs'
 import ProfileInfo from './components/ProfileInfo'
 import ProfileButtons from './components/ProfileButtons'
 import { VerificationStatus } from './components'
-import { CircleTick, Icons, Warning } from '@/assets/images/icons'
+import { Icons, Warning } from '@/assets/images/icons'
 
 import Posts from '@/screens/Dashboard/components/posts'
 import { cloneDeep, isEmpty } from 'lodash'
@@ -171,8 +171,8 @@ const ProfileScreen = ({
   }
 
   useEffect(() => {
-    refreshPosts()
-  }, [])
+    if (needsRefresh) refreshPosts()
+  }, [needsRefresh])
 
   useEffect(() => {
     updateCoverPhotoUrl()

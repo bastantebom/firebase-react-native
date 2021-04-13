@@ -66,7 +66,7 @@ const PostCard = React.memo(
               activeOpacity={0.7}
               style={[utilStyles.row, utilStyles.alignCenter]}>
               <Text style={[typography.caption, typography.medium]}>
-                {post.user?.full_name}
+                {post.user?.display_name || post.user?.full_name}
               </Text>
               {!!post.user?.account_verified && (
                 <Icons.Verified style={styles.verifiedIcon} {...iconSize(16)} />
