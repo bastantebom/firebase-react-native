@@ -15,7 +15,7 @@ import SkeletonLoader from '@/screens/Activity/components/skeleton-loader'
 
 const ActivitiesCard = ({ item }) => {
   const navigation = useNavigation()
-  const { user } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
 
   const [orderLoader, setOrderLoader] = useState(true)
   const [activity, setActivity] = useState(item)
@@ -30,6 +30,8 @@ const ActivitiesCard = ({ item }) => {
         })
 
         currentActivity.orders = data
+        currentActivity.orders.sort((a, b) => b.date._seconds - a.date._seconds)
+
         setActivity(currentActivity)
       }
 
@@ -210,12 +212,18 @@ const ActivitiesCard = ({ item }) => {
               <View style={styles.avatar}>
                 <Avatar
                   style={{ height: '100%', width: '100%' }}
-                  path={activity?.sellerInfo?.profile_photo}
+                  path={
+                    item.post.uid === user.uid
+                      ? userInfo.profile_photo
+                      : activity?.sellerInfo?.profile_photo
+                  }
                   size="64x64"
                 />
               </View>
               <AppText textStyle="body3" customStyle={styles.username}>
-                {activity?.sellerInfo?.name}
+                {item.post.uid === user.uid
+                  ? userInfo.display_name || userInfo.full_name
+                  : activity?.sellerInfo?.name}
               </AppText>
             </View>
             <AppText

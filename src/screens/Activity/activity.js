@@ -106,20 +106,31 @@ const Activity = ({ navigation }) => {
       if (lastId.current) params.lastItemId = lastId.current
 
       const response = await Api.getActivities(params)
+
       if (!response.success) throw new Error(response.message)
 
       const newItem = response.data
         .filter(item => !!item)
         .map(item => ({
-          id: item.id,
           post_id: item.post_id,
           orders: [item],
           post: item.post,
-          sellerInfo: {
-            profile_photo: userInfo.profile_photo,
-            name: userInfo.display_name || userInfo.full_name,
-          },
         }))
+
+      await Promise.all(
+        newItem.map(async item => {
+          if (item.post.uid !== userInfo.uid) {
+            const response = await Api.getUser({ uid: item.post.uid })
+
+            item.sellerInfo = {
+              profile_photo: response.data.profile_photo,
+              name: response.data.display_name || response.data.full_name,
+            }
+
+            return item
+          }
+        })
+      )
 
       const currentActivities = []
       newItem.forEach(item => {
@@ -208,11 +219,22 @@ const Activity = ({ navigation }) => {
           post_id: item.post_id,
           orders: [item],
           post: item.post,
-          sellerInfo: {
-            profile_photo: userInfo.profile_photo,
-            name: userInfo.display_name || userInfo.full_name,
-          },
         }))
+
+      await Promise.all(
+        newItem.map(async item => {
+          if (item.post.uid !== userInfo.uid) {
+            const response = await Api.getUser({ uid: item.post.uid })
+
+            item.sellerInfo = {
+              profile_photo: response.data.profile_photo,
+              name: response.data.display_name || response.data.full_name,
+            }
+
+            return item
+          }
+        })
+      )
 
       const currentActivities = []
       newItem.forEach(item => {

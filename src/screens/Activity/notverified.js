@@ -21,8 +21,13 @@ const NotVerified = ({ navigation, route }) => {
             {new Date(date.seconds * 1000).toString()}
           </AppText>
           <AppText textStyle="body2">Reason/s</AppText>
-          {reasons.reject_reasons.map(reason => {
-            if (reason) return <AppText textStyle="body2">{reason}</AppText>
+          {reasons.reject_reasons.map((reason, index) => {
+            if (reason)
+              return (
+                <AppText key={index} textStyle="body2">
+                  {reason}
+                </AppText>
+              )
           })}
         </View>
         <View style={{ padding: normalize(24) }}>
