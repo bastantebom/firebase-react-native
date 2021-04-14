@@ -92,15 +92,16 @@ const ChatHouse = () => {
       const params = {}
       if (lastId.current) params.lastItemId = lastId.current
 
-      const response = await Api.getOwnPosts(params)
+      const response = await Api.getPostsChat(params)
 
       if (!response.success) throw new Error(response.message)
 
       const newItems = response.data
         .filter(item => !!item)
         .map(item => ({
-          post_id: item.id,
-          post: item,
+          id: item.id,
+          post_id: item.post_id,
+          chat_room: item,
           $isLoading: true,
         }))
         .reduce(
@@ -112,7 +113,6 @@ const ChatHouse = () => {
         )
 
       lastId.current = response.data.slice(-1)[0]?.id
-
       setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
       console.error(error.message || 'error on getting own posts chat data')
@@ -330,6 +330,50 @@ const ChatHouse = () => {
           }))
         })
       )
+
+    if (!item.post)
+      promises.push(
+        Api.getPost({ pid: item.post_id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              post: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.latest_chat)
+      promises.push(
+        Api.getLatestPostChat({ chatId: item.id }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              latest_chat: response.data,
+            },
+          }))
+        })
+      )
+
+    if (!item.seller_info && sort.value !== 'own posts') {
+      const sellerId = Object.keys(item.chat_room.members).filter(
+        member => member !== userInfo.uid
+      )[0]
+
+      promises.push(
+        Api.getUser({ uid: sellerId }).then(response => {
+          setItems(items => ({
+            ...items,
+            [item.post_id]: {
+              ...items[item.post_id],
+              seller_info: response.data,
+            },
+          }))
+        })
+      )
+    }
 
     return await Promise.all(promises)
       .then(() => {
