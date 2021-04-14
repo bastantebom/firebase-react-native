@@ -301,6 +301,10 @@ const PublishedPostScreen = ({ navigation, route }) => {
           message: '',
           attachedPost: null,
         })
+      else
+        setBasket({
+          offer: post.current.budget.minimum,
+        })
 
       setTimeout(() => {
         setMakeOfferModalVisible(true)
