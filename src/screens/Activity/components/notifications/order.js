@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   notification: {
     padding: normalize(14),
     marginTop: normalize(10),
-    borderRadius: 4,
+    borderRadius: normalize(4),
   },
   holder: {
     flexDirection: 'row',
@@ -334,19 +334,19 @@ const styles = StyleSheet.create({
   },
   yellowButton: {
     alignItems: 'center',
-    paddingVertical: 6,
-    marginRight: 10,
-    width: 130,
+    paddingVertical: normalize(6),
+    marginRight: normalize(10),
+    width: '35%',
     backgroundColor: '#FFD400',
-    borderRadius: 5,
+    borderRadius: normalize(5),
   },
   invertedButton: {
     alignItems: 'center',
-    paddingVertical: 6,
-    marginRight: 10,
-    width: 130,
-    borderRadius: 5,
-    borderWidth: 1,
+    paddingVertical: normalize(6),
+    marginRight: normalize(10),
+    width: '35%',
+    borderRadius: normalize(5),
+    borderWidth: normalize(1),
   },
 })
 

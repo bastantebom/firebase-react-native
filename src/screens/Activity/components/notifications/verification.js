@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   notification: {
     padding: normalize(14),
     marginTop: normalize(10),
-    borderRadius: 4,
+    borderRadius: normalize(4),
   },
   holder: {
     flexDirection: 'row',
@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
     marginRight: normalize(5),
   },
   viewButton: {
-    paddingVertical: 6,
-    marginRight: 10,
-    width: 130,
+    paddingVertical: normalize(6),
+    marginRight: normalize(10),
+    width: '35%',
     alignItems: 'center',
     backgroundColor: '#FFD400',
-    borderRadius: 5,
+    borderRadius: normalize(5),
   },
 })
 

@@ -7,12 +7,13 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack'
 import {
-  SafeAreaView,
+  StatusBar,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import ProfileInformationScreen from './profile-information'
 import AddAddressScreen from './add-address'
 import Api from '@/services/Api'
@@ -122,12 +123,13 @@ const VerificationScreen = ({ navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={styles.containerStyle}>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <TransitionIndicator
         loading={isLoading}
         backdropStyle={{ backgroundColor: '#fff' }}
       />
-      <View style={{ padding: 24 }}>
+      <View style={styles.wrapper}>
         <TouchableOpacity onPress={navigation.goBack}>
           <Icons.Back
             style={styles.backButton}
@@ -137,7 +139,7 @@ const VerificationScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        <View style={{ padding: 24 }}>
+        <View style={{ padding: normalize(24) }}>
           <Icons.VerifiedProfile height={normalize(80)} width={normalize(80)} />
           <View style={styles.headingWrapper}>
             <AppText textStyle="display6">Get bee-rified!</AppText>
@@ -210,13 +212,15 @@ const VerificationScreen = ({ navigation }) => {
             .map(renderCompletedItem)}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  containerStyle: {
+  wrapper: {
     flex: 1,
+    padding: normalize(24),
+    marginTop: getStatusBarHeight(),
   },
   backButton: { color: '#91919C', width: normalize(16), height: normalize(16) },
   badgeContainer: {

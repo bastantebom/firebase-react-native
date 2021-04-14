@@ -3,10 +3,11 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  SafeAreaView,
   Keyboard,
   Text,
+  StatusBar,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { Notification } from '@/components/Notification'
 import AppColor from '@/globals/Colors'
@@ -141,89 +142,99 @@ const VerifyCodeScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      {isNotificationVisible && (
-        <Notification
-          type={notificationType}
-          onClose={() => setIsNotificationVisible(false)}
-          icon={
-            notificationType === 'danger' ? (
-              <Icons.Warning />
-            ) : (
-              <Icons.CircleTick />
-            )
-          }>
-          <View style={{ marginLeft: 15 }}>{notificationMessage}</View>
-        </Notification>
-      )}
-      <View style={{ padding: normalize(24) }}>
-        <ScreenHeaderTitle close={() => onBackPress?.()} />
-      </View>
-      <View style={styles.container}>
-        <TransitionIndicator loading={isLoading} />
-        <View style={styles.alignCenter}>
-          <VerifySms />
+    <>
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
+      <View style={styles.wrapper}>
+        {isNotificationVisible && (
+          <Notification
+            type={notificationType}
+            onClose={() => setIsNotificationVisible(false)}
+            icon={
+              notificationType === 'danger' ? (
+                <Icons.Warning />
+              ) : (
+                <Icons.CircleTick />
+              )
+            }>
+            <View style={{ marginLeft: 15 }}>{notificationMessage}</View>
+          </Notification>
+        )}
+        <View style={{ padding: normalize(24) }}>
+          <ScreenHeaderTitle close={() => onBackPress?.()} />
         </View>
-        <View style={[styles.alignCenter, styles.spacingBottom]}>
-          <AppText textStyle="display5">Enter Your Verification</AppText>
-        </View>
-        <View style={[styles.alignCenter, styles.spacingBottomx2]}>
-          <AppText textStyle="body2" customStyle={styles.bodyContent}>
-            A 4-digit code has been sent to{' '}
-            <AppText textStyle="body3" customStyle={styles.bodyContent}>
-              {login}
+        <View style={styles.container}>
+          <TransitionIndicator loading={isLoading} />
+          <View style={styles.alignCenter}>
+            <VerifySms />
+          </View>
+          <View style={[styles.alignCenter, styles.spacingBottom]}>
+            <AppText textStyle="display5">Enter Your Verification</AppText>
+          </View>
+          <View style={[styles.alignCenter, styles.spacingBottomx2]}>
+            <AppText textStyle="body2" customStyle={styles.bodyContent}>
+              A 4-digit code has been sent to{' '}
+              <AppText textStyle="body3" customStyle={styles.bodyContent}>
+                {login}
+              </AppText>
             </AppText>
-          </AppText>
+          </View>
+          <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
+            {code.map((input, index) => (
+              <TextInput
+                key={index}
+                ref={textInputsRef[index]}
+                style={[styles.inputVerification, getInputStyle(index)]}
+                keyboardType="number-pad"
+                value={code[index]}
+                autoFocus={!index}
+                onChangeText={value => handleInputChange(value, index)}
+                onKeyPress={event => handelInputKeyPress(event, index)}
+                maxLength={1}
+                fontFamily={'RoundedMplus1c-Regular'}
+                theme={{
+                  colors: {
+                    primary: AppColor.contentOcean,
+                  },
+                  fonts: {
+                    regular: '',
+                  },
+                }}
+              />
+            ))}
+          </View>
+          <View style={{ ...styles.alignCenter, ...styles.spacingBottom }}>
+            <AppText textStyle="body2" customStyle={styles.bodyContent}>
+              Didn’t receive a code?
+            </AppText>
+          </View>
+          <TouchableOpacity
+            customStyle={styles.alignCenter}
+            onPress={handleResendCode}>
+            <AppText
+              textStyle="body2"
+              customStyle={{
+                ...styles.bodyContent,
+                color: AppColor.contentOcean,
+              }}>
+              Resend code
+            </AppText>
+          </TouchableOpacity>
         </View>
-        <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
-          {code.map((input, index) => (
-            <TextInput
-              key={index}
-              ref={textInputsRef[index]}
-              style={[styles.inputVerification, getInputStyle(index)]}
-              keyboardType="number-pad"
-              value={code[index]}
-              autoFocus={!index}
-              onChangeText={value => handleInputChange(value, index)}
-              onKeyPress={event => handelInputKeyPress(event, index)}
-              maxLength={1}
-              fontFamily={'RoundedMplus1c-Regular'}
-              theme={{
-                colors: {
-                  primary: AppColor.contentOcean,
-                },
-                fonts: {
-                  regular: '',
-                },
-              }}
-            />
-          ))}
-        </View>
-        <View style={{ ...styles.alignCenter, ...styles.spacingBottom }}>
-          <AppText textStyle="body2" customStyle={styles.bodyContent}>
-            Didn’t receive a code?
-          </AppText>
-        </View>
-        <TouchableOpacity
-          customStyle={styles.alignCenter}
-          onPress={handleResendCode}>
-          <AppText
-            textStyle="body2"
-            customStyle={{
-              ...styles.bodyContent,
-              color: AppColor.contentOcean,
-            }}>
-            Resend code
-          </AppText>
-        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     flex: 1,
+    marginTop: getStatusBarHeight(),
+  },
+  container: {
     backgroundColor: AppColor.neutralsWhite,
     padding: 24,
     paddingTop: 96,
