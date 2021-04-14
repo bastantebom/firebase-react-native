@@ -7,17 +7,18 @@ import {
   Text,
   StatusBar,
 } from 'react-native'
-import { getStatusBarHeight } from 'react-native-status-bar-height'
-import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
-import { Notification } from '@/components/Notification'
+import { ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import AppColor from '@/globals/Colors'
 import { VerifySms } from '@/assets/images'
 import { TextInput } from 'react-native-paper'
 import Colors from '@/globals/Colors'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
-import { Icons } from '@/assets/images/icons'
 import { normalize } from '@/globals'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import Toast from '@/components/toast'
+import { isEmail } from '@/globals/Utils'
+import typography from '@/globals/typography'
 
 /**
  * @typedef {Object} VerifyCodeProps
@@ -40,12 +41,8 @@ const VerifyCodeScreen = ({ navigation, route }) => {
   const textInputsRef = [useRef(null), useRef(null), useRef(null), useRef(null)]
   const [code, setCode] = useState(['', '', '', ''])
   const [isLoading, setIsLoading] = useState(false)
-  const [notificationMessage, setNotificationMessage] = useState('')
-  const [notificationType, setNotificationType] = useState('success')
-  const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
   const handleResendCode = async () => {
-    setIsNotificationVisible(false)
     setIsLoading(true)
     try {
       const response = await Api.resendCode({
@@ -55,28 +52,30 @@ const VerifyCodeScreen = ({ navigation, route }) => {
         uid: user.uid,
       })
       if (!response.success) throw new Error(response.message)
-      setNotificationMessage(
-        <View>
-          <AppText textStyle="body2" customStyle={{ color: '#fff' }}>
-            Verification code has been sent to {login}
-          </AppText>
-        </View>
-      )
-      setNotificationType('success')
+      Toast.show({
+        label: `Verification code has been sent to ${
+          isEmail(login) ? login : `+63${login}`
+        }`,
+        type: 'success',
+        dismissible: true,
+        screenId: 'verify-code',
+        timeout: 5000,
+      })
     } catch (error) {
       console.log(error)
-      setNotificationType('danger')
-      setNotificationMessage(
-        <Text style={{ color: '#fff' }}>{error.message || error}</Text>
-      )
+      Toast.show({
+        label: 'Oops, something went wrong',
+        type: 'error',
+        dismissible: true,
+        screenId: 'verify-code',
+        timeout: 5000,
+      })
     }
 
     setIsLoading(false)
-    setIsNotificationVisible(true)
   }
 
   const submit = async code => {
-    setIsNotificationVisible(false)
     setIsLoading(true)
     try {
       const response = await Api.verifyCode({
@@ -91,11 +90,13 @@ const VerifyCodeScreen = ({ navigation, route }) => {
       onSubmit?.()
     } catch (error) {
       console.log(error.message || error)
-      setNotificationMessage(
-        <Text style={{ color: '#fff' }}>{error.message || error}</Text>
-      )
-      setNotificationType('danger')
-      setIsNotificationVisible(true)
+      Toast.show({
+        label: 'Oops, something went wrong',
+        type: 'error',
+        dismissible: true,
+        screenId: 'verify-code',
+        timeout: 5000,
+      })
     }
 
     setIsLoading(false)
@@ -142,95 +143,78 @@ const VerifyCodeScreen = ({ navigation, route }) => {
   }
 
   return (
-    <>
-      <StatusBar
-        translucent
-        barStyle="dark-content"
-        backgroundColor="transparent"
+    <View style={styles.wrapper}>
+      <Toast
+        containerStyle={{ marginTop: normalize(16) }}
+        ref={ref => Toast.setRef(ref, 'verify-code')}
       />
-      <View style={styles.wrapper}>
-        {isNotificationVisible && (
-          <Notification
-            type={notificationType}
-            onClose={() => setIsNotificationVisible(false)}
-            icon={
-              notificationType === 'danger' ? (
-                <Icons.Warning />
-              ) : (
-                <Icons.CircleTick />
-              )
-            }>
-            <View style={{ marginLeft: 15 }}>{notificationMessage}</View>
-          </Notification>
-        )}
-        <View style={{ padding: normalize(24) }}>
-          <ScreenHeaderTitle close={() => onBackPress?.()} />
-        </View>
-        <View style={styles.container}>
-          <TransitionIndicator loading={isLoading} />
-          <View style={styles.alignCenter}>
-            <VerifySms />
-          </View>
-          <View style={[styles.alignCenter, styles.spacingBottom]}>
-            <AppText textStyle="display5">Enter Your Verification</AppText>
-          </View>
-          <View style={[styles.alignCenter, styles.spacingBottomx2]}>
-            <AppText textStyle="body2" customStyle={styles.bodyContent}>
-              A 4-digit code has been sent to{' '}
-              <AppText textStyle="body3" customStyle={styles.bodyContent}>
-                {login}
-              </AppText>
-            </AppText>
-          </View>
-          <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
-            {code.map((input, index) => (
-              <TextInput
-                key={index}
-                ref={textInputsRef[index]}
-                style={[styles.inputVerification, getInputStyle(index)]}
-                keyboardType="number-pad"
-                value={code[index]}
-                autoFocus={!index}
-                onChangeText={value => handleInputChange(value, index)}
-                onKeyPress={event => handelInputKeyPress(event, index)}
-                maxLength={1}
-                fontFamily={'RoundedMplus1c-Regular'}
-                theme={{
-                  colors: {
-                    primary: AppColor.contentOcean,
-                  },
-                  fonts: {
-                    regular: '',
-                  },
-                }}
-              />
-            ))}
-          </View>
-          <View style={{ ...styles.alignCenter, ...styles.spacingBottom }}>
-            <AppText textStyle="body2" customStyle={styles.bodyContent}>
-              Didn’t receive a code?
-            </AppText>
-          </View>
-          <TouchableOpacity
-            customStyle={styles.alignCenter}
-            onPress={handleResendCode}>
-            <AppText
-              textStyle="body2"
-              customStyle={{
-                ...styles.bodyContent,
-                color: AppColor.contentOcean,
-              }}>
-              Resend code
-            </AppText>
-          </TouchableOpacity>
-        </View>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
+      <View style={{ padding: normalize(24) }}>
+        <ScreenHeaderTitle close={() => onBackPress?.()} />
       </View>
-    </>
+      <View style={styles.container}>
+        <TransitionIndicator loading={isLoading} />
+        <View style={styles.alignCenter}>
+          <VerifySms />
+        </View>
+        <View style={[styles.alignCenter, styles.spacingBottom]}>
+          <Text style={[typography.display5]}>Enter Your Verification</Text>
+        </View>
+        <View style={[styles.alignCenter, styles.spacingBottomx2]}>
+          <Text style={typography.body2narrow}>
+            A 4-digit code has been sent to{' '}
+            <Text style={typography.medium}>
+              {isEmail(login) ? login : `+63${login}`}
+            </Text>
+          </Text>
+        </View>
+        <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
+          {code.map((input, index) => (
+            <TextInput
+              key={index}
+              ref={textInputsRef[index]}
+              style={[styles.inputVerification, getInputStyle(index)]}
+              keyboardType="number-pad"
+              value={code[index]}
+              autoFocus={!index}
+              onChangeText={value => handleInputChange(value, index)}
+              onKeyPress={event => handelInputKeyPress(event, index)}
+              maxLength={1}
+              fontFamily={'RoundedMplus1c-Regular'}
+              theme={{
+                colors: {
+                  primary: AppColor.contentOcean,
+                },
+                fonts: {
+                  regular: '',
+                },
+              }}
+            />
+          ))}
+        </View>
+        <View style={{ ...styles.alignCenter, ...styles.spacingBottom }}>
+          <Text style={typography.body2}>Didn’t receive a code?</Text>
+        </View>
+        <TouchableOpacity
+          customStyle={styles.alignCenter}
+          onPress={handleResendCode}>
+          <Text
+            style={[typography.body2, typography.link, typography.textCenter]}>
+            Resend code
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
+  container: {
     flex: 1,
     marginTop: getStatusBarHeight(),
   },
@@ -238,9 +222,6 @@ const styles = StyleSheet.create({
     backgroundColor: AppColor.neutralsWhite,
     padding: 24,
     paddingTop: 96,
-  },
-  bodyContent: {
-    textAlign: 'center',
   },
   spacingBottom: {
     marginBottom: 8,
