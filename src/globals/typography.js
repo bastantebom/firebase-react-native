@@ -10,6 +10,10 @@ const typography = StyleSheet.create({
   light: {
     fontFamily: 'RoundedMplus1c-Light',
   },
+  bold: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontWeight: 'bold',
+  },
   body1: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(16),

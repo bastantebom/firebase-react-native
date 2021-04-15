@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
@@ -9,6 +9,7 @@ import { normalize, timePassedShort } from '@/globals'
 
 import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
+import typography from '@/globals/typography'
 
 const Order = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
@@ -50,192 +51,187 @@ const Order = ({ unreadNotification, item }) => {
   const renderText = () => {
     if (item.status === 'payment failed') {
       return (
-        <>
-          <AppText textStyle="caption">Payment to</AppText>
-          <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
-            {` ${item.seller.name} `}
-          </AppText>
-          <AppText textStyle="caption">failed. Please try again.</AppText>
-        </>
+        <Text style={typography.caption}>
+          <Text style={[typography.caption, typography.bold]}>
+            {`${item.seller.name} `}
+          </Text>
+          failed. Please try again.
+        </Text>
       )
     } else if (item.status === 'paid') {
       return (
-        <>
-          <AppText textStyle="caption">Successfully paid to</AppText>
-          <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
-            {` ${item.seller.name} `}
-          </AppText>
-        </>
+        <Text style={typography.caption}>
+          Successfully paid to
+          <Text style={[typography.caption, typography.bold]}>
+            {` ${item.seller.name}`}
+          </Text>
+        </Text>
       )
     }
 
     if (item.post_type === 'sell') {
       if (item.status === 'pending') {
         return (
-          <>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            <Text style={[typography.caption, typography.bold]}>
               {`${item.user.name} `}
-            </AppText>
-            <AppText textStyle="caption">
-              reqested an order on your post.
-            </AppText>
-          </>
+            </Text>
+            reqested an order on your post.
+          </Text>
         )
       } else if (item.status === 'confirmed') {
         if (item.payment_method === 'cash') {
           return (
-            <>
-              <AppText textStyle="caption">Your order from</AppText>
-              <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+            <Text style={typography.caption}>
+              Your order from
+              <Text style={[typography.caption, typography.bold]}>
                 {` ${item.seller.name} `}
-              </AppText>
-              <AppText textStyle="caption">
-                has been accepted. Proceed to payment to complete your order
-              </AppText>
-            </>
+              </Text>
+              has been accepted. Proceed to payment to complete your order
+            </Text>
           )
         } else {
           return (
-            <>
-              <AppText textStyle="caption">Your order from</AppText>
-              <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+            <Text style={typography.caption}>
+              Your order from
+              <Text style={[typography.caption, typography.bold]}>
                 {` ${item.seller.name} `}
-              </AppText>
-              <AppText textStyle="caption">has been accepted.</AppText>
-            </>
+              </Text>
+              has been accepted.
+            </Text>
           )
         }
       } else if (item.status === 'declined') {
         return (
-          <>
-            <AppText textStyle="caption">Your order from</AppText>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            Your order from
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">has been declined.</AppText>
-          </>
+            </Text>
+            has been declined.
+          </Text>
         )
       } else if (item.status === 'cancelled') {
         return (
-          <>
-            <AppText textStyle="caption">Your order from</AppText>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            Your order from
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">has been cancelled.</AppText>
-          </>
+            </Text>
+            has been cancelled.
+          </Text>
         )
       } else if (item.status === 'completed') {
         return (
-          <>
-            <AppText textStyle="caption">Your order from</AppText>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            Your order from
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">has been completed.</AppText>
-          </>
+            </Text>
+            has been completed.
+          </Text>
         )
       }
     } else if (item.post_type === 'service') {
       if (item.status === 'pending') {
         return (
-          <>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            <Text style={[typography.caption, typography.bold]}>
               {`${item.user.name} `}
-            </AppText>
-            <AppText textStyle="caption">
-              reqested a booking on your post.
-            </AppText>
-          </>
+            </Text>
+            reqested a booking on your post.
+          </Text>
         )
       } else if (item.status === 'confirmed') {
         if (item.payment_method === 'cash') {
           return (
-            <>
-              <AppText textStyle="caption">Your booking from</AppText>
-              <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+            <Text style={typography.caption}>
+              Your booking from
+              <Text style={[typography.caption, typography.bold]}>
                 {` ${item.seller.name} `}
-              </AppText>
-              <AppText textStyle="caption">
-                has been accepted. Proceed to payment to complete your booking
-              </AppText>
-            </>
+              </Text>
+              has been accepted. Proceed to payment to complete your booking
+            </Text>
           )
         } else {
           return (
-            <>
-              <AppText textStyle="caption">Your booking from</AppText>
-              <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+            <Text style={typography.caption}>
+              Your booking from
+              <Text style={[typography.caption, typography.bold]}>
                 {` ${item.seller.name} `}
-              </AppText>
-              <AppText textStyle="caption">has been accepted.</AppText>
-            </>
+              </Text>
+              has been accepted.
+            </Text>
           )
         }
       } else if (item.status === 'declined') {
         return (
-          <>
-            <AppText textStyle="caption">Your booking from</AppText>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            Your booking from
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">has been declined.</AppText>
-          </>
+            </Text>
+            has been declined.
+          </Text>
         )
       } else if (item.status === 'cancelled') {
         return (
-          <>
-            <AppText textStyle="caption">Your booking from</AppText>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            Your booking from
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">has been cancelled.</AppText>
-          </>
+            </Text>
+            has been cancelled.
+          </Text>
         )
       } else if (item.status === 'completed') {
         return (
-          <>
-            <AppText textStyle="caption">Your booking from</AppText>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            Your booking from
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">has been completed.</AppText>
-          </>
+            </Text>
+            has been completed.
+          </Text>
         )
       }
     } else {
       if (item.status === 'pending') {
         return (
-          <>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            <Text style={[typography.caption, typography.bold]}>
               {`${item.user.name} `}
-            </AppText>
-            <AppText textStyle="caption">
-              has made an offer on your post.
-            </AppText>
-          </>
+            </Text>
+            has made an offer on your post.
+          </Text>
         )
       } else if (item.status === 'confirmed') {
         return (
-          <>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
-              {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">
-              accepted your offer on his post.
-            </AppText>
-          </>
+          <Text style={typography.caption}>
+            <Text style={[typography.caption, typography.bold]}>
+              {`${item.seller.name} `}
+            </Text>
+            accepted your offer on his post.
+          </Text>
         )
       } else if (item.status === 'declined') {
         return (
-          <>
-            <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
+          <Text style={typography.caption}>
+            <Text style={[typography.caption, typography.bold]}>
+              {`${item.seller.name} `}
+            </Text>
+            declined your offer on his post.
+          </Text>
+        )
+      } else if (item.status === 'completed') {
+        return (
+          <Text style={typography.caption}>
+            Your offer from{' '}
+            <Text style={[typography.caption, typography.bold]}>
               {` ${item.seller.name} `}
-            </AppText>
-            <AppText textStyle="caption">
-              declined your offer on his post.
-            </AppText>
-          </>
+            </Text>
+            has been completed.
+          </Text>
         )
       }
     }
