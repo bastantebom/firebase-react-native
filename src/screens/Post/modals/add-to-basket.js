@@ -104,8 +104,16 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
       items: newItems,
     }
 
-    setBasket(newBasket)
     close()
+    setBasket(newBasket)
+  }
+
+  const handleOnRemoveService = () => {
+    close()
+    setBasket(basket => ({
+      ...basket,
+      items: basket.items.filter(_item => _item.id !== item.id),
+    }))
   }
 
   const handleOnBackPress = () => {
@@ -338,6 +346,17 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
                   </Text>
                 )}
               </Button>
+
+              {post.type === 'service' &&
+                basket.items?.some(_item => _item.id === item.id) && (
+                  <Button
+                    style={{ marginTop: normalize(16) }}
+                    type="danger"
+                    label="Remove"
+                    onPress={handleOnRemoveService}
+                    labelStyle={{ color: '#fff' }}
+                  />
+                )}
             </View>
           </>
         )}
