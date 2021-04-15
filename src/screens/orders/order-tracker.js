@@ -370,7 +370,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           participants: [user.uid, otherUID],
           post_id: orderData.post_id,
           buyer_id: user.uid,
-          seller_id: user.uid,
+          seller_id: otherUID,
         })
 
         await ref.doc(id).update({ id })

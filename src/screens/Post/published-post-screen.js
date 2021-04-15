@@ -2049,7 +2049,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           participants: [userInfo.uid, user.current.uid],
           post_id: post.current.id,
           buyer_id: userInfo.uid,
-          seller_id: userInfo.uid,
+          seller_id: user.current.uid,
         })
 
         await ref.doc(id).update({ id })
