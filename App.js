@@ -13,20 +13,13 @@ import Routes from './Routes'
 import SplashScreen from 'react-native-splash-screen'
 import { ContextProvider } from '@/context'
 import { UserContextProvider } from '@/context/UserContext'
-//import {ProfileInfoContextProvider} from '@/context/ProfileInfoContext';
 
 const App = () => {
-  const [hideSplash, setHideSplash] = useState(false)
-
   useEffect(() => {
     setTimeout(() => {
-      setHideSplash(true)
+      SplashScreen.hide()
     }, 3000)
   }, [])
-
-  useEffect(() => {
-    hideSplash && SplashScreen.hide()
-  }, [hideSplash])
 
   return (
     <UserContextProvider>
