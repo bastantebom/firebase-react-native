@@ -1,14 +1,15 @@
 import React from 'react'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import Api from '@/services/Api'
 
-import { NotVerified, Verified, PostClock } from '@/assets/images/icons'
+import { PostClock } from '@/assets/images/icons'
 import { normalize, timePassedShort } from '@/globals'
 
 import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
+import typography from '@/globals/typography'
 
 const Follow = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
@@ -57,10 +58,10 @@ const Follow = ({ unreadNotification, item }) => {
           />
         </View>
         <View style={styles.captionWrapper}>
-          <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
-            {item.user.name}
-          </AppText>
-          <AppText textStyle="caption"> followed you</AppText>
+          <Text style={typography.caption}>
+            <Text style={typography.medium}>{`${item.user.name} `}</Text>
+            followed you
+          </Text>
         </View>
       </View>
       <View style={styles.notificationFooter}>

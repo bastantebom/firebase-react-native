@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
@@ -9,6 +9,7 @@ import { normalize, timePassedShort } from '@/globals'
 
 import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
+import typography from '@/globals/typography'
 
 const payment = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
@@ -63,14 +64,10 @@ const payment = ({ unreadNotification, item }) => {
         </View>
         <View style={styles.captionWrapper}>
           {item.status === 'paid' && (
-            <>
-              <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
-                {`${item.user.name} `}
-              </AppText>
-              <AppText textStyle="caption">
-                successfully paid for his order on your post.
-              </AppText>
-            </>
+            <Text style={typography.caption}>
+              <Text style={typography.medium}> {`${item.user.name} `}</Text>
+              successfully paid for his order on your post.
+            </Text>
           )}
         </View>
       </View>

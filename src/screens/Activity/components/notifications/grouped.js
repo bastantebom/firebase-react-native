@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
@@ -10,6 +10,7 @@ import { normalize, timePassedShort } from '@/globals'
 
 import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
+import typography from '@/globals/typography'
 
 const Grouped = ({ item }) => {
   const navigation = useNavigation()
@@ -94,10 +95,10 @@ const Grouped = ({ item }) => {
           </View>
         </View>
         <View style={styles.captionWrapper}>
-          <AppText textStyle="caption" customStyle={{ fontWeight: 'bold' }}>
-            {getNames(item)}
-          </AppText>
-          <AppText textStyle="caption">requested orders on your post.</AppText>
+          <Text style={typography.caption}>
+            <Text style={typography.medium}>{getNames(item)}</Text> requested
+            orders on your post.
+          </Text>
         </View>
       </View>
       <View style={styles.notificationFooter}>

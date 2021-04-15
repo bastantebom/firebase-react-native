@@ -52,9 +52,7 @@ const Order = ({ unreadNotification, item }) => {
     if (item.status === 'payment failed') {
       return (
         <Text style={typography.caption}>
-          <Text style={[typography.caption, typography.bold]}>
-            {`${item.seller.name} `}
-          </Text>
+          <Text style={typography.medium}>{`${item.seller.name} `}</Text>
           failed. Please try again.
         </Text>
       )
@@ -62,9 +60,7 @@ const Order = ({ unreadNotification, item }) => {
       return (
         <Text style={typography.caption}>
           Successfully paid to
-          <Text style={[typography.caption, typography.bold]}>
-            {` ${item.seller.name}`}
-          </Text>
+          <Text style={typography.medium}>{` ${item.seller.name}`}</Text>
         </Text>
       )
     }
@@ -73,9 +69,7 @@ const Order = ({ unreadNotification, item }) => {
       if (item.status === 'pending') {
         return (
           <Text style={typography.caption}>
-            <Text style={[typography.caption, typography.bold]}>
-              {`${item.user.name} `}
-            </Text>
+            <Text style={typography.medium}>{`${item.user.name} `}</Text>
             reqested an order on your post.
           </Text>
         )
@@ -84,9 +78,7 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your order from
-              <Text style={[typography.caption, typography.bold]}>
-                {` ${item.seller.name} `}
-              </Text>
+              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
               has been accepted. Proceed to payment to complete your order
             </Text>
           )
@@ -94,9 +86,7 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your order from
-              <Text style={[typography.caption, typography.bold]}>
-                {` ${item.seller.name} `}
-              </Text>
+              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
               has been accepted.
             </Text>
           )
@@ -105,9 +95,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been declined.
           </Text>
         )
@@ -115,9 +103,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been cancelled.
           </Text>
         )
@@ -125,9 +111,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been completed.
           </Text>
         )
@@ -136,9 +120,7 @@ const Order = ({ unreadNotification, item }) => {
       if (item.status === 'pending') {
         return (
           <Text style={typography.caption}>
-            <Text style={[typography.caption, typography.bold]}>
-              {`${item.user.name} `}
-            </Text>
+            <Text style={typography.medium}>{`${item.user.name} `}</Text>
             reqested a booking on your post.
           </Text>
         )
@@ -147,9 +129,7 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your booking from
-              <Text style={[typography.caption, typography.bold]}>
-                {` ${item.seller.name} `}
-              </Text>
+              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
               has been accepted. Proceed to payment to complete your booking
             </Text>
           )
@@ -157,9 +137,7 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your booking from
-              <Text style={[typography.caption, typography.bold]}>
-                {` ${item.seller.name} `}
-              </Text>
+              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
               has been accepted.
             </Text>
           )
@@ -168,9 +146,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your booking from
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been declined.
           </Text>
         )
@@ -178,9 +154,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your booking from
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been cancelled.
           </Text>
         )
@@ -188,9 +162,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your booking from
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been completed.
           </Text>
         )
@@ -199,27 +171,21 @@ const Order = ({ unreadNotification, item }) => {
       if (item.status === 'pending') {
         return (
           <Text style={typography.caption}>
-            <Text style={[typography.caption, typography.bold]}>
-              {`${item.user.name} `}
-            </Text>
+            <Text style={typography.medium}>{`${item.user.name} `}</Text>
             has made an offer on your post.
           </Text>
         )
       } else if (item.status === 'confirmed') {
         return (
           <Text style={typography.caption}>
-            <Text style={[typography.caption, typography.bold]}>
-              {`${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{`${item.seller.name} `}</Text>
             accepted your offer on his post.
           </Text>
         )
       } else if (item.status === 'declined') {
         return (
           <Text style={typography.caption}>
-            <Text style={[typography.caption, typography.bold]}>
-              {`${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{`${item.seller.name} `}</Text>
             declined your offer on his post.
           </Text>
         )
@@ -227,9 +193,7 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your offer from{' '}
-            <Text style={[typography.caption, typography.bold]}>
-              {` ${item.seller.name} `}
-            </Text>
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
             has been completed.
           </Text>
         )
