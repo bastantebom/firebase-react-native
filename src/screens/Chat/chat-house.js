@@ -65,6 +65,9 @@ const ChatHouse = () => {
 
       const newItems = response.data
         .filter(item => !!item)
+        .sort(
+          (a, b) => a.latest_chat_time._seconds - b.latest_chat_time._seconds
+        )
         .map(item => ({
           id: item.id,
           post_id: item.post_id,
@@ -196,12 +199,8 @@ const ChatHouse = () => {
       )
 
     if (!item.seller_info && sort.value !== 'own posts') {
-      const sellerId = Object.keys(item.chat_room.members).filter(
-        member => member !== userInfo.uid
-      )[0]
-
       promises.push(
-        Api.getUser({ uid: sellerId }).then(response => {
+        Api.getUser({ uid: item.chat_room.seller_id }).then(response => {
           setItems(items => ({
             ...items,
             [item.post_id]: {
@@ -590,7 +589,11 @@ const ChatHouse = () => {
           </TouchableOpacity>
 
           <FlatList
-            data={Object.values(items)}
+            data={Object.values(items).sort(
+              (a, b) =>
+                b.chat_room.latest_chat_time._seconds -
+                a.chat_room.latest_chat_time._seconds
+            )}
             keyExtractor={item => item.post_id}
             renderItem={renderItem}
             onEndReachedThreshold={0.5}
