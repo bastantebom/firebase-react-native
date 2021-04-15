@@ -35,21 +35,13 @@ const ProfileLinks = ({
   }
 
   useEffect(() => {
-    let mounted = true
-    if (uid && mounted) getProfileCounters()
-    return () => {
-      mounted = false
-    }
+    if (uid) getProfileCounters()
   }, [uid])
 
   useEffect(() => {
-    let mounted = true
-    if (addFollowers && mounted) {
+    if (addFollowers !== null) {
       if (addFollowers) setFollowers(followers + 1)
       else setFollowers(followers - 1)
-    }
-    return () => {
-      mounted = false
     }
   }, [addFollowers])
 
