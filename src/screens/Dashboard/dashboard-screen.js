@@ -286,7 +286,10 @@ const DashboardScreen = ({ navigation }) => {
       screen: 'posts',
       params: {
         screen: 'published-post',
-        params: { post },
+        params: {
+          id: post.id,
+          uid: post.uid,
+        },
       },
     })
   }
