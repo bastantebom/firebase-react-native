@@ -9,6 +9,7 @@ import Modal from 'react-native-modal'
 
 import Api from '@/services/Api'
 import { AppText } from '@/components'
+import firestore from '@react-native-firebase/firestore'
 
 const ProfileLinks = ({
   visibleHives,
@@ -28,10 +29,20 @@ const ProfileLinks = ({
       const followersResponse = await Api.getFollowers({ uid })
       if (followersResponse.success) setFollowers(followersResponse.data.length)
       const postCountResponse = await Api.getUserPostsCount({ uid })
-      if (postCountResponse.success) setPostCount(postCountResponse.count)
+      if (postCountResponse.success)
+        setPostCount(postCountResponse.count - (await archivedCount()))
     } catch (error) {
       console.log(error.message || error)
     }
+  }
+
+  const archivedCount = async () => {
+    const posts = await firestore()
+      .collection('posts')
+      .where('uid', '==', uid)
+      .where('archived', '==', true)
+      .get()
+    return posts.docs.length || 0
   }
 
   useEffect(() => {
@@ -39,7 +50,7 @@ const ProfileLinks = ({
   }, [uid])
 
   useEffect(() => {
-    if (addFollowers !== null) {
+    if (typeof addFollowers === 'boolean') {
       if (addFollowers) setFollowers(followers + 1)
       else setFollowers(followers - 1)
     }
