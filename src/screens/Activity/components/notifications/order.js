@@ -91,6 +91,14 @@ const Order = ({ unreadNotification, item }) => {
             </Text>
           )
         }
+      } else if (item.status === 'delivering') {
+        return (
+          <Text style={typography.caption}>
+            Your order from
+            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            is being delivered.
+          </Text>
+        )
       } else if (item.status === 'declined') {
         return (
           <Text style={typography.caption}>

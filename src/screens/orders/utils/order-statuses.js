@@ -66,7 +66,7 @@ export const getStatusData = ({
         title: 'Payment Processing',
         message:
           userType === 'seller'
-            ? 'Please wait a little bit. We\'ll buzz once the customer\'s payment has been processed.'
+            ? "Please wait a little bit. We'll buzz once the customer's payment has been processed."
             : 'Thank you. We will buzz once payment is confirmed.',
         animation: inProgress,
         withGradient: true,
@@ -111,7 +111,7 @@ export const getStatusData = ({
         message:
           userType === 'seller'
             ? 'Sorry, the buyer cancelled their order.'
-            : 'Sorry, the Buyer cancelled the order. ',
+            : 'Sorry, the seller cancelled the order. ',
         animation: customerOrderCancelled,
       },
       declined: {
@@ -214,7 +214,7 @@ export const getStatusData = ({
         title: 'Awaiting Confirmation',
         message:
           userType === 'seller'
-            ? "Customer is reviewing your offer. "
+            ? 'Customer is reviewing your offer. '
             : 'Got your order request, Buzzybee!',
         animation: pending,
       },
@@ -246,9 +246,10 @@ export const getStatusData = ({
       },
       completed: {
         title: 'Completed',
-        message:  userType === 'seller'
-        ? 'Payment completed, booking is good to go! '
-        : 'Don\'t forget to rate your Service/Seller Bee!',
+        message:
+          userType === 'seller'
+            ? 'Payment completed, booking is good to go! '
+            : "Don't forget to rate your Service/Seller Bee!",
         animation: pending,
       },
       cancelled: {
