@@ -222,6 +222,7 @@ const Activity = ({ navigation }) => {
       if (lastId.current) params.lastItemId = lastId.current
 
       const response = await Api.getOwnOrders(params)
+
       if (!response.success) throw new Error(response.message)
 
       const newItem = response.data
@@ -248,32 +249,18 @@ const Activity = ({ navigation }) => {
         })
       )
 
-      const currentActivities = []
-      newItem.forEach(item => {
-        if (
-          currentActivities.some(activity => activity.post_id === item.post_id)
-        ) {
-          currentActivities.forEach(_item => {
-            if (_item.post_id === item.post_id) {
-              _item.orders.push(item.orders[0])
-            }
-          })
-        } else {
-          currentActivities.push(item)
-        }
-      })
-
       lastId.current = response.data.slice(-1)[0]?.id
       setResDataLength(response.data.length)
-      setActivities(
-        currentActivities.reduce(
+      setActivities(activities => ({
+        ...activities,
+        ...newItem.reduce(
           (items, item) => ({
             ...items,
             [item.post_id]: item,
           }),
           {}
-        )
-      )
+        ),
+      }))
     } catch (error) {
       console.log(error.message)
       Alert.alert('Error', 'Oops, something went wrong.')
