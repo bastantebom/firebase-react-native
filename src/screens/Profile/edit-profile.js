@@ -25,7 +25,7 @@ import { Colors, normalize } from '@/globals'
 import { Images } from '@/assets/images'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
-import { debounce } from 'lodash'
+
 import Svg, {
   ClipPath,
   Defs,
@@ -180,10 +180,19 @@ const EditProfileScreen = ({ navigation, route }) => {
     return Object.values(errors).some(error => error.length)
   }
 
-  const handleValidateUsername = useCallback(
-    debounce(async username => {
-      setIsCheckingUsername(true)
-      try {
+  const handleValidateUsername = useCallback(async username => {
+    if (/^([a-zA-Z0-9_.]){0,30}$/.test(username)) {
+      setFormData(data => ({ ...data, username }))
+      setDirtyStates([...new Set([...dirtyStates, 'username'])])
+      setIsValidUsername(true)
+      setIsCheckingUsername(false)
+    }
+  }, [])
+
+  const validateWord = async username => {
+    setIsCheckingUsername(true)
+    try {
+      if (username.length >= 3) {
         const validateUsernameResponse = await Api.validateUsername({
           body: {
             username,
@@ -191,13 +200,12 @@ const EditProfileScreen = ({ navigation, route }) => {
         })
         if (!validateUsernameResponse.success) setIsValidUsername(false)
         setIsValidUsername(validateUsernameResponse.valid)
-      } catch (error) {
-        setIsValidUsername(false)
-      }
-      setIsCheckingUsername(false)
-    }, 200),
-    []
-  )
+      } else setIsValidUsername(false)
+    } catch (error) {
+      setIsValidUsername(false)
+    }
+    setIsCheckingUsername(false)
+  }
 
   const handleSubmit = async () => {
     if (hasErrors(checkErrors(false))) return
@@ -455,11 +463,10 @@ const EditProfileScreen = ({ navigation, route }) => {
             label="Username"
             onChangeText={username => {
               handleValidateUsername(username)
-              setFormData(data => ({ ...data, username }))
-              setDirtyStates([...new Set([...dirtyStates, 'username'])])
             }}
             onBlurInput={() => {
               setDirtyStates([...new Set([...dirtyStates, 'username'])])
+              validateWord(formData.username)
             }}
             error={
               errors.username.length ||
@@ -477,7 +484,7 @@ const EditProfileScreen = ({ navigation, route }) => {
           />
           <Text style={styles.errorMessage}>
             {!isValidUsername && !isCheckingUsername
-              ? 'Username is already taken.'
+              ? "This username isn't allowed. Try another one."
               : errors.username}
           </Text>
         </View>
