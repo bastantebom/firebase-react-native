@@ -66,183 +66,6 @@ const StickyHeader = ({
     }
   }
 
-  if (type === 'post-other') {
-    return (
-      <>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            position: 'absolute',
-            zIndex: 1,
-            backgroundColor: 'transparent',
-          }}>
-          <View
-            style={{
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              paddingHorizontal: 16,
-              width: Dimensions.get('window').width,
-              paddingTop: 4,
-            }}>
-            <View>
-              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-                <View style={styles.circle}>
-                  <HeaderBack width={normalize(16)} height={normalize(16)} />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              {user ? (
-                <>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={toggleFollowing}>
-                    <View
-                      style={[styles.followButton, GlobalStyle.marginLeft1]}>
-                      {isFollowing ? (
-                        <HeaderFollowing
-                          width={normalize(16)}
-                          height={normalize(16)}
-                        />
-                      ) : (
-                        <HeaderFollow
-                          width={normalize(16)}
-                          height={normalize(16)}
-                        />
-                      )}
-                      <AppText
-                        textStyle="button3"
-                        color="white"
-                        customStyle={{ marginLeft: 4 }}>
-                        {isFollowing ? 'Following' : 'Follow'}
-                      </AppText>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={0.7}>
-                    <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                      <JarHeartWhite
-                        width={normalize(16)}
-                        height={normalize(16)}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={toggleEllipsisState}>
-                    <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                      <HeaderEllipsis
-                        width={normalize(16)}
-                        height={normalize(16)}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </>
-              ) : null}
-            </View>
-          </View>
-        </SafeAreaView>
-        <Modal
-          isVisible={ellipsisState}
-          animationIn="slideInUp"
-          animationInTiming={250}
-          animationOut="slideOutDown"
-          animationOutTiming={200}
-          onSwipeComplete={toggleEllipsisState}
-          swipeDirection="down"
-          style={{
-            justifyContent: 'flex-end',
-            margin: 0,
-          }}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              onPress={() => {
-                toggleEllipsisState()
-              }}>
-              <View style={{ flex: 1, backgroundColor: 'black' }} />
-            </TouchableWithoutFeedback>
-          }>
-          <OtherPostEllipsis
-            toggleEllipsisState={toggleEllipsisState}
-            postId={postId}
-            postTitle={postTitle}
-            hidePost={hidePost}
-          />
-        </Modal>
-      </>
-    )
-  }
-
-  if (type === 'post-own') {
-    return (
-      <>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            position: 'absolute',
-            zIndex: 1,
-            backgroundColor: 'transparent',
-          }}>
-          <View
-            style={{
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              paddingHorizontal: 16,
-              width: Dimensions.get('window').width,
-              paddingTop: 4,
-            }}>
-            <View>
-              <TouchableOpacity activeOpacity={0.7} onPress={backFunction}>
-                <View style={styles.circle}>
-                  <HeaderBack width={normalize(16)} height={normalize(16)} />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={toggleEllipsisState}>
-                <View style={[styles.circle, GlobalStyle.marginLeft1]}>
-                  <HeaderEllipsis
-                    width={normalize(16)}
-                    height={normalize(16)}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-
-        <Modal
-          isVisible={ellipsisState}
-          animationIn="slideInUp"
-          animationInTiming={250}
-          animationOut="slideOutDown"
-          animationOutTiming={200}
-          onSwipeComplete={toggleEllipsisState}
-          swipeDirection="down"
-          style={{
-            justifyContent: 'flex-end',
-            margin: 0,
-          }}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              onPress={() => {
-                toggleEllipsisState()
-              }}>
-              <View style={{ flex: 1, backgroundColor: 'black' }} />
-            </TouchableWithoutFeedback>
-          }>
-          <PostEllipsis
-            toggleEllipsisState={toggleEllipsisState}
-            editPostFunction={editPostFunction}
-            deletePostFunction={deletePostFunction}
-          />
-        </Modal>
-      </>
-    )
-  }
-
   if (type === 'profile') {
     return (
       <>
@@ -276,6 +99,7 @@ const StickyHeader = ({
             style={{
               flexDirection: 'row',
               width: '60%',
+              position: 'relative',
             }}>
             <View style={styles.profileImageWrapper}>
               <HexagonBorder
@@ -391,19 +215,12 @@ const StickyHeader = ({
 }
 
 const styles = StyleSheet.create({
-  circle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    width: normalize(32),
-    height: normalize(32),
-    borderRadius: normalize(32 / 2),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   profileImageWrapper: {
     width: normalize(40),
     height: normalize(40),
-    top: normalize(37),
+    marginTop: normalize(40),
     position: 'absolute',
+    alignItems: 'center',
   },
   followButton: {
     borderRadius: 20,
