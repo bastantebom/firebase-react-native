@@ -7,7 +7,7 @@
  */
 
 import 'react-native-gesture-handler'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import Routes from './Routes'
 import SplashScreen from 'react-native-splash-screen'
@@ -16,9 +16,7 @@ import { UserContextProvider } from '@/context/UserContext'
 
 const App = () => {
   useEffect(() => {
-    setTimeout(() => {
-      SplashScreen.hide()
-    }, 3000)
+    SplashScreen.hide()
   }, [])
 
   return (
