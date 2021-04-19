@@ -19,7 +19,7 @@ const ItemCard = ({ items, chats }) => {
   const getItemQuantity = order => {
     if (order.offer) return 1
 
-    return order.items.length
+    return order?.items?.length
   }
 
   const getTimeAgo = time => {
@@ -49,7 +49,7 @@ const ItemCard = ({ items, chats }) => {
 
     if (order.offer) return order.offer
 
-    order.items.forEach(item => (totalAmount += parseInt(item.price)))
+    order?.items?.forEach(item => (totalAmount += parseInt(item.price)))
 
     return totalAmount
   }
