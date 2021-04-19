@@ -14,11 +14,7 @@ import typography from '@/globals/typography'
 const Follow = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
 
-  const timeAgo = time => {
-    if (time <= 60) return 'Just now'
-
-    return timePassedShort(time)
-  }
+  const timeAgo = time => timePassedShort(time)
 
   const handleViewProfile = () => {
     if (!item.read) unreadNotification(item.id)

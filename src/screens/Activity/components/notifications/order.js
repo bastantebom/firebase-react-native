@@ -15,11 +15,7 @@ const Order = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
 
-  const timeAgo = time => {
-    if (time <= 60) return 'Just now'
-
-    return timePassedShort(time)
-  }
+  const timeAgo = time => timePassedShort(time)
 
   const handleViewProfile = () => {
     if (!item.read) unreadNotification(item.id)

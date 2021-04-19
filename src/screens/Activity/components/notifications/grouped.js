@@ -16,11 +16,7 @@ const Grouped = ({ item }) => {
   const navigation = useNavigation()
   const { user, userInfo } = useContext(UserContext)
 
-  const timeAgo = time => {
-    if (time <= 60) return 'Just now'
-
-    return timePassedShort(time)
-  }
+  const timeAgo = time => timePassedShort(time)
 
   const getNames = items => {
     let names = `${items[0].user.name}, ${items[1].user.name}`
