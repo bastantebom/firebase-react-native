@@ -46,7 +46,9 @@ const PaymentWebView = ({ navigation, route }) => {
           await Api.updateOrder({
             uid: user.uid,
             id: orderId,
-            body: { status: 'paid' },
+            body: {
+              status: title !== 'Paypal' ? 'paid' : 'payment processing',
+            },
           })
         }
       })()
