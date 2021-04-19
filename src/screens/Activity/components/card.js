@@ -113,6 +113,8 @@ const ActivitiesCard = ({ item }) => {
         return 'Completed'
       else if (activity.orders.some(order => order.status === 'declined'))
         return 'Declined'
+      else if (activity.orders.some(order => order.status === 'cancelled'))
+        return 'Cancelled'
     }
 
     return 'N/A'
