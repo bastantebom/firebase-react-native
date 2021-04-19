@@ -427,6 +427,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
       if (!response.success) throw new Error(response.message)
       setDashboardNeedsRefresh(true)
       setIsLoading(false)
+      navigation.goBack()
       Toast.show({
         content: (
           <View>
@@ -450,10 +451,8 @@ const PublishedPostScreen = ({ navigation, route }) => {
         ),
         type: 'success',
         dismissible: true,
-        screenId: 'dashboard',
         timeout: 5000,
       })
-      navigation.goBack()
     } catch (error) {
       console.log(error.message)
       Toast.show({

@@ -37,6 +37,8 @@ import { cloneDeep, isEmpty } from 'lodash'
 import Api from '@/services/Api'
 import ImageApi from '@/services/image-api'
 import { isUrl } from '@/globals/Utils'
+import Toast from '@/components/toast'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const ProfileScreen = ({
   profileViewType = 'profile',
@@ -314,6 +316,12 @@ const ProfileScreen = ({
           translucent={true}
           barStyle="dark-content"
           backgroundColor="transparent"
+        />
+        <Toast
+          containerStyle={{
+            marginTop: getStatusBarHeight() + normalize(8),
+          }}
+          ref={ref => Toast.setRef(ref, 'profile')}
         />
         <View
           style={{ display: 'flex' }}

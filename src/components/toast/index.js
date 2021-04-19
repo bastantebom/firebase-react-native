@@ -2,10 +2,10 @@ import { Icons } from '@/assets/images/icons'
 import { Colors } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize, normalize } from '@/globals/Utils'
-import { timeout } from 'q'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { getStatusBarHeight } from 'react-native-status-bar-height'
+
+import { navigationRef } from '../../../Routes'
 
 /**
  * @typedef {object} ToastConfig
@@ -16,7 +16,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
  * @property {() => React.Component} renderIcon
  * @property {string} type
  */
-
 export default class Toast extends React.Component {
   static _refs = {}
 
@@ -38,11 +37,14 @@ export default class Toast extends React.Component {
    */
   static show(_config = {}) {
     const { screenId, ...config } = _config
-    return Toast._refs[screenId]?.show(config)
+    const currentScreen = navigationRef.current
+      ?.getCurrentRoute?.()
+      ?.name?.toLowerCase?.()
+    return Toast._refs[screenId || currentScreen]?.show(config)
   }
 
   static hide(config = {}) {
-    const { screenId, id } = _config
+    const { screenId, id } = config
 
     Toast._refs[screenId]?.hide(id)
   }

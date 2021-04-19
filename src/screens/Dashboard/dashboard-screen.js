@@ -360,7 +360,7 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <>
       <Toast
-        containerStyle={{ marginTop: normalize(16) }}
+        containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'dashboard')}
       />
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
