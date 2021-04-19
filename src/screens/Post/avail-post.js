@@ -106,12 +106,22 @@ const AvailPostScreen = ({ navigation, route }) => {
           payment_method,
         }
       } else if (post.type === 'sell') {
-        const { items, shippingMethod, schedule, paymentMethod, notes } = basket
+        const {
+          items,
+          shippingMethod,
+          shippingAddress,
+          schedule,
+          paymentMethod,
+          notes,
+        } = basket
 
         body = {
           post_id: post.id,
           items,
           shipping_method: shippingMethod,
+          shipping_address:
+            shippingAddress ||
+            userInfo.addresses.find(address => address.default),
           payment_method: paymentMethod,
           notes,
         }
@@ -183,6 +193,18 @@ const AvailPostScreen = ({ navigation, route }) => {
     }))
   }
 
+  const handleOnChangeDeliveryAdderssPress = () => {
+    navigation.navigate('post-location', {
+      addresses: userInfo.addresses || [],
+      onPress: location => {
+        setBasket(basket => ({
+          ...basket,
+          shippingAddress: location,
+        }))
+      },
+    })
+  }
+
   const backPressHandler = event => {
     if (onBackPress && navigation.isFocused()) {
       event.preventDefault()
@@ -226,8 +248,9 @@ const AvailPostScreen = ({ navigation, route }) => {
     if (post.type === 'sell') {
       location =
         basket.shippingMethod === 'pickup'
-          ? post.shipping_methods.pickup.location
-          : userInfo.addresses.find(address => address.default)
+          ? post.shipping_methods.pickup?.location
+          : basket.shippingAddress ||
+            userInfo.addresses.find(address => address.default)
     } else if (post.type === 'service') {
       location = post.location
     }
@@ -238,15 +261,18 @@ const AvailPostScreen = ({ navigation, route }) => {
         latitudeDelta: 0.0025,
         longitudeDelta: 0.0025,
       })
-      !!initialRegion &&
-        mapViewRef.current.animateToRegion({
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: 0.0025,
-          longitudeDelta: 0.0025,
-        })
     }
-  }, [basket.shippingMethod])
+  }, [basket.shippingMethod, basket.shippingAddress])
+
+  useEffect(() => {
+    !!initialRegion &&
+      mapViewRef.current?.animateToRegion({
+        latitude: initialRegion.latitude,
+        longitude: initialRegion.longitude,
+        latitudeDelta: 0.0025,
+        longitudeDelta: 0.0025,
+      })
+  }, [initialRegion])
 
   const getTotal = () =>
     (basket.items || []).reduce(
@@ -467,8 +493,9 @@ const AvailPostScreen = ({ navigation, route }) => {
       post.type === 'service'
         ? post.location
         : basket.shippingMethod === 'pickup'
-        ? post.shipping_methods.pickup.location
-        : userInfo.addresses.find(address => address.default)
+        ? post.shipping_methods.pickup?.location
+        : basket.shippingAddress ||
+          userInfo.addresses.find(address => address.default)
 
     const notes = []
     if (
@@ -537,28 +564,50 @@ const AvailPostScreen = ({ navigation, route }) => {
             ]}>
             {label}
           </Text>
-          <TouchableOpacity
-            onPress={() => setShippingMethodModalVisible(true)}
-            activeOpacity={0.7}
-            style={styles.linkWrapper}>
-            <Text
-              style={[typography.body2, typography.medium, typography.link]}>
-              Change
-            </Text>
-          </TouchableOpacity>
+          {Object.keys(post.shipping_methods).length > 1 && (
+            <TouchableOpacity
+              onPress={() => setShippingMethodModalVisible(true)}
+              activeOpacity={0.7}
+              style={styles.linkWrapper}>
+              <Text
+                style={[typography.body2, typography.medium, typography.link]}>
+                Change
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        <View style={styles.location}>
-          <Text style={[typography.body2, typography.medium]}>
-            {location.name || 'Home'} (Default)
-          </Text>
-          <Text
-            style={[
-              typography.caption,
-              { marginTop: normalize(4), color: Colors.contentPlaceholder },
-            ]}>
-            {location.full_address}
-          </Text>
+        <View
+          style={[
+            utilStyles.row,
+            utilStyles.justifySpaceBetween,
+            { alignItems: 'flex-start' },
+          ]}>
+          <View
+            style={[styles.location, { flex: 1, paddingRight: normalize(8) }]}>
+            <Text style={[typography.body2, typography.medium]}>
+              {basket.shippingMethod === 'pickup' ? 'Seller' : 'Buyer'}
+              {"'s Address"}
+            </Text>
+            <Text
+              style={[
+                typography.caption,
+                { marginTop: normalize(4), color: Colors.contentPlaceholder },
+              ]}>
+              {location.full_address}
+            </Text>
+          </View>
+          {basket.shippingMethod === 'delivery' && (
+            <TouchableOpacity
+              onPress={handleOnChangeDeliveryAdderssPress}
+              activeOpacity={0.7}
+              style={[styles.linkWrapper, { paddingTop: normalize(14) }]}>
+              <Text
+                style={[typography.body2, typography.medium, typography.link]}>
+                Change
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {!!initialRegion && (

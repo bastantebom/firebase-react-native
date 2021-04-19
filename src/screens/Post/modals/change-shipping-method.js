@@ -172,29 +172,7 @@ const ChangeShippingMethodModal = ({ close, post }) => {
                   <TouchableOpacity
                     style={{ marginBottom: normalize(16) }}
                     activeOpacity={0.7}
-                    onPress={handleOnSetSchedulePress}>
-                    <View pointerEvents="none">
-                      <TextInput
-                        inputStyle={{ color: Colors.contentEbony }}
-                        label={basket.schedule ? 'Schedule' : 'Set Schedule'}
-                        disabled
-                        filled
-                        editable={false}
-                        value={
-                          schedule
-                            ? format(
-                                schedule,
-                                `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                              )
-                            : undefined
-                        }
-                        placeholderTextColor={Colors.contentEbony}
-                        rightIcon={() => (
-                          <Icons.ChevronDown style={{ color: Colors.icon }} />
-                        )}
-                      />
-                    </View>
-                  </TouchableOpacity>
+                    onPress={handleOnSetSchedulePress}></TouchableOpacity>
                 )}
               </View>
 
@@ -221,29 +199,7 @@ const ChangeShippingMethodModal = ({ close, post }) => {
                   <TouchableOpacity
                     style={{ marginBottom: normalize(16) }}
                     activeOpacity={0.7}
-                    onPress={handleOnSetSchedulePress}>
-                    <View pointerEvents="none">
-                      <TextInput
-                        inputStyle={{ color: Colors.contentEbony }}
-                        label={basket.schedule ? 'Schedule' : 'Set Schedule'}
-                        disabled
-                        filled
-                        editable={false}
-                        value={
-                          schedule
-                            ? format(
-                                schedule,
-                                `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                              )
-                            : undefined
-                        }
-                        placeholderTextColor={Colors.contentEbony}
-                        rightIcon={() => (
-                          <Icons.ChevronDown style={{ color: Colors.icon }} />
-                        )}
-                      />
-                    </View>
-                  </TouchableOpacity>
+                    onPress={handleOnSetSchedulePress}></TouchableOpacity>
                 )}
               </View>
             </>
