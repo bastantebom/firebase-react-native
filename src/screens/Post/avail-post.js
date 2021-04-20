@@ -564,7 +564,8 @@ const AvailPostScreen = ({ navigation, route }) => {
             ]}>
             {label}
           </Text>
-          {Object.keys(post.shipping_methods).length > 1 && (
+          {Object.keys(post.shipping_methods || post.booking_methods || {})
+            .length > 1 && (
             <TouchableOpacity
               onPress={() => setShippingMethodModalVisible(true)}
               activeOpacity={0.7}
