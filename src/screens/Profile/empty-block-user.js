@@ -1,16 +1,11 @@
-//import liraries
-import React, { useContext } from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import React from 'react'
+import { View, StyleSheet } from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { NoPost } from '@/assets/images'
 import { AppText } from '@/components'
 
-import { Context } from '@/context/index'
-import { useNavigation } from '@react-navigation/native'
-
-// create a component
-const EmptyArchivedPost = ({ isLoading }) => {
+const EmptyBlockList = () => {
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
@@ -18,27 +13,27 @@ const EmptyArchivedPost = ({ isLoading }) => {
       </View>
       <View style={styles.copyWrapper}>
         <AppText textStyle="display6" customStyle={styles.centerCopy}>
-          Posts you’ve archived appears here
+          No Blocked Users
         </AppText>
         <AppText
           textStyle="body3"
           color={Colors.profileLink}
           customStyle={styles.centerCopy}>
-          Some text here saying not to worry when posts are archived because
-          they can re-publish archived posts.
+          When you block someone, that person won't be able to find your profile
+          and posts or transact with you on Servbees.
         </AppText>
       </View>
     </View>
   )
 }
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: normalize(16),
+    backgroundColor: Colors.neutralsWhite,
   },
   imageWrapper: {
     marginBottom: normalize(16),
@@ -66,5 +61,4 @@ const styles = StyleSheet.create({
   },
 })
 
-//make this component available to the app
-export default EmptyArchivedPost
+export default EmptyBlockList

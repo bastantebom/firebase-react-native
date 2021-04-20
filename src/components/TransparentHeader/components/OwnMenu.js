@@ -38,7 +38,6 @@ import { UserContext } from '@/context/UserContext'
 const OwnMenu = ({ navigation, triggerNotify }) => {
   const { providerData, signOut } = useContext(UserContext)
   const [about, setAbout] = useState(false)
-  const [blockUser, setBlockUser] = useState(false)
   const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
   const [notifications, setNotifications] = useState(false)
@@ -47,7 +46,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   )
 
   const toggleAbout = () => setAbout(!about)
-  const toggleBlockedUser = () => setBlockUser(!blockUser)
   const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
 
@@ -287,7 +285,11 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
               <TouchableOpacity
                 style={{ marginTop: !hasPassword ? normalize(16) : 0 }}
                 activeOpacity={0.7}
-                onPress={toggleBlockedUser}>
+                onPress={() => {
+                  navigation.navigate('NBTScreen', {
+                    screen: 'block-user',
+                  })
+                }}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -333,20 +335,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
           </PaddingView>
         </View>
       </ScrollView>
-
-      <Modal
-        isVisible={blockUser}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <BlockList toggleBlockedUser={toggleBlockedUser} />
-      </Modal>
 
       <Modal
         isVisible={about}

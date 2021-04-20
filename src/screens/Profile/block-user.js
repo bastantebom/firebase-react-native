@@ -12,17 +12,21 @@ import {
   ProfileInfo,
   TransitionIndicator,
 } from '@/components'
-
+import { useNavigation } from '@react-navigation/native'
 import { normalize, Colors } from '@/globals'
 import Modal from 'react-native-modal'
 import { UserContext } from '@/context/UserContext'
+import { Context } from '@/context'
 import Api from '@/services/Api'
+import EmptyBlockUser from '@/screens/Profile/empty-block-user'
 
-const BlockList = ({ toggleBlockedUser }) => {
-  const { userInfo, user, setUserInfo } = useContext(UserContext)
+const BlockUser = () => {
+  const { setDashboardNeedsRefresh } = useContext(Context)
+  const { user } = useContext(UserContext)
   const [selectedUser, setSelectedUser] = useState({})
   const [blockUsers, setBlockUsers] = useState([])
   const [showCancelModal, setShowCancelModal] = useState(false)
+  const navigation = useNavigation()
   const cancelModalToggle = user => {
     setShowCancelModal(!showCancelModal)
     setSelectedUser(user)
@@ -38,6 +42,7 @@ const BlockList = ({ toggleBlockedUser }) => {
     if (unblockUser.success) {
       setIsLoading(true)
       setBlockUsers([])
+      setDashboardNeedsRefresh(true)
       getBlockUsers()
     }
     closeHandler()
@@ -70,24 +75,23 @@ const BlockList = ({ toggleBlockedUser }) => {
   }
 
   useEffect(() => {
-    let isMounted = true
     setIsLoading(true)
-    if (isMounted) getBlockUsers()
-    return () => (isMounted = false)
+    getBlockUsers()
   }, [])
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.neutralsWhite }}>
         <TransitionIndicator loading={isLoading} />
         <View style={{ padding: normalize(16) }}>
-          <ScreenHeaderTitle title="Blocked Users" close={toggleBlockedUser} />
+          <ScreenHeaderTitle title="Blocked Users" close={navigation.goBack} />
         </View>
         <View
           style={{
             marginTop: normalize(10),
             borderTopColor: Colors.neutralGray,
             borderTopWidth: 1,
+            flex: 1,
           }}>
           {blockUsers?.length
             ? blockUsers.map((user, index) => {
@@ -102,13 +106,7 @@ const BlockList = ({ toggleBlockedUser }) => {
                   />
                 )
               })
-            : !isLoading && (
-                <View style={{ padding: 16 }}>
-                  <AppText textStyle="caption">
-                    You don't have any block user
-                  </AppText>
-                </View>
-              )}
+            : !isLoading && <EmptyBlockUser />}
         </View>
       </SafeAreaView>
       <Modal
@@ -178,8 +176,4 @@ const BlockList = ({ toggleBlockedUser }) => {
     </>
   )
 }
-
-// define your styles
-
-//make this component available to the app
-export default BlockList
+export default BlockUser

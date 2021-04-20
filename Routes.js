@@ -29,6 +29,7 @@ import InviteFriendsScreen from '@/screens/Profile/invite-friends'
 import UpdateTemperature from '@/screens/Profile/update-temperature'
 import TemperatureHistory from '@/screens/Profile/temperature-history'
 import TemperatureAbout from '@/screens/Profile/temperature-about'
+import BlockUser from '@/screens/Profile/block-user'
 
 import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import ChangePasswordScreen from '@/screens/Profile/change-password'
@@ -54,7 +55,6 @@ import { Verified } from '@/screens/Activity'
 import { NotVerified } from '@/screens/Activity'
 import { OngoingItem } from '@/screens/Activity'
 import GuestActivity from '@/screens/Activity/components/guest-activity'
-
 import ChatHouse from '@/screens/Chat/chat-house'
 import PostChat from '@/screens/Chat/post-chat'
 
@@ -201,6 +201,7 @@ function NoBottomTabScreens() {
         name="temperature-history"
         component={TemperatureHistory}
       />
+      <NoBottomTabScreenStack.Screen name="block-user" component={BlockUser} />
     </NoBottomTabScreenStack.Navigator>
   )
 }

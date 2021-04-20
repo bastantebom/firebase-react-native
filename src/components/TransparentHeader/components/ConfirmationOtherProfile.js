@@ -4,7 +4,8 @@ import { View, TouchableOpacity, Alert } from 'react-native'
 import { AppText } from '@/components'
 
 import { Colors, normalize } from '@/globals'
-import { UserContext } from '@/context/UserContext'
+
+import { Context } from '@/context/index'
 import { useNavigation } from '@react-navigation/native'
 import Api from '@/services/Api'
 
@@ -13,14 +14,14 @@ const ConfirmationOtherProfile = ({
   toggleEllipsisState,
   cancelModalToggle,
 }) => {
-  const { user, userInfo, setUserInfo } = useContext(UserContext)
+  const { setDashboardNeedsRefresh } = useContext(Context)
   const navigation = useNavigation()
 
   const blockUser = async () => {
     const blockUserResponse = await Api.blockUser({ uid: userID })
     if (blockUserResponse.success) {
-      Alert.alert('Success', blockUserResponse.message)
       toggleEllipsisState()
+      setDashboardNeedsRefresh(true)
       navigation.goBack()
     }
   }

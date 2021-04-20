@@ -4,7 +4,6 @@ import PaymentTerms from './About/PaymentTerms'
 import PrivacyPolicy from './About/PrivacyPolicy.js'
 import TermsOfUse from './About/TermsOfUse'
 
-import BlockList from './Account/BlockList.js'
 import ArchivedPost from './Account/ArchivedPost.js'
 
 import AddAddress from './EditProfile/AddAddress.js'
@@ -24,7 +23,6 @@ export {
   PaymentTerms,
   PrivacyPolicy,
   TermsOfUse,
-  BlockList,
   AddAddress,
   Gender,
   ArchivedPost,
