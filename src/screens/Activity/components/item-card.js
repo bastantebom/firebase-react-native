@@ -72,13 +72,13 @@ const ItemCard = ({ items, chats }) => {
                 <View style={styles.avatarWrapper}>
                   <Avatar
                     style={styles.avatar}
-                    path={item.user.profile_photo}
+                    path={item?.user?.profile_photo}
                     size="64x64"
                   />
                 </View>
                 <View style={styles.userTextWrapper}>
                   <AppText textStyle="caption2" customStyle={styles.userName}>
-                    {item.user.name || 'N/A'}
+                    {item?.user?.name || 'N/A'}
                   </AppText>
                   <AppText textStyle="metadata" customStyle={styles.orderDate}>
                     {moment

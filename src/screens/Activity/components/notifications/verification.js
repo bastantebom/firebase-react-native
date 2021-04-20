@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { NotVerified, Verified, PostClock } from '@/assets/images/icons'
 import { normalize, timePassedShort } from '@/globals'
+import { UserContext } from '@/context/UserContext'
 
 import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
 
 const Verification = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
+  const { userInfo } = useContext(UserContext)
 
   const timeAgo = time => timePassedShort(time)
 
@@ -46,7 +48,7 @@ const Verification = ({ unreadNotification, item }) => {
           <View style={styles.avatarHolder}>
             <Avatar
               style={styles.avatar}
-              path={item?.user?.profile_photo}
+              path={userInfo?.profile_photo}
               size="64x64"
             />
           </View>

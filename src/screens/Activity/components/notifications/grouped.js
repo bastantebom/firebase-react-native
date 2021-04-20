@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { TouchableOpacity, View, StyleSheet, Text, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
@@ -11,16 +11,20 @@ import { normalize, timePassedShort } from '@/globals'
 import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
 import typography from '@/globals/typography'
+import Api from '@/services/Api'
 
 const Grouped = ({ item }) => {
   const navigation = useNavigation()
   const { user, userInfo } = useContext(UserContext)
+  const [buyers, setBuyers] = useState([])
 
   const timeAgo = time => timePassedShort(time)
 
-  const getNames = items => {
-    let names = `${items[0].user.name}, ${items[1].user.name}`
-    if (items.length > 2) names += ` and ${items.length - 2} others`
+  const getNames = () => {
+    let names = `${
+      buyers?.[0]?.data.display_name || buyers?.[0]?.data.full_name || ''
+    }, ${buyers?.[1]?.data.display_name || buyers?.[1]?.data.full_name || ''}`
+    if (buyers.length > 2) names += ` and ${buyers.length - 2} others`
     return names
   }
 
@@ -65,6 +69,28 @@ const Grouped = ({ item }) => {
     })
   }
 
+  const loadUser = async () => {
+    try {
+      const result = await Promise.all(
+        item.map(data => {
+          return Api.getUser({ uid: data.buyer_id })
+        })
+      )
+
+      if (result.some(item => !item.success))
+        throw new Error('Error getting user info')
+
+      setBuyers(result)
+    } catch (error) {
+      console.error(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  useEffect(() => {
+    loadUser()
+  }, [])
+
   return (
     <View
       style={{
@@ -78,22 +104,22 @@ const Grouped = ({ item }) => {
           <View style={styles.avatarContainer}>
             <Avatar
               style={styles.avatar}
-              path={item[0]?.user?.profile_photo}
+              path={buyers?.[0]?.data?.profile_photo}
               size="64x64"
             />
           </View>
           <View style={{ ...styles.avatarContainer, ...styles.secondAvatar }}>
             <Avatar
               style={styles.avatar}
-              path={item[1]?.user?.profile_photo}
+              path={buyers?.[1]?.data?.profile_photo}
               size="64x64"
             />
           </View>
         </View>
         <View style={styles.captionWrapper}>
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{getNames(item)}</Text> requested
-            orders on your post.
+            <Text style={typography.medium}>{getNames()}</Text> requested orders
+            on your post.
           </Text>
         </View>
       </View>

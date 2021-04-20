@@ -1,8 +1,9 @@
-import React, { useContext } from 'react'
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { TouchableOpacity, View, StyleSheet, Text, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
+import Api from '@/services/Api'
 
 import { PostClock } from '@/assets/images/icons'
 import { normalize, timePassedShort } from '@/globals'
@@ -14,21 +15,23 @@ import typography from '@/globals/typography'
 const Order = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
+  const [buyerInfo, setBuyerInfo] = useState({})
+  const [sellerInfo, setSellerInfo] = useState({})
 
   const timeAgo = time => timePassedShort(time)
 
   const handleViewProfile = () => {
     if (!item.read) unreadNotification(item.id)
 
-    if (item.user.uid === user.uid) {
+    if (sellerInfo.uid === user.uid) {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: item.seller.uid },
+        params: { uid: buyerInfo.uid },
       })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: item.user.uid },
+        params: { uid: sellerInfo.uid },
       })
     }
   }
@@ -48,7 +51,9 @@ const Order = ({ unreadNotification, item }) => {
     if (item.status === 'payment failed') {
       return (
         <Text style={typography.caption}>
-          <Text style={typography.medium}>{`${item.seller.name} `}</Text>
+          <Text style={typography.medium}>{`${
+            sellerInfo?.display_name || sellerInfo?.full_name || ''
+          } `}</Text>
           failed. Please try again.
         </Text>
       )
@@ -56,7 +61,9 @@ const Order = ({ unreadNotification, item }) => {
       return (
         <Text style={typography.caption}>
           Successfully paid to
-          <Text style={typography.medium}>{` ${item.seller.name}`}</Text>
+          <Text style={typography.medium}>{` ${
+            sellerInfo?.display_name || sellerInfo?.full_name || ''
+          }`}</Text>
         </Text>
       )
     }
@@ -65,7 +72,9 @@ const Order = ({ unreadNotification, item }) => {
       if (item.status === 'pending') {
         return (
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${item.user.name} `}</Text>
+            <Text style={typography.medium}>{`${
+              buyerInfo?.display_name || buyerInfo?.full_name || ''
+            } `}</Text>
             reqested an order on your post.
           </Text>
         )
@@ -74,7 +83,9 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your order from
-              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+              <Text style={typography.medium}>{` ${
+                sellerInfo?.display_name || sellerInfo?.full_name || ''
+              } `}</Text>
               has been accepted. Proceed to payment to complete your order
             </Text>
           )
@@ -82,7 +93,9 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your order from
-              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+              <Text style={typography.medium}>{` ${
+                sellerInfo?.display_name || sellerInfo?.full_name || ''
+              } `}</Text>
               has been accepted.
             </Text>
           )
@@ -91,7 +104,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             is being delivered.
           </Text>
         )
@@ -99,7 +114,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been declined.
           </Text>
         )
@@ -107,7 +124,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been cancelled.
           </Text>
         )
@@ -115,7 +134,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your order from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been completed.
           </Text>
         )
@@ -124,7 +145,9 @@ const Order = ({ unreadNotification, item }) => {
       if (item.status === 'pending') {
         return (
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${item.user.name} `}</Text>
+            <Text style={typography.medium}>{`${
+              buyerInfo?.display_name || buyerInfo?.full_name || ''
+            } `}</Text>
             reqested a booking on your post.
           </Text>
         )
@@ -133,7 +156,9 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your booking from
-              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+              <Text style={typography.medium}>{` ${
+                sellerInfo?.display_name || sellerInfo?.full_name || ''
+              } `}</Text>
               has been accepted. Proceed to payment to complete your booking
             </Text>
           )
@@ -141,7 +166,9 @@ const Order = ({ unreadNotification, item }) => {
           return (
             <Text style={typography.caption}>
               Your booking from
-              <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+              <Text style={typography.medium}>{` ${
+                sellerInfo?.display_name || sellerInfo?.full_name || ''
+              } `}</Text>
               has been accepted.
             </Text>
           )
@@ -150,7 +177,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your booking from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been declined.
           </Text>
         )
@@ -158,7 +187,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your booking from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been cancelled.
           </Text>
         )
@@ -166,7 +197,9 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your booking from
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been completed.
           </Text>
         )
@@ -175,21 +208,27 @@ const Order = ({ unreadNotification, item }) => {
       if (item.status === 'pending') {
         return (
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${item.user.name} `}</Text>
+            <Text style={typography.medium}>{`${
+              buyerInfo?.display_name || buyerInfo?.full_name || ''
+            } `}</Text>
             has made an offer on your post.
           </Text>
         )
       } else if (item.status === 'confirmed') {
         return (
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{`${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             accepted your offer on his post.
           </Text>
         )
       } else if (item.status === 'declined') {
         return (
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{`${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             declined your offer on his post.
           </Text>
         )
@@ -197,13 +236,36 @@ const Order = ({ unreadNotification, item }) => {
         return (
           <Text style={typography.caption}>
             Your offer from{' '}
-            <Text style={typography.medium}>{` ${item.seller.name} `}</Text>
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
             has been completed.
           </Text>
         )
       }
     }
   }
+
+  const loadUser = async () => {
+    try {
+      const [buyer, seller] = await Promise.all([
+        Api.getUser({ uid: item.buyer_id }),
+        Api.getUser({ uid: item.seller_id }),
+      ])
+
+      if (!buyer.success || !seller.success) throw new Error(response.message)
+
+      setBuyerInfo(buyer.data)
+      setSellerInfo(seller.data)
+    } catch (error) {
+      console.error(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  useEffect(() => {
+    loadUser()
+  }, [])
 
   return (
     <View
@@ -213,19 +275,11 @@ const Order = ({ unreadNotification, item }) => {
       }}>
       <View style={styles.holder}>
         <View style={styles.avatarHolder}>
-          {item.user.uid !== user.uid ? (
-            <Avatar
-              style={styles.avatar}
-              path={item?.user?.profile_photo}
-              size="64x64"
-            />
-          ) : (
-            <Avatar
-              style={styles.avatar}
-              path={item?.seller?.profile_photo}
-              size="64x64"
-            />
-          )}
+          <Avatar
+            style={styles.avatar}
+            path={buyerInfo?.profile_photo}
+            size="64x64"
+          />
         </View>
         <View style={styles.captionWrapper}>{renderText()}</View>
       </View>

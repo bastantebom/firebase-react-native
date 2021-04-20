@@ -1,5 +1,5 @@
-import React from 'react'
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { TouchableOpacity, View, StyleSheet, Text, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import Api from '@/services/Api'
@@ -13,6 +13,7 @@ import typography from '@/globals/typography'
 
 const Follow = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
+  const [follower, setFollower] = useState({})
 
   const timeAgo = time => timePassedShort(time)
 
@@ -35,9 +36,26 @@ const Follow = ({ unreadNotification, item }) => {
       else throw new Error(response.message)
     } catch (error) {
       console.log(error)
-      alert(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
     }
   }
+
+  const loadUser = async () => {
+    try {
+      const response = await Api.getUser({ uid: item.follower_uid })
+
+      if (!response.success) throw new Error(response.message)
+
+      setFollower(response.data)
+    } catch (error) {
+      console.error(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  useEffect(() => {
+    loadUser()
+  }, [])
 
   return (
     <View
@@ -49,13 +67,15 @@ const Follow = ({ unreadNotification, item }) => {
         <View style={styles.avatarHolder}>
           <Avatar
             style={styles.avatar}
-            path={item?.user?.profile_photo}
+            path={follower?.profile_photo}
             size="64x64"
           />
         </View>
         <View style={styles.captionWrapper}>
           <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${item.user.name} `}</Text>
+            <Text style={typography.medium}>{`${
+              follower.display_name || follower.full_name || ''
+            } `}</Text>
             followed you
           </Text>
         </View>

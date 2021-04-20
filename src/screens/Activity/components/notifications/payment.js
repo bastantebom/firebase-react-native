@@ -1,8 +1,9 @@
-import React, { useContext } from 'react'
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { TouchableOpacity, View, StyleSheet, Text, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
+import Api from '@/services/Api'
 
 import { PostClock } from '@/assets/images/icons'
 import { normalize, timePassedShort } from '@/globals'
@@ -14,21 +15,22 @@ import typography from '@/globals/typography'
 const payment = ({ unreadNotification, item }) => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
+  const [buyerInfo, setBuyerInfo] = useState({})
 
   const timeAgo = time => timePassedShort(time)
 
   const handleViewProfile = () => {
     if (!item.read) unreadNotification(item.id)
 
-    if (item.user.uid === user.uid) {
+    if (buyerInfo.uid !== user.uid) {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: item.seller.uid },
+        params: { uid: user.uid },
       })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: item.user.uid },
+        params: { uid: buyerInfo.uid },
       })
     }
   }
@@ -44,6 +46,23 @@ const payment = ({ unreadNotification, item }) => {
     })
   }
 
+  const loadUser = async () => {
+    try {
+      const response = await Api.getUser({ uid: item.buyer_id })
+
+      if (!response.success) throw new Error(response.message)
+
+      setBuyerInfo(response.data)
+    } catch (error) {
+      console.error(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
+  useEffect(() => {
+    loadUser()
+  }, [])
+
   return (
     <View
       style={{
@@ -54,14 +73,16 @@ const payment = ({ unreadNotification, item }) => {
         <View style={styles.avatarHolder}>
           <Avatar
             style={styles.avatar}
-            path={item?.user?.profile_photo}
+            path={buyerInfo?.profile_photo}
             size="64x64"
           />
         </View>
         <View style={styles.captionWrapper}>
           {item.status === 'paid' && (
             <Text style={typography.caption}>
-              <Text style={typography.medium}> {`${item.user.name} `}</Text>
+              <Text style={typography.medium}>
+                {`${buyerInfo?.display_name || buyerInfo?.full_name || ''} `}
+              </Text>
               successfully paid for his order on your post.
             </Text>
           )}
