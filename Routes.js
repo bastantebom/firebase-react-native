@@ -26,6 +26,9 @@ import ChangePayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/
 import PayoutDetailsScreen from '@/screens/Profile/components/PayoutMethod/PayoutDetails'
 import PayoutSuccessScreen from '@/screens/Profile/components/PayoutMethod/SuccessScreen'
 import InviteFriendsScreen from '@/screens/Profile/invite-friends'
+import UpdateTemperature from '@/screens/Profile/update-temperature'
+import TemperatureHistory from '@/screens/Profile/temperature-history'
+import TemperatureAbout from '@/screens/Profile/temperature-about'
 
 import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
 import ChangePasswordScreen from '@/screens/Profile/change-password'
@@ -185,6 +188,18 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="payout-success"
         component={PayoutSuccessScreen}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="update-temperature"
+        component={UpdateTemperature}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="temperature-about"
+        component={TemperatureAbout}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="temperature-history"
+        component={TemperatureHistory}
       />
     </NoBottomTabScreenStack.Navigator>
   )

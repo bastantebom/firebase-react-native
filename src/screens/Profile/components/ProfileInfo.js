@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, Dimensions } from 'react-native'
 import { Divider } from 'react-native-paper'
-import { TempHistory } from '@/screens/Profile/components'
 import { AppText } from '@/components'
 import {
   normalize,
@@ -13,15 +12,15 @@ import {
 import {
   Verified,
   Temperature,
-  StarRating,
   BeeJoinedTime,
   NavigationPinRed,
 } from '@/assets/images/icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import Modal from 'react-native-modal'
+import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
 
 const ProfileInfo = ({ profileData }) => {
+  const navigation = useNavigation()
   const {
     display_name,
     account_verified,
@@ -29,12 +28,8 @@ const ProfileInfo = ({ profileData }) => {
     username,
     temperature,
     temperature_history,
-    ratings_count,
-    ratings_average,
     date_joined,
     addresses,
-    address,
-    account,
   } = profileData
 
   const ALLOWED_TEMP = 37.2
@@ -99,8 +94,16 @@ const ProfileInfo = ({ profileData }) => {
             marginTop: 8,
           }}
           onPress={() => {
-            temperature && temperature.value ? toggleHistory() : ''
-          }}>
+            temperature &&
+              temperature.value &&
+              navigation.navigate('NBTScreen', {
+                screen: 'temperature-history',
+                params: {
+                  temperature_history,
+                },
+              })
+          }}
+          activeOpacity={1}>
           <View
             style={{
               flexDirection: 'row',
@@ -123,17 +126,6 @@ const ProfileInfo = ({ profileData }) => {
             </AppText>
           </View>
         </TouchableOpacity>
-
-        {/* <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 16}}>
-        <StarRating width={normalize(16)} height={normalize(16)} />
-        <AppText textStyle="body3" customStyle={{marginRight: 8}}>
-          {' '}
-          {ratings_average} out of 5
-        </AppText>
-        <AppText textStyle="body2" customStyle={{marginRight: 8}}>
-          ({ratings_count} Ratings)
-        </AppText>
-      </View> */}
 
         <Divider
           style={[
@@ -164,19 +156,6 @@ const ProfileInfo = ({ profileData }) => {
           </AppText>
         </View>
       </View>
-      <Modal
-        isVisible={history}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <TempHistory profileData={profileData} toggleHistory={toggleHistory} />
-      </Modal>
     </>
   )
 }

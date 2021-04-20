@@ -1,4 +1,3 @@
-//import liraries
 import React, { useState } from 'react'
 import {
   StyleSheet,
@@ -20,15 +19,16 @@ import { Images, NoReview } from '@/assets/images'
 import { format, isThisMonth } from 'date-fns/esm'
 import { Icons } from '@/assets/images/icons'
 import Modal from 'react-native-modal'
+import { useNavigation } from '@react-navigation/native'
 
 const ListSeparator = () => {
   return <View style={styles.separator}></View>
 }
 
-const TempHistory = ({ toggleHistory, profileData }) => {
+const TempHistory = ({ toggleHistory, route }) => {
   const [infoModalVisible, setInfoModalVisible] = useState(false)
-
-  const { temperature_history } = profileData
+  const { temperature_history } = route.params
+  const navigation = useNavigation()
   const data = (temperature_history || [])
     .reduce((list, item) => {
       const date = new Date(item.date._seconds * 1000)
@@ -87,7 +87,7 @@ const TempHistory = ({ toggleHistory, profileData }) => {
       <View style={{ flex: 1, padding: normalize(24) }}>
         <ScreenHeaderTitle
           title="Body Temperature History"
-          close={toggleHistory}
+          close={() => navigation.goBack()}
         />
         {data.length ? (
           <View style={styles.listWrapper}>

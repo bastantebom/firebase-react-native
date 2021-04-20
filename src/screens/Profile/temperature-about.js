@@ -4,9 +4,11 @@ import { View, SafeAreaView, ScrollView } from 'react-native'
 import { PaddingView, AppText, AppButton } from '@/components'
 
 import { BodyTemp } from '@/assets/images'
-import { normalize, Colors } from '@/globals'
+import { normalize } from '@/globals'
+import { useNavigation } from '@react-navigation/native'
 
-const TempAbout = ({ toggleTempAbout }) => {
+const TempAbout = () => {
+  const navigation = useNavigation()
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
@@ -39,7 +41,7 @@ const TempAbout = ({ toggleTempAbout }) => {
                 type="primary"
                 size="l"
                 height="xl"
-                onPress={toggleTempAbout}
+                onPress={() => navigation.goBack()}
                 customStyle={{ marginTop: normalize(20) }}
               />
             </View>

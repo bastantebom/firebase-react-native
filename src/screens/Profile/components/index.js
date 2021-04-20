@@ -13,10 +13,6 @@ import Gender from './EditProfile/Gender.js'
 import ContactServbees from './HelpSupport/ContactUs.js'
 import FaqScreen from './HelpSupport/Faq'
 
-import UpdateTempScreen from './Temperature/UpdateTemp'
-import TempHistory from './Temperature/TempHistory'
-import TempAboutScreen from './Temperature/TempAbout'
-
 import VerificationStatus from './VerificationStatus'
 
 import PayoutMethod from './PayoutMethod/PayoutMethod'
@@ -34,9 +30,6 @@ export {
   ArchivedPost,
   ContactServbees,
   FaqScreen,
-  UpdateTempScreen,
-  TempHistory,
-  TempAboutScreen,
   VerificationStatus,
   PayoutMethod,
   NotificationSettings,

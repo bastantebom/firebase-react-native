@@ -2,17 +2,9 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, Dimensions } from 'react-native'
 import { AppText } from '@/components'
 import { Colors } from '@/globals'
-import Modal from 'react-native-modal'
-
-import { UpdateTempScreen } from '@/screens/Profile/components'
 import { useNavigation } from '@react-navigation/native'
 const ProfileButtons = () => {
   const navigation = useNavigation()
-
-  const [updateTemp, setUpdateTemp] = useState(false)
-  const toggleUpdateTemp = () => {
-    setUpdateTemp(!updateTemp)
-  }
 
   return (
     <>
@@ -39,7 +31,11 @@ const ProfileButtons = () => {
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={toggleUpdateTemp}
+        onPress={() => {
+          navigation.navigate('NBTScreen', {
+            screen: 'update-temperature',
+          })
+        }}
         style={{ paddingLeft: 8 }}>
         <View
           style={{
@@ -54,19 +50,6 @@ const ProfileButtons = () => {
           <AppText textStyle="captionConstant">Update Temperature</AppText>
         </View>
       </TouchableOpacity>
-      <Modal
-        isVisible={updateTemp}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <UpdateTempScreen toggleUpdateTemp={toggleUpdateTemp} />
-      </Modal>
     </>
   )
 }

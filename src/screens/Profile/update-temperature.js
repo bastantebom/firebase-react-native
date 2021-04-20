@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react'
 import {
   View,
   SafeAreaView,
-  Dimensions,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
@@ -18,19 +17,18 @@ import {
   Notification,
   TransitionIndicator,
 } from '@/components'
-import { TempHistory, TempAboutScreen } from '@/screens/Profile/components'
-import { UserContext } from '@/context/UserContext'
 
+import { UserContext } from '@/context/UserContext'
 import { Colors, normalize } from '@/globals'
-import Modal from 'react-native-modal'
+import { useNavigation } from '@react-navigation/native'
 import Api from '@/services/Api'
 import { Icons } from '@/assets/images/icons'
 
 const UpdateTemp = ({ toggleUpdateTemp }) => {
-  const { userInfo, user, setUserInfo } = useContext(UserContext)
+  const navigation = useNavigation()
+  const { userInfo, user } = useContext(UserContext)
   const { temperature_history } = userInfo
-  const [history, setHistory] = useState(false)
-  const [tempAbout, setTempAbout] = useState(false)
+
   const [temp, setTemp] = useState('')
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: Colors.buttonDisable,
@@ -42,14 +40,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   const [notificationMessage, setNotificationMessage] = useState()
   const [notificationType, setNotificationType] = useState()
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
-
-  const toggleHistory = () => {
-    setHistory(!history)
-  }
-
-  const toggleTempAbout = () => {
-    setTempAbout(!tempAbout)
-  }
 
   const onTempChangeHandler = temp => {
     const decimalRegEx = /^\d{2}\.\d{1}$|^\d{2}$/
@@ -159,9 +149,17 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
               textTransform: 'none',
               maxWidth: '70%',
             }}
-            close={toggleUpdateTemp}
+            close={() => navigation.goBack()}
             rightLink="History"
-            rightLinkEvent={toggleHistory}
+            rightLinkEvent={() =>
+              navigation.navigate('NBTScreen', {
+                screen: 'temperature-history',
+                params: {
+                  temperature_history,
+                  navigation,
+                },
+              })
+            }
           />
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{ paddingVertical: 24 }}>
@@ -175,7 +173,11 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 using a scanner or thermometer and log it down below.
               </AppText>
               <TouchableOpacity
-                onPress={toggleTempAbout}
+                onPress={() => {
+                  navigation.navigate('NBTScreen', {
+                    screen: 'temperature-about',
+                  })
+                }}
                 customStyle={{
                   paddingBottom: 8,
                   marginBottom: 12,
@@ -238,34 +240,6 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </SafeAreaView>
-
-      <Modal
-        isVisible={history}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <TempHistory profileData={userInfo} toggleHistory={toggleHistory} />
-      </Modal>
-
-      <Modal
-        isVisible={tempAbout}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <TempAboutScreen toggleTempAbout={toggleTempAbout} />
-      </Modal>
     </>
   )
 }
