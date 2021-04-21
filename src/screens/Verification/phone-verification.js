@@ -7,7 +7,6 @@ import {
   Keyboard,
   StatusBar,
   Text,
-  Alert,
 } from 'react-native'
 import { TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -18,6 +17,7 @@ import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import Toast from '@/components/toast'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'PhoneVerification'>} param0 */
 const PhoneVerificationScreen = ({ navigation }) => {
@@ -56,13 +56,22 @@ const PhoneVerificationScreen = ({ navigation }) => {
       })
     } catch (error) {
       console.log(error)
-      Alert.alert('Error', 'Oops, something went wrong.')
+      Toast.show({
+        label: error.message || 'Oops! Something went wrong.',
+        type: 'error',
+        dismissible: true,
+        timeout: 5000,
+      })
     }
     setIsSubmitting(false)
   }
 
   return (
     <View style={styles.wrapper}>
+      <Toast
+        containerStyle={{ marginTop: normalize(8) }}
+        ref={ref => Toast.setRef(ref, 'phone-verification')}
+      />
       <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <TransitionIndicator loading={isSubmitting} />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
