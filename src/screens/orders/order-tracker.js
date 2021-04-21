@@ -50,6 +50,7 @@ import { format } from 'date-fns'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import base64 from 'react-native-base64'
 import axios from 'axios'
+import Toast from '@/components/toast'
 
 if (
   Platform.OS === 'android' &&
@@ -1320,6 +1321,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         translucent={true}
         barStyle="dark-content"
         backgroundColor="#EDF0F8"
+      />
+      <Toast
+        containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
+        ref={ref => Toast.setRef(ref, 'orders')}
       />
       <View style={styles.wrapper}>
         <View style={styles.headerBackground} />

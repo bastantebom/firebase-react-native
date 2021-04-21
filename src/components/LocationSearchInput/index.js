@@ -3,7 +3,8 @@ import { View, StyleSheet } from 'react-native'
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete'
 import Global from '@/services/Config'
 import { Colors, normalize } from '@/globals'
-import { NavigationPinAlt } from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
+import { iconSize } from '@/globals/Utils'
 
 const GooglePlacesInput = ({
   onResultsClick,
@@ -34,7 +35,10 @@ const GooglePlacesInput = ({
         {customIcon ? (
           customIcon
         ) : (
-          <NavigationPinAlt width={normalize(24)} height={normalize(24)} />
+          <Icons.Navigation
+            style={{ color: Colors.secondaryBrinkPink }}
+            {...iconSize(24)}
+          />
         )}
       </View>
       <GooglePlacesAutocomplete
@@ -114,8 +118,8 @@ const styles = StyleSheet.create({
     elevation: 100,
   },
   navIcon: {
-    top: 20,
-    left: 16,
+    top: normalize(20),
+    left: normalize(16),
     position: 'absolute',
     zIndex: 101,
     elevation: 101,

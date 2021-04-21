@@ -314,6 +314,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         const newBasket = {
           postId: post.current.id,
           shippingMethod: Object.keys(post.current.shipping_methods).sort()[0],
+          shippingAddress: userInfo.addresses.find(address => address.default),
           items: basket.items,
         }
         if (!post.current.is_multiple)
@@ -333,6 +334,8 @@ const PublishedPostScreen = ({ navigation, route }) => {
         const newBasket = {
           postId: post.current.id,
           bookingMethod: Object.keys(post.current.booking_methods).sort()[0],
+          bookingAddress: userInfo.addresses.find(address => address.default),
+          selectedBookingAddress: userInfo.addresses.find(address => address.default),
           items: basket.items,
         }
 

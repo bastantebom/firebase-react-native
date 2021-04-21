@@ -3,16 +3,20 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  SafeAreaView,
   ActivityIndicator,
+  StatusBar,
+  Text,
 } from 'react-native'
 import Geocoder from 'react-native-geocoding'
-import { HeaderBackGray } from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 import Config from '@/services/Config'
 import GooglePlacesInput from '@/components/LocationSearchInput'
-import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
-import { normalize } from '@/globals'
-import { getCurrentPosition } from '@/globals/Utils'
+import { MapComponent } from '@/components'
+import { Colors, normalize } from '@/globals'
+import { getCurrentPosition, iconSize } from '@/globals/Utils'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import typography from '@/globals/typography'
+import Button from '@/components/Button'
 
 /**
  * @typedef {Object} Address
@@ -124,57 +128,70 @@ const MapLocationScreen = ({ navigation, route }) => {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ padding: normalize(24) }}>
-        <View style={styles.modalHeader}>
-          <TouchableOpacity
-            onPress={navigation.goBack}
-            activeOpacity={0.7}
-            style={{ position: 'absolute', left: 0 }}>
-            <HeaderBackGray width={normalize(24)} height={normalize(24)} />
-          </TouchableOpacity>
-          <AppText textStyle="body3">{title || 'Select Location'}</AppText>
-        </View>
-      </View>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
 
-      {!mapInitialized ? (
-        <View style={[styles.loader]}>
-          <ActivityIndicator color="#3781FC" size="large" animating={true} />
+      <View style={styles.wrapper}>
+        <View style={{ padding: normalize(24) }}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              onPress={navigation.goBack}
+              activeOpacity={0.7}
+              style={{ position: 'absolute', left: 0 }}>
+              <Icons.Back
+                style={{ color: Colors.primaryMidnightBlue }}
+                {...iconSize(24)}
+              />
+            </TouchableOpacity>
+            <Text style={[typography.body2, typography.medium]}>
+              {title || 'Select Location'}
+            </Text>
+          </View>
         </View>
-      ) : (
-        <>
-          <View style={styles.textInputWrapper}>
-            <GooglePlacesInput
-              onResultsClick={handleLocationSearchChange}
-              onClearInput={() => {}}
-              currentValue={addressData.full_address}
-            />
+
+        {!mapInitialized ? (
+          <View style={[styles.loader]}>
+            <ActivityIndicator color="#3781FC" size="large" animating={true} />
           </View>
-          <MapComponent
-            latitude={mapCoords.lat}
-            longitude={mapCoords.lng}
-            reCenter={mapCoords}
-            onRegionChange={handleRegionChange}
-            withCurrentMarker={false}
-          />
-          <View style={styles.buttonWrapper}>
-            <AppButton
-              text="Confirm"
-              type="primary"
-              height="xl"
-              onPress={() => {
-                onSelect({ ...addressData })
-                navigation.goBack()
-              }}
+        ) : (
+          <>
+            <View style={styles.textInputWrapper}>
+              <GooglePlacesInput
+                onResultsClick={handleLocationSearchChange}
+                onClearInput={() => {}}
+                currentValue={addressData.full_address}
+              />
+            </View>
+            <MapComponent
+              latitude={mapCoords.lat}
+              longitude={mapCoords.lng}
+              reCenter={mapCoords}
+              onRegionChange={handleRegionChange}
+              withCurrentMarker={false}
             />
-          </View>
-        </>
-      )}
-    </SafeAreaView>
+            <View style={styles.buttonWrapper}>
+              <Button
+                label="Confirm"
+                type="primary"
+                onPress={() => {
+                  onSelect({ ...addressData })
+                  navigation.goBack()
+                }}
+              />
+            </View>
+          </>
+        )}
+      </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
   modalHeader: {
     position: 'relative',
     justifyContent: 'center',

@@ -25,7 +25,7 @@ const RadioButton = ({
     <TouchableOpacity
       activeOpacity={0.7}
       disabled={disabled}
-      onPress={() => onPress?.()}
+      onPress={() => !value && onPress?.()}
       style={[styles.wrapper, containerStyle]}>
       {!!value ? (
         <Icons.RadioActive style={radioStyle} {...iconSize(24)} {...props} />

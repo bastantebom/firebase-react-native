@@ -7,7 +7,6 @@ import {
   StatusBar,
   UIManager,
   Text,
-  Alert,
   TouchableWithoutFeedback,
   LayoutAnimation,
 } from 'react-native'
@@ -29,8 +28,13 @@ import Loader from '@/components/loader'
 import { CommonActions } from '@react-navigation/native'
 import ChangeShippingMethodModal from './modals/change-shipping-method'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import TextInput from '@/components/textinput'
+import { capitalize, isEqual } from 'lodash'
 
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
+import RadioButton from '@/components/radio-button'
+import BookingScheduleModal from './modals/booking-schedule'
+import Toast from '@/components/toast'
 
 if (
   Platform.OS === 'android' &&
@@ -60,6 +64,10 @@ const AvailPostScreen = ({ navigation, route }) => {
   const [shippingMethodModalVisible, setShippingMethodModalVisible] = useState(
     false
   )
+  const [
+    bookingScheduleModalVisible,
+    setBookingScheduleModalVisible,
+  ] = useState(false)
   const [initialRegion, setInitialRegion] = useState(null)
 
   const title = (() => {
@@ -110,7 +118,6 @@ const AvailPostScreen = ({ navigation, route }) => {
           items,
           shippingMethod,
           shippingAddress,
-          schedule,
           paymentMethod,
           notes,
         } = basket
@@ -125,17 +132,30 @@ const AvailPostScreen = ({ navigation, route }) => {
           payment_method: paymentMethod,
           notes,
         }
-        if (schedule) body.schedule = schedule.toString()
       } else if (post.type === 'service') {
-        const { items, bookingMethod, schedule, paymentMethod, notes } = basket
+        const {
+          items,
+          bookingMethod,
+          bookingAddress,
+          bookingSchedule,
+          paymentMethod,
+          notes,
+        } = basket
         body = {
           post_id: post.id,
           items,
           booking_method: bookingMethod,
           payment_method: paymentMethod,
+          booking_address: bookingAddress,
+          booking_schedule: bookingSchedule
+            ? {
+                schedule: bookingSchedule.schedule,
+                flexible: bookingSchedule.flexible,
+                time_slot: bookingSchedule.timeSlot,
+              }
+            : null,
           notes,
         }
-        if (schedule) body.schedule = schedule.toString()
       }
 
       const response = await Api.createOrder({
@@ -167,9 +187,21 @@ const AvailPostScreen = ({ navigation, route }) => {
           params: { orderID },
         },
       })
+
+      Toast.show({
+        label: 'Order Sent!',
+        type: 'success',
+        dismissible: true,
+        timeout: 5000,
+      })
     } catch (error) {
       console.log(error.message)
-      Alert.alert('Error', 'Oops, something went wrong.')
+      Toast.show({
+        label: 'Oops! Something went wrong',
+        type: 'error',
+        dismissible: true,
+        timeout: 5000,
+      })
     }
     setIsLoading(false)
   }
@@ -200,6 +232,19 @@ const AvailPostScreen = ({ navigation, route }) => {
         setBasket(basket => ({
           ...basket,
           shippingAddress: location,
+        }))
+      },
+    })
+  }
+
+  const handleOnChangeBookingAddressPress = () => {
+    navigation.navigate('post-location', {
+      addresses: userInfo.addresses || [],
+      onPress: location => {
+        setBasket(basket => ({
+          ...basket,
+          selectedBookingAddress: location,
+          bookingAddress: location,
         }))
       },
     })
@@ -244,16 +289,13 @@ const AvailPostScreen = ({ navigation, route }) => {
   }, [])
 
   useEffect(() => {
-    let location
-    if (post.type === 'sell') {
-      location =
-        basket.shippingMethod === 'pickup'
-          ? post.shipping_methods.pickup?.location
-          : basket.shippingAddress ||
-            userInfo.addresses.find(address => address.default)
-    } else if (post.type === 'service') {
-      location = post.location
-    }
+    if (post.type !== 'sell') return
+    const location =
+      basket.shippingMethod === 'pickup'
+        ? post.shipping_methods.pickup?.location
+        : basket.shippingAddress ||
+          userInfo.addresses.find(address => address.default)
+
     if (location) {
       setInitialRegion({
         latitude: location.latitude,
@@ -263,6 +305,19 @@ const AvailPostScreen = ({ navigation, route }) => {
       })
     }
   }, [basket.shippingMethod, basket.shippingAddress])
+
+  useEffect(() => {
+    if (post.type !== 'service') return
+
+    if (basket.bookingAddress) {
+      setInitialRegion({
+        latitude: basket.bookingAddress.latitude,
+        longitude: basket.bookingAddress.longitude,
+        latitudeDelta: 0.0025,
+        longitudeDelta: 0.0025,
+      })
+    }
+  }, [basket.bookingMethod, basket.bookingAddress])
 
   useEffect(() => {
     !!initialRegion &&
@@ -552,6 +607,13 @@ const AvailPostScreen = ({ navigation, route }) => {
     else if (basket.bookingMethod === 'appointment')
       notesLabel = "Seller's Appointment Notes"
 
+    let bookingScheduleLabel = []
+    if (basket.bookingSchedule?.schedule)
+      bookingScheduleLabel.push(basket.bookingSchedule.schedule)
+    if (basket.bookingSchedule?.timeSlot)
+      bookingScheduleLabel.push(capitalize(basket.bookingSchedule.timeSlot))
+    bookingScheduleLabel = bookingScheduleLabel.join(', ')
+
     return (
       <View style={styles.section}>
         <View style={styles.sectionLabel}>
@@ -578,38 +640,177 @@ const AvailPostScreen = ({ navigation, route }) => {
           )}
         </View>
 
-        <View
-          style={[
-            utilStyles.row,
-            utilStyles.justifySpaceBetween,
-            { alignItems: 'flex-start' },
-          ]}>
+        {post.type === 'sell' && (
           <View
-            style={[styles.location, { flex: 1, paddingRight: normalize(8) }]}>
-            <Text style={[typography.body2, typography.medium]}>
-              {basket.shippingMethod === 'pickup' ? 'Seller' : 'Buyer'}
-              {"'s Address"}
-            </Text>
+            style={[
+              utilStyles.row,
+              utilStyles.justifySpaceBetween,
+              { alignItems: 'flex-start' },
+            ]}>
+            <View
+              style={[
+                styles.location,
+                { flex: 1, paddingRight: normalize(8) },
+              ]}>
+              <Text style={[typography.body2, typography.medium]}>
+                {basket.shippingMethod === 'pickup' ? 'Seller' : 'Buyer'}
+                {"'s Address"}
+              </Text>
+              <Text
+                style={[
+                  typography.caption,
+                  {
+                    marginTop: normalize(4),
+                    color: Colors.contentPlaceholder,
+                  },
+                ]}>
+                {location.full_address}
+              </Text>
+            </View>
+            {basket.shippingMethod === 'delivery' && (
+              <TouchableOpacity
+                onPress={handleOnChangeDeliveryAdderssPress}
+                activeOpacity={0.7}
+                style={[styles.linkWrapper, { paddingTop: normalize(14) }]}>
+                <Text
+                  style={[
+                    typography.body2,
+                    typography.medium,
+                    typography.link,
+                  ]}>
+                  Change
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
+        {post.type === 'service' && (
+          <View>
             <Text
               style={[
-                typography.caption,
-                { marginTop: normalize(4), color: Colors.contentPlaceholder },
+                typography.body1narrow,
+                typography.medium,
+                { marginVertical: normalize(12) },
               ]}>
-              {location.full_address}
+              Service Schedule
             </Text>
-          </View>
-          {basket.shippingMethod === 'delivery' && (
+
             <TouchableOpacity
-              onPress={handleOnChangeDeliveryAdderssPress}
+              style={{
+                marginBottom: normalize(16),
+                height: normalize(54),
+                width: '100%',
+                zIndex: 2000,
+              }}
               activeOpacity={0.7}
-              style={[styles.linkWrapper, { paddingTop: normalize(14) }]}>
-              <Text
-                style={[typography.body2, typography.medium, typography.link]}>
-                Change
-              </Text>
+              onPress={() => setBookingScheduleModalVisible(true)}>
+              <View pointerEvents="none">
+                <TextInput
+                  containerStyle={{
+                    borderColor: Colors.neutralGray,
+                  }}
+                  inputStyle={{ color: Colors.contentEbony }}
+                  placeholder={basket.bookingSchedule ? null : 'Set Schedule'}
+                  label={basket.bookingSchedule ? 'Service Schedule' : null}
+                  value={bookingScheduleLabel}
+                  disabled
+                  filled
+                  editable={false}
+                  placeholderTextColor={Colors.neutralsMischka}
+                  rightIcon={() => (
+                    <Icons.ChevronRight style={{ color: Colors.icon }} />
+                  )}
+                />
+              </View>
             </TouchableOpacity>
-          )}
-        </View>
+
+            <Text
+              style={[
+                typography.body1narrow,
+                typography.medium,
+                { marginVertical: normalize(12) },
+              ]}>
+              Service Location
+            </Text>
+            {basket.bookingMethod === 'appointment' && (
+              <View style={{ marginBottom: normalize(16) }}>
+                <RadioButton
+                  value={isEqual(
+                    basket.selectedBookingAddress,
+                    basket.bookingAddress
+                  )}
+                  onPress={() => {
+                    setBasket(basket => ({
+                      ...basket,
+                      bookingAddress: basket.selectedBookingAddress,
+                    }))
+                  }}>
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={[
+                        typography.body1narrow,
+                        typography.medium,
+                        { flex: 1 },
+                      ]}>
+                      {basket.selectedBookingAddress?.name || 'Home (Default)'}
+                    </Text>
+                    <Text
+                      style={[
+                        typography.body2,
+                        { marginVertical: normalize(4) },
+                      ]}
+                      numberOfLines={1}>
+                      {basket.selectedBookingAddress?.full_address}
+                    </Text>
+                  </View>
+                </RadioButton>
+                <TouchableOpacity
+                  onPress={handleOnChangeBookingAddressPress}
+                  activeOpacity={0.7}
+                  style={styles.linkWrapper}>
+                  <Text
+                    style={[
+                      typography.body2,
+                      typography.medium,
+                      typography.link,
+                    ]}>
+                    Change
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <View style={{ marginBottom: normalize(16) }}>
+              <RadioButton
+                value={isEqual(basket.bookingAddress, post.location)}
+                disabled={basket.bookingMethod === 'walkin'}
+                radioStyle={
+                  basket.bookingMethod === 'walkin' ? { display: 'none' } : {}
+                }
+                onPress={() => {
+                  setBasket(basket => ({
+                    ...basket,
+                    bookingAddress: post.location,
+                  }))
+                }}>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={[
+                      typography.body1narrow,
+                      typography.medium,
+                      { flex: 1 },
+                    ]}>
+                    Service Provider’s Address
+                  </Text>
+                  <Text style={typography.body2} numberOfLines={1}>
+                    {location.full_address}
+                  </Text>
+                </View>
+              </RadioButton>
+            </View>
+          </View>
+        )}
 
         {!!initialRegion && (
           <View style={styles.mapViewWrapper}>
@@ -624,8 +825,8 @@ const AvailPostScreen = ({ navigation, route }) => {
               scrollEnabled={false}>
               <Marker
                 coordinate={{
-                  latitude: location.latitude,
-                  longitude: location.longitude,
+                  latitude: initialRegion.latitude,
+                  longitude: initialRegion.longitude,
                 }}>
                 <Images.PinBee {...iconSize(56)} />
               </Marker>
@@ -1028,6 +1229,41 @@ const AvailPostScreen = ({ navigation, route }) => {
     )
   }
 
+  const renderBookingScheduleModall = () => {
+    if (post.type !== 'service') return
+
+    const handleOnBookingScheduleSubmit = bookingSchedule => {
+      setBasket(basket => ({ ...basket, bookingSchedule }))
+    }
+
+    return (
+      <Modal
+        isVisible={bookingScheduleModalVisible}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        animationInTiming={200}
+        animationOutTiming={180}
+        style={styles.modal}
+        onSwipeComplete={() => setBookingScheduleModalVisible(false)}
+        propagateSwipe
+        onBackButtonPress={() => setBookingScheduleModalVisible(false)}
+        statusBarTranslucent={true}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            style={{ flex: 1 }}
+            onPress={() => setBookingScheduleModalVisible(false)}>
+            <View style={{ flex: 1, backgroundColor: '#000a' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <BookingScheduleModal
+          close={() => setBookingScheduleModalVisible(false)}
+          onSubmit={handleOnBookingScheduleSubmit}
+          data={basket.bookingSchedule}
+        />
+      </Modal>
+    )
+  }
+
   return (
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
@@ -1060,6 +1296,7 @@ const AvailPostScreen = ({ navigation, route }) => {
             {renderAdditionalNotesSection()}
             {renderBottomSection()}
             {renderChangeShippingMethodModal()}
+            {renderBookingScheduleModall()}
           </View>
         </ScrollView>
       </View>
