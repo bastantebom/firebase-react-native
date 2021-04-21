@@ -1,19 +1,24 @@
-import React, { useState, useContext } from 'react'
-import { View, SafeAreaView, TouchableOpacity, Dimensions } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  StatusBar,
+  StyleSheet,
+  Text,
+} from 'react-native'
 import Modal from 'react-native-modal'
 
-import {
-  ScreenHeaderTitle,
-  PaddingView,
-  AppText,
-  AppButton,
-} from '@/components'
+import { AppText, FloatingAppInput } from '@/components'
 import { Colors, normalize } from '@/globals'
-import { ArrowDown } from '@/assets/images/icons'
-import FloatingAppInput from '@/components/AppInput/AppInput'
+import { ArrowDown, Icons } from '@/assets/images/icons'
 import BankList from './BankList'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
+import typography from '@/globals/typography'
+import { iconSize } from '@/globals/Utils'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import Button from '@/components/Button'
 
 const PayoutDetails = ({ navigation, route }) => {
   const { payout, method } = route.params
@@ -22,6 +27,17 @@ const PayoutDetails = ({ navigation, route }) => {
   const [showBankList, setShowBankList] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
   const { user } = useContext(UserContext)
+
+  useEffect(() => {
+    accountChange('')
+  }, [])
+
+  const accountChange = value => {
+    if (value.length > 0 && value.length < 3) return
+    let newValue = value
+    if (!newValue.includes('+63')) newValue = `+63${value}`
+    setPayoutData({ ...payoutData, account_number: newValue })
+  }
 
   const onSave = async () => {
     let success = false
@@ -40,24 +56,25 @@ const PayoutDetails = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScreenHeaderTitle
-        title={method}
-        close={() => navigation.goBack()}
-        paddingSize={3}
-      />
-      <PaddingView
-        paddingSize={3}
-        style={{
-          paddingBottom: 0,
-        }}>
-        <View
-          style={{
-            justifyContent: 'space-between',
-            height: '90%',
-          }}>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>
+              Payout Method
+            </Text>
+          </View>
+        </View>
+        <View style={styles.content}>
           {method === 'GCash' ? (
-            <View>
+            <View style={{ flex: 1 }}>
               <AppText
                 textStyle="body1"
                 color={Colors.primaryMidnightBlue}
@@ -71,15 +88,13 @@ const PayoutDetails = ({ navigation, route }) => {
                 Thursday for payments made using credit/debit, e-wallets, and
                 PayPal.
               </AppText>
+
               <FloatingAppInput
                 label="+63 10 digit number"
-                onChangeText={value =>
-                  setPayoutData({
-                    ...payoutData,
-                    account_number: `+63${value}`,
-                  })
-                }
-                value={payoutData.account_number || ''}
+                onChangeText={value => accountChange(value)}
+                value={payoutData.account_number}
+                maxLength={13}
+                keyboardType="number-pad"
               />
             </View>
           ) : method === 'Bank' ? (
@@ -129,6 +144,7 @@ const PayoutDetails = ({ navigation, route }) => {
                     </View>
                   </View>
                 </TouchableOpacity>
+
                 <FloatingAppInput
                   label="Account Name"
                   onChangeText={value =>
@@ -153,7 +169,7 @@ const PayoutDetails = ({ navigation, route }) => {
               </View>
             </View>
           ) : method === 'PayPal' ? (
-            <View>
+            <View style={{ flex: 1 }}>
               <AppText
                 textStyle="body1"
                 color={Colors.primaryMidnightBlue}
@@ -190,9 +206,9 @@ const PayoutDetails = ({ navigation, route }) => {
               />
             </View>
           ) : null}
-          <AppButton type="primary" text="Save" onPress={onSave} />
+          <Button type="primary" label="Save" onPress={onSave} />
         </View>
-      </PaddingView>
+      </View>
 
       <Modal
         isVisible={showBankList}
@@ -211,8 +227,39 @@ const PayoutDetails = ({ navigation, route }) => {
           setPayoutData={setPayoutData}
         />
       </Modal>
-    </SafeAreaView>
+    </>
   )
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: normalize(24),
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
+  },
+})
 
 export default PayoutDetails
