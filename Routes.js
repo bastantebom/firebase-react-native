@@ -501,15 +501,14 @@ export default Routes = () => {
       case '/post': {
         const { id } = query
         const { data: post } = await Api.getPost({ pid: id })
-        const { data: user } = await Api.getUser({ uid: post.uid })
-        post.user = user
 
-        navigation.navigate('NBTScreen', {
+        navigate('NBTScreen', {
           screen: 'posts',
           params: {
             screen: 'published-post',
             params: {
-              post,
+              id: post.id,
+              uid: post.uid,
             },
           },
         })
