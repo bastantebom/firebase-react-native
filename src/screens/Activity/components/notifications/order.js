@@ -235,11 +235,21 @@ const Order = ({ unreadNotification, item }) => {
       } else if (item.status === 'completed') {
         return (
           <Text style={typography.caption}>
-            Your offer from{' '}
+            Your offer from
             <Text style={typography.medium}>{` ${
               sellerInfo?.display_name || sellerInfo?.full_name || ''
             } `}</Text>
             has been completed.
+          </Text>
+        )
+      } else if (item.status === 'cancelled') {
+        return (
+          <Text style={typography.caption}>
+            Your offer from
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
+            has been cancelled.
           </Text>
         )
       }
