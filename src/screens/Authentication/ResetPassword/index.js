@@ -1,22 +1,11 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
-import {
-  View,
-  TouchableOpacity,
-  Keyboard,
-  StyleSheet,
-  Dimensions,
-  Text,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, TouchableOpacity, Keyboard, StatusBar, Text } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import {
   Notification,
   AppViewContainer,
   AppButton,
-  AppInput,
-  AppText,
   FloatingAppInput,
 } from '@/components'
 
@@ -27,6 +16,7 @@ import Api from '@/services/Api'
 
 import styles from './resetPassword.scss'
 import { Colors, normalize } from '@/globals'
+import typography from '@/globals/typography'
 
 const ResetPassword = ({ navigation }) => {
   const [email, setEmail] = useState('')
@@ -92,27 +82,21 @@ const ResetPassword = ({ navigation }) => {
       setNotificationType('success')
       setButtonText('Resend the link')
       return (
-        <AppText
-          color={'white'}
-          textStyle="body2"
-          customStyle={styles.notificationText}>
+        <Text style={[styles.notificationText, typography.body2]}>
           We sent {useEmail ? 'an email' : 'an sms'} to{' '}
-          <AppText color={'white'} customStyle={styles.email}>
-            {email}.
-          </AppText>{' '}
-          Click the link in the {useEmail ? 'email' : 'sms'} to reset your
-          password.
-        </AppText>
+          <Text style={styles.email}>{email}.</Text> Click the link in the{' '}
+          {useEmail ? 'email' : 'sms'} to reset your password.
+        </Text>
       )
     } else {
       setNotificationType('danger')
       return (
-        <AppText textStyle="body2" customStyle={notificationErrorTextStyle}>
+        <Text style={[notificationErrorTextStyle, typography.body2]}>
           Verification code wasn’t sent. The{' '}
           {useEmail ? 'email' : 'mobile number'}{' '}
-          <AppText customStyle={styles.email}>{email}</AppText> does not exist
-          in our database.
-        </AppText>
+          <Text style={styles.email}>{email}</Text> does not exist in our
+          database.
+        </Text>
       )
     }
   }
@@ -132,10 +116,14 @@ const ResetPassword = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <StatusBar backgroundColor="black" barStyle={'light-content'} />
-      {notif && (
-        <SafeAreaView style={{ zIndex: 2 }}>
+    <>
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
+      <View style={{ marginTop: getStatusBarHeight(), flex: 1 }}>
+        {notif && (
           <Notification
             type={notificationType}
             animationOptions={{ height: 90 }}
@@ -148,63 +136,63 @@ const ResetPassword = ({ navigation }) => {
                 />
               )
             }>
-            {notificationMessage}
+            <Text>{notificationMessage}</Text>
           </Notification>
-        </SafeAreaView>
-      )}
-      <AppViewContainer paddingSize={3} customStyle={styles.container}>
-        <View style={styles.closeIconContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <HeaderBackGray width={normalize(24)} height={normalize(24)} />
-          </TouchableOpacity>
-        </View>
+        )}
+        <AppViewContainer paddingSize={3} customStyle={styles.container}>
+          <View style={styles.closeIconContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.resetPasswordContainer}>
-          <ResetPasswordLock width={80} height={80} />
-        </View>
+          <View style={styles.resetPasswordContainer}>
+            <ResetPasswordLock width={80} height={80} />
+          </View>
 
-        <AppText customStyle={styles.resetPasswordText} textStyle="display5">
-          Reset Password
-        </AppText>
+          <Text style={[styles.resetPasswordText, typography.display5]}>
+            Reset Password
+          </Text>
 
-        <AppText customStyle={styles.resetPasswordSubText} textStyle="caption">
-          No worries, it happens to the best of us!
-        </AppText>
+          <Text style={[styles.resetPasswordSubText, typography.caption]}>
+            No worries, it happens to the best of us!
+          </Text>
 
-        <FloatingAppInput
-          label={useEmail ? 'Email' : 'Mobile Number'}
-          value={email}
-          onChangeText={text => onEmailChange(text)}
-        />
-
-        <TouchableOpacity
-          style={{ paddingVertical: 8 }}
-          onPress={toggleUseEmail}>
-          <AppText color={Colors.contentOcean}>
-            {useEmail === 'email'
-              ? 'Use email address instead'
-              : 'Use mobile number instead'}
-          </AppText>
-        </TouchableOpacity>
-
-        <View style={{ marginTop: 8 }}>
-          <AppButton
-            text={buttonText}
-            type="primary"
-            height="lg"
-            customStyle={styles[buttonState]}
-            loading={buttonLoading}
-            disabled={buttonDisabled}
-            onPress={() => {
-              setButtonLoading(true)
-              setButtonDisabled(true)
-              sendEmail()
-              Keyboard.dismiss()
-            }}
+          <FloatingAppInput
+            label={useEmail ? 'Email' : 'Mobile Number'}
+            value={email}
+            onChangeText={text => onEmailChange(text)}
           />
-        </View>
-      </AppViewContainer>
-    </SafeAreaView>
+
+          <TouchableOpacity
+            style={{ paddingVertical: 8 }}
+            onPress={toggleUseEmail}>
+            <Text style={{ color: Colors.contentOcean }}>
+              {useEmail === 'email'
+                ? 'Use email address instead'
+                : 'Use mobile number instead'}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={{ marginTop: 8 }}>
+            <AppButton
+              text={buttonText}
+              type="primary"
+              height="lg"
+              customStyle={styles[buttonState]}
+              loading={buttonLoading}
+              disabled={buttonDisabled}
+              onPress={() => {
+                setButtonLoading(true)
+                setButtonDisabled(true)
+                sendEmail()
+                Keyboard.dismiss()
+              }}
+            />
+          </View>
+        </AppViewContainer>
+      </View>
+    </>
   )
 }
 
