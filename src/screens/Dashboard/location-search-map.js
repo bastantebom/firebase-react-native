@@ -113,6 +113,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
     } catch (error) {
       console.log(error)
     }
+    onInputBlur()
   }
 
   const handleRegionChange = async region => {
@@ -214,7 +215,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
                 paddingSize={2}
                 style={{
                   top: normalize(85),
-                  display: !isFocused ? 'flex' : 'none',
                 }}>
                 <View
                   style={{
@@ -252,7 +252,6 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               onResultsClick={handleLocationSearchChange}
               onClearInput={() => {}}
               currentValue={addressData.full_address}
-              onInputFocus={onInputFocus}
               customListViewStyle={{
                 top: normalize(75),
                 marginLeft: normalize(0),
