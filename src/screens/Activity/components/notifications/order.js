@@ -287,7 +287,7 @@ const Order = ({ unreadNotification, item }) => {
         <View style={styles.avatarHolder}>
           <Avatar
             style={styles.avatar}
-            path={buyerInfo?.profile_photo}
+            path={sellerInfo?.profile_photo}
             size="64x64"
           />
         </View>
