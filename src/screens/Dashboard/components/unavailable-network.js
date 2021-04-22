@@ -1,10 +1,17 @@
 import React from 'react'
-import { View, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Linking,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native'
 import NetInfo from '@react-native-community/netinfo'
-
-import { Images } from '@/assets/images'
 import { normalize, Colors } from '@/globals'
 import { AppButton, AppText } from '@/components'
+import LottieView from 'lottie-react-native'
+import noInternet from '@/assets/animations/no-internet-connection.json'
 
 const UnavailableNetwork = ({ navigation }) => {
   const handleReload = () => {
@@ -15,7 +22,7 @@ const UnavailableNetwork = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
-        <Images.NoInternet style={styles.image} />
+        <LottieView source={noInternet} autoPlay />
       </View>
       <View style={styles.textWrapper}>
         <Text style={styles.title}>No Internet Connection</Text>
@@ -60,10 +67,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutralsWhite,
   },
   imageWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: normalize(40),
-    marginBottom: normalize(20),
+    flex: 2,
+    marginTop: normalize(80),
+    alignItems: 'flex-end',
   },
   textWrapper: {
     paddingLeft: normalize(27.7),
