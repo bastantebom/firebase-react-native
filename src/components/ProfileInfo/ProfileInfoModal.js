@@ -440,7 +440,7 @@ function ProfileInfoModal(props) {
           onPostPress={handlePostPress}
           onLikePress={handleLikePress}
           isLoadingMoreItems={isDataLoading}
-          showsVerticalScrollIndicator={false}
+          scrollEnabled={true}
         />
       ) : (
         <UserPostEmpty userInfo={otherUserInfo} />
@@ -514,7 +514,7 @@ function ProfileInfoModal(props) {
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
-          flex: 1,
+          height: Dimensions.get('window').height * 0.8,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: '#DADCE0',
         }}></StickyParallaxHeader>

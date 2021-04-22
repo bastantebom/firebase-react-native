@@ -457,8 +457,7 @@ const ProfileScreen = ({
           onPostPress={handlePostPress}
           onLikePress={handleLikePress}
           isLoadingMoreItems={fetchMore}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={false}
+          scrollEnabled={true}
         />
       ) : (
         <UserPostEmpty userInfo={userInfo} />
@@ -537,7 +536,7 @@ const ProfileScreen = ({
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
-          flex: 1,
+          height: Dimensions.get('window').height * 0.8,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: '#DADCE0',
         }}></StickyParallaxHeader>
