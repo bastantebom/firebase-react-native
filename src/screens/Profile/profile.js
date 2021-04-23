@@ -536,9 +536,16 @@ const ProfileScreen = ({
         }}
         contentContainerStyles={{
           backgroundColor: Colors.neutralsWhite,
-          height: Dimensions.get('window').height * 0.8,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: '#DADCE0',
+          ...Platform.select({
+            ios: {
+              height: Dimensions.get('window').height * 0.8,
+            },
+            android: {
+              flexGrow: 1,
+            },
+          }),
         }}></StickyParallaxHeader>
     </>
   )
