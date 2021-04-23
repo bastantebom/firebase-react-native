@@ -33,6 +33,7 @@ const DeclineOrderModal = ({ onBackPress, onDeclinePress }) => {
             underlineColorAndroid={'transparent'}
             textAlignVertical="top"
             placeholder="Add notes (optional)"
+            placeholderTextColor="#A8AAB7"
           />
         </View>
         <AppButton

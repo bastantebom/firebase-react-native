@@ -219,7 +219,7 @@ const ContactUs = ({ toggleContactUs }) => {
                   multiline={true}
                   value={formData.message}
                   placeholder="Your message"
-                  placeholderTextColor={Colors.profileLink}
+                  placeholderTextColor="#A8AAB7"
                   numberOfLines={Platform.OS === 'ios' ? null : 6}
                   minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
                   style={[styles.input]}

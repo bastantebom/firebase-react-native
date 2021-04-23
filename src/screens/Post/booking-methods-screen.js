@@ -142,6 +142,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
                 multiline={true}
                 numberOfLines={6}
                 textAlignVertical="top"
+                placeholderTextColor="#A8AAB7"
               />
             </View>
           )}
@@ -178,6 +179,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
                 value={bookingMethods.walkin.notes}
                 onChangeText={setWalkinNotes}
                 placeholder="Are there additional fees and options? (Optional)"
+                placeholderTextColor="#A8AAB7"
                 multiline={true}
                 numberOfLines={6}
                 containerStyle={{ height: 'auto' }}

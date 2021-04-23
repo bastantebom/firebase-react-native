@@ -254,6 +254,7 @@ const FloatingAppInput = props => {
           onBlur={onBlurInput}
           blurOnSubmit
           ref={props.inputRef}
+          placeholderTextColor="#A8AAB7"
         />
       </View>
       {validation.length > 0 && (

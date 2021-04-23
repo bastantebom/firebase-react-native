@@ -177,6 +177,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             label="Post Title"
             onChangeText={title => setFormData(data => ({ ...data, title }))}
             placeholder={titlePlaceholder}
+            placeholderTextColor="#A8AAB7"
             maxLength={150}
             displayLength={true}
           />
@@ -191,6 +192,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             placeholder={descriptionPlaceholder}
             multiline={true}
             numberOfLines={5}
+            placeholderTextColor="#A8AAB7"
           />
         </View>
         {userInfo.phone_number ? (

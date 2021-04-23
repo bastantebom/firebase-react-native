@@ -99,6 +99,7 @@ const PhoneVerificationScreen = ({ navigation }) => {
                     value={phoneNumber}
                     selectTextOnFocus={false}
                     placeholder="Mobile Number"
+                    placeholderTextColor="#A8AAB7"
                     onChangeText={handlePhoneNumberChange}
                     keyboardType="phone-pad"
                     returnKeyType="done"

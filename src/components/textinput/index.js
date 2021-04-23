@@ -196,7 +196,7 @@ const TextField = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           value={value}
-          placeholderTextColor={Colors.contentPlaceholder}
+          placeholderTextColor="#A8AAB7"
           {...props}
         />
       )}

@@ -139,7 +139,7 @@ const AddItemScreen = ({ navigation, route }) => {
               filled
               editable={false}
               value={selectedCategory}
-              placeholderTextColor={Colors.contentEbony}
+              placeholderTextColor="#A8AAB7"
               rightIcon={() => (
                 <Icons.ChevronDown style={{ color: Colors.icon }} />
               )}
@@ -172,6 +172,7 @@ const AddItemScreen = ({ navigation, route }) => {
             onChangeText={name => setFormData(data => ({ ...data, name }))}
             maxLength={100}
             displayLength={true}
+            placeholderTextColor="#A8AAB7"
           />
         </View>
         <View style={styles.formGroup}>
@@ -184,6 +185,7 @@ const AddItemScreen = ({ navigation, route }) => {
             placeholder="Get the most out of your post by adding the product features, and buzz-worthy offers that your buyers might be interested in."
             multiline={true}
             numberOfLines={4}
+            placeholderTextColor="#A8AAB7"
           />
         </View>
         <View style={styles.formGroup}>

@@ -284,7 +284,7 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
                           )
                         : undefined
                     }
-                    placeholderTextColor={Colors.contentEbony}
+                    placeholderTextColor="#A8AAB7"
                     rightIcon={() => (
                       <Icons.ChevronDown style={{ color: Colors.icon }} />
                     )}
@@ -297,6 +297,7 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
                 <TextInput
                   label="Notes (Optional)"
                   placeholder="e.g. no onions"
+                  placeholderTextColor="#A8AAB7"
                   value={notes}
                   onChangeText={setNotes}
                 />

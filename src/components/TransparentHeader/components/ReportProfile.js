@@ -144,7 +144,7 @@ const ReportUser = ({ toggleReportUser, username, userID }) => {
               value={reportMessage}
               multiline={true}
               placeholder={'Describe your Report to @' + username}
-              placeholderTextColor={Colors.neutralGray}
+              placeholderTextColor="#A8AAB7"
               numberOfLines={Platform.OS === 'ios' ? null : 6}
               minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
               style={{

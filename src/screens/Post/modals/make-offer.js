@@ -124,6 +124,7 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
           <View style={styles.formGroup}>
             <TextInput
               placeholder="Some text here saying they could add more information about their offer"
+              placeholderTextColor="#A8AAB7"
               label="Message (Optional)"
               value={basket.message}
               multiline

@@ -34,6 +34,7 @@ const PriceInput = ({ style, label, ...props }) => {
         {...props}
         ref={inputRef}
         style={constantStyles.floatingInput}
+        placeholderTextColor="#A8AAB7"
       />
     </TouchableOpacity>
   )

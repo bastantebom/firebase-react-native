@@ -123,7 +123,7 @@ const ReportScreen = ({ navigation, route }) => {
               value={message}
               multiline={true}
               placeholder={placeholder}
-              placeholderTextColor={Colors.placeholder}
+              placeholderTextColor="#A8AAB7"
               numberOfLines={Platform.OS === 'ios' ? null : 6}
               minHeight={Platform.OS === 'ios' && 8 ? 20 * 6 : null}
               style={styles.textInput}

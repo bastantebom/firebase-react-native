@@ -68,6 +68,7 @@ const CreateCategoryScreen = ({ navigation, route }) => {
             <TextInput
               label="Category Name"
               placeholder="e.g. Burgers"
+              placeholderTextColor="#A8AAB7"
               value={category}
               onChangeText={setCategory}
               autofocus
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   backButton: {
     padding: normalize(16),

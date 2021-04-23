@@ -200,6 +200,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
                 value={shippingMethods.pickup.notes}
                 onChangeText={setPickupNotes}
                 placeholder="Are there additional notes for the customer? e.g. place order at least 30 minutes before pick-up schedule (Optional)"
+                placeholderTextColor="#A8AAB7"
                 multiline={true}
                 numberOfLines={5}
                 containerStyle={{ height: 'auto' }}
@@ -252,6 +253,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
                     value={shippingMethods.delivery.courierNotes}
                     onChangeText={notes => setDeliveryNotes('courier', notes)}
                     placeholder="Are there additional delivery fees and options? (Optional)"
+                    placeholderTextColor="#A8AAB7"
                     multiline={true}
                     numberOfLines={5}
                     containerStyle={{ height: 'auto' }}
@@ -278,6 +280,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
                       setDeliveryNotes('ownDelivery', notes)
                     }
                     placeholder="Which areas will you offer delivery? e.g. Marikina City, Quezon City. Also add if there are additional delivery fees. (Optional)"
+                    placeholderTextColor="#A8AAB7"
                     multiline={true}
                     numberOfLines={5}
                     containerStyle={{ height: 'auto' }}

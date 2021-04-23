@@ -164,6 +164,7 @@ const ReportPostScreen = ({ navigation, route }) => {
                   <TextInput
                     value={reportMessage}
                     placeholder="Be more specific about why you think this account is suspicious."
+                    placeholderTextColor="#A8AAB7"
                     onChangeText={setReportMessage}
                     multiline={true}
                     numberOfLines={6}
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   content: {
     padding: normalize(24),

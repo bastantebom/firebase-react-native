@@ -86,7 +86,7 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
                 disabled
                 filled
                 editable={false}
-                placeholderTextColor={Colors.neutralsMischka}
+                placeholderTextColor="#A8AAB7"
                 rightIcon={() => (
                   <Icons.Calendar style={{ color: Colors.icon }} />
                 )}

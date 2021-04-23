@@ -717,7 +717,7 @@ const AvailPostScreen = ({ navigation, route }) => {
                   disabled
                   filled
                   editable={false}
-                  placeholderTextColor={Colors.neutralsMischka}
+                  placeholderTextColor="#A8AAB7"
                   rightIcon={() => (
                     <Icons.ChevronRight style={{ color: Colors.icon }} />
                   )}

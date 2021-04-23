@@ -20,6 +20,7 @@ const PriceInput = ({ priceLabel, ...props }) => {
         props.onChangeText(value > 9999999.99 ? 9999999.99 : value)
       }
       onChangeText={() => {}}
+      placeholderTextColor="#A8AAB7"
       maxValue={props.maxValue || 9999999.99}>
       <View style={styles.priceInputLabelWrapper}>
         <Text style={styles.priceInputLabel}>{priceLabel || 'Price'}</Text>

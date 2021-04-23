@@ -150,6 +150,7 @@ const FloatingAppInput = ({
             blurOnSubmit
             selectTextOnFocus={false}
             clearTextOnFocus={false}
+            placeholderTextColor="#A8AAB7"
             {...props}
           />
         )}
