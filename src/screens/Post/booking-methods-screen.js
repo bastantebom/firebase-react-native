@@ -208,11 +208,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
         <ScrollView>
           <View style={styles.content}>
             <Text style={[typography.body1, styles.contentTitle]}>
-              How do you want to manage bookings?
-            </Text>
-            <Text style={[typography.caption, styles.sub]}>
-              Set your booking preferences and ways customers can avail your
-              service.
+              Set your booking preferences
             </Text>
 
             {renderBookingMethods()}
@@ -229,7 +225,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',

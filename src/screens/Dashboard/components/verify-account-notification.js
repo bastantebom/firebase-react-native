@@ -32,8 +32,7 @@ const VerifyNotifictaion = ({ onPress, onClose }) => {
               textStyle="body2"
               color={Colors.neutralsWhite}
               customStyle={{ marginBottom: 10 }}>
-              Safeguard your account and boost your credibility within the
-              community.
+              Safeguard your account and credibility within the community.
             </AppText>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <AppText textStyle="body2medium" color={Colors.neutralsWhite}>

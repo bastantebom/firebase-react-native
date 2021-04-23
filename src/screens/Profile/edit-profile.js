@@ -397,7 +397,9 @@ const EditProfileScreen = ({ navigation, route }) => {
           </G>
         </Svg>
         <Text style={styles.uploadProfilePhotoLabel}>
-          Tap Image to change Profile Picture
+          {profilePhotoURI || currentProfilePhoto
+            ? 'Change Profile Photo'
+            : 'Upload Profile Photo'}
         </Text>
       </TouchableOpacity>
     )

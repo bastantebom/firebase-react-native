@@ -199,7 +199,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
               <TextInput
                 value={shippingMethods.pickup.notes}
                 onChangeText={setPickupNotes}
-                placeholder="Are there additional notes for the customer? e.g. place order at least 30 minutes before pickup schedule (Optional)"
+                placeholder="Are there additional notes for the customer? e.g. place order at least 30 minutes before pick-up schedule (Optional)"
                 multiline={true}
                 numberOfLines={5}
                 containerStyle={{ height: 'auto' }}
@@ -311,10 +311,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
         <KeyboardAwareScrollView>
           <View style={styles.content}>
             <Text style={[typography.body1, styles.contentTitle]}>
-              How do you deliver your products?
-            </Text>
-            <Text style={[typography.caption, styles.sub]}>
-              Select the shipping options that you want to offer.
+              Set the shipping options you offer
             </Text>
 
             {renderDeliveryMethods()}

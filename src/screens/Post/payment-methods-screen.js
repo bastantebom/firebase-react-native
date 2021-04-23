@@ -221,9 +221,8 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
               What are your preferred payment options?
             </Text>
             <Text style={[typography.caption, styles.sub]}>
-              Select your preferred payment options. Note that a payment
-              processing fee will be applied to purchases made through Visa,
-              Mastercard, GCash, and PayPal.
+              Note: payment processing fee will be applied to purchases made
+              through GCash, PayPal, Visa, and Mastercard.
             </Text>
             <TouchableOpacity
               style={styles.learnMore}

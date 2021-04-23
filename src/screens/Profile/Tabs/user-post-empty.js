@@ -30,8 +30,8 @@ const UserPostEmpty = ({ userInfo }) => {
             textStyle="body2"
             color={Colors.profileLink}
             customStyle={styles.centerCopy}>
-            Post your own offers today or just browse through your Servbees feed
-            and discover nearby services and products you might like.
+            Start posting offers, browse through the latest deals, or book a
+            service you need today.
           </AppText>
         )}
       </View>

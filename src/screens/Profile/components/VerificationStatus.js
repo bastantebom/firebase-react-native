@@ -68,8 +68,7 @@ const VerificationStatus = ({ statusPercentage }) => {
                 </AppText>
               </View>
               <AppText textStyle="caption">
-                Safeguard your account and boost your credibility within the
-                community.
+                Safeguard your account and credibility within the community.
               </AppText>
             </TouchableOpacity>
           </View>

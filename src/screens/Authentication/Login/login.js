@@ -157,7 +157,7 @@ function Login({ setNotificationMessage }) {
           <View style={styles.container}>
             <AppText textStyle="display5">Welcome back!</AppText>
             <AppText textStyle="caption" customStyle={styles.caption}>
-              Log in to get going, Buzzybee.
+              Time to get beezy
             </AppText>
             <AppViewContainer
               marginSize={3}

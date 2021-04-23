@@ -285,7 +285,7 @@ const StoreScheduleScreen = ({ navigation, route }) => {
               Set your {postType === 'service' ? 'business' : 'service'} hours
             </Text>
             <Text style={[typography.caption, styles.sub]}>
-              Let your customers know your store’s schedule
+              Manage incoming orders/bookings by publishing your availability.
             </Text>
           </View>
           {renderScheduleDays()}
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',

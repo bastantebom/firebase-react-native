@@ -976,7 +976,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             typography.body2,
             { color: Colors.contentPlaceholder, marginTop: normalize(4) },
           ]}>
-          Attract Buzzybees by adding a price range.
+          Get offers within your price range.
         </Text>
         <View style={[styles.formGroup, { marginTop: normalize(16) }]}>
           <PriceInput
@@ -1320,7 +1320,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         renderIcon: () => (
           <Icons.Page style={styles.menuItemIcon} {...iconSize(24)} />
         ),
-        label: `${formData.notes?.length ? 'Edit' : 'Add'} Additonal Notes`,
+        label: `${formData.notes?.length ? 'Edit' : 'Add'} Additional Notes`,
       },
     ]
 
