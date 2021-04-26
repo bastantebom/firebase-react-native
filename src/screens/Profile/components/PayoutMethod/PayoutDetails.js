@@ -19,6 +19,7 @@ import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Button from '@/components/Button'
+import Toast from '@/components/toast'
 
 const PayoutDetails = ({ navigation, route }) => {
   const { payout, method } = route.params
@@ -39,24 +40,31 @@ const PayoutDetails = ({ navigation, route }) => {
     setPayoutData({ ...payoutData, account_number: newValue })
   }
 
-  const onSave = async () => {
-    let success = false
-    if (payout || isSaved) {
-      const result = await Api.updatePayout({ uid: user.uid, body: payoutData })
-      success = result.success
-    } else {
-      const result = await Api.savePayout({ body: payoutData })
-      success = result.success
-    }
+  const handleOnSave = async () => {
+    try {
+      const response = await Api.savePayout({ body: payoutData })
+      if (!response.success) throw new Error(response.message)
 
-    if (success) {
       setIsSaved(true)
       navigation.navigate('payout-success')
+    } catch (error) {
+      console.log(error)
+      Toast.show({
+        label: 'Oops! Something went wrong',
+        type: 'error',
+        dismissible: true,
+        timeout: 5000,
+        screenId: 'payout-details',
+      })
     }
   }
 
   return (
     <>
+      <Toast
+        containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
+        ref={ref => Toast.setRef(ref, 'payout-details')}
+      />
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <View style={styles.wrapper}>
         <View style={styles.header}>
@@ -206,7 +214,7 @@ const PayoutDetails = ({ navigation, route }) => {
               />
             </View>
           ) : null}
-          <Button type="primary" label="Save" onPress={onSave} />
+          <Button type="primary" label="Save" onPress={handleOnSave} />
         </View>
       </View>
 

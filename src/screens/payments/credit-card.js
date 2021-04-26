@@ -291,7 +291,6 @@ const CreditCardScreen = ({ navigation, route }) => {
         paymentIntentId
       )
       const paymentStatus = response.data.data.attributes.status
-      console.log(JSON.stringify(response.data, null, 2))
       if (paymentStatus === 'succeeded') {
         const paymentId = response.data.data.attributes.payments[0].id
         await Promise.all([
