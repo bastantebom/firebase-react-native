@@ -1,13 +1,13 @@
 import React from 'react'
 import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native'
+import LottieView from 'lottie-react-native'
+import loadingBee from '@/assets/animations/transition-indicator.json'
 
 const TransitionIndicator = ({ loading, backdropStyle }) => {
   return (
     <Modal transparent={true} animationType={'none'} visible={loading}>
       <View style={[styles.modalBackground, backdropStyle]}>
-        <View style={styles.activityIndicatorWrapper}>
-          <ActivityIndicator color="#3781FC" size="large" animating={loading} />
-        </View>
+        <LottieView source={loadingBee} autoPlay />
       </View>
     </Modal>
   )
@@ -22,13 +22,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000040',
   },
   activityIndicatorWrapper: {
-    backgroundColor: '#FFFFFF',
-    height: 100,
-    width: 100,
-    borderRadius: 10,
-    display: 'flex',
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
   },
 })
 
