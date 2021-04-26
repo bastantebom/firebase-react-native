@@ -304,6 +304,20 @@ export const generateDynamicLink = async ({
 }
 
 export const getPreviewLinkData = async ({ type, data }) => {
+  const defaultProfileImage =
+    'https://dev-servbees-web-app.onrender.com/images/default-profile.png'
+
+  const defaultCoverPhoto = () => {
+    switch (data?.type?.toLowerCase()) {
+      case 'service':
+        return 'https://dev-servbees-web-app.onrender.com/images/cover-service.png'
+      case 'need':
+        return 'https://dev-servbees-web-app.onrender.com/images/cover-need.png'
+      default:
+        return 'https://dev-servbees-web-app.onrender.com/images/cover-sell.png'
+    }
+  }
+
   const getPostPrice = post => {
     const prices = [
       ...new Set(
@@ -359,28 +373,25 @@ export const getPreviewLinkData = async ({ type, data }) => {
     const name = data.display_name || data.full_name
     return {
       socialTitle: `${name} is on Servbees, your friendly neighborhood Pagkakakita-App`,
-      socialImageLink:
-        (data.profile_photo &&
-          (await ImageApi.getUrl({
+      socialImageLink: data?.profile_photo
+        ? (await ImageApi.getUrl({
             path: data.profile_photo,
             size: '1200x630',
-          }))) ||
-        (await ImageApi.getUrl({ path: data.profile_photo })) ||
-        data.profile_photo,
+          })) || (await ImageApi.getUrl({ path: data.profile_photo }))
+        : defaultProfileImage,
     }
   } else if (type === 'post') {
     return {
       socialTitle: getPostTitle(),
-      socialImageLink:
-        data.cover_photos[0] &&
-        ((await ImageApi.getUrl({
-          path: data.cover_photos[0],
-          size: '1200x630',
-        })) ||
+      socialImageLink: data.cover_photos[0]
+        ? (await ImageApi.getUrl({
+            path: data.cover_photos[0],
+            size: '1200x630',
+          })) ||
           (await ImageApi.getUrl({
             path: data.cover_photos[0],
-          })) ||
-          data.cover_photos[0]),
+          }))
+        : defaultCoverPhoto(),
       socialDescription: getPostDescription(),
     }
   } else if (type === 'invite') {
