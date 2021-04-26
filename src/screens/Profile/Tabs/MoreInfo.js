@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { Users, Icons } from '@/assets/images/icons'
 import { NoInfo } from '@/assets/images'
 import { AppText, PaddingView } from '@/components'
 import { UserContext } from '@/context/UserContext'
-import { ScrollView } from 'react-native-gesture-handler'
 import Api from '@/services/Api'
 import { useNavigation } from '@react-navigation/native'
 
@@ -34,17 +33,16 @@ const MoreInfo = ({ profileInfo }) => {
       label: 'Email Address',
     },
   ])
-  const [statusPercentage, setStatusPercentage] = useState(0)
   const navigation = useNavigation()
+  const statusPercentage = useRef(0)
 
   const initConnections = async () => {
-    if (description && description?.trim().length) {
-      setHasInfo(true)
-      const followersResponse = await Api.getFollowers({ uid })
-      const followingResponse = await Api.getFollowing({ uid })
-      setFollowers(followersResponse.data.length)
-      setFollowing(followingResponse.data.length)
-    }
+    const [followersResponse, followingResponse] = await Promise.all([
+      Api.getFollowers({ uid }),
+      Api.getFollowing({ uid }),
+    ])
+    setFollowers(followersResponse.data.length)
+    setFollowing(followingResponse.data.length)
   }
 
   const initStatus = async () => {
@@ -55,24 +53,21 @@ const MoreInfo = ({ profileInfo }) => {
         status: response?.status?.verified[verification.key] || 'pending',
       }))
     )
-    setStatusPercentage(
+    statusPercentage.current =
       Object.values(response?.status?.verified || {}).reduce(
         (a, status) => a + (status === 'completed' ? 1 : 0),
         0
       ) * 0.25
-    )
+
+    if (uid === userInfo?.uid && statusPercentage.current > 0.25)
+      setHasInfo(true)
+    else setHasInfo(true)
   }
 
   useEffect(() => {
-    let mounted = true
-    if (uid && mounted) {
-      initStatus()
-      initConnections()
-    }
-    return () => {
-      mounted = false
-    }
-  }, [profileInfo])
+    initStatus()
+    initConnections()
+  }, [])
 
   const WithInfo = () => {
     return (
@@ -87,7 +82,11 @@ const MoreInfo = ({ profileInfo }) => {
               <AppText textStyle="subtitle2">About</AppText>
             </View>
             <View style={styles.infoContentWrapper}>
-              <AppText textStyle="body2">{description}</AppText>
+              {description?.trim().length ? (
+                <AppText textStyle="body2">{description}</AppText>
+              ) : (
+                <AppText textStyle="body2">No information yet...</AppText>
+              )}
             </View>
             <View style={styles.connectionWrapper}>
               <View style={styles.followers}>
@@ -116,13 +115,13 @@ const MoreInfo = ({ profileInfo }) => {
             <PaddingView paddingSize={4}>
               <View style={styles.titleWrapper}>
                 <AppText textStyle="subtitle2">
-                  {statusPercentage < 1
+                  {statusPercentage.current < 1
                     ? `${
                         full_name.split(' ')[0]
                       } we're still verifying your profile`
                     : `${full_name.split(' ')[0]} is verified by Servbees`}
                 </AppText>
-                {statusPercentage < 1 && (
+                {statusPercentage.current < 1 && (
                   <AppText textStyle="caption">
                     Thank you for providing the following documents and
                     information{' '}
