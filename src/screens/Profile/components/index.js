@@ -14,7 +14,6 @@ import FaqScreen from './HelpSupport/Faq'
 
 import VerificationStatus from './VerificationStatus'
 
-import PayoutMethod from './PayoutMethod/PayoutMethod'
 import NotificationSettings from './Account/NotificationSettings'
 
 export {
@@ -29,6 +28,5 @@ export {
   ContactServbees,
   FaqScreen,
   VerificationStatus,
-  PayoutMethod,
   NotificationSettings,
 }

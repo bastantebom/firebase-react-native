@@ -28,7 +28,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
         separator: '.',
         precision: 2,
         delimiter: ',',
-      })} was successfuly completed.`,
+      })} was successfully completed.`,
       buttonText: 'Back',
       image: () => <Images.PaymentSuccess />,
     },

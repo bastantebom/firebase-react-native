@@ -647,6 +647,7 @@ export const Icons = {
   ArrowRight,
   Avatar: ProfileImageDefault,
   Back,
+  Bank,
   BankActive,
   BasketAdditionalNotes,
   BasketAttachedPost,

@@ -21,10 +21,7 @@ import VerificationStack from '@/screens/Verification'
 import ProfileScreen from '@/screens/Profile/profile'
 import OwnMenuScreen from '@/components/TransparentHeader/components/OwnMenu'
 import EditProfileScreen from '@/screens/Profile/edit-profile'
-import PayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/PayoutMethod'
-import ChangePayoutMethodScreen from '@/screens/Profile/components/PayoutMethod/ChangePayoutMethod'
-import PayoutDetailsScreen from '@/screens/Profile/components/PayoutMethod/PayoutDetails'
-import PayoutSuccessScreen from '@/screens/Profile/components/PayoutMethod/SuccessScreen'
+import PayoutMethodStack from '@/screens/Profile/payout-method'
 import InviteFriendsScreen from '@/screens/Profile/invite-friends'
 import UpdateTemperature from '@/screens/Profile/update-temperature'
 import TemperatureHistory from '@/screens/Profile/temperature-history'
@@ -174,20 +171,8 @@ function NoBottomTabScreens() {
         component={OwnMenuScreen}
       />
       <NoBottomTabScreenStack.Screen
-        name="payout-method"
-        component={PayoutMethodScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="change-payout-method"
-        component={ChangePayoutMethodScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="payout-details"
-        component={PayoutDetailsScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="payout-success"
-        component={PayoutSuccessScreen}
+        name="payout-methods"
+        component={PayoutMethodStack}
       />
       <NoBottomTabScreenStack.Screen
         name="update-temperature"

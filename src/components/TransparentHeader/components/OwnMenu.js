@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react'
 import {
   View,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Dimensions,
@@ -28,12 +27,12 @@ import {
 
 import {
   About,
-  BlockList,
   ContactServbees,
   FaqScreen,
   NotificationSettings,
 } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const OwnMenu = ({ navigation, triggerNotify }) => {
   const { providerData, signOut } = useContext(UserContext)
@@ -152,189 +151,199 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <>
       <ScreenHeaderTitle
         title="Settings"
         close={navigation.goBack}
         paddingSize={3}
       />
-      <ScrollView>
-        <View
-          style={{
-            paddingBottom: 24,
-            borderTopEndRadius: 8,
-            borderTopStartRadius: 8,
-          }}>
-          <PaddingView paddingSize={3}>
-            <View>
-              <AppText
-                textStyle="body3"
-                customStyle={{ marginBottom: normalize(16) }}>
-                Account
-              </AppText>
+      <View style={styles.wrapper}>
+        <ScrollView>
+          <View
+            style={{
+              paddingBottom: 24,
+              borderTopEndRadius: 8,
+              borderTopStartRadius: 8,
+            }}>
+            <PaddingView paddingSize={3}>
+              <View>
+                <AppText
+                  textStyle="body3"
+                  customStyle={{ marginBottom: normalize(16) }}>
+                  Account
+                </AppText>
 
-              {accountMenuItems.map(
-                ({ label, onPress, icon, hidden }) =>
-                  !hidden && (
-                    <TouchableOpacity
-                      key={label}
-                      activeOpacity={0.7}
-                      onPress={onPress}>
-                      <View style={styles.menuItem}>
-                        {icon()}
-                        <AppText
-                          customStyle={styles.menuItemLabel}
-                          textStyle="body1">
-                          {label}
-                        </AppText>
-                      </View>
-                    </TouchableOpacity>
-                  )
-              )}
-            </View>
+                {accountMenuItems.map(
+                  ({ label, onPress, icon, hidden }) =>
+                    !hidden && (
+                      <TouchableOpacity
+                        key={label}
+                        activeOpacity={0.7}
+                        onPress={onPress}>
+                        <View style={styles.menuItem}>
+                          {icon()}
+                          <AppText
+                            customStyle={styles.menuItemLabel}
+                            textStyle="body1">
+                            {label}
+                          </AppText>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                )}
+              </View>
 
-            <Divider
-              style={{
-                backgroundColor: Colors.neutralGray,
-                marginVertical: 24,
-              }}
-            />
+              <Divider
+                style={{
+                  backgroundColor: Colors.neutralGray,
+                  marginVertical: 24,
+                }}
+              />
 
-            <View>
-              <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
-                Payouts
-              </AppText>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() =>
-                  navigation.navigate('NBTScreen', {
-                    screen: 'payout-method',
-                  })
-                }>
-                <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                  <Icons.PayoutWallet
-                    width={normalize(24)}
-                    height={normalize(24)}
-                  />
-                  <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
-                    Payout Method
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <Divider
-              style={{
-                backgroundColor: Colors.neutralGray,
-                marginVertical: 24,
-              }}
-            />
-
-            <View>
-              <AppText
-                textStyle="body3"
-                customStyle={{ marginBottom: normalize(16) }}>
-                Help and Support
-              </AppText>
-
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <ContactUs width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Contact Us
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <Divider
-              style={{
-                backgroundColor: Colors.neutralGray,
-                marginVertical: 24,
-              }}
-            />
-
-            <View>
-              <AppText
-                textStyle="body3"
-                customStyle={{ marginBottom: normalize(16) }}>
-                Settings and Privacy
-              </AppText>
-
-              {hasPassword && (
+              <View>
+                <AppText textStyle="body3" customStyle={{ marginBottom: 16 }}>
+                  Payouts
+                </AppText>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={handleChangePasswordPress}>
+                  onPress={() =>
+                    navigation.navigate('NBTScreen', {
+                      screen: 'payout-methods',
+                      params: {
+                        screen: 'payout-method',
+                      },
+                    })
+                  }>
+                  <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                    <Icons.PayoutWallet
+                      width={normalize(24)}
+                      height={normalize(24)}
+                    />
+                    <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                      Payout Method
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <Divider
+                style={{
+                  backgroundColor: Colors.neutralGray,
+                  marginVertical: 24,
+                }}
+              />
+
+              <View>
+                <AppText
+                  textStyle="body3"
+                  customStyle={{ marginBottom: normalize(16) }}>
+                  Help and Support
+                </AppText>
+
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <ContactUs width={normalize(20)} height={normalize(20)} />
+                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                      Contact Us
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <Divider
+                style={{
+                  backgroundColor: Colors.neutralGray,
+                  marginVertical: 24,
+                }}
+              />
+
+              <View>
+                <AppText
+                  textStyle="body3"
+                  customStyle={{ marginBottom: normalize(16) }}>
+                  Settings and Privacy
+                </AppText>
+
+                {hasPassword && (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={handleChangePasswordPress}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginBottom: 16,
+                        alignItems: 'center',
+                      }}>
+                      <ChangePasswordRed
+                        width={normalize(20)}
+                        height={normalize(20)}
+                      />
+                      <AppText
+                        customStyle={{ marginLeft: 12 }}
+                        textStyle="body1">
+                        Change Password
+                      </AppText>
+                    </View>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={{ marginTop: !hasPassword ? normalize(16) : 0 }}
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    navigation.navigate('NBTScreen', {
+                      screen: 'block-user',
+                    })
+                  }}>
                   <View
                     style={{
                       flexDirection: 'row',
                       marginBottom: 16,
                       alignItems: 'center',
                     }}>
-                    <ChangePasswordRed
+                    <BlockedUsers
                       width={normalize(20)}
                       height={normalize(20)}
                     />
                     <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                      Change Password
+                      Blocked Users
                     </AppText>
                   </View>
                 </TouchableOpacity>
-              )}
 
-              <TouchableOpacity
-                style={{ marginTop: !hasPassword ? normalize(16) : 0 }}
-                activeOpacity={0.7}
-                onPress={() => {
-                  navigation.navigate('NBTScreen', {
-                    screen: 'block-user',
-                  })
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleAbout}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginBottom: 16,
+                      alignItems: 'center',
+                    }}>
+                    <AboutRed width={normalize(20)} height={normalize(20)} />
+                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                      About
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    signOut().then(() => {
+                      navigation.navigate('Onboarding')
+                    })
                   }}>
-                  <BlockedUsers width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Blocked Users
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity activeOpacity={0.7} onPress={toggleAbout}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 16,
-                    alignItems: 'center',
-                  }}>
-                  <AboutRed width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    About
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {
-                  signOut().then(() => {
-                    navigation.navigate('Onboarding')
-                  })
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <MenuLogOut width={normalize(20)} height={normalize(20)} />
-                  <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-                    Log out
-                  </AppText>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </PaddingView>
-        </View>
-      </ScrollView>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <MenuLogOut width={normalize(20)} height={normalize(20)} />
+                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                      Log out
+                    </AppText>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </PaddingView>
+          </View>
+        </ScrollView>
+      </View>
 
       <Modal
         isVisible={about}
@@ -377,12 +386,17 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
         }}>
         <FaqScreen toggleFaq={toggleFaq} />
       </Modal>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#fff' },
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
   menuItem: {
     flexDirection: 'row',
     marginBottom: normalize(16),

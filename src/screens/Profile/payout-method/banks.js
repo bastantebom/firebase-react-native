@@ -1,18 +1,33 @@
 import React from 'react'
+import { Colors, normalize } from '@/globals'
+import typography from '@/globals/typography'
 import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
   Image,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { Icons } from '@/assets/images/icons'
+import { iconSize } from '@/globals/Utils'
 
-import { ScreenHeaderTitle, PaddingView, AppText } from '@/components'
-import { normalize } from '@/globals'
+/**
+ * @typedef {object} BanksScreenProps
+ * @property {(string) => void} onSelect
+ */
 
-const BankList = ({ close, payoutData, setPayoutData }) => {
-  const bankList = [
+/**
+ * @typedef {object} RootProps
+ * @property {BanksScreenProps} BanksScreen
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'BanksScreen'>} param0 */
+const BanksScreen = ({ navigation, route }) => {
+  const { onSelect } = route.params
+  const banks = [
     {
       label: 'AllBank',
       icon: require('@/assets/images/icons/bank-icons/all-bank.png'),
@@ -200,64 +215,93 @@ const BankList = ({ close, payoutData, setPayoutData }) => {
     },
   ]
 
-  const onSelect = item => {
-    setPayoutData({
-      ...payoutData,
-      bank: item,
-    })
-    close()
-  }
-
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScreenHeaderTitle title="Select Bank" close={close} paddingSize={3} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <PaddingView paddingSize={3} style={{ paddingVertical: 0 }}>
-          {bankList.map((item, i) => {
-            return (
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>
+              Select Bank
+            </Text>
+          </View>
+        </View>
+        <View style={styles.content}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ flexGrow: 1 }}>
+            {banks.map(bank => (
               <TouchableOpacity
-                key={i}
-                style={styles.payoutInput}
-                onPress={() => onSelect(item.label)}
-                activeOpacity={0.7}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <Image
-                    style={{
-                      borderWidth: item.withBorder === true ? 1 : 0,
-                      borderRadius: 4,
-                      borderColor: '#91919c',
-                      width: normalize(36),
-                      height: normalize(25),
-                    }}
-                    source={item.icon}
-                  />
-                  <AppText
-                    textStyle="body1"
-                    customStyle={{
-                      marginLeft: normalize(10),
-                      maxWidth: '83%',
-                    }}>
-                    {item.label}
-                  </AppText>
-                </View>
+                key={bank.label}
+                activeOpacity={0.7}
+                style={styles.listItem}
+                onPress={() => onSelect(bank.label)}>
+                <Image
+                  style={[
+                    styles.bankIcon,
+                    {
+                      borderWidth: bank.withBorder === true ? 1 : 0,
+                    },
+                  ]}
+                  source={bank.icon}
+                />
+                <Text style={[typography.body2, { marginLeft: normalize(8) }]}>
+                  {bank.label}
+                </Text>
               </TouchableOpacity>
-            )
-          })}
-        </PaddingView>
-      </ScrollView>
-    </SafeAreaView>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  payoutInput: {
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
     padding: normalize(16),
-    marginBottom: normalize(8),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
+  },
+  content: {
+    flex: 1,
+    padding: normalize(24),
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: normalize(24),
+  },
+  bankIcon: {
+    borderRadius: 4,
+    borderColor: Colors.icon,
+    width: normalize(36),
+    height: normalize(25),
   },
 })
 
-export default BankList
+export default BanksScreen
