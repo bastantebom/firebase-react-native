@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { normalize, Colors } from '@/globals'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -10,6 +10,7 @@ import Modal from 'react-native-modal'
 import Api from '@/services/Api'
 import { AppText } from '@/components'
 import firestore from '@react-native-firebase/firestore'
+import { Context } from '@/context'
 
 const ProfileLinks = ({
   visibleHives,
@@ -23,12 +24,16 @@ const ProfileLinks = ({
   const { uid } = userInfo
   const [followers, setFollowers] = useState(0)
   const [postCount, setPostCount] = useState(0)
-
+  const { dashboardNeedsRefresh, setDashboardNeedsRefresh } = useContext(
+    Context
+  )
   const getProfileCounters = async () => {
     try {
-      const followersResponse = await Api.getFollowers({ uid })
-      if (followersResponse.success) setFollowers(followersResponse.data.length)
-      const postCountResponse = await Api.getUserPostsCount({ uid })
+      const [followersResponse, postCountResponse] = await Promise.all([
+        Api.getFollowers({ uid }),
+        Api.getUserPostsCount({ uid }),
+      ])
+      setFollowers(followersResponse.data.length)
       if (postCountResponse.success)
         setPostCount(postCountResponse.count - (await archivedCount()))
     } catch (error) {
@@ -46,8 +51,11 @@ const ProfileLinks = ({
   }
 
   useEffect(() => {
-    if (uid) getProfileCounters()
-  }, [uid])
+    if (uid) {
+      getProfileCounters()
+      setDashboardNeedsRefresh(false)
+    }
+  }, [uid, dashboardNeedsRefresh])
 
   useEffect(() => {
     if (typeof addFollowers === 'boolean') {
