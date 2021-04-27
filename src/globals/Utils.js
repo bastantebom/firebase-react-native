@@ -289,6 +289,9 @@ export const generateDynamicLink = async ({
             iosAppStoreId: '1530137634',
             iosFallbackLink: 'https://app.servbees.com/download',
           },
+          navigationInfo: {
+            enableForcedRedirect: true,
+          },
           socialMetaTagInfo: social,
         },
         suffix: {

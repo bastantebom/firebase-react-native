@@ -1,13 +1,17 @@
 import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
+import { Colors } from '@/globals'
 import { isUrl } from '@/globals/Utils'
 import ImageApi from '@/services/image-api'
 import React, { useEffect, useState } from 'react'
-import { PixelRatio, Platform, StyleSheet, View, Image } from 'react-native'
+import {
+  ActivityIndicator,
+  PixelRatio,
+  Platform,
+  StyleSheet,
+  View,
+  Image,
+} from 'react-native'
 import FastImage from 'react-native-fast-image'
-import LottieView from 'lottie-react-native'
-import sellLoader from '@/assets/animations/sell-loader.json'
-import serviceLoader from '@/assets/animations/service-loader.json'
-import needLoader from '@/assets/animations/need-loader.json'
 
 const sizeProps = {
   width: '100%',
@@ -28,17 +32,6 @@ const DefaultPostThumbnail = ({ type }) => {
       return <DefaultNeed {...sizeProps} />
     default:
       return <DefaultSell {...sizeProps} />
-  }
-}
-
-const PostLoader = ({ type }) => {
-  switch (type?.toLowerCase()) {
-    case 'service':
-      return <LottieView source={serviceLoader} autoPlay />
-    case 'need':
-      return <LottieView source={needLoader} autoPlay />
-    default:
-      return <LottieView source={sellLoader} autoPlay />
   }
 }
 
@@ -108,7 +101,7 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
     <>
       {isLoading && (
         <View style={styles.loader}>
-          <PostLoader type={postType} />
+          <ActivityIndicator color={Colors.contentOcean} size="large" />
         </View>
       )}
       {Platform.select({
