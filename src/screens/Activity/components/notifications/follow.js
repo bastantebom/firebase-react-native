@@ -11,9 +11,12 @@ import { AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
 import typography from '@/globals/typography'
 
-const Follow = ({ unreadNotification, item }) => {
+const Follow = ({ unreadNotification, item, followings }) => {
   const navigation = useNavigation()
   const [follower, setFollower] = useState({})
+  const [isFollower, setIsFollower] = useState(
+    followings.some(following => following.uid === item.follower_uid)
+  )
 
   const timeAgo = time => timePassedShort(time)
 
@@ -30,10 +33,19 @@ const Follow = ({ unreadNotification, item }) => {
     if (!item.read) unreadNotification(item.id)
 
     try {
-      const response = await Api.followUser({ uid: item.follower_uid })
+      if (isFollower) {
+        const response = await Api.unfollowUser({ uid: item.follower_uid })
 
-      if (response.success) alert('Success')
-      else throw new Error(response.message)
+        if (response.success) alert('Success')
+        else throw new Error(response.message)
+        setIsFollower(false)
+      } else {
+        const response = await Api.followUser({ uid: item.follower_uid })
+
+        if (response.success) alert('Success')
+        else throw new Error(response.message)
+        setIsFollower(true)
+      }
     } catch (error) {
       console.log(error)
       Alert.alert('Error', 'Oops, something went wrong.')
@@ -97,7 +109,9 @@ const Follow = ({ unreadNotification, item }) => {
           activeOpacity={0.7}
           style={styles.invertedButton}
           onPress={handleFollowBack}>
-          <AppText textStyle="button3">Follow Back</AppText>
+          <AppText textStyle="button3">
+            {isFollower ? 'Unfollow' : 'Follow Back'}
+          </AppText>
         </TouchableOpacity>
       </View>
     </View>

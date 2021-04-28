@@ -6,6 +6,7 @@ import {
   StyleSheet,
   RefreshControl,
   StatusBar,
+  Alert,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -23,6 +24,7 @@ import Grouped from '@/screens/Activity/components/notifications/grouped'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
+import Api from '@/services/Api'
 
 const Notifications = () => {
   const navigation = useNavigation()
@@ -36,6 +38,7 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([])
   const [newNotifications, setNewNotification] = useState([])
   const [earlierNotifications, setEarlierNotification] = useState([])
+  const [followings, setFollowings] = useState([])
 
   const loadNotifications = async ({ isLoadMore }) => {
     if (isLoadingMore) return
@@ -115,8 +118,22 @@ const Notifications = () => {
     )
   }
 
+  const getFollowing = async () => {
+    try {
+      const response = await Api.getFollowing({ uid: user.uid })
+
+      if (!response.success) throw new Error(response.message)
+
+      setFollowings(response.data)
+    } catch (error) {
+      console.error(error)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
+
   useEffect(() => {
     loadNotifications({ isLoadMore: false })
+    getFollowing()
   }, [])
 
   useEffect(() => {
@@ -173,7 +190,11 @@ const Notifications = () => {
       )
     } else if (notification.type === 'follow') {
       return (
-        <Follow unreadNotification={unreadNotification} item={notification} />
+        <Follow
+          unreadNotification={unreadNotification}
+          item={notification}
+          followings={followings}
+        />
       )
     } else if (notification.type === 'order') {
       return (

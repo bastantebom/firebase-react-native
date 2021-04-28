@@ -369,7 +369,9 @@ const Activity = ({ navigation }) => {
                     ...styles.notifDot,
                     paddingHorizontal: normalize([counts.chat > 9 ? 2 : 6]),
                   }}>
-                  <Text style={styles.countText}>{counts.chat}</Text>
+                  <Text style={styles.countText}>
+                    {counts.chat >= 99 ? 99 : counts.chat}
+                  </Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -389,7 +391,9 @@ const Activity = ({ navigation }) => {
                       counts.notification > 9 ? 2 : 6,
                     ]),
                   }}>
-                  <Text style={styles.countText}>{counts.notification}</Text>
+                  <Text style={styles.countText}>
+                    {counts.notification >= 99 ? 99 : counts.notification}
+                  </Text>
                 </View>
               )}
             </TouchableOpacity>
