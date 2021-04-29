@@ -30,9 +30,10 @@ const ChatSort = ({ choice, close }) => {
       icon: <Icons.OrdersChats />,
     },
     {
-      label: 'Past',
+      label: 'Chat History',
       value: 'past',
-      description: "Deleted or archived messages you'd want to recover.",
+      description:
+        'Messages from completed, cancelled, declined, and recently deleted posts.',
       icon: <Icons.PastsChats />,
     },
   ]
