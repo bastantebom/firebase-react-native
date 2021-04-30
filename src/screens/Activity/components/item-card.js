@@ -56,110 +56,116 @@ const ItemCard = ({ items, chats }) => {
 
   return (
     <>
-      {items.map((item, index) => (
-        <View key={index} style={styles.card}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('orders', {
-                screen: 'order-tracker',
-                params: {
-                  orderID: item?.order_id || item?.id,
-                },
-              })
-            }>
-            <View style={styles.userDetailsWrapper}>
-              <View style={styles.userDetails}>
-                <View style={styles.avatarWrapper}>
-                  <Avatar
-                    style={styles.avatar}
-                    path={item?.user?.profile_photo}
-                    size="64x64"
-                  />
-                </View>
-                <View style={styles.userTextWrapper}>
-                  <AppText textStyle="caption2" customStyle={styles.userName}>
-                    {item?.user?.name || 'N/A'}
-                  </AppText>
-                  <AppText textStyle="metadata" customStyle={styles.orderDate}>
-                    {moment
-                      .unix(item.date._seconds)
-                      .format('MMMM D, YYYY • h:mmA')}
-                  </AppText>
-                </View>
-              </View>
-              <AppText textStyle="metadata">
-                {getTimeAgo(Date.now() / 1000 - item.date._seconds)}
-              </AppText>
-            </View>
-
-            <View style={styles.paymentDetails}>
-              <AppText
-                textStyle="body2medium"
-                customStyle={styles.paymentFontSize}>
-                ₱
-                {formatNumber(item.total_price || getTotalAmount(item), {
-                  separator: '.',
-                  precision: 2,
-                  delimiter: ',',
-                })}
-              </AppText>
-              <AppText
-                textStyle="caption"
-                color={Colors.contentPlaceholder}
-                customStyle={styles.paymentFontSize}>
-                {` — via `}
-              </AppText>
-              <AppText
-                textStyle="caption2"
-                customStyle={{
-                  ...styles.paymentFontSize,
-                  textTransform: 'capitalize',
-                }}>
-                {getPaymentMethod(item.payment_method)}
-              </AppText>
-            </View>
-
-            <AppText textStyle="caption">
-              No. of items: {getItemQuantity(item)}
-            </AppText>
-          </TouchableOpacity>
-
-          {!!chats?.[item.id]?.data?.length && (
+      {items
+        .sort((a, b) => b.date._seconds - a.date._seconds)
+        .map((item, index) => (
+          <View key={index} style={styles.card}>
             <TouchableOpacity
-              style={styles.chatTextWrapper}
               onPress={() =>
-                navigation.navigate('Chat', {
-                  user,
-                  channel: chats[item.id]?.chatRoom[0],
+                navigation.navigate('orders', {
+                  screen: 'order-tracker',
+                  params: {
+                    orderID: item?.order_id || item?.id,
+                  },
                 })
               }>
-              <View style={styles.chatCountWrapper}>
-                <ChatBlue />
+              <View style={styles.userDetailsWrapper}>
+                <View style={styles.userDetails}>
+                  <View style={styles.avatarWrapper}>
+                    <Avatar
+                      style={styles.avatar}
+                      path={item?.user?.profile_photo}
+                      size="64x64"
+                    />
+                  </View>
+                  <View style={styles.userTextWrapper}>
+                    <AppText textStyle="caption2" customStyle={styles.userName}>
+                      {item?.user?.name || 'N/A'}
+                    </AppText>
+                    <AppText
+                      textStyle="metadata"
+                      customStyle={styles.orderDate}>
+                      {moment
+                        .unix(item.date._seconds)
+                        .format('MMMM D, YYYY • h:mmA')}
+                    </AppText>
+                  </View>
+                </View>
+                <AppText textStyle="metadata">
+                  {getTimeAgo(Date.now() / 1000 - item.date._seconds)}
+                </AppText>
+              </View>
+
+              <View style={styles.paymentDetails}>
+                <AppText
+                  textStyle="body2medium"
+                  customStyle={styles.paymentFontSize}>
+                  ₱
+                  {formatNumber(item.total_price || getTotalAmount(item), {
+                    separator: '.',
+                    precision: 2,
+                    delimiter: ',',
+                  })}
+                </AppText>
                 <AppText
                   textStyle="caption"
-                  color={Colors.contentOcean}
-                  customStyle={{ marginLeft: normalize(6) }}>
-                  {chats[item.id]?.data?.length} new messages
+                  color={Colors.contentPlaceholder}
+                  customStyle={styles.paymentFontSize}>
+                  {` — via `}
                 </AppText>
-              </View>
-              <View style={styles.chatText}>
                 <AppText
                   textStyle="caption2"
-                  customStyle={{ width: '80%' }}
-                  numberOfLines={1}>
-                  {chats[item.id]?.data[0]?.text}
-                </AppText>
-                <AppText textStyle="metadata" color={Colors.contentPlaceholder}>
-                  {getTimeAgo(
-                    Date.now() / 1000 -
-                      chats[item.id]?.data[0]?.created_at?._seconds
-                  )}
+                  customStyle={{
+                    ...styles.paymentFontSize,
+                    textTransform: 'capitalize',
+                  }}>
+                  {getPaymentMethod(item.payment_method)}
                 </AppText>
               </View>
+
+              <AppText textStyle="caption">
+                No. of items: {getItemQuantity(item)}
+              </AppText>
             </TouchableOpacity>
-          )}
-        </View>
-      ))}
+
+            {!!chats?.[item.id]?.data?.length && (
+              <TouchableOpacity
+                style={styles.chatTextWrapper}
+                onPress={() =>
+                  navigation.navigate('Chat', {
+                    user,
+                    channel: chats[item.id]?.chatRoom[0],
+                  })
+                }>
+                <View style={styles.chatCountWrapper}>
+                  <ChatBlue />
+                  <AppText
+                    textStyle="caption"
+                    color={Colors.contentOcean}
+                    customStyle={{ marginLeft: normalize(6) }}>
+                    {chats[item.id]?.data?.length} new messages
+                  </AppText>
+                </View>
+                <View style={styles.chatText}>
+                  <AppText
+                    textStyle="caption2"
+                    customStyle={{ width: '80%' }}
+                    numberOfLines={1}>
+                    {chats[item.id]?.data[0]?.text}
+                  </AppText>
+                  <AppText
+                    textStyle="metadata"
+                    color={Colors.contentPlaceholder}>
+                    {getTimeAgo(
+                      Date.now() / 1000 -
+                        chats[item.id]?.data[0]?.created_at?._seconds
+                    )}
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+        ))}
     </>
   )
 }
