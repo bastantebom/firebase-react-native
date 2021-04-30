@@ -6,10 +6,11 @@ import {
   TransitionIndicator,
 } from '@/components'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import {
   Alert,
   Image,
-  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -736,73 +737,77 @@ const EditProfileScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={styles.wrapper}>
-      <TransitionIndicator loading={isLoading} />
-      <ScreenHeaderTitle
-        paddingSize={3}
-        title="Edit Profile"
-        close={navigation.goBack}
-      />
-      <KeyboardAwareScrollView
-        style={styles.container}
-        extraHeight={40}
-        keyboardOpeningTime={50}>
-        <View
-          style={[
-            styles.section,
-            {
-              borderTopEndRadius: 0,
-              borderTopStartRadius: 0,
-            },
-          ]}>
-          {renderCoverPhotoSection()}
-          {renderProfilePhotoSection()}
-          {renderNameSection()}
-        </View>
-        <View style={[styles.section, { paddingBottom: normalize(12) }]}>
-          {renderAddressesSection()}
-        </View>
-        <View style={[styles.section, { marginBottom: 0 }]}>
-          {renderPersonalInformationSection()}
-        </View>
-        {renderSubmitButton()}
-
-        <Modal
-          isVisible={isGenderModalVisible}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={180}
-          animationOutTiming={150}
-          onSwipeComplete={() => setIsGenderModalVisible(false)}
-          swipeDirection="down"
-          style={{
-            justifyContent: 'flex-end',
-            margin: 0,
-          }}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              onPress={() => setIsGenderModalVisible(false)}>
-              <View style={{ flex: 1, backgroundColor: 'black' }} />
-            </TouchableWithoutFeedback>
-          }>
-          <View>
-            <GenderList
-              value={formData.gender}
-              onChange={gender => {
-                setFormData({ ...formData, gender })
-                setIsGenderModalVisible(false)
-              }}
-            />
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <TransitionIndicator loading={isLoading} />
+        <ScreenHeaderTitle
+          paddingSize={3}
+          title="Edit Profile"
+          close={navigation.goBack}
+        />
+        <KeyboardAwareScrollView
+          style={styles.container}
+          extraHeight={40}
+          keyboardOpeningTime={50}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderTopEndRadius: 0,
+                borderTopStartRadius: 0,
+              },
+            ]}>
+            {renderCoverPhotoSection()}
+            {renderProfilePhotoSection()}
+            {renderNameSection()}
           </View>
-        </Modal>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+          <View style={[styles.section, { paddingBottom: normalize(12) }]}>
+            {renderAddressesSection()}
+          </View>
+          <View style={[styles.section, { marginBottom: 0 }]}>
+            {renderPersonalInformationSection()}
+          </View>
+          {renderSubmitButton()}
+
+          <Modal
+            isVisible={isGenderModalVisible}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+            animationInTiming={180}
+            animationOutTiming={150}
+            onSwipeComplete={() => setIsGenderModalVisible(false)}
+            swipeDirection="down"
+            style={{
+              justifyContent: 'flex-end',
+              margin: 0,
+            }}
+            customBackdrop={
+              <TouchableWithoutFeedback
+                onPress={() => setIsGenderModalVisible(false)}>
+                <View style={{ flex: 1, backgroundColor: 'black' }} />
+              </TouchableWithoutFeedback>
+            }>
+            <View>
+              <GenderList
+                value={formData.gender}
+                onChange={gender => {
+                  setFormData({ ...formData, gender })
+                  setIsGenderModalVisible(false)
+                }}
+              />
+            </View>
+          </Modal>
+        </KeyboardAwareScrollView>
+      </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    marginTop: getStatusBarHeight(),
     backgroundColor: '#fff',
   },
   container: {
