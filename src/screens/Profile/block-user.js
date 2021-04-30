@@ -1,10 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react'
 import {
   View,
-  SafeAreaView,
+  StatusBar,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  StyleSheet,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import {
   ScreenHeaderTitle,
@@ -81,7 +83,8 @@ const BlockUser = () => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.neutralsWhite }}>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
+      <View style={styles.wrapper}>
         <TransitionIndicator loading={isLoading} />
         <View style={{ padding: normalize(16) }}>
           <ScreenHeaderTitle title="Blocked Users" close={navigation.goBack} />
@@ -108,7 +111,8 @@ const BlockUser = () => {
               })
             : !isLoading && <EmptyBlockUser />}
         </View>
-      </SafeAreaView>
+      </View>
+
       <Modal
         isVisible={showCancelModal}
         animationIn="bounceIn"
@@ -176,4 +180,12 @@ const BlockUser = () => {
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
+    backgroundColor: Colors.neutralsWhite,
+  },
+})
 export default BlockUser
