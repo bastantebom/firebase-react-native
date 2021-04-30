@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { NoPost } from '@/assets/images'
-import { AppText } from '@/components'
+import typography from '@/globals/typography'
 
 const EmptyBlockList = () => {
   return (
@@ -12,16 +12,13 @@ const EmptyBlockList = () => {
         <NoPost width={normalize(140)} height={normalize(140)} />
       </View>
       <View style={styles.copyWrapper}>
-        <AppText textStyle="display6" customStyle={styles.centerCopy}>
+        <Text style={[styles.centerCopy, typography.display6]}>
           No Blocked Users
-        </AppText>
-        <AppText
-          textStyle="body3"
-          color={Colors.profileLink}
-          customStyle={styles.centerCopy}>
+        </Text>
+        <Text style={[styles.centerCopy, typography.body2]}>
           When you block someone, that person won't be able to find your profile
           and posts or transact with you on Servbees.
-        </AppText>
+        </Text>
       </View>
     </View>
   )
@@ -32,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: normalize(16),
+    padding: normalize(30),
     backgroundColor: Colors.neutralsWhite,
   },
   imageWrapper: {
@@ -46,6 +43,7 @@ const styles = StyleSheet.create({
   centerCopy: {
     textAlign: 'center',
     marginBottom: normalize(8),
+    color: Colors.profileLink,
   },
 
   linksWrapper: {
