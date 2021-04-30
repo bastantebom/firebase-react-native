@@ -93,9 +93,8 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
                 Photos - {images.length}/10{' '}
               </Text>
             )}
-            {!images.length
-              ? 'Choose up to 10 photos for your listing. The first photo you upload is automatically your cover photo. You may drag and drop to re-order the images. '
-              : 'You can post up to 10 photos. The first one uploaded becomes your cover photo.'}
+            You can post up to 10 photos. The first one uploaded becomes your
+            cover photo.
           </Text>
           <TouchableOpacity
             style={styles.linkWrapper}
