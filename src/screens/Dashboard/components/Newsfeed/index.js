@@ -172,16 +172,18 @@ const NewsFeed = ({ props }) => {
             />
           </View>
           <View>
-            <View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={styles.username}>
                 {post?.user?.display_name || post?.user?.full_name}
               </Text>
               {post?.user?.account_verified && (
-                <Icons.Verified
-                  style={{ marginLeft: normalize(4) }}
-                  width={normalize(10)}
-                  height={normalize(10)}
-                />
+                <View>
+                  <Icons.Verified
+                    style={{ marginLeft: normalize(4) }}
+                    width={normalize(15)}
+                    height={normalize(15)}
+                  />
+                </View>
               )}
             </View>
             <View style={{ flexDirection: 'row' }}>
