@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, StyleSheet, Alert } from 'react-native'
+import { View, StatusBar, StyleSheet, Alert } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Api from '@/services/Api'
 import {
   AppText,
@@ -64,7 +65,7 @@ const PaypalScreen = ({ navigation, route }) => {
             orderId: orderData.id,
             link: response.data.links[1].href,
             amount: totalPrice,
-            title: 'Paypal',
+            title: 'PayPal',
           },
         })
       else throw new Error(response.message)
@@ -77,8 +78,13 @@ const PaypalScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <View style={styles.backgroundHeader} />
-      <SafeAreaView style={styles.safeArea}>
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
+      <View style={styles.wrapper}>
+        <View style={styles.backgroundHeader} />
         <TransitionIndicator loading={isLoading} />
         <ScreenHeaderTitle
           close={navigation.goBack}
@@ -96,6 +102,7 @@ const PaypalScreen = ({ navigation, route }) => {
             <View
               style={{
                 paddingHorizontal: normalize(25),
+                paddingBottom: normalize(25),
                 justifyent: 'space-between',
                 backgroundColor: Colors.neutralsWhite,
                 elevation: 3,
@@ -122,13 +129,6 @@ const PaypalScreen = ({ navigation, route }) => {
                 </AppText>
                 <AppText textStyle="caption">Amount</AppText>
               </View>
-              <View style={[styles.border, { marginBottom: 25 }]}>
-                <AppText
-                  textStyle="caption"
-                  customStyle={{ textAlign: 'center' }}>
-                  Reference No. / Payment ID: {orderData.id}
-                </AppText>
-              </View>
             </View>
             <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
               Please confirm the transaction within{'\n'}
@@ -145,7 +145,7 @@ const PaypalScreen = ({ navigation, route }) => {
             onPress={handleSubmit}
           />
         </PaddingView>
-      </SafeAreaView>
+      </View>
     </>
   )
 }
@@ -158,6 +158,10 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 16,
     borderRadius: 4,
+  },
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
   },
   backgroundHeader: {
     backgroundColor: '#EDF0F8',

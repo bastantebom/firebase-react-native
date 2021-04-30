@@ -84,7 +84,7 @@ const ScreenHeaderTitle = ({
           <RenderIcon />
         </TouchableOpacity>
         <AppText
-          customStyle={{ textTransform: 'capitalize', ...customTitleStyle }}
+          customStyle={{ ...customTitleStyle }}
           textStyle="body3"
           numberOfLines={1}>
           {title}

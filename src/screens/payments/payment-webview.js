@@ -1,12 +1,12 @@
-import { ScreenHeaderTitle } from '@/components'
-import { normalize } from '@/globals'
 import React, { useContext } from 'react'
-import { SafeAreaView, StyleSheet } from 'react-native'
+import { StatusBar, StyleSheet, View } from 'react-native'
 import { WebView } from 'react-native-webview'
-import url from 'url'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
+import { ScreenHeaderTitle } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
+import url from 'url'
 
 /**
  * @typedef {object} PaymentWebViewProps
@@ -53,30 +53,38 @@ const PaymentWebView = ({ navigation, route }) => {
         }
       })()
 
-      navigation.navigate('payment-status', { status, amount })
+      navigation.navigate('payment-status', { status, amount, orderId })
       return false
     } else return true
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScreenHeaderTitle
-        close={navigation.goBack}
-        title={title}
-        paddingSize={3}
+    <>
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
       />
+      <View style={styles.safeArea}>
+        <ScreenHeaderTitle
+          close={navigation.goBack}
+          title={title}
+          paddingSize={3}
+        />
 
-      <WebView
-        source={{ uri }}
-        onShouldStartLoadWithRequest={handleWebViewStartLoad}
-      />
-    </SafeAreaView>
+        <WebView
+          source={{ uri }}
+          onShouldStartLoadWithRequest={handleWebViewStartLoad}
+        />
+      </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    marginTop: getStatusBarHeight(),
   },
 })
 
