@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   subtitle1: {
     fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(defaultFontSize + 4),
+    fontSize: normalize(defaultFontSize + 5),
     letterSpacing: 0.15,
   },
   subtitle2: {

@@ -139,7 +139,7 @@ const CreatePostScreen = ({ navigation, route }) => {
     }
 
     const titlePlaceholder = (() => {
-      if (postType === 'sell') return 'eg. Plants for Sale!'
+      if (postType === 'sell') return 'e.g. Plants for Sale!'
       else if (postType === 'service') return 'e.g. Online Tutor, Maintenance'
       else if (postType === 'need') return 'e.g. 45pcs Party Balloons'
     })()
@@ -1494,7 +1494,7 @@ const PostTypeCards = ({ onCardPress, postType }) => {
   const cardsData = [
     {
       type: 'need',
-      title: 'Find what you need',
+      title: 'Find What You Need',
       description: 'Order items & hire services nearby',
       renderIcon: () => <Icons.PostNeed {...iconSize(isExpanded ? 24 : 16)} />,
       position: needCardPosition,
@@ -1502,7 +1502,7 @@ const PostTypeCards = ({ onCardPress, postType }) => {
     },
     {
       type: 'sell',
-      title: 'Sell your products',
+      title: 'Sell Your Products',
       description: 'Market new or pre-loved goods',
       renderIcon: () => <Icons.PostSell {...iconSize(isExpanded ? 24 : 16)} />,
       position: sellCardPosition,
@@ -1510,7 +1510,7 @@ const PostTypeCards = ({ onCardPress, postType }) => {
     },
     {
       type: 'service',
-      title: 'Offer your services',
+      title: 'Offer Your Services',
       description: 'Earn more with your skills',
       renderIcon: () => (
         <Icons.PostService {...iconSize(isExpanded ? 24 : 16)} />

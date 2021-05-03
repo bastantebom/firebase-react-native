@@ -571,7 +571,7 @@ const ChatHouse = () => {
         <ScreenHeaderTitle
           close={() => navigation.goBack()}
           title="All Chats"
-          iconSize={normalize(16)}
+          iconSize={normalize(24)}
           paddingSize={3}
         />
         <View style={styles.bodyWrapper}>

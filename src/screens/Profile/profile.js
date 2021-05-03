@@ -527,7 +527,6 @@ const ProfileScreen = ({
         tabTextContainerActiveStyle={{
           borderBottomColor: Colors.contentOcean,
           borderBottomWidth: normalize(4),
-          borderRadius: 2,
         }}
         tabsContainerStyle={{
           height: normalize(40),

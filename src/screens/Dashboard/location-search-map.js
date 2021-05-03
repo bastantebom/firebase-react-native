@@ -253,7 +253,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
               onClearInput={() => {}}
               currentValue={addressData.full_address}
               customListViewStyle={{
-                top: normalize(75),
+                top: normalize(80),
                 marginLeft: normalize(0),
                 marginRight: normalize(0),
                 paddingLeft: 16,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     elevation: 100,
   },
   textInputWrapper: {
-    top: Dimensions.get('window').height > 780 ? normalize(32) : normalize(12),
+    top: Dimensions.get('window').height > 780 ? normalize(38) : normalize(12),
     width: '100%',
     height: 'auto',
     position: 'absolute',

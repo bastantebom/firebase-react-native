@@ -285,7 +285,7 @@ const PopupButtons = ({ close, onButtonPress }) => {
                   <PostSell width={normalize(25)} height={normalize(25)} />
                 </View>
                 <AppText textStyle="body2" customStyle={styles.btnText}>
-                  Sell your products
+                  Sell Your Products
                 </AppText>
                 <View style={styles.exampleHolder}>
                   <AppText textStyle="caption" customStyle={styles.exampleText}>

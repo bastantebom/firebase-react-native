@@ -73,6 +73,8 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
             multiline={true}
             numberOfLines={6}
             textAlignVertical="top"
+            placeholder="e.g. Disclaimer, Terms and Conditions, Returns Policy"
+            placeholderTextColor="#A8AAB7"
           />
         </DismissKeyboardView>
         <View style={styles.buttonWrapper}>
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     flex: 1,
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
 })
 

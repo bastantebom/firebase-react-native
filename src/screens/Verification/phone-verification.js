@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import { Icons } from '@/assets/images/icons'
 import {
   TouchableOpacity,
   View,
@@ -10,7 +11,6 @@ import {
 } from 'react-native'
 import { TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
-import { HeaderBackGray } from '@/assets/images/icons'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import TextInput from '@/components/textinput'
@@ -82,7 +82,13 @@ const PhoneVerificationScreen = ({ navigation }) => {
                 onPress={navigation.goBack}
                 activeOpacity={0.7}
                 style={{ position: 'absolute', left: 0 }}>
-                <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+                <Icons.Back
+                  style={{
+                    width: normalize(24),
+                    height: normalize(24),
+                    color: Colors.primaryMidnightBlue,
+                  }}
+                />
               </TouchableOpacity>
             </View>
             <>
@@ -130,6 +136,21 @@ const PhoneVerificationScreen = ({ navigation }) => {
                     </Text>
                   </TextInput>
                 </View>
+              </View>
+              <View style={{ flexDirection: 'row', padding: normalize(16) }}>
+                <Icons.Lock width={normalize(24)} height={normalize(24)} />
+                <Text
+                  style={[
+                    typography.caption,
+                    {
+                      lineHeight: normalize(18),
+                      marginLeft: 12,
+                      maxWidth: '90%',
+                    },
+                  ]}>
+                  Your personal information will never be shared to other
+                  Servbees users.
+                </Text>
               </View>
               <Button
                 label="Verify"

@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, Dimensions } from 'react-native'
+import { View, Dimensions, Text } from 'react-native'
 import { Divider } from 'react-native-paper'
 import { AppText } from '@/components'
+import typography from '@/globals/typography'
 import {
   normalize,
   Colors,
@@ -61,12 +62,18 @@ const ProfileInfo = ({ profileData }) => {
     <>
       <View style={{ paddingHorizontal: 16, backgroundColor: 'white' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <AppText
-            textStyle="subtitle1"
-            color={Colors.primaryMidnightBlue}
-            customStyle={{ marginRight: 8 }}>
+          <Text
+            style={[
+              typography.subtitle1,
+              {
+                color: Colors.primaryMidnightBlue,
+                marginRight: normalize(8),
+                fontSize: normalize(19),
+              },
+            ]}>
             {display_name || full_name}
-          </AppText>
+          </Text>
+
           <VerifiedBadge size={15} />
         </View>
         <View

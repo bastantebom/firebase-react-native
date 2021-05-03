@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { View, TouchableOpacity, SafeAreaView } from 'react-native'
-
+import { View, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native'
+import { Icons } from '@/assets/images/icons'
 import { AppText, PaddingView, TabNavigation } from '@/components'
-import { HeaderBackGray } from '@/assets/images/icons'
-import { normalize } from '@/globals'
+import { Colors, normalize } from '@/globals'
 import Profiles from './components/Profiles'
 import { UserContext } from '@/context/UserContext'
 import { Context } from '@/context'
@@ -110,7 +109,7 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
                 left: normalize(-6),
                 padding: normalize(6),
               }}>
-              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+              <Icons.Back style={styles.backButton} />
             </TouchableOpacity>
             <AppText textStyle="body3">
               {viewUserInfo.display_name
@@ -124,5 +123,12 @@ const ProfileList = ({ toggleProfileList, viewUserInfo, viewType }) => {
     </SafeAreaView>
   )
 }
+const styles = StyleSheet.create({
+  backButton: {
+    color: Colors.primaryMidnightBlue,
+    width: normalize(24),
+    height: normalize(24),
+  },
+})
 
 export default ProfileList

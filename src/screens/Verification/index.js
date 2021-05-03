@@ -12,7 +12,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Text,
 } from 'react-native'
+import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import ProfileInformationScreen from './profile-information'
 import AddAddressScreen from './add-address'
@@ -133,8 +135,8 @@ const VerificationScreen = ({ navigation }) => {
         <TouchableOpacity onPress={navigation.goBack}>
           <Icons.Back
             style={styles.backButton}
-            height={normalize(16)}
-            width={normalize(16)}
+            height={normalize(24)}
+            width={normalize(24)}
           />
         </TouchableOpacity>
       </View>
@@ -211,6 +213,21 @@ const VerificationScreen = ({ navigation }) => {
             .filter(item => item.status === 'completed')
             .map(renderCompletedItem)}
         </View>
+        <View style={{ flexDirection: 'row', padding: normalize(16) }}>
+          <Icons.Lock width={normalize(24)} height={normalize(24)} />
+          <Text
+            style={[
+              typography.caption,
+              {
+                lineHeight: normalize(18),
+                marginLeft: 12,
+                maxWidth: '90%',
+              },
+            ]}>
+            Your personal information will never be shared to other Servbees
+            users.
+          </Text>
+        </View>
       </ScrollView>
     </>
   )
@@ -222,7 +239,7 @@ const styles = StyleSheet.create({
     padding: normalize(24),
     marginTop: getStatusBarHeight(),
   },
-  backButton: { color: '#91919C', width: normalize(16), height: normalize(16) },
+  backButton: { color: '#1F1A54', width: normalize(24), height: normalize(24) },
   badgeContainer: {
     backgroundColor: Colors.checkboxBorderDefault,
     borderRadius: 8,

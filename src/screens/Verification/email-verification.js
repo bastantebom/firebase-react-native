@@ -14,7 +14,7 @@ import {
   TransitionIndicator,
 } from '@/components'
 import { Colors, normalize } from '@/globals'
-import { HeaderBackGray } from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 import { VF } from '@/components/AppInput'
 import { UserContext } from '@/context/UserContext'
 import Validator from '@/components/AppInput/Validator'
@@ -92,7 +92,13 @@ const EmailVerificationScreen = ({ navigation }) => {
               onPress={navigation.goBack}
               activeOpacity={0.7}
               style={{ position: 'absolute', left: 0 }}>
-              <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+              <Icons.Back
+                style={{
+                  width: normalize(24),
+                  height: normalize(24),
+                  color: Colors.primaryMidnightBlue,
+                }}
+              />
             </TouchableOpacity>
             <AppText textStyle="body3">&nbsp;</AppText>
           </View>

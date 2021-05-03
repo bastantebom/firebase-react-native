@@ -116,7 +116,7 @@ import RadioInactive from './radio-inactive.svg'
 import RadioActive from './radio-active.svg'
 
 import HeaderBack from './header-back.svg'
-import HeaderBackGray from './header-back-gray.svg'
+import HeaderBackGray from './back.svg'
 import HeaderEllipsis from './header-ellipsis'
 import HeaderEllipsisGray from './header-ellipsis-gray'
 import HeaderFollow from './header-follow.svg'
@@ -264,6 +264,7 @@ import HelpfulBadge from '@/assets/images/icons/badge-helpful.svg'
 import LatestTemp from './current-temp.svg'
 import Chat from './chat.svg'
 import ChatGray from './chat-gray.svg'
+import ChatHeader from './chat-header.svg'
 import ShoppingCart from './shopping-cart.svg'
 import PlusSign from './plus-sign.svg'
 import MinusSign from './minus-sign.svg'
@@ -324,6 +325,7 @@ import WelcomeNotif from './WelcomeNotif.svg'
 import InfoGray from './info-menu-gray.svg'
 import Share from './share.svg'
 import MegaPhone from './megaphone.svg'
+import MegaPhoneHeader from './megaphone-header.svg'
 
 import Info from './info.svg'
 import ChatBlue from './chat-blue.svg'
@@ -675,6 +677,7 @@ export const Icons = {
   CashPaymentActive,
   Chat,
   ChatGray,
+  ChatHeader,
   CheckActive,
   CheckboxActive,
   CheckboxCheck,
@@ -729,6 +732,7 @@ export const Icons = {
   LikeHeader,
   Lock,
   MegaPhone,
+  MegaPhoneHeader,
   Minus,
   Mobile,
   More,

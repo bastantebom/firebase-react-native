@@ -72,12 +72,13 @@ const Activity = ({ navigation }) => {
   const renderEmptyBodyText = () => {
     switch (sort.value) {
       case 'all':
-        return 'Start checking what you can offer and discover the best deals in your area.'
+        return 'Now, is the best time to start selling, hustling, and checking the best deals in your community.'
       case 'my offers':
-      case 'my orders':
-        return 'Keep on posting about your products to attract orders, Buzzybee!'
-      default:
         return 'Getting projects starts by making offers, Buzzybee!'
+      case 'my orders':
+        return "Attract orders by posting more! And don't forget to support other bees by ordering, too. "
+      default:
+        return "Save posts you'd want to go back to or republish in the future. "
     }
   }
 
@@ -362,7 +363,7 @@ const Activity = ({ navigation }) => {
                   screen: 'ChatHouse',
                 })
               }>
-              <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
+              <Icons.ChatHeader width={normalize(24)} height={normalize(24)} />
               {!!counts.chat && (
                 <View
                   style={{
@@ -382,7 +383,10 @@ const Activity = ({ navigation }) => {
                   screen: 'Notifications',
                 })
               }>
-              <Icons.MegaPhone width={normalize(20)} height={normalize(20)} />
+              <Icons.MegaPhoneHeader
+                width={normalize(24)}
+                height={normalize(24)}
+              />
               {!!counts.notification && (
                 <View
                   style={{
@@ -431,11 +435,13 @@ const Activity = ({ navigation }) => {
           <View style={styles.emptyState}>
             {renderEmptyIcon()}
 
-            <Text style={styles.emptyHeaderText}>
+            <Text style={[typography.subtitle1, styles.emptyHeaderText]}>
               {renderEmptyHeadingText()}
             </Text>
 
-            <Text style={styles.emptyBodyText}>{renderEmptyBodyText()}</Text>
+            <Text style={[typography.body2, styles.emptyBodyText]}>
+              {renderEmptyBodyText()}
+            </Text>
           </View>
         )}
       </View>

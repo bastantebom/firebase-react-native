@@ -11,6 +11,7 @@ import {
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
+import { ScrollView } from 'react-native-gesture-handler'
 
 /**
  * @typedef {object} SelectPayoutMethodScreenProps
@@ -68,7 +69,7 @@ const SelectPayoutMethodScreen = ({ navigation }) => {
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
         </View>
-        <View style={styles.content}>
+        <ScrollView style={styles.content}>
           <Text
             style={[
               typography.body1,
@@ -123,7 +124,22 @@ const SelectPayoutMethodScreen = ({ navigation }) => {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+          <View
+            style={{ flexDirection: 'row', paddingVertical: normalize(16) }}>
+            <Icons.Lock width={normalize(24)} height={normalize(24)} />
+            <Text
+              style={[
+                typography.caption,
+                {
+                  marginLeft: 12,
+                  maxWidth: '90%',
+                },
+              ]}>
+              Your account details is securely stored and will never be shared
+              to other Servbees users.
+            </Text>
+          </View>
+        </ScrollView>
       </View>
     </>
   )

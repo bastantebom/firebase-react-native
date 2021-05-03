@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, View, StyleSheet, SafeAreaView } from 'react-native'
 import Geocoder from 'react-native-geocoding'
-import { HeaderBackGray } from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 import Config from '@/services/Config'
 import GooglePlacesInput from '@/components/LocationSearchInput'
 import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
@@ -128,7 +128,13 @@ const Location = ({ toggleMap, address, changeFromMapHandler }) => {
             onPress={toggleMap}
             activeOpacity={0.7}
             style={{ position: 'absolute', left: 0 }}>
-            <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+            <Icons.Back
+              style={{
+                width: normalize(24),
+                height: normalize(24),
+                color: Colors.primaryMidnightBlue,
+              }}
+            />
           </TouchableOpacity>
           <AppText textStyle="body3">Address</AppText>
         </View>

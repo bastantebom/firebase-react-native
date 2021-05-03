@@ -1,17 +1,9 @@
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
 import { AppText, PaddingView } from '@/components'
-
-import {
-  HeaderBackGray,
-  HeaderCloseGray,
-  QRLink,
-  QRDownload,
-  QRShare,
-  Close,
-  VerticalEllipsis,
-} from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
+import { VerticalEllipsis } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 
 /**
@@ -42,24 +34,24 @@ const ScreenHeaderTitle = ({
   const RenderIcon = () => {
     if (icon === 'close')
       return (
-        <HeaderCloseGray
-          width={normalize(iconSize)}
-          height={normalize(iconSize)}
+        <Icons.Back
+          style={{
+            width: normalize(iconSize),
+            height: normalize(iconSize),
+            color: Colors.primaryMidnightBlue,
+          }}
         />
       )
 
-    if (icon === 'back')
-      return (
-        <HeaderBackGray
-          width={normalize(iconSize)}
-          height={normalize(iconSize)}
-        />
-      )
+    if (icon === 'back') return <Icons.Back style={styles.backButton} />
 
     return (
-      <HeaderBackGray
-        width={normalize(iconSize)}
-        height={normalize(iconSize)}
+      <Icons.Back
+        style={{
+          width: normalize(iconSize),
+          height: normalize(iconSize),
+          color: Colors.primaryMidnightBlue,
+        }}
       />
     )
   }
@@ -125,5 +117,11 @@ const ScreenHeaderTitle = ({
     </PaddingView>
   )
 }
+
+const styles = StyleSheet.create({
+  backButton: {
+    color: Colors.primaryMidnightBlue,
+  },
+})
 
 export default ScreenHeaderTitle

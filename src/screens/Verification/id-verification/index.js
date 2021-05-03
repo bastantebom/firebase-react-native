@@ -114,6 +114,7 @@ const IdVerificationScreen = ({ navigation }) => {
             Verify Your Identity
           </AppText>
           <AppText
+            textStyle="body2"
             customStyle={{
               color: Colors.contentPlaceholder,
               fontSize: normalize(14),

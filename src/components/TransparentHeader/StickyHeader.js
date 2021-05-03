@@ -14,11 +14,6 @@ import { useNavigation } from '@react-navigation/native'
 import { AppText, CacheableImage, HexagonBorder } from '@/components'
 import { QRScreen, PostEllipsis, OtherPostEllipsis } from './components'
 import {
-  HeaderBack,
-  HeaderFollowing,
-  HeaderFollow,
-  HeaderEllipsis,
-  JarHeartWhite,
   HeaderShareGray,
   HeaderMenuGray,
   HeaderFollowingBlack,
@@ -106,7 +101,6 @@ const StickyHeader = ({
                 size={40}
                 path={profile_photo}
                 dimensions="64x64"
-                borderColor={Colors.primaryMidnightBlue}
               />
             </View>
             <AppText
@@ -128,8 +122,8 @@ const StickyHeader = ({
               <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                 <View style={GlobalStyle.marginLeft1}>
                   <HeaderShareGray
-                    width={normalize(15)}
-                    height={normalize(15)}
+                    width={normalize(22)}
+                    height={normalize(22)}
                   />
                 </View>
               </TouchableOpacity>
@@ -142,8 +136,8 @@ const StickyHeader = ({
                 }}>
                 <View style={GlobalStyle.marginLeft2}>
                   <HeaderMenuGray
-                    width={normalize(15)}
-                    height={normalize(15)}
+                    width={normalize(22)}
+                    height={normalize(22)}
                   />
                 </View>
               </TouchableOpacity>
@@ -161,13 +155,13 @@ const StickyHeader = ({
                   <View style={GlobalStyle.marginLeft1}>
                     {isFollowing ? (
                       <HeaderFollowingBlack
-                        width={normalize(16)}
-                        height={normalize(16)}
+                        width={normalize(22)}
+                        height={normalize(22)}
                       />
                     ) : (
                       <HeaderFollowBlack
-                        width={normalize(16)}
-                        height={normalize(16)}
+                        width={normalize(22)}
+                        height={normalize(22)}
                       />
                     )}
                   </View>
@@ -175,8 +169,8 @@ const StickyHeader = ({
                 <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
                   <View style={GlobalStyle.marginLeft1}>
                     <HeaderShareGray
-                      width={normalize(15)}
-                      height={normalize(15)}
+                      width={normalize(22)}
+                      height={normalize(22)}
                     />
                   </View>
                 </TouchableOpacity>
@@ -186,8 +180,8 @@ const StickyHeader = ({
                   onPress={toggleEllipsisState}>
                   <View style={GlobalStyle.marginLeft1}>
                     <HeaderEllipsisGray
-                      width={normalize(15)}
-                      height={normalize(15)}
+                      width={normalize(22)}
+                      height={normalize(22)}
                     />
                   </View>
                 </TouchableOpacity>
@@ -234,16 +228,16 @@ const styles = StyleSheet.create({
   profileStickyHeader: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: normalize(16),
+    height: normalize(56),
+    paddingHorizontal: normalize(16),
     backgroundColor: Colors.neutralsWhite,
     alignItems: 'center',
     borderBottomColor: Colors.neutralGray,
     borderBottomWidth: normalize(4),
-    borderTopLeftRadius: normalize(18),
+    borderTopLeftRadius: normalize(6),
     borderTopWidth: normalize(1),
     borderTopColor: Colors.neutralsZirconLight,
-    borderTopRightRadius: normalize(18),
+    borderTopRightRadius: normalize(6),
   },
 })
 

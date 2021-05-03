@@ -160,18 +160,11 @@ const ContactUs = ({ toggleContactUs }) => {
                       />
                     </View>
                     <View style={{ marginLeft: normalize(32) }}>
-                      <AppText textStyle="body2medium">Singapore</AppText>
+                      <AppText textStyle="body2medium">Philippines</AppText>
+                      <AppText textStyle="body2">360Verve, OPC </AppText>
                       <AppText textStyle="body2">
-                        Flora Drive #02-12, Singapore 50689242
-                      </AppText>
-                      <AppText
-                        textStyle="body2medium"
-                        customStyle={{ marginTop: normalize(24) }}>
-                        Philippines
-                      </AppText>
-                      <AppText textStyle="body2">
-                        8/F 8 Rockwell Building, Hidalgo Drive, Rockwell Center,
-                        Makati City 1210
+                        41F, Pioneer Highlands West Tower 2, Madison St.,
+                        Mandaluyong City Ph
                       </AppText>
                     </View>
                   </View>
