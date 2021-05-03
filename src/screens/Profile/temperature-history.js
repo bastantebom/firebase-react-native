@@ -1,25 +1,23 @@
 import React, { useState } from 'react'
 import {
   StyleSheet,
-  SafeAreaView,
+  StatusBar,
   View,
   SectionList,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native'
-import {
-  ScreenHeaderTitle,
-  AppText,
-  AppButton,
-  BottomSheetHeader,
-} from '@/components'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+
+import { ScreenHeaderTitle, AppButton, BottomSheetHeader } from '@/components'
 import { normalize, Colors } from '@/globals'
 import { Images, NoReview } from '@/assets/images'
 import { format, isThisMonth } from 'date-fns/esm'
 import { Icons } from '@/assets/images/icons'
 import Modal from 'react-native-modal'
 import { useNavigation } from '@react-navigation/native'
+import typography from '@/globals/typography'
 
 const ListSeparator = () => {
   return <View style={styles.separator}></View>
@@ -83,74 +81,80 @@ const TempHistory = ({ toggleHistory, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1, padding: normalize(24) }}>
-        <ScreenHeaderTitle
-          title="Body Temperature History"
-          close={() => navigation.goBack()}
-        />
-        {data.length ? (
-          <View style={styles.listWrapper}>
-            <SectionList
-              sections={data}
-              ItemSeparatorComponent={ListSeparator}
-              keyExtractor={(item, index) => item.date._nanoseconds + index}
-              renderItem={renderItem}
-              renderSectionHeader={({ section: { title } }) => {
-                return <Text style={styles.sectionHeader}>{title}</Text>
-              }}
-            />
-          </View>
-        ) : (
-          <View style={{ justifyContent: 'space-between', height: '95%' }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                flex: 1,
-              }}>
-              <NoReview />
-              <AppText
-                textStyle="body1medium"
-                customStyle={{
-                  marginTop: normalize(30),
-                  marginBottom: normalize(8),
-                }}>
-                Temperature Tracker{' '}
-              </AppText>
-              <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-                Safety first, always! Keep track of your temperature and body
-                condition before hustling.
-              </AppText>
+    <>
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
+      <View style={{ flex: 1, marginTop: getStatusBarHeight() }}>
+        <View style={{ flex: 1, padding: normalize(24) }}>
+          <ScreenHeaderTitle
+            title="Body Temperature History"
+            close={() => navigation.goBack()}
+          />
+          {data.length ? (
+            <View style={styles.listWrapper}>
+              <SectionList
+                sections={data}
+                ItemSeparatorComponent={ListSeparator}
+                keyExtractor={(item, index) => item.date._nanoseconds + index}
+                renderItem={renderItem}
+                renderSectionHeader={({ section: { title } }) => {
+                  return <Text style={styles.sectionHeader}>{title}</Text>
+                }}
+              />
             </View>
-            <AppButton
-              text="Log Temperature"
-              type="primary"
-              onPress={toggleHistory}
-            />
-          </View>
-        )}
+          ) : (
+            <View style={{ justifyContent: 'space-between', height: '95%' }}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}>
+                <NoReview />
+                <Text
+                  style={[
+                    typography.body1,
+                    { marginTop: normalize(30), marginBottom: normalize(8) },
+                  ]}>
+                  Temperature Tracker{' '}
+                </Text>
+                <Text style={[typography.body2, { textAlign: 'center' }]}>
+                  Safety first, always! Keep track of your temperature and body
+                  condition before hustling.
+                </Text>
+              </View>
+              <AppButton
+                text="Log Temperature"
+                type="primary"
+                onPress={toggleHistory}
+              />
+            </View>
+          )}
+        </View>
+        <Modal
+          isVisible={infoModalVisible}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={250}
+          animationOutTiming={200}
+          style={styles.modal}
+          swipeDirection="down"
+          onSwipeComplete={() => setInfoModalVisible(false)}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              style={{ flex: 1 }}
+              onPress={() => setInfoModalVisible(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <BottomSheetHeader />
+          <HighTemperatureInfoModal close={() => setInfoModalVisible(false)} />
+        </Modal>
       </View>
-      <Modal
-        isVisible={infoModalVisible}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        animationInTiming={250}
-        animationOutTiming={200}
-        style={styles.modal}
-        swipeDirection="down"
-        onSwipeComplete={() => setInfoModalVisible(false)}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            style={{ flex: 1 }}
-            onPress={() => setInfoModalVisible(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <BottomSheetHeader />
-        <HighTemperatureInfoModal close={() => setInfoModalVisible(false)} />
-      </Modal>
-    </SafeAreaView>
+    </>
   )
 }
 

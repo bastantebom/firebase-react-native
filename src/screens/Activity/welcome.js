@@ -1,51 +1,73 @@
 import React from 'react'
-import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-import { AppText, ScreenHeaderTitle } from '@/components'
+import { ScreenHeaderTitle } from '@/components'
 import IllustHive from '@/assets/images/hive-img1.svg'
 import { normalize } from '@/globals'
+import typography from '@/globals/typography'
 
 const Welcome = () => {
   const navigation = useNavigation()
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-      <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
-      <View style={styles.contentWrapper}>
-        <IllustHive />
-        <AppText textStyle="display5">Welcome to Servbees</AppText>
-        <AppText textStyle="body2">
-          Get busy connecting with Buzzybees in your community, selling
-          products, offering your services, and scoring sweet deals. Start with
-          your first post today!
-        </AppText>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.wrapper}>
+        <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
+        <View style={styles.contentWrapper}>
+          <IllustHive />
+          <Text style={typography.display5}>Welcome to Servbees</Text>
+          <Text style={typography.body2}>
+            Get busy connecting with Buzzybees in your community, selling
+            products, offering your services, and scoring sweet deals. Start
+            with your first post today!
+          </Text>
+        </View>
+        <View style={styles.buttonWrapper}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate('dashboard')
+            }}>
+            <Text style={typography.button2}>Explore Postings Near You</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={{ flex: 1, justifyContent: 'flex-end', padding: 24 }}>
-        <TouchableOpacity
-          style={{
-            marginTop: normalize(20),
-            paddingVertical: normalize(10),
-            alignItems: 'center',
-            backgroundColor: '#FFD400',
-            borderRadius: 3,
-          }}
-          onPress={() => {
-            navigation.navigate('dashboard')
-          }}>
-          <AppText textStyle="button2">Explore Postings Near You</AppText>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
+    backgroundColor: 'white',
+  },
   contentWrapper: {
     paddingTop: normalize(20),
     paddingHorizontal: normalize(16),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonWrapper: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    padding: 24,
+  },
+  button: {
+    alignItems: 'center',
+    marginTop: normalize(20),
+    paddingVertical: normalize(10),
+    backgroundColor: '#FFD400',
+    borderRadius: 3,
   },
 })
 

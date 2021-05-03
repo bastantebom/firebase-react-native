@@ -1,17 +1,18 @@
 import React, { useState, useContext } from 'react'
 import {
   View,
-  SafeAreaView,
+  StatusBar,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
   StyleSheet,
+  Text,
 } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import {
   ScreenHeaderTitle,
-  AppText,
   AppButton,
   FloatingAppInput,
   Notification,
@@ -23,6 +24,7 @@ import { Colors, normalize } from '@/globals'
 import { useNavigation } from '@react-navigation/native'
 import Api from '@/services/Api'
 import { Icons } from '@/assets/images/icons'
+import typography from '@/globals/typography'
 
 const UpdateTemp = ({ toggleUpdateTemp }) => {
   const navigation = useNavigation()
@@ -112,19 +114,24 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
   const triggerNotification = (message, type) => {
     setNotificationType(type)
     setNotificationMessage(
-      <AppText
-        textStyle="body2"
-        customStyle={
-          type === 'success' ? notificationText : notificationErrorTextStyle
-        }>
+      <Text
+        style={[
+          typography.body2,
+          type === 'success' ? notificationText : notificationErrorTextStyle,
+        ]}>
         {message}
-      </AppText>
+      </Text>
     )
   }
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
+      <View style={{ flex: 1, marginTop: getStatusBarHeight() }}>
         <TransitionIndicator loading={isUpdating} />
         {isNotificationVisible && (
           <Notification
@@ -137,12 +144,13 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 <Icons.CircleTickWhite />
               )
             }>
-            <View style={{ marginLeft: 15, marginTop: 10 }}>
+            <View
+              style={{ marginLeft: normalize(15), marginTop: normalize(10) }}>
               {notificationMessage}
             </View>
           </Notification>
         )}
-        <KeyboardAvoidingView style={{ flex: 1, padding: 24 }}>
+        <KeyboardAvoidingView style={{ flex: 1, padding: normalize(24) }}>
           <ScreenHeaderTitle
             title="Track your temperature"
             customTitleStyle={{
@@ -162,16 +170,15 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
             }
           />
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={{ paddingVertical: 24 }}>
-              <AppText textStyle="body1" customStyle={{ paddingBottom: 8 }}>
+            <View style={{ paddingVertical: normalize(24) }}>
+              <Text style={[typography.body1, { paddingBottom: normalize(8) }]}>
                 What’s your body temperature today?
-              </AppText>
-              <AppText
-                textStyle="captionConstant"
-                customStyle={{ paddingBottom: 8 }}>
+              </Text>
+              <Text
+                style={[typography.caption, { paddingBottom: normalize(8) }]}>
                 We prioritize health and safety. Please take your temperature
                 using a scanner or thermometer and log it down below.
-              </AppText>
+              </Text>
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('NBTScreen', {
@@ -179,15 +186,14 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                   })
                 }}
                 customStyle={{
-                  paddingBottom: 8,
-                  marginBottom: 12,
+                  paddingBottom: normalize(8),
+                  marginBottom: normalize(12),
                   backgroundColor: 'red',
                 }}>
-                <AppText
-                  textStyle="captionConstant"
-                  color={Colors.contentOcean}>
+                <Text
+                  style={[typography.caption, { color: Colors.contentOcean }]}>
                   Why we’re asking this?
-                </AppText>
+                </Text>
               </TouchableOpacity>
               <View style={styles.inputWrapper}>
                 <FloatingAppInput
@@ -218,11 +224,9 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
                 )}
               </View>
               {copyGuide ? (
-                <AppText
-                  textStyle="captionConstant"
-                  customStyle={{ marginTop: 8 }}>
+                <Text style={[typography.caption, { marginTop: normalize(8) }]}>
                   Body temperature should be within 36.4 °C - 41.0 °C
-                </AppText>
+                </Text>
               ) : null}
             </View>
           </TouchableWithoutFeedback>
@@ -239,7 +243,7 @@ const UpdateTemp = ({ toggleUpdateTemp }) => {
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
     </>
   )
 }
