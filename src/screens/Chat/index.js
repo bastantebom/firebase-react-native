@@ -18,7 +18,7 @@ import {
 import Video from 'react-native-video'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Colors, normalize } from '@/globals'
-import { AudioVideo, HeaderBackGray, SendMessage } from '@/assets/images/icons'
+import { AudioVideo, Icons, SendMessage } from '@/assets/images/icons'
 import firestore from '@react-native-firebase/firestore'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
@@ -304,7 +304,7 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
     <>
       <View style={styles.chatWrapper}>
         <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
-          <HeaderBackGray
+          <Icons.Back
             style={styles.backButton}
             width={normalize(24)}
             height={normalize(24)}
@@ -440,6 +440,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: normalize(16),
+    color: Colors.primaryMidnightBlue,
   },
   composerWrapper: {
     display: 'flex',
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
   sendContainer: {
     backgroundColor: Colors.primaryYellow,
     padding: normalize(12),
-    height: normalize(48),
+    height: normalize(44),
     width: normalize(48),
     marginLeft: normalize(8),
     borderRadius: 4,
