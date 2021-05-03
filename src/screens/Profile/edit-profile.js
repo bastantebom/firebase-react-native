@@ -5,6 +5,7 @@ import {
   ScreenHeaderTitle,
   TransitionIndicator,
 } from '@/components'
+import TextInput from '@/components/textinput'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import {
@@ -70,6 +71,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     displayName: '',
     fullName: '',
     username: '',
+    description: '',
     email: '',
     phoneNumber: '',
     birthDate: format(new Date(), 'MM/dd/yyyy'),
@@ -97,6 +99,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       addresses,
       gender,
       username,
+      description,
       phone_number,
       email,
       cover_photo,
@@ -107,6 +110,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       displayName: display_name || '',
       fullName: full_name || '',
       username: username || '',
+      description: description || '',
       email: email || '',
       phoneNumber: phone_number || '',
       addresses: addresses || [],
@@ -244,6 +248,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         birth_date,
         phone_number,
       }
+
       if (profilePhotoRef) body.profile_photo = profilePhotoRef.fullPath
       if (coverPhotoRef) body.cover_photo = coverPhotoRef.fullPath
 
@@ -490,6 +495,19 @@ const EditProfileScreen = ({ navigation, route }) => {
               ? "This username isn't allowed. Try another one."
               : errors.username}
           </Text>
+        </View>
+
+        <View style={[styles.inputWrapper]}>
+          <TextInput
+            value={formData.description}
+            label="Description"
+            onChangeText={description =>
+              setFormData(data => ({ ...data, description }))
+            }
+            multiline={true}
+            numberOfLines={5}
+            placeholderTextColor="#A8AAB7"
+          />
         </View>
       </>
     )
