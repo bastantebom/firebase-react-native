@@ -12,6 +12,8 @@ import {
   Image,
 } from 'react-native'
 import FastImage from 'react-native-fast-image'
+import LottieView from 'lottie-react-native'
+import assetLoader from '@/assets/animations/asset-loader.json'
 
 const sizeProps = {
   width: '100%',
@@ -100,8 +102,10 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
   return isUrl(source?.uri) ? (
     <>
       {isLoading && (
-        <View style={styles.loader}>
-          <ActivityIndicator color={Colors.contentOcean} size="large" />
+        <View style={styles.loaderWrapper}>
+          <View style={styles.loader}>
+            <LottieView source={assetLoader} autoPlay />
+          </View>
         </View>
       )}
       {Platform.select({
@@ -135,12 +139,15 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
 }
 
 const styles = StyleSheet.create({
-  loader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
+  loaderWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
     height: '100%',
     width: '100%',
+  },
+  loader: {
+    height: 100,
+    width: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },

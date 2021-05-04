@@ -2,6 +2,8 @@ import { Colors, normalize } from '@/globals'
 import React from 'react'
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
+import LottieView from 'lottie-react-native'
+import assetLoader from '@/assets/animations/asset-loader.json'
 
 /**
  * @param {object} props
@@ -16,7 +18,7 @@ const Loader = ({ visible, ...props }) => {
       animationIn="fadeIn"
       animationOut="fadeOut">
       <View style={styles.spinnerWrapper}>
-        <ActivityIndicator animating color={Colors.link} size="large" />
+        <LottieView source={assetLoader} autoPlay />
       </View>
     </Modal>
   )
@@ -32,10 +34,9 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   spinnerWrapper: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     height: normalize(100),
     width: normalize(100),
-    borderRadius: normalize(8),
     alignItems: 'center',
     justifyContent: 'center',
   },
