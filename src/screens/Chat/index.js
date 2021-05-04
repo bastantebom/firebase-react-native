@@ -178,6 +178,7 @@ const ChatScreen = ({ route, navigation }) => {
         />
         <ChatHeader
           user={messagingUser}
+          userInfo={userInfo}
           navigation={navigation}
           post={postDetail}
         />
@@ -299,7 +300,18 @@ const renderSend = props => {
   )
 }
 
-const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
+const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
+  const handleUserPress = () => {
+    if (user?.uid === userInfo?.uid) {
+      navigation.navigate('TabStack', { screen: 'You' })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: { uid: user?.uid },
+      })
+    }
+  }
+
   return (
     <>
       <View style={styles.chatWrapper}>
@@ -314,7 +326,9 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post }) => {
           style={{
             flex: 1,
           }}>
-          <TouchableOpacity style={styles.headerContent} onPress={() => null}>
+          <TouchableOpacity
+            style={styles.headerContent}
+            onPress={handleUserPress}>
             <View style={styles.headerContentImage}>
               <Avatar
                 style={{ height: '100%', width: '100%' }}

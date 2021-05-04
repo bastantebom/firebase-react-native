@@ -179,6 +179,17 @@ const ActivitiesCard = ({ item }) => {
     )
   }
 
+  const handleUserPress = () => {
+    if (user?.uid === item?.post?.uid) {
+      navigation.navigate('TabStack', { screen: 'You' })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: { uid: item?.post?.uid },
+      })
+    }
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -210,24 +221,26 @@ const ActivitiesCard = ({ item }) => {
 
         <View style={styles.infoWrapper}>
           <View style={styles.userInfoWrapper}>
-            <View style={styles.userInfo}>
-              <View style={styles.avatar}>
-                <Avatar
-                  style={{ height: '100%', width: '100%' }}
-                  path={
-                    item.post.uid === user.uid
-                      ? userInfo.profile_photo
-                      : activity?.sellerInfo?.profile_photo
-                  }
-                  size="64x64"
-                />
+            <TouchableOpacity onPress={handleUserPress} activeOpacity={1}>
+              <View style={styles.userInfo}>
+                <View style={styles.avatar}>
+                  <Avatar
+                    style={{ height: '100%', width: '100%' }}
+                    path={
+                      item.post.uid === user.uid
+                        ? userInfo.profile_photo
+                        : activity?.sellerInfo?.profile_photo
+                    }
+                    size="64x64"
+                  />
+                </View>
+                <AppText textStyle="body3" customStyle={styles.username}>
+                  {item.post.uid === user.uid
+                    ? userInfo.display_name || userInfo.full_name
+                    : activity?.sellerInfo?.name}
+                </AppText>
               </View>
-              <AppText textStyle="body3" customStyle={styles.username}>
-                {item.post.uid === user.uid
-                  ? userInfo.display_name || userInfo.full_name
-                  : activity?.sellerInfo?.name}
-              </AppText>
-            </View>
+            </TouchableOpacity>
             <AppText
               textStyle="captionConstant"
               color={Colors.contentPlaceholder}>

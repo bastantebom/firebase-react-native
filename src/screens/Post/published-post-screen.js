@@ -335,7 +335,9 @@ const PublishedPostScreen = ({ navigation, route }) => {
           postId: post.current.id,
           bookingMethod: Object.keys(post.current.booking_methods).sort()[0],
           bookingAddress: userInfo.addresses.find(address => address.default),
-          selectedBookingAddress: userInfo.addresses.find(address => address.default),
+          selectedBookingAddress: userInfo.addresses.find(
+            address => address.default
+          ),
           items: basket.items,
         }
 
@@ -420,6 +422,17 @@ const PublishedPostScreen = ({ navigation, route }) => {
       'Hide your post from your profile and republish anytime you want. All active orders will still be processed.'
     )
     setConfirmModalCallback(() => handleOnArchivePost)
+  }
+
+  const handleUserPress = () => {
+    if (userInfo?.uid === post.current.uid) {
+      navigation.navigate('TabStack', { screen: 'You' })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: { uid: post.current.uid },
+      })
+    }
   }
 
   const handleOnArchivePost = async () => {
@@ -1290,20 +1303,24 @@ const PublishedPostScreen = ({ navigation, route }) => {
     return (
       <Animated.View style={[styles.userSection]}>
         <View style={styles.avatarWrapper}>
-          <Avatar
-            style={styles.avatar}
-            path={user.current.profile_photo}
-            size="64x64"
-          />
+          <TouchableOpacity onPress={handleUserPress} activeOpacity={1}>
+            <Avatar
+              style={styles.avatar}
+              path={user.current.profile_photo}
+              size="64x64"
+            />
+          </TouchableOpacity>
         </View>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={[typography.body1, typography.medium]}>
-              {user.current.display_name || user.current.full_name}
-            </Text>
-            {!!user.current?.account_verified && (
-              <Icons.Verified style={styles.verifiedIcon} />
-            )}
+            <TouchableOpacity onPress={handleUserPress} activeOpacity={1}>
+              <Text style={[typography.body1, typography.medium]}>
+                {user.current.display_name || user.current.full_name}
+              </Text>
+              {!!user.current?.account_verified && (
+                <Icons.Verified style={styles.verifiedIcon} />
+              )}
+            </TouchableOpacity>
           </View>
           <Text
             style={[typography.body1, { color: Colors.contentPlaceholder }]}>
