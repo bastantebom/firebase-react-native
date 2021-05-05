@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
   },
   activityIndicatorWrapper: {
     backgroundColor: 'transparent',
-    height: 100,
-    width: 100,
+    height: 40,
+    width: 40,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',

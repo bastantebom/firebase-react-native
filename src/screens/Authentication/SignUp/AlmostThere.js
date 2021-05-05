@@ -139,7 +139,7 @@ const AlmostThere = () => {
           <ActivityIndicator
             animating={true}
             size="small"
-            color={Colors.contentEbony}
+            color={Colors.primaryYellow}
           />
         )}
         <View style={styles.buttonWrapper}>

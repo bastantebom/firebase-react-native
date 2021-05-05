@@ -167,8 +167,8 @@ const SelectPostScreen = ({ navigation, route }) => {
                 <RefreshControl
                   progressViewOffset={20}
                   refreshing={isRefreshing}
-                  titleColor={Colors.secondaryRoyalBlue}
-                  tintColor={Colors.secondaryRoyalBlue}
+                  titleColor={Colors.primaryMidnightBlue}
+                  tintColor={Colors.primaryYellow}
                   title="Reloading"
                   onRefresh={handleOnRefresh}
                 />
@@ -177,7 +177,7 @@ const SelectPostScreen = ({ navigation, route }) => {
                 !hasMorePost ? null : (
                   <View style={{ padding: normalize(16) }}>
                     <ActivityIndicator
-                      color={Colors.secondaryRoyalBlue}
+                      color={Colors.primaryYellow}
                       style={styles.activeIndicator}
                     />
                   </View>
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',

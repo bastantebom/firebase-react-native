@@ -222,8 +222,8 @@ const PostChat = ({ route }) => {
               <RefreshControl
                 progressViewOffset={20}
                 refreshing={isRefreshing}
-                titleColor="#2E3034"
-                tintColor="#2E3034"
+                titleColor={Colors.primaryMidnightBlue}
+                tintColor={Colors.primaryYellow}
                 title="Refreshing"
                 onRefresh={handleRefresh}
               />

@@ -18,7 +18,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { debounce } from 'lodash'
 
 import { UserContext } from '@/context/UserContext'
-import { normalize } from '@/globals'
+import { Colors, normalize } from '@/globals'
 import { getCurrentPosition, getLocationData } from '@/globals/Utils'
 import NewsFeed from '@/screens/Dashboard/components/Newsfeed/index'
 import SkeletonLoader from '@/screens/Dashboard/components/Newsfeed/skeleton-loader'
@@ -472,15 +472,19 @@ const DashboardScreen = ({ navigation }) => {
                 noMorePost ? (
                   <Text style={styles.noMorePost}>No new buzz right now.</Text>
                 ) : (
-                  <ActivityIndicator style={styles.activeIndicator} />
+                  <ActivityIndicator
+                    animating={true}
+                    size="small"
+                    color={Colors.primaryYellow}
+                  />
                 )
               }
               refreshControl={
                 <RefreshControl
                   progressViewOffset={20}
                   refreshing={isRereshing}
-                  titleColor="#2E3034"
-                  tintColor="#2E3034"
+                  titleColor={Colors.primaryMidnightBlue}
+                  tintColor={Colors.primaryYellow}
                   title="Refreshing"
                   onRefresh={handleOnRefresh}
                 />
@@ -504,8 +508,8 @@ const DashboardScreen = ({ navigation }) => {
                 <RefreshControl
                   progressViewOffset={150}
                   refreshing={isRereshing}
-                  titleColor="#2E3034"
-                  tintColor="#2E3034"
+                  titleColor={Colors.primaryMidnightBlue}
+                  tintColor={Colors.primaryYellow}
                   title="Refreshing"
                   onRefresh={() => {
                     setNoMorePost(false)

@@ -105,7 +105,7 @@ const EmailVerificationScreen = ({ navigation }) => {
           {isLoading ? (
             <View style={[styles.loader]}>
               <ActivityIndicator
-                color="#3781FC"
+                color={Colors.primaryYellow}
                 size="large"
                 animating={true}
               />

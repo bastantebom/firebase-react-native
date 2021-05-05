@@ -12,7 +12,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { groupBy } from 'lodash'
 import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
-import { normalize } from '@/globals'
+import { Colors, normalize } from '@/globals'
 import { Calendar } from '@/assets/images/icons'
 
 import Welcome from '@/screens/Activity/components/notifications/welcome'
@@ -245,8 +245,8 @@ const Notifications = () => {
             refreshControl={
               <RefreshControl
                 refreshing={isRereshing}
-                titleColor="#2E3034"
-                tintColor="#2E3034"
+                titleColor={Colors.primaryMidnightBlue}
+                tintColor={Colors.primaryYellow}
                 title="Refreshing"
                 onRefresh={() => {
                   setNoMoreNorifications(false)

@@ -46,7 +46,7 @@ const Posts = ({
           alignItems: 'center',
           marginVertical: normalize(12),
         }}>
-        <ActivityIndicator color={Colors.contentOcean} />
+        <ActivityIndicator color={Colors.primaryYellow} />
       </View>
     ) : null
   }

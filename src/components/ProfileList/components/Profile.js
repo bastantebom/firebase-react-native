@@ -89,7 +89,11 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
           activeOpacity={0.7}
           onPress={() => unFollowUser(data)}>
           {isLoading ? (
-            <ActivityIndicator />
+            <ActivityIndicator
+              animating={true}
+              size="small"
+              color={Colors.primaryYellow}
+            />
           ) : (
             <View
               style={{
@@ -109,7 +113,11 @@ const Profile = ({ data, type, viewType, toggleProfileList }) => {
       return (
         <TouchableOpacity activeOpacity={0.7} onPress={() => followUser(data)}>
           {isLoading ? (
-            <ActivityIndicator />
+            <ActivityIndicator
+              animating={true}
+              size="small"
+              color={Colors.primaryYellow}
+            />
           ) : (
             <View
               style={{

@@ -131,7 +131,7 @@ const SearchResults = ({
 
       {isLoading && (
         <ActivityIndicator
-          color="#3781FC"
+          color={Colors.primaryYellow}
           height={normalize(24)}
           width={normalize(24)}
           animating={true}

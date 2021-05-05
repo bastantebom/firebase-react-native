@@ -1,6 +1,6 @@
 import { Colors, normalize } from '@/globals'
 import React from 'react'
-import { View, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import Modal from 'react-native-modal'
 import LottieView from 'lottie-react-native'
 import assetLoader from '@/assets/animations/asset-loader.json'
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
   },
   spinnerWrapper: {
     backgroundColor: 'transparent',
-    height: normalize(100),
-    width: normalize(100),
+    height: normalize(40),
+    width: normalize(40),
     alignItems: 'center',
     justifyContent: 'center',
   },

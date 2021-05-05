@@ -487,8 +487,8 @@ function ProfileInfoModal(props) {
           <RefreshControl
             style={{ zIndex: 1 }}
             refreshing={refresh}
-            titleColor="#2E3034"
-            tintColor="#2E3034"
+            titleColor={Colors.primaryMidnightBlue}
+            tintColor={Colors.primaryYellow}
             title="Refreshing"
             onRefresh={refreshPosts}
           />

@@ -271,7 +271,7 @@ const ArchivedPostsScreen = ({ navigation, route }) => {
           alignItems: 'center',
           marginVertical: normalize(12),
         }}>
-        <ActivityIndicator color={Colors.contentOcean} />
+        <ActivityIndicator color={Colors.primaryYellow} size="large" />
       </View>
     ) : isEmpty ? (
       <View

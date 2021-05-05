@@ -151,7 +151,11 @@ const MapLocationScreen = ({ navigation, route }) => {
 
         {!mapInitialized ? (
           <View style={[styles.loader]}>
-            <ActivityIndicator color="#3781FC" size="large" animating={true} />
+            <ActivityIndicator
+              color={Colors.primaryYellow}
+              size="large"
+              animating={true}
+            />
           </View>
         ) : (
           <>

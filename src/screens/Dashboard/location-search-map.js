@@ -205,7 +205,11 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
     <DismissKeyboard isFocused={onInputBlur}>
       {!mapInitialized ? (
         <View style={[styles.loader]}>
-          <ActivityIndicator color="#3781FC" size="large" animating={true} />
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={Colors.primaryYellow}
+          />
         </View>
       ) : (
         <>

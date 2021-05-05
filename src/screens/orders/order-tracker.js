@@ -1341,8 +1341,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             <RefreshControl
               style={{ zIndex: 1 }}
               refreshing={isRefreshing}
-              titleColor="#2E3034"
-              tintColor="#2E3034"
+              titleColor={Colors.primaryMidnightBlue}
+              tintColor={Colors.primaryYellow}
               onRefresh={handleRefresh}
             />
           }>

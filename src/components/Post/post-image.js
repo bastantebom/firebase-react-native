@@ -145,9 +145,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   lottieView: {
-    width: normalize(100),
-    height: normalize(100),
-    backgroundColor: 'transparent',
+    width: normalize(40),
+    height: normalize(40),
+    alignItems: 'center',
+    justifyContent: 'center',
     overflow: 'hidden',
   },
 })

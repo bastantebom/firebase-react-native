@@ -156,7 +156,11 @@ const LikedPostsScreen = ({ navigation, route }) => {
           alignItems: 'center',
           marginVertical: normalize(12),
         }}>
-        <ActivityIndicator color={Colors.contentOcean} />
+        <ActivityIndicator
+          animating={true}
+          size="large"
+          color={Colors.primaryYellow}
+        />
       </View>
     ) : isEmpty ? (
       <View

@@ -51,7 +51,7 @@ const WebviewScreen = ({ navigation, route }) => {
             startInLoadingState={true}
             renderLoading={() => (
               <View style={styles.loadingWrapper}>
-                <ActivityIndicator color={Colors.secondaryRoyalBlue} />
+                <ActivityIndicator color={Colors.primaryYellow} />
               </View>
             )}
           />
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',

@@ -370,7 +370,7 @@ const ImagePickerScreen = ({ navigation, route }) => {
                     <ActivityIndicator
                       animating={true}
                       size="small"
-                      color={Colors.contentOcean}
+                      color={Colors.primaryYellow}
                     />
                   </View>
                 )

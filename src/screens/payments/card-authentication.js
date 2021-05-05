@@ -65,7 +65,7 @@ const CardAuthenticationScreen = ({ navigation, route }) => {
             injectedJavaScript={injectedJavascript}
             renderLoading={() => (
               <View style={styles.loadingWrapper}>
-                <ActivityIndicator color={Colors.secondaryRoyalBlue} />
+                <ActivityIndicator color={Colors.primaryYellow} />
               </View>
             )}
           />

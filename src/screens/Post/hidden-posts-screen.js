@@ -267,7 +267,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
           alignItems: 'center',
           marginVertical: normalize(12),
         }}>
-        <ActivityIndicator color={Colors.contentOcean} />
+        <ActivityIndicator color={Colors.primaryYellow} />
       </View>
     ) : isEmpty ? (
       <View
@@ -332,7 +332,7 @@ const HiddenPostsScreen = ({ navigation, route }) => {
             size="small"
             style={styles.unhideButton}>
             {unhidingPosts.includes(item.id) ? (
-              <ActivityIndicator size="small" color={Colors.contentEbony} />
+              <ActivityIndicator size="small" color={Colors.primaryYellow} />
             ) : (
               <Text style={[typography.medium, typography.caption]}>
                 Unhide
