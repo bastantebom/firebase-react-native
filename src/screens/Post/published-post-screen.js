@@ -331,13 +331,12 @@ const PublishedPostScreen = ({ navigation, route }) => {
       })
     } else if (post.current.type === 'service') {
       if (basket.postId !== post.current.id || shouldReset) {
+        const bookingAddress = post.current.location
         const newBasket = {
           postId: post.current.id,
           bookingMethod: Object.keys(post.current.booking_methods).sort()[0],
-          bookingAddress: userInfo.addresses.find(address => address.default),
-          selectedBookingAddress: userInfo.addresses.find(
-            address => address.default
-          ),
+          bookingAddress,
+          selectedBookingAddress: bookingAddress,
           items: basket.items,
         }
 
@@ -1693,23 +1692,17 @@ const PublishedPostScreen = ({ navigation, route }) => {
             delimiter: ',',
           })}`
 
-    const postTypeIcon = (() => {
-      if (post.current.type === 'sell')
-        return () => (
-          <Icons.PostTypeSell style={styles.postInfoIcon} {...iconSize(18)} />
-        )
-      else if (post.current.type === 'service')
-        return () => (
-          <Icons.PostTypeService
-            style={styles.postInfoIcon}
-            {...iconSize(18)}
-          />
-        )
-      else if (post.current.type === 'need')
-        return () => (
-          <Icons.PostTypeNeed style={styles.postInfoIcon} {...iconSize(18)} />
-        )
-    })()
+    const postTypeIcons = {
+      sell: (
+        <Icons.PostTypeSell style={styles.postInfoIcon} {...iconSize(18)} />
+      ),
+      service: (
+        <Icons.PostTypeService style={styles.postInfoIcon} {...iconSize(18)} />
+      ),
+      need: (
+        <Icons.PostTypeNeed style={styles.postInfoIcon} {...iconSize(18)} />
+      ),
+    }
 
     const postTypeLabelColor = {
       need: Colors.secondaryMountainMeadow,
@@ -1795,7 +1788,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             utilStyles.alignCenter,
             { marginTop: normalize(12) },
           ]}>
-          {postTypeIcon()}
+          {postTypeIcons[post.current.type]}
           <Text style={typography.body1}>
             <Text style={{ color: Colors.neutralsMischka }}>in </Text>
             <Text style={{ color: postTypeLabelColor[post.current.type] }}>

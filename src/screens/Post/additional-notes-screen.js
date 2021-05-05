@@ -45,6 +45,11 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
     navigation.goBack()
   }
 
+  const [maxLines, setMaxLines] = useState(5)
+  const handleOnLayout = event => {
+    setMaxLines(~~(event.nativeEvent.layout.height / 24 - 3))
+  }
+
   return (
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
@@ -57,10 +62,12 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
-            <Text style={styles.title}>Additional Notes</Text>
+            <Text style={[typography.body2, typography.medium]}>
+              Additional Notes
+            </Text>
           </View>
         </View>
-        <DismissKeyboardView style={styles.content}>
+        <DismissKeyboardView style={styles.content} onLayout={handleOnLayout}>
           {!!description?.length && (
             <Text style={[typography.body2, { marginBottom: normalize(16) }]}>
               {description}
@@ -75,6 +82,9 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
             textAlignVertical="top"
             placeholder="e.g. Disclaimer, Terms and Conditions, Returns Policy"
             placeholderTextColor="#A8AAB7"
+            autoHeight
+            minLines={4}
+            maxLines={maxLines}
           />
         </DismissKeyboardView>
         <View style={styles.buttonWrapper}>
@@ -102,10 +112,6 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-  },
-  title: {
-    ...typography.body2,
-    ...typography.medium,
   },
   titleWrapper: {
     alignItems: 'center',

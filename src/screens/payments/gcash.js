@@ -1,13 +1,23 @@
 import React, { useState } from 'react'
-import { View, StatusBar, StyleSheet, Alert } from 'react-native'
-import { getStatusBarHeight } from 'react-native-status-bar-height'
+import {
+  View,
+  StyleSheet,
+  Alert,
+  StatusBar,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
 import Api from '@/services/Api'
-import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 
 import { Colors, normalize } from '@/globals'
 import { LogoGCash } from '@/assets/images'
 import { formatNumber } from 'react-native-currency-input'
 import Button from '@/components/Button'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { Icons } from '@/assets/images/icons'
+import { iconSize } from '@/globals/Utils'
+import typography from '@/globals/typography'
+import Loader from '@/components/loader'
 
 /**
  * @typedef {object} GCashProps
@@ -61,58 +71,64 @@ const GCashScreen = ({ navigation, route }) => {
   return (
     <>
       <StatusBar
-        translucent
+        translucent={true}
         barStyle="dark-content"
-        backgroundColor="transparent"
+        backgroundColor="#EDF0F8"
       />
       <View style={styles.wrapper}>
+        <Loader visible={isLoading} />
         <View style={styles.backgroundHeader} />
-
-        <TransitionIndicator loading={isLoading} />
-        <ScreenHeaderTitle
-          close={navigation.goBack}
-          title="GCash"
-          paddingSize={3}
-        />
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>GCash</Text>
+          </View>
+        </View>
         <View style={styles.contentWrapper}>
           <View>
             <View
               style={{
-                paddingHorizontal: normalize(25),
-                paddingBottom: normalize(25),
+                padding: normalize(30),
                 justifyent: 'space-between',
                 backgroundColor: Colors.neutralsWhite,
                 elevation: 3,
                 borderRadius: 4,
                 marginBottom: normalize(24),
               }}>
-              <View
-                style={{
-                  paddingTop: normalize(25),
-                  width: '100%',
-                  alignItems: 'center',
-                  paddingBottom: normalize(15),
-                }}>
+              <View style={{ width: '100%', alignItems: 'center' }}>
                 <LogoGCash width={normalize(150)} height={normalize(50)} />
               </View>
               <View style={{ alignItems: 'center' }}>
-                <AppText textStyle="display6">
+                <Text style={typography.display6}>
                   ₱
                   {formatNumber(totalPrice, {
                     separator: '.',
                     precision: 2,
                     delimiter: ',',
                   })}
-                </AppText>
-                <AppText textStyle="caption">Amount</AppText>
+                </Text>
+                <Text style={[typography.caption, { color: Colors.icon }]}>
+                  Amount
+                </Text>
               </View>
             </View>
-            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
-              Please confirm the transaction within{'\n'}
-              <AppText textStyle="body2medium" color={Colors.red}>
-                15 minutes
-              </AppText>
-            </AppText>
+            <Text style={[typography.body2, typography.textCenter]}>
+              Please confirm the transaction within
+            </Text>
+            <Text
+              style={[
+                typography.body2,
+                typography.medium,
+                typography.textCenter,
+                { color: Colors.secondaryBrinkPink },
+              ]}>
+              15 minutes
+            </Text>
           </View>
 
           <Button
@@ -129,6 +145,11 @@ const GCashScreen = ({ navigation, route }) => {
 export default GCashScreen
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    marginTop: getStatusBarHeight(),
+    backgroundColor: '#fff',
+  },
   border: {
     borderColor: '#cacbcc',
     borderWidth: 1,
@@ -136,10 +157,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 16,
     borderRadius: 4,
-  },
-  wrapper: {
-    flex: 1,
-    marginTop: getStatusBarHeight(),
   },
   backgroundHeader: {
     backgroundColor: '#EDF0F8',
@@ -152,11 +169,28 @@ const styles = StyleSheet.create({
     opacity: 1,
     zIndex: -1,
   },
-  safeArea: { flex: 1 },
   contentWrapper: {
     padding: normalize(24),
     paddingTop: 0,
     justifyContent: 'space-between',
     flex: 1,
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
   },
 })

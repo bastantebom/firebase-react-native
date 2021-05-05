@@ -212,7 +212,9 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
-            <Text style={styles.title}>Payment Methods</Text>
+            <Text style={[typography.body2, typography.medium]}>
+              Payment Methods
+            </Text>
           </View>
         </View>
         <ScrollView>
@@ -316,10 +318,6 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     paddingVertical: normalize(16),
-  },
-  title: {
-    ...typography.body2,
-    ...typography.medium,
   },
   content: {
     flex: 1,

@@ -131,13 +131,6 @@ const ChangeShippingMethodModal = ({ close, post }) => {
                   {...iconSize(24)}
                 />
               </RadioButton>
-
-              {method === 'pickup' && (
-                <TouchableOpacity
-                  style={{ marginBottom: normalize(16) }}
-                  activeOpacity={0.7}
-                  onPress={handleOnSetSchedulePress}></TouchableOpacity>
-              )}
             </View>
           </>
         ) : (

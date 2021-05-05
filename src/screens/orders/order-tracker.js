@@ -2,13 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 
 import { Colors, normalize } from '@/globals'
-import {
-  AppButton,
-  AppText,
-  BottomSheetHeader,
-  ScreenHeaderTitle,
-  TransitionIndicator,
-} from '@/components'
+import { BottomSheetHeader, TransitionIndicator } from '@/components'
 import openMap from 'react-native-open-maps'
 import {
   Alert,
@@ -22,6 +16,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   UIManager,
+  Linking,
 } from 'react-native'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
@@ -51,6 +46,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import base64 from 'react-native-base64'
 import axios from 'axios'
 import Toast from '@/components/toast'
+import Button from '@/components/Button'
+import { Images } from '@/assets/images'
 
 if (
   Platform.OS === 'android' &&
@@ -80,6 +77,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const [post, setPost] = useState(route.params.post || {})
   const [isLoading, setIsLoading] = useState(false)
   const [orderData, setOrderData] = useState({})
+  const [paymentData, setPaymentData] = useState()
   const [orderStatus, setOrderStatus] = useState({})
   const [title, setTitle] = useState('Order status')
   const [userType, setUserType] = useState('')
@@ -126,10 +124,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   useEffect(() => {
     const newUserType = orderData.seller_id === user.uid ? 'seller' : 'buyer'
     const newTitle = getTitle()
-    const newTotal = (orderData?.items || []).reduce(
-      (total, item) => total + item.price * (item.quantity || 1),
-      0
-    )
+    const newTotal =
+      orderData.offer ||
+      (orderData?.items || []).reduce(
+        (total, item) => total + item.price * (item.quantity || 1),
+        0
+      )
 
     if (newUserType !== userType) setUserType(newUserType)
     if (newTitle !== title) setTitle(newTitle)
@@ -296,6 +296,21 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           }
         })()
       )
+
+      promises.push(
+        (async () => {
+          const query = firestore()
+            .collection('payments')
+            .where('order_id', '==', orderID)
+            .where('status', '==', 'paid')
+          const snapshot = await query.get()
+          const data = snapshot.docs.length
+            ? snapshot.docs[0].data()
+            : undefined
+
+          setPaymentData(data)
+        })()
+      )
       await Promise.all(promises)
     } catch (error) {
       console.log(error)
@@ -313,36 +328,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         orderData,
       },
     })
-  }
-
-  const handleViewPostPress = async () => {
-    if (!user) return
-    setIsLoading(true)
-    const data = post
-
-    try {
-      if (!data.user) {
-        const response = await Api.getUser({ uid: post.uid })
-        const user = response.data
-        data.user = user
-
-        setPost(post => ({ ...post, user }))
-      }
-
-      navigation.push('NBTScreen', {
-        screen: 'posts',
-        params: {
-          screen: 'published-post',
-          params: {
-            post: data,
-          },
-        },
-      })
-    } catch (error) {
-      console.log(error)
-      Alert.alert('Error', 'Oops, something went wrong')
-    }
-    setIsLoading(false)
   }
 
   const handleChatPress = async () => {
@@ -482,7 +467,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       <>
         <View style={styles.statusInfo}>
           {renderOrderStatusHistory()}
-          <View style={[styleUtils.row, styleUtils.alignCenter]}>
+          <View style={[utilStyles.row, utilStyles.alignCenter]}>
             {renderStatusIndicator(orderData.status)}
             <Text
               style={[
@@ -577,8 +562,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderShowDetailsToggle = () => {
     if (orderData.status === 'pending') return null
 
-    const history = orderStatusHistory?.slice?.(0, -1) || []
-
     return (
       <TouchableOpacity
         onPress={() => {
@@ -630,7 +613,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderStatusSection = () => {
     return (
       <View style={[styles.section, styles.orderStatus]}>
-        <View style={styleUtils.row}>
+        <View style={utilStyles.row}>
           {renderStatusInfo()}
           {renderStatusAnimation()}
         </View>
@@ -646,34 +629,29 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           orderData?.sellerData?.full_name
         : orderData?.buyerData?.display_name || orderData?.buyerData?.full_name
 
+    const labels = {
+      sell: userType === 'seller' ? 'Sold to' : 'Sold by',
+      need: userType === 'seller' ? 'Posted by' : 'Offer by',
+      service: userType === 'seller' ? 'Booked by' : 'Service by',
+    }
+
+    const label = labels[post.type]
+
     return (
       <View style={styles.section}>
-        <View style={[styleUtils.row, styleUtils.alignCenter]}>
+        <View style={[utilStyles.row, utilStyles.alignCenter]}>
           {renderAvatar()}
           <View>
-            <Text style={styles.messageSectionName}>{name}</Text>
-            <Text style={styles.messageSectionDescription}>
-              Order # {orderData.id}
+            <Text style={[typography.body2, typography.medium]}>
+              {post.title}
+            </Text>
+            <Text
+              style={[typography.body2, { color: Colors.contentPlaceholder }]}>
+              {label} <Text style={typography.medium}>{name}</Text>
             </Text>
           </View>
         </View>
         <View style={styles.messageSectionButtonsWrapper}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={handleViewPostPress}
-            style={[
-              styles.messageSectionButtonWrapper,
-              { marginRight: normalize(8) },
-            ]}>
-            <View style={styles.messageSectionButton}>
-              <Icons.Eye
-                style={styles.messageSectionButtonIcon}
-                width={normalize(16)}
-                height={normalize(16)}
-              />
-              <Text style={styles.messageSectionButtonText}>View Post</Text>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={handleChatPress}
@@ -681,8 +659,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             <View style={styles.messageSectionButton}>
               <Icons.Chat
                 style={styles.messageSectionButtonIcon}
-                width={normalize(16)}
-                height={normalize(16)}
+                {...iconSize(16)}
               />
               <Text style={styles.messageSectionButtonText}>Message</Text>
             </View>
@@ -692,23 +669,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     )
   }
 
-  const renderDeliverySection = () => {
-    if (post.type === 'need') return
-
-    const shipToLabel =
-      orderData.shipping_method === 'delivery' && post.type === 'sell'
-        ? 'Deliver to'
-        : orderData.shipping_method === 'pickup' && post.type === 'sell'
-        ? 'Pickup at'
-        : post.type === 'service' && orderData.status !== 'ongoing'
-        ? 'Service at'
-        : post.type === 'service' && orderData.status === 'ongoing'
-        ? 'Servicing at'
-        : ''
-
-    const shipTo = orderData?.buyerData?.addresses.find(
-      address => address.default
-    )
+  const renderShippingDetails = () => {
+    if (!['sell', 'service'].includes(post.type)) return
+    const label = post.type === 'sell' ? 'Shipping Details' : 'Service Details'
 
     const handleOnViewMapPress = ({ latitude, longitude }) => {
       openMap({
@@ -719,100 +682,338 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     }
 
     return (
-      <View style={styles.section}>
-        <View style={styles.deliverFrom}>
-          <Icons.Navigation style={styles.sectionIcon} {...iconSize(16)} />
-          <View style={styles.sectionInfo}>
-            <Text style={typography.body1}>
-              From{' '}
-              <Text style={typography.medium}>
-                {orderData?.sellerData?.display_name ||
-                  orderData?.sellerData?.full_name}
-              </Text>
+      <>
+        <View style={styles.sectionLabelWrapper}>
+          <Icons.OrderDetails style={styles.sectionIcon} {...iconSize(16)} />
+          <Text style={[typography.body2, typography.medium]}>{label}</Text>
+        </View>
+        {!!orderData.booking_schedule?.schedule && (
+          <View style={[styles.section, { marginBottom: normalize(8) }]}>
+            <Text style={[typography.body2, typography.medium]}>
+              Service Schedule
             </Text>
-            <Text style={[typography.body2, { marginTop: normalize(4) }]}>
-              {post?.location?.full_address}{' '}
-              <Text style={{ color: Colors.neutralsIron }}> • </Text>
-              <Text
-                style={[typography.medium, typography.link]}
-                onPress={() =>
-                  handleOnViewMapPress({
-                    latitude: post?.location?.latitude,
-                    longitude: post?.location?.longitude,
-                  })
-                }>
-                View Map
-              </Text>
+            <Text
+              style={[
+                typography.body2,
+                { color: Colors.contentPlaceholder, marginTop: normalize(4) },
+              ]}>
+              {orderData.booking_schedule.schedule}
+              {orderData.booking_schedule.time_slot
+                ? `, ${capitalize(orderData.booking_schedule.time_slot)}`
+                : ''}
             </Text>
           </View>
+        )}
+        <View style={styles.section}>
+          {orderData.booking_method === 'walkin' && (
+            <>
+              <View style={styles.shippingInfoWrapper}>
+                <Icons.Navigation
+                  style={styles.shippingInfoIcon}
+                  {...iconSize(16)}
+                />
+                <View style={styles.shippingInfo}>
+                  <Text style={typography.body1}>
+                    Service at{' '}
+                    <Text style={typography.medium}>{post.title}</Text>
+                  </Text>
+                  <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+                    {orderData.booking_address?.full_address
+                      .split(', ')
+                      .slice(0, -1)
+                      .join(', ')}
+                  </Text>
+                </View>
+              </View>
+            </>
+          )}
+          {orderData.booking_method === 'appointment' && (
+            <>
+              <View style={styles.shippingInfoWrapper}>
+                <Icons.Navigation
+                  style={styles.shippingInfoIcon}
+                  {...iconSize(16)}
+                />
+                <View style={styles.shippingInfo}>
+                  <Text style={typography.body1}>
+                    Service at{' '}
+                    <Text style={typography.medium}>
+                      {orderData.booking_address
+                        ? orderData.booking_address.full_address.split(',')[0]
+                        : ''}
+                    </Text>
+                  </Text>
+                  <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+                    {orderData.booking_address
+                      ? orderData.booking_address.full_address
+                          .split(', ')
+                          .slice(0, -1)
+                          .join(', ')
+                      : ''}
+                  </Text>
+                </View>
+              </View>
+            </>
+          )}
+          {orderData.shipping_method === 'delivery' && (
+            <>
+              <View style={styles.shippingInfoWrapper}>
+                <Icons.Navigation
+                  style={styles.shippingInfoIcon}
+                  {...iconSize(16)}
+                />
+                <View style={styles.shippingInfo}>
+                  <Text style={typography.body1}>
+                    From{' '}
+                    <Text style={typography.medium}>
+                      {orderData?.sellerData?.display_name ||
+                        orderData?.sellerData?.full_name}
+                    </Text>
+                  </Text>
+
+                  <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+                    {post?.location?.full_address
+                      .split(', ')
+                      .slice(0, -1)
+                      .join(', ')}{' '}
+                    <Text style={{ color: Colors.neutralsIron }}> • </Text>
+                    <Text
+                      style={[typography.medium, typography.link]}
+                      onPress={() =>
+                        handleOnViewMapPress({
+                          latitude: post?.location?.latitude,
+                          longitude: post?.location?.longitude,
+                        })
+                      }>
+                      View Map
+                    </Text>
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  marginVertical: normalize(16),
+                  height: normalize(1),
+                  width: '100%',
+                  backgroundColor: Colors.Gainsboro,
+                }}
+              />
+              <View>
+                <View style={styles.shippingInfoWrapper}>
+                  <Icons.Navigation
+                    style={styles.shippingInfoIcon}
+                    {...iconSize(16)}
+                  />
+                  <View style={styles.shippingInfo}>
+                    <Text style={typography.body1}>
+                      Deliver to{' '}
+                      <Text style={typography.medium}>
+                        {orderData.shipping_address
+                          ? orderData.shipping_address.full_address.split(
+                              ','
+                            )[0]
+                          : ''}
+                      </Text>
+                    </Text>
+                    <Text
+                      style={[typography.body2, { marginTop: normalize(4) }]}>
+                      {orderData.shipping_address
+                        ? orderData.shipping_address.full_address
+                            .split(', ')
+                            .slice(0, -1)
+                            .join(', ')
+                        : ''}{' '}
+                      <Text style={{ color: Colors.neutralsIron }}> • </Text>
+                      <Text
+                        style={[typography.medium, typography.link]}
+                        onPress={() =>
+                          handleOnViewMapPress({
+                            latitude: orderData?.shipping_address?.latitude,
+                            longitude: orderData?.shipping_address?.longitude,
+                          })
+                        }>
+                        View Map
+                      </Text>
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </>
+          )}
+
+          {orderData.shipping_method === 'pickup' && (
+            <>
+              <View style={styles.shippingInfoWrapper}>
+                <Icons.Navigation
+                  style={styles.shippingInfoIcon}
+                  {...iconSize(16)}
+                />
+                <View style={styles.shippingInfo}>
+                  <Text style={typography.body1}>
+                    Pick up at{' '}
+                    <Text style={typography.medium}>
+                      {orderData?.sellerData?.display_name ||
+                        orderData?.sellerData?.full_name}
+                    </Text>
+                  </Text>
+
+                  <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+                    {post?.location?.full_address
+                      .split(', ')
+                      .slice(0, -1)
+                      .join(', ')}{' '}
+                    <Text style={{ color: Colors.neutralsIron }}> • </Text>
+                    <Text
+                      style={[typography.medium, typography.link]}
+                      onPress={() =>
+                        handleOnViewMapPress({
+                          latitude: post?.location?.latitude,
+                          longitude: post?.location?.longitude,
+                        })
+                      }>
+                      View Map
+                    </Text>
+                  </Text>
+                </View>
+              </View>
+            </>
+          )}
         </View>
-        <View>
-          <View style={[styles.deliverTo]}>
-            {post.type === 'service' ? (
-              <Icons.Truck style={styles.sectionIcon} {...iconSize(16)} />
-            ) : (
-              <Icons.Navigation style={styles.sectionIcon} {...iconSize(16)} />
-            )}
-            <View style={styles.sectionInfo}>
-              <Text style={typography.body1}>
-                {shipToLabel}{' '}
-                <Text style={typography.medium}>
-                  {shipTo?.name || 'Home (Default)'}
-                </Text>
-              </Text>
-              <Text style={[typography.body2, { marginTop: normalize(4) }]}>
-                {shipTo?.full_address}
-                <Text style={{ color: Colors.neutralsIron }}> • </Text>
-                <Text
-                  style={[typography.medium, typography.link]}
-                  onPress={() =>
-                    handleOnViewMapPress({
-                      latitude: shipTo?.latitude,
-                      latitude: shipTo?.latitude,
-                    })
-                  }>
-                  View Map
-                </Text>
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
+      </>
     )
   }
 
-  const renderOfferSection = () => {
+  const renderOfferDetailsSection = () => {
     if (post.type !== 'need') return
 
-    return (
-      <View style={styles.section}>
-        <View style={{ flexDirection: 'row' }}>
-          <Icons.Cash style={styles.sectionIcon} {...iconSize(20)} />
-          <View style={styles.sectionInfo}>
-            <Text style={[typography.body1narrow, typography.medium]}>
-              {userType === 'seller' ? 'Offer' : 'Your Offer'}
-            </Text>
-          </View>
-        </View>
+    const handleOnAttachedPostPress = () => {
+      navigation.push('NBTScreen', {
+        screen: 'posts',
+        params: {
+          screen: 'published-post',
+          params: {
+            id: attachedPost?.id,
+            uid: attachedPost?.uid,
+          },
+        },
+      })
+    }
 
-        <Text
-          style={[
-            typography.body1narrow,
-            typography.medium,
-            { marginTop: normalize(12) },
-          ]}>
-          ₱
-          {formatNumber(orderData.offer, {
-            separator: '.',
-            precision: 2,
-            delimiter: ',',
-          })}
-        </Text>
-      </View>
+    return (
+      <>
+        <View style={styles.sectionLabelWrapper}>
+          <Icons.OrderDetails style={styles.sectionIcon} {...iconSize(16)} />
+          <Text style={[typography.body2, typography.medium]}>
+            Offer Details
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={typography.body2}>Offer</Text>
+          <Text
+            style={[
+              typography.body1,
+              typography.medium,
+              { marginTop: normalize(4) },
+            ]}>
+            ₱
+            {formatNumber(orderData.offer, {
+              separator: '.',
+              precision: 2,
+              delimiter: ',',
+            })}
+          </Text>
+
+          {!!orderData.message?.length && (
+            <>
+              <View
+                style={{
+                  marginVertical: normalize(16),
+                  height: normalize(1),
+                  width: '100%',
+                  backgroundColor: Colors.Gainsboro,
+                }}
+              />
+              <Text style={[typography.body2, typography.medium]}>Message</Text>
+              <Text style={[typography.body2, { marginTop: normalize(8) }]}>
+                {orderData.message}
+              </Text>
+            </>
+          )}
+
+          {!!orderData.attached_post && !!attachedPost && (
+            <>
+              <View
+                style={{
+                  marginVertical: normalize(16),
+                  height: normalize(1),
+                  width: '100%',
+                  backgroundColor: Colors.Gainsboro,
+                }}
+              />
+              <Text style={[typography.body2, typography.medium]}>
+                Attached Post
+              </Text>
+              <PostCard
+                post={attachedPost}
+                containerStyle={{ marginTop: normalize(16) }}
+                onCardPress={handleOnAttachedPostPress}
+                showLikeButton={false}
+              />
+            </>
+          )}
+        </View>
+      </>
     )
   }
 
-  const renderPaymentMethodSection = () => {
+  const renderOrderDetailsSection = () => {
+    if (!orderData) return
+
+    const date =
+      orderData.date &&
+      format(
+        new Date(new Date(orderData.date._seconds * 1000)),
+        `MMM'.' dd, yyyy hh:mmaa`
+      )
+
+    return (
+      <>
+        <View style={styles.sectionLabelWrapper}>
+          <Icons.OrderDetails style={styles.sectionIcon} {...iconSize(16)} />
+          <Text style={[typography.body2, typography.medium]}>
+            Order Details
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text style={typography.body2}>Order ID</Text>
+            <Text style={[typography.body2, typography.medium]}>
+              {orderData.id}
+            </Text>
+          </View>
+          {!!date && (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: normalize(8),
+              }}>
+              <Text style={typography.body2}>Order Placed</Text>
+              <Text style={[typography.body2, typography.medium]}>{date}</Text>
+            </View>
+          )}
+        </View>
+      </>
+    )
+  }
+
+  const renderPaymentInformationSection = () => {
     const paymentMethods = {
       cash: {
         label: 'Cash on Delivery / Pick up',
@@ -836,91 +1037,152 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       },
     }
 
-    return (
-      <View style={styles.section}>
-        <View style={{ flexDirection: 'row' }}>
-          <Icons.Cash style={styles.sectionIcon} {...iconSize(16)} />
-          <View style={styles.sectionInfo}>
-            <Text style={[typography.body1narrow, typography.medium]}>
-              Payment Method
-            </Text>
-          </View>
-        </View>
+    const { icon, label } = paymentMethods[orderData.payment_method] || {}
 
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 16,
-          }}>
-          {paymentMethods[orderData.payment_method]?.icon}
-          <Text
-            style={[
-              typography.body2,
-              typography.medium,
-              { marginLeft: normalize(10) },
-            ]}>
-            {paymentMethods[orderData.payment_method]?.label}
+    const date =
+      paymentData?.date &&
+      format(
+        new Date(paymentData.date._seconds * 1000),
+        `MMM'.' dd, yyyy hh:mmaa`
+      )
+
+    return (
+      <>
+        <View style={styles.sectionLabelWrapper}>
+          <Icons.Cash style={styles.sectionIcon} {...iconSize(16)} />
+          <Text style={[typography.body2, typography.medium]}>
+            Payment Information
           </Text>
         </View>
-      </View>
+        <View style={styles.section}>
+          <View style={[utilStyles.row, utilStyles.alignCenter]}>
+            {icon}
+            <Text
+              style={[
+                typography.body2,
+                typography.medium,
+                { marginLeft: normalize(10) },
+              ]}>
+              {label}
+            </Text>
+          </View>
+          {paymentData && (
+            <>
+              <Text style={[typography.body2, { marginTop: normalize(16) }]}>
+                Payment Reference
+              </Text>
+              <Text
+                style={[
+                  typography.body2,
+                  typography.medium,
+                  { marginTop: normalize(4) },
+                ]}>
+                {paymentData.payment_id}
+              </Text>
+              <Text style={[typography.body2, { marginTop: normalize(16) }]}>
+                Paid on
+              </Text>
+              <Text
+                style={[
+                  typography.body2,
+                  typography.medium,
+                  { marginTop: normalize(4) },
+                ]}>
+                {date}
+              </Text>
+            </>
+          )}
+        </View>
+      </>
     )
   }
 
   const renderSummarySection = () => {
-    if (post.type === 'need') return
+    if (!post) return
+
+    const fee = paymentData ? paymentData.fee : 0
+    const total = userType === 'seller' ? totalPrice - fee : totalPrice
+
+    const labels = {
+      need: 'Offer Summary',
+      service: 'Booking Summary',
+      sell: 'Order Summary',
+    }
+    const label = labels[post.type]
 
     return (
-      <View style={styles.section}>
-        <View style={utilStyles.row}>
-          <Icons.Summary
-            style={{ marginTop: normalize(4) }}
-            {...iconSize(16)}
-          />
-          <View style={[styles.sectionInfo, { marginBottom: normalize(24) }]}>
-            <Text style={[typography.body1narrow, typography.medium]}>
-              {`${post.type === 'sell' ? 'Order' : 'Booking'} Summary`}
-            </Text>
-          </View>
+      <>
+        <View style={styles.sectionLabelWrapper}>
+          <Icons.Summary style={styles.sectionIcon} {...iconSize(16)} />
+          <Text style={[typography.body2, typography.medium]}>{label}</Text>
         </View>
-
-        <View style={styles.summary}>
-          {(orderData.items || []).map((item, index, arr) => {
-            return (
-              <View
-                key={item.id || index}
-                style={[
-                  styles.summaryItem,
-                  index === arr.length - 1
-                    ? {}
-                    : { paddingBottom: normalize(10) },
-                ]}>
-                <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
-                  <Text style={[typography.body1, styles.itemQuantity]}>
-                    {item.quantity || 1}x
-                  </Text>
-                  <View>
-                    <Text style={[typography.body2, typography.medium]}>
-                      {item.name || post.title}
-                    </Text>
-                    {!!item.note && (
-                      <Text
-                        style={[typography.body2, { marginTop: normalize(4) }]}>
-                        {item.note}
+        <View style={styles.section}>
+          <View style={styles.summary}>
+            {['sell', 'service'].includes(post.type) &&
+              (orderData.items || []).map((item, index, arr) => {
+                return (
+                  <View
+                    key={item.id || index}
+                    style={[
+                      styles.summaryItem,
+                      index === arr.length - 1
+                        ? {}
+                        : { paddingBottom: normalize(10) },
+                    ]}>
+                    <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
+                      <Text style={[typography.body1, styles.itemQuantity]}>
+                        {item.quantity || 1}x
                       </Text>
-                    )}
-                    {(item.schedule || orderData.schedule) && (
-                      <Text
-                        style={[typography.body2, { marginTop: normalize(4) }]}>
-                        {format(
-                          new Date(item.schedule || orderData.schedule),
-                          `MMMM dd, yyyy 'at' '${parseTime(
-                            new Date(item.schedule || orderData.schedule)
-                          )}'`
+                      <View>
+                        <Text style={[typography.body2, typography.medium]}>
+                          {item.name || post.title}
+                        </Text>
+                        {!!item.note && (
+                          <Text
+                            style={[
+                              typography.body2,
+                              { marginTop: normalize(4) },
+                            ]}>
+                            {item.note}
+                          </Text>
                         )}
-                      </Text>
-                    )}
+                        {(item.schedule || orderData.schedule) && (
+                          <Text
+                            style={[
+                              typography.body2,
+                              { marginTop: normalize(4) },
+                            ]}>
+                            {format(
+                              new Date(item.schedule || orderData.schedule),
+                              `MMMM dd, yyyy 'at' '${parseTime(
+                                new Date(item.schedule || orderData.schedule)
+                              )}'`
+                            )}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <Text
+                      style={[
+                        typography.body2,
+                        { color: Colors.contentPlaceholder },
+                      ]}>
+                      ₱
+                      {formatNumber(item.price, {
+                        separator: '.',
+                        precision: 2,
+                        delimiter: ',',
+                      })}
+                    </Text>
                   </View>
+                )
+              })}
+            {post.type === 'need' && (
+              <View style={styles.summaryItem}>
+                <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
+                  <Text style={[typography.body2, typography.medium]}>
+                    Offer
+                  </Text>
                 </View>
                 <Text
                   style={[
@@ -928,138 +1190,87 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     { color: Colors.contentPlaceholder },
                   ]}>
                   ₱
-                  {formatNumber(item.price, {
+                  {formatNumber(orderData.offer, {
                     separator: '.',
                     precision: 2,
                     delimiter: ',',
                   })}
                 </Text>
               </View>
-            )
-          })}
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingTop: normalize(16),
-          }}>
-          <Text style={[typography.body1narrow, typography.medium]}>Total</Text>
-          <Text style={[typography.body1narrow, typography.medium]}>
-            ₱
-            {formatNumber(totalPrice, {
-              separator: '.',
-              precision: 2,
-              delimiter: ',',
-            })}
-          </Text>
-        </View>
-      </View>
-    )
-  }
-
-  const renderNotesSection = () => {
-    return (
-      <>
-        {post.type === 'need' && !!orderData.notes?.length && (
-          <View style={styles.section}>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: '#E5E5E5',
-                paddingBottom: normalize(10),
-              }}>
-              <View style={styleUtils.row}>
-                <Icons.Page style={{ color: Colors.icon }} {...iconSize(20)} />
-                <View style={styles.sectionInfo}>
-                  <AppText textStyle="body1medium">Order Notes</AppText>
+            )}
+          </View>
+          <View>
+            {userType === 'seller' && (
+              <>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: normalize(12),
+                  }}>
+                  <Text style={[typography.body2]}>Servbees Fee</Text>
+                  <Text style={[typography.body2]}>
+                    - ₱
+                    {formatNumber(0, {
+                      separator: '.',
+                      precision: 2,
+                      delimiter: ',',
+                    })}
+                  </Text>
                 </View>
-              </View>
-            </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingTop: normalize(12),
+                  }}>
+                  <View style={[utilStyles.row, utilStyles.alignCenter]}>
+                    <Text style={[typography.body2]}>Payment Fees</Text>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+                      <Icons.InfoCircle
+                        style={{ color: Colors.icon, marginLeft: normalize(6) }}
+                        {...iconSize(16)}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {!!paymentData ? (
+                    <Text style={[typography.body2]}>
+                      - ₱
+                      {formatNumber(fee, {
+                        separator: '.',
+                        precision: 2,
+                        delimiter: ',',
+                      })}
+                    </Text>
+                  ) : (
+                    <Text style={[typography.body2, { color: Colors.icon }]}>
+                      awaiting payment
+                    </Text>
+                  )}
+                </View>
+              </>
+            )}
             <View
               style={{
                 flexDirection: 'row',
-                paddingTop: normalize(10),
+                justifyContent: 'space-between',
+                paddingTop: normalize(12),
               }}>
-              <AppText textStyle="body1medium">{orderData.notes}</AppText>
-            </View>
-          </View>
-        )}
-
-        {(post.type === 'need' ||
-          (post.type === 'service' && orderData.status === 'cancelled')) &&
-          !!orderData.message?.length && (
-            <View style={styles.section}>
-              <View style={styleUtils.row}>
-                {post.type === 'need' ? (
-                  <Icons.Page
-                    style={{ color: Colors.icon }}
-                    {...iconSize(20)}
-                  />
-                ) : (
-                  <Icons.Cash
-                    style={{ color: Colors.icon }}
-                    {...iconSize(20)}
-                  />
-                )}
-                <View style={styles.sectionInfo}>
-                  <Text style={[typography.body1narrow, typography.medium]}>
-                    Message
-                  </Text>
-                </View>
-              </View>
-              <Text style={[typography.body2, { marginTop: normalize(12) }]}>
-                {orderData.message}
+              <Text style={[typography.body1narrow, typography.medium]}>
+                Total
+              </Text>
+              <Text style={[typography.body1narrow, typography.medium]}>
+                ₱
+                {formatNumber(total, {
+                  separator: '.',
+                  precision: 2,
+                  delimiter: ',',
+                })}
               </Text>
             </View>
-          )}
-      </>
-    )
-  }
-
-  const renderAttachedPost = () => {
-    const handleOnAttachedPostPress = () => {
-      navigation.push('NBTScreen', {
-        screen: 'posts',
-        params: {
-          screen: 'published-post',
-          params: {
-            post: orderData.attached_post,
-          },
-        },
-      })
-    }
-
-    return (
-      post.type === 'need' &&
-      !!orderData.attached_post?.id &&
-      !!attachedPost && (
-        <View style={[styles.section, { padding: 0, borderWidth: 0 }]}>
-          <View style={{ flexDirection: 'row' }}>
-            <Icons.SendMessage
-              style={[
-                styles.sectionIcon,
-                { color: Colors.checkboxBorderDefault },
-              ]}
-              width={normalize(18)}
-              height={normalize(18)}
-            />
-            <View style={[styles.sectionInfo, { marginBottom: normalize(12) }]}>
-              <AppText textStyle="body1medium">Attached Post</AppText>
-            </View>
           </View>
-          <PostCard
-            post={attachedPost}
-            containerStyle={{
-              padding: normalize(12),
-              borderColor: Colors.neutralsZircon,
-              borderWidth: normalize(1),
-              borderRadius: normalize(8),
-            }}
-            onCardPress={handleOnAttachedPostPress}
-          />
         </View>
-      )
+      </>
     )
   }
 
@@ -1098,15 +1309,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     activeOpacity={0.7}
                     onPress={() => setCancelModalVisible(true)}
                     style={{ width: '100%', alignItems: 'center' }}>
-                    <AppText
-                      textStyle="button2"
-                      color={Colors.secondaryBrinkPink}>
+                    <Text
+                      style={[
+                        typography.body1,
+                        typography.medium,
+                        { color: Colors.secondaryBrinkPink },
+                      ]}>
                       {post.type === 'sell'
                         ? 'Cancel Order'
                         : post.type === 'service'
                         ? 'Cancel Request'
                         : 'Cancel Offer'}
-                    </AppText>
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -1115,20 +1329,27 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             {['sell', 'service'].includes(post.type) &&
               orderData.status === 'confirmed' &&
               orderData.payment_method !== 'cash' && (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={[styleUtils.btnPrimary]}
+                <Button
+                  style={{
+                    margin: normalize(16),
+                    marginBottom: normalize(24),
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                  type="primary"
                   onPress={() => handlePayment(orderData.payment_method)}>
-                  <AppText textStyle="body2medium">Continue to Payment</AppText>
-                  <AppText textStyle="body2">
+                  <Text style={[typography.body1narrow, typography.medium]}>
+                    Continue to Payment
+                  </Text>
+                  <Text style={typography.subtitle1}>
                     ₱
                     {formatNumber(totalPrice, {
                       separator: '.',
                       precision: 2,
                       delimiter: ',',
                     })}
-                  </AppText>
-                </TouchableOpacity>
+                  </Text>
+                </Button>
               )}
 
             {orderData.status === 'confirmed' &&
@@ -1139,11 +1360,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     activeOpacity={0.7}
                     onPress={() => setCancelModalVisible(true)}
                     style={{ width: '100%', alignItems: 'center' }}>
-                    <AppText
-                      textStyle="button2"
-                      color={Colors.secondaryBrinkPink}>
+                    <Text
+                      style={[
+                        typography.body1,
+                        typography.medium,
+                        { color: Colors.secondaryBrinkPink },
+                      ]}>
                       Cancel Request
-                    </AppText>
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -1160,23 +1384,22 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   padding: normalize(15),
                 }}>
                 <View style={{ width: '40%' }}>
-                  <AppButton
-                    type="secondary"
-                    text="Decline"
+                  <Button
+                    label="Decline"
                     onPress={() => setDeclineModalVisible(true)}
                   />
                 </View>
                 <View style={{ width: '55%' }}>
-                  <AppButton
+                  <Button
                     type="primary"
-                    onPress={() => handleStatusChange('confirmed')}
-                    text={
+                    label={
                       post.type === 'sell'
                         ? 'Confirm Order'
                         : post.type === 'need'
                         ? 'Confirm Offer'
                         : 'Confirm Request'
                     }
+                    onPress={() => handleStatusChange('confirmed')}
                   />
                 </View>
               </View>
@@ -1196,15 +1419,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <AppText
-                      textStyle="button2"
-                      color={Colors.secondaryBrinkPink}>
+                    <Text
+                      style={[
+                        typography.body1,
+                        typography.medium,
+                        { color: Colors.secondaryBrinkPink },
+                      ]}>
                       {post.type === 'sell'
                         ? 'Cancel Order'
                         : post.type === 'service'
                         ? 'Cancel Request'
                         : null}
-                    </AppText>
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -1220,10 +1446,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                         orderData.payment_method === 'cash') ||
                         (orderData.status === 'paid' &&
                           orderData.payment_method !== 'cash')) && (
-                        <AppButton
+                        <Button
                           type="primary"
                           onPress={() => handleStatusChange('delivering')}
-                          text="Confirm for Delivery"
+                          label="Confirm for Delivery"
                         />
                       )}
                     {orderData.shipping_method === 'pickup' &&
@@ -1231,10 +1457,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                         orderData.payment_method === 'cash') ||
                         (orderData.status === 'paid' &&
                           orderData.payment_method !== 'cash')) && (
-                        <AppButton
+                        <Button
                           type="primary"
                           onPress={() => handleStatusChange('pickup')}
-                          text="Confirm for Pick Up"
+                          label="Confirm for Pick Up"
                         />
                       )}
                   </>
@@ -1248,11 +1474,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     orderData.payment_method === 'cash') ||
                   (orderData.status === 'paid' &&
                     orderData.payment_method !== 'cash') ? (
-                    <AppButton
+                    <Button
                       type="primary"
                       onPress={() => handleStatusChange('completed')}
-                      text="Order Completed"
-                      customStyle={{ marginBottom: 16 }}
+                      label="Order Completed"
+                      style={{ marginBottom: normalize(16) }}
                     />
                   ) : null}
                   {!['completed', 'cancelled', 'declined', 'pending'].includes(
@@ -1266,11 +1492,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                         alignItems: 'center',
                         padding: normalize(12),
                       }}>
-                      <AppText
-                        textStyle="button2"
-                        color={Colors.secondaryBrinkPink}>
+                      <Text
+                        style={[
+                          typography.body1,
+                          typography.medium,
+                          { color: Colors.secondaryBrinkPink },
+                        ]}>
                         Cancel Request
-                      </AppText>
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -1280,20 +1509,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             {post.type === 'sell' &&
               ['delivering', 'pickup'].includes(orderData.status) && (
                 <View style={{ padding: normalize(16) }}>
-                  <AppButton
+                  <Button
                     type="primary"
                     onPress={() => handleStatusChange('completed')}
-                    text="Order Completed"
+                    label="Order Completed"
                   />
                 </View>
               )}
 
             {post.type === 'need' && orderData.status === 'confirmed' && (
               <View style={{ padding: normalize(16) }}>
-                <AppButton
+                <Button
                   type="primary"
                   onPress={() => handleStatusChange('completed')}
-                  text="Offer Completed"
+                  label="Offer Completed"
                 />
               </View>
             )}
@@ -1302,15 +1531,56 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               orderData.status
             ) && (
               <View style={{ padding: normalize(16) }}>
-                <AppButton
+                <Button
                   type="primary"
                   onPress={navigation.goBack}
-                  text="Done"
+                  label="Done"
                 />
               </View>
             )}
           </>
         )}
+      </View>
+    )
+  }
+
+  const renderBuyerNote = () => {
+    if (userType !== 'buyer' || (userType === 'buyer' && post.type === 'need'))
+      return
+
+    const handleOnEmailUsPress = () => {
+      Linking.openURL('mailto:help@servbees.com')
+    }
+
+    return (
+      <View style={styles.buyerNote}>
+        <View style={[utilStyles.row, utilStyles.alignCenter]}>
+          <Images.HelpCenter style={{ marginRight: normalize(8) }} />
+          <Text
+            style={[
+              typography.body1narrow,
+              typography.medium,
+              { color: Colors.primaryMidnightBlue },
+            ]}>
+            Not satisfied with your order?
+          </Text>
+        </View>
+        <Text style={[typography.caption, { marginTop: normalize(4) }]}>
+          If you have problems with your order, email us with the order ID and
+          details of your order until{' '}
+          <Text style={typography.medium}>
+            {'<'}TD + 4days{'>'}
+          </Text>
+        </Text>
+
+        <TouchableOpacity
+          style={{ marginTop: normalize(16) }}
+          activeOpacity={0.7}
+          onPress={handleOnEmailUsPress}>
+          <Text style={[typography.body2, typography.medium, typography.link]}>
+            Email Us
+          </Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -1329,11 +1599,17 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       <View style={styles.wrapper}>
         <View style={styles.headerBackground} />
         <TransitionIndicator loading={isLoading} />
-        <ScreenHeaderTitle
-          close={navigation.goBack}
-          title={title}
-          paddingSize={3}
-        />
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>{title}</Text>
+          </View>
+        </View>
 
         <ScrollView
           style={styles.scrollWrapper}
@@ -1348,12 +1624,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           }>
           {renderStatusSection()}
           {renderMessageSection()}
-          {renderDeliverySection()}
-          {renderOfferSection()}
-          {renderNotesSection()}
-          {renderPaymentMethodSection()}
+          {renderShippingDetails()}
+          {renderOfferDetailsSection()}
+          {renderOrderDetailsSection()}
+          {renderPaymentInformationSection()}
           {renderSummarySection()}
-          {renderAttachedPost()}
+          {renderBuyerNote()}
         </ScrollView>
 
         {renderActionButtons()}
@@ -1489,13 +1765,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     lineHeight: normalize(18),
   },
-  messageSectionName: {
-    color: Colors.contentEbony,
-    fontFamily: 'RoundedMplus1c-Medium',
-    fontSize: normalize(14),
-    letterSpacing: 0.25,
-    lineHeight: normalize(21),
-  },
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
@@ -1533,11 +1802,8 @@ const styles = StyleSheet.create({
     padding: normalize(16),
   },
   sectionIcon: {
-    marginTop: normalize(4),
     color: Colors.icon,
-  },
-  sectionInfo: {
-    marginLeft: normalize(8),
+    marginRight: normalize(8),
   },
   statusAnimation: {
     flexBasis: 120,
@@ -1588,24 +1854,47 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.Gainsboro,
     paddingBottom: normalize(16),
   },
-})
-
-const styleUtils = StyleSheet.create({
-  row: {
+  shippingInfoIcon: {
+    marginRight: normalize(8),
+    marginTop: normalize(4),
+    color: Colors.icon,
+  },
+  shippingInfoWrapper: {
     flexDirection: 'row',
   },
-  alignCenter: {
+  shippingInfo: {
+    flex: 1,
+  },
+  sectionLabelWrapper: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: normalize(16),
+    marginVertical: normalize(14),
   },
-  btnPrimary: {
-    padding: normalize(16),
-    justifyContent: 'space-between',
-    backgroundColor: Colors.primaryYellow,
-    borderRadius: 5,
+  header: {
     flexDirection: 'row',
-    marginTop: 15,
-    marginBottom: 24,
-    marginHorizontal: 16,
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
+  },
+  buyerNote: {
+    margin: normalize(24),
+    marginTop: 0,
+    padding: normalize(16),
+    backgroundColor: Colors.secondarySolitude,
+    borderRadius: normalize(8),
   },
 })
 

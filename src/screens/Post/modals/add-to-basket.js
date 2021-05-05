@@ -19,8 +19,6 @@ import {
 import CurrencyInput, { formatNumber } from 'react-native-currency-input'
 import { Context } from '@/context'
 import cloneDeep from 'lodash.clonedeep'
-import { format } from 'date-fns'
-import CustomDatePicker from '../components/custom-date-picker'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -51,10 +49,6 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
   const { basket, setBasket } = useContext(Context)
   const [quantity, setQuantity] = useState(item.quantity || 1)
   const [notes, setNotes] = useState(item.notes || '')
-  const [datePickerVisible, setDatePickerVisible] = useState(false)
-  const [selectedDate, setSelectedDate] = useState()
-  const [initDate, setInitDate] = useState(item.schedule || new Date())
-  const [schedule, setSchedule] = useState(item.schedule)
   const inBasket = !!basket.items?.some?.(_item => _item.id === item.id)
 
   const handleOnSubmit = async () => {
@@ -77,8 +71,6 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
           newItems[index].quantity = quantity
           newItems[index].notes = notes
         }
-      } else if (post.type === 'sell') {
-        newItems[index].schedule = schedule
       }
     } else {
       if (post.type === 'sell') {
@@ -93,7 +85,6 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
         newItems.push(
           cloneDeep({
             ...item,
-            schedule,
           })
         )
       }
@@ -117,27 +108,7 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
   }
 
   const handleOnBackPress = () => {
-    datePickerVisible ? setDatePickerVisible(false) : close()
-  }
-
-  const handleOnSetSchedulePress = () => {
-    setDatePickerVisible(true)
-    setSelectedDate(initDate)
-  }
-
-  const handleOnDateSelected = date => {
-    setSelectedDate(new Date(date))
-  }
-
-  const handleOnSaveSchedulePress = () => {
-    setDatePickerVisible(false)
-    setSchedule(selectedDate)
-    setInitDate(selectedDate)
-  }
-
-  const canSubmit = () => {
-    if (post.type === 'service' && !schedule) return false
-    return true
+    close()
   }
 
   return (
@@ -147,220 +118,154 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
         style={{ marginTop: normalize(24) }}
         activeOpacity={0.7}
         onPress={handleOnBackPress}>
-        {datePickerVisible ? (
-          <Icons.Back
-            style={{ color: Colors.primaryMidnightBlue }}
-            {...iconSize(24)}
-          />
-        ) : (
-          <Icons.Close
-            style={{ color: Colors.primaryMidnightBlue }}
-            {...iconSize(24)}
-          />
-        )}
+        <Icons.Close
+          style={{ color: Colors.primaryMidnightBlue }}
+          {...iconSize(24)}
+        />
       </TouchableOpacity>
 
       <View style={styles.content}>
-        {datePickerVisible ? (
-          <View>
-            <Text
-              style={[typography.subtitle1, { marginVertical: normalize(16) }]}>
-              Set Schedule
+        <View style={styles.postDetails}>
+          {!!item.image && (
+            <PostImage
+              style={styles.postImage}
+              path={item.image}
+              size="128x128"
+              postType={post.type}
+            />
+          )}
+          <View style={utilStyles.flex1}>
+            <Text style={[typography.body1narrow, typography.medium]}>
+              {item.name}
             </Text>
-            {!!initDate && (
-              <CustomDatePicker
-                minutes={['00', '30', '00']}
-                initDate={initDate}
-                onDateSelected={handleOnDateSelected}
-                minimumDate={new Date()}
-              />
-            )}
-
-            <View style={styles.buttonWrapper}>
+            <Text
+              style={[typography.body2, { color: Colors.contentPlaceholder }]}>
+              {item.description}
+            </Text>
+          </View>
+          <Text style={[typography.body1narrow, typography.medium]}>
+            ₱
+            {formatNumber(item.price, {
+              separator: '.',
+              precision: 2,
+              delimiter: ',',
+            })}
+          </Text>
+        </View>
+        {post.type === 'sell' && (
+          <View style={styles.quantityWrapper}>
+            <Text style={[typography.body1, utilStyles.flex1]}>Quantity</Text>
+            <View style={[utilStyles.row, utilStyles.alignCenter]}>
               <Button
-                label="Save"
-                type="primary"
-                onPress={handleOnSaveSchedulePress}
+                type={quantity > (inBasket ? 0 : 1) ? 'primary' : 'disabled'}
+                style={styles.changeQuantityButton}
+                onPress={() =>
+                  quantity > (inBasket ? 0 : 1) && setQuantity(quantity - 1)
+                }>
+                <Icons.Minus
+                  style={{
+                    color:
+                      quantity === (inBasket ? 0 : 1)
+                        ? Colors.contentEbony
+                        : '#fff',
+                  }}
+                  {...iconSize(18)}
+                />
+              </Button>
+              <CurrencyInput
+                underlineColorAndroid="transparent"
+                style={styles.input}
+                value={quantity}
+                delimiter={null}
+                separator={null}
+                precision={0}
+                onChangeValue={setQuantity}
+                maxValue={20}
+                minValue={inBasket ? 0 : 1}
               />
+              <Button
+                type={quantity < 20 ? 'primary' : 'disabled'}
+                style={styles.changeQuantityButton}
+                onPress={() => quantity < 20 && setQuantity(quantity + 1)}>
+                <Icons.Plus
+                  style={{
+                    color: quantity >= 20 ? Colors.contentEbony : '#fff',
+                  }}
+                  {...iconSize(18)}
+                />
+              </Button>
             </View>
           </View>
-        ) : (
-          <>
-            <View style={styles.postDetails}>
-              {!!item.image && (
-                <PostImage
-                  style={styles.postImage}
-                  path={item.image}
-                  size="128x128"
-                  postType={post.type}
-                />
-              )}
-              <View style={utilStyles.flex1}>
-                <Text style={[typography.body1narrow, typography.medium]}>
-                  {item.name}
-                </Text>
+        )}
+        {!!item.custom_requests && (
+          <View style={styles.notesWrapper}>
+            <TextInput
+              label="Notes (Optional)"
+              placeholder="e.g. no onions"
+              placeholderTextColor="#A8AAB7"
+              value={notes}
+              onChangeText={setNotes}
+            />
+          </View>
+        )}
+
+        <View style={styles.buttonWrapper}>
+          {!(
+            post.type === 'service' &&
+            basket.items?.some(_item => _item.id === item.id)
+          ) && (
+            <Button
+              style={styles.submitButton}
+              type="primary"
+              onPress={handleOnSubmit}>
+              {!quantity ? (
                 <Text
                   style={[
-                    typography.body2,
-                    { color: Colors.contentPlaceholder },
+                    typography.body1narrow,
+                    typography.medium,
+                    { color: '#fff', flex: 1, textAlign: 'center' },
                   ]}>
-                  {item.description}
+                  Remove
                 </Text>
-              </View>
-              <Text style={[typography.body1narrow, typography.medium]}>
-                ₱
-                {formatNumber(item.price, {
-                  separator: '.',
-                  precision: 2,
-                  delimiter: ',',
-                })}
-              </Text>
-            </View>
-            {post.type === 'sell' ? (
-              <View style={styles.quantityWrapper}>
-                <Text style={[typography.body1, utilStyles.flex1]}>
-                  Quantity
+              ) : post.type === 'sell' ? (
+                <>
+                  <Text style={[typography.body1narrow, typography.medium]}>
+                    Add to Order
+                  </Text>
+                  <Text style={[typography.body1narrow, typography.medium]}>
+                    ₱
+                    {formatNumber(item.price * quantity, {
+                      separator: '.',
+                      precision: 2,
+                      delimiter: ',',
+                    })}
+                  </Text>
+                </>
+              ) : (
+                <Text
+                  style={[
+                    typography.body1narrow,
+                    typography.medium,
+                    utilStyles.flex1,
+                    typography.textCenter,
+                  ]}>
+                  Book
                 </Text>
-                <View style={[utilStyles.row, utilStyles.alignCenter]}>
-                  <Button
-                    type={
-                      quantity > (inBasket ? 0 : 1) ? 'primary' : 'disabled'
-                    }
-                    style={styles.changeQuantityButton}
-                    onPress={() =>
-                      quantity > (inBasket ? 0 : 1) && setQuantity(quantity - 1)
-                    }>
-                    <Icons.Minus
-                      style={{
-                        color:
-                          quantity === (inBasket ? 0 : 1)
-                            ? Colors.contentEbony
-                            : '#fff',
-                      }}
-                      {...iconSize(18)}
-                    />
-                  </Button>
-                  <CurrencyInput
-                    underlineColorAndroid="transparent"
-                    style={styles.input}
-                    value={quantity}
-                    delimiter={null}
-                    separator={null}
-                    precision={0}
-                    onChangeValue={setQuantity}
-                    maxValue={20}
-                    minValue={inBasket ? 0 : 1}
-                  />
-                  <Button
-                    type={quantity < 20 ? 'primary' : 'disabled'}
-                    style={styles.changeQuantityButton}
-                    onPress={() => quantity < 20 && setQuantity(quantity + 1)}>
-                    <Icons.Plus
-                      style={{
-                        color: quantity >= 20 ? Colors.contentEbony : '#fff',
-                      }}
-                      {...iconSize(18)}
-                    />
-                  </Button>
-                </View>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={styles.scheduleInput}
-                activeOpacity={0.7}
-                onPress={handleOnSetSchedulePress}>
-                <View pointerEvents="none">
-                  <TextInput
-                    inputStyle={{ color: Colors.contentEbony }}
-                    label={item.schedule ? 'Schedule' : 'Set Schedule'}
-                    disabled
-                    filled
-                    editable={false}
-                    value={
-                      schedule
-                        ? format(
-                            schedule,
-                            `MMMM dd, yyyy 'at' '${parseTime(schedule)}'`
-                          )
-                        : undefined
-                    }
-                    placeholderTextColor="#A8AAB7"
-                    rightIcon={() => (
-                      <Icons.ChevronDown style={{ color: Colors.icon }} />
-                    )}
-                  />
-                </View>
-              </TouchableOpacity>
-            )}
-            {!!item.custom_requests && (
-              <View style={styles.notesWrapper}>
-                <TextInput
-                  label="Notes (Optional)"
-                  placeholder="e.g. no onions"
-                  placeholderTextColor="#A8AAB7"
-                  value={notes}
-                  onChangeText={setNotes}
-                />
-              </View>
-            )}
+              )}
+            </Button>
+          )}
 
-            <View style={styles.buttonWrapper}>
+          {post.type === 'service' &&
+            basket.items?.some(_item => _item.id === item.id) && (
               <Button
-                style={styles.submitButton}
-                type={
-                  !canSubmit() ? 'disabled' : !quantity ? 'danger' : 'primary'
-                }
-                onPress={handleOnSubmit}
-                disabled={!canSubmit()}>
-                {!quantity ? (
-                  <Text
-                    style={[
-                      typography.body1narrow,
-                      typography.medium,
-                      { color: '#fff', flex: 1, textAlign: 'center' },
-                    ]}>
-                    Remove
-                  </Text>
-                ) : post.type === 'sell' ? (
-                  <>
-                    <Text style={[typography.body1narrow, typography.medium]}>
-                      Add to Order
-                    </Text>
-                    <Text style={[typography.body1narrow, typography.medium]}>
-                      ₱
-                      {formatNumber(item.price * quantity, {
-                        separator: '.',
-                        precision: 2,
-                        delimiter: ',',
-                      })}
-                    </Text>
-                  </>
-                ) : (
-                  <Text
-                    style={[
-                      typography.body1narrow,
-                      typography.medium,
-                      utilStyles.flex1,
-                      typography.textCenter,
-                    ]}>
-                    Book
-                  </Text>
-                )}
-              </Button>
-
-              {post.type === 'service' &&
-                basket.items?.some(_item => _item.id === item.id) && (
-                  <Button
-                    style={{ marginTop: normalize(16) }}
-                    type="danger"
-                    label="Remove"
-                    onPress={handleOnRemoveService}
-                    labelStyle={{ color: '#fff' }}
-                  />
-                )}
-            </View>
-          </>
-        )}
+                style={{ marginTop: normalize(16) }}
+                type="danger"
+                label="Remove"
+                onPress={handleOnRemoveService}
+                labelStyle={{ color: '#fff' }}
+              />
+            )}
+        </View>
       </View>
     </DismissKeyboardView>
   )
@@ -422,12 +327,6 @@ const styles = StyleSheet.create({
     ...iconSize(32),
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  scheduleInput: {
-    marginBottom: normalize(16),
-    paddingTop: normalize(16),
-    borderTopColor: Colors.neutralGray,
-    borderTopWidth: normalize(1),
   },
 })
 

@@ -17,6 +17,7 @@ import { formatNumber } from 'react-native-currency-input'
  * @property {function} props.onUserPress
  * @property {function} props.onPostPress
  * @property {function} props.onCardPress
+ * @property {boolean} props.showLikeButton
  * @property {import('react-native').StyleProp<import('react-native').ViewStyle>} props.thumbnailStyle
  * @property {import('react-native').StyleProp<import('react-native').ViewStyle>} props.containerStyle
  */
@@ -30,6 +31,7 @@ const PostCard = React.memo(
     currentLocation,
     thumbnailStyle,
     containerStyle,
+    showLikeButton = true,
   }) => {
     const { user } = useContext(UserContext)
 
@@ -109,20 +111,22 @@ const PostCard = React.memo(
               </Text>
             </View>
           </View>
-          <TouchableOpacity
-            disabled={!onLikePress}
-            style={styles.likeButton}
-            activeOpacity={0.7}
-            onPress={() => onLikePress(post)}>
-            {!post.likes?.includes?.(user?.uid) ? (
-              <Icons.Like style={{ color: Colors.icon }} {...iconSize(24)} />
-            ) : (
-              <Icons.LikeActive
-                style={{ color: Colors.icon }}
-                {...iconSize(24)}
-              />
-            )}
-          </TouchableOpacity>
+          {showLikeButton && (
+            <TouchableOpacity
+              disabled={!onLikePress}
+              style={styles.likeButton}
+              activeOpacity={0.7}
+              onPress={() => onLikePress(post)}>
+              {!post.likes?.includes?.(user?.uid) ? (
+                <Icons.Like style={{ color: Colors.icon }} {...iconSize(24)} />
+              ) : (
+                <Icons.LikeActive
+                  style={{ color: Colors.icon }}
+                  {...iconSize(24)}
+                />
+              )}
+            </TouchableOpacity>
+          )}
         </View>
       )
     }

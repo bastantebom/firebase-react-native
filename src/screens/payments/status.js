@@ -1,19 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, StatusBar, StyleSheet, Text, View } from 'react-native'
-import { formatNumber } from 'react-native-currency-input'
+import {
+  ActivityIndicator,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import firestore from '@react-native-firebase/firestore'
 
 import { Images } from '@/assets/images'
-import { AppButton, ScreenHeaderTitle } from '@/components'
-import { normalize } from '@/globals'
+import { ScreenHeaderTitle } from '@/components'
+import Button from '@/components/Button'
+import { Colors, normalize } from '@/globals'
+import typography from '@/globals/typography'
 import { CommonActions } from '@react-navigation/native'
-import moment from 'moment'
+import { formatNumber } from 'react-native-currency-input'
+import { format } from 'date-fns'
+import { Icons } from '@/assets/images/icons'
+import { iconSize } from '@/globals/Utils'
+import { normalizeUnits } from 'moment'
 
 /**
  * @typedef {object} PaymentStatusProps
  * @property {string} status
  * @property {number} amount
+ * @property {object} paymentData
  */
 
 /**
@@ -23,30 +36,33 @@ import moment from 'moment'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'PaymentStatus'>} param0 */
 const PaymentStatusScreen = ({ navigation, route }) => {
-  const { status, amount, orderId } = route.params
-  const [paymentInfo, setPaymenInfo] = useState({})
-  const [sellerName, setSellerName] = useState(null)
+  const { status, amount, paymentId, sellerName } = route.params
+  const [paymentData, setPaymentData] = useState()
 
   const statusInfo = {
     success: {
       title: 'Payment Successful',
-      description: `You have paid ₱ ${formatNumber(amount, {
-        separator: '.',
-        precision: 2,
-        delimiter: ',',
-      })} to ${sellerName}`,
-      buttonText: 'Back',
-      image: () => <Images.PaymentSuccess />,
-      paymentReference: {
-        id: paymentInfo?.payment_id,
-        date: paymentInfo?.date,
-      },
+      description: (
+        <Text>
+          Your have paid ₱
+          <Text style={typography.medium}>
+            {formatNumber(amount, {
+              separator: '.',
+              precision: 2,
+              delimiter: ',',
+            })}
+          </Text>{' '}
+          to <Text style={typography.medium}>{sellerName}</Text>
+        </Text>
+      ),
+      label: 'Back',
+      image: <Images.PaymentSuccess />,
     },
     failed: {
       title: 'Payment Unsuccessful',
       description: 'The transaction failed due to unspecified reasons.',
-      buttonText: 'Try again',
-      image: () => <Images.PaymentFailed />,
+      label: 'Try again',
+      image: <Images.PaymentFailed />,
     },
   }
 
@@ -64,87 +80,110 @@ const PaymentStatusScreen = ({ navigation, route }) => {
     )
   }
 
-  const getPaymentInfo = async () => {
-    try {
-      const [payment, order] = await Promise.all([
-        (async () => {
-          const paymentQuery = firestore()
-            .collection('payments')
-            .where('order_id', '==', orderId)
-          const paymentDocs = await paymentQuery.get()
-          const paymentData = paymentDocs.docs.map(doc => doc.data())
-
-          return paymentData[0]
-        })(),
-        (async () => {
-          const orderDoc = await firestore()
-            .collection('orders')
-            .doc(orderId)
-            .get()
-
-          return orderDoc.data()
-        })(),
-      ])
-
-      const userDoc = await firestore()
-        .collection('users')
-        .doc(order.seller_id)
-        .get()
-      const userData = userDoc.data()
-
-      setSellerName(
-        userData.display_name || userData.full_name || userData.username
-      )
-      setPaymenInfo(payment)
-    } catch (error) {
-      console.error(error.message)
-      Alert.alert('Error', 'Oops, something went wrong.')
-    }
-  }
+  const date = format(
+    new Date(paymentData ? paymentData.date._seconds * 1000 : Date.now()),
+    `MMM'.' dd, yyyy hh:mmaa`
+  )
 
   useEffect(() => {
     navigation.removeListener('beforeRemove', backPressHandler)
     navigation.addListener('beforeRemove', backPressHandler)
 
-    getPaymentInfo()
-
     return () => navigation.removeListener('beforeRemove', backPressHandler)
   }, [navigation])
 
+  useEffect(() => {
+    if (!paymentId) return
+    return firestore()
+      .doc(`payments/${paymentId}`)
+      .onSnapshot(snapshot => {
+        setPaymentData(snapshot.data() || {})
+      })
+  }, [])
+
   return (
     <>
-      <StatusBar
-        translucent
-        barStyle="dark-content"
-        backgroundColor="transparent"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <View style={styles.wrapper}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+        </View>
         <ScreenHeaderTitle close={navigation.goBack} paddingSize={3} />
         <View style={styles.contentWrapper}>
           <View style={styles.content}>
-            {statusInfo[status].image()}
+            {statusInfo[status].image}
             <View style={styles.infoWrapper}>
-              <Text style={styles.statusTitle}>{statusInfo[status].title}</Text>
-              <Text style={styles.statusText}>
+              <Text
+                style={[
+                  typography.body1,
+                  typography.medium,
+                  typography.textCenter,
+                ]}>
+                {statusInfo[status].title}
+              </Text>
+              <Text
+                style={[
+                  typography.body2,
+                  typography.textCenter,
+                  { marginTop: normalize(8) },
+                ]}>
                 {statusInfo[status].description}
               </Text>
-            </View>
-            <View style={styles.reference}>
-              <Text style={styles.referenceTitle}>Payment Reference ID:</Text>
-              <Text style={styles.referenceText}>
-                {statusInfo[status]?.paymentReference?.id}
-              </Text>
-              <Text style={styles.referenceText}>
-                {moment
-                  .unix(statusInfo[status]?.paymentReference?.date?._seconds)
-                  .format('MMM D YYYY, h:mm a') || 'N/A'}
-              </Text>
+
+              {status === 'success' && (
+                <>
+                  <Text
+                    style={[
+                      typography.body2,
+                      typography.textCenter,
+                      {
+                        color: Colors.contentPlaceholder,
+                        marginTop: normalize(24),
+                      },
+                    ]}>
+                    Payment Reference ID:
+                  </Text>
+                  {!!paymentData?.payment_id ? (
+                    <Text
+                      style={[
+                        typography.body2,
+                        typography.medium,
+                        typography.textCenter,
+                        {
+                          color: Colors.contentPlaceholder,
+                          marginVertical: normalize(4),
+                        },
+                      ]}>
+                      {paymentData?.payment_id}
+                    </Text>
+                  ) : (
+                    <ActivityIndicator
+                      style={{ marginVertical: normalize(4) }}
+                      size="small"
+                      color={Colors.contentOcean}
+                    />
+                  )}
+                  <Text
+                    style={[
+                      typography.body2,
+                      typography.textCenter,
+                      { color: Colors.contentPlaceholder },
+                    ]}>
+                    {date}
+                  </Text>
+                </>
+              )}
             </View>
           </View>
           <View style={styles.buttonWrapper}>
-            <AppButton
-              text={statusInfo[status].buttonText}
+            <Button
               type="primary"
+              label={statusInfo[status].label}
               onPress={navigation.goBack}
             />
           </View>

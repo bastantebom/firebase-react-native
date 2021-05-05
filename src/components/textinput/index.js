@@ -39,6 +39,9 @@ const TextField = ({
   children,
   message,
   messageStyle,
+  autoHeight,
+  minLines = 4,
+  maxLines = 6,
   ...props
 }) => {
   const labelPosition = useRef(
@@ -51,6 +54,7 @@ const TextField = ({
     )
   ).current
   const [isFocused, setIsFocused] = useState(false)
+  const [currentNumberOfLines, setCurrentNumberOfLines] = useState(0)
   const inputRef = useRef(null)
 
   const handleFocus = () => {
@@ -93,14 +97,28 @@ const TextField = ({
     setIsFocused(false)
   }
 
+  const handleOnContentSizeChange = event => {
+    setCurrentNumberOfLines(~~(event.nativeEvent.contentSize.height / 24 - 1))
+  }
+
   if (!containerStyle) containerStyle = {}
   if (!inputStyle) inputStyle = {}
   if (!labelStyle) labelStyle = {}
-  if (props.multiline && props.numberOfLines) {
+  if (props.multiline && (props.numberOfLines || autoHeight)) {
     containerStyle = { ...containerStyle, height: 'auto' }
     inputStyle = {
       ...inputStyle,
-      height: normalize(24 * (props.numberOfLines + (label?.length ? 1 : 0))),
+      height: normalize(
+        24 *
+          ((autoHeight
+            ? currentNumberOfLines < minLines
+              ? minLines
+              : currentNumberOfLines > maxLines
+              ? maxLines
+              : currentNumberOfLines
+            : props.numberOfLines) +
+            (label?.length ? 1 : 0))
+      ),
       marginTop: normalize(10),
     }
     if (!label?.length) inputStyle.paddingTop = 0
@@ -197,6 +215,7 @@ const TextField = ({
           onBlur={handleBlur}
           value={value}
           placeholderTextColor="#A8AAB7"
+          onContentSizeChange={handleOnContentSizeChange}
           {...props}
         />
       )}

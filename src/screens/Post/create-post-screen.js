@@ -272,7 +272,7 @@ const CreatePostScreen = ({ navigation, route }) => {
     const disabledMethods = []
     if (
       (postType === 'need' && formData.budget.maximum < 100) ||
-      (!formData.isMultiple && formData.price < 100)
+      (postType !== 'need' && !formData.isMultiple && formData.price < 100)
     )
       disabledMethods.push('gcash', 'grabpay', 'card')
     else if (

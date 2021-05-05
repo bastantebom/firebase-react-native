@@ -89,6 +89,7 @@ import Error from './error.svg'
 import NoPosts from './no-posts.svg'
 import Image from './image.svg'
 import NoPayoutMethod from './no-payout-method.svg'
+import HelpCenter from './help-center.svg'
 
 export {
   Guide,
@@ -172,4 +173,5 @@ export const Images = {
   Success,
   Verify,
   Image,
+  HelpCenter,
 }

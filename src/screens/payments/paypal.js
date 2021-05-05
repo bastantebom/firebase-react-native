@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
-import { View, StatusBar, StyleSheet, Alert } from 'react-native'
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Api from '@/services/Api'
-import {
-  AppText,
-  PaddingView,
-  ScreenHeaderTitle,
-  TransitionIndicator,
-} from '@/components'
 
 import { Colors, normalize } from '@/globals'
 import { LogoPaypal } from '@/assets/images'
 import { formatNumber } from 'react-native-currency-input'
 import Button from '@/components/Button'
+import Loader from '@/components/loader'
+import { Icons } from '@/assets/images/icons'
+import { iconSize } from '@/globals/Utils'
+import typography from '@/globals/typography'
 
 /**
  * @typedef {object} PaypalProps
@@ -81,23 +86,23 @@ const PaypalScreen = ({ navigation, route }) => {
       <StatusBar
         translucent
         barStyle="dark-content"
-        backgroundColor="transparent"
+        backgroundColor="#EDF0F8"
       />
       <View style={styles.wrapper}>
+        <Loader visible={isLoading} />
         <View style={styles.backgroundHeader} />
-        <TransitionIndicator loading={isLoading} />
-        <ScreenHeaderTitle
-          close={navigation.goBack}
-          title="PayPal"
-          paddingSize={3}
-        />
-        <PaddingView
-          paddingSize={3}
-          style={{
-            paddingTop: 0,
-            justifyContent: 'space-between',
-            flex: 1,
-          }}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>PayPal</Text>
+          </View>
+        </View>
+        <View style={styles.contentWrapper}>
           <View>
             <View
               style={{
@@ -119,23 +124,29 @@ const PaypalScreen = ({ navigation, route }) => {
                 <LogoPaypal width={normalize(150)} height={normalize(50)} />
               </View>
               <View style={{ alignItems: 'center' }}>
-                <AppText textStyle="display6">
+                <Text style={typography.display6}>
                   ₱
                   {formatNumber(totalPrice, {
                     separator: '.',
                     precision: 2,
                     delimiter: ',',
                   })}
-                </AppText>
-                <AppText textStyle="caption">Amount</AppText>
+                </Text>
+                <Text
+                  style={[
+                    typography.caption,
+                    { color: Colors.contentPlaceholder },
+                  ]}>
+                  Amount
+                </Text>
               </View>
             </View>
-            <AppText textStyle="body2" customStyle={{ textAlign: 'center' }}>
+            <Text style={[typography.body2, typography.textCenter]}>
               Please confirm the transaction within{'\n'}
-              <AppText textStyle="body2medium" color={Colors.red}>
+              <Text style={typography.medium} color={Colors.red}>
                 15 minutes
-              </AppText>
-            </AppText>
+              </Text>
+            </Text>
           </View>
 
           <Button
@@ -144,7 +155,7 @@ const PaypalScreen = ({ navigation, route }) => {
             label="Proceed"
             onPress={handleSubmit}
           />
-        </PaddingView>
+        </View>
       </View>
     </>
   )
@@ -162,6 +173,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     marginTop: getStatusBarHeight(),
+    backgroundColor: '#fff',
   },
   backgroundHeader: {
     backgroundColor: '#EDF0F8',
@@ -180,6 +192,24 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     justifyContent: 'space-between',
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
   },
 })
 

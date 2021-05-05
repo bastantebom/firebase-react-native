@@ -6,12 +6,12 @@ import {
   StyleSheet,
   Dimensions,
   StatusBar,
+  Text,
 } from 'react-native'
 import { Divider } from 'react-native-paper'
 import Modal from 'react-native-modal'
 
-import { ArchivePostMenu, Icons } from '@/assets/images/icons'
-import { AppText, PaddingView, ScreenHeaderTitle } from '@/components'
+import { AppText, PaddingView } from '@/components'
 import { Colors, normalize } from '@/globals'
 import {
   MenuEdit,
@@ -24,6 +24,8 @@ import {
   ContactUs,
   Notifications,
   InviteFriendsMenu,
+  Icons,
+  ArchivePostMenu,
 } from '@/assets/images/icons'
 
 import {
@@ -34,6 +36,8 @@ import {
 } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { iconSize } from '@/globals/Utils'
+import typography from '@/globals/typography'
 
 const OwnMenu = ({ navigation, triggerNotify }) => {
   const { providerData, signOut } = useContext(UserContext)
@@ -153,18 +157,20 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
 
   return (
     <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <View style={styles.wrapper}>
-        <StatusBar
-          translucent
-          barStyle="dark-content"
-          backgroundColor={'#fff'}
-        />
-        <ScreenHeaderTitle
-          title="Settings"
-          close={navigation.goBack}
-          paddingSize={3}
-        />
-        <ScrollView style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>Settings</Text>
+          </View>
+        </View>
+        <ScrollView>
           <View
             style={{
               paddingBottom: 24,
@@ -220,14 +226,19 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                       },
                     })
                   }>
-                  <View style={{ flexDirection: 'row', marginBottom: 16 }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginBottom: normalize(16),
+                    }}>
                     <Icons.PayoutWallet
                       width={normalize(24)}
                       height={normalize(24)}
                     />
-                    <AppText customStyle={{ marginLeft: 8 }} textStyle="body1">
+                    <Text
+                      style={[typography.body1, { marginLeft: normalize(8) }]}>
                       Payout Method
-                    </AppText>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -249,9 +260,10 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                 <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <ContactUs width={normalize(20)} height={normalize(20)} />
-                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                    <Text
+                      style={[typography.body1, { marginLeft: normalize(12) }]}>
                       Contact Us
-                    </AppText>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -311,9 +323,9 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                       width={normalize(20)}
                       height={normalize(20)}
                     />
-                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                    <Text style={[typography.body1, { marginLeft: 12 }]}>
                       Blocked Users
-                    </AppText>
+                    </Text>
                   </View>
                 </TouchableOpacity>
 
@@ -325,9 +337,9 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                       alignItems: 'center',
                     }}>
                     <AboutRed width={normalize(20)} height={normalize(20)} />
-                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                    <Text style={[typography.body1, { marginLeft: 12 }]}>
                       About
-                    </AppText>
+                    </Text>
                   </View>
                 </TouchableOpacity>
 
@@ -340,58 +352,58 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                   }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <MenuLogOut width={normalize(20)} height={normalize(20)} />
-                    <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
+                    <Text style={[typography.body1, { marginLeft: 12 }]}>
                       Log out
-                    </AppText>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
             </PaddingView>
           </View>
         </ScrollView>
-
-        <Modal
-          isVisible={about}
-          animationIn="slideInRight"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <About toggleAbout={toggleAbout} />
-        </Modal>
-
-        <Modal
-          isVisible={contactServbees}
-          animationIn="slideInRight"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <ContactServbees toggleContactUs={toggleContactUs} />
-        </Modal>
-
-        <Modal
-          isVisible={questions}
-          animationIn="slideInRight"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <FaqScreen toggleFaq={toggleFaq} />
-        </Modal>
       </View>
+
+      <Modal
+        isVisible={about}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <About toggleAbout={toggleAbout} />
+      </Modal>
+
+      <Modal
+        isVisible={contactServbees}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <ContactServbees toggleContactUs={toggleContactUs} />
+      </Modal>
+
+      <Modal
+        isVisible={questions}
+        animationIn="slideInRight"
+        animationInTiming={450}
+        animationOut="slideOutLeft"
+        animationOutTiming={450}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <FaqScreen toggleFaq={toggleFaq} />
+      </Modal>
     </>
   )
 }
@@ -401,6 +413,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     marginTop: getStatusBarHeight(),
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
   },
   menuItem: {
     flexDirection: 'row',
