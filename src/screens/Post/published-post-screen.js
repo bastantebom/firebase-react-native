@@ -1763,6 +1763,8 @@ const PublishedPostScreen = ({ navigation, route }) => {
       })
     }
 
+    console.log(descriptionLines)
+
     return (
       <View style={styles.postContent}>
         <Text style={[typography.display6, styles.postTitle]}>
@@ -1833,11 +1835,12 @@ const PublishedPostScreen = ({ navigation, route }) => {
               <View style={{ flex: 1 }}>
                 <Text
                   style={typography.body1}
-                  numberOfLines={10}
+                  numberOfLines={!descriptionLines ? null : 10}
                   ellipsizeMode="clip"
-                  onTextLayout={e =>
-                    setDescriptionLines(e.nativeEvent.lines.length)
-                  }>
+                  onTextLayout={e => {
+                    !descriptionLines &&
+                      setDescriptionLines(e.nativeEvent.lines.length)
+                  }}>
                   {post.current.description}
                 </Text>
                 {descriptionLines > 10 && (
