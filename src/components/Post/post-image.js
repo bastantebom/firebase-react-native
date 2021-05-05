@@ -1,16 +1,8 @@
 import { DefaultNeed, DefaultSell, DefaultService } from '@/assets/images'
-import { Colors } from '@/globals'
-import { isUrl } from '@/globals/Utils'
+import { isUrl, normalize } from '@/globals/Utils'
 import ImageApi from '@/services/image-api'
 import React, { useEffect, useState } from 'react'
-import {
-  ActivityIndicator,
-  PixelRatio,
-  Platform,
-  StyleSheet,
-  View,
-  Image,
-} from 'react-native'
+import { PixelRatio, Platform, StyleSheet, View, Image } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import LottieView from 'lottie-react-native'
 import assetLoader from '@/assets/animations/asset-loader.json'
@@ -102,10 +94,13 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
   return isUrl(source?.uri) ? (
     <>
       {isLoading && (
-        <View style={styles.loaderWrapper}>
-          <View style={styles.loader}>
-            <LottieView source={assetLoader} autoPlay />
-          </View>
+        <View style={styles.loader}>
+          <LottieView
+            source={assetLoader}
+            autoPlay
+            resizeMode="cover"
+            style={styles.lottieView}
+          />
         </View>
       )}
       {Platform.select({
@@ -139,17 +134,21 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
 }
 
 const styles = StyleSheet.create({
-  loaderWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  loader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     height: '100%',
     width: '100%',
-  },
-  loader: {
-    height: 100,
-    width: 100,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  lottieView: {
+    width: normalize(100),
+    height: normalize(100),
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
   },
 })
 
