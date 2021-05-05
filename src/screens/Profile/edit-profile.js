@@ -43,6 +43,7 @@ import { parse, format } from 'date-fns/esm'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Api from '@/services/Api'
 import ImageApi from '@/services/image-api'
+import typography from '@/globals/typography'
 
 /**
  * @typedef {object} EditProfileScreenProps
@@ -506,8 +507,14 @@ const EditProfileScreen = ({ navigation, route }) => {
             }
             multiline={true}
             numberOfLines={5}
+            maxLength={600}
             placeholderTextColor="#A8AAB7"
           />
+          <Text
+            style={[
+              typography.caption,
+              { textAlign: 'right', marginTop: normalize(8) },
+            ]}>{`${formData.description.length}/600`}</Text>
         </View>
       </>
     )

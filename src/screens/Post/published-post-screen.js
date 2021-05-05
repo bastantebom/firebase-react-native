@@ -1757,8 +1757,6 @@ const PublishedPostScreen = ({ navigation, route }) => {
       })
     }
 
-    console.log(descriptionLines)
-
     return (
       <View style={styles.postContent}>
         <Text style={[typography.display6, styles.postTitle]}>
