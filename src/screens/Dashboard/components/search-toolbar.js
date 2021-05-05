@@ -1,9 +1,4 @@
-import {
-  FilterDark,
-  HeaderBackGray,
-  LikeDark,
-  SearchDark,
-} from '@/assets/images/icons'
+import { FilterDark, Icons, LikeDark, SearchDark } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useRef, useState } from 'react'
@@ -165,7 +160,11 @@ const SearchToolbar = ({
           { transform: [{ translateX: backPosition }] },
         ]}>
         <Animated.View style={{ opacity: backOpacity }}>
-          <HeaderBackGray width={normalize(24)} height={normalize(24)} />
+          <Icons.Back
+            width={normalize(24)}
+            height={normalize(24)}
+            style={{ color: Colors.icon }}
+          />
         </Animated.View>
       </AnimatedTouchable>
       <View style={{ flex: 1 }}>
