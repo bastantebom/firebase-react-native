@@ -18,12 +18,12 @@ const { height } = Dimensions.get('screen')
  * @param {object} props
  * @param {string} props.description
  **/
-const PostDescriptionModal = ({ description, close }) => {
+const PostDescriptionModal = ({ title, description, close }) => {
   return (
     <View style={styles.container}>
       <BottomSheetHeader />
       <View style={styles.titleWrapper}>
-        <Text style={styles.title}>Post Description</Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
       <ScrollView style={styles.content}>
         <TouchableWithoutFeedback style={{ flex: 1 }}>

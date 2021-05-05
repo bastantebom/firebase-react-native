@@ -844,6 +844,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           </TouchableWithoutFeedback>
         }>
         <PostDescriptionModal
+          title={post.current.title}
           description={post.current.description}
           close={() => setPostDescriptionModalVisible(false)}
         />
