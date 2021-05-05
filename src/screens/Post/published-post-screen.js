@@ -1822,7 +1822,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           <>
             <View style={styles.divider} />
             <View style={[utilStyles.row]}>
-              <Icons.InfoCircle
+              <Icons.Page
                 style={[styles.postInfoIcon, { marginTop: normalize(2) }]}
                 {...iconSize(18)}
               />
@@ -2007,7 +2007,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           <>
             <View style={styles.divider} />
             <View style={utilStyles.row}>
-              <Icons.Page
+              <Icons.InfoCircle
                 style={[styles.postInfoIcon, { marginTop: normalize(2) }]}
                 {...iconSize(18)}
               />
