@@ -102,9 +102,7 @@ const MoreInfo = ({ profileInfo }) => {
               </View>
               <View style={styles.following}>
                 <AppText textStyle="caption" color={Colors.profileLink}>
-                  {following > 1
-                    ? `${following} Followings`
-                    : `${following} Following`}
+                  {`${following} Following`}
                 </AppText>
               </View>
             </View>
