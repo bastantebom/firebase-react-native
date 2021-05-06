@@ -137,21 +137,6 @@ const PhoneVerificationScreen = ({ navigation }) => {
                   </TextInput>
                 </View>
               </View>
-              <View style={{ flexDirection: 'row', padding: normalize(16) }}>
-                <Icons.Lock width={normalize(24)} height={normalize(24)} />
-                <Text
-                  style={[
-                    typography.caption,
-                    {
-                      lineHeight: normalize(18),
-                      marginLeft: 12,
-                      maxWidth: '90%',
-                    },
-                  ]}>
-                  Your personal information will never be shared to other
-                  Servbees users.
-                </Text>
-              </View>
               <Button
                 label="Verify"
                 type="primary"

@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Icons } from '@/assets/images/icons'
 import { AppText, TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
+import Modal from 'react-native-modal'
+import Privacy from '@/screens/Authentication/SignUp/components/PrivacyPolicy'
 import {
   CardStyleInterpolators,
   createStackNavigator,
@@ -13,6 +15,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  Dimensions,
 } from 'react-native'
 import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -29,6 +32,7 @@ import MapLocationScreen from './map-location'
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Verification'>} param0 */
 const VerificationScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [privacyVisible, setPrivacyVisible] = useState(false)
   const { user } = useContext(UserContext)
 
   const [verifications, setVerifications] = useState([
@@ -114,6 +118,25 @@ const VerificationScreen = ({ navigation }) => {
         <AppText textStyle="body1">{item.completedLabel}</AppText>
         <Icons.CheckActive />
       </View>
+    )
+  }
+
+  const renderPrivacyModal = () => {
+    return (
+      <Modal
+        isVisible={privacyVisible}
+        animationIn="slideInRight"
+        animationInTiming={200}
+        animationOut="slideOutRight"
+        animationOutTiming={180}
+        onBackButtonPress={() => setPrivacyVisible(false)}
+        style={{
+          margin: 0,
+          backgroundColor: 'white',
+          height: Dimensions.get('window').height,
+        }}>
+        <Privacy onClose={() => setPrivacyVisible(false)} />
+      </Modal>
     )
   }
 
@@ -224,10 +247,22 @@ const VerificationScreen = ({ navigation }) => {
                 maxWidth: '90%',
               },
             ]}>
-            Your personal information will never be shared to other Servbees
-            users.
+            Your privacy is important to us, we do not share your personal
+            information. Check our{' '}
+            <Text
+              style={[
+                typography.caption,
+                { textDecorationLine: 'underline', color: Colors.contentOcean },
+              ]}
+              onPress={() => {
+                setPrivacyVisible(true)
+              }}>
+              Privacy Policy
+            </Text>{' '}
+            for more details.
           </Text>
         </View>
+        {renderPrivacyModal()}
       </ScrollView>
     </>
   )
