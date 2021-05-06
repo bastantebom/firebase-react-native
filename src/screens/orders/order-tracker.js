@@ -107,9 +107,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           if (orderData.status !== data.status && post.type) {
             const statusData = getStatusData({
               userType: data.seller_id === user.uid ? 'seller' : 'buyer',
-              type: post.type,
-              status: data.status,
-              paymentMethod: data.payment_method,
+              postType: post.type,
+              orderData: data,
             })
             setOrderStatus(statusData)
           }
@@ -239,9 +238,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           setOrderStatus(
             getStatusData({
               userType: data.seller_id === user.uid ? 'seller' : 'buyer',
-              type: postData.type,
-              status: data.status,
-              paymentMethod: data.payment_method,
+              postType: postData.type,
+              orderData: data,
             })
           )
         })()
@@ -391,12 +389,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const handleStatusChange = async status => {
     setIsLoading(true)
     try {
+      const body = { status }
+      if (status === 'cancelled') body.cancelled_by = userType
       const response = await Api.updateOrder({
         uid: user.uid,
         id: orderData.id,
-        body: {
-          status,
-        },
+        body,
       })
 
       if (!response.success) throw new Error(response.message)
@@ -459,8 +457,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const orderStatus = post.type
       ? getStatusData({
           userType,
-          type: post.type,
-          status: orderData.status,
+          postType: post.type,
+          orderData,
         })
       : {}
     return (
@@ -496,8 +494,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           <LottieView
             source={
               orderStatus.animation ||
-              getStatusData({ userType, type: post.type, status: 'pending' })
-                .animation
+              getStatusData({
+                userType,
+                postType: post.type,
+                orderData: { status: 'pending' },
+              }).animation
             }
             autoPlay
           />
@@ -533,9 +534,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             history.map(({ status, date }) => {
               const { title } = getStatusData({
                 userType,
-                type: post.type,
-                status,
+                postType: post.type,
                 past: true,
+                orderData: { status },
               })
 
               return (

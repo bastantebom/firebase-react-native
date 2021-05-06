@@ -8,31 +8,26 @@ import pickup from '@/assets/animations/pickup.json'
 
 import customerOrderCancelled from '@/assets/animations/customer-order-cancelled.json'
 import orderDeclined from '@/assets/animations/order-declined.json'
-import awaitingPayment from '@/assets/animations/awaiting-payment.json'
 import bookingScheduled from '@/assets/animations/booking-scheduled.json'
 import sellerServiceCancelled from '@/assets/animations/seller-service-cancelled.json'
 
-export const getStatusData = ({
-  userType,
-  type,
-  status,
-  paymentMethod,
-  past,
-}) => {
+export const getStatusData = ({ userType, postType, orderData, past }) => {
   const statuses = {
     sell: {
       pending: {
         title:
-          userType === 'seller' ? 'Requesting...' : 'Awaiting Confirmation',
+          userType === 'seller' && !past
+            ? 'Requesting'
+            : 'Awaiting Confirmation',
         message:
           userType === 'seller'
-            ? "Don't forget to check details before confirming your customer's order"
+            ? "Don't forget to check details before confirming your customer's order."
             : 'Got your order request, Buzzybee!',
         animation: pending,
       },
       confirmed: {
         title:
-          paymentMethod === 'cash'
+          orderData.payment_method === 'cash'
             ? userType === 'seller'
               ? 'Processing'
               : 'Order Confirmed'
@@ -42,31 +37,21 @@ export const getStatusData = ({
               : 'Awaiting Payment'
             : 'Awaiting Payment',
         message:
-          paymentMethod === 'cash'
+          orderData.payment_method === 'cash'
             ? userType === 'seller'
               ? 'Bee ready! '
-              : 'Your order is now being prepared...'
+              : 'Bee ready! Your order is now being processed.'
             : userType === 'seller'
             ? 'Just waiting for the customer to  complete the payment.'
             : 'Last step! Once the payment is complete the order will be processed.',
-
-        animation: inProgress,
-        withGradient: true,
-      },
-      ['payment failed']: {
-        title: 'Payment Failed',
-        message:
-          userType === 'seller'
-            ? 'Bee ready!'
-            : 'Please check and try again in a few minutes.',
         animation: inProgress,
         withGradient: true,
       },
       ['payment processing']: {
-        title: 'Payment Processing',
+        title: past ? 'Payment Completed' : 'Payment Processing',
         message:
           userType === 'seller'
-            ? "Please wait a little bit. We'll buzz once the customer's payment has been processed."
+            ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
             : 'Thank you. We will buzz once payment is confirmed.',
         animation: inProgress,
         withGradient: true,
@@ -81,7 +66,7 @@ export const getStatusData = ({
         withGradient: true,
       },
       delivering: {
-        title: 'Delivering',
+        title: past ? 'Delivered' : 'Delivering',
         message:
           userType === 'seller'
             ? 'Delivering Bee on the lookout, your delivery is on its way to the customer.'
@@ -89,29 +74,29 @@ export const getStatusData = ({
         animation: delivering,
         withGradient: true,
       },
-      completed: {
-        title: 'Completed',
-        message:
-          userType === 'seller'
-            ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees. "
-            : 'All good? Tell us all about your experience. ',
-        animation:
-          userType === 'seller' ? sellerOrderCompleted : customerOrderCompleted,
-      },
       pickup: {
-        title: 'Pick Up',
+        title: past ? 'Picked up' : 'Pick Up',
         message:
           userType === 'seller'
             ? 'All set! Awaiting for customer to pick up the order.'
             : 'BUZZ! Your order is waiting for you.',
         animation: pickup,
       },
+      completed: {
+        title: 'Completed',
+        message:
+          userType === 'seller'
+            ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees."
+            : 'All good? Tell us all about your experience.',
+        animation:
+          userType === 'seller' ? sellerOrderCompleted : customerOrderCompleted,
+      },
       cancelled: {
         title: 'Cancelled',
         message:
-          userType === 'seller'
-            ? 'Sorry, the buyer cancelled their order.'
-            : 'Sorry, the seller cancelled the order. ',
+          orderData.cancelled_by === 'seller'
+            ? 'Your order has been cancelled.'
+            : 'Sorry, the Buyer cancelled the order.',
         animation: customerOrderCancelled,
       },
       declined: {
@@ -122,36 +107,6 @@ export const getStatusData = ({
             : 'Your order cannot be processed at this time. Please contact the Seller.',
         animation: orderDeclined,
       },
-      pendingPayment: {
-        title: 'Awaiting Payment',
-        message:
-          userType === 'seller'
-            ? 'Just waiting for the customer to complete the payment.'
-            : 'The seller is waiting for your payment.',
-        animation: awaitingPayment,
-      },
-    },
-    service: {
-      pending: {
-        title:
-          userType === 'seller' ? 'Requesting...' : 'Awaiting Confirmation',
-        message:
-          userType === 'seller'
-            ? 'Confirm or decline booking...'
-            : 'Reviewing your booking request. ',
-        animation: pending,
-      },
-      confirmed: {
-        title:
-          paymentMethod === 'cash' ? 'Schedule Confirmed' : 'Awaiting Payment',
-        message:
-          paymentMethod === 'cash'
-            ? 'Booked! Please bee on time for your appointment.'
-            : userType === 'seller'
-            ? 'Just waiting for the customer to  complete the payment.'
-            : 'Confeeermed! Please settle payment to complete your booking.',
-        animation: bookingScheduled,
-      },
       ['payment failed']: {
         title: 'Payment Failed',
         message:
@@ -161,12 +116,35 @@ export const getStatusData = ({
         animation: inProgress,
         withGradient: true,
       },
-      ['payment processing']: {
-        title: 'Payment Processing',
+    },
+    service: {
+      pending: {
+        title: userType === 'seller' ? 'Requesting' : 'Awaiting Confirmation',
         message:
           userType === 'seller'
-            ? 'Payment is now being processed'
-            : 'Got your payment, Buzzbee! We are now processing your payment.',
+            ? 'Confirm or decline booking...'
+            : 'Reviewing your booking request.',
+        animation: pending,
+      },
+      confirmed: {
+        title:
+          orderData.payment_method === 'cash'
+            ? 'Schedule Confirmed'
+            : 'Awaiting Payment',
+        message:
+          orderData.payment_method === 'cash'
+            ? 'Booked! Please bee on time for your appointment.'
+            : userType === 'seller'
+            ? 'Just waiting for the customer to complete the payment.'
+            : 'Confeeermed! Please settle payment to complete your booking!',
+        animation: bookingScheduled,
+      },
+      ['payment processing']: {
+        title: past ? 'Payment Completed' : 'Payment Processing',
+        message:
+          userType === 'seller'
+            ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
+            : 'Last step! Once the payment is complete the order will be processed.',
         animation: inProgress,
         withGradient: true,
       },
@@ -187,8 +165,8 @@ export const getStatusData = ({
       cancelled: {
         title: 'Cancelled',
         message:
-          userType === 'seller'
-            ? 'Sorry. This booking has been cancelled.'
+          orderData.cancelled_by === 'seller'
+            ? 'Sorry, the Service Provider cancelled this booking.'
             : 'Sorry. This booking has been cancelled.',
         animation: sellerServiceCancelled,
       },
@@ -200,13 +178,14 @@ export const getStatusData = ({
             : 'Try checking with the service provider or check other options.',
         animation: sellerServiceCancelled,
       },
-      pendingPayment: {
-        title: 'Awaiting Payment',
+      ['payment failed']: {
+        title: 'Payment Failed',
         message:
           userType === 'seller'
-            ? 'Just waiting for the customer to complete the payment.'
-            : 'Confeeermed! Please settle payment to complete your booking. ',
-        animation: bookingScheduled,
+            ? 'Bee ready!'
+            : 'Please check and try again in a few minutes.',
+        animation: inProgress,
+        withGradient: true,
       },
     },
     need: {
@@ -214,16 +193,54 @@ export const getStatusData = ({
         title: 'Awaiting Confirmation',
         message:
           userType === 'seller'
-            ? 'Customer is reviewing your offer. '
-            : 'Got your order request, Buzzybee!',
+            ? 'Confirm or decline the offer.'
+            : 'Customer is reviewing your offer.',
         animation: pending,
       },
       confirmed: {
-        title: 'Offer Confirmed',
+        title:
+          orderData.payment_method === 'cash'
+            ? 'Offer Confirmed'
+            : 'Awaiting Payment',
+        message:
+          orderData.payment_method === 'cash'
+            ? 'Bee ready! Your order is now being processed. '
+            : userType === 'seller'
+            ? 'Just waiting for the customer to complete the payment.'
+            : 'Confeeermed! Please settle payment to complete your booking!',
+        animation: pending,
+      },
+      ['payment processing']: {
+        title: past ? 'Payment Completed' : 'Payment Processing',
         message:
           userType === 'seller'
-            ? 'Bee ready! '
-            : 'Choose from the payment methods available and settle the balance to proceed. ',
+            ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
+            : "Please wait a bit, we're working on it! ",
+        animation: inProgress,
+        withGradient: true,
+      },
+      completed: {
+        title: 'Offer Completed',
+        message:
+          userType === 'seller'
+            ? "Transaction completed! Thank you for your beezness! We're happy to be of Servbees."
+            : 'Payment completed, booking is good to go! ',
+        animation: pending,
+      },
+      cancelled: {
+        title: 'Offer Cancelled',
+        message:
+          orderData.cancelled_by === 'seller'
+            ? 'Sorry. This offer has been cancelled.'
+            : 'Sorry, the customer will no longer take the offer.',
+        animation: pending,
+      },
+      declined: {
+        title: 'Offer Declined',
+        message:
+          userType === 'seller'
+            ? 'Feel free to review other offers and see what fits your needs best.'
+            : 'Sorry, the customer declined the offer.',
         animation: pending,
       },
       ['payment failed']: {
@@ -235,43 +252,10 @@ export const getStatusData = ({
         animation: inProgress,
         withGradient: true,
       },
-      ['payment processing']: {
-        title: 'Payment Processing',
-        message:
-          userType === 'seller'
-            ? 'Payment is now being processed'
-            : 'Got your payment, Buzzbee! We are now processing your payment.',
-        animation: inProgress,
-        withGradient: true,
-      },
-      completed: {
-        title: 'Completed',
-        message:
-          userType === 'seller'
-            ? 'Payment completed, booking is good to go! '
-            : "Don't forget to rate your Service/Seller Bee!",
-        animation: pending,
-      },
-      cancelled: {
-        title: 'Cancelled',
-        message:
-          userType === 'seller'
-            ? 'Sorry, the respondent cancelled their offer.'
-            : 'Luh. Cancelled?! Chat with the Service Provider for details.',
-        animation: pending,
-      },
-      declined: {
-        title: 'Offer Declined',
-        message:
-          userType === 'seller'
-            ? 'Feel free to review other offers and see what fits your needs best.'
-            : 'Uh-oh. Try checking with the service provider or look for other options on Servbees.',
-        animation: pending,
-      },
     },
   }
 
-  return statuses[type][status]
+  return statuses[postType][orderData.status]
 }
 
 export default getStatusData
