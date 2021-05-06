@@ -1551,6 +1551,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType !== 'buyer' || (userType === 'buyer' && post.type === 'need'))
       return
 
+    if (orderData.status !== 'completed') return
+
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
     }
