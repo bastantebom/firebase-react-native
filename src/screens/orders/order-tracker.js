@@ -1101,7 +1101,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (!post) return
 
     const fee = paymentData ? paymentData.fee : 0
-    const total = userType === 'seller' ? totalPrice - fee : totalPrice
+    const total =
+      userType === 'seller' && orderData.payment_method !== 'cash'
+        ? totalPrice - fee
+        : totalPrice
 
     const labels = {
       need: 'Offer Summary',
@@ -1200,7 +1203,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             )}
           </View>
           <View>
-            {userType === 'seller' && (
+            {userType === 'seller' && orderData.payment_method !== 'cash' && (
               <>
                 <View
                   style={{
