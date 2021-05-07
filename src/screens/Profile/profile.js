@@ -94,7 +94,8 @@ const ProfileScreen = ({
       params: {
         screen: 'published-post',
         params: {
-          post,
+          id: post.id,
+          uid: post.uid,
         },
       },
     })

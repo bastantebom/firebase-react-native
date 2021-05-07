@@ -31,7 +31,12 @@ const PostDescriptionModal = ({ title, description, close }) => {
         </TouchableWithoutFeedback>
       </ScrollView>
       <View style={styles.buttonWrapper}>
-        <Button label="Okay" type="primary" onPress={close} />
+        <Button
+          label="Got it!"
+          type="primary-outline"
+          style={{ borderColor: Colors.primaryMidnightBlue }}
+          onPress={close}
+        />
       </View>
     </View>
   )
@@ -45,11 +50,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: normalize(10),
   },
   titleWrapper: {
-    margin: normalize(16),
+    marginHorizontal: normalize(24),
     alignItems: 'center',
     borderBottomColor: Colors.secondarySolitude,
     borderBottomWidth: normalize(1),
-    paddingBottom: normalize(24),
+    paddingBottom: normalize(16),
   },
   title: {
     ...typography.medium,
@@ -63,6 +68,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: normalize(36),
+    paddingVertical: normalize(16),
   },
 })
 

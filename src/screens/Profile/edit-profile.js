@@ -510,12 +510,8 @@ const EditProfileScreen = ({ navigation, route }) => {
             autoHeight
             minLines={6}
             maxLines={12}
+            displayLength={true}
           />
-          <Text
-            style={[
-              typography.caption,
-              { textAlign: 'right', marginTop: normalize(8) },
-            ]}>{`${formData.description.length}/600`}</Text>
         </View>
       </>
     )
