@@ -9,7 +9,7 @@ import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
 import { useNavigation } from '@react-navigation/native'
 
-const MoreInfo = ({ profileInfo }) => {
+const MoreInfo = ({ profileInfo, addFollowers }) => {
   const [hasInfo, setHasInfo] = useState(false)
   const { description, uid, display_name, full_name } = profileInfo
   const { userInfo } = useContext(UserContext)
@@ -68,6 +68,13 @@ const MoreInfo = ({ profileInfo }) => {
     initStatus()
     initConnections()
   }, [])
+
+  useEffect(() => {
+    if (typeof addFollowers === 'boolean') {
+      if (addFollowers) setFollowers(followers + 1)
+      else setFollowers(followers - 1)
+    }
+  }, [addFollowers])
 
   const WithInfo = () => {
     return (

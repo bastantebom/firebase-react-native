@@ -89,9 +89,9 @@ const ProfileLinks = ({
       <Modal
         isVisible={profileList}
         animationIn="slideInUp"
-        animationInTiming={750}
+        animationInTiming={200}
         animationOut="slideOutDown"
-        animationOutTiming={750}
+        animationOutTiming={180}
         onSwipeComplete={toggleProfileList}
         swipeDirection="down"
         style={{

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {
   Dimensions,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -12,7 +13,7 @@ import { Icons } from '@/assets/images/icons'
 import { AppText, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
 import MoreIdTypes from './modals/more-id-types'
-
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 /**
  * @typedef {Object} IdTypeProps
  * @property {string} type
@@ -82,63 +83,73 @@ const IdTypeScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <ScreenHeaderTitle close={navigation.goBack} />
-        </View>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
+      <View style={styles.wrapper}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <ScreenHeaderTitle close={navigation.goBack} />
+          </View>
 
-        <View>
-          <AppText textStyle="body1medium" customStyle={styles.title}>
-            Select your preferred ID for upload:
-          </AppText>
-          <ScrollView>{idTypes.slice(0, 7).map(renderItem)}</ScrollView>
-        </View>
+          <View>
+            <AppText textStyle="body1medium" customStyle={styles.title}>
+              Select your preferred ID for upload:
+            </AppText>
+            <ScrollView>{idTypes.slice(0, 7).map(renderItem)}</ScrollView>
+          </View>
 
-        <TouchableOpacity
-          style={styles.moreOptionsWrapper}
-          onPress={() => setMoreOptionsModalVisible(true)}>
-          <Icons.More width={normalize(24)} height={normalize(24)} />
-          <AppText textStyle="body2medium" customStyle={styles.moreOptionsText}>
-            More Options
+          <TouchableOpacity
+            style={styles.moreOptionsWrapper}
+            onPress={() => setMoreOptionsModalVisible(true)}>
+            <Icons.More width={normalize(24)} height={normalize(24)} />
+            <AppText
+              textStyle="body2medium"
+              customStyle={styles.moreOptionsText}>
+              More Options
+            </AppText>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.infoWrapper}>
+          <Icons.Lock width={normalize(24)} height={normalize(24)} />
+          <AppText textStyle="caption" customStyle={styles.infoText}>
+            This information won’t be shared with other people who use Servbees.
           </AppText>
-        </TouchableOpacity>
+        </View>
+        <Modal
+          isVisible={moreOptionsModalVisible}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationInTiming={300}
+          animationOutTiming={250}
+          onSwipeComplete={() => setMoreOptionsModalVisible(false)}
+          swipeDirection="down"
+          style={styles.modal}
+          customBackdrop={
+            <TouchableWithoutFeedback
+              onPress={() => setMoreOptionsModalVisible(false)}>
+              <View style={{ flex: 1, backgroundColor: 'black' }} />
+            </TouchableWithoutFeedback>
+          }>
+          <MoreIdTypes
+            onSelect={item => {
+              setMoreOptionsModalVisible(false)
+              setTimeout(() => {
+                onSelect(item)
+              }, 250)
+            }}
+            items={idTypes.slice(7)}
+          />
+        </Modal>
       </View>
-      <View style={styles.infoWrapper}>
-        <Icons.Lock width={normalize(24)} height={normalize(24)} />
-        <AppText textStyle="caption" customStyle={styles.infoText}>
-          This information won’t be shared with other people who use Servbees.
-        </AppText>
-      </View>
-      <Modal
-        isVisible={moreOptionsModalVisible}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        animationInTiming={300}
-        animationOutTiming={250}
-        onSwipeComplete={() => setMoreOptionsModalVisible(false)}
-        swipeDirection="down"
-        style={styles.modal}
-        customBackdrop={
-          <TouchableWithoutFeedback
-            onPress={() => setMoreOptionsModalVisible(false)}>
-            <View style={{ flex: 1, backgroundColor: 'black' }} />
-          </TouchableWithoutFeedback>
-        }>
-        <MoreIdTypes
-          onSelect={item => {
-            setMoreOptionsModalVisible(false)
-            setTimeout(() => {
-              onSelect(item)
-            }, 250)
-          }}
-          items={idTypes.slice(7)}
-        />
-      </Modal>
     </>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
   container: { flex: 1, padding: normalize(24), paddingBottom: normalize(80) },
   header: {
     marginBottom: normalize(24),

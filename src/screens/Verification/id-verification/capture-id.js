@@ -93,8 +93,8 @@ const CaptureIdScreen = ({ navigation, route }) => {
               onPress={navigation.goBack}>
               <Icons.Back
                 style={{ color: '#fff' }}
-                width={normalize(16)}
-                height={normalize(16)}></Icons.Back>
+                width={normalize(24)}
+                height={normalize(24)}></Icons.Back>
             </TouchableOpacity>
           </View>
           <CameraOverlay />
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    padding: normalize(24),
+    padding: normalize(16),
     zIndex: 1,
   },
   maskOutter: {

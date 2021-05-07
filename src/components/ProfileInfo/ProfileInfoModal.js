@@ -69,7 +69,9 @@ function ProfileInfoModal(props) {
 
   const toggleHives = () => setVisibleHives(!visibleHives)
 
-  const toggleProfileList = () => setProfileList(!profileList)
+  const toggleProfileList = () => {
+    if (user?.uid) setProfileList(!profileList)
+  }
 
   const toggleFollowing = () => {
     ProfileInfoService.follow(uid, isFollowing)
@@ -449,7 +451,9 @@ function ProfileInfoModal(props) {
     },
     {
       title: 'More Info',
-      content: <MoreInfo profileInfo={otherUserInfo} />,
+      content: (
+        <MoreInfo profileInfo={otherUserInfo} addFollowers={addFollowers} />
+      ),
     },
   ]
 
