@@ -52,10 +52,12 @@ const CreditCardScreen = ({ navigation, route }) => {
   const { orderData } = route.params
   const { userInfo } = useContext(UserContext)
 
-  const totalPrice = orderData.items.reduce(
-    (total, item) => total + item.price * (item.quantity || 1),
-    0
-  )
+  const totalPrice =
+    orderData.offer ||
+    (orderData?.items || []).reduce(
+      (total, item) => total + item.price * (item.quantity || 1),
+      0
+    )
 
   const [errors, setErrors] = useState({
     name: '',

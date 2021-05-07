@@ -82,7 +82,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
 
   const date = format(
     new Date(paymentData ? paymentData.date._seconds * 1000 : Date.now()),
-    `MMM'.' dd, yyyy hh:mmaa`
+    `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
   )
 
   useEffect(() => {

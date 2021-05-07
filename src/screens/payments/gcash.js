@@ -34,10 +34,12 @@ const GCashScreen = ({ navigation, route }) => {
   const { orderData } = route.params
   const [isLoading, setIsLoading] = useState(false)
 
-  const totalPrice = (orderData?.items || []).reduce(
-    (total, item) => total + item.price * (item.quantity || 1),
-    0
-  )
+  const totalPrice =
+    orderData.offer ||
+    (orderData?.items || []).reduce(
+      (total, item) => total + item.price * (item.quantity || 1),
+      0
+    )
 
   const handleSubmit = async () => {
     setIsLoading(true)

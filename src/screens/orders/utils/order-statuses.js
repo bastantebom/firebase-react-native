@@ -219,6 +219,15 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
         animation: inProgress,
         withGradient: true,
       },
+      paid: {
+        title: 'Offer Confirmed',
+        message:
+          userType === 'seller'
+            ? 'Bee ready! Your order is now being processed.'
+            : 'Payment completed, booking is good to go!',
+        animation: inProgress,
+        withGradient: true,
+      },
       completed: {
         title: 'Offer Completed',
         message:

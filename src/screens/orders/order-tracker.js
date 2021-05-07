@@ -318,7 +318,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     setIsLoading(false)
   }
 
-  const handlePayment = method => {
+  const handleOnPayment = method => {
     if (method === 'cash') return
     navigation.navigate('payments', {
       screen: method,
@@ -974,7 +974,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       orderData.date &&
       format(
         new Date(new Date(orderData.date._seconds * 1000)),
-        `MMM'.' dd, yyyy hh:mmaa`
+        `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
       )
 
     return (
@@ -1044,7 +1044,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       paymentData?.date &&
       format(
         new Date(paymentData.date._seconds * 1000),
-        `MMM'.' dd, yyyy hh:mmaa`
+        `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
       )
 
     return (
@@ -1330,8 +1330,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               </>
             )}
 
-            {['sell', 'service'].includes(post.type) &&
-              orderData.status === 'confirmed' &&
+            {orderData.status === 'confirmed' &&
               orderData.payment_method !== 'cash' && (
                 <Button
                   style={{
@@ -1341,7 +1340,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     justifyContent: 'space-between',
                   }}
                   type="primary"
-                  onPress={() => handlePayment(orderData.payment_method)}>
+                  onPress={() => handleOnPayment(orderData.payment_method)}>
                   <Text style={[typography.body1narrow, typography.medium]}>
                     Continue to Payment
                   </Text>
@@ -1373,6 +1372,19 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       Cancel Request
                     </Text>
                   </TouchableOpacity>
+                </View>
+              )}
+
+            {post.type === 'need' &&
+              (orderData.status === 'paid' ||
+                (orderData.payment_method === 'cash' &&
+                  orderData.status === 'confirmed')) && (
+                <View style={{ padding: normalize(16) }}>
+                  <Button
+                    type="primary"
+                    onPress={() => handleStatusChange('completed')}
+                    label="Complete Offer"
+                  />
                 </View>
               )}
           </>
@@ -1521,19 +1533,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 </View>
               )}
 
-            {post.type === 'need' && orderData.status === 'confirmed' && (
-              <View style={{ padding: normalize(16) }}>
-                <Button
-                  type="primary"
-                  onPress={() => handleStatusChange('completed')}
-                  label="Offer Completed"
-                />
-              </View>
-            )}
-
-            {['completed', 'cancelled', 'declined'].includes(
-              orderData.status
-            ) && (
+            {post.type === 'need' && orderData.status === 'cancelled' && (
               <View style={{ padding: normalize(16) }}>
                 <Button
                   type="primary"
@@ -1552,7 +1552,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType !== 'buyer' || (userType === 'buyer' && post.type === 'need'))
       return
 
-    if (orderData.status !== 'completed') return
+    if (
+      !orderData.history.some(({ status }) => status === 'paid') ||
+      (orderData.payment_method === 'cash' && orderData.status !== 'completed')
+    )
+      return
 
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
