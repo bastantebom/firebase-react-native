@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  TouchableWithoutFeedback,
+} from 'react-native'
 import { Colors, normalize } from '@/globals'
 
 import { Users, Icons } from '@/assets/images/icons'
@@ -8,6 +14,9 @@ import { AppText, PaddingView } from '@/components'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
 import { useNavigation } from '@react-navigation/native'
+import typography from '@/globals/typography'
+import Modal from 'react-native-modal'
+import DescriptionModal from '@/screens/Post/modals/post-description'
 
 const MoreInfo = ({ profileInfo, addFollowers }) => {
   const [hasInfo, setHasInfo] = useState(false)
@@ -15,6 +24,10 @@ const MoreInfo = ({ profileInfo, addFollowers }) => {
   const { userInfo } = useContext(UserContext)
   const [followers, setFollowers] = useState(0)
   const [following, setFollowing] = useState(0)
+  const [
+    profileDescriptionModalVisible,
+    setProfileDescriptionModalVisible,
+  ] = useState(false)
   const [verifications, setVerifications] = useState([
     {
       key: 'profile',
@@ -35,6 +48,7 @@ const MoreInfo = ({ profileInfo, addFollowers }) => {
   ])
   const navigation = useNavigation()
   const statusPercentage = useRef(0)
+  const descriptionLines = useRef(0)
 
   const initConnections = async () => {
     const [followersResponse, followingResponse] = await Promise.all([
@@ -64,6 +78,36 @@ const MoreInfo = ({ profileInfo, addFollowers }) => {
     else setHasInfo(true)
   }
 
+  const renderProfileDescriptionModal = () => {
+    return (
+      <Modal
+        isVisible={profileDescriptionModalVisible}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        animationInTiming={200}
+        animationOutTiming={180}
+        onSwipeComplete={() => setProfileDescriptionModalVisible(false)}
+        swipeDirection="down"
+        style={styles.modal}
+        propagateSwipe
+        onBackButtonPress={() => setProfileDescriptionModalVisible(false)}
+        statusBarTranslucent={true}
+        customBackdrop={
+          <TouchableWithoutFeedback
+            style={{ flex: 1 }}
+            onPress={() => setProfileDescriptionModalVisible(false)}>
+            <View style={{ flex: 1, backgroundColor: '#000a' }} />
+          </TouchableWithoutFeedback>
+        }>
+        <DescriptionModal
+          title={display_name || full_name}
+          description={description}
+          close={() => setProfileDescriptionModalVisible(false)}
+        />
+      </Modal>
+    )
+  }
+
   useEffect(() => {
     initStatus()
     initConnections()
@@ -89,8 +133,26 @@ const MoreInfo = ({ profileInfo, addFollowers }) => {
               <AppText textStyle="subtitle2">About</AppText>
             </View>
             <View style={styles.infoContentWrapper}>
-              {description?.trim().length ? (
-                <AppText textStyle="body2">{description}</AppText>
+              {description?.length ? (
+                <View>
+                  <Text
+                    style={typography.body2}
+                    numberOfLines={!descriptionLines.current ? null : 12}
+                    ellipsizeMode="clip"
+                    onTextLayout={e => {
+                      !descriptionLines.current &&
+                        (descriptionLines.current = e.nativeEvent.lines.length)
+                    }}>
+                    {description}
+                  </Text>
+                  {descriptionLines.current > 12 && (
+                    <Text
+                      style={[typography.body2, typography.link]}
+                      onPress={() => setProfileDescriptionModalVisible(true)}>
+                      Read more
+                    </Text>
+                  )}
+                </View>
               ) : (
                 <AppText textStyle="body2">No information yet...</AppText>
               )}
@@ -154,6 +216,7 @@ const MoreInfo = ({ profileInfo, addFollowers }) => {
             </PaddingView>
           </View>
         )}
+        <View style={{ flex: 1 }}>{renderProfileDescriptionModal()}</View>
       </>
     )
   }
@@ -263,6 +326,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '50%',
     marginBottom: normalize(12),
+  },
+  linkWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: normalize(4),
+  },
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-end',
   },
 })
 

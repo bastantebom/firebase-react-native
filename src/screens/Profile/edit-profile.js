@@ -506,9 +506,10 @@ const EditProfileScreen = ({ navigation, route }) => {
               setFormData(data => ({ ...data, description }))
             }
             multiline={true}
-            numberOfLines={5}
             maxLength={600}
-            placeholderTextColor="#A8AAB7"
+            autoHeight
+            minLines={6}
+            maxLines={12}
           />
           <Text
             style={[
