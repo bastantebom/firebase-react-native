@@ -92,6 +92,15 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
                 )}
               />
             </View>
+            {isDatePickerVisible && (
+              <DateTimePicker
+                value={datePickerValue}
+                mode="date"
+                display="default"
+                onChange={handleOnDateChange}
+                minimumDate={Date.now()}
+              />
+            )}
           </TouchableOpacity>
 
           <Text
@@ -110,7 +119,7 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
             containerStyle={styles.checkbox}
             checked={data.flexible}>
             <Text style={[typography.body2, styles.checkboxLabel]}>
-              I’m flexible
+              Flexi [9am-10pm]
             </Text>
           </Checkbox>
           <View style={styles.divider} />
@@ -125,7 +134,7 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
             containerStyle={styles.checkbox}
             checked={data.timeSlot === 'morning'}>
             <Text style={[typography.body2, styles.checkboxLabel]}>
-              Morning
+              Morning [9am-12nn]
             </Text>
           </Checkbox>
 
@@ -139,7 +148,7 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
             containerStyle={styles.checkbox}
             checked={data.timeSlot === 'afternoon'}>
             <Text style={[typography.body2, styles.checkboxLabel]}>
-              Afternoon
+              Afternoon [1pm-6pm]
             </Text>
           </Checkbox>
 
@@ -153,7 +162,7 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
             containerStyle={styles.checkbox}
             checked={data.timeSlot === 'evening'}>
             <Text style={[typography.body2, styles.checkboxLabel]}>
-              Evening
+              Night [6pm-10pm]
             </Text>
           </Checkbox>
 
@@ -162,15 +171,6 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
           </View>
         </View>
       </View>
-      {isDatePickerVisible && (
-        <DateTimePicker
-          value={datePickerValue}
-          mode="date"
-          display="default"
-          onChange={handleOnDateChange}
-          minimumDate={Date.now()}
-        />
-      )}
     </>
   )
 }
