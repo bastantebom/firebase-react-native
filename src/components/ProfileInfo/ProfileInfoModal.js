@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   View,
   StyleSheet,
@@ -11,7 +11,11 @@ import {
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo'
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
-import { useNavigation } from '@react-navigation/native'
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native'
 
 import {
   HexagonBorder,
@@ -299,6 +303,30 @@ function ProfileInfoModal(props) {
     }
   }
 
+  const handleOnBackPress = event => {
+    event.preventDefault()
+    navigation.removeListener('beforeRemove', handleOnBackPress)
+    if (!navigation.canGoBack()) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'TabStack' }],
+        })
+      )
+    } else {
+      navigation.goBack()
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.removeListener('beforeRemove', handleOnBackPress)
+      navigation.addListener('beforeRemove', handleOnBackPress)
+
+      return () => navigation.removeListener('beforeRemove', handleOnBackPress)
+    }, [navigation])
+  )
+
   useEffect(() => {
     Object.values(otherUserPosts)
       .filter(post => !post.$promise)
@@ -339,7 +367,7 @@ function ProfileInfoModal(props) {
             signOut={signOut}
             toggleQR={toggleQR}
             QR={QR}
-            backFunction={() => navigation.goBack()}
+            backFunction={handleOnBackPress}
             userInfo={otherUserInfo}
             userID={uid}
           />
@@ -427,7 +455,7 @@ function ProfileInfoModal(props) {
             signOut={signOut}
             toggleQR={toggleQR}
             QR={QR}
-            backFunction={() => navigation.goBack()}
+            backFunction={handleOnBackPress}
             userInfo={otherUserInfo}
             userID={uid}
             coverPhotoUrl={coverPhotoUrl}

@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   Alert,
   Animated,
@@ -51,6 +57,7 @@ import ConfirmModal from './modals/confirm'
 import Q from 'q'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Toast from '@/components/toast'
+import { CommonActions, useFocusEffect } from '@react-navigation/native'
 
 if (
   Platform.OS === 'android' &&
@@ -203,6 +210,30 @@ const PublishedPostScreen = ({ navigation, route }) => {
       console.log(error.message)
     }
   }
+
+  const handleOnBackPress = event => {
+    event.preventDefault()
+    navigation.removeListener('beforeRemove', handleOnBackPress)
+    if (!navigation.canGoBack()) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'TabStack' }],
+        })
+      )
+    } else {
+      navigation.goBack()
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.removeListener('beforeRemove', handleOnBackPress)
+      navigation.addListener('beforeRemove', handleOnBackPress)
+
+      return () => navigation.removeListener('beforeRemove', handleOnBackPress)
+    }, [navigation])
+  )
 
   useEffect(() => {
     const promises = []
@@ -442,7 +473,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
       if (!response.success) throw new Error(response.message)
       setDashboardNeedsRefresh(true)
       setIsLoading(false)
-      navigation.goBack()
+      handleOnBackPress()
       Toast.show({
         content: (
           <View>
@@ -501,7 +532,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
       const response = await Api.hidePost({ pid: post.current.id })
       if (!response.success) throw new Error(response.message)
       setDashboardNeedsRefresh(true)
-      navigation.goBack()
+      handleOnBackPress()
     } catch (error) {
       Alert.alert('Error', 'Oops, something went wrong')
       console.log(error.message)
@@ -599,7 +630,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           <TouchableOpacity
             style={[styles.headerButton, styles.backButton]}
             activeOpacity={0.7}
-            onPress={navigation.goBack}>
+            onPress={handleOnBackPress}>
             <Icons.Back style={styles.headerIcon} {...iconSize(22)} />
           </TouchableOpacity>
 
@@ -695,7 +726,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
           <TouchableOpacity
             style={styles.secondaryHeaderButton}
             activeOpacity={0.7}
-            onPress={navigation.goBack}>
+            onPress={handleOnBackPress}>
             <Icons.Back style={styles.secondaryHeaderIcon} {...iconSize(22)} />
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row' }}>
@@ -1104,12 +1135,12 @@ const PublishedPostScreen = ({ navigation, route }) => {
       setMakeOfferModalVisible(false)
       navigation.navigate('select-post', {
         onSelect: attachedPost => {
-          navigation.goBack()
+          handleOnBackPress()
           setBasket(basket => ({ ...basket, attachedPost }))
           setMakeOfferModalVisible(true)
         },
         onBackPress: () => {
-          navigation.goBack()
+          handleOnBackPress()
           setMakeOfferModalVisible(true)
         },
       })
@@ -1124,12 +1155,12 @@ const PublishedPostScreen = ({ navigation, route }) => {
         post: postData,
         callbacks: {
           onEditPress: () => {
-            navigation.goBack()
+            handleOnBackPress()
             setMakeOfferModalVisible(true)
           },
         },
         onBackPress: () => {
-          navigation.goBack()
+          handleOnBackPress()
           setMakeOfferModalVisible(true)
         },
       })
