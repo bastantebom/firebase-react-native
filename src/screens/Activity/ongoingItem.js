@@ -113,7 +113,8 @@ const OngoingItem = ({ route, navigation }) => {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('NBTScreen', {
-                    screen: 'ChatHouse',
+                    screen: 'PostChat',
+                    params: { post: item.post },
                   })
                 }>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />

@@ -15,6 +15,7 @@ import { AppText, ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
 import { Calendar } from '@/assets/images/icons'
 
+import Toast from '@/components/toast'
 import Welcome from '@/screens/Activity/components/notifications/welcome'
 import Verification from '@/screens/Activity/components/notifications/verification'
 import Follow from '@/screens/Activity/components/notifications/follow'
@@ -216,6 +217,10 @@ const Notifications = () => {
   return (
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <Toast
+        containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
+        ref={ref => Toast.setRef(ref, 'Notifications')}
+      />
       <TransitionIndicator loading={isLoading} />
       <View style={styles.contentWrapper}>
         <ScreenHeaderTitle

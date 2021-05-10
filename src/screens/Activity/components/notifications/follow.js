@@ -8,15 +8,14 @@ import { PostClock } from '@/assets/images/icons'
 import { normalize, timePassedShort } from '@/globals'
 
 import { AppText } from '@/components'
+import Toast from '@/components/toast'
 import Avatar from '@/components/Avatar/avatar'
 import typography from '@/globals/typography'
 
 const Follow = ({ unreadNotification, item, followings }) => {
   const navigation = useNavigation()
   const [follower, setFollower] = useState({})
-  const [isFollower, setIsFollower] = useState(
-    followings.some(following => following.uid === item.follower_uid)
-  )
+  const [isFollower, setIsFollower] = useState(false)
 
   const timeAgo = time => timePassedShort(time)
 
@@ -36,19 +35,41 @@ const Follow = ({ unreadNotification, item, followings }) => {
       if (isFollower) {
         const response = await Api.unfollowUser({ uid: item.follower_uid })
 
-        if (response.success) alert('Success')
-        else throw new Error(response.message)
+        if (!response.success) throw new Error(response.message)
+
+        Toast.show({
+          label: `successfully unfollowed this account`,
+          type: 'success',
+          dismissible: true,
+          timeout: 5000,
+          screenId: 'Notifications',
+        })
+
         setIsFollower(false)
       } else {
         const response = await Api.followUser({ uid: item.follower_uid })
 
-        if (response.success) alert('Success')
-        else throw new Error(response.message)
+        if (!response.success) throw new Error(response.message)
+
+        Toast.show({
+          label: `You're now following this account`,
+          type: 'success',
+          dismissible: true,
+          timeout: 5000,
+          screenId: 'Notifications',
+        })
+
         setIsFollower(true)
       }
     } catch (error) {
       console.log(error)
-      Alert.alert('Error', 'Oops, something went wrong.')
+      Toast.show({
+        label: 'Oops! Something went wrong',
+        type: 'error',
+        dismissible: true,
+        timeout: 5000,
+        screenId: 'Notifications',
+      })
     }
   }
 
@@ -68,6 +89,12 @@ const Follow = ({ unreadNotification, item, followings }) => {
   useEffect(() => {
     loadUser()
   }, [])
+
+  useEffect(() => {
+    setIsFollower(
+      followings.some(following => following.uid === item.follower_uid)
+    )
+  }, [followings])
 
   return (
     <View
