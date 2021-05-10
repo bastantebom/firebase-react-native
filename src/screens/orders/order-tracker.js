@@ -1553,7 +1553,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       return
 
     if (
-      !orderData.history.some(({ status }) => status === 'paid') ||
+      !orderData?.history?.some(({ status }) => status === 'paid') ||
       (orderData.payment_method === 'cash' && orderData.status !== 'completed')
     )
       return
