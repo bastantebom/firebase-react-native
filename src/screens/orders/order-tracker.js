@@ -1279,6 +1279,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   }
 
   const renderActionButtons = () => {
+    const handleOnSeeOtherPostPress = () => {
+      navigation.navigate('TabStack', {
+        screen: 'Servbees',
+      })
+    }
+
     return (
       <View>
         <LinearGradient
@@ -1331,6 +1337,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             )}
 
             {orderData.status === 'confirmed' &&
+              post.type !== 'need' &&
               orderData.payment_method !== 'cash' && (
                 <Button
                   style={{
@@ -1375,18 +1382,15 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 </View>
               )}
 
-            {post.type === 'need' &&
-              (orderData.status === 'paid' ||
-                (orderData.payment_method === 'cash' &&
-                  orderData.status === 'confirmed')) && (
-                <View style={{ padding: normalize(16) }}>
-                  <Button
-                    type="primary"
-                    onPress={() => handleStatusChange('completed')}
-                    label="Complete Offer"
-                  />
-                </View>
-              )}
+            {post.type === 'need' && orderData.status === 'cancelled' && (
+              <View style={{ padding: normalize(16) }}>
+                <Button
+                  type="primary"
+                  onPress={handleOnSeeOtherPostPress}
+                  label="See other posts"
+                />
+              </View>
+            )}
           </>
         )}
 
@@ -1420,6 +1424,32 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 </View>
               </View>
             )}
+
+            {orderData.status === 'confirmed' &&
+              post.type === 'need' &&
+              orderData.payment_method !== 'cash' && (
+                <Button
+                  style={{
+                    margin: normalize(16),
+                    marginBottom: normalize(24),
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                  type="primary"
+                  onPress={() => handleOnPayment(orderData.payment_method)}>
+                  <Text style={[typography.body1narrow, typography.medium]}>
+                    Continue to Payment
+                  </Text>
+                  <Text style={typography.subtitle1}>
+                    ₱
+                    {formatNumber(totalPrice, {
+                      separator: '.',
+                      precision: 2,
+                      delimiter: ',',
+                    })}
+                  </Text>
+                </Button>
+              )}
 
             {post.type === 'sell' &&
               orderData.status === 'confirmed' &&
@@ -1542,6 +1572,19 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 />
               </View>
             )}
+
+            {post.type === 'need' &&
+              (orderData.status === 'paid' ||
+                (orderData.payment_method === 'cash' &&
+                  orderData.status === 'confirmed')) && (
+                <View style={{ padding: normalize(16) }}>
+                  <Button
+                    type="primary"
+                    onPress={() => handleStatusChange('completed')}
+                    label="Complete Offer"
+                  />
+                </View>
+              )}
           </>
         )}
       </View>
