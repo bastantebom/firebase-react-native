@@ -367,7 +367,9 @@ const PublishedPostScreen = ({ navigation, route }) => {
           postId: post.current.id,
           bookingMethod: Object.keys(post.current.booking_methods).sort()[0],
           bookingAddress,
-          selectedBookingAddress: bookingAddress,
+          selectedBookingAddress: userInfo.addresses.find(
+            address => address.default
+          ),
           items: basket.items,
         }
 
