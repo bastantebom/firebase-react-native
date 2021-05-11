@@ -212,7 +212,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
   }
 
   const handleOnBackPress = event => {
-    event.preventDefault()
+    event && event.preventDefault()
     navigation.removeListener('beforeRemove', handleOnBackPress)
     if (!navigation.canGoBack()) {
       navigation.dispatch(
