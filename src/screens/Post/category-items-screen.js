@@ -1,11 +1,9 @@
 import { Icons } from '@/assets/images/icons'
-import { BottomSheetHeader } from '@/components'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
 import {
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -19,6 +17,7 @@ import Modal from 'react-native-modal'
 import CategoryOptionsModal from './modals/category-options'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { FlatList } from 'react-native-gesture-handler'
+import PostImage from '@/components/Post/post-image'
 
 /**
  * @typedef {object} PostItem
@@ -73,14 +72,7 @@ const CategoryItemsScreen = ({ navigation, route }) => {
         ]}>
         {!!item.image && (
           <View style={styles.thumbnailWrapper}>
-            <FastImage
-              style={styles.thumbnail}
-              resizeMode="cover"
-              source={{
-                uri: item.image,
-                priority: 'normal',
-              }}
-            />
+            <PostImage style={styles.thumbnail} path={item.image} />
           </View>
         )}
         <View style={[styles.itemDetails]}>
