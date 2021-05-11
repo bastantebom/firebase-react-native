@@ -1638,6 +1638,24 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     )
   }
 
+  const renderNotesSection = () => {
+    if (!orderData?.notes?.length) return
+
+    return (
+      <>
+        <View style={styles.sectionLabelWrapper}>
+          <Icons.Page style={styles.sectionIcon} {...iconSize(16)} />
+          <Text style={[typography.body2, typography.medium]}>
+            Additional Notes
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={typography.body2}>{orderData.notes}</Text>
+        </View>
+      </>
+    )
+  }
+
   return (
     <>
       <StatusBar
@@ -1681,6 +1699,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           {renderOfferDetailsSection()}
           {renderOrderDetailsSection()}
           {renderPaymentInformationSection()}
+          {renderNotesSection()}
           {renderSummarySection()}
           {renderBuyerNote()}
         </ScrollView>
