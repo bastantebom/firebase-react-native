@@ -346,6 +346,7 @@ export const getPreviewLinkData = async ({ type, data }) => {
             precision: 2,
             delimiter: ',',
           })}`
+    return price
   }
 
   const getPostTitle = () => {
