@@ -670,6 +670,19 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     )
   }
 
+  const getTimeSlot = timeSlot => {
+    switch (timeSlot) {
+      case 'morning':
+        return `, Morning [9am-12nn]`
+      case 'afternoon':
+        return `, Afternoon [1pm-6pm]`
+      case 'evening':
+        return `, Night [6pm-10pm]`
+      default:
+        return ''
+    }
+  }
+
   const renderShippingDetails = () => {
     if (!['sell', 'service'].includes(post.type)) return
     const label = post.type === 'sell' ? 'Shipping Details' : 'Service Details'
@@ -699,8 +712,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 { color: Colors.contentPlaceholder, marginTop: normalize(4) },
               ]}>
               {orderData.booking_schedule.schedule}
-              {orderData.booking_schedule.time_slot
-                ? `, ${capitalize(orderData.booking_schedule.time_slot)}`
+              {orderData.booking_schedule?.flexible
+                ? ', Flexi [9am-10pm]'
+                : orderData.booking_schedule.time_slot
+                ? getTimeSlot(orderData.booking_schedule.time_slot)
                 : ''}
             </Text>
           </View>
