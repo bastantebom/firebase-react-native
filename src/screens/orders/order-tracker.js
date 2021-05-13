@@ -585,9 +585,31 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
   const renderAvatar = () => {
     const profilePhoto = orderData.buyerData?.profile_photo
+    const handleOnAvatarPress = () => {
+      if (userType === 'seller')
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersProfile',
+          params: { uid: orderData.buyerData?.uid },
+        })
+      else if (userType === 'buyer' && post?.id)
+        navigation.push('NBTScreen', {
+          screen: 'posts',
+          params: {
+            screen: 'published-post',
+            params: {
+              id: post?.id,
+              uid: post?.uid,
+            },
+          },
+        })
+    }
+
     if (userType === 'seller')
       return (
-        <View style={[styles.messagePhoto, styles.avatarImageWrapper]}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleOnAvatarPress}
+          style={[styles.messagePhoto, styles.avatarImageWrapper]}>
           <Avatar
             path={profilePhoto}
             size="64x64"
@@ -596,17 +618,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               width: '100%',
             }}
           />
-        </View>
+        </TouchableOpacity>
       )
     else if (userType === 'buyer') {
       return (
-        <View style={[styles.messagePhoto, styles.postImageWrapper]}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleOnAvatarPress}
+          style={[styles.messagePhoto, styles.postImageWrapper]}>
           <PostImage
             size="64x64"
             path={post?.cover_photos?.[0]}
             postType={post?.type?.toLowerCase()}
           />
-        </View>
+        </TouchableOpacity>
       )
     }
   }
@@ -630,6 +655,35 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           orderData?.sellerData?.full_name
         : orderData?.buyerData?.display_name || orderData?.buyerData?.full_name
 
+    const handelOnNamePress = () => {
+      const uid =
+        userType === 'buyer'
+          ? orderData?.sellerData?.uid
+          : orderData.buyerData.uid
+      if (!uid) return
+
+      if (user.uid === uid) navigation.navigate('TabStack', { screen: 'You' })
+      else
+        navigation.navigate('NBTScreen', {
+          screen: 'OthersProfile',
+          params: { uid },
+        })
+    }
+
+    const handleOnPostTitlePress = () => {
+      if (!post?.id) return
+      navigation.push('NBTScreen', {
+        screen: 'posts',
+        params: {
+          screen: 'published-post',
+          params: {
+            id: post?.id,
+            uid: post?.uid,
+          },
+        },
+      })
+    }
+
     const labels = {
       sell: userType === 'seller' ? 'Sold to' : 'Sold by',
       need: userType === 'seller' ? 'Posted by' : 'Offer by',
@@ -643,13 +697,25 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         <View style={[utilStyles.row, utilStyles.alignCenter]}>
           {renderAvatar()}
           <View>
-            <Text style={[typography.body2, typography.medium]}>
-              {post.title}
-            </Text>
-            <Text
-              style={[typography.body2, { color: Colors.contentPlaceholder }]}>
-              {label} <Text style={typography.medium}>{name}</Text>
-            </Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleOnPostTitlePress}>
+              <Text style={[typography.body2, typography.medium]}>
+                {post.title}
+              </Text>
+            </TouchableOpacity>
+            <View style={[utilStyles.row, utilStyles.alignCenter]}>
+              <Text
+                style={[
+                  typography.body2,
+                  { color: Colors.contentPlaceholder },
+                ]}>
+                {label}{' '}
+              </Text>
+              <TouchableOpacity activeOpacity={0.7} onPress={handelOnNamePress}>
+                <Text style={typography.medium}>{name}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         <View style={styles.messageSectionButtonsWrapper}>
