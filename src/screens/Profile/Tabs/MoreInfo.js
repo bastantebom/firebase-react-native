@@ -140,12 +140,11 @@ const MoreInfo = ({ profileInfo, addFollowers }) => {
                     numberOfLines={!descriptionLines.current ? null : 12}
                     ellipsizeMode="clip"
                     onTextLayout={e => {
-                      !descriptionLines.current &&
-                        (descriptionLines.current = e.nativeEvent.lines.length)
+                      descriptionLines.current = e.nativeEvent.lines.length
                     }}>
                     {description}
                   </Text>
-                  {descriptionLines.current > 12 && (
+                  {descriptionLines.current >= 12 && (
                     <Text
                       style={[typography.body2, typography.link]}
                       onPress={() => setProfileDescriptionModalVisible(true)}>
