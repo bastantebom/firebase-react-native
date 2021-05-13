@@ -126,10 +126,10 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
         ),
       })}
     </>
-  ) : type === 'thumbnail' ? (
+  ) : type === 'thumbnail' && !isLoading ? (
     <DefaultPostThumbnail type={postType} />
   ) : (
-    <DefaultPostImage type={postType} />
+    !isLoading && <DefaultPostImage type={postType} />
   )
 }
 
