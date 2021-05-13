@@ -1346,7 +1346,10 @@ const PublishedPostScreen = ({ navigation, route }) => {
         </View>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={handleUserPress} activeOpacity={1}>
+            <TouchableOpacity
+              style={[utilStyles.row, utilStyles.alignCenter]}
+              onPress={handleUserPress}
+              activeOpacity={1}>
               <Text style={[typography.body1, typography.medium]}>
                 {user.current.display_name || user.current.full_name}
               </Text>
