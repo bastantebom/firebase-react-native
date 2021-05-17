@@ -1626,9 +1626,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       style={{ marginBottom: normalize(16) }}
                     />
                   ) : null}
-                  {!['completed', 'cancelled', 'declined', 'pending'].includes(
-                    orderData.status
-                  ) && (
+                  {![
+                    'completed',
+                    'cancelled',
+                    'declined',
+                    'pending',
+                    'paid',
+                  ].includes(orderData.status) && (
                     <TouchableOpacity
                       activeOpacity={0.7}
                       onPress={() => setCancelModalVisible(true)}
@@ -1652,7 +1656,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             )}
 
             {post.type === 'sell' &&
-              ['delivering', 'pickup'].includes(orderData.status) && (
+              (['delivering', 'pickup'].includes(orderData.status) ||
+                (!orderData.shipping_method &&
+                  orderData.status === 'confirmed')) && (
                 <View style={{ padding: normalize(16) }}>
                   <Button
                     type="primary"
