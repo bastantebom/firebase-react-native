@@ -598,6 +598,7 @@ const ChatHouse = () => {
             renderItem={renderItem}
             onEndReachedThreshold={0.5}
             onEndReached={handleLoadMore}
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
                 progressViewOffset={20}

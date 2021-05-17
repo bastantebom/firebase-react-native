@@ -1,43 +1,21 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { formatNumber } from 'react-native-currency-input'
 import { useNavigation } from '@react-navigation/native'
 
 import { UserContext } from '@/context/UserContext'
-import Api from '@/services/Api'
 
 import { Colors, normalize, timePassedShort } from '@/globals'
 import { AppText, MarginView } from '@/components'
 import { Icons } from '@/assets/images/icons'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
-import SkeletonLoader from '@/screens/Activity/components/skeleton-loader'
 
 const ActivitiesCard = ({ item }) => {
   const navigation = useNavigation()
-  const { user, userInfo } = useContext(UserContext)
+  const { user } = useContext(UserContext)
 
-  const [orderLoader, setOrderLoader] = useState(true)
-  const [activity, setActivity] = useState(item)
-
-  useEffect(() => {
-    ;(async () => {
-      if (!activity.orders) {
-        let currentActivity = { ...activity }
-        const { data } = await Api.getOrders({
-          uid: user.uid,
-          pid: item.post.id,
-        })
-
-        currentActivity.orders = data
-        currentActivity.orders.sort((a, b) => b.date._seconds - a.date._seconds)
-
-        setActivity(currentActivity)
-      }
-
-      setOrderLoader(false)
-    })()
-  }, [])
+  const [activity] = useState(item)
 
   const timeAgo = time => {
     if (time <= 60) {
@@ -80,53 +58,31 @@ const ActivitiesCard = ({ item }) => {
   }
 
   const setStatusLabel = () => {
-    if (activity.post.uid === user.uid) {
-      const orderStatus = setOrders()
+    const capitalize = word => {
+      if (word === 'pending') return 'Awating Confirmation'
 
-      if (activity.post.type === 'service' || activity.post.type === 'need') {
-        const hasOffers = orderStatus.map(status => status.includes('offers'))
-
-        if (hasOffers) return 'Ongoing'
-
-        return 'Completed'
-      } else if (activity.post.type === 'sell') {
-        const hasPending = orderStatus.map(status => status.includes('pending'))
-
-        if (hasPending) return 'Ongoing'
-
-        return 'Completed'
-      }
-    } else {
-      if (activity.orders.some(order => order.status === 'pending'))
-        return 'Awating Confirmation'
-      else if (activity.orders.some(order => order.status === 'confirmed'))
-        return 'Awating Payment'
-      else if (
-        activity.orders.some(order => order.status === 'payment processing')
-      )
-        return 'Payment Processing'
-      else if (activity.orders.some(order => order.status === 'paid'))
-        return 'Ready for Delivery/Pickup'
-      else if (activity.orders.some(order => order.status === 'delivering'))
-        return 'Delivering'
-      else if (activity.orders.some(order => order.status === 'completed'))
-        return 'Completed'
-      else if (activity.orders.some(order => order.status === 'declined'))
-        return 'Declined'
-      else if (activity.orders.some(order => order.status === 'cancelled'))
-        return 'Cancelled'
+      return word.split(' ').map(item => {
+        return item[0].toUpperCase() + item.slice(1, item.length)
+      })[0]
     }
 
-    return 'N/A'
+    if (activity.order_id) return capitalize(activity.order.status)
+
+    if (
+      activity.pending_requests ||
+      (!activity.pending_requests && !activity.availed)
+    )
+      return 'Ongoing'
+    else return 'Completed'
   }
 
   const setOrders = () => {
-    if (activity.post.uid !== user.uid) {
+    if (activity.category === 'my order') {
       const totalPrice =
-        activity?.orders[0]?.items?.reduce(
+        activity?.order?.items?.reduce(
           (total, item) => total + item.price * (item.quantity || 1),
           0
-        ) || activity.orders[0].offer
+        ) || activity.order.offer
 
       return ` ₱${formatNumber(totalPrice, {
         separator: '.',
@@ -135,57 +91,21 @@ const ActivitiesCard = ({ item }) => {
       })}`
     }
 
-    const orderCounts = {}
+    let label = ''
+    if (!!activity.availed) label = label + `${activity.availed} availed `
+    if (!!activity.pending_requests)
+      label = label + `${activity.pending_requests} pending`
 
-    if (activity.post.type === 'service') {
-      activity.orders.forEach(order => {
-        if (['cancelled', 'declined', 'completed'].includes(order.status)) {
-          orderCounts.availed = {
-            label: 'availed',
-            count: orderCounts?.completed?.count + 1 || 1,
-          }
-        } else {
-          orderCounts.offers = {
-            label: 'offers',
-            count: orderCounts?.offers?.count + 1 || 1,
-          }
-        }
-      })
-    } else if (activity.post.type === 'sell') {
-      activity.orders.forEach(order => {
-        if (['cancelled', 'declined', 'completed'].includes(order.status)) {
-          orderCounts.availed = {
-            label: 'availed',
-            count: orderCounts?.availed?.count + 1 || 1,
-          }
-        } else {
-          orderCounts.pending = {
-            label: 'pending request',
-            count: orderCounts?.pending?.count + 1 || 1,
-          }
-        }
-      })
-    } else {
-      activity.orders.forEach(() => {
-        orderCounts.offers = {
-          label: 'offers',
-          count: orderCounts?.offers?.count + 1 || 1,
-        }
-      })
-    }
-
-    return Object.values(orderCounts).map(
-      count => ` ${count.count} ${count.label}`
-    )
+    return label
   }
 
   const handleUserPress = () => {
-    if (user?.uid === item?.post?.uid) {
+    if (user.uid === item.user.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
       navigation.navigate('NBTScreen', {
         screen: 'OthersProfile',
-        params: { uid: item?.post?.uid },
+        params: { uid: item.user.uid },
       })
     }
   }
@@ -194,18 +114,18 @@ const ActivitiesCard = ({ item }) => {
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={() => {
-        if (item.post.uid === user.uid) {
+        if (item?.post?.uid === user.uid) {
           navigation.navigate('NBTScreen', {
             screen: 'OngoingItem',
             params: {
-              item: activity,
+              activity: item,
             },
           })
         } else {
           navigation.navigate('orders', {
             screen: 'order-tracker',
             params: {
-              orderID: item.orders[0].id,
+              orderID: item.order.id,
             },
           })
         }
@@ -213,9 +133,12 @@ const ActivitiesCard = ({ item }) => {
       <MarginView marginSize={1} style={styles.marginView}>
         <View style={styles.postImageContainer}>
           <PostImage
-            path={activity.post.cover_photos[0]}
+            path={
+              activity?.post?.cover_photos[0] ||
+              activity?.order?.post?.cover_photos[0]
+            }
             size="64x64"
-            postType={activity.post.type}
+            postType={activity?.post?.type || activity?.order?.post?.type}
           />
         </View>
 
@@ -226,62 +149,46 @@ const ActivitiesCard = ({ item }) => {
                 <View style={styles.avatar}>
                   <Avatar
                     style={{ height: '100%', width: '100%' }}
-                    path={
-                      item.post.uid === user.uid
-                        ? userInfo.profile_photo
-                        : activity?.sellerInfo?.profile_photo
-                    }
+                    path={activity.user.profile_photo}
                     size="64x64"
                   />
                 </View>
                 <AppText textStyle="body3" customStyle={styles.username}>
-                  {item.post.uid === user.uid
-                    ? userInfo.display_name || userInfo.full_name
-                    : activity?.sellerInfo?.name}
+                  {activity.user.display_name ||
+                    activity.user.full_name ||
+                    activity.user.username}
                 </AppText>
               </View>
             </TouchableOpacity>
             <AppText
               textStyle="captionConstant"
               color={Colors.contentPlaceholder}>
-              {timeAgo(
-                Date.now() / 1000 -
-                  (activity?.orders?.[0]?.date?._seconds ||
-                    activity.post.date_posted._seconds)
-              )}
+              {timeAgo(Date.now() / 1000 - activity.date._seconds)}
             </AppText>
           </View>
 
           <View style={styles.statusWrapper}>
-            {orderLoader ? (
-              <View style={styles.loaderWrapper}>
-                <SkeletonLoader isLoading={orderLoader} />
-              </View>
-            ) : (
-              <>
-                <View
-                  style={[
-                    styles.statusText,
-                    {
-                      backgroundColor: setStatusBackground(),
-                    },
-                  ]}>
-                  <AppText textStyle="metadata" color={'white'}>
-                    {setStatusLabel()}
-                  </AppText>
-                </View>
-                <AppText textStyle="metadata">{setOrders()}</AppText>
-              </>
-            )}
+            <View
+              style={[
+                styles.statusText,
+                {
+                  backgroundColor: setStatusBackground(),
+                },
+              ]}>
+              <AppText textStyle="metadata" color={'white'}>
+                {setStatusLabel()}
+              </AppText>
+            </View>
+            <AppText textStyle="metadata">{setOrders()}</AppText>
           </View>
 
           <View style={styles.orderTitle}>
-            {getOrderIcon(activity.post.type)}
+            {getOrderIcon(activity?.post?.type || activity?.order?.post?.type)}
             <AppText
               textStyle="caption2"
               numberOfLines={1}
               customStyle={{ marginLeft: normalize(4) }}>
-              {activity.post.title}
+              {activity?.post?.title || activity?.order?.post?.title}
             </AppText>
           </View>
         </View>

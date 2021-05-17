@@ -21,7 +21,7 @@ const Past = ({ route, navigation }) => {
       </View>
       <ScrollView style={styles.scrollView}>
         <ItemCard
-          items={item.orders.filter(
+          items={item.filter(
             order =>
               order.status === 'completed' ||
               order.status === 'declined' ||

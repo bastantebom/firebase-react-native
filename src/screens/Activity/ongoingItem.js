@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   ScrollView,
   View,
@@ -13,32 +13,46 @@ import { normalize, Colors } from '@/globals'
 import { AppText, ScreenHeaderTitle } from '@/components'
 import { Icons, ChevronDown, ChevronUp, PostClock } from '@/assets/images/icons'
 
-import { UserContext } from '@/context/UserContext'
 import ActivitiesCard from './components/card'
 import ItemCard from '@/screens/Activity/components/item-card'
 import Api from '@/services/Api'
 
 const OngoingItem = ({ route, navigation }) => {
-  const { item: currentItem } = route.params
-  const { user } = useContext(UserContext)
+  const { activity } = route.params
+  const [item, setItem] = useState()
+  const [chats, setChats] = useState({})
 
   const [accordion, setAccordion] = useState({
     awatingPayments: false,
     requests: false,
     ongoing: false,
   })
-  const [chats, setChats] = useState({})
-  const [item, setItem] = useState(currentItem)
+
+  const loadOrders = async () => {
+    try {
+      const result = await Api.getOrders({
+        uid: activity.post.uid,
+        pid: activity.post.id,
+      })
+
+      if (!result.success) throw new Error(result.message)
+
+      setItem(result.data)
+    } catch (error) {
+      console.log(error.message)
+      Alert.alert('Error', 'Oops, something went wrong.')
+    }
+  }
 
   const handleAccordionOnLoad = () => {
     if (
-      item.orders.some(
+      item?.some(
         order => order.status === 'confirmed' && order.payment_method !== 'cash'
       )
     )
       setAccordion({ ...accordion, awatingPayments: true })
     else if (
-      item.orders.some(
+      item?.some(
         order =>
           order.status === 'pending' ||
           (order.status === 'confirmed' && order.payment_method === 'cash')
@@ -50,7 +64,7 @@ const OngoingItem = ({ route, navigation }) => {
 
   const getChatData = async () => {
     try {
-      item.orders.forEach(async order => {
+      item?.forEach(async order => {
         const response = await Api.getLatestOrderChat({
           uid: order.buyer_id || order.user.uid,
         })
@@ -64,25 +78,6 @@ const OngoingItem = ({ route, navigation }) => {
             data: response.data,
           },
         }))
-      })
-    } catch (error) {
-      console.error(error)
-      Alert.alert('Error', 'Oops, something went wrong.')
-    }
-  }
-
-  const loadOrders = async () => {
-    try {
-      const response = await Api.getOrders({
-        uid: user.uid,
-        pid: item.post.id,
-      })
-
-      if (!response.success) throw new Error(response.message)
-
-      setItem({
-        ...currentItem,
-        orders: response.data,
       })
     } catch (error) {
       console.error(error)
@@ -106,7 +101,7 @@ const OngoingItem = ({ route, navigation }) => {
         <View style={styles.headerWrapper}>
           <ScreenHeaderTitle
             close={() => navigation.goBack()}
-            title={item?.post?.title}
+            title={activity.post.title}
             customTitleStyle={styles.headerText}
             paddingSize={2}
             rightIcon={
@@ -114,17 +109,17 @@ const OngoingItem = ({ route, navigation }) => {
                 onPress={() =>
                   navigation.navigate('NBTScreen', {
                     screen: 'PostChat',
-                    params: { post: item.post },
+                    params: { post: activity.post },
                   })
                 }>
                 <Icons.ChatGray width={normalize(20)} height={normalize(20)} />
               </TouchableOpacity>
             }
           />
-          <ActivitiesCard item={item} />
+          <ActivitiesCard item={activity} />
         </View>
 
-        {item?.orders?.some(
+        {item?.some(
           order =>
             order.status === 'confirmed' && order.payment_method !== 'cash'
         ) && (
@@ -154,7 +149,7 @@ const OngoingItem = ({ route, navigation }) => {
                   }}>
                   <AppText textStyle="metadata" color={Colors.neutralsWhite}>
                     {
-                      item?.orders?.filter(
+                      item?.filter(
                         order =>
                           order.status === 'confirmed' &&
                           order.payment_method !== 'cash'
@@ -172,7 +167,7 @@ const OngoingItem = ({ route, navigation }) => {
 
             {accordion.awatingPayments && (
               <ItemCard
-                items={item?.orders?.filter(
+                items={item?.filter(
                   order =>
                     order.status === 'confirmed' &&
                     order.payment_method !== 'cash'
@@ -182,7 +177,7 @@ const OngoingItem = ({ route, navigation }) => {
           </View>
         )}
 
-        {item?.orders?.some(
+        {item?.some(
           order =>
             order.status === 'pending' ||
             (order.status === 'confirmed' && order.payment_method === 'cash')
@@ -210,7 +205,7 @@ const OngoingItem = ({ route, navigation }) => {
                   }}>
                   <AppText textStyle="metadata" color={Colors.neutralsWhite}>
                     {
-                      item?.orders?.filter(
+                      item?.filter(
                         order =>
                           order.status === 'pending' ||
                           (order.status === 'confirmed' &&
@@ -229,7 +224,7 @@ const OngoingItem = ({ route, navigation }) => {
 
             {accordion.requests && (
               <ItemCard
-                items={item?.orders?.filter(
+                items={item?.filter(
                   order =>
                     order.status === 'pending' ||
                     (order.status === 'confirmed' &&
@@ -241,7 +236,7 @@ const OngoingItem = ({ route, navigation }) => {
           </View>
         )}
 
-        {item?.orders?.some(
+        {item?.some(
           order =>
             order.status === 'paid' ||
             order.status === 'delivering' ||
@@ -271,7 +266,7 @@ const OngoingItem = ({ route, navigation }) => {
                   }}>
                   <AppText textStyle="metadata" color={Colors.neutralsWhite}>
                     {
-                      item?.orders?.filter(
+                      item?.filter(
                         order =>
                           order.status === 'paid' ||
                           order.status === 'delivering' ||
@@ -291,7 +286,7 @@ const OngoingItem = ({ route, navigation }) => {
 
             {accordion.ongoing && (
               <ItemCard
-                items={item?.orders?.filter(
+                items={item?.filter(
                   order =>
                     order.status === 'paid' ||
                     order.status === 'delivering' ||
@@ -304,7 +299,7 @@ const OngoingItem = ({ route, navigation }) => {
         )}
       </ScrollView>
 
-      {item?.orders?.some(
+      {item?.some(
         order =>
           order.status === 'completed' ||
           order.status === 'cancelled' ||

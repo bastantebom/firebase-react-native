@@ -12,6 +12,7 @@ import {
   StatusBar,
 } from 'react-native'
 import Modal from 'react-native-modal'
+import firestore from '@react-native-firebase/firestore'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { UserContext } from '@/context/UserContext'
@@ -84,11 +85,11 @@ const Activity = ({ navigation }) => {
 
   const loadData = async () => {
     if (sort.value === 'all') {
-      await loadAllActivities()
+      await loadActivities({ type: 'all' })
     } else if (sort.value === 'my offers') {
-      await loadMyOffers()
+      await loadActivities({ type: 'offers' })
     } else if (sort.value === 'my orders') {
-      await loadMyOrders()
+      await loadActivities({ type: 'orders' })
     } else if (sort.value === 'past') {
       await loadPast()
     }
@@ -101,163 +102,56 @@ const Activity = ({ navigation }) => {
     if (resDataLength >= 10) loadData()
   }
 
-  const loadAllActivities = async () => {
+  const handleActivitiesInfo = async data => {
+    return await Promise.all(
+      data.map(async item => {
+        if (item.category === 'my offer') {
+          const response = await Api.getPost({ pid: item.post_id })
+
+          if (!response.success) throw new Error(response.message)
+
+          item.user = userInfo
+          item.post = response.data
+        } else if (item.category === 'my order') {
+          const orderDoc = await firestore()
+            .collection('orders')
+            .doc(item.order_id)
+            .get()
+
+          const { data: userData } = await Api.getUser({
+            uid: orderDoc.data().seller_id,
+          })
+
+          item.user = userData
+          item.order = orderDoc.data()
+        }
+
+        return item
+      })
+    )
+  }
+
+  const loadActivities = async ({ type }) => {
     try {
-      const params = {}
+      const params = {
+        type,
+      }
       if (lastId.current) params.lastItemId = lastId.current
 
       const response = await Api.getActivities(params)
 
       if (!response.success) throw new Error(response.message)
 
-      const newItem = response.data
-        .filter(item => !!item)
-        .map(item => ({
-          post_id: item.post_id,
-          orders: [item],
-          post: item.post,
-        }))
-
-      await Promise.all(
-        newItem.map(async item => {
-          if (item.post.uid !== userInfo.uid) {
-            const response = await Api.getUser({ uid: item.post.uid })
-
-            item.sellerInfo = {
-              profile_photo: response.data.profile_photo,
-              name: response.data.display_name || response.data.full_name,
-            }
-
-            return item
-          }
-        })
-      )
-
-      const currentActivities = []
-      newItem.forEach(item => {
-        if (
-          currentActivities.some(activity => activity.post_id === item.post_id)
-        ) {
-          currentActivities.forEach(_item => {
-            if (_item.post_id === item.post_id) {
-              _item.orders.push(item.orders[0])
-            }
-          })
-        } else {
-          currentActivities.push(item)
-        }
-      })
-
       lastId.current = response.data.slice(-1)[0]?.id
       setResDataLength(response.data.length)
-      setActivities(activities => ({
-        ...activities,
-        ...currentActivities.reduce(
-          (items, item) => ({
-            ...items,
-            [item.post_id]: item,
-          }),
-          {}
-        ),
-      }))
-    } catch (error) {
-      console.log(error.message)
-      Alert.alert('Error', 'Oops, something went wrong.')
-    }
-  }
+      const newItems = await handleActivitiesInfo(response.data)
 
-  const loadMyOffers = async () => {
-    try {
-      const params = {}
-      if (lastId.current) params.lastItemId = lastId.current
-
-      const response = await Api.getOwnPosts(params)
-      if (!response.success) throw new Error(response.message)
-
-      const newItems = response.data
-        .filter(item => !!item)
-        .map(item => ({
-          post_id: item.id,
-          post: item,
-        }))
-
-      await Promise.all(
-        newItems.map(async item => {
-          const response = await Api.getOrders({
-            uid: userInfo.uid,
-            pid: item.post.id,
-          })
-
-          if (!response.success) throw new Error(response.message)
-
-          item.orders = response.data.sort(
-            (a, b) => b.date._seconds - a.date._seconds
-          )
-          return item
-        })
-      )
-
-      lastId.current = response.data.slice(-1)[0]?.id
-      setResDataLength(response.data.length)
       setActivities(activities => ({
         ...activities,
         ...newItems.reduce(
           (items, item) => ({
             ...items,
-            [item.post_id]: item,
-          }),
-          {}
-        ),
-      }))
-    } catch (error) {
-      console.log(error.message)
-      Alert.alert('Error', 'Oops, something went wrong.')
-    }
-  }
-
-  const loadMyOrders = async () => {
-    try {
-      const params = {
-        uid: userInfo.uid,
-      }
-      if (lastId.current) params.lastItemId = lastId.current
-
-      const response = await Api.getOwnOrders(params)
-
-      if (!response.success) throw new Error(response.message)
-
-      const newItem = response.data
-        .filter(item => !!item)
-        .map(item => ({
-          id: item.id,
-          post_id: item.post_id,
-          orders: [item],
-          post: item.post,
-        }))
-
-      await Promise.all(
-        newItem.map(async item => {
-          if (item.post.uid !== userInfo.uid) {
-            const response = await Api.getUser({ uid: item.post.uid })
-
-            item.sellerInfo = {
-              profile_photo: response.data.profile_photo,
-              name: response.data.display_name || response.data.full_name,
-            }
-
-            return item
-          }
-        })
-      )
-
-      lastId.current = response.data.slice(-1)[0]?.id
-      setResDataLength(response.data.length)
-      setActivities(activities => ({
-        ...activities,
-        ...newItem.reduce(
-          (items, item) => ({
-            ...items,
-            [item.post_id]: item,
+            [item.id]: item,
           }),
           {}
         ),
@@ -271,50 +165,43 @@ const Activity = ({ navigation }) => {
   const loadPast = async () => {
     try {
       const params = {}
+
       if (lastId.current) params.lastItemId = lastId.current
 
       const response = await Api.getPastActivities()
+
       if (!response.success) throw new Error(response.message)
-
-      const newItem = response.data
-        .filter(item => !!item)
-        .map(item => ({
-          id: item.id,
-          post_id: item.post_id,
-          orders: [item],
-          post: item.post,
-          sellerInfo: {
-            profile_photo: userInfo.profile_photo,
-            name: userInfo.display_name || userInfo.full_name,
-          },
-        }))
-
-      const currentActivities = []
-      newItem.forEach(item => {
-        if (
-          currentActivities.some(activity => activity.post_id === item.post_id)
-        ) {
-          currentActivities.forEach(_item => {
-            if (_item.post_id === item.post_id) {
-              _item.orders.push(item.orders[0])
-            }
-          })
-        } else {
-          currentActivities.push(item)
-        }
-      })
 
       lastId.current = response.data.slice(-1)[0]?.id
       setResDataLength(response.data.length)
-      setActivities(
-        currentActivities.reduce(
+
+      const newItems = await Promise.all(
+        response.data.map(async item => {
+          const { data: userData } = await Api.getUser({
+            uid: item.seller_id,
+          })
+
+          return {
+            category: 'my order',
+            date: item.date,
+            id: item.id,
+            order_id: item.id,
+            order: item,
+            user: userData,
+          }
+        })
+      )
+
+      setActivities(activities => ({
+        ...activities,
+        ...newItems.reduce(
           (items, item) => ({
             ...items,
-            [item.post_id]: item,
+            [item.id]: item,
           }),
           {}
-        )
-      )
+        ),
+      }))
     } catch (error) {
       console.log(error.message)
       Alert.alert('Error', 'Oops, something went wrong.')
@@ -407,12 +294,8 @@ const Activity = ({ navigation }) => {
         {!!Object.values(activities).length && (
           <View style={styles.activityWrapper}>
             <FlatList
-              data={Object.values(activities).sort(
-                (a, b) =>
-                  b?.orders?.[0]?.date?._seconds -
-                  a?.orders?.[0]?.date?._seconds
-              )}
-              keyExtractor={item => item.post_id}
+              data={Object.values(activities)}
+              keyExtractor={item => item.id}
               renderItem={({ item }) => <ActivitiesCard item={item} />}
               onEndReachedThreshold={0.5}
               onEndReached={handleLoadMore}
