@@ -247,6 +247,8 @@ const Notifications = () => {
               if (isCloseToBottom(nativeEvent)) loadMoreNotifiations()
             }}
             scrollEventThrottle={400}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             refreshControl={
               <RefreshControl
                 refreshing={isRereshing}

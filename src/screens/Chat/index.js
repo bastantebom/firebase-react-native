@@ -312,6 +312,20 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
     }
   }
 
+  const handlePostPress = () => {
+    if (!post?.uid || !post?.id) return
+    navigation.navigate('NBTScreen', {
+      screen: 'posts',
+      params: {
+        screen: 'published-post',
+        params: {
+          id: post.id,
+          uid: post.uid,
+        },
+      },
+    })
+  }
+
   return (
     <>
       <View style={styles.chatWrapper}>
@@ -355,18 +369,26 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
       </View>
       {post?.id && (
         <View style={styles.postDetails}>
-          <View style={styles.postImageContainer}>
-            <PostImage
-              size="32x32"
-              path={post?.cover_photos?.[0]}
-              postType={post?.type?.toLowerCase()}
-            />
-          </View>
-          <AppText
-            textStyle="caption2"
-            customStyle={{ marginLeft: normalize(6), marginTop: normalize(3) }}>
-            {post?.title}
-          </AppText>
+          <TouchableOpacity
+            style={styles.headerContent}
+            activeOpacity={0.8}
+            onPress={handlePostPress}>
+            <View style={styles.postImageContainer}>
+              <PostImage
+                size="32x32"
+                path={post?.cover_photos?.[0]}
+                postType={post?.type?.toLowerCase()}
+              />
+            </View>
+            <AppText
+              textStyle="caption2"
+              customStyle={{
+                marginLeft: normalize(6),
+                marginTop: normalize(3),
+              }}>
+              {post?.title}
+            </AppText>
+          </TouchableOpacity>
         </View>
       )}
     </>

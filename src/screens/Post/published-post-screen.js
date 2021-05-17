@@ -736,7 +736,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
               {user.current.display_name || user.current.full_name}
             </Text>
             {!!user.current?.account_verified && (
-              <Icons.Verified style={styles.verifiedIcon} />
+              <Icons.Verified style={styles.verifiedIcon} {...iconSize(16)} />
             )}
           </View>
 
@@ -1354,7 +1354,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
                 {user.current.display_name || user.current.full_name}
               </Text>
               {!!user.current?.account_verified && (
-                <Icons.Verified style={styles.verifiedIcon} />
+                <Icons.Verified style={styles.verifiedIcon} {...iconSize(16)} />
               )}
             </TouchableOpacity>
           </View>

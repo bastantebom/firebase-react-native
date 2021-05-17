@@ -696,7 +696,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       <View style={styles.section}>
         <View style={[utilStyles.row, utilStyles.alignCenter]}>
           {renderAvatar()}
-          <View>
+          <View style={{ flex: 1 }}>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={handleOnPostTitlePress}>
@@ -739,11 +739,11 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const getTimeSlot = timeSlot => {
     switch (timeSlot) {
       case 'morning':
-        return `, Morning [9am-12nn]`
+        return `Morning [9am-12nn]`
       case 'afternoon':
-        return `, Afternoon [1pm-6pm]`
+        return `Afternoon [1pm-6pm]`
       case 'evening':
-        return `, Night [6pm-10pm]`
+        return `Night [6pm-10pm]`
       default:
         return ''
     }
@@ -778,12 +778,25 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 { color: Colors.contentPlaceholder, marginTop: normalize(4) },
               ]}>
               {orderData.booking_schedule.schedule}
-              {orderData.booking_schedule?.flexible
-                ? ', Flexi [9am-10pm]'
-                : orderData.booking_schedule.time_slot
-                ? getTimeSlot(orderData.booking_schedule.time_slot)
-                : ''}
             </Text>
+            {orderData.booking_schedule?.flexible && (
+              <Text
+                style={[
+                  typography.body2,
+                  { color: Colors.contentPlaceholder, marginTop: normalize(4) },
+                ]}>
+                Flexi [9am-10pm]
+              </Text>
+            )}
+            {orderData.booking_schedule.time_slot && (
+              <Text
+                style={[
+                  typography.body2,
+                  { color: Colors.contentPlaceholder, marginTop: normalize(4) },
+                ]}>
+                {getTimeSlot(orderData.booking_schedule.time_slot)}
+              </Text>
+            )}
           </View>
         )}
         <View style={styles.section}>
@@ -1219,7 +1232,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                         {item.quantity || 1}x
                       </Text>
                       <View>
-                        <Text style={[typography.body2, typography.medium]}>
+                        <Text
+                          style={[
+                            typography.body2,
+                            typography.medium,
+                            { paddingRight: normalize(8) },
+                          ]}>
                           {item.name || post.title}
                         </Text>
                         {!!item.note && (
@@ -1677,7 +1695,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       return
 
     if (
-      !orderData?.history?.some(({ status }) => status === 'paid') ||
+      (orderData.payment_method !== 'cash' &&
+        !orderData?.history?.some(({ status }) => status === 'paid')) ||
       (orderData.payment_method === 'cash' && orderData.status !== 'completed')
     )
       return
@@ -1685,6 +1704,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
     }
+    const cutOffDate =
+      orderData.payment_method !== 'cash' && paymentData?.date
+        ? format(
+            new Date((paymentData.date._seconds + 345600) * 1000),
+            `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
+          )
+        : (orderData?.history?.some(({ status }) => status === 'completed') &&
+            moment
+              .unix(
+                orderData?.history?.find(({ status }) => status === 'completed')
+                  .date._seconds + 345600
+              )
+              .format('MMM D YYYY, h:mm a')) ||
+          'N/A'
 
     return (
       <View style={styles.buyerNote}>
@@ -1703,7 +1736,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           If you have problems with your order, email us with the order ID and
           details of your order until{' '}
           <Text style={typography.medium}>
-            {'<'}TD + 4days{'>'}
+            {'<'}
+            {cutOffDate}
+            {'>'}
           </Text>
         </Text>
 

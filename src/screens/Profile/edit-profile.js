@@ -187,7 +187,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   }
 
   const handleValidateUsername = useCallback(async username => {
-    if (/^([a-zA-Z0-9_.]){0,30}$/.test(username)) {
+    if (/^([a-z0-9_.]){0,30}$/.test(username)) {
       setFormData(data => ({ ...data, username }))
       setDirtyStates([...new Set([...dirtyStates, 'username'])])
       setIsValidUsername(true)

@@ -5,7 +5,13 @@ import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Platform,
+} from 'react-native'
 import TextInput from '@/components/textinput'
 import Checkbox from '@/components/checkbox'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -73,7 +79,7 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
               zIndex: 2000,
             }}
             activeOpacity={0.7}
-            onPress={() => setIsDatePickerVisible(true)}>
+            onPress={() => setIsDatePickerVisible(!isDatePickerVisible)}>
             <View pointerEvents="none">
               <TextInput
                 containerStyle={{
@@ -96,9 +102,10 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
               <DateTimePicker
                 value={datePickerValue}
                 mode="date"
-                display="default"
+                display={Platform.OS === 'ios' ? 'inline' : 'default'}
                 onChange={handleOnDateChange}
                 minimumDate={Date.now()}
+                style={styles.datePicker}
               />
             )}
           </TouchableOpacity>
@@ -198,6 +205,9 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     marginLeft: normalize(12),
+  },
+  datePicker: {
+    backgroundColor: Colors.neutralsWhite,
   },
 })
 

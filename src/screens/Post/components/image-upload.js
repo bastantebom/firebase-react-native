@@ -4,7 +4,14 @@ import { Icons } from '@/assets/images/icons'
 import { Colors, GlobalStyle, normalize } from '@/globals'
 import { iconSize } from '@/globals/Utils'
 import { useNavigation } from '@react-navigation/native'
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Platform,
+} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import typography from '@/globals/typography'
 import PostImage from '@/components/Post/post-image'
@@ -96,6 +103,15 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
             You can post up to 10 photos. The first one uploaded becomes your
             cover photo.
           </Text>
+          {Platform.OS === 'ios' && (
+            <Text
+              style={[
+                styles.uploadImageDescription,
+                { marginTop: normalize(4) },
+              ]}>
+              * Live Photos setting option is currently unavailable.
+            </Text>
+          )}
           <TouchableOpacity
             style={styles.linkWrapper}
             activeOpacity={0.7}
