@@ -7,6 +7,8 @@ import {
   RefreshControl,
   StatusBar,
   Platform,
+  ActivityIndicator,
+  Text,
 } from 'react-native'
 
 import ProfileInfoService from '@/services/Profile/ProfileInfo'
@@ -46,7 +48,6 @@ function ProfileInfoModal(props) {
   const { profileViewType = 'profile', uid } = props.route?.params
   const navigation = useNavigation()
   const { user, signOut } = useContext(UserContext)
-  const { needsRefresh } = useContext(Context)
   const [otherUserPosts, setOtherUserPosts] = useState({})
   const [otherUserInfo, setOtherUserInfo] = useState({})
 
@@ -56,27 +57,25 @@ function ProfileInfoModal(props) {
 
   const [visibleHives, setVisibleHives] = useState(false)
   const [profileList, setProfileList] = useState(false)
-  const [isDataLoading, setIsDataLoading] = useState(true)
-
+  const [isDataLoading, setIsDataLoading] = useState(false)
+  const [morePostLoading, setMorePostLoading] = useState(true)
   const [headerState, setHeaderState] = useState(profileViewType)
   const [isFollowing, setIsFollowing] = useState(false)
   const [addFollowers, setAddFollowers] = useState(null)
 
   const [offsetHeight, setOffsetHeight] = useState(0)
   const [coverPhotoUrl, setCoverPhotoUrl] = useState(null)
+  const [lastPID, setLastPID] = useState(0)
+  const [noMorePost, setNoMorePost] = useState(false)
+  const [refresh, setRefresh] = useState(false)
 
   const toggleQR = () => setQR(!QR)
-
   const toggleEllipsisState = () => setEllipsisState(!ellipsisState)
-
   const toggleMenu = () => setMenu(!menu)
-
   const toggleHives = () => setVisibleHives(!visibleHives)
-
   const toggleProfileList = () => {
     if (user?.uid) setProfileList(!profileList)
   }
-
   const toggleFollowing = () => {
     ProfileInfoService.follow(uid, isFollowing)
       .then(response => {
@@ -132,30 +131,19 @@ function ProfileInfoModal(props) {
     refreshPosts()
   }, [])
 
-  const [lastPID, setLastPID] = useState(0)
-  const [fetchMore, setFetchMore] = useState(false)
-  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
-  const [refresh, setRefresh] = useState(false)
-
-  const getMorePost = async () => {
+  const handleOnEndReached = async () => {
     try {
-      setFetchMore(true)
-
-      if (!thereIsMoreFlag) {
-        setFetchMore(false)
-        return
-      }
-
+      if (noMorePost) return
+      setMorePostLoading(true)
       const getPostsParams = {
         uid: uid,
-        limit: 5,
+        limit: 10,
         page: lastPID,
       }
-
       const res = await Api.getUserPosts(getPostsParams)
       if (!res.success) throw new Error(res.message)
 
-      if (res.data) {
+      if (res.data.length) {
         const userPosts = res.data
           .map(post => ({ ...post, $isLoading: true }))
           .reduce(
@@ -165,16 +153,14 @@ function ProfileInfoModal(props) {
             }),
             {}
           )
-
         setOtherUserPosts(posts => ({ ...posts, ...userPosts }))
         setLastPID(lastPID + 1)
-        setFetchMore(false)
       } else {
-        setThereIsMoreFlag(false)
-        setFetchMore(false)
+        setNoMorePost(true)
+        setMorePostLoading(false)
       }
     } catch (err) {
-      setFetchMore(false)
+      setNoMorePost(true)
     }
   }
 
@@ -207,6 +193,7 @@ function ProfileInfoModal(props) {
             $isLoading: false,
           },
         }))
+        setMorePostLoading(false)
       })
       .catch(() => {
         setOtherUserPosts(posts => ({
@@ -216,6 +203,7 @@ function ProfileInfoModal(props) {
             $hasErrors: true,
           },
         }))
+        setMorePostLoading(false)
       })
   }
 
@@ -227,7 +215,7 @@ function ProfileInfoModal(props) {
 
       const params = {
         uid: uid,
-        limit: 5,
+        limit: 10,
         page: 0,
       }
       const res = await Api.getUserPosts(params)
@@ -246,8 +234,7 @@ function ProfileInfoModal(props) {
 
         setOtherUserPosts(posts => ({ ...posts, ...userPosts }))
         setLastPID(1)
-        setIsLoading(false)
-        setNeedsRefresh(false)
+        setMorePostLoading(true)
       }
       setRefresh(false)
     } catch (err) {
@@ -328,6 +315,7 @@ function ProfileInfoModal(props) {
   )
 
   useEffect(() => {
+    if (!morePostLoading) return
     Object.values(otherUserPosts)
       .filter(post => !post.$promise)
       .forEach(post => {
@@ -473,7 +461,7 @@ function ProfileInfoModal(props) {
           posts={otherUserPosts}
           onPostPress={handlePostPress}
           onLikePress={handleLikePress}
-          isLoadingMoreItems={isDataLoading}
+          isLoading={morePostLoading}
           scrollEnabled={true}
         />
       ) : (
@@ -506,7 +494,7 @@ function ProfileInfoModal(props) {
         foreground={renderForeground()}
         header={renderHeader()}
         parallaxHeight={offsetHeight ? offsetHeight : normalize(425.9)}
-        headerHeight={scrollPosition < 100 ? 0 : normalize(115)}
+        headerHeight={scrollPosition < 115 ? 0 : normalize(115)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -517,7 +505,7 @@ function ProfileInfoModal(props) {
         )}
         snapToEdge={false}
         transparentHeader={scrollPosition < 250 ? true : false}
-        onEndReached={getMorePost}
+        onEndReached={handleOnEndReached}
         refreshControl={
           <RefreshControl
             style={{ zIndex: 1 }}
@@ -552,6 +540,7 @@ function ProfileInfoModal(props) {
           backgroundColor: Colors.neutralsWhite,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: '#DADCE0',
+          flex: 1,
           ...Platform.select({
             ios: {
               height: Dimensions.get('window').height * 0.8,

@@ -59,11 +59,9 @@ const ProfileScreen = ({
   const [visibleFollowing, setVisibleFollowing] = useState(false)
   const [profileList, setProfileList] = useState(false)
   const [coverPhotoUrl, setCoverPhotoUrl] = useState(null)
-
   const [offsetHeight, setOffsetHeight] = useState(0)
-
   const [headerState, setHeaderState] = useState(profileViewType)
-
+  const [noMorePost, setNoMorePost] = useState(false)
   const toggleQR = () => {
     setQR(!QR)
   }
@@ -125,6 +123,10 @@ const ProfileScreen = ({
   }, [needsRefresh])
 
   useEffect(() => {
+    refreshPosts()
+  }, [])
+
+  useEffect(() => {
     updateCoverPhotoUrl()
   }, [userInfo.cover_photo])
 
@@ -136,8 +138,7 @@ const ProfileScreen = ({
   }, [])
 
   const [lastPID, setLastPID] = useState(0)
-  const [fetchMore, setFetchMore] = useState(false)
-  const [thereIsMoreFlag, setThereIsMoreFlag] = useState(true)
+  const [morePostLoading, setMorePostLoading] = useState(true)
   const [refresh, setRefresh] = useState(false)
 
   const getDeferredData = post => {
@@ -169,6 +170,7 @@ const ProfileScreen = ({
             $isLoading: false,
           },
         }))
+        setMorePostLoading(false)
       })
       .catch(() => {
         setUserPosts(posts => ({
@@ -178,28 +180,23 @@ const ProfileScreen = ({
             $hasErrors: true,
           },
         }))
+        setMorePostLoading(false)
       })
   }
 
-  const getMorePost = async () => {
+  const handleOnEndReached = async () => {
     try {
-      setFetchMore(true)
-
-      if (!thereIsMoreFlag) {
-        setFetchMore(false)
-        return
-      }
-
+      if (noMorePost) return
+      setMorePostLoading(true)
       const getPostsParams = {
         uid: user.uid,
-        limit: 5,
+        limit: 10,
         page: lastPID,
       }
-
       const res = await Api.getUserPosts(getPostsParams)
       if (!res.success) throw new Error(res.message)
 
-      if (res.data) {
+      if (res.data.length) {
         const userPosts = res.data
           .map(post => ({ ...post, $isLoading: true }))
           .reduce(
@@ -209,17 +206,14 @@ const ProfileScreen = ({
             }),
             {}
           )
-
         setUserPosts(posts => ({ ...posts, ...userPosts }))
-
         setLastPID(lastPID + 1)
-        setFetchMore(false)
       } else {
-        setThereIsMoreFlag(false)
-        setFetchMore(false)
+        setNoMorePost(true)
+        setMorePostLoading(false)
       }
     } catch (err) {
-      setFetchMore(false)
+      setNoMorePost(true)
     }
   }
 
@@ -251,6 +245,7 @@ const ProfileScreen = ({
         setUserPosts(posts => ({ ...posts, ...userPosts }))
         setLastPID(1)
         setIsLoading(false)
+        setMorePostLoading(true)
         setNeedsRefresh(false)
       }
       setRefresh(false)
@@ -457,7 +452,7 @@ const ProfileScreen = ({
           posts={userPosts}
           onPostPress={handlePostPress}
           onLikePress={handleLikePress}
-          isLoadingMoreItems={fetchMore}
+          isLoading={morePostLoading}
           scrollEnabled={true}
         />
       ) : (
@@ -494,7 +489,7 @@ const ProfileScreen = ({
             ? normalize(574.857)
             : normalize(479.23)
         }
-        headerHeight={scrollPosition < 100 ? 0 : normalize(116)}
+        headerHeight={scrollPosition < 115 ? 0 : normalize(116)}
         headerSize={() => {}}
         scrollEvent={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scroll } } }],
@@ -505,7 +500,7 @@ const ProfileScreen = ({
         )}
         snapToEdge={false}
         transparentHeader={scrollPosition < 250 ? true : false}
-        onEndReached={getMorePost}
+        onEndReached={handleOnEndReached}
         refreshControl={
           <RefreshControl
             style={{ zIndex: 1 }}
@@ -538,6 +533,7 @@ const ProfileScreen = ({
           backgroundColor: Colors.neutralsWhite,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: '#DADCE0',
+          flex: 1,
           ...Platform.select({
             ios: {
               height: Dimensions.get('window').height * 0.8,
