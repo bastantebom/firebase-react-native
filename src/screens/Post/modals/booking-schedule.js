@@ -49,19 +49,26 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
       <View style={styles.container}>
         <BottomSheetHeader />
         <View style={styles.content}>
-          <TouchableOpacity
-            style={{ marginTop: normalize(24) }}
-            activeOpacity={0.7}
-            onPress={close}>
-            <Icons.Back
-              style={{ color: Colors.primaryMidnightBlue }}
-              {...iconSize(24)}
-            />
-          </TouchableOpacity>
-
-          <Text style={[typography.subtitle1, { marginTop: normalize(28) }]}>
-            Service Schedule
-          </Text>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={{ marginTop: normalize(24) }}
+              activeOpacity={0.7}
+              onPress={close}>
+              <Icons.Back
+                style={{ color: Colors.primaryMidnightBlue }}
+                {...iconSize(24)}
+              />
+            </TouchableOpacity>
+            <View style={styles.headerTitle}>
+              <Text
+                style={[
+                  typography.subtitle1,
+                  { marginTop: normalize(28), justifyContent: 'center' },
+                ]}>
+                Service Schedule
+              </Text>
+            </View>
+          </View>
           <View style={styles.divider} />
           <Text
             style={[
@@ -191,6 +198,17 @@ const styles = StyleSheet.create({
   content: {
     padding: normalize(24),
   },
+  header: {
+    flexDirection: 'row',
+    paddingBottom: normalize(16),
+  },
+  headerTitle: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: '100%',
+  },
   buttonWrapper: {
     paddingTop: normalize(24),
   },
@@ -208,6 +226,7 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     backgroundColor: Colors.neutralsWhite,
+    marginTop: normalize(16),
   },
 })
 
