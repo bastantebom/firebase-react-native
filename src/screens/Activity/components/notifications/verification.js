@@ -23,7 +23,6 @@ const Verification = ({ unreadNotification, item }) => {
         screen: 'Verified',
         params: {
           screen: 'VerifiedScreen',
-          params: { item },
         },
       })
     } else {
@@ -115,7 +114,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    bottom: 0,
+    bottom: normalize(12),
     right: normalize(12),
   },
   captionWrapper: {

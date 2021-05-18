@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -6,9 +6,10 @@ import { AppText, ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
 
 import { VerifiedIllustration } from '@/assets/images/icons'
+import { UserContext } from '@/context/UserContext'
 
-const Verified = ({ navigation, route }) => {
-  const { name } = route.params.item
+const Verified = ({ navigation }) => {
+  const { userInfo } = useContext(UserContext)
 
   return (
     <>
@@ -18,7 +19,8 @@ const Verified = ({ navigation, route }) => {
         <View style={styles.contentWrapper}>
           <VerifiedIllustration />
           <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
-            Yay, {name}! You're now bee-rified!
+            Yay, {userInfo.display_name || userInfo.full_name}! You're now
+            bee-rified!
           </AppText>
           <AppText
             textStyle="body2Dashboard"
@@ -53,7 +55,6 @@ const styles = StyleSheet.create({
     marginTop: getStatusBarHeight(),
   },
   contentWrapper: {
-    paddingTop: normalize(70),
     alignItems: 'center',
     height: '100%',
     paddingHorizontal: normalize(24),
