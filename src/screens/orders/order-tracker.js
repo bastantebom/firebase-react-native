@@ -777,8 +777,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 typography.body2,
                 { color: Colors.contentPlaceholder, marginTop: normalize(4) },
               ]}>
-              <Text style={typography.medium}>Date:</Text>{' '}
-              {orderData.booking_schedule.schedule}
+              Date:{' '}
+              <Text style={typography.medium}>
+                {orderData.booking_schedule.schedule}
+              </Text>
             </Text>
             {orderData.booking_schedule?.flexible && (
               <Text
@@ -786,8 +788,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   typography.body2,
                   { color: Colors.contentPlaceholder, marginTop: normalize(4) },
                 ]}>
-                <Text style={typography.medium}>Preferred time: </Text>
-                Flexi [9am-10pm]
+                Preferred time:
+                <Text style={typography.medium}> Flexi [9am-10pm]</Text>
               </Text>
             )}
             {orderData.booking_schedule.time_slot && (
@@ -796,12 +798,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   typography.body2,
                   { color: Colors.contentPlaceholder, marginTop: normalize(4) },
                 ]}>
+                {!orderData.booking_schedule?.flexible
+                  ? 'Preferred time: '
+                  : 'Other available time: '}
+
                 <Text style={typography.medium}>
-                  {!orderData.booking_schedule?.flexible
-                    ? 'Preferred time: '
-                    : 'Other available time: '}
+                  {getTimeSlot(orderData.booking_schedule.time_slot)}
                 </Text>
-                {getTimeSlot(orderData.booking_schedule.time_slot)}
               </Text>
             )}
           </View>
