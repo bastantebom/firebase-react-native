@@ -29,25 +29,26 @@ const Grouped = ({ item }) => {
   }
 
   const handleViewOrders = async item => {
-    const postRef = await firestore()
-      .collection('posts')
-      .doc(item[0].post_id)
-      .get()
-    const postData = postRef.data()
+    const [postData, userData] = await Promise.all([
+      (async () => {
+        const postRef = await firestore()
+          .collection('posts')
+          .doc(item[0].post_id)
+          .get()
+        return postRef.data()
+      })(),
+      (async () => {
+        const response = await Api.getUser({ uid: item[0].seller_id })
 
-    const orders = item.map(order => {
-      const currentOrder = { ...order }
-      currentOrder.items = postData.items
-      return currentOrder
-    })
+        return response.data
+      })(),
+    ])
 
     const activity = {
       post: postData,
-      orders,
-      user: {
-        profile_photo: userInfo.profile_photo,
-        name: userInfo.display_name || userInfo.full_name,
-      },
+      post_id: postData.id,
+      date: item[0].date,
+      user: userData,
     }
 
     Promise.all(
@@ -64,7 +65,7 @@ const Grouped = ({ item }) => {
     navigation.navigate('NBTScreen', {
       screen: 'OngoingItem',
       params: {
-        item: activity,
+        activity,
       },
     })
   }
