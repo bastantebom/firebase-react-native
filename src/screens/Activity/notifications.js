@@ -26,6 +26,7 @@ import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
 import Api from '@/services/Api'
+import moment from 'moment'
 
 const Notifications = () => {
   const navigation = useNavigation()
@@ -40,6 +41,48 @@ const Notifications = () => {
   const [newNotifications, setNewNotification] = useState([])
   const [earlierNotifications, setEarlierNotification] = useState([])
   const [followings, setFollowings] = useState([])
+
+  const dateNow = new Date() / 1000
+  const today = moment().startOf('day').unix()
+  const yesterday = moment().startOf('day').subtract(1, 'days').unix()
+  const thisweek = moment().startOf('day').subtract(7, 'days').unix()
+  const thismonth = moment().startOf('day').subtract(30, 'days').unix()
+
+  const groupByToday = () => {
+    return earlierNotifications?.filter(
+      notif => dateNow - notif[0].date._seconds <= dateNow - today
+    )
+  }
+
+  const groupByYesterday = () => {
+    return earlierNotifications?.filter(
+      notif =>
+        dateNow - notif[0].date._seconds <= dateNow - yesterday &&
+        dateNow - notif[0].date._seconds > dateNow - today
+    )
+  }
+
+  const groupByThisWeek = () => {
+    return earlierNotifications?.filter(
+      notif =>
+        dateNow - notif[0].date._seconds <= dateNow - thisweek &&
+        dateNow - notif[0].date._seconds > dateNow - yesterday
+    )
+  }
+
+  const groupByThisMonth = () => {
+    return earlierNotifications?.filter(
+      notif =>
+        dateNow - notif[0].date._seconds <= dateNow - thismonth &&
+        dateNow - notif[0].date._seconds > dateNow - thisweek
+    )
+  }
+
+  const groupByPastMonths = () => {
+    return earlierNotifications?.filter(
+      notif => dateNow - notif[0].date._seconds > dateNow - thismonth
+    )
+  }
 
   const loadNotifications = async ({ isLoadMore }) => {
     if (isLoadingMore) return
@@ -233,15 +276,6 @@ const Notifications = () => {
             paddingHorizontal: normalize(15),
             paddingBottom: normalize(90),
           }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Calendar
-              height={normalize(20)}
-              width={normalize(20)}
-              style={{ marginRight: 10 }}
-            />
-            <AppText textStyle="body3">Today</AppText>
-          </View>
-
           <ScrollView
             onScroll={({ nativeEvent }) => {
               if (isCloseToBottom(nativeEvent)) loadMoreNotifiations()
@@ -262,6 +296,17 @@ const Notifications = () => {
                 }}
               />
             }>
+            {!!groupByToday().length && (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Calendar
+                  height={normalize(20)}
+                  width={normalize(20)}
+                  style={{ marginRight: 10 }}
+                />
+                <AppText textStyle="body3">Today</AppText>
+              </View>
+            )}
+
             {!!newNotifications.length && (
               <AppText
                 textStyle="eyebrow1"
@@ -280,7 +325,7 @@ const Notifications = () => {
               )
             })}
 
-            {!!earlierNotifications.length && (
+            {!!groupByToday().length && (
               <AppText
                 textStyle="eyebrow1"
                 customStyle={{ color: '#91919C', paddingTop: normalize(15) }}>
@@ -288,7 +333,111 @@ const Notifications = () => {
               </AppText>
             )}
 
-            {earlierNotifications.map(notification => {
+            {groupByToday().map(notification => {
+              return (
+                <View key={notification[0].id}>
+                  {notification.length === 1
+                    ? renderCard(notification[0])
+                    : renderGroupedNotification(notification)}
+                </View>
+              )
+            })}
+
+            {!!groupByYesterday().length && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: normalize(15),
+                }}>
+                <Calendar
+                  height={normalize(20)}
+                  width={normalize(20)}
+                  style={{ marginRight: 10 }}
+                />
+                <AppText textStyle="body3">Yesterday</AppText>
+              </View>
+            )}
+
+            {groupByYesterday().map(notification => {
+              return (
+                <View key={notification[0].id}>
+                  {notification.length === 1
+                    ? renderCard(notification[0])
+                    : renderGroupedNotification(notification)}
+                </View>
+              )
+            })}
+
+            {!!groupByThisWeek().length && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: normalize(15),
+                }}>
+                <Calendar
+                  height={normalize(20)}
+                  width={normalize(20)}
+                  style={{ marginRight: 10 }}
+                />
+                <AppText textStyle="body3">This Week</AppText>
+              </View>
+            )}
+
+            {groupByThisWeek().map(notification => {
+              return (
+                <View key={notification[0].id}>
+                  {notification.length === 1
+                    ? renderCard(notification[0])
+                    : renderGroupedNotification(notification)}
+                </View>
+              )
+            })}
+
+            {!!groupByThisMonth().length && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: normalize(15),
+                }}>
+                <Calendar
+                  height={normalize(20)}
+                  width={normalize(20)}
+                  style={{ marginRight: 10 }}
+                />
+                <AppText textStyle="body3">This Month</AppText>
+              </View>
+            )}
+
+            {groupByThisMonth().map(notification => {
+              return (
+                <View key={notification[0].id}>
+                  {notification.length === 1
+                    ? renderCard(notification[0])
+                    : renderGroupedNotification(notification)}
+                </View>
+              )
+            })}
+
+            {!!groupByPastMonths().length && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: normalize(15),
+                }}>
+                <Calendar
+                  height={normalize(20)}
+                  width={normalize(20)}
+                  style={{ marginRight: 10 }}
+                />
+                <AppText textStyle="body3">Past Months</AppText>
+              </View>
+            )}
+
+            {groupByPastMonths().map(notification => {
               return (
                 <View key={notification[0].id}>
                   {notification.length === 1

@@ -1,5 +1,6 @@
 import React from 'react'
-import { SafeAreaView, View, StyleSheet, ScrollView } from 'react-native'
+import { StatusBar, View, StyleSheet, ScrollView } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import ItemCard from '@/screens/Activity/components/item-card'
 
@@ -10,33 +11,36 @@ const Past = ({ route, navigation }) => {
   const { item } = route.params
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <View style={styles.headerWrapper}>
-        <ScreenHeaderTitle
-          close={() => navigation.goBack()}
-          title={'Past Orders'}
-          customTitleStyle={styles.headerText}
-          paddingSize={2}
-        />
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <View style={styles.safeAreaView}>
+        <View style={styles.headerWrapper}>
+          <ScreenHeaderTitle
+            close={() => navigation.goBack()}
+            title={'Past Orders'}
+            customTitleStyle={styles.headerText}
+            paddingSize={2}
+          />
+        </View>
+        <ScrollView style={styles.scrollView}>
+          <ItemCard
+            items={item.filter(
+              order =>
+                order.status === 'completed' ||
+                order.status === 'declined' ||
+                order.status === 'cancelled'
+            )}
+          />
+        </ScrollView>
       </View>
-      <ScrollView style={styles.scrollView}>
-        <ItemCard
-          items={item.filter(
-            order =>
-              order.status === 'completed' ||
-              order.status === 'declined' ||
-              order.status === 'cancelled'
-          )}
-        />
-      </ScrollView>
-    </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
-    paddingTop: normalize(20),
+    marginTop: getStatusBarHeight(),
     backgroundColor: '#fff',
   },
   scrollView: {
