@@ -1237,7 +1237,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                         ? {}
                         : { paddingBottom: normalize(10) },
                     ]}>
-                    <View style={{ flexDirection: 'row', maxWidth: '70%' }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        maxWidth: '70%',
+                        flex: 1,
+                      }}>
                       <Text style={[typography.body1, styles.itemQuantity]}>
                         {item.quantity || 1}x
                       </Text>
