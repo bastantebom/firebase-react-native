@@ -4,16 +4,18 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { Icons } from '@/assets/images/icons'
-import { AppText, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
 import MoreIdTypes from './modals/more-id-types'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import typography from '@/globals/typography'
+import { iconSize } from '@/globals/Utils'
 /**
  * @typedef {Object} IdTypeProps
  * @property {string} type
@@ -29,10 +31,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 const IdTypeScreen = ({ navigation, route }) => {
   const { onSelect } = route.params
   const [moreOptionsModalVisible, setMoreOptionsModalVisible] = useState(false)
-
-  const [moreOptions, setMoreOptions] = useState(false)
-
-  const toggleMoreOptions = () => setMoreOptions(!moreOptions)
 
   const idTypes = [
     "Driver's license",
@@ -70,7 +68,7 @@ const IdTypeScreen = ({ navigation, route }) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <AppText textStyle="body1">{item}</AppText>
+          <Text style={typography.body1}>{item}</Text>
         </View>
         <Icons.ChevronRight
           color={Colors.checkboxBorderDefault}
@@ -85,34 +83,42 @@ const IdTypeScreen = ({ navigation, route }) => {
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <ScreenHeaderTitle close={navigation.goBack} />
-          </View>
-
-          <View>
-            <AppText textStyle="body1medium" customStyle={styles.title}>
-              Select your preferred ID for upload:
-            </AppText>
-            <ScrollView>{idTypes.slice(0, 7).map(renderItem)}</ScrollView>
-          </View>
-
+        <View style={styles.header}>
           <TouchableOpacity
-            style={styles.moreOptionsWrapper}
-            onPress={() => setMoreOptionsModalVisible(true)}>
-            <Icons.More width={normalize(24)} height={normalize(24)} />
-            <AppText
-              textStyle="body2medium"
-              customStyle={styles.moreOptionsText}>
-              More Options
-            </AppText>
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
+        </View>
+        <View style={styles.container}>
+          <Text style={[typography.body1, typography.medium, styles.title]}>
+            Select your preferred ID for upload:
+          </Text>
+          <View style={{ flex: 1 }}>
+            <ScrollView>
+              {idTypes.slice(0, 7).map(renderItem)}
+              <TouchableOpacity
+                style={styles.moreOptionsWrapper}
+                onPress={() => setMoreOptionsModalVisible(true)}>
+                <Icons.More {...iconSize(24)} />
+                <Text
+                  style={[
+                    typography.body2,
+                    typography.medium,
+                    styles.moreOptionsText,
+                  ]}>
+                  More Options
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
         </View>
         <View style={styles.infoWrapper}>
           <Icons.Lock width={normalize(24)} height={normalize(24)} />
-          <AppText textStyle="caption" customStyle={styles.infoText}>
+          <Text style={[typography.caption, styles.infoText]}>
             This information won’t be shared with other people who use Servbees.
-          </AppText>
+          </Text>
         </View>
         <Modal
           isVisible={moreOptionsModalVisible}
@@ -150,17 +156,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop: getStatusBarHeight(),
   },
-  container: { flex: 1, padding: normalize(24), paddingBottom: normalize(80) },
-  header: {
-    marginBottom: normalize(24),
+  container: {
+    flex: 1,
   },
   title: {
     marginBottom: normalize(24),
+    paddingHorizontal: normalize(24),
   },
   moreOptionsWrapper: {
     flexDirection: 'row',
     marginTop: normalize(16),
     paddingVertical: normalize(5),
+    paddingHorizontal: normalize(20),
   },
   moreOptionsText: {
     color: Colors.contentOcean,
@@ -171,15 +178,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: normalize(16),
-    paddingLeft: normalize(3),
-    paddingRight: 0,
+    paddingHorizontal: normalize(24),
   },
   infoWrapper: {
     flexDirection: 'row',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: normalize(24),
   },
   infoText: {
@@ -193,6 +195,16 @@ const styles = StyleSheet.create({
     margin: 0,
     height: Dimensions.get('window').height,
     marginTop: 144,
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
   },
 })
 
