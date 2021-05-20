@@ -576,7 +576,10 @@ const CreatePostScreen = ({ navigation, route }) => {
       preview: true,
       post,
       user: userInfo,
-      onPublishPress: handleSubmit,
+      onPublishPress: () => {
+        navigation.goBack()
+        handleSubmit()
+      },
     })
   }
 
