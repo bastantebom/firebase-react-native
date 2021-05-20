@@ -75,7 +75,7 @@ const Order = ({ unreadNotification, item }) => {
             <Text style={typography.medium}>{`${
               buyerInfo?.display_name || buyerInfo?.full_name || ''
             } `}</Text>
-            reqested an order on your post.
+            requested an order on your post.
           </Text>
         )
       } else if (item.status === 'confirmed') {
@@ -256,6 +256,18 @@ const Order = ({ unreadNotification, item }) => {
     }
   }
 
+  const profilePhoto = [
+    'payment failed',
+    'paid',
+    'confirmed',
+    'delivering',
+    'declined',
+    'cancelled',
+    'completed',
+  ].includes(item.status)
+    ? sellerInfo?.profile_photo
+    : buyerInfo?.profile_photo
+
   const loadUser = async () => {
     try {
       const [buyer, seller] = await Promise.all([
@@ -285,11 +297,7 @@ const Order = ({ unreadNotification, item }) => {
       }}>
       <View style={styles.holder}>
         <View style={styles.avatarHolder}>
-          <Avatar
-            style={styles.avatar}
-            path={sellerInfo?.profile_photo}
-            size="64x64"
-          />
+          <Avatar style={styles.avatar} path={profilePhoto} size="64x64" />
         </View>
         <View style={styles.captionWrapper}>{renderText()}</View>
       </View>

@@ -296,16 +296,17 @@ const Notifications = () => {
                 }}
               />
             }>
-            {!!groupByToday().length && (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Calendar
-                  height={normalize(20)}
-                  width={normalize(20)}
-                  style={{ marginRight: 10 }}
-                />
-                <AppText textStyle="body3">Today</AppText>
-              </View>
-            )}
+            {!!groupByToday().length ||
+              (!!newNotifications.length && (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Calendar
+                    height={normalize(20)}
+                    width={normalize(20)}
+                    style={{ marginRight: 10 }}
+                  />
+                  <AppText textStyle="body3">Today</AppText>
+                </View>
+              ))}
 
             {!!newNotifications.length && (
               <AppText

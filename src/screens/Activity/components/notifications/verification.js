@@ -68,7 +68,7 @@ const Verification = ({ unreadNotification, item }) => {
         <View style={styles.captionWrapper}>
           <AppText textStyle="caption">
             {item?.approved
-              ? 'Congratulations, Wayne! Your account has been successfully verified! You may now enjoy the full features of Servbees!'
+              ? `Congratulations, ${userInfo.full_name}! Your account has been successfully verified! You may now enjoy the full features of Servbees!`
               : 'Account verification unsuccessful. Try again today.'}
           </AppText>
         </View>
