@@ -110,6 +110,16 @@ const Order = ({ unreadNotification, item }) => {
             is being delivered.
           </Text>
         )
+      } else if (item.status === 'pickup') {
+        return (
+          <Text style={typography.caption}>
+            Your order from
+            <Text style={typography.medium}>{` ${
+              sellerInfo?.display_name || sellerInfo?.full_name || ''
+            } `}</Text>
+            is ready for pick-up.
+          </Text>
+        )
       } else if (item.status === 'declined') {
         return (
           <Text style={typography.caption}>
