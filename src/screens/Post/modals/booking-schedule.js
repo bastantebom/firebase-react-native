@@ -63,7 +63,11 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
               <Text
                 style={[
                   typography.subtitle1,
-                  { marginTop: normalize(28), justifyContent: 'center' },
+                  {
+                    marginTop: normalize(22),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
                 ]}>
                 Service Schedule
               </Text>

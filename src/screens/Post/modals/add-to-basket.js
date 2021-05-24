@@ -107,22 +107,9 @@ const AddToBasketModal = ({ item, close, post, onAskResetBasket }) => {
     }))
   }
 
-  const handleOnBackPress = () => {
-    close()
-  }
-
   return (
     <DismissKeyboardView style={styles.container}>
       <BottomSheetHeader />
-      <TouchableOpacity
-        style={{ marginTop: normalize(24) }}
-        activeOpacity={0.7}
-        onPress={handleOnBackPress}>
-        <Icons.Close
-          style={{ color: Colors.primaryMidnightBlue }}
-          {...iconSize(24)}
-        />
-      </TouchableOpacity>
 
       <View style={styles.content}>
         <View style={styles.postDetails}>

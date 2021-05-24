@@ -258,6 +258,17 @@ const AvailPostScreen = ({ navigation, route }) => {
     }
   }
 
+  const handleOnUserPress = () => {
+    if (user?.uid === post?.uid) {
+      navigation.navigate('TabStack', { screen: 'You' })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'OthersProfile',
+        params: { uid: post?.uid },
+      })
+    }
+  }
+
   useEffect(() => {
     if (typeof onBackPress === 'function') {
       navigation.removeListener('beforeRemove', backPressHandler)
@@ -338,7 +349,10 @@ const AvailPostScreen = ({ navigation, route }) => {
   const renderTopSection = () => {
     return (
       <View style={[styles.section, styles.topSection]}>
-        <View style={styles.userSection}>
+        <TouchableOpacity
+          style={styles.userSection}
+          onPress={handleOnUserPress}
+          activeOpacity={0.9}>
           <View style={styles.avatarWrapper}>
             <Avatar
               style={styles.avatar}
@@ -352,7 +366,7 @@ const AvailPostScreen = ({ navigation, route }) => {
                 {post.user.full_name}
               </Text>
               {!!post.user.account_verified && (
-                <Icons.Verified style={styles.verifiedIcon} />
+                <Icons.Verified style={styles.verifiedIcon} {...iconSize(16)} />
               )}
             </View>
             <Text style={[typography.body2, styles.username]}>
@@ -364,7 +378,7 @@ const AvailPostScreen = ({ navigation, route }) => {
             style={{ color: Colors.icon }}
             {...iconSize(24)}
           />
-        </View>
+        </TouchableOpacity>
 
         {post.type === 'need' && (
           <View style={styles.offer}>

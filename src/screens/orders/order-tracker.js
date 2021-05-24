@@ -769,43 +769,49 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         </View>
         {!!orderData.booking_schedule?.schedule && (
           <View style={[styles.section, { marginBottom: normalize(8) }]}>
-            <Text style={[typography.body2, typography.medium]}>
-              Service Schedule
-            </Text>
-            <Text
-              style={[
-                typography.body2,
-                { color: Colors.contentPlaceholder, marginTop: normalize(4) },
-              ]}>
-              Date:{' '}
-              <Text style={typography.medium}>
+            <View style={[styles.sectionItem]}>
+              <Text
+                style={[
+                  typography.body2,
+                  { color: Colors.contentPlaceholder },
+                ]}>
+                Date
+              </Text>
+              <Text style={[typography.body2, typography.medium]}>
                 {orderData.booking_schedule.schedule}
               </Text>
-            </Text>
+            </View>
             {orderData.booking_schedule?.flexible && (
-              <Text
-                style={[
-                  typography.body2,
-                  { color: Colors.contentPlaceholder, marginTop: normalize(4) },
-                ]}>
-                Preferred time:
-                <Text style={typography.medium}> Flexi [9am-10pm]</Text>
-              </Text>
+              <View style={[styles.sectionItem, { marginTop: normalize(8) }]}>
+                <Text
+                  style={[
+                    typography.body2,
+                    {
+                      color: Colors.contentPlaceholder,
+                    },
+                  ]}>
+                  Preferred time:
+                </Text>
+                <Text style={[typography.body2, typography.medium]}>
+                  Flexi [9am-10pm]
+                </Text>
+              </View>
             )}
             {orderData.booking_schedule.time_slot && (
-              <Text
-                style={[
-                  typography.body2,
-                  { color: Colors.contentPlaceholder, marginTop: normalize(4) },
-                ]}>
-                {!orderData.booking_schedule?.flexible
-                  ? 'Preferred time: '
-                  : 'Other available time: '}
-
-                <Text style={typography.medium}>
+              <View style={[styles.sectionItem, { marginTop: normalize(8) }]}>
+                <Text
+                  style={[
+                    typography.body2,
+                    { color: Colors.contentPlaceholder },
+                  ]}>
+                  {!orderData.booking_schedule?.flexible
+                    ? 'Preferred time: '
+                    : 'Other time: '}
+                </Text>
+                <Text style={[typography.body2, typography.medium]}>
                   {getTimeSlot(orderData.booking_schedule.time_slot)}
                 </Text>
-              </Text>
+              </View>
             )}
           </View>
         )}
@@ -1716,8 +1722,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       return
 
     if (
-      (orderData.payment_method !== 'cash' &&
-        !orderData?.history?.some(({ status }) => status === 'paid')) ||
+      (orderData.payment_method !== 'cash' && !paymentData?.date) ||
       (orderData.payment_method === 'cash' && orderData.status !== 'completed')
     )
       return
@@ -1725,6 +1730,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
     }
+
     const cutOffDate =
       orderData.payment_method !== 'cash' && paymentData?.date
         ? format(
@@ -2104,6 +2110,11 @@ const styles = StyleSheet.create({
     padding: normalize(16),
     backgroundColor: Colors.secondarySolitude,
     borderRadius: normalize(8),
+  },
+  sectionItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 })
 

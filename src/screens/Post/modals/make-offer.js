@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,6 +22,10 @@ import { iconSize } from '@/globals/Utils'
 import { Context } from '@/context'
 import PostImage from '@/components/Post/post-image'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import Api from '@/services/Api'
+import firestore from '@react-native-firebase/firestore'
+import { UserContext } from '@/context/UserContext'
+import Loader from '@/components/loader'
 
 const { height } = Dimensions.get('screen')
 
@@ -34,8 +37,10 @@ const { height } = Dimensions.get('screen')
  **/
 const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
   const { basket, setBasket } = useContext(Context)
+  const { userInfo } = useContext(UserContext)
   const [keyboardHeight, setKeyboardHeight] = useState(0)
-
+  const [postCount, setPostCount] = useState(0)
+  const [loading, setLoading] = useState(true)
   const budgetLabel = `₱${formatNumber(budget.minimum, {
     separator: '.',
     precision: 2,
@@ -58,6 +63,28 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
     setKeyboardHeight(0)
   }
 
+  const getPostCount = async () => {
+    try {
+      const postCountResponse = await Api.getUserPostsCount({
+        uid: userInfo?.uid,
+      })
+      if (postCountResponse.success)
+        setPostCount(postCountResponse.count - (await archivedCount()))
+    } catch (error) {
+      console.log(error.message || error)
+    }
+    setLoading(false)
+  }
+
+  const archivedCount = async () => {
+    const posts = await firestore()
+      .collection('posts')
+      .where('uid', '==', userInfo?.uid)
+      .where('archived', '==', true)
+      .get()
+    return posts.docs.length || 0
+  }
+
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', onKeyboardShowHandler)
     Keyboard.addListener('keyboardDidHide', onKeyboardHideHandler)
@@ -68,139 +95,152 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (userInfo?.uid) getPostCount()
+  }, [userInfo])
+
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          maxHeight: height - keyboardHeight - getStatusBarHeight(),
-        },
-      ]}>
-      <BottomSheetHeader />
+    <>
+      <Loader visible={loading} />
+      <View
+        style={[
+          styles.container,
+          {
+            maxHeight: height - keyboardHeight - getStatusBarHeight(),
+          },
+        ]}>
+        <BottomSheetHeader />
 
-      <View style={styles.titleWrapper}>
-        <Text style={styles.title}>Make an Offer</Text>
-      </View>
-      <View style={styles.budgetWraper}>
-        <Text style={[typography.eyebrow, { marginRight: normalize(8) }]}>
-          BUDGET
-        </Text>
-        <Text style={typography.subtitle1}>{budgetLabel}</Text>
-      </View>
-      <KeyboardAvoidingView
-        behavior={Platform.select({ ios: 'padding', android: null })}>
-        <ScrollView style={styles.content}>
-          <View style={styles.formGroup}>
-            <PriceInput
-              value={basket.offer}
-              priceLabel="You are offering"
-              onChangeText={offer =>
-                setBasket(basket => ({
-                  ...basket,
-                  offer,
-                }))
-              }
-              containerStyle={[
-                basket.offer < budget.minimum || basket.offer > budget.maximum
-                  ? {
-                      borderColor: Colors.secondaryBrinkPink,
-                      marginBottom: normalize(16),
-                    }
-                  : {},
-              ]}
-              message={
-                basket.offer < budget.minimum
-                  ? 'Uh-oh please make a better offer. '
-                  : basket.offer > budget.maximum
-                  ? "Oops it's a little out of budget. "
-                  : ''
-              }
-              messageStyle={{
-                color: Colors.secondaryBrinkPink,
-              }}
-              placeholder="0.00"
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <TextInput
-              placeholder="Some text here saying they could add more information about their offer"
-              placeholderTextColor="#A8AAB7"
-              label="Message (Optional)"
-              value={basket.message}
-              multiline
-              numberOfLines={5}
-              onChangeText={message =>
-                setBasket(basket => ({ ...basket, message }))
-              }
-            />
-          </View>
-          <View style={[styles.divider, { marginBottom: normalize(8) }]} />
-          <View>
-            <Text style={[typography.body1, { marginBottom: normalize(3) }]}>
-              <Text style={typography.medium}>You can also send your post</Text>
-              <Text> (Optional)</Text>
-            </Text>
-            <Text style={[typography.body2, { marginBottom: normalize(16) }]}>
-              If you posted about this product/service, send it along with your
-              offer.{' '}
-            </Text>
-
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={[
-                styles.attachedPostWrapper,
-                {
-                  borderColor: !basket.attachedPost
-                    ? Colors.neutralGray
-                    : Colors.contentEbony,
-                },
-              ]}
-              onPress={onAttachPostPress}>
-              {basket.attachedPost ? (
-                <View style={styles.attachedPost}>
-                  <View style={styles.thumbnailWrapper}>
-                    <PostImage
-                      path={basket.attachedPost.cover_photos?.[0]}
-                      size="64x64"
-                      postType={basket.attachedPost.type}
-                    />
-                  </View>
-                  <Text style={typography.body2} numberOfLine={2}>
-                    {basket.attachedPost.title}
-                  </Text>
-                </View>
-              ) : (
-                <View>
-                  <Text
-                    style={[
-                      typography.body2,
-                      { color: Colors.contentPlaceholder },
-                    ]}>
-                    Send a Post
-                  </Text>
-                  <Text style={typography.body1}>
-                    Select one from your posts
-                  </Text>
-                </View>
-              )}
-              <Icons.ChevronRight
-                style={{ color: Colors.icon }}
-                {...iconSize(24)}
+        <View style={styles.titleWrapper}>
+          <Text style={styles.title}>Make an Offer</Text>
+        </View>
+        <View style={styles.budgetWraper}>
+          <Text style={[typography.eyebrow, { marginRight: normalize(8) }]}>
+            BUDGET
+          </Text>
+          <Text style={typography.subtitle1}>{budgetLabel}</Text>
+        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.select({ ios: 'padding', android: null })}>
+          <ScrollView style={styles.content}>
+            <View style={styles.formGroup}>
+              <PriceInput
+                value={basket.offer}
+                priceLabel="You are offering"
+                onChangeText={offer =>
+                  setBasket(basket => ({
+                    ...basket,
+                    offer,
+                  }))
+                }
+                containerStyle={[
+                  basket.offer < budget.minimum || basket.offer > budget.maximum
+                    ? {
+                        borderColor: Colors.secondaryBrinkPink,
+                        marginBottom: normalize(16),
+                      }
+                    : {},
+                ]}
+                message={
+                  basket.offer < budget.minimum
+                    ? 'Uh-oh please make a better offer. '
+                    : basket.offer > budget.maximum
+                    ? "Oops it's a little out of budget. "
+                    : ''
+                }
+                messageStyle={{
+                  color: Colors.secondaryBrinkPink,
+                }}
+                placeholder="0.00"
               />
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+            </View>
+            <View style={styles.formGroup}>
+              <TextInput
+                placeholder="Some text here saying they could add more information about their offer"
+                placeholderTextColor="#A8AAB7"
+                label="Message (Optional)"
+                value={basket.message}
+                multiline
+                numberOfLines={5}
+                onChangeText={message =>
+                  setBasket(basket => ({ ...basket, message }))
+                }
+              />
+            </View>
+            <View style={[styles.divider, { marginBottom: normalize(8) }]} />
+            {!!postCount && (
+              <View>
+                <Text
+                  style={[typography.body1, { marginBottom: normalize(3) }]}>
+                  <Text style={typography.medium}>
+                    You can also send your post
+                  </Text>
+                  <Text> (Optional)</Text>
+                </Text>
+                <Text
+                  style={[typography.body2, { marginBottom: normalize(16) }]}>
+                  If you posted about this product/service, send it along with
+                  your offer.{' '}
+                </Text>
 
-      <View style={styles.buttonWrapper}>
-        <Button
-          disabled={!canSubmit()}
-          label="Make an Offer"
-          type={!canSubmit() ? 'disabled' : 'primary'}
-          onPress={onSubmit}
-        />
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={[
+                    styles.attachedPostWrapper,
+                    {
+                      borderColor: !basket.attachedPost
+                        ? Colors.neutralGray
+                        : Colors.contentEbony,
+                    },
+                  ]}
+                  onPress={onAttachPostPress}>
+                  {basket.attachedPost ? (
+                    <View style={styles.attachedPost}>
+                      <View style={styles.thumbnailWrapper}>
+                        <PostImage
+                          path={basket.attachedPost.cover_photos?.[0]}
+                          size="64x64"
+                          postType={basket.attachedPost.type}
+                        />
+                      </View>
+                      <Text style={typography.body2} numberOfLine={2}>
+                        {basket.attachedPost.title}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View>
+                      <Text
+                        style={[
+                          typography.body2,
+                          { color: Colors.contentPlaceholder },
+                        ]}>
+                        Send a Post
+                      </Text>
+                      <Text style={typography.body1}>
+                        Select one from your posts
+                      </Text>
+                    </View>
+                  )}
+                  <Icons.ChevronRight
+                    style={{ color: Colors.icon }}
+                    {...iconSize(24)}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
+
+        <View style={styles.buttonWrapper}>
+          <Button
+            disabled={!canSubmit()}
+            label="Make an Offer"
+            type={!canSubmit() ? 'disabled' : 'primary'}
+            onPress={onSubmit}
+          />
+        </View>
       </View>
-    </View>
+    </>
   )
 }
 

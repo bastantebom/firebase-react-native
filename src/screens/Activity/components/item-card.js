@@ -11,6 +11,7 @@ import { normalize, Colors, timePassedShort } from '@/globals'
 import { AppText } from '@/components'
 
 import Avatar from '@/components/Avatar/avatar'
+import pluralize from 'pluralize'
 
 const ItemCard = ({ items, chats }) => {
   const { user } = useContext(UserContext)
@@ -124,7 +125,8 @@ const ItemCard = ({ items, chats }) => {
               </View>
 
               <AppText textStyle="caption">
-                No. of items: {getItemQuantity(item)}
+                No. of {pluralize('item', getItemQuantity(item))}:{' '}
+                {getItemQuantity(item)}
               </AppText>
             </TouchableOpacity>
 
