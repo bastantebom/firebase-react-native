@@ -161,7 +161,6 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
                     {
                       color: Colors.icon,
                       position: 'absolute',
-                      top: normalize(14.5),
                       left: normalize(16),
                     },
                   ]}>

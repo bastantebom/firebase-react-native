@@ -24,7 +24,9 @@ const PhoneVerificationScreen = ({ navigation }) => {
   const { user, userInfo } = useContext(UserContext)
 
   const [error, setError] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState(userInfo.phone_number || '')
+  const [phoneNumber, setPhoneNumber] = useState(
+    userInfo.phone_number?.length ? userInfo.phone_number.slice(-10) : ''
+  )
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handlePhoneNumberChange = _phoneNumber => {
@@ -104,7 +106,7 @@ const PhoneVerificationScreen = ({ navigation }) => {
                   <TextInput
                     value={phoneNumber}
                     selectTextOnFocus={false}
-                    placeholder="Mobile Number"
+                    placeholder="10 digit number"
                     placeholderTextColor="#A8AAB7"
                     onChangeText={handlePhoneNumberChange}
                     keyboardType="phone-pad"
@@ -128,7 +130,6 @@ const PhoneVerificationScreen = ({ navigation }) => {
                         {
                           color: Colors.icon,
                           position: 'absolute',
-                          top: normalize(14.5),
                           left: normalize(16),
                         },
                       ]}>

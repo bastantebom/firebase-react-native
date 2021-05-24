@@ -167,8 +167,8 @@ const EditProfileScreen = ({ navigation, route }) => {
 
     if (
       (checkDirty ? dirtyStates.includes('phoneNumber') : true) &&
-      formData.phoneNumber &&
-      !/^(09|\+639)\d{9}$/.test(formData.phoneNumber)
+      !formData.phoneNumber?.length &&
+      !/^\d{9}$/.test(formData.phoneNumber)
     )
       errors.phoneNumber = 'Invalid phone number'
 
@@ -247,7 +247,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         display_name,
         full_name,
         birth_date,
-        phone_number,
+        phone_number: phone_number.length ? `+63${phone_number}` : phone_number,
       }
 
       if (profilePhotoRef) body.profile_photo = profilePhotoRef.fullPath
@@ -654,24 +654,45 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.inputWrapper}>
-          <AppInput
+          <TextInput
             value={formData.phoneNumber}
-            label="Mobile Number"
+            selectTextOnFocus={false}
+            placeholder="10 digit phone number"
+            placeholderTextColor="#A8AAB7"
             onChangeText={phoneNumber => {
               setFormData(data => ({ ...data, phoneNumber }))
               setDirtyStates([...new Set([...dirtyStates, 'phoneNumber'])])
             }}
-            onBlurInput={() => {
+            onBlur={() => {
               setDirtyStates([...new Set([...dirtyStates, 'phoneNumber'])])
             }}
-            error={errors.phoneNumber.length}
-            customLabelStyle={
-              errors.phoneNumber.length ? { color: Colors.red } : {}
-            }
-            debounce={false}
-            keyboardType={'phone-pad'}
-          />
-          <Text style={styles.errorMessage}>{errors.phoneNumber}</Text>
+            keyboardType="phone-pad"
+            returnKeyType="done"
+            message={errors.phoneNumber}
+            maxLength={10}
+            messageStyle={{
+              color: Colors.secondaryBrinkPink,
+            }}
+            containerStyle={[
+              errors.phoneNumber.length
+                ? { borderColor: Colors.secondaryBrinkPink }
+                : {},
+            ]}
+            inputStyle={{
+              marginLeft: normalize(40),
+            }}>
+            <Text
+              style={[
+                typography.body1,
+                {
+                  color: Colors.icon,
+                  position: 'absolute',
+                  left: normalize(16),
+                },
+              ]}>
+              +63
+            </Text>
+          </TextInput>
         </View>
 
         <View style={styles.inputWrapper}>
