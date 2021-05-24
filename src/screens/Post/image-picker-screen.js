@@ -184,7 +184,7 @@ const ImagePickerScreen = ({ navigation, route }) => {
       first: 50,
       groupName: selectedAlbum === 'All Photos' ? undefined : selectedAlbum,
       assetType: 'Photos',
-      groupTypes: 'Album',
+      groupTypes: selectedAlbum === 'All Photos' ? 'All' : 'Album',
       after: options.after,
     }
 
@@ -204,7 +204,6 @@ const ImagePickerScreen = ({ navigation, route }) => {
     setIsLoading(true)
     const result = await CameraRoll.getAlbums({
       assetType: 'Photos',
-      groupTypes: 'Album',
     })
 
     const albums = [
@@ -220,7 +219,7 @@ const ImagePickerScreen = ({ navigation, route }) => {
         const result = await CameraRoll.getPhotos({
           first: 1,
           assetType: 'Photos',
-          groupTypes: 'Album',
+          groupTypes: album.title === 'All Photos' ? 'All' : 'Album',
           groupName: album.title === 'All Photos' ? undefined : album.title,
         })
 
