@@ -1762,11 +1762,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         <Text style={[typography.caption, { marginTop: normalize(4) }]}>
           If you have problems with your order, email us with the order ID and
           details of your order until{' '}
-          <Text style={typography.medium}>
-            {'<'}
-            {cutOffDate}
-            {'>'}
-          </Text>
+          <Text style={typography.medium}>{cutOffDate}</Text>
         </Text>
 
         <TouchableOpacity
