@@ -799,7 +799,9 @@ const PublishedPostScreen = ({ navigation, route }) => {
                     <Icons.PostService {...iconSize(18)} />
                   )}
                 </View>
-                <Text style={typography.display6}>{post.current.title}</Text>
+                <Text style={[typography.display6, { flex: 1 }]}>
+                  {post.current.title}
+                </Text>
               </View>
 
               <ScrollView
@@ -2620,7 +2622,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: normalize(24),
     paddingVertical: normalize(6),
-    alignItems: 'center',
+    // alignItems: 'center',
+    alignItems: 'flex-start',
   },
   categoriesNav: {
     paddingHorizontal: normalize(24),
