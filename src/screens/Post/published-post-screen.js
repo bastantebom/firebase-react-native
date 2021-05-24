@@ -1659,6 +1659,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
                                 typography.body1narrow,
                                 typography.medium,
                                 !item.available ? { color: Colors.icon } : {},
+                                { flex: 1, paddingRight: normalize(6) },
                               ]}>
                               {item.name}
                             </Text>
