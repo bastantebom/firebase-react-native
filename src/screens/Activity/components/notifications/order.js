@@ -271,6 +271,7 @@ const Order = ({ unreadNotification, item }) => {
     'paid',
     'confirmed',
     'delivering',
+    'pickup',
     'declined',
     'cancelled',
     'completed',
