@@ -26,6 +26,7 @@ import ChatSort from './components/sort-modal'
 
 import { Icons, ChatEmpty, ChatBlue, BlueDot } from '@/assets/images/icons'
 import Api from '@/services/Api'
+import typography from '@/globals/typography'
 
 const ChatHouse = () => {
   const navigation = useNavigation()
@@ -493,7 +494,9 @@ const ChatHouse = () => {
         </View>
         <View style={styles.infoWrapper}>
           <View style={styles.chatTitle}>
-            <Text style={styles.username}>{item?.post?.title}</Text>
+            <Text style={[typography.body2, styles.username]}>
+              {item?.post?.title}
+            </Text>
             <AppText
               textStyle="captionConstant"
               color={Colors.contentPlaceholder}
@@ -517,7 +520,7 @@ const ChatHouse = () => {
         return (
           <>
             <ChatBlue style={styles.chatIcon} />
-            <Text style={{ color: '#3781FC' }}>
+            <Text style={[typography.body2, { color: '#3781FC' }]}>
               {item?.chat_counts?.new_messages} New in{' '}
               {item?.chat_counts?.messages} chats
             </Text>
@@ -527,7 +530,7 @@ const ChatHouse = () => {
         return (
           <>
             <ChatEmpty style={styles.chatIcon} />
-            <Text style={{ color: '#515057' }}>
+            <Text style={[typography.caption, { color: '#515057' }]}>
               {`${item?.chat_counts?.messages || 0} ${
                 item?.chat_counts?.messages ? 'chats' : 'chat'
               }`}
@@ -541,6 +544,7 @@ const ChatHouse = () => {
           <Text
             numberOfLines={2}
             style={[
+              typography.caption,
               styles.recentChat,
               {
                 fontWeight:

@@ -790,7 +790,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       color: Colors.contentPlaceholder,
                     },
                   ]}>
-                  Preferred time:
+                  Preferred time
                 </Text>
                 <Text style={[typography.body2, typography.medium]}>
                   Flexi [9am-10pm]
@@ -802,13 +802,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 <Text
                   style={[
                     typography.body2,
-                    { color: Colors.contentPlaceholder },
+                    { color: Colors.contentPlaceholder, width: '45%' },
                   ]}>
                   {!orderData.booking_schedule?.flexible
-                    ? 'Preferred time: '
-                    : 'Other time: '}
+                    ? 'Preferred time '
+                    : 'Other available time '}
                 </Text>
-                <Text style={[typography.body2, typography.medium]}>
+                <Text
+                  style={[
+                    typography.body2,
+                    typography.medium,
+                    { alignSelf: 'flex-start' },
+                  ]}>
                   {getTimeSlot(orderData.booking_schedule.time_slot)}
                 </Text>
               </View>

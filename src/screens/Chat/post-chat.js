@@ -20,6 +20,7 @@ import { BlueDot, Icons } from '@/assets/images/icons'
 
 import Avatar from '@/components/Avatar/avatar'
 import Api from '@/services/Api'
+import typography from '@/globals/typography'
 
 const PostChat = ({ route }) => {
   const post = route?.params?.post
@@ -165,8 +166,10 @@ const PostChat = ({ route }) => {
         </View>
         <View style={styles.info}>
           <View style={[utilStyles.row, styles.name]}>
-            <Text style={styles.nameText}>{item?.buyer_info?.full_name}</Text>
-            <Text style={styles.timeAgo}>
+            <Text style={[typography.body2, styles.nameText]}>
+              {item?.buyer_info?.full_name}
+            </Text>
+            <Text style={[typography.caption, styles.timeAgo]}>
               {timePassedShort(
                 Date.now() / 1000 - item?.latest_chat?.created_at?._seconds
               )}
@@ -175,6 +178,7 @@ const PostChat = ({ route }) => {
           <View style={[utilStyles.row, utilStyles.alignCenter]}>
             <Text
               style={[
+                typography.caption,
                 styles.latestChat,
                 {
                   color: !item?.latest_chat?.read
@@ -208,7 +212,7 @@ const PostChat = ({ route }) => {
 
         <View style={[utilStyles.row, styles.postTitleWrapper]}>
           <Icons.PostChat style={styles.postTitleIcon} />
-          <Text style={styles.postTitle}>{post.title}</Text>
+          <Text style={[typography.body2, styles.postTitle]}>{post.title}</Text>
         </View>
 
         <View style={styles.contentWrapper}>
