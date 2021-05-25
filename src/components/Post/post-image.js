@@ -88,7 +88,7 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
   }
 
   useEffect(() => {
-    handlePathChange(path)
+    if (path) handlePathChange(path)
   }, [path])
 
   return isUrl(source?.uri) ? (
@@ -126,10 +126,10 @@ const PostImage = ({ path, size, postType, type = 'thumbnail', ...props }) => {
         ),
       })}
     </>
-  ) : type === 'thumbnail' ? (
+  ) : type === 'thumbnail' && !path ? (
     <DefaultPostThumbnail type={postType} />
   ) : (
-    <DefaultPostImage type={postType} />
+    !path && <DefaultPostImage type={postType} />
   )
 }
 
