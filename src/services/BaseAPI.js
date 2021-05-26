@@ -1,9 +1,9 @@
 import axios from 'axios'
-import APIURL from '@/services/Config'
 import AsyncStorage from '@react-native-community/async-storage'
+import { API_BASE_URL } from '@env'
 
 const client = axios.create({
-  baseURL: APIURL.dev.api,
+  baseURL: API_BASE_URL,
 })
 
 const BaseAPI = function (options) {

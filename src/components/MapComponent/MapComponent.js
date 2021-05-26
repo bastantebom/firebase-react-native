@@ -15,7 +15,6 @@ import MapView, {
 } from 'react-native-maps'
 import { MapMarker, PinBee } from '@/assets/images/icons'
 import { normalize } from '@/globals'
-import Config from '@/services/Config'
 
 const MapComponent = ({
   latitude,
@@ -47,8 +46,8 @@ const MapComponent = ({
   const initialRegion = {
     latitude: latitude,
     longitude: longitude,
-    latitudeDelta: Config.latitudeDelta,
-    longitudeDelta: Config.longitudeDelta,
+    latitudeDelta: 0.0075,
+    longitudeDelta: 0.0075,
   }
 
   const mapStyle = [
@@ -265,8 +264,8 @@ const MapComponent = ({
         let centralCoordinates = {
           latitude: newLat,
           longitude: newLng,
-          latitudeDelta: Config.latitudeDelta,
-          longitudeDelta: Config.longitudeDelta,
+          latitudeDelta: 0.0075,
+          longitudeDelta: 0.0075,
         }
 
         mapViewRef.current.animateToRegion(centralCoordinates, 2000)

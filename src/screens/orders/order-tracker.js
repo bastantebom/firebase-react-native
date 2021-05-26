@@ -48,6 +48,7 @@ import axios from 'axios'
 import Toast from '@/components/toast'
 import Button from '@/components/Button'
 import { Images } from '@/assets/images'
+import { PAYMONGO_SECRET_KEY } from '@env'
 
 if (
   Platform.OS === 'android' &&
@@ -56,7 +57,7 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
-const paymongoSK = base64.encode('sk_test_Hf4GQS4e8sBEzUe6a3rwyfGx')
+const paymongoSK = base64.encode(PAYMONGO_SECRET_KEY)
 
 /**
  * @typedef {object} OrderTrackerProps

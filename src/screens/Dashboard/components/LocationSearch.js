@@ -28,14 +28,13 @@ import {
   FilterRecentActive,
 } from '@/assets/images/icons'
 
-import Config from '@/services/Config'
 import { GlobalStyle, Colors, normalize } from '@/globals'
 import { UserContext } from '@/context/UserContext'
 import { getColorByBackground } from '@/globals/Utils'
 import Geocoder from 'react-native-geocoding'
-import { useNavigation } from '@react-navigation/native'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
-Geocoder.init(Config.apiKey)
+Geocoder.init(GOOGLE_MAPS_API_KEY)
 const LocationSearch = ({
   filters,
   onTypeFilterPress,

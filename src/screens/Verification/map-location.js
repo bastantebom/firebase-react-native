@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import Geocoder from 'react-native-geocoding'
 import { Icons } from '@/assets/images/icons'
-import Config from '@/services/Config'
 import GooglePlacesInput from '@/components/LocationSearchInput'
 import { MapComponent } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -17,6 +16,7 @@ import { getCurrentPosition, iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import typography from '@/globals/typography'
 import Button from '@/components/Button'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
 /**
  * @typedef {Object} Address
@@ -46,7 +46,7 @@ import Button from '@/components/Button'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'MapLocationScreen'>} param0 */
 const MapLocationScreen = ({ navigation, route }) => {
-  Geocoder.init(Config.apiKey)
+  Geocoder.init(GOOGLE_MAPS_API_KEY)
   const { onSelect, address, title } = route.params
 
   const [addressData, setAddressData] = useState(address)

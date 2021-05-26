@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, View, StyleSheet, SafeAreaView } from 'react-native'
 import Geocoder from 'react-native-geocoding'
 import { Icons } from '@/assets/images/icons'
-import Config from '@/services/Config'
 import GooglePlacesInput from '@/components/LocationSearchInput'
 import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
 import { Colors, normalize } from '@/globals'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
 const styles = StyleSheet.create({
   modalHeader: {
@@ -43,7 +43,7 @@ const Location = ({ toggleMap, address, changeFromMapHandler }) => {
     borderColor: Colors.buttonDisable,
   })
   const [buttonDisabled, setButtonDisabled] = useState(true)
-  Geocoder.init(Config.apiKey)
+  Geocoder.init(GOOGLE_MAPS_API_KEY)
   const [newCoords, setNewCoords] = useState({})
   const [addressComponents, setAddressComponents] = useState({
     city: '',

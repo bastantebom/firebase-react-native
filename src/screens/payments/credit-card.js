@@ -27,6 +27,7 @@ import Button from '@/components/Button'
 import { formatNumber } from 'react-native-currency-input'
 import firestore from '@react-native-firebase/firestore'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { PAYMONGO_SECRET_KEY } from '@env'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -35,7 +36,7 @@ const DismissKeyboardView = ({ children, ...props }) => {
     </TouchableWithoutFeedback>
   )
 }
-const paymongoSK = base64.encode('sk_test_Hf4GQS4e8sBEzUe6a3rwyfGx')
+const paymongoSK = base64.encode(PAYMONGO_SECRET_KEY)
 
 /**
  * @typedef {object} CreditCardProps

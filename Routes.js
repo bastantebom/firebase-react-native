@@ -65,7 +65,6 @@ import {
 import VerifyCodeScreen from '@/screens/Verification/verify-code'
 
 import { normalize, Colors } from '@/globals'
-import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
 
 import {

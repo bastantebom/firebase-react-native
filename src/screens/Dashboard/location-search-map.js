@@ -22,12 +22,12 @@ import {
   NavigationPinRed,
   PushPin,
 } from '@/assets/images/icons'
-import Config from '@/services/Config'
 import { Colors, normalize } from '@/globals'
 import { getCurrentPosition } from '@/globals/Utils'
 import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
 import GooglePlacesInput from '@/components/LocationSearchInput'
 import { RangeSlider } from '@/components/Slider/RangeSlider'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
 const DismissKeyboard = ({ children, isFocused }) => {
   const onDismissPress = () => {
@@ -55,7 +55,7 @@ const DismissKeyboard = ({ children, isFocused }) => {
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'LocationSearchMapScreen'>} param0 */
 const LocationSearchMapScreen = ({ navigation, route }) => {
-  Geocoder.init(Config.apiKey)
+  Geocoder.init(GOOGLE_MAPS_API_KEY)
 
   const { address, onValueChange } = route.params
 

@@ -1,5 +1,4 @@
 import BaseAPI from '@/services/BaseAPI'
-import Config from '@/services/Config'
 
 import auth from '@react-native-firebase/auth'
 import { AccessToken, LoginManager } from 'react-native-fbsdk'
@@ -7,10 +6,10 @@ import { GoogleSignin } from '@react-native-community/google-signin'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
 
 import Api from '@/services/Api'
-import { Alert } from 'react-native'
+import { GOOGLE_WEB_CLIENT_ID } from '@env'
 
 GoogleSignin.configure({
-  webClientId: Config.dev.googleSignIn,
+  webClientId: GOOGLE_WEB_CLIENT_ID,
 })
 
 const loginMobile = payload => {

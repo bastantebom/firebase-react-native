@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { StyleSheet, View, SafeAreaView, Alert } from 'react-native'
 
-import Config from '@/services/Config'
 import Geocoder from 'react-native-geocoding'
 import MapComponent from '@/components/MapComponent/MapComponent'
 import { AppButton, TransitionIndicator, ScreenHeaderTitle } from '@/components'
@@ -12,6 +11,7 @@ import GooglePlacesInput from '@/components/LocationSearchInput'
 import { useNavigation } from '@react-navigation/native'
 import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
 const AlmostThereMap = route => {
   const navigation = useNavigation()
@@ -19,7 +19,7 @@ const AlmostThereMap = route => {
   const [isScreenLoading, setIsScreenLoading] = useState(false)
 
   const { user } = useContext(UserContext)
-  Geocoder.init(Config.apiKey)
+  Geocoder.init(GOOGLE_MAPS_API_KEY)
   const [addressData, setAddressData] = useState(route?.route?.params)
   const [mapCoords, setMapCoords] = useState({})
 

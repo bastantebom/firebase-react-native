@@ -61,5 +61,5 @@ buck-out/
 *.hprof
 
 src/services/Api.js
-.env
+.env*
 android/app/src/main/assets/index.android.bundle

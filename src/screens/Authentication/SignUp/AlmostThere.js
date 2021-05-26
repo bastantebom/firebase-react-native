@@ -15,15 +15,15 @@ import LocationImage from '@/assets/images/location.svg'
 import Geocoder from 'react-native-geocoding'
 import { useNavigation } from '@react-navigation/native'
 
-import Config from '@/services/Config'
 import { UserContext } from '@/context/UserContext'
 import { getCurrentPosition } from '@/globals/Utils'
 import Api from '@/services/Api'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
 const AlmostThere = () => {
   const navigation = useNavigation()
   const { user } = useContext(UserContext)
-  Geocoder.init(Config.apiKey)
+  Geocoder.init(GOOGLE_MAPS_API_KEY)
 
   const [addressData, setAddressData] = useState(null)
   const [mapInitialized, setMapInitialized] = useState(false)

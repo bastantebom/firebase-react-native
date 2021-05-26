@@ -7,17 +7,13 @@ import {
 import Geolocation from 'react-native-geolocation-service'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
 import Geocoder from 'react-native-geocoding'
-import Config from '@/services/Config'
 
-import firebase from '@react-native-firebase/app'
 import axios from 'axios'
 import ImageApi from '@/services/image-api'
 import { formatNumber } from 'react-native-currency-input'
+import { FIREBASE_API_KEY, GOOGLE_MAPS_API_KEY } from '@env'
 
-// const FIREBASE_API_KEY = firebase.app().options.apiKey
-const FIREBASE_API_KEY = 'AIzaSyDMknlgnSUy46tevw-jAixdIegnE4yiPCQ'
-
-Geocoder.init(Config.apiKey)
+Geocoder.init(GOOGLE_MAPS_API_KEY)
 
 export const timePassed = seconds => {
   seconds = Number(seconds)

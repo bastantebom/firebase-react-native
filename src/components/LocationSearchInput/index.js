@@ -1,17 +1,16 @@
 import React, { useRef, useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'
 import GooglePlacesAutocomplete from 'react-native-google-places-autocomplete'
-import Global from '@/services/Config'
 import { Colors, normalize } from '@/globals'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
+import { GOOGLE_MAPS_API_KEY } from '@env'
 
 const GooglePlacesInput = ({
   onResultsClick,
   onClearInput,
   currentValue,
   adjustListPosition,
-  cityOnly,
   onInputFocus,
   customListViewStyle,
   customContainerStyle,
@@ -44,7 +43,7 @@ const GooglePlacesInput = ({
       <GooglePlacesAutocomplete
         placeholder={placeholder}
         query={{
-          key: Global.apiKey,
+          key: GOOGLE_MAPS_API_KEY,
           language: 'en', // language of the results
           components: 'country:ph',
         }}
