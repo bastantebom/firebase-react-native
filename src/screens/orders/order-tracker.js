@@ -1726,30 +1726,22 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType !== 'buyer' || (userType === 'buyer' && post.type === 'need'))
       return
 
-    if (
-      (orderData.payment_method !== 'cash' && !paymentData?.date) ||
-      (orderData.payment_method === 'cash' && orderData.status !== 'completed')
-    )
-      return
+    if (!paymentData?.date) return
 
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
     }
 
-    const cutOffDate =
-      orderData.payment_method !== 'cash' && paymentData?.date
-        ? format(
-            new Date((paymentData.date._seconds + 345600) * 1000),
-            `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
-          )
-        : (orderData?.history?.some(({ status }) => status === 'completed') &&
-            moment
-              .unix(
-                orderData?.history?.find(({ status }) => status === 'completed')
-                  .date._seconds + 345600
-              )
-              .format('MMM D YYYY, h:mm a')) ||
-          'N/A'
+    const rawSeconds = paymentData?.date._seconds + 345600
+    const now = new Date()
+    const currentSeconds = Math.round(now.getTime() / 1000)
+
+    if (rawSeconds < currentSeconds) return
+
+    const cutOffDate = format(
+      new Date(rawSeconds * 1000),
+      `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
+    )
 
     return (
       <View style={styles.buyerNote}>

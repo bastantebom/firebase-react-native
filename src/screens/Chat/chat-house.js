@@ -27,6 +27,7 @@ import ChatSort from './components/sort-modal'
 import { Icons, ChatEmpty, ChatBlue, BlueDot } from '@/assets/images/icons'
 import Api from '@/services/Api'
 import typography from '@/globals/typography'
+import pluralize from 'pluralize'
 
 const ChatHouse = () => {
   const navigation = useNavigation()
@@ -522,7 +523,8 @@ const ChatHouse = () => {
             <ChatBlue style={styles.chatIcon} />
             <Text style={[typography.body2, { color: '#3781FC' }]}>
               {item?.chat_counts?.new_messages} New in{' '}
-              {item?.chat_counts?.messages} chats
+              {item?.chat_counts?.messages}{' '}
+              {pluralize('chat', item?.chat_counts?.messages)}
             </Text>
           </>
         )
@@ -531,9 +533,8 @@ const ChatHouse = () => {
           <>
             <ChatEmpty style={styles.chatIcon} />
             <Text style={[typography.caption, { color: '#515057' }]}>
-              {`${item?.chat_counts?.messages || 0} ${
-                item?.chat_counts?.messages ? 'chats' : 'chat'
-              }`}
+              {`${item?.chat_counts?.messages || 0} `}
+              {pluralize('chat', item?.chat_counts?.messages)}
             </Text>
           </>
         )
