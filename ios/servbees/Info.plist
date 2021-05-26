@@ -77,6 +77,7 @@
 		<string>RoundedMplus1c-Regular.ttf</string>
 		<string>MaterialIcons.ttf</string>
 		<string>MaterialCommunityIcons.ttf</string>
+		<string>Ionicons.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

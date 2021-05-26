@@ -638,6 +638,8 @@ const CreditCardScreen = ({ navigation, route }) => {
                   ]}>
                   <Picker
                     selectedValue={address.country}
+                    textStyle={typography.body1}
+                    itemTextStyle={typography.body1}
                     onValueChange={country =>
                       setAddress(address => ({ ...address, country }))
                     }>
@@ -707,6 +709,8 @@ const CreditCardScreen = ({ navigation, route }) => {
                   ]}>
                   <Picker
                     selectedValue={address.province}
+                    textStyle={typography.body1}
+                    itemTextStyle={typography.body1}
                     onValueChange={province => {
                       setDirtyStates(dirtyStates => [
                         ...new Set([...dirtyStates, 'province']),
@@ -748,6 +752,8 @@ const CreditCardScreen = ({ navigation, route }) => {
                   ]}>
                   <Picker
                     selectedValue={address.city}
+                    textStyle={typography.body1}
+                    itemTextStyle={typography.body1}
                     enabled={!!address.province.length}
                     onValueChange={city => {
                       setDirtyStates(dirtyStates => [
