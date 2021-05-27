@@ -162,9 +162,10 @@ const VerificationScreen = ({ navigation }) => {
             width={normalize(24)}
           />
         </TouchableOpacity>
-      </View>
-      <ScrollView>
-        <View style={{ padding: normalize(24) }}>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ marginTop: normalize(25) }}>
           <Icons.VerifiedProfile height={normalize(80)} width={normalize(80)} />
           <View style={styles.headingWrapper}>
             <AppText textStyle="display6">Get bee-rified!</AppText>
@@ -176,36 +177,44 @@ const VerificationScreen = ({ navigation }) => {
               of {verifications.length}
             </AppText>
           </View>
-          <AppText
-            textStyle="body2"
-            color={Colors.contentPlaceholder}
-            customStyle={{ marginBottom: normalize(24) }}>
+          <Text
+            style={[
+              typography.body2,
+              { marginBottom: normalize(24), color: Colors.contentPlaceholder },
+            ]}>
             Complete your profile and verification to validate your account and
             ensure that only you can access your account. It will also make your
             customer feel more secure during transactions.
-          </AppText>
+          </Text>
 
           {verifications.filter(
             verification => verification.status === 'pending'
           ).length >= 3 ? (
             <View>
-              <AppText
-                textStyle="body1medium"
-                customStyle={{ marginBottom: normalize(4) }}>
+              <Text
+                style={[
+                  typography.body1,
+                  typography.medium,
+                  { marginBottom: normalize(4) },
+                ]}>
                 Start the verification process now
-              </AppText>
-              <AppText
-                textStyle="body2"
-                color={Colors.contentPlaceholder}
-                customStyle={{ marginBottom: normalize(24) }}>
+              </Text>
+              <Text
+                style={[
+                  typography.body2,
+                  {
+                    marginBottom: normalize(24),
+                    color: Colors.contentPlaceholder,
+                  },
+                ]}>
                 Provide all the necessary info and requirements.
-              </AppText>
+              </Text>
             </View>
           ) : (
             verifications.some(item => item.status === 'pending') && (
-              <AppText textStyle="subtitle1" customStyle={styles.listHeader}>
+              <Text style={[typography.subtitle1, styles.listHeader]}>
                 Pending
-              </AppText>
+              </Text>
             )
           )}
 
@@ -216,9 +225,9 @@ const VerificationScreen = ({ navigation }) => {
           {verifications.some(item =>
             ['review', 'submitted'].includes(item.status)
           ) && (
-            <AppText textStyle="subtitle1" customStyle={styles.listHeader}>
+            <Text style={[typography.subtitle1, styles.listHeader]}>
               For Review
-            </AppText>
+            </Text>
           )}
 
           {verifications
@@ -226,44 +235,48 @@ const VerificationScreen = ({ navigation }) => {
             .map(renderItem)}
 
           {verifications.some(item => item.status === 'completed') && (
-            <AppText
-              textStyle="subtitle1"
-              customStyle={{ marginVertical: normalize(8) }}>
+            <Text
+              style={[typography.subtitle1, { marginVertical: normalize(8) }]}>
               Already Completed
-            </AppText>
+            </Text>
           )}
           {verifications
             .filter(item => item.status === 'completed')
             .map(renderCompletedItem)}
-        </View>
-        <View style={{ flexDirection: 'row', padding: normalize(16) }}>
-          <Icons.Lock width={normalize(24)} height={normalize(24)} />
-          <Text
-            style={[
-              typography.caption,
-              {
-                lineHeight: normalize(18),
-                marginLeft: 12,
-                maxWidth: '90%',
-              },
-            ]}>
-            Your privacy is important to us, we do not share your personal
-            information. Check our{' '}
+
+          <View style={{ flexDirection: 'row', padding: normalize(16) }}>
+            <Icons.Lock width={normalize(24)} height={normalize(24)} />
             <Text
               style={[
                 typography.caption,
-                { textDecorationLine: 'underline', color: Colors.contentOcean },
-              ]}
-              onPress={() => {
-                setPrivacyVisible(true)
-              }}>
-              Privacy Policy
-            </Text>{' '}
-            for more details.
-          </Text>
-        </View>
-        {renderPrivacyModal()}
-      </ScrollView>
+                {
+                  lineHeight: normalize(18),
+                  marginLeft: 12,
+                  maxWidth: '90%',
+                },
+              ]}>
+              Your privacy is important to us, we do not share your personal
+              information. Check our{' '}
+              <Text
+                style={[
+                  typography.caption,
+                  {
+                    textDecorationLine: 'underline',
+                    color: Colors.contentOcean,
+                  },
+                ]}
+                onPress={() => {
+                  setPrivacyVisible(true)
+                }}>
+                Privacy Policy
+              </Text>{' '}
+              for more details.
+            </Text>
+          </View>
+
+          {renderPrivacyModal()}
+        </ScrollView>
+      </View>
     </>
   )
 }
