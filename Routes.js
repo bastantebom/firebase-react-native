@@ -497,6 +497,16 @@ export default Routes = () => {
           },
         })
       }
+      case '/order-tracker': {
+        const { id } = query
+
+        navigate('orders', {
+          screen: 'order-tracker',
+          params: {
+            orderID: id,
+          },
+        })
+      }
     }
   }
 
