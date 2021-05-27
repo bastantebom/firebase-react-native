@@ -113,7 +113,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       username: username || '',
       description: description || '',
       email: email || '',
-      phoneNumber: phone_number || '',
+      phoneNumber: phone_number?.length ? phone_number.slice(-10) : '',
       addresses: addresses || [],
       gender,
       birthDate: format(
@@ -680,6 +680,7 @@ const EditProfileScreen = ({ navigation, route }) => {
             ]}
             inputStyle={{
               marginLeft: normalize(40),
+              marginBottom: normalize(4),
             }}>
             <Text
               style={[

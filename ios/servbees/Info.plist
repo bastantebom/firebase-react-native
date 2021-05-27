@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>servbees</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>1</string>
 	<key>FacebookAppID</key>
 	<string>1251574315191207</string>
 	<key>FacebookDisplayName</key>
@@ -55,7 +55,7 @@
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access your Media Library to add images to your post.</string>
+    <string>$(PRODUCT_NAME) would like to access your Media Library to add images to your post.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your camera. This lets you take photos to upload and include in your post.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -76,7 +76,7 @@
 		<string>RoundedMplus1c-Medium.ttf</string>
 		<string>RoundedMplus1c-Regular.ttf</string>
 		<string>MaterialIcons.ttf</string>
-		<string>MaterialCommunityIcons.ttf</string>
+        <string>MaterialCommunityIcons.ttf</string>
 		<string>Ionicons.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -89,9 +89,9 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIUserInterfaceStyle</key>
+    <string>Light</string>
 </dict>
 </plist>

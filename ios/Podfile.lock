@@ -799,6 +799,9 @@ PODS:
     - React-Core
   - RNScreens (2.15.2):
     - React-Core
+  - RNSentry (2.4.3):
+    - React-Core
+    - Sentry (= 6.1.4)
   - RNShare (5.1.0):
     - React-Core
   - RNSVG (12.1.0):
@@ -811,6 +814,9 @@ PODS:
   - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.7)
+  - Sentry (6.1.4):
+    - Sentry/Core (= 6.1.4)
+  - Sentry/Core (6.1.4)
   - TOCropViewController (2.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -910,6 +916,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -956,6 +963,7 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
+    - Sentry
     - TOCropViewController
     - YogaKit
 
@@ -1098,6 +1106,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNShare:
     :path: "../node_modules/react-native-share"
   RNSVG:
@@ -1214,15 +1224,17 @@ SPEC CHECKSUMS:
   RNPermissions: 4c8a37b4dde50f1f152bf8cd08c4a43d2355829e
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 3d682bcaba69a4f8e55543d90818704f34338db1
+  RNSentry: 6f8f9ee7e4c939dcd35e5633b94d0e3782888e46
   RNShare: fed99fd743f80ca255903c1da46fc9a6430efab6
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   SDWebImage: e378178472b735e84b007bfb55514c97948a0598
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
+  Sentry: 9d055e2de30a77685e86b219acf02e59b82091fc
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 234afb4bf7d13bc8034fdde4a7ff635a8d0f8f9d
+PODFILE CHECKSUM: 10beb55571dfb0ec174d4770a1743a2ad951cc2a
 
 COCOAPODS: 1.9.3
