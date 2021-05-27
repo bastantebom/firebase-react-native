@@ -86,7 +86,6 @@ const PaymentWebView = ({ navigation, route }) => {
       navigation.navigate('payment-status', {
         status,
         amount,
-        orderId,
         paymentId,
         sellerName: response.data.display_name || response.data.full_name,
       })

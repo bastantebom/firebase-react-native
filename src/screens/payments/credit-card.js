@@ -270,7 +270,7 @@ const CreditCardScreen = ({ navigation, route }) => {
     status,
   }) => {
     const ref = firestore().collection('payments')
-    await ref.add({
+    return await ref.add({
       order_id: orderData.id,
       intent_id: paymentIntentId,
       method_id: paymentMethodId,
@@ -294,9 +294,11 @@ const CreditCardScreen = ({ navigation, route }) => {
         paymentIntentId
       )
       const paymentStatus = response.data.data.attributes.status
+      const seller = await Api.getUser({ uid: orderData.seller_id })
+
       if (paymentStatus === 'succeeded') {
         const paymentId = response.data.data.attributes.payments[0].id
-        await Promise.all([
+        const [paymentData] = await Promise.all([
           createPayment({
             paymentIntentId,
             paymentMethodId,
@@ -314,6 +316,8 @@ const CreditCardScreen = ({ navigation, route }) => {
         navigation.navigate('payment-status', {
           status: 'success',
           amount: totalPrice,
+          sellerName: seller.data.display_name || seller.data.full_name,
+          paymentId: paymentData.id,
         })
       } else if (paymentStatus === 'awaiting_next_action') {
         setIsLoading(false)
@@ -326,7 +330,7 @@ const CreditCardScreen = ({ navigation, route }) => {
             const { status } = intentData.data.attributes
 
             if (status === 'succeeded') {
-              await Promise.all([
+              const [paymentData] = await Promise.all([
                 createPayment({
                   paymentIntentId,
                   paymentMethodId,
@@ -342,6 +346,8 @@ const CreditCardScreen = ({ navigation, route }) => {
               navigation.navigate('payment-status', {
                 status: 'success',
                 amount: totalPrice,
+                sellerName: seller.data.display_name || seller.data.full_name,
+                paymentId: paymentData.id,
               })
             } else if (status === 'processing') {
               await Promise.all([
@@ -379,6 +385,7 @@ const CreditCardScreen = ({ navigation, route }) => {
               navigation.navigate('payment-status', {
                 status: 'failed',
                 amount: totalPrice,
+                sellerName: seller.data.display_name || seller.data.full_name,
               })
             }
           },

@@ -20,7 +20,6 @@ import { formatNumber } from 'react-native-currency-input'
 import { format } from 'date-fns'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
-import { normalizeUnits } from 'moment'
 
 /**
  * @typedef {object} PaymentStatusProps
