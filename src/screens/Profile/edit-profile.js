@@ -11,6 +11,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import {
   Alert,
   Image,
+  Platform,
   StatusBar,
   StyleSheet,
   Text,
@@ -719,8 +720,9 @@ const EditProfileScreen = ({ navigation, route }) => {
             <DateTimePicker
               value={datePickerValue}
               mode="date"
-              display="default"
+              display={Platform.OS === 'ios' ? 'inline' : 'default'}
               onChange={handleBirthDateChange}
+              style={styles.datePicker}
             />
           )}
         </View>
@@ -983,6 +985,10 @@ const styles = StyleSheet.create({
     padding: normalize(24),
     paddingTop: 0,
     backgroundColor: '#fff',
+  },
+  datePicker: {
+    backgroundColor: Colors.neutralsWhite,
+    marginTop: normalize(16),
   },
 })
 
