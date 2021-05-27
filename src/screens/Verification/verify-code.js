@@ -163,9 +163,7 @@ const VerifyCodeScreen = ({ navigation, route }) => {
         <View style={[styles.alignCenter, styles.spacingBottomx2]}>
           <Text style={typography.body2narrow}>
             A 4-digit code has been sent to{' '}
-            <Text style={typography.medium}>
-              {isEmail(login) ? login : `+63${login}`}
-            </Text>
+            <Text style={typography.medium}>{login}</Text>
           </Text>
         </View>
         <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
