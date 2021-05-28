@@ -263,8 +263,9 @@ const EditProfileScreen = ({ navigation, route }) => {
       setNeedsRefresh(true)
       navigation.goBack()
     } catch (error) {
-      console.log(error)
-      Alert.alert('Error', 'Oops, something went wrong.')
+      if (['phone number', 'TOO_SHORT'].includes(error.message))
+        setErrors({ ...errors, phoneNumber: 'Invalid phone number' })
+      else console.log(error)
     }
     setIsLoading(false)
   }
