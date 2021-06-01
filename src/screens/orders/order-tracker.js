@@ -1727,7 +1727,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType !== 'buyer' || (userType === 'buyer' && post.type === 'need'))
       return
 
-    if (!paymentData?.date) return
+    if (!paymentData?.date || orderData.payment_method === 'cash') return
 
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
