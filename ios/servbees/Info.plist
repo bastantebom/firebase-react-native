@@ -59,13 +59,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your camera. This lets you take photos to upload and include in your post.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access your location.</string>
+	<string>$(PRODUCT_NAME) would like to access your location. Turning on location services allows us to help you find nearby services, deals and offers.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access your location.</string>
+	<string>$(PRODUCT_NAME) would like to access your location. Turning on location services allows us to help you find nearby services, deals and offers.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access your location.</string>
+	<string>$(PRODUCT_NAME) would like to access your location. Turning on location services allows us to help you find nearby services, deals and offers.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access your microphone.</string>
+	<string>$(PRODUCT_NAME) would like to access your microphone. This lets you choose media to upload and include in your post.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access your photos. This lets you choose which photos to upload and include in your post.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
