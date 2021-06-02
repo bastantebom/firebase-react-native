@@ -1610,7 +1610,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             {post.type === 'sell' &&
               ((orderData.status === 'confirmed' &&
                 orderData.payment_method === 'cash') ||
-                orderData.status === 'paid') && (
+                (orderData.status === 'paid' && !!paymentData?.payment_id)) && (
                 <View style={{ padding: normalize(16) }}>
                   <>
                     {orderData.shipping_method === 'delivery' &&
@@ -1645,6 +1645,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   {(orderData.status === 'confirmed' &&
                     orderData.payment_method === 'cash') ||
                   (orderData.status === 'paid' &&
+                    !!paymentData?.payment_id &&
                     orderData.payment_method !== 'cash') ? (
                     <Button
                       type="primary"
@@ -1706,7 +1707,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             )}
 
             {post.type === 'need' &&
-              (orderData.status === 'paid' ||
+              ((orderData.status === 'paid' && !!paymentData?.payment_id) ||
                 (orderData.payment_method === 'cash' &&
                   orderData.status === 'confirmed')) && (
                 <View style={{ padding: normalize(16) }}>
