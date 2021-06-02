@@ -12,6 +12,18 @@ import { AppText, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
 
 const PrivacyPolicy = ({ onClose }) => {
+  const webViewJs = `
+  document.querySelector('.show-card-mobile').style.display = 'none';
+  document.querySelector('.cards-mobile').style.display = 'none';
+  document.querySelector('.header').style.display = 'none';
+  document.querySelector('.sub-title-holder').style.display = 'none';
+  document.querySelector('.banner-wrapper').style.display = 'none';
+  document.querySelector('.vector-dash').style.paddingTop = '0';
+  document.querySelector('.section-cta').style.display = 'none';
+  document.querySelector('.footer').style.display = 'none';
+  true;
+  `
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenHeaderTitle
@@ -21,7 +33,9 @@ const PrivacyPolicy = ({ onClose }) => {
       />
       <WebView
         source={{ uri: 'https://servbees.com/privacy/' }}
+        injectedJavaScript={webViewJs}
         startInLoadingState={true}
+        onMessage={event => {}}
         renderLoading={() => (
           <View style={{ flex: 1 }}>
             <ActivityIndicator color={Colors.primaryYellow} />
