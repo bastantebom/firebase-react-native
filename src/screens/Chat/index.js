@@ -380,14 +380,14 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
                 postType={post?.type?.toLowerCase()}
               />
             </View>
-            <AppText
-              textStyle="caption2"
-              customStyle={{
-                marginLeft: normalize(6),
-                marginTop: normalize(3),
-              }}>
+            <Text
+              style={[
+                typography.caption,
+                { marginLeft: normalize(8), width: '90%', flexShrink: 1 },
+              ]}
+              numberOfLines={2}>
               {post?.title}
-            </AppText>
+            </Text>
           </TouchableOpacity>
         </View>
       )}
