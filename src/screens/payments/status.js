@@ -112,7 +112,6 @@ const PaymentStatusScreen = ({ navigation, route }) => {
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
         </View>
-        <ScreenHeaderTitle close={navigation.goBack} paddingSize={3} />
         <View style={styles.contentWrapper}>
           <View style={styles.content}>
             {statusInfo[status].image}
@@ -197,13 +196,24 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: getStatusBarHeight(),
   },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  header: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+  },
   buttonWrapper: {
     width: '100%',
   },
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: normalize(50),
   },
   contentWrapper: {
     flex: 1,
