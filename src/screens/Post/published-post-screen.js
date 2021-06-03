@@ -1648,6 +1648,15 @@ const PublishedPostScreen = ({ navigation, route }) => {
                               size="128x128"
                               postType={post.type}
                             />
+                            {!item.available && (
+                              <Text
+                                style={[
+                                  typography.caption,
+                                  styles.unavailableThumbnail,
+                                ]}>
+                                Not available
+                              </Text>
+                            )}
                           </TouchableOpacity>
                         )}
                         <View style={styles.categoryItemInfo}>
@@ -2555,6 +2564,7 @@ const styles = StyleSheet.create({
     padding: normalize(16),
   },
   thumbnailWrapper: {
+    position: 'relative',
     height: normalize(60),
     width: normalize(60),
     marginRight: normalize(16),
@@ -2564,6 +2574,19 @@ const styles = StyleSheet.create({
   thumbnail: {
     height: '100%',
     width: '100%',
+  },
+  unavailableThumbnail: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    backgroundColor: 'rgba(31, 26, 84, 0.8)',
+    zIndex: 1,
+    color: '#fff',
+    fontSize: normalize(8),
+    lineHeight: normalize(8),
+    padding: normalize(4),
+    textAlign: 'center',
   },
   secondaryHeader: {
     position: 'absolute',
