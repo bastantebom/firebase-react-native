@@ -512,7 +512,6 @@ function ProfileInfoModal(props) {
             refreshing={refresh}
             titleColor={Colors.primaryMidnightBlue}
             tintColor={Colors.primaryYellow}
-            title="Refreshing"
             onRefresh={refreshPosts}
           />
         }

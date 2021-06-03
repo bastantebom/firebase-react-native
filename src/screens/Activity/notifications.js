@@ -288,7 +288,6 @@ const Notifications = () => {
                 refreshing={isRereshing}
                 titleColor={Colors.primaryMidnightBlue}
                 tintColor={Colors.primaryYellow}
-                title="Refreshing"
                 onRefresh={() => {
                   setNoMoreNorifications(false)
                   setIsRereshing(true)

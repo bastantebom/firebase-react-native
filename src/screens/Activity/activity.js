@@ -306,7 +306,6 @@ const Activity = ({ navigation }) => {
                   refreshing={isRefreshing}
                   titleColor={Colors.primaryMidnightBlue}
                   tintColor={Colors.primaryYellow}
-                  title="Refreshing"
                   onRefresh={() => setIsRefreshing(true)}
                 />
               }

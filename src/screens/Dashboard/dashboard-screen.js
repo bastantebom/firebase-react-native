@@ -491,7 +491,6 @@ const DashboardScreen = ({ navigation }) => {
                   refreshing={isRereshing}
                   titleColor={Colors.primaryMidnightBlue}
                   tintColor={Colors.primaryYellow}
-                  title="Refreshing"
                   onRefresh={handleOnRefresh}
                 />
               }
@@ -516,7 +515,6 @@ const DashboardScreen = ({ navigation }) => {
                   refreshing={isRereshing}
                   titleColor={Colors.primaryMidnightBlue}
                   tintColor={Colors.primaryYellow}
-                  title="Refreshing"
                   onRefresh={() => {
                     setNoMorePost(false)
                     setIsRefreshing(true)
