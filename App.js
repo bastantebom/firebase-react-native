@@ -15,6 +15,8 @@ import { ContextProvider } from '@/context'
 import { UserContextProvider } from '@/context/UserContext'
 import * as Sentry from '@sentry/react-native'
 import { APP_ENV } from '@env'
+import Toast from '@/components/toast'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const App = () => {
   useEffect(() => {
@@ -30,6 +32,10 @@ const App = () => {
   return (
     <UserContextProvider>
       <ContextProvider>
+        <Toast
+          containerStyle={{ marginTop: getStatusBarHeight() }}
+          ref={ref => Toast.setRef(ref, 'root')}
+        />
         <Routes />
       </ContextProvider>
     </UserContextProvider>
