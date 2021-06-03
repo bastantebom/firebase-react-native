@@ -87,7 +87,7 @@ const ChatHouse = () => {
       lastId.current = response.data.slice(-1)[0]?.id
       setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
-      console.error(error.message || 'error on getting all messages data')
+      console.log(error.message || 'error on getting all messages data')
       Alert.alert('Error', 'Oops, something went wrong.')
     }
   }
@@ -120,7 +120,7 @@ const ChatHouse = () => {
       lastId.current = response.data.slice(-1)[0]?.id
       setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
-      console.error(error.message || 'error on getting own posts chat data')
+      console.log(error.message || 'error on getting own posts chat data')
       Alert.alert('Error', 'Oops, something went wrong.')
     }
   }
@@ -153,7 +153,7 @@ const ChatHouse = () => {
       lastId.current = response.data.slice(-1)[0]?.id
       setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
-      console.error(error.message || 'error on getting own posts chat data')
+      console.log(error.message || 'error on getting own posts chat data')
       Alert.alert('Error', 'Oops, something went wrong.')
     }
   }

@@ -80,7 +80,7 @@ const OngoingItem = ({ route, navigation }) => {
         }))
       })
     } catch (error) {
-      console.error(error)
+      console.log(error)
       Alert.alert('Error', 'Oops, something went wrong.')
     }
   }

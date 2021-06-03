@@ -59,7 +59,7 @@ const PostChat = ({ route }) => {
 
       setItems(items => ({ ...items, ...newItems }))
     } catch (error) {
-      console.error(error.message)
+      console.log(error.message)
       Alert.alert('Error', 'Oops, something went wrong.')
     }
 

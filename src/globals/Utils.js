@@ -228,19 +228,24 @@ export const getLocationName = (components, key) =>
   components.find(component => component.types.includes(key))?.long_name
 
 export const getLocationData = async ({ latitude, longitude }) => {
-  const { results } = await Geocoder.from(latitude, longitude)
-  const addressComponents = results[0].address_components || []
+  try {
+    const { results } = await Geocoder.from(latitude, longitude)
+    const addressComponents = results[0].address_components || []
 
-  return {
-    longitude,
-    latitude,
-    city: getLocationName(addressComponents, 'locality'),
-    province:
-      getLocationName(addressComponents, 'administrative_area_level_2') ||
-      getLocationName(addressComponents, 'administrative_area_level_1') ||
-      '',
-    country: getLocationName(addressComponents, 'country'),
-    full_address: results[0].formatted_address,
+    return {
+      longitude,
+      latitude,
+      city: getLocationName(addressComponents, 'locality'),
+      province:
+        getLocationName(addressComponents, 'administrative_area_level_2') ||
+        getLocationName(addressComponents, 'administrative_area_level_1') ||
+        '',
+      country: getLocationName(addressComponents, 'country'),
+      full_address: results[0].formatted_address,
+    }
+  } catch (error) {
+    console.log(error)
+    return {}
   }
 }
 

@@ -55,7 +55,7 @@ const GooglePlacesInput = ({
           //sendCoordinates(coordinates, {data, details});
         }}
         listViewDisplayed={false}
-        onFail={error => console.error(error)}
+        onFail={error => console.log(error)}
         textInputProps={{
           onChangeText: value => onClearInput?.(value),
           onFocus: onInputFocus,

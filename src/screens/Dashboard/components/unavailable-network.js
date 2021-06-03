@@ -1,29 +1,37 @@
 import React from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Linking,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native'
+import { View, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native'
 import NetInfo from '@react-native-community/netinfo'
 import { normalize, Colors } from '@/globals'
 import { AppButton, AppText } from '@/components'
 import LottieView from 'lottie-react-native'
-import noInternet from '@/assets/animations/no-internet-connection.json'
+import Toast from '@/components/toast'
 
 const UnavailableNetwork = ({ navigation }) => {
-  const handleReload = () => {
-    NetInfo.fetch().then(state => {
+  const handleReload = async () => {
+    try {
+      const state = await NetInfo.fetch()
       if (state.isInternetReachable === true) navigation.goBack()
-    })
+    } catch (error) {
+      console.log(error)
+      Toast.show({
+        type: 'error',
+        timeout: 5000,
+        label: 'Oops, something went wrong',
+        screenId: 'root',
+        dismissible: true,
+      })
+    }
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
-        <LottieView source={noInternet} autoPlay />
+        <LottieView
+          source={require('../../../assets/animations/no-internet-connection.json')}
+          autoPlay
+        />
       </View>
+
       <View style={styles.textWrapper}>
         <Text style={styles.title}>No Internet Connection</Text>
         <Text style={styles.description}>

@@ -291,7 +291,7 @@ const Order = ({ unreadNotification, item }) => {
       setBuyerInfo(buyer.data)
       setSellerInfo(seller.data)
     } catch (error) {
-      console.error(error)
+      console.log(error)
       Alert.alert('Error', 'Oops, something went wrong.')
     }
   }

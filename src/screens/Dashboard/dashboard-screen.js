@@ -89,8 +89,14 @@ const DashboardScreen = ({ navigation }) => {
       setIsLoading(false)
       setIsRefreshing(false)
     } catch (error) {
-      console.error(error)
-      alert(error.message || 'There was an error getting dashboard posts')
+      console.log(error)
+      Toast.show({
+        label: error.message || 'There was an error getting dashboard posts',
+        type: 'error',
+        timeout: 5000,
+        dismissible: true,
+        screenId: 'dashboard',
+      })
     }
   }
 

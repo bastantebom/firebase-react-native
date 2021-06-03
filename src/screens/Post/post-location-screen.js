@@ -152,7 +152,7 @@ const PostLocationScreen = ({ navigation, route }) => {
                 handleResultPress(details)
               }}
               fetchDetails={true}
-              onFail={error => console.error(error)}
+              onFail={error => console.log(error)}
               textInputProps={{
                 onChangeText: setSearchValue,
               }}
