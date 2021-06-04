@@ -37,25 +37,10 @@ const unBlockUser = async payload => {
   })
 }
 
-const contactServbees = async payload => {
-  //url: /users/:reported_uid/unblock
-  ////POST
-  //body: { full_name, email, message}
-  return BaseAPI({
-    url: `contact-us`,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: payload,
-  })
-}
-
 const AdminFunctionService = {
   reportUser,
   blockUser,
   unBlockUser,
-  contactServbees,
 }
 
 export default AdminFunctionService

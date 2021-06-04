@@ -75,6 +75,7 @@ import {
   NotificationDot,
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
+import ContactUsScreen from '@/screens/Profile/components/contact-us'
 
 const defaultScreenOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -184,6 +185,10 @@ function NoBottomTabScreens() {
       <NoBottomTabScreenStack.Screen
         name="temperature-history"
         component={TemperatureHistory}
+      />
+      <NoBottomTabScreenStack.Screen
+        name="contact-us"
+        component={ContactUsScreen}
       />
       <NoBottomTabScreenStack.Screen name="block-user" component={BlockUser} />
     </NoBottomTabScreenStack.Navigator>

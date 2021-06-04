@@ -22,35 +22,26 @@ import {
   ChangePasswordRed,
   LikedPostMenu,
   ContactUs,
-  Notifications,
   InviteFriendsMenu,
   Icons,
   ArchivePostMenu,
 } from '@/assets/images/icons'
 
-import {
-  About,
-  ContactServbees,
-  FaqScreen,
-  NotificationSettings,
-} from '@/screens/Profile/components'
+import { About, FaqScreen } from '@/screens/Profile/components'
 import { UserContext } from '@/context/UserContext'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
 
-const OwnMenu = ({ navigation, triggerNotify }) => {
+const OwnMenu = ({ navigation }) => {
   const { providerData, signOut } = useContext(UserContext)
   const [about, setAbout] = useState(false)
-  const [contactServbees, setContactServbees] = useState(false)
   const [questions, setQuestions] = useState(false)
-  const [notifications, setNotifications] = useState(false)
   const [hasPassword] = useState(
     providerData.some(pd => pd.providerId === 'password')
   )
 
   const toggleAbout = () => setAbout(!about)
-  const toggleContactUs = () => setContactServbees(!contactServbees)
   const toggleFaq = () => setQuestions(!questions)
 
   const handleChangePasswordPress = () => {
@@ -116,44 +107,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
       ),
     },
   ]
-
-  // Removed from current build
-  const notificationComponent = () => {
-    return (
-      <>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => setNotifications(true)}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginBottom: 16,
-              alignItems: 'center',
-            }}>
-            <Notifications width={normalize(20)} height={normalize(20)} />
-            <AppText customStyle={{ marginLeft: 12 }} textStyle="body1">
-              Notification
-            </AppText>
-          </View>
-        </TouchableOpacity>
-
-        <Modal
-          isVisible={notifications}
-          animationIn="slideInRight"
-          animationInTiming={450}
-          animationOut="slideOutLeft"
-          animationOutTiming={450}
-          onBackButtonPress={() => setNotifications(false)}
-          style={{
-            margin: 0,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').height,
-          }}>
-          <NotificationSettings />
-        </Modal>
-      </>
-    )
-  }
 
   return (
     <>
@@ -257,7 +210,13 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
                   Help and Support
                 </AppText>
 
-                <TouchableOpacity activeOpacity={0.7} onPress={toggleContactUs}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    navigation.navigate('NBTScreen', {
+                      screen: 'contact-us',
+                    })
+                  }>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <ContactUs width={normalize(20)} height={normalize(20)} />
                     <Text
@@ -375,20 +334,6 @@ const OwnMenu = ({ navigation, triggerNotify }) => {
           height: Dimensions.get('window').height,
         }}>
         <About toggleAbout={toggleAbout} />
-      </Modal>
-
-      <Modal
-        isVisible={contactServbees}
-        animationIn="slideInRight"
-        animationInTiming={450}
-        animationOut="slideOutLeft"
-        animationOutTiming={450}
-        style={{
-          margin: 0,
-          backgroundColor: 'white',
-          height: Dimensions.get('window').height,
-        }}>
-        <ContactServbees toggleContactUs={toggleContactUs} />
       </Modal>
 
       <Modal

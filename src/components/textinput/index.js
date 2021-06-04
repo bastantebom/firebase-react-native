@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     height: normalize(54),
   },
   messageWrapper: {
-    bottom: normalize(-24),
+    bottom: normalize(-20),
     position: 'absolute',
     left: 0,
   },

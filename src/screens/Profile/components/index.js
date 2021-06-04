@@ -9,7 +9,6 @@ import ArchivedPost from './Account/ArchivedPost.js'
 import AddAddress from './EditProfile/AddAddress.js'
 import Gender from './EditProfile/Gender.js'
 
-import ContactServbees from './HelpSupport/ContactUs.js'
 import FaqScreen from './HelpSupport/Faq'
 
 import VerificationStatus from './VerificationStatus'
@@ -25,7 +24,6 @@ export {
   AddAddress,
   Gender,
   ArchivedPost,
-  ContactServbees,
   FaqScreen,
   VerificationStatus,
   NotificationSettings,

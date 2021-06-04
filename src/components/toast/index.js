@@ -15,6 +15,8 @@ import { navigationRef } from '../../../Routes'
  * @property {() => React.Component} renderDismiss
  * @property {() => React.Component} renderIcon
  * @property {string} type
+ * @property {string} label
+ * @property {string} screenId
  */
 export default class Toast extends React.Component {
   static _refs = {}
@@ -32,7 +34,7 @@ export default class Toast extends React.Component {
   }
 
   /**
-   * @param {ToastConfig} config
+   * @param {ToastConfig} _config
    * @returns {string} toast id
    */
   static show(_config = {}) {
