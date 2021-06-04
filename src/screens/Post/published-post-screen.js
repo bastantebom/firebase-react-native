@@ -1607,7 +1607,8 @@ const PublishedPostScreen = ({ navigation, route }) => {
     }
 
     const handleOnItemPress = item => {
-      if (preview || user.current.uid === userInfo.uid) return
+      if (preview || user.current.uid === userInfo.uid || !item.available)
+        return
 
       setAddToBasketModalItem(
         basket.items?.find?.(_item => _item.id === item.id) || item
@@ -1634,15 +1635,17 @@ const PublishedPostScreen = ({ navigation, route }) => {
                   return (
                     <View key={index} style={[styles.categoryItem]}>
                       <TouchableOpacity
+                        disabled={!item.available}
                         style={[utilStyles.row, utilStyles.flex1]}
                         activeOpacity={0.7}
                         onPress={() => handleOnItemPress(item)}>
                         {!!item.image && (
                           <TouchableOpacity
-                            disabled={!item.available}
                             activeOpacity={0.7}
-                            onPress={() => handleOnItemImagePress(items, index)}
-                            style={styles.thumbnailWrapper}>
+                            style={styles.thumbnailWrapper}
+                            onPress={() =>
+                              handleOnItemImagePress(items, index)
+                            }>
                             <PostImage
                               path={item.image}
                               size="128x128"
