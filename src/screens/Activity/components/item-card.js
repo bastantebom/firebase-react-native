@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native'
 import { formatNumber } from 'react-native-currency-input'
 import { useNavigation } from '@react-navigation/native'
 
@@ -8,7 +8,7 @@ import moment from 'moment'
 import { UserContext } from '@/context/UserContext'
 import { ChatBlue } from '@/assets/images/icons'
 import { normalize, Colors, timePassedShort } from '@/globals'
-import { AppText } from '@/components'
+import typography from '@/globals/typography'
 
 import Avatar from '@/components/Avatar/avatar'
 import pluralize from 'pluralize'
@@ -41,7 +41,7 @@ const ItemCard = ({ items, chats }) => {
       case 'grabpay':
         return 'GrabPay'
       case 'paypal':
-        return 'Paypal'
+        return 'PayPal'
     }
   }
 
@@ -80,54 +80,52 @@ const ItemCard = ({ items, chats }) => {
                     />
                   </View>
                   <View style={styles.userTextWrapper}>
-                    <AppText textStyle="caption2" customStyle={styles.userName}>
+                    <Text style={[typography.caption, styles.userName]}>
                       {item?.user?.name || 'N/A'}
-                    </AppText>
-                    <AppText
-                      textStyle="metadata"
-                      customStyle={styles.orderDate}>
+                    </Text>
+                    <Text style={[typography.metadata, styles.orderDate]}>
                       {moment
                         .unix(item.date._seconds)
                         .format('MMMM D, YYYY • h:mmA')}
-                    </AppText>
+                    </Text>
                   </View>
                 </View>
-                <AppText textStyle="metadata">
+                <Text style={typography.metadata}>
                   {getTimeAgo(Date.now() / 1000 - item.date._seconds)}
-                </AppText>
+                </Text>
               </View>
 
               <View style={styles.paymentDetails}>
-                <AppText
-                  textStyle="body2medium"
-                  customStyle={styles.paymentFontSize}>
+                <Text
+                  style={[
+                    typography.body2,
+                    typography.medium,
+                    styles.paymentFontSize,
+                  ]}>
                   ₱
                   {formatNumber(item.total_price || getTotalAmount(item), {
                     separator: '.',
                     precision: 2,
                     delimiter: ',',
                   })}
-                </AppText>
-                <AppText
-                  textStyle="caption"
-                  color={Colors.contentPlaceholder}
-                  customStyle={styles.paymentFontSize}>
+                </Text>
+                <Text
+                  style={[
+                    typography.metadata,
+                    styles.paymentFontSize,
+                    { color: Colors.contentPlaceholder },
+                  ]}>
                   {` — via `}
-                </AppText>
-                <AppText
-                  textStyle="caption2"
-                  customStyle={{
-                    ...styles.paymentFontSize,
-                    textTransform: 'capitalize',
-                  }}>
+                </Text>
+                <Text style={[typography.caption, styles.paymentFontSize]}>
                   {getPaymentMethod(item.payment_method)}
-                </AppText>
+                </Text>
               </View>
 
-              <AppText textStyle="caption">
+              <Text style={typography.caption}>
                 No. of {pluralize('item', getItemQuantity(item))}:{' '}
                 {getItemQuantity(item)}
-              </AppText>
+              </Text>
             </TouchableOpacity>
 
             {!!chats?.[item.id]?.data?.length && (
@@ -141,28 +139,30 @@ const ItemCard = ({ items, chats }) => {
                 }>
                 <View style={styles.chatCountWrapper}>
                   <ChatBlue />
-                  <AppText
-                    textStyle="caption"
-                    color={Colors.contentOcean}
-                    customStyle={{ marginLeft: normalize(6) }}>
+                  <Text
+                    style={[
+                      typography.caption,
+                      { color: Colors.contentOcean, marginLeft: normalize(6) },
+                    ]}>
                     {chats[item.id]?.data?.length} new messages
-                  </AppText>
+                  </Text>
                 </View>
                 <View style={styles.chatText}>
-                  <AppText
-                    textStyle="caption2"
-                    customStyle={{ width: '80%' }}
+                  <Text
+                    style={[typography.caption, { width: '80%' }]}
                     numberOfLines={1}>
                     {chats[item.id]?.data[0]?.text}
-                  </AppText>
-                  <AppText
-                    textStyle="metadata"
-                    color={Colors.contentPlaceholder}>
+                  </Text>
+                  <Text
+                    style={[
+                      typography.metadata,
+                      { color: Colors.contentPlaceholder },
+                    ]}>
                     {getTimeAgo(
                       Date.now() / 1000 -
                         chats[item.id]?.data[0]?.created_at?._seconds
                     )}
-                  </AppText>
+                  </Text>
                 </View>
               </TouchableOpacity>
             )}

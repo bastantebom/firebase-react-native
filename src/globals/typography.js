@@ -136,6 +136,11 @@ const typography = StyleSheet.create({
   textCenter: {
     textAlign: 'center',
   },
+  metadata: {
+    fontFamily: 'RoundedMplus1c-Regular',
+    fontSize: normalize(12),
+    letterSpacing: normalize(0.8),
+  },
 })
 
 export default typography
