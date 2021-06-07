@@ -2,6 +2,7 @@ import storage from '@react-native-firebase/storage'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
 import { Platform } from 'react-native'
+import RNFS from 'react-native-fs'
 
 const ImageApi = {
   pathUrls: [],
@@ -21,11 +22,34 @@ const ImageApi = {
       const filename = _filename || `${uuidv4()}${ext || ''}`
 
       const fileRef = this.getRef(`${parentFolder}/${filename}`)
-      const uploadUri = Platform.select({
+      let uploadUri = Platform.select({
         android: uri,
         ios: uri.replace('file://', ''),
       })
+      let destinationPath = ''
+      if (Platform.OS === 'ios' && type === 'post') {
+        destinationPath = `${
+          RNFS.TemporaryDirectoryPath
+        }${Math.random().toString(36).substring(7)}.jpg`
+        try {
+          uploadUri = await RNFS.copyAssetsFileIOS(
+            uploadUri,
+            destinationPath,
+            0,
+            0
+          )
+        } catch (err) {
+          console.log(err)
+        }
+      }
       await fileRef.putFile(uploadUri)
+
+      try {
+        const exists = await RNFS.exists(destinationPath)
+        if (exists && destinationPath) RNFS.unlink(destinationPath)
+      } catch (error) {
+        console.log(error)
+      }
 
       return fileRef
     } catch (error) {

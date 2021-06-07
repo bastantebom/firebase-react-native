@@ -75,6 +75,7 @@
     "react-native-fix-image": "^2.1.0",
     "react-native-fluid-animations": "^0.1.1",
     "react-native-fluid-transitions": "^0.1.1",
+    "react-native-fs": "^2.18.0",
     "react-native-geocoding": "^0.4.0",
     "react-native-geolocation-service": "^5.2.0",
     "react-native-gesture-handler": "^1.6.1",
