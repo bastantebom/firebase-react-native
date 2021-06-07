@@ -424,7 +424,7 @@ const DashboardScreen = ({ navigation }) => {
               setSearchResults={setSearchResults}
             />
           </Animated.View>
-          {(!searchResults.length || noResults) && (
+          {!searchBarFocused && (
             <Animated.View
               style={{
                 height: FILTER_TOOLBAR_HEIGHT,
