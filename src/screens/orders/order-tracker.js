@@ -1806,7 +1806,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         ref={ref => Toast.setRef(ref, 'orders')}
       />
       <View style={styles.wrapper}>
-        <View style={styles.headerBackground} />
         <TransitionIndicator loading={isLoading} />
         <View style={styles.header}>
           <TouchableOpacity
@@ -1831,6 +1830,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               onRefresh={handleRefresh}
             />
           }>
+          <View style={styles.headerBackground} />
           {renderStatusSection()}
           {renderMessageSection()}
           {renderShippingDetails()}
@@ -1926,13 +1926,11 @@ const styles = StyleSheet.create({
     width: 12,
   },
   headerBackground: {
-    backgroundColor: '#EDF0F8',
-    height: normalize(150),
-    left: 0,
-    opacity: 1,
     position: 'absolute',
-    right: 0,
     top: 0,
+    backgroundColor: '#EDF0F8',
+    height: normalize(120),
+    opacity: 1,
     width: '100%',
     zIndex: -1,
   },
@@ -2001,6 +1999,7 @@ const styles = StyleSheet.create({
   },
   scrollWrapper: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   section: {
     backgroundColor: Colors.neutralsWhite,
@@ -2052,7 +2051,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EDF0F8',
     marginTop: getStatusBarHeight(),
   },
   itemQuantity: {
@@ -2083,6 +2082,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    backgroundColor: '#EDF0F8',
   },
   backButton: {
     padding: normalize(16),
