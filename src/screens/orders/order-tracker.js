@@ -1412,7 +1412,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     }
 
     return (
-      <View>
+      <View style={styles.buttonsWrapper}>
         <LinearGradient
           style={{
             height: normalize(20),
@@ -1639,49 +1639,56 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 </View>
               )}
 
-            {post.type === 'service' && (
-              <>
-                <View style={{ padding: normalize(16) }}>
-                  {(orderData.status === 'confirmed' &&
-                    orderData.payment_method === 'cash') ||
-                  (orderData.status === 'paid' &&
-                    !!paymentData?.payment_id &&
-                    orderData.payment_method !== 'cash') ? (
-                    <Button
-                      type="primary"
-                      onPress={() => handleStatusChange('completed')}
-                      label="Order Completed"
-                      style={{ marginBottom: normalize(16) }}
-                    />
-                  ) : null}
-                  {![
-                    'completed',
-                    'cancelled',
-                    'declined',
-                    'pending',
-                    'paid',
-                  ].includes(orderData.status) && (
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => setCancelModalVisible(true)}
-                      style={{
-                        width: '100%',
-                        alignItems: 'center',
-                        padding: normalize(12),
-                      }}>
-                      <Text
-                        style={[
-                          typography.body1,
-                          typography.medium,
-                          { color: Colors.secondaryBrinkPink },
-                        ]}>
-                        Cancel Request
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </>
-            )}
+            {post.type === 'service' &&
+              ![
+                'completed',
+                'cancelled',
+                'declined',
+                'pending',
+                'paid',
+              ].includes(orderData.status) && (
+                <>
+                  <View style={{ padding: normalize(16) }}>
+                    {(orderData.status === 'confirmed' &&
+                      orderData.payment_method === 'cash') ||
+                    (orderData.status === 'paid' &&
+                      !!paymentData?.payment_id &&
+                      orderData.payment_method !== 'cash') ? (
+                      <Button
+                        type="primary"
+                        onPress={() => handleStatusChange('completed')}
+                        label="Order Completed"
+                        style={{ marginBottom: normalize(16) }}
+                      />
+                    ) : null}
+                    {![
+                      'completed',
+                      'cancelled',
+                      'declined',
+                      'pending',
+                      'paid',
+                    ].includes(orderData.status) && (
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => setCancelModalVisible(true)}
+                        style={{
+                          width: '100%',
+                          alignItems: 'center',
+                          padding: normalize(12),
+                        }}>
+                        <Text
+                          style={[
+                            typography.body1,
+                            typography.medium,
+                            { color: Colors.secondaryBrinkPink },
+                          ]}>
+                          Cancel Request
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </>
+              )}
 
             {post.type === 'sell' &&
               (['delivering', 'pickup'].includes(orderData.status) ||
@@ -2110,6 +2117,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+
+  buttonsWrapper: {
+    backgroundColor: '#fff',
   },
 })
 
