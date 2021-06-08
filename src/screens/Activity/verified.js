@@ -1,12 +1,20 @@
 import React, { useContext } from 'react'
-import { View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-import { AppText, ScreenHeaderTitle } from '@/components'
+import { ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
+import typography from '@/globals/typography'
 
 import { VerifiedIllustration } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
+import Button from '@/components/Button'
 
 const Verified = ({ navigation }) => {
   const { userInfo } = useContext(UserContext)
@@ -18,32 +26,38 @@ const Verified = ({ navigation }) => {
         <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
         <View style={styles.contentWrapper}>
           <VerifiedIllustration />
-          <AppText textStyle="body3" customStyle={{ marginBottom: 10 }}>
+          <Text
+            style={[
+              typography.body2narrow,
+              typography.medium,
+              {
+                marginBottom: 10,
+                fontSize: normalize(16),
+                textAlign: 'center',
+              },
+            ]}>
             Yay, {userInfo.display_name || userInfo.full_name}! You're now
             bee-rified!
-          </AppText>
-          <AppText
-            textStyle="body2Dashboard"
-            customStyle={{ textAlign: 'center' }}>
+          </Text>
+          <Text style={[typography.body2, { textAlign: 'center' }]}>
             Here's a badge for creating a buzz, and for being awesome in the
             community. Keep unlocking those achievements.
-          </AppText>
-          <TouchableOpacity
-            style={{
-              marginTop: normalize(20),
-              paddingVertical: normalize(10),
-              paddingHorizontal: normalize(60),
-              alignItems: 'center',
-              justifyContent: 'center',
-              alignSelf: 'center',
-              backgroundColor: '#FFD400',
-              borderRadius: 3,
-            }}
+          </Text>
+          <Button
+            label="View Profile"
+            type="primary"
+            style={[
+              typography.button2,
+              {
+                marginTop: normalize(20),
+                paddingVertical: normalize(10),
+                paddingHorizontal: normalize(60),
+              },
+            ]}
             onPress={() => {
               navigation.navigate('TabStack', { screen: 'You' })
-            }}>
-            <AppText textStyle="button2">View Profile</AppText>
-          </TouchableOpacity>
+            }}
+          />
         </View>
       </View>
     </>
