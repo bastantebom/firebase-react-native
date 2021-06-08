@@ -103,15 +103,6 @@ const ImageUpload = ({ images, maximum, onChange, label, multiple }) => {
             You can post up to 10 photos. The first one uploaded becomes your
             cover photo.
           </Text>
-          {Platform.OS === 'ios' && (
-            <Text
-              style={[
-                styles.uploadImageDescription,
-                { marginTop: normalize(4) },
-              ]}>
-              * Live Photos setting option is currently unavailable.
-            </Text>
-          )}
           <TouchableOpacity
             style={styles.linkWrapper}
             activeOpacity={0.7}
