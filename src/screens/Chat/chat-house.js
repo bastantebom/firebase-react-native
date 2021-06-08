@@ -34,9 +34,10 @@ const ChatHouse = () => {
   const { user, userInfo } = useContext(UserContext)
 
   const [sort, setSort] = useState({
-    label: 'All Messages',
+    label: 'All Chats',
     value: 'all',
-    description: 'These are all your messages',
+    description:
+      'Replies to posts and orders, new messages, and all your chat history in one inbox.',
   })
 
   const [items, setItems] = useState({})

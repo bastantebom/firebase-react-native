@@ -10,7 +10,7 @@ import { normalize, Colors } from '@/globals'
 const ChatSort = ({ choice, close }) => {
   const choices = [
     {
-      label: 'All Messages',
+      label: 'All Chats',
       value: 'all',
       description:
         'Replies to posts and orders, new messages, and all your chat history in one inbox.',
