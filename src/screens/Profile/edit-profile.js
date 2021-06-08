@@ -501,6 +501,14 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
 
         <View style={[styles.inputWrapper]}>
+          <Text
+            style={[
+              typography.body2,
+              typography.medium,
+              styles.descriptionLabel,
+            ]}>
+            About
+          </Text>
           <TextInput
             value={formData.description}
             label="Description"
@@ -990,6 +998,10 @@ const styles = StyleSheet.create({
   datePicker: {
     backgroundColor: Colors.neutralsWhite,
     marginTop: normalize(16),
+  },
+  descriptionLabel: {
+    color: Colors.contentEbony,
+    marginBottom: normalize(8),
   },
 })
 
