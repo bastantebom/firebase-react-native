@@ -399,7 +399,7 @@ const DashboardScreen = ({ navigation }) => {
             height: Animated.add(
               translateY,
               getSearchToolbarHeight() +
-                (searchResults.length || noResults ? 0 : FILTER_TOOLBAR_HEIGHT)
+                (searchBarFocused ? 0 : FILTER_TOOLBAR_HEIGHT)
             ),
             zIndex: 4,
           }}>
