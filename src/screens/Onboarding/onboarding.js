@@ -91,9 +91,8 @@ const Onboarding = ({ navigation }) => {
     },
     {
       illustration: <IllustFour width={width} height={height * 0.4} />,
-      title: 'Join a Hive',
-      description:
-        'Create your own Hives to organize your offers or connect with people with the same interests and needs.',
+      title: 'Share and Earn',
+      description: `Help other Buzybees sell products and offer services simply by sharing their post. You'll get a percentage for every successful sale. Win-win!`,
     },
   ])
 
