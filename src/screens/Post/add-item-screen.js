@@ -110,9 +110,8 @@ const AddItemScreen = ({ navigation, route }) => {
   }
 
   const canSubmit = () => {
-    const { name } = formData
-
-    return !!name.length
+    const { name, price } = formData
+    return !!name.length && price
   }
 
   const renderCategoriesSection = () => {

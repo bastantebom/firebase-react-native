@@ -6,16 +6,18 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
+  Text,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { normalize, Colors } from '@/globals'
-import { AppText, ScreenHeaderTitle } from '@/components'
+import { ScreenHeaderTitle } from '@/components'
 import { Icons, ChevronDown, ChevronUp, PostClock } from '@/assets/images/icons'
 
 import ActivitiesCard from './components/card'
 import ItemCard from '@/screens/Activity/components/item-card'
 import Api from '@/services/Api'
+import typography from '@/globals/typography'
 
 const OngoingItem = ({ route, navigation }) => {
   const { activity } = route.params
@@ -137,17 +139,24 @@ const OngoingItem = ({ route, navigation }) => {
                   width={normalize(18)}
                   height={normalize(18)}
                 />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
+                <Text
+                  style={[
+                    typography.body1,
+                    typography.medium,
+                    { marginLeft: normalize(10) },
+                  ]}>
                   Awaiting Payment
-                </AppText>
+                </Text>
                 <View
                   style={{
                     ...styles.iconBadge,
                     backgroundColor: Colors.secondaryBrinkPink,
                   }}>
-                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
+                  <Text
+                    style={[
+                      typography.metadata,
+                      { color: Colors.neutralsWhite },
+                    ]}>
                     {
                       item?.filter(
                         order =>
@@ -155,7 +164,7 @@ const OngoingItem = ({ route, navigation }) => {
                           order.payment_method !== 'cash'
                       ).length
                     }
-                  </AppText>
+                  </Text>
                 </View>
               </View>
               {accordion.awatingPayments ? (
@@ -193,17 +202,24 @@ const OngoingItem = ({ route, navigation }) => {
               }>
               <View style={styles.iconText}>
                 <Icons.ChatGray />
-                <AppText
-                  textStyle="body1medium"
-                  customStyle={{ marginLeft: normalize(10) }}>
+                <Text
+                  style={[
+                    typography.body1,
+                    typography.medium,
+                    { marginLeft: normalize(10) },
+                  ]}>
                   Requests
-                </AppText>
+                </Text>
                 <View
                   style={{
                     ...styles.iconBadge,
                     backgroundColor: Colors.secondaryDarkTangerine,
                   }}>
-                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
+                  <Text
+                    style={[
+                      typography.metadata,
+                      { color: Colors.neutralsWhite },
+                    ]}>
                     {
                       item?.filter(
                         order =>
@@ -212,7 +228,7 @@ const OngoingItem = ({ route, navigation }) => {
                             order.payment_method === 'cash')
                       ).length
                     }
-                  </AppText>
+                  </Text>
                 </View>
               </View>
               {accordion.requests ? (
@@ -254,17 +270,26 @@ const OngoingItem = ({ route, navigation }) => {
               }>
               <View style={styles.iconText}>
                 <PostClock />
-                <AppText
+                <Text
+                  style={[
+                    typography.body1,
+                    typography.medium,
+                    { marginLeft: normalize(10) },
+                  ]}
                   textStyle="body1medium"
                   customStyle={{ marginLeft: normalize(10) }}>
                   Ongoing
-                </AppText>
+                </Text>
                 <View
                   style={{
                     ...styles.iconBadge,
                     backgroundColor: Colors.secondaryShamrock,
                   }}>
-                  <AppText textStyle="metadata" color={Colors.neutralsWhite}>
+                  <Text
+                    style={[
+                      typography.metadata,
+                      { color: Colors.neutralsWhite },
+                    ]}>
                     {
                       item?.filter(
                         order =>
@@ -274,7 +299,7 @@ const OngoingItem = ({ route, navigation }) => {
                           order.status === 'payment processing'
                       ).length
                     }
-                  </AppText>
+                  </Text>
                 </View>
               </View>
               {accordion.ongoing ? (
@@ -315,7 +340,7 @@ const OngoingItem = ({ route, navigation }) => {
               },
             })
           }}>
-          <AppText customStyle={styles.pastText}>Past Orders</AppText>
+          <Text style={[typography.body2, styles.pastText]}>Past Orders</Text>
         </TouchableOpacity>
       )}
     </>
