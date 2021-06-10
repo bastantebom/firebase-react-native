@@ -32,6 +32,7 @@ import { UserContext } from '@/context/UserContext'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
+import { CommonActions } from '@react-navigation/native'
 
 const OwnMenu = ({ navigation }) => {
   const { providerData, signOut } = useContext(UserContext)
@@ -306,7 +307,12 @@ const OwnMenu = ({ navigation }) => {
                   activeOpacity={0.7}
                   onPress={() => {
                     signOut().then(() => {
-                      navigation.navigate('Onboarding')
+                      navigation.dispatch(
+                        CommonActions.reset({
+                          index: 0,
+                          routes: [{ name: 'Onboarding' }],
+                        })
+                      )
                     })
                   }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
