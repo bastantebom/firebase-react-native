@@ -524,8 +524,8 @@ const ChatHouse = () => {
             <ChatBlue style={styles.chatIcon} />
             <Text style={[typography.body2, { color: '#3781FC' }]}>
               {item?.chat_counts?.new_messages} New in{' '}
-              {item?.chat_counts?.messages}{' '}
-              {pluralize('chat', item?.chat_counts?.messages)}
+              {item?.chat_counts?.post_chats}{' '}
+              {pluralize('chat', item?.chat_counts?.post_chats)}
             </Text>
           </>
         )
