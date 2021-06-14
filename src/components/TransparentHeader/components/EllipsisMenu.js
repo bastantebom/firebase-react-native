@@ -170,19 +170,6 @@ const EllipsisMenu = ({
               </AppText>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7} onPress={handleChatPress}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 16,
-              }}>
-              <SendMessage style={{ color: '#91919C' }}></SendMessage>
-              <AppText customStyle={{ marginLeft: 8 }} textStyle="body2">
-                Message @{username}
-              </AppText>
-            </View>
-          </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.7} onPress={toggleEllipsisState}>
             <View
