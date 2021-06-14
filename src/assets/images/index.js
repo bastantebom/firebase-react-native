@@ -91,6 +91,8 @@ import Image from './image.svg'
 import NoPayoutMethod from './no-payout-method.svg'
 import HelpCenter from './help-center.svg'
 
+import ChatGuest from './chat-guest.svg'
+
 export {
   Guide,
   Category,
@@ -156,6 +158,7 @@ export const Status = {
 export const Images = {
   CameraImage,
   Capture,
+  ChatGuest,
   DashboardEmptyState,
   Doctor,
   Error,

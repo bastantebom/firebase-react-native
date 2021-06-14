@@ -10,8 +10,6 @@ import SplashScreenComponent from './SplashScreen'
 
 import Bell from '@/assets/images/icons/bell.svg'
 import BellActive from '@/assets/images/icons/bell-active.svg'
-import Hive from '@/assets/images/icons/hive.svg'
-import HiveActive from '@/assets/images/icons/hive-active.svg'
 
 //screens
 import { Onboarding } from '@/screens/Onboarding'
@@ -34,6 +32,7 @@ import ReportScreen from '@/screens/Profile/report'
 import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
+import ChatGuestScreen from '@/screens/Chat/guest-screen'
 import PaymentsStack from '@/screens/payments'
 import OrdersStack from '@/screens/orders'
 import UnavailableNetwork from '@/screens/Dashboard/components/unavailable-network'
@@ -73,6 +72,7 @@ import {
   UserAlt,
   UserAltActive,
   NotificationDot,
+  Icons,
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
 import ContactUsScreen from '@/screens/Profile/components/contact-us'
@@ -95,6 +95,7 @@ const WelcomeStack = createStackNavigator()
 const BadgeStack = createStackNavigator()
 const VerifiedStack = createStackNavigator()
 const NotVerifiedStack = createStackNavigator()
+const ChatStack = createStackNavigator()
 
 const Stack = createStackNavigator()
 const NoBottomTabScreenStack = createStackNavigator()
@@ -246,6 +247,18 @@ function HiveStackScreen() {
   )
 }
 
+function ChatStackScreen() {
+  const { user } = useContext(UserContext)
+  
+  return (
+    <ChatStack.Navigator
+      headerMode="none"
+      screenOptions={defaultScreenOptions}>
+      <ChatStack.Screen name="Chat" component={user ? ChatHouse : ChatGuestScreen} />
+    </ChatStack.Navigator>
+  )
+}
+
 function ActivityStackScreen() {
   const { user } = useContext(UserContext)
   if (user) {
@@ -335,27 +348,6 @@ const TabStack = () => {
         }}
       />
       <Tab.Screen
-        name="Hive"
-        component={HiveStackScreen}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            const icon = focused ? (
-              <HiveActive width={normalize(25)} height={normalize(25)} />
-            ) : (
-              <Hive width={normalize(25)} height={normalize(25)} />
-            )
-            return <>{icon}</>
-          },
-        }}
-      />
-      <Tab.Screen
-        name="posts"
-        component={PostStack}
-        options={{
-          tabBarButton: () => <CreatePostPopup />,
-        }}
-      />
-      <Tab.Screen
         name="Activity"
         component={ActivityStackScreen}
         options={{
@@ -387,6 +379,59 @@ const TabStack = () => {
                   </View>
                 ) : (
                   <></>
+                )}
+
+                <View
+                  style={{
+                    position: 'relative',
+                  }}>
+                  {icon}
+                </View>
+              </View>
+            )
+          },
+        }}
+      />
+      <Tab.Screen
+        name="posts"
+        component={PostStack}
+        options={{
+          tabBarButton: () => <CreatePostPopup />,
+        }}
+      />
+      <Tab.Screen
+        name="Chats"
+        component={ChatStackScreen}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            const icon = focused ? (
+              <Icons.ActiveChatIcon
+                width={normalize(25)}
+                height={normalize(25)}
+              />
+            ) : (
+              <Icons.ChatIcon width={normalize(25)} height={normalize(25)} />
+            )
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {!!counts.chat && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: normalize(-3),
+                      right: normalize(-3),
+                      zIndex: 2,
+                    }}>
+                    <NotificationDot
+                      width={normalize(11)}
+                      height={normalize(11)}
+                    />
+                  </View>
                 )}
 
                 <View
