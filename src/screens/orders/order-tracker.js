@@ -1267,13 +1267,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                           ]}>
                           {item.name || post.title}
                         </Text>
-                        {!!item.note && (
+                        {!!item.notes && (
                           <Text
                             style={[
                               typography.body2,
                               { marginTop: normalize(4) },
                             ]}>
-                            {item.note}
+                            {item.notes}
                           </Text>
                         )}
                         {(item.schedule || orderData.schedule) && (
