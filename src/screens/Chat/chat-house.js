@@ -18,7 +18,7 @@ import { UserContext } from '@/context/UserContext'
 
 import { normalize, Colors, timePassedShort } from '@/globals'
 import utilStyles from '@/globals/util-styles'
-import { AppText, ScreenHeaderTitle } from '@/components'
+import { AppText } from '@/components'
 
 import PostImage from '@/components/Post/post-image'
 import Avatar from '@/components/Avatar/avatar'
@@ -28,6 +28,8 @@ import { Icons, ChatEmpty, ChatBlue, BlueDot } from '@/assets/images/icons'
 import Api from '@/services/Api'
 import typography from '@/globals/typography'
 import pluralize from 'pluralize'
+
+import EmptyState from './components/empty-state'
 
 const ChatHouse = () => {
   const navigation = useNavigation()
@@ -472,7 +474,10 @@ const ChatHouse = () => {
               params: { post: item.post },
             })
           } else {
-            navigation.navigate('Chat', { user, channel: item.chat_room })
+            navigation.navigate('NBTScreen', {
+              screen: 'Chat',
+              params: { post: item.post, user, channel: item.chat_room },
+            })
           }
         }}>
         <View style={styles.imageWrapper}>
@@ -574,25 +579,22 @@ const ChatHouse = () => {
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <View style={styles.wrapper}>
-        <ScreenHeaderTitle
-          close={() => navigation.goBack()}
-          title="All Chats"
-          iconSize={normalize(24)}
-          paddingSize={3}
-        />
         <View style={styles.bodyWrapper}>
           <TouchableOpacity
             style={[styles.sortWrapper, utilStyles.row, utilStyles.alignCenter]}
             onPress={() => setSortModal(true)}>
-            <AppText textStyle="body3" customStyle={styles.sortText}>
+            <Text
+              style={[typography.body1, typography.medium, styles.sortText]}>
               {sort.label}
-            </AppText>
+            </Text>
             <Icons.ChevronDown
               style={{ color: 'black' }}
               width={normalize(24)}
               height={normalize(24)}
             />
           </TouchableOpacity>
+
+          {!Object.keys(items).length && <EmptyState />}
 
           <FlatList
             data={Object.values(items).sort(
@@ -651,19 +653,20 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
+    paddingTop: normalize(25),
+    paddingHorizontal: normalize(16),
     marginTop: getStatusBarHeight(),
     backgroundColor: '#fff',
   },
   bodyWrapper: {
-    paddingHorizontal: normalize(16),
     paddingBottom: normalize(120),
-    marginTop: normalize(15),
   },
   sortWrapper: {
     marginBottom: normalize(30),
   },
   sortText: {
     marginRight: normalize(8),
+    fontSize: normalize(18),
   },
   postWrapper: {
     marginBottom: normalize(20),

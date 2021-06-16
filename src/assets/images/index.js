@@ -92,6 +92,7 @@ import NoPayoutMethod from './no-payout-method.svg'
 import HelpCenter from './help-center.svg'
 
 import ChatGuest from './chat-guest.svg'
+import ChatEmptyState from './chat-empty-state.svg'
 
 export {
   Guide,
@@ -159,6 +160,7 @@ export const Images = {
   CameraImage,
   Capture,
   ChatGuest,
+  ChatEmptyState,
   DashboardEmptyState,
   Doctor,
   Error,

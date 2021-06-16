@@ -244,27 +244,6 @@ const Activity = ({ navigation }) => {
 
           <View style={styles.flexRow}>
             <TouchableOpacity
-              style={styles.chat}
-              onPress={() =>
-                navigation.navigate('NBTScreen', {
-                  screen: 'ChatHouse',
-                })
-              }>
-              <Icons.ChatHeader width={normalize(24)} height={normalize(24)} />
-              {!!counts.chat && (
-                <View
-                  style={{
-                    ...styles.notifDot,
-                    paddingHorizontal: normalize([counts.chat > 9 ? 2 : 6]),
-                  }}>
-                  <Text style={styles.countText}>
-                    {counts.chat >= 99 ? 99 : counts.chat}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.chatWrapper}
               onPress={() =>
                 navigation.navigate('NBTScreen', {
                   screen: 'Notifications',
@@ -390,9 +369,6 @@ const styles = StyleSheet.create({
   sortText: {
     marginRight: normalize(5),
     fontSize: normalize(18),
-  },
-  chat: {
-    marginRight: normalize(25),
   },
   activityWrapper: {
     flex: 1,
