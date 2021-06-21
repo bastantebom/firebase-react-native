@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 
 import { Colors, normalize } from '@/globals'
-import { BottomSheetHeader, TransitionIndicator } from '@/components'
+import { TransitionIndicator } from '@/components'
 import openMap from 'react-native-open-maps'
 import {
   Alert,
@@ -14,7 +14,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   UIManager,
   Linking,
 } from 'react-native'
@@ -29,10 +28,6 @@ import LinearGradient from 'react-native-linear-gradient'
 import LottieView from 'lottie-react-native'
 import getStatusColor from './utils/order-status-color'
 
-import Modal from 'react-native-modal'
-import CancelOrderModal from './modals/cancel-order'
-import DeclineOrderModal from './modals/decline-order'
-
 import moment from 'moment'
 import { iconSize, parseTime } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
@@ -46,6 +41,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Toast from '@/components/toast'
 import Button from '@/components/Button'
 import { Images } from '@/assets/images'
+import ModalComponent from './modals'
+import Dialog from '@/screens/orders/modals/components/dialog'
 
 if (
   Platform.OS === 'android' &&
@@ -82,10 +79,23 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const [statusHistoryVisible, setStatusHistoryVisible] = useState(false)
   const [totalPrice, setTotalPrice] = useState(0)
 
-  const [cancelModalVisible, setCancelModalVisible] = useState(false)
-  const [declineModalVisible, setDeclineModalVisible] = useState(false)
-  const [orderStatusHistory, setOrderStatusHistory] = useState([])
+  const [declineOrderModalVisible, setDeclineOrderModalVisible] = useState(
+    false
+  )
+  const [cancelOrderModalVisible, setCancelOrderModalVisible] = useState(false)
+  const [confirmOrderModalVisible, setConfirmOrderModalVisible] = useState(
+    false
+  )
+  const [
+    confirmDeliveryModalVisible,
+    setConfirmDeliveryModalVisible,
+  ] = useState(false)
+  const [pickupOrderModalVisible, setPickupOrderModalVisible] = useState(false)
+  const [completeOrderModalVisible, setCompleteOrderModalVisible] = useState(
+    false
+  )
 
+  const [orderStatusHistory, setOrderStatusHistory] = useState([])
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   useEffect(() => {
@@ -334,13 +344,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   }
 
   const handleCancel = () => {
-    setCancelModalVisible(false)
     handleStatusChange('cancelled')
-  }
-
-  const handleDecline = () => {
-    setDeclineModalVisible(false)
-    handleStatusChange('declined')
+    setCancelOrderModalVisible(false)
   }
 
   const handleStatusChange = async status => {
@@ -1409,7 +1414,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={() => setCancelModalVisible(true)}
+                    onPress={() => setCancelOrderModalVisible(true)}
                     style={{ width: '100%', alignItems: 'center' }}>
                     <Text
                       style={[
@@ -1460,7 +1465,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 <View style={{ padding: normalize(16) }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={() => setCancelModalVisible(true)}
+                    onPress={() => setCancelOrderModalVisible(true)}
                     style={{ width: '100%', alignItems: 'center' }}>
                     <Text
                       style={[
@@ -1498,7 +1503,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 <View style={{ width: '40%' }}>
                   <Button
                     label="Decline"
-                    onPress={() => setDeclineModalVisible(true)}
+                    onPress={() => setDeclineOrderModalVisible(true)}
                   />
                 </View>
                 <View style={{ width: '55%' }}>
@@ -1511,7 +1516,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                         ? 'Confirm Offer'
                         : 'Confirm Request'
                     }
-                    onPress={() => handleStatusChange('confirmed')}
+                    onPress={() => setConfirmOrderModalVisible(true)}
                   />
                 </View>
               </View>
@@ -1552,7 +1557,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   }}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={() => setCancelModalVisible(true)}
+                    onPress={() => setCancelOrderModalVisible(true)}
                     style={{
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -1587,7 +1592,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                           orderData.payment_method !== 'cash')) && (
                         <Button
                           type="primary"
-                          onPress={() => handleStatusChange('delivering')}
+                          onPress={() => setConfirmOrderModalVisible(true)}
                           label="Confirm for Delivery"
                         />
                       )}
@@ -1598,7 +1603,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                           orderData.payment_method !== 'cash')) && (
                         <Button
                           type="primary"
-                          onPress={() => handleStatusChange('pickup')}
+                          onPress={() => setPickupOrderModalVisible(true)}
                           label="Confirm for Pick Up"
                         />
                       )}
@@ -1623,7 +1628,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       orderData.payment_method !== 'cash') ? (
                       <Button
                         type="primary"
-                        onPress={() => handleStatusChange('completed')}
+                        onPress={() => setCompleteOrderModalVisible(true)}
                         label="Order Completed"
                         style={{ marginBottom: normalize(16) }}
                       />
@@ -1637,7 +1642,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     ].includes(orderData.status) && (
                       <TouchableOpacity
                         activeOpacity={0.7}
-                        onPress={() => setCancelModalVisible(true)}
+                        onPress={() => setCancelOrderModalVisible(true)}
                         style={{
                           width: '100%',
                           alignItems: 'center',
@@ -1664,7 +1669,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 <View style={{ padding: normalize(16) }}>
                   <Button
                     type="primary"
-                    onPress={() => handleStatusChange('completed')}
+                    onPress={() => setCompleteOrderModalVisible(true)}
                     label="Order Completed"
                   />
                 </View>
@@ -1688,7 +1693,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 <View style={{ padding: normalize(16) }}>
                   <Button
                     type="primary"
-                    onPress={() => handleStatusChange('completed')}
+                    onPress={() => setCompleteOrderModalVisible(true)}
                     label="Complete Offer"
                   />
                 </View>
@@ -1819,58 +1824,163 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
         {renderActionButtons()}
 
-        <Modal
-          isVisible={cancelModalVisible}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={250}
-          animationOutTiming={200}
-          style={styles.modal}
-          swipeDirection="down"
-          onSwipeComplete={() => setCancelModalVisible(false)}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              style={{ flex: 1 }}
-              onPress={() => setCancelModalVisible(false)}>
-              <View style={{ flex: 1, backgroundColor: 'black' }} />
-            </TouchableWithoutFeedback>
-          }>
-          <BottomSheetHeader />
-          <CancelOrderModal
-            onCancelPress={handleCancel}
-            onBackPress={() => setCancelModalVisible(false)}
-            cancelText={
-              post.type === 'sell'
-                ? 'Cancel Order'
-                : post.type === 'service'
-                ? 'Cancel Request'
-                : 'Cancel'
-            }
-          />
-        </Modal>
+        <ModalComponent
+          isVisible={cancelOrderModalVisible}
+          setIsVisible={setCancelOrderModalVisible}>
+          <Dialog
+            Dialog
+            title="Cancel Order"
+            description="Are you sure you want to cancel your order?">
+            <Button
+              label="No"
+              type="primary"
+              style={styles.primaryButton}
+              onPress={() => setCancelOrderModalVisible(false)}
+            />
+            <Button
+              label="Yes"
+              type="primary-outline"
+              style={styles.outlineButton}
+              onPress={() => {
+                setCancelOrderModalVisible(false)
 
-        <Modal
-          isVisible={declineModalVisible}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          animationInTiming={250}
-          animationOutTiming={200}
-          style={styles.modal}
-          swipeDirection="down"
-          onSwipeComplete={() => setDeclineModalVisible(false)}
-          customBackdrop={
-            <TouchableWithoutFeedback
-              style={{ flex: 1 }}
-              onPress={() => setDeclineModalVisible(false)}>
-              <View style={{ flex: 1, backgroundColor: 'black' }} />
-            </TouchableWithoutFeedback>
-          }>
-          <BottomSheetHeader />
-          <DeclineOrderModal
-            onDeclinePress={handleDecline}
-            onBackPress={() => setDeclineModalVisible(false)}
-          />
-        </Modal>
+                navigation.navigate('orders', {
+                  screen: 'cancel-order',
+                  params: { handleCancel },
+                })
+              }}
+            />
+          </Dialog>
+        </ModalComponent>
+
+        <ModalComponent
+          isVisible={declineOrderModalVisible}
+          setIsVisible={setDeclineOrderModalVisible}>
+          <Dialog
+            title="Decline Order"
+            description="Are you sure you want to decline your order?">
+            <Button
+              label="No"
+              type="primary"
+              style={styles.primaryButton}
+              onPress={() => setDeclineOrderModalVisible(false)}
+            />
+            <Button
+              label="Yes"
+              type="primary-outline"
+              style={styles.outlineButton}
+              onPress={() => {
+                setDeclineOrderModalVisible(false)
+                handleStatusChange('declined')
+              }}
+            />
+          </Dialog>
+        </ModalComponent>
+
+        <ModalComponent
+          isVisible={confirmOrderModalVisible}
+          setIsVisible={setConfirmOrderModalVisible}>
+          <Dialog
+            title={`Confirm ${
+              post.type === 'sell'
+                ? 'Order'
+                : post.type === 'need'
+                ? 'Offer'
+                : 'Request'
+            }`}
+            description="Are you sure you want to proceed with
+            this order?">
+            <Button
+              label="Yes"
+              type="primary"
+              style={styles.primaryButton}
+              onPress={() => {
+                handleStatusChange('confirmed')
+                setConfirmOrderModalVisible(false)
+              }}
+            />
+            <Button
+              label="No"
+              type="primary-outline"
+              style={styles.outlineButton}
+              onPress={() => setConfirmOrderModalVisible(false)}
+            />
+          </Dialog>
+        </ModalComponent>
+
+        <ModalComponent
+          isVisible={confirmDeliveryModalVisible}
+          setIsVisible={setConfirmDeliveryModalVisible}>
+          <Dialog
+            title="Confirm Delivery"
+            description="Order/s prepared and ready to be delivered? Please confirm.">
+            <Button
+              label="Yes"
+              type="primary"
+              style={styles.primaryButton}
+              onPress={() => {
+                handleStatusChange('delivering')
+                setConfirmDeliveryModalVisible(false)
+              }}
+            />
+            <Button
+              label="No"
+              type="primary-outline"
+              style={styles.outlineButton}
+              onPress={() => setConfirmDeliveryModalVisible(false)}
+            />
+          </Dialog>
+        </ModalComponent>
+
+        <ModalComponent
+          isVisible={pickupOrderModalVisible}
+          setIsVisible={setPickupOrderModalVisible}>
+          <Dialog
+            title="Confirm Pick up"
+            description="Order/s prepared and ready for pick up?
+            Please confirm.">
+            <Button
+              label="Yes"
+              type="primary"
+              style={styles.primaryButton}
+              onPress={() => {
+                handleStatusChange('pickup')
+                setPickupOrderModalVisible(false)
+              }}
+            />
+            <Button
+              label="No"
+              type="primary-outline"
+              style={styles.outlineButton}
+              onPress={() => setPickupOrderModalVisible(false)}
+            />
+          </Dialog>
+        </ModalComponent>
+
+        <ModalComponent
+          isVisible={completeOrderModalVisible}
+          setIsVisible={setCompleteOrderModalVisible}>
+          <Dialog
+            title="Complete Order"
+            description="Are you sure you want to complete order?
+            Please confirm.">
+            <Button
+              label="Yes"
+              type="primary"
+              style={styles.primaryButton}
+              onPress={() => {
+                handleStatusChange('completed')
+                setCompleteOrderModalVisible(false)
+              }}
+            />
+            <Button
+              label="No"
+              type="primary-outline"
+              style={styles.outlineButton}
+              onPress={() => setCompleteOrderModalVisible(false)}
+            />
+          </Dialog>
+        </ModalComponent>
       </View>
     </>
   )
@@ -1947,10 +2057,6 @@ const styles = StyleSheet.create({
     fontSize: normalize(12),
     letterSpacing: 0.4,
     lineHeight: normalize(18),
-  },
-  modal: {
-    justifyContent: 'flex-end',
-    margin: 0,
   },
   orderHistoryItem: {
     flexDirection: 'row',
@@ -2089,6 +2195,14 @@ const styles = StyleSheet.create({
 
   buttonsWrapper: {
     backgroundColor: '#fff',
+  },
+
+  primaryButton: {
+    marginBottom: normalize(15),
+  },
+  outlineButton: {
+    borderWidth: normalize(1),
+    borderColor: Colors.contentEbony,
   },
 })
 
