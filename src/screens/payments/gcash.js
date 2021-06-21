@@ -44,11 +44,10 @@ const GCashScreen = ({ navigation, route }) => {
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      const response = await Api.createSourcePayment({
+      const response = await Api.createPaymentSource({
         body: {
           amount: totalPrice * 100,
           type: 'gcash',
-          currency: 'PHP',
           order_id: orderData.id,
         },
       })
@@ -61,6 +60,8 @@ const GCashScreen = ({ navigation, route }) => {
           link: response.data.redirect.checkout_url,
           amount: totalPrice,
           title: 'GCash',
+          sourceId: response.data.id,
+          type: 'gcash',
         },
       })
     } catch (error) {

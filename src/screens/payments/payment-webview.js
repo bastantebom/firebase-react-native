@@ -10,7 +10,6 @@ import {
 import { WebView } from 'react-native-webview'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-import { UserContext } from '@/context/UserContext'
 import Api from '@/services/Api'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
@@ -31,8 +30,7 @@ import firestore from '@react-native-firebase/firestore'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'PaymentWebView'>} param0 */
 const PaymentWebView = ({ navigation, route }) => {
-  const { user } = useContext(UserContext)
-  const { orderId, link: uri, amount, title } = route.params
+  const { orderId, link: uri, amount, title, sourceId } = route.params
 
   const handleWebViewStartLoad = event => {
     if (!!event.url.match(/(app\.servbees\.com|dev\-servbees\-web\-app)/)) {
@@ -46,48 +44,33 @@ const PaymentWebView = ({ navigation, route }) => {
 
   const onSuccess = async ({ status }) => {
     try {
-      if (status === 'failed') {
-        await Api.updateOrder({
-          uid: user.uid,
-          id: orderId,
-          body: { status: 'payment failed' },
+      const orderQuery = await firestore()
+        .collection('orders')
+        .doc(orderId)
+        .get()
+
+      const orderData = orderQuery.data()
+      const getUserResponse = await Api.getUser({ uid: orderData.seller_id })
+
+      if (status === 'failed')
+        return navigation.navigate('payment-status', {
+          status: 'failed',
         })
 
-        await Api.updateOrder({
-          uid: user.uid,
-          id: orderId,
-          body: { status: 'confirmed' },
-        })
-      } else {
-        await Api.updateOrder({
-          uid: user.uid,
-          id: orderId,
-          body: {
-            status: title !== 'Paypal' ? 'paid' : 'payment processing',
-          },
-        })
-      }
+      let query = firestore()
+        .collection('payments')
+        .where('order_id', '==', orderId)
 
-      const [paymentQuery, orderSnapshot] = await Promise.all([
-        firestore()
-          .collection('payments')
-          .where('order_id', '==', orderId)
-          .orderBy('date', 'desc')
-          .get(),
-        firestore().collection('orders').doc(orderId).get(),
-      ])
-      const paymentQuerySnapshot = paymentQuery.docs.map(doc => doc.data())
-      const paymentData = paymentQuerySnapshot[0] || {}
-      const paymentId = paymentData.id || null
-      const orderData = orderSnapshot.data()
-
-      const response = await Api.getUser({ uid: orderData.seller_id })
+      if (sourceId) query = query.where('src_id', '==', sourceId)
+      const paymentRef = await query.get()
+      const paymentId = paymentRef.docs[0]?.id
 
       navigation.navigate('payment-status', {
         status,
         amount,
-        paymentId,
-        sellerName: response.data.display_name || response.data.full_name,
+        paymentId: paymentId,
+        sellerName:
+          getUserResponse.data.display_name || getUserResponse.data.full_name,
       })
     } catch (error) {
       console.log(error)

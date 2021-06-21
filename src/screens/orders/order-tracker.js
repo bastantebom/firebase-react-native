@@ -43,12 +43,9 @@ import PostCard from '../Post/components/post-card'
 import utilStyles from '@/globals/util-styles'
 import { format } from 'date-fns'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import base64 from 'react-native-base64'
-import axios from 'axios'
 import Toast from '@/components/toast'
 import Button from '@/components/Button'
 import { Images } from '@/assets/images'
-import { PAYMONGO_SECRET_KEY } from '@env'
 
 if (
   Platform.OS === 'android' &&
@@ -56,8 +53,6 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
-
-const paymongoSK = base64.encode(PAYMONGO_SECRET_KEY)
 
 /**
  * @typedef {object} OrderTrackerProps
@@ -95,30 +90,55 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     handleRefresh(false)
+    const subscribers = []
 
-    return firestore()
-      .doc(`orders/${orderID}`)
-      .onSnapshot(async snapshot => {
-        if (!snapshot?.data() || !user) return
-        Platform.OS === 'android' && setIsLoading(true)
-        try {
-          const data = snapshot.data()
-          setOrderData(orderData => ({ ...orderData, ...data }))
+    subscribers.push(
+      firestore()
+        .doc(`orders/${orderID}`)
+        .onSnapshot(async snapshot => {
+          if (!snapshot?.data() || !user) return
+          Platform.OS === 'android' && setIsLoading(true)
+          try {
+            const data = snapshot.data()
+            setOrderData(orderData => ({ ...orderData, ...data }))
 
-          if (orderData.status !== data.status && post.type) {
-            const statusData = getStatusData({
-              userType: data.seller_id === user.uid ? 'seller' : 'buyer',
-              postType: post.type,
-              orderData: data,
+            if (orderData.status !== data.status && post.type) {
+              const statusData = getStatusData({
+                userType: data.seller_id === user.uid ? 'seller' : 'buyer',
+                postType: post.type,
+                orderData: data,
+              })
+              setOrderStatus(statusData)
+            }
+          } catch (error) {
+            console.log(error)
+            Toast.show({
+              label: 'Oops! Something went wrong.',
+              type: 'error',
+              dismissible: true,
+              timeout: 5000,
+              screenId: 'order-tracker',
             })
-            setOrderStatus(statusData)
           }
-        } catch (error) {
-          console.log(error)
-          Alert.alert('Error', 'Oops, something went wrong.')
-        }
-        Platform.OS === 'android' && setIsLoading(false)
-      })
+          Platform.OS === 'android' && setIsLoading(false)
+        })
+    )
+
+    subscribers.push(
+      firestore()
+        .collection('payments')
+        .where('order_id', '==', orderID)
+        .onSnapshot(snapshot => {
+          const data = snapshot.docs[0]?.data()
+          setPaymentData(data)
+        })
+    )
+
+    return () => {
+      for (const subscriber of subscribers) {
+        subscriber()
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -246,70 +266,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         })()
       )
 
-      promises.push(
-        (async () => {
-          const query = firestore()
-            .collection('payments')
-            .where('order_id', '==', orderID)
-            .where('type', '==', 'card')
-            .where('status', '==', 'processing')
-
-          const data = (await query.get()).docs[0]?.data()
-          if (!data) return
-          const { intent_id } = data
-
-          const { data: intentData } = await axios({
-            method: 'GET',
-            url: `https://api.paymongo.com/v1/payment_intents/${intent_id}`,
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Basic ${paymongoSK}`,
-            },
-          })
-          const { status } = intentData.data.attributes
-
-          const paymentRef = (await query.get()).docs[0].ref
-          if (status === 'succeeded') {
-            await Promise.all([
-              paymentRef.update({ status: 'paid' }),
-              Api.updateOrder({
-                uid: user.uid,
-                id: orderID,
-                body: { status: 'paid' },
-              }),
-            ])
-          } else if (status !== 'processing') {
-            await Promise.all([
-              paymentRef.update({ status: 'failed' }),
-              Api.updateOrder({
-                uid: user.uid,
-                id: orderID,
-                body: { status: 'payment failed' },
-              }),
-            ])
-            await Api.updateOrder({
-              uid: user.uid,
-              id: orderID,
-              body: { status: 'confirmed' },
-            })
-          }
-        })()
-      )
-
-      promises.push(
-        (async () => {
-          const query = firestore()
-            .collection('payments')
-            .where('order_id', '==', orderID)
-            .where('status', '==', 'paid')
-          const snapshot = await query.get()
-          const data = snapshot.docs.length
-            ? snapshot.docs[0].data()
-            : undefined
-
-          setPaymentData(data)
-        })()
-      )
       await Promise.all(promises)
     } catch (error) {
       console.log(error)
@@ -1157,9 +1113,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     const { icon, label } = paymentMethods[orderData.payment_method] || {}
 
     const date =
-      paymentData?.date &&
+      paymentData?.date_paid &&
       format(
-        new Date(paymentData.date._seconds * 1000),
+        new Date(paymentData.date_paid._seconds * 1000),
         `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
       )
 
@@ -1185,28 +1141,38 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           </View>
           {paymentData && (
             <>
-              <Text style={[typography.body2, { marginTop: normalize(16) }]}>
-                Payment Reference
-              </Text>
-              <Text
-                style={[
-                  typography.body2,
-                  typography.medium,
-                  { marginTop: normalize(4) },
-                ]}>
-                {paymentData.payment_id}
-              </Text>
-              <Text style={[typography.body2, { marginTop: normalize(16) }]}>
-                Paid on
-              </Text>
-              <Text
-                style={[
-                  typography.body2,
-                  typography.medium,
-                  { marginTop: normalize(4) },
-                ]}>
-                {date}
-              </Text>
+              {!!paymentData?.payment_id && (
+                <>
+                  <Text
+                    style={[typography.body2, { marginTop: normalize(16) }]}>
+                    Payment Reference
+                  </Text>
+                  <Text
+                    style={[
+                      typography.body2,
+                      typography.medium,
+                      { marginTop: normalize(4) },
+                    ]}>
+                    {paymentData.payment_id}
+                  </Text>
+                </>
+              )}
+              {!!date && (
+                <>
+                  <Text
+                    style={[typography.body2, { marginTop: normalize(16) }]}>
+                    Paid on
+                  </Text>
+                  <Text
+                    style={[
+                      typography.body2,
+                      typography.medium,
+                      { marginTop: normalize(4) },
+                    ]}>
+                    {date}
+                  </Text>
+                </>
+              )}
             </>
           )}
         </View>
@@ -1217,7 +1183,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const renderSummarySection = () => {
     if (!post) return
 
-    const fee = paymentData ? paymentData.fee : 0
+    const fee = paymentData?.fee || 0
     const total =
       userType === 'seller' && orderData.payment_method !== 'cash'
         ? totalPrice - fee
@@ -1363,7 +1329,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       />
                     </TouchableOpacity>
                   </View>
-                  {!!paymentData ? (
+                  {!!paymentData?.payment_id ? (
                     <Text style={[typography.body2]}>
                       - ₱
                       {formatNumber(fee, {
@@ -1610,7 +1576,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             {post.type === 'sell' &&
               ((orderData.status === 'confirmed' &&
                 orderData.payment_method === 'cash') ||
-                (orderData.status === 'paid' && !!paymentData?.payment_id)) && (
+                (orderData.status === 'paid' &&
+                  paymentData?.status === 'paid')) && (
                 <View style={{ padding: normalize(16) }}>
                   <>
                     {orderData.shipping_method === 'delivery' &&
@@ -1652,7 +1619,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     {(orderData.status === 'confirmed' &&
                       orderData.payment_method === 'cash') ||
                     (orderData.status === 'paid' &&
-                      !!paymentData?.payment_id &&
+                      paymentData?.status === 'paid' &&
                       orderData.payment_method !== 'cash') ? (
                       <Button
                         type="primary"
@@ -1714,7 +1681,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
             )}
 
             {post.type === 'need' &&
-              ((orderData.status === 'paid' && !!paymentData?.payment_id) ||
+              ((orderData.status === 'paid' &&
+                paymentData?.status === 'paid') ||
                 (orderData.payment_method === 'cash' &&
                   orderData.status === 'confirmed')) && (
                 <View style={{ padding: normalize(16) }}>
@@ -1735,13 +1703,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (userType !== 'buyer' || (userType === 'buyer' && post.type === 'need'))
       return
 
-    if (!paymentData?.date || orderData.payment_method === 'cash') return
+    if (!paymentData?.date_paid || orderData.payment_method === 'cash') return
 
     const handleOnEmailUsPress = () => {
       Linking.openURL('mailto:help@servbees.com')
     }
 
-    const rawSeconds = paymentData?.date._seconds + 345600
+    const rawSeconds = paymentData?.date_paid._seconds + 345600
     const now = new Date()
     const currentSeconds = Math.round(now.getTime() / 1000)
 
@@ -1810,7 +1778,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
-        ref={ref => Toast.setRef(ref, 'orders')}
+        ref={ref => Toast.setRef(ref, 'order-tracker')}
       />
       <View style={styles.wrapper}>
         <TransitionIndicator loading={isLoading} />

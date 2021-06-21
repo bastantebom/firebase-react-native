@@ -44,11 +44,10 @@ const GrabPayScreen = ({ navigation, route }) => {
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      const response = await Api.createSourcePayment({
+      const response = await Api.createPaymentSource({
         body: {
           amount: totalPrice * 100,
           type: 'grab_pay',
-          currency: 'PHP',
           order_id: orderData.id,
         },
       })
@@ -61,6 +60,8 @@ const GrabPayScreen = ({ navigation, route }) => {
           link: response.data.redirect.checkout_url,
           amount: totalPrice,
           title: 'GrabPay',
+          sourceId: response.data.id,
+          type: 'grabpay',
         },
       })
     } catch (error) {

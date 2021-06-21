@@ -11,7 +11,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import firestore from '@react-native-firebase/firestore'
 
 import { Images } from '@/assets/images'
-import { ScreenHeaderTitle } from '@/components'
 import Button from '@/components/Button'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
@@ -36,14 +35,14 @@ import { iconSize } from '@/globals/Utils'
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'PaymentStatus'>} param0 */
 const PaymentStatusScreen = ({ navigation, route }) => {
   const { status, amount, paymentId, sellerName } = route.params
-  const [paymentData, setPaymentData] = useState()
+  const [paymentData, setPaymentData] = useState({ status })
 
   const statusInfo = {
-    success: {
+    paid: {
       title: 'Payment Successful',
       description: (
         <Text>
-          Your have paid ₱
+          You have paid ₱
           <Text style={typography.medium}>
             {formatNumber(amount, {
               separator: '.',
@@ -54,13 +53,33 @@ const PaymentStatusScreen = ({ navigation, route }) => {
           to <Text style={typography.medium}>{sellerName}</Text>
         </Text>
       ),
-      label: 'Back',
+      buttonLabel: 'Back',
+      image: <Images.PaymentSuccess />,
+    },
+    processing: {
+      title: 'Payment Processing',
+      description: (
+        <Text>
+          We are currently processing your payment of ₱
+          <Text style={typography.medium}>
+            {formatNumber(amount, {
+              separator: '.',
+              precision: 2,
+              delimiter: ',',
+            })}
+          </Text>{' '}
+          to <Text style={typography.medium}>{sellerName}</Text>. We’ll let you
+          know once your payment has been processed or you can track the status
+          of your order by clicking the button below.
+        </Text>
+      ),
+      buttonLabel: 'Track your order',
       image: <Images.PaymentSuccess />,
     },
     failed: {
       title: 'Payment Unsuccessful',
       description: 'The transaction failed due to unspecified reasons.',
-      label: 'Try again',
+      buttonLabel: 'Try again',
       image: <Images.PaymentFailed />,
     },
   }
@@ -80,7 +99,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
   }
 
   const date = format(
-    new Date(paymentData ? paymentData.date._seconds * 1000 : Date.now()),
+    new Date(paymentData?.date ? paymentData.date._seconds * 1000 : Date.now()),
     `MMM${new Date().getMonth() === 4 ? '' : '.'} dd, yyyy hh:mmaa`
   )
 
@@ -96,7 +115,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
     return firestore()
       .doc(`payments/${paymentId}`)
       .onSnapshot(snapshot => {
-        setPaymentData(snapshot.data() || {})
+        setPaymentData(snapshot.data() || { status })
       })
   }, [])
 
@@ -114,7 +133,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.contentWrapper}>
           <View style={styles.content}>
-            {statusInfo[status].image}
+            {statusInfo[paymentData.status]?.image}
             <View style={styles.infoWrapper}>
               <Text
                 style={[
@@ -122,7 +141,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
                   typography.medium,
                   typography.textCenter,
                 ]}>
-                {statusInfo[status].title}
+                {statusInfo[paymentData.status]?.title}
               </Text>
               <Text
                 style={[
@@ -130,10 +149,10 @@ const PaymentStatusScreen = ({ navigation, route }) => {
                   typography.textCenter,
                   { marginTop: normalize(8) },
                 ]}>
-                {statusInfo[status].description}
+                {statusInfo[paymentData.status]?.description}
               </Text>
 
-              {status === 'success' && (
+              {paymentData.status === 'paid' && (
                 <>
                   <Text
                     style={[
@@ -181,7 +200,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
           <View style={styles.buttonWrapper}>
             <Button
               type="primary"
-              label={statusInfo[status].label}
+              label={statusInfo[paymentData.status]?.buttonLabel}
               onPress={navigation.goBack}
             />
           </View>
