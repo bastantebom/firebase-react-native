@@ -25,7 +25,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import { formatNumber } from 'react-native-currency-input'
-import firestore from '@react-native-firebase/firestore'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { PAYMONGO_SECRET_KEY } from '@env'
 

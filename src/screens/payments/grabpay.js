@@ -57,7 +57,7 @@ const GrabPayScreen = ({ navigation, route }) => {
         screen: 'payment-webview',
         params: {
           orderId: orderData.id,
-          link: response.data.redirect.checkout_url,
+          link: response.data.attributes.redirect.checkout_url,
           amount: totalPrice,
           title: 'GrabPay',
           sourceId: response.data.id,
