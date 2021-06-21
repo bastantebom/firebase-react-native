@@ -215,7 +215,7 @@ const CreditCardScreen = ({ navigation, route }) => {
       } else if (response.data.attributes.status === 'awaiting_next_action') {
         navigation.navigate('card-authentication', {
           title: 'One-Time PIN',
-          uri: response.data.data.attributes.next_action.redirect.url,
+          uri: response.data.attributes.next_action.redirect.url,
           onComplete: () => {
             navigation.goBack()
             navigation.navigate('payment-status', {

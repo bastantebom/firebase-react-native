@@ -138,8 +138,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       firestore()
         .collection('payments')
         .where('order_id', '==', orderID)
+        .orderBy('date_created', 'desc')
         .onSnapshot(snapshot => {
-          const data = snapshot.docs[0]?.data()
+          const data = snapshot?.docs?.[0]?.data()
+          if (!data) return
           setPaymentData(data)
         })
     )
