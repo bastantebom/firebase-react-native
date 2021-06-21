@@ -136,7 +136,7 @@ const ResetPassword = ({ navigation }) => {
             style={{ paddingVertical: 8 }}
             onPress={toggleUseEmail}>
             <Text style={{ color: Colors.contentOcean }}>
-              {useEmail === 'email'
+              {!useEmail
                 ? 'Use email address instead'
                 : 'Use mobile number instead'}
             </Text>
