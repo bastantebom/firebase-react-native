@@ -114,8 +114,8 @@ export const UserContextProvider = ({ children }) => {
       return firestore()
         .collection('counts')
         .doc(user.uid)
-        .onSnapshot(doc => {
-          setCounts(doc.data() || {})
+        .onSnapshot(snap => {
+          setCounts(snap?.data() || {})
         })
   }, [user])
 
