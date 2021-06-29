@@ -6,6 +6,7 @@
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
     "dev": "cd firebase_env && ./dev-env.sh && cd ../android && ./gradlew clean",
+    "staging": "cd firebase_env && ./staging-env.sh && cd ../android && ./gradlew clean",
     "prod": "cd firebase_env && ./prod-env.sh && cd ../android && ./gradlew clean",
     "start": "react-native start",
     "test": "jest",
@@ -13,7 +14,8 @@
     "debug": "yarn android -- --variant=debug",
     "release": "yarn android -- --variant=release",
     "generate:services": "node ./src/scripts/generate-services",
-    "generate:services:prod": "NODE_ENV=production node ./src/scripts/generate-services",
+    "generate:services:staging": "env NODE_ENV=staging node ./src/scripts/generate-services",
+    "generate:services:prod": "env NODE_ENV=production node ./src/scripts/generate-services",
     "postinstall": "yarn generate:services && npx react-native-fix-image",
     "build:android": "APP_ENV=production node ./src/scripts/build-apk"
   },

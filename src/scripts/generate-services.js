@@ -10,6 +10,8 @@ const baseURL =
       case 'prod':
       case 'production':
         return 'https://api.servbees.com'
+      case 'staging':
+        return 'https://servbees-api-staging.onrender.com'
       case 'local':
         return 'http://localhost:5000'
       case 'dev':

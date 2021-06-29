@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "746436195177",
+    "project_id": "servbees-staging",
+    "storage_bucket": "servbees-staging.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746436195177:android:ff7bad43be2972186503f8",
+        "android_client_info": {
+          "package_name": "com.servbees"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746436195177-q0633aa886fhqo9i5rcqmdu6t854u7dj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWkWAO4AfghemkATY5NWD0E1Wc_-_C0ro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746436195177-q0633aa886fhqo9i5rcqmdu6t854u7dj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
