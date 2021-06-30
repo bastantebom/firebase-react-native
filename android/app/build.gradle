@@ -80,6 +80,8 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
+    resourcesDirRelease: "src/release/res",
+    resourcesDirStaging: "src/staging/res",
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -155,12 +157,16 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-                storeFile file(MYAPP_UPLOAD_STORE_FILE)
-                storePassword MYAPP_UPLOAD_STORE_PASSWORD
-                keyAlias MYAPP_UPLOAD_KEY_ALIAS
-                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-            }
+            storeFile file(RELEASE_KEYSTORE_FILE)
+            storePassword RELEASE_KEYSTORE_PASSWORD
+            keyAlias RELEASE_KEYSTORE_FILE_ALIAS
+            keyPassword RELEASE_KEYSTORE_PASSWORD
+        }
+        staging {
+            storeFile file(STAGING_KEYSTORE_FILE)
+            storePassword STAGING_KEYSTORE_PASSWORD
+            keyAlias STAGING_KEYSTORE_FILE_ALIAS
+            keyPassword STAGING_KEYSTORE_PASSWORD
         }
     }
     buildTypes {
@@ -172,6 +178,14 @@ android {
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
             //signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        staging {
+            initWith release
+            matchingFallbacks = ['release']
+
+            signingConfig signingConfigs.staging
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -231,6 +245,7 @@ dependencies {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
+        stagingImplementation files(hermesPath + "hermes-staging.aar")
     } else {
         implementation jscFlavor
     }

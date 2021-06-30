@@ -16,7 +16,7 @@
     "generate:services": "node ./src/scripts/generate-services",
     "generate:services:staging": "env NODE_ENV=staging node ./src/scripts/generate-services",
     "generate:services:prod": "env NODE_ENV=production node ./src/scripts/generate-services",
-    "postinstall": "yarn generate:services && npx react-native-fix-image",
+    "postinstall": "test -n \"$IGNORE_SCRIPTS\" || (yarn generate:services && npx react-native-fix-image)",
     "build:android": "APP_ENV=production node ./src/scripts/build-apk"
   },
   "dependencies": {

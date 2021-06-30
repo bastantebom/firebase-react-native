@@ -1,7 +1,12 @@
 name: Build apk for production
 
-on: [push, pull_request]
-  - branches: [ master ]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -20,20 +25,56 @@ jobs:
         with:
           node-version: 12.x
 
+      - name: Decrypt Android keys 
+        run: sh ./.github/scripts/decrypt_android_release_keys.sh 
+        env: 
+          RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+          RELEASE_KEYSTORE_PASSPHRASE: ${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}
+
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
       - name: Create env file
         run: |
           touch .env
           echo PAYMONGO_SECRET_KEY=${{ secrets.PAYMONGO_SECRET_KEY_LIVE }} >> .env
           echo API_KEY=${{ secrets.API_BASE_URL_PROD }} >> .env
           echo GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID_PROD }} >> .env
+          echo GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }} >> .env
+          echo FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }} >> .env
           cat .env
 
-      - name: build release 
-        run: ./gradlew assembleRelease
-        run: npm ci
-        run: npm run prod
-        run: npm run generate:services:prod
-        run: ./gradlew assembleRelease -Dorg.gradle.logging.level=info
+      - name: Run yarn clean install
+        run: IGNORE_SCRIPTS=1 yarn --frozen-lockfile
+
+      - name: Generate services
+        run: yarn run generate:services:prod
+
+      - name: Fix images
+        run: npx react-native-fix-image
+
+      - name: Run gradle clean
+        working-directory: android
+        run: ./gradlew clean --no-daemon
+
+      - run: mkdir -p ./android/app/src/staging/assets
+      - name: Compile android bundle
+        run: APP_ENV=production npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/release/assets/index.android.bundle
+
+      - name: Build android apk
+        run: APP_ENV=production ./gradlew :app:assembleRelease --no-daemon
         working-directory: android
         
       - name: Upload artifact

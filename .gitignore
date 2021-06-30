@@ -62,4 +62,4 @@ buck-out/
 
 src/services/Api.js
 .env*
-android/app/src/main/assets/index.android.bundle
+**/*/index.android.bundle

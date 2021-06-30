@@ -49,7 +49,7 @@ const baseURL =
         ),
       { ...config, parser: 'babel' }
     )
-    code = `import { checkToken } from '@/context/UserContext'\nimport AsyncStorage from '@react-native-community/async-storage'\n${code}`
+    code = `import { checkToken } from '../context/UserContext'\nimport AsyncStorage from '@react-native-community/async-storage'\n${code}`
     fs.writeFileSync('./src/services/Api.js', code)
   } catch (error) {
     console.error(error)
