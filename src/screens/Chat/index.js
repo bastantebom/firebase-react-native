@@ -305,9 +305,12 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
     if (user?.uid === userInfo?.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: user?.uid },
+      navigation.push('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'profile',
+          params: { uid: user?.uid },
+        },
       })
     }
   }

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Icons } from '@/assets/images/icons'
 import { AppText, TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -21,13 +21,13 @@ import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import ProfileInformationScreen from './profile-information'
 import AddAddressScreen from './add-address'
-import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import EmailVerificationScreen from './email-verification'
 import PhoneVerificationScreen from './phone-verification'
 import VerifyCodeScreen from './verify-code'
 import IdVerificationScreen from './id-verification'
 import MapLocationScreen from './map-location'
+import firestore from '@react-native-firebase/firestore'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Verification'>} param0 */
 const VerificationScreen = ({ navigation }) => {
@@ -48,7 +48,7 @@ const VerificationScreen = ({ navigation }) => {
       },
     },
     {
-      key: 'phone_number',
+      key: 'phone',
       label: 'Add and verify mobile number',
       completedLabel: 'Mobile number verified',
       icon: <Icons.VerifyNumber />,
@@ -78,18 +78,6 @@ const VerificationScreen = ({ navigation }) => {
       },
     },
   ])
-
-  const getStatus = async () => {
-    setIsLoading(true)
-    const response = await Api.getUserStatus({ uid: user.uid })
-    setVerifications(
-      verifications.map(verification => ({
-        ...verification,
-        status: response.status.verified[verification.key] || 'pending',
-      }))
-    )
-    setIsLoading(false)
-  }
 
   const renderItem = item => {
     return (
@@ -141,10 +129,19 @@ const VerificationScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    navigation.addListener('focus', getStatus)
-    return () => {
-      navigation.removeListener('focus', getStatus)
-    }
+    return firestore()
+      .doc(`account_verifications/${user.uid}`)
+      .onSnapshot(snap => {
+        const data = snap?.data()
+        if (!data) return
+
+        setVerifications(
+          verifications.map(verification => ({
+            ...verification,
+            status: data[verification.key]?.status || 'pending',
+          }))
+        )
+      })
   }, [])
 
   return (

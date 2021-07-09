@@ -98,7 +98,12 @@ const SearchBarWithFilter = ({
 
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.navigate('liked-posts')}>
+              onPress={() =>
+                navigation.navigate('NBTScreen', {
+                  screen: 'profile',
+                  params: { screen: 'liked-posts' },
+                })
+              }>
               <View style={styles.circleButton}>
                 <Like
                   style={{ color: Colors.icon }}

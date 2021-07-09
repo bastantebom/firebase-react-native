@@ -57,6 +57,7 @@ import DeliveryVanBlue from './delivery-van-blue.svg'
 
 // Posts
 import Verified from '@/assets/images/icons/verified.svg'
+import VerifiedPending from './verified-pending.svg'
 import VerifiedGreen from '@/assets/images/icons/check-active.svg'
 import StarRating from '@/assets/images/icons/star-rating.svg'
 import TransportationBox from '@/assets/images/icons/transportation-box.svg'
@@ -77,9 +78,7 @@ import ServbeesAltActive from '@/assets/images/icons/servbees-alt-active.svg'
 
 import SendMessage from '@/assets/images/icons/send-message.svg'
 
-import UserAlt from '@/assets/images/icons/user-alt.svg'
 import UserAltActive from '@/assets/images/icons/user-alt-active.svg'
-import Users from '@/assets/images/icons/followers.svg'
 
 import FilterNeeds from './filter-needs.svg'
 import FilterSeller from './filter-seller.svg'
@@ -137,16 +136,7 @@ import ProfileBlockRed from './profile-block-red.svg'
 import ProfileMute from './profile-mute.svg'
 import ProfileReport from './profile-report.svg'
 
-import MenuAddFriend from './MenuAddFriend.svg'
-import MenuArchive from './MenuArchive.svg'
-import MenuBell from './MenuBell.svg'
-import MenuChat from './MenuChat.svg'
-import MenuEdit from './edit-profile.svg'
-import MenuInfo from './MenuInfo.svg'
-import MenuKey from './MenuKey.svg'
-import MenuLiked from './MenuLiked.svg'
-import MenuLogOut from './MenuLogOut.svg'
-import MenuTelephone from './MenuTelephone.svg'
+import AddFriend from './add-friend.svg'
 
 import QRLink from './qr-link.svg'
 import QRDownload from './qr-download.svg'
@@ -404,6 +394,19 @@ import Report from './report.svg'
 import LikeActive from './like-active.svg'
 import ErrorInput from './error-input.svg'
 import OrderDetails from './order-details.svg'
+import QR from './qr.svg'
+import Menu from './menu.svg'
+import Bee2 from './bee2.svg'
+import PencilPaper from './pencil-paper.svg'
+import Archive from './archive'
+import Key from './key.svg'
+import User from './user.svg'
+import UserAlt from './user-alt.svg'
+import MenuBell from './menu-bell.svg'
+import MenuInfo from './menu-info.svg'
+import DoorOut from './door-out.svg'
+import Users from './users.svg'
+import CirclePending from './circle-pending.svg'
 
 export {
   Trash,
@@ -419,7 +422,6 @@ export {
   AngleDown,
   PostAdd,
   Public,
-  ContactTelephone,
   ContactEmail,
   ContactLocation,
   CircleTickWhite,
@@ -444,16 +446,6 @@ export {
   PostNeed,
   PostService,
   PostSell,
-  MenuAddFriend,
-  MenuTelephone,
-  MenuLogOut,
-  MenuLiked,
-  MenuArchive,
-  MenuBell,
-  MenuChat,
-  MenuEdit,
-  MenuInfo,
-  MenuKey,
   ProfileBlockRed,
   ProfileReport,
   ProfileMute,
@@ -539,7 +531,6 @@ export {
   StarRating,
   CheckboxCheck,
   RadioDot,
-  Users,
   Card,
   Mobile,
   Id,
@@ -821,4 +812,24 @@ export const Icons = {
   WelcomeNotif,
   ErrorInput,
   OrderDetails,
+  QR,
+  Menu,
+  Temperature,
+  Bee2,
+  PencilPaper,
+  Archive,
+  LikedPostMenu,
+  HidePost,
+  AddFriend,
+  Faq,
+  Key,
+  User,
+  UserAlt,
+  Bell,
+  MenuBell,
+  MenuInfo,
+  DoorOut,
+  Users,
+  VerifiedPending,
+  CirclePending,
 }

@@ -7,6 +7,9 @@ const typography = StyleSheet.create({
   medium: {
     fontFamily: 'RoundedMplus1c-Medium',
   },
+  regular: {
+    fontFamily: 'RoundedMplus1c-Regular',
+  },
   light: {
     fontFamily: 'RoundedMplus1c-Light',
   },
@@ -140,6 +143,9 @@ const typography = StyleSheet.create({
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(12),
     letterSpacing: normalize(0.8),
+  },
+  uppercase: {
+    textTransform: 'uppercase',
   },
 })
 

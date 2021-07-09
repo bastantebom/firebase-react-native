@@ -8,8 +8,9 @@ import utilStyles from '@/globals/util-styles'
 import { iconSize, normalize, timePassedShort } from '@/globals/Utils'
 import { getDistance } from 'geolib'
 import React, { useContext } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { formatNumber } from 'react-native-currency-input'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 /**
  * @param {object} props
@@ -112,20 +113,24 @@ const PostCard = React.memo(
             </View>
           </View>
           {showLikeButton && (
-            <TouchableOpacity
-              disabled={!onLikePress}
-              style={styles.likeButton}
-              activeOpacity={0.7}
-              onPress={() => onLikePress(post)}>
-              {!post.likes?.includes?.(user?.uid) ? (
-                <Icons.Like style={{ color: Colors.icon }} {...iconSize(24)} />
-              ) : (
-                <Icons.LikeActive
-                  style={{ color: Colors.icon }}
-                  {...iconSize(24)}
-                />
-              )}
-            </TouchableOpacity>
+            <View style={styles.likeButton}>
+              <TouchableOpacity
+                disabled={!onLikePress}
+                activeOpacity={0.7}
+                onPress={() => onLikePress(post)}>
+                {!post.likes?.includes?.(user?.uid) ? (
+                  <Icons.Like
+                    style={{ color: Colors.icon }}
+                    {...iconSize(24)}
+                  />
+                ) : (
+                  <Icons.LikeActive
+                    style={{ color: Colors.icon }}
+                    {...iconSize(24)}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
           )}
         </View>
       )
@@ -225,7 +230,7 @@ const PostCard = React.memo(
       return (
         <TouchableOpacity
           disabled={!onPostPress}
-          onPress={() => onPostPress?.()}
+          onPress={() => onPostPress?.(post)}
           activeOpacity={0.7}
           style={styles.postContent}>
           <View style={[styles.thumbnailContainer, thumbnailStyle]}>
@@ -324,6 +329,7 @@ const styles = StyleSheet.create({
     marginLeft: normalize(4),
   },
   postHeader: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
   },

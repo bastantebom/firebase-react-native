@@ -102,9 +102,12 @@ const ArchivedPostsScreen = ({ navigation, route }) => {
     if (user?.uid === _user.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: _user.uid },
+      navigation.push('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'profile',
+          params: { uid: _user.uid },
+        },
       })
     }
   }

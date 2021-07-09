@@ -100,9 +100,12 @@ const NewsFeed = ({ props }) => {
     if (user?.uid === post?.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: post?.uid },
+      navigation.push('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'profile',
+          params: { uid: post?.uid },
+        },
       })
     }
   }

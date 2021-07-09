@@ -523,11 +523,28 @@ const ChatHouse = () => {
 
   const renderDetails = item => {
     if (item?.post?.uid === userInfo.uid) {
-      if (!!item?.chat_counts?.new_messages) {
+      if (
+        !!item?.chat_counts?.new_messages &&
+        !!item?.chat_counts?.post_chats
+      ) {
         return (
           <>
             <ChatBlue style={styles.chatIcon} />
             <Text style={[typography.body2, { color: '#3781FC' }]}>
+              {item?.chat_counts?.new_messages} New in{' '}
+              {item?.chat_counts?.post_chats}{' '}
+              {pluralize('chat', item?.chat_counts?.post_chats)}
+            </Text>
+          </>
+        )
+      } else if (
+        !item?.chat_counts?.new_messages &&
+        !!item?.chat_counts?.post_chats
+      ) {
+        return (
+          <>
+            <ChatEmpty style={styles.chatIcon} />
+            <Text style={[typography.body2, { color: '#515057' }]}>
               {item?.chat_counts?.new_messages} New in{' '}
               {item?.chat_counts?.post_chats}{' '}
               {pluralize('chat', item?.chat_counts?.post_chats)}

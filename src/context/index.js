@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { flatten } from 'lodash'
 
 export const Context = createContext()
 

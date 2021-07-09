@@ -85,17 +85,6 @@ const getFollowing = async uid => {
   })
 }
 
-const updateTemp = async payload => {
-  return await BaseAPI({
-    url: `/users/${payload.uid}/temperature`,
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: payload,
-  })
-}
-
 const getLikedPost = async payload => {
   return await BaseAPI({
     url: `/users/${payload.uid}/posts/liked?limit=${payload.limit}&page=${payload.page}`,
@@ -135,7 +124,6 @@ const ProfileInfoService = {
   follow,
   getFollowers,
   getFollowing,
-  updateTemp,
   getLikedPost,
   getArchivedPost,
   getStatus,

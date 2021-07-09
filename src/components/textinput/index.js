@@ -69,7 +69,13 @@ const TextField = ({
         }),
       ]).start()
     } else {
-      labelPosition.setValue(toValue)
+      Animated.parallel([
+        Animated.timing(labelPosition, {
+          toValue,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ]).start()
     }
     setIsFocused(true)
   }
@@ -91,8 +97,6 @@ const TextField = ({
           useNativeDriver: true,
         }),
       ]).start()
-    } else {
-      labelPosition.setValue(toValue)
     }
     setIsFocused(false)
   }
@@ -165,6 +169,7 @@ const TextField = ({
     ),
     color: isFocused ? Colors.contentOcean : Colors.contentPlaceholder,
   }
+
   const defaultInputStyle = !label?.length
     ? { marginTop: 0, height: '100%' }
     : {}

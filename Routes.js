@@ -11,25 +11,10 @@ import SplashScreenComponent from './SplashScreen'
 import Bell from '@/assets/images/icons/bell.svg'
 import BellActive from '@/assets/images/icons/bell-active.svg'
 
-//screens
 import { Onboarding } from '@/screens/Onboarding'
 import DashboardStack from '@/screens/Dashboard'
-import LikedPostsScreen from '@/screens/Dashboard/liked-posts-screen'
 import VerificationStack from '@/screens/Verification'
-import ProfileScreen from '@/screens/Profile/profile'
-import OwnMenuScreen from '@/components/TransparentHeader/components/OwnMenu'
-import EditProfileScreen from '@/screens/Profile/edit-profile'
-import PayoutMethodStack from '@/screens/Profile/payout-method'
-import InviteFriendsScreen from '@/screens/Profile/invite-friends'
-import UpdateTemperature from '@/screens/Profile/update-temperature'
-import TemperatureHistory from '@/screens/Profile/temperature-history'
-import TemperatureAbout from '@/screens/Profile/temperature-about'
-import BlockUser from '@/screens/Profile/block-user'
 
-import { GuestProfile } from '@/screens/Profile/components/GuestProfile'
-import ChangePasswordScreen from '@/screens/Profile/change-password'
-import ReportScreen from '@/screens/Profile/report'
-import { Hives } from '@/screens/Hive'
 import { Activity } from '@/screens/Activity'
 import ChatScreen from '@/screens/Chat'
 import ChatGuestScreen from '@/screens/Chat/guest-screen'
@@ -42,7 +27,6 @@ import CreatePostPopup from '@/screens/Post/components/create-post-popup'
 
 import PostStack from '@/screens/Post'
 
-import ProfileInfoModal from '@/components/ProfileInfo/ProfileInfoModal'
 import { Past } from '@/screens/Activity'
 import { Notifications } from '@/screens/Activity'
 import { Badge } from '@/screens/Activity'
@@ -69,13 +53,12 @@ import { UserContext } from '@/context/UserContext'
 import {
   ServbeesAlt,
   ServbeesAltActive,
-  UserAlt,
   UserAltActive,
   NotificationDot,
   Icons,
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
-import ContactUsScreen from '@/screens/Profile/components/contact-us'
+import ProfileStack from '@/screens/Profile'
 
 const defaultScreenOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -87,112 +70,39 @@ export function navigate(name, params) {
   navigationRef.current?.navigate(name, params)
 }
 
-const HiveStack = createStackNavigator()
-const ActivityStack = createStackNavigator()
-const ProfileStack = createStackNavigator()
+export function dispatch(...args) {
+  navigationRef.current?.dispatch(...args)
+}
+
 const Tab = createBottomTabNavigator()
 const WelcomeStack = createStackNavigator()
 const BadgeStack = createStackNavigator()
 const VerifiedStack = createStackNavigator()
 const NotVerifiedStack = createStackNavigator()
-const ChatStack = createStackNavigator()
 
 const Stack = createStackNavigator()
-const NoBottomTabScreenStack = createStackNavigator()
 
 function NoBottomTabScreens() {
+  const Stack = createStackNavigator()
   return (
-    <NoBottomTabScreenStack.Navigator
-      headerMode="none"
-      screenOptions={defaultScreenOptions}>
-      <NoBottomTabScreenStack.Screen
-        name="OthersProfile"
-        component={ProfileInfoModal}
-      />
-      <NoBottomTabScreenStack.Screen name="Chat" component={ChatScreen} />
-      <NoBottomTabScreenStack.Screen name="posts" component={PostStack} />
-      <NoBottomTabScreenStack.Screen
-        name="Welcome"
-        component={WelcomeStackScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="Badge"
-        component={BadgeStackScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="Verified"
-        component={VerifiedStackScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="SetNewPassword"
-        component={SetNewPassword}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="NotVerified"
-        component={NotVerifiedStackScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="Verification"
-        component={VerificationStack}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="Notifications"
-        component={Notifications}
-      />
-      <NoBottomTabScreenStack.Screen name="ChatHouse" component={ChatHouse} />
-      <NoBottomTabScreenStack.Screen name="PostChat" component={PostChat} />
-      <NoBottomTabScreenStack.Screen
-        name="OngoingItem"
-        component={OngoingItem}
-      />
-      <NoBottomTabScreenStack.Screen name="Past" component={Past} />
-      <NoBottomTabScreenStack.Screen name="report" component={ReportScreen} />
-      <NoBottomTabScreenStack.Screen
-        name="change-password"
-        component={ChangePasswordScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="edit-profile"
-        component={EditProfileScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="invite-friends"
-        component={InviteFriendsScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="unavailable-network"
-        component={UnavailableNetwork}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="liked-posts"
-        component={LikedPostsScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="own-menu"
-        component={OwnMenuScreen}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="payout-methods"
-        component={PayoutMethodStack}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="update-temperature"
-        component={UpdateTemperature}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="temperature-about"
-        component={TemperatureAbout}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="temperature-history"
-        component={TemperatureHistory}
-      />
-      <NoBottomTabScreenStack.Screen
-        name="contact-us"
-        component={ContactUsScreen}
-      />
-      <NoBottomTabScreenStack.Screen name="block-user" component={BlockUser} />
-    </NoBottomTabScreenStack.Navigator>
+    <Stack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
+      <Stack.Screen name="posts" component={PostStack} />
+      <Stack.Screen name="profile" component={ProfileStack} />
+
+      <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen name="Welcome" component={WelcomeStackScreen} />
+      <Stack.Screen name="Badge" component={BadgeStackScreen} />
+      <Stack.Screen name="Verified" component={VerifiedStackScreen} />
+      <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
+      <Stack.Screen name="NotVerified" component={NotVerifiedStackScreen} />
+      <Stack.Screen name="Verification" component={VerificationStack} />
+      <Stack.Screen name="Notifications" component={Notifications} />
+      <Stack.Screen name="ChatHouse" component={ChatHouse} />
+      <Stack.Screen name="PostChat" component={PostChat} />
+      <Stack.Screen name="OngoingItem" component={OngoingItem} />
+      <Stack.Screen name="Past" component={Past} />
+      <Stack.Screen name="unavailable-network" component={UnavailableNetwork} />
+    </Stack.Navigator>
   )
 }
 
@@ -239,23 +149,16 @@ function NotVerifiedStackScreen() {
   )
 }
 
-function HiveStackScreen() {
-  return (
-    <HiveStack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
-      <HiveStack.Screen name="Hive" component={Hives} />
-    </HiveStack.Navigator>
-  )
-}
-
 function ChatStackScreen() {
   const { user } = useContext(UserContext)
-  
+
   return (
-    <ChatStack.Navigator
-      headerMode="none"
-      screenOptions={defaultScreenOptions}>
-      <ChatStack.Screen name="Chat" component={user ? ChatHouse : ChatGuestScreen} />
-    </ChatStack.Navigator>
+    <Stack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
+      <Stack.Screen
+        name="Chat"
+        component={user ? ChatHouse : ChatGuestScreen}
+      />
+    </Stack.Navigator>
   )
 }
 
@@ -263,45 +166,20 @@ function ActivityStackScreen() {
   const { user } = useContext(UserContext)
   if (user) {
     return (
-      <ActivityStack.Navigator
-        headerMode="none"
-        screenOptions={defaultScreenOptions}>
-        <ActivityStack.Screen name="Activity" component={Activity} />
-        <ActivityStack.Screen name="Past" component={Past} />
-        <ActivityStack.Screen name="Notifications" component={Notifications} />
-        <ActivityStack.Screen name="OngoingItem" component={OngoingItem} />
-        <ActivityStack.Screen name="Chat" component={ChatScreen} />
-        <ActivityStack.Screen name="PostChat" component={PostChat} />
-      </ActivityStack.Navigator>
+      <Stack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
+        <Stack.Screen name="Activity" component={Activity} />
+        <Stack.Screen name="Past" component={Past} />
+        <Stack.Screen name="Notifications" component={Notifications} />
+        <Stack.Screen name="OngoingItem" component={OngoingItem} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
+        <Stack.Screen name="PostChat" component={PostChat} />
+      </Stack.Navigator>
     )
   } else {
     return (
-      <ActivityStack.Navigator
-        headerMode="none"
-        screenOptions={defaultScreenOptions}>
-        <ActivityStack.Screen name="Activity" component={GuestActivity} />
-      </ActivityStack.Navigator>
-    )
-  }
-}
-
-function ProfileStackScreen() {
-  const { user } = useContext(UserContext)
-  if (user) {
-    return (
-      <ProfileStack.Navigator
-        headerMode="none"
-        screenOptions={defaultScreenOptions}>
-        <ProfileStack.Screen name="Profile" component={ProfileScreen} />
-      </ProfileStack.Navigator>
-    )
-  } else {
-    return (
-      <ProfileStack.Navigator
-        headerMode="none"
-        screenOptions={defaultScreenOptions}>
-        <ProfileStack.Screen name="Profile" component={GuestProfile} />
-      </ProfileStack.Navigator>
+      <Stack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
+        <Stack.Screen name="Activity" component={GuestActivity} />
+      </Stack.Navigator>
     )
   }
 }
@@ -447,13 +325,17 @@ const TabStack = () => {
       />
       <Tab.Screen
         name="You"
-        component={ProfileStackScreen}
+        component={ProfileStack}
         options={{
           tabBarIcon: ({ focused }) => {
             const icon = focused ? (
               <UserAltActive width={normalize(25)} height={normalize(25)} />
             ) : (
-              <UserAlt width={normalize(25)} height={normalize(25)} />
+              <Icons.User
+                style={{ color: Colors.icon }}
+                width={normalize(25)}
+                height={normalize(25)}
+              />
             )
             return (
               <View
@@ -482,8 +364,7 @@ export default Routes = () => {
     signOut,
     token,
     userInfo,
-    userStatus,
-    updateUserStatus,
+    verificationStatus,
     unavailableNetwork,
   } = useContext(UserContext)
   const { addresses } = userInfo
@@ -527,9 +408,17 @@ export default Routes = () => {
       }
       case '/profile': {
         const { uid } = query
-        if (uid && uid === userInfo?.uid)
-          navigate('TabStack', { screen: 'You' })
-        else navigate('NBTScreen', { screen: 'OthersProfile', params: { uid } })
+        if (uid && uid === userInfo?.uid) {
+          navigation.navigate('TabStack', { screen: 'You' })
+        } else {
+          navigation.push('NBTScreen', {
+            screen: 'profile',
+            params: {
+              screen: 'profile',
+              params: { uid },
+            },
+          })
+        }
         break
       }
       case '/post': {
@@ -570,10 +459,10 @@ export default Routes = () => {
 
   const renderAuthScreens = () => {
     if (
-      userStatus.verified &&
-      ![userStatus.verified?.email, userStatus.verified?.phone_number].includes(
-        'completed'
-      )
+      ![
+        verificationStatus.email?.status,
+        verificationStatus.phone_number?.status,
+      ].includes('completed')
     ) {
       const provider = userInfo.email?.length
         ? 'email'
@@ -595,7 +484,6 @@ export default Routes = () => {
           initialParams={{
             login,
             provider,
-            onSubmit: updateUserStatus,
             onBackPress: signOut,
           }}
         />
@@ -626,7 +514,9 @@ export default Routes = () => {
 
       <Animated.View style={fadingContainerStyle}>
         <NavigationContainer ref={navigationRef}>
-          {token && userInfo?.uid && userStatus?.verified ? (
+          {token &&
+          userInfo?.uid &&
+          Object.values(verificationStatus).length ? (
             <Stack.Navigator
               headerMode="none"
               screenOptions={defaultScreenOptions}>

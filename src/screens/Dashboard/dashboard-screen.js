@@ -39,7 +39,7 @@ const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient)
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Dashboard'>} param0 */
 const DashboardScreen = ({ navigation }) => {
-  const { user, userInfo, userStatus } = useContext(UserContext)
+  const { user, userInfo, verificationStatus } = useContext(UserContext)
   const { dashboardNeedsRefresh, setDashboardNeedsRefresh } = useContext(
     Context
   )
@@ -170,12 +170,11 @@ const DashboardScreen = ({ navigation }) => {
   }, [searchType])
 
   useEffect(() => {
-    if (!userStatus?.verified) return
-    const isVerified = Object.values(userStatus?.verified).every(
-      status => status === 'completed'
+    const isVerified = Object.values(verificationStatus).every(status =>
+      ['completed', 'submitted'].includes(status)
     )
     setIsVerifyToastVisible(!!user && !isVerified && shouldShowVerifyToast)
-  }, [userStatus, shouldShowVerifyToast])
+  }, [setIsVerifyToastVisible, verificationStatus, shouldShowVerifyToast])
 
   const handleOnFocus = () => {
     if (dashboardNeedsRefresh) {
@@ -304,9 +303,12 @@ const DashboardScreen = ({ navigation }) => {
     if (user?.uid === post.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: post.uid },
+      navigation.push('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'profile',
+          params: { uid: post.uid },
+        },
       })
     }
   }

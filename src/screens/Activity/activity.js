@@ -17,7 +17,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { UserContext } from '@/context/UserContext'
 import { Icons } from '@/assets/images/icons'
-import { NoInfo, NoPost, NoReview } from '@/assets/images'
+import { Images, NoInfo, NoPost } from '@/assets/images'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import utilStyles from '@/globals/util-styles'
@@ -49,7 +49,7 @@ const Activity = ({ navigation }) => {
       case 'my offers':
       case 'my orders':
       case 'past':
-        return <NoReview />
+        return <Images.NoReview />
       default:
         return <NoInfo />
     }

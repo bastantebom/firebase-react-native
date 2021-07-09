@@ -244,7 +244,12 @@ const SearchToolbar = ({
 
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.navigate('liked-posts')}>
+              onPress={() =>
+                navigation.navigate('NBTScreen', {
+                  screen: 'profile',
+                  params: { screen: 'liked-posts' },
+                })
+              }>
               <View style={styles.circleButton}>
                 <LikeDark width={normalize(25)} height={normalize(25)} />
               </View>

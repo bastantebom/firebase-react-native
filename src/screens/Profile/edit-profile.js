@@ -9,7 +9,6 @@ import TextInput from '@/components/textinput'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import {
-  Alert,
   Image,
   Platform,
   StatusBar,
@@ -39,12 +38,13 @@ import Svg, {
   Rect,
   Mask,
 } from 'react-native-svg'
-import { ArrowDown, Calendar, CircleAdd, Icons } from '@/assets/images/icons'
+import { ArrowDown, Calendar, Icons } from '@/assets/images/icons'
 import { parse, format } from 'date-fns/esm'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Api from '@/services/Api'
 import ImageApi from '@/services/image-api'
 import typography from '@/globals/typography'
+import { iconSize } from '@/globals/Utils'
 
 /**
  * @typedef {object} EditProfileScreenProps
@@ -619,7 +619,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         <TouchableOpacity
           style={styles.buttonLink}
           onPress={() => handleAddAddressPress()}>
-          <CircleAdd width={normalize(24)} height={normalize(24)} />
+          <Icons.CircleAdd style={{ color: Colors.link }} {...iconSize(24)} />
           <Text style={styles.addButtonLinkLabel}>Add an Address</Text>
         </TouchableOpacity>
       </View>
@@ -688,10 +688,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                 ? { borderColor: Colors.secondaryBrinkPink }
                 : {},
             ]}
-            inputStyle={{
-              marginLeft: normalize(40),
-              marginBottom: normalize(4),
-            }}>
+            inputStyle={{ marginLeft: normalize(40) }}>
             <Text
               style={[
                 typography.body1,

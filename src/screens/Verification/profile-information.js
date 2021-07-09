@@ -19,7 +19,7 @@ import {
 } from '@/components'
 import { Colors, normalize } from '@/globals'
 import AppColor from '@/globals/Colors'
-import { Calendar, ArrowDown, CircleAdd } from '@/assets/images/icons'
+import { Calendar, ArrowDown, Icons } from '@/assets/images/icons'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GenderList from '../Profile/components/EditProfile/Gender'
@@ -27,6 +27,7 @@ import { UserContext } from '@/context/UserContext'
 import { parse, format } from 'date-fns/esm'
 import VF from '@/components/AppInput/ValidationFunctions'
 import Api from '@/services/Api'
+import { iconSize } from '@/globals/Utils'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'ProfileInformation'>} param0 */
 const ProfileInformationScreen = ({ navigation }) => {
@@ -362,10 +363,9 @@ const ProfileInformationScreen = ({ navigation }) => {
                   onRemove: handleRemoveAddress,
                 })
               }}>
-              <CircleAdd
-                style={{ marginRight: normalize(8) }}
-                height={normalize(24)}
-                width={normalize(24)}
+              <Icons.CircleAdd
+                style={{ marginRight: normalize(8), color: Colors.link }}
+                {...iconSize(24)}
               />
               <AppText textStyle="body2" color={Colors.contentOcean}>
                 Add an Address

@@ -1,87 +1,147 @@
-import React, { useContext } from 'react'
-import { View, StyleSheet, SafeAreaView, Share } from 'react-native'
-import { ScreenHeaderTitle, AppText, AppButton } from '@/components'
-import { InviteFriend } from '@/assets/images'
-import { normalize, Colors } from '@/globals'
-import { generateDynamicLink, getPreviewLinkData } from '@/globals/Utils'
+import { Images } from '@/assets/images'
+import { Icons } from '@/assets/images/icons'
+import Button from '@/components/Button'
 import { UserContext } from '@/context/UserContext'
+import { Colors, normalize } from '@/globals'
+import typography from '@/globals/typography'
+import {
+  generateDynamicLink,
+  getPreviewLinkData,
+  iconSize,
+} from '@/globals/Utils'
+import React, { useContext } from 'react'
+import {
+  StyleSheet,
+  StatusBar,
+  View,
+  TouchableOpacity,
+  Text,
+  Share,
+} from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-const InviteFriends = ({ navigation }) => {
+/**
+ * @typedef {Object} InviteFriendsScreenProps
+ */
+
+/**
+ * @typedef {Object} RootProps
+ * @property {InviteFriendsScreenProps} InviteFriendsScreen
+ **/
+
+/** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'InviteFriendsScreen'>} param0 */
+const InviteFriendsScreen = ({ navigation }) => {
   const { userInfo } = useContext(UserContext)
-  const handleSendInvite = async () => {
+  const handleOnSendInvitePress = async () => {
     try {
       const socialPreview = await getPreviewLinkData({
         type: 'invite',
         data: userInfo,
       })
-      const url = await (async () => {
-        return await generateDynamicLink({
-          type: 'download',
-          social: socialPreview,
-        })
-      })()
 
-      const message = `${socialPreview.socialTitle}\r\n\r\n${socialPreview.socialDescription}`
+      const url = await generateDynamicLink({
+        type: 'download',
+        social: socialPreview,
+      })
+      const message = `${socialPreview.socialTitle}\r\n\r\n${socialPreview.socialDescription}\r\n${url}`
       await Share.share({ url, message })
     } catch (error) {
       console.log(error)
+      Toast.show({
+        label: 'Oops! Something went wrong.',
+        type: 'error',
+        screenId: 'root',
+        dismissible: true,
+        timeout: 5000,
+      })
     }
   }
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ padding: normalize(16) }}>
-          <ScreenHeaderTitle
-            title="Invite Friends"
-            close={() => navigation.goBack()}
-          />
+      <StatusBar
+        translucent={true}
+        barStyle="dark-content"
+        backgroundColor="#fff"
+      />
+      <View style={styles.wrapper}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            activeOpacity={0.7}
+            onPress={navigation.goBack}>
+            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+          </TouchableOpacity>
+          <View style={styles.titleWrapper}>
+            <Text style={[typography.body2, typography.medium]}>
+              Invite Friends
+            </Text>
+          </View>
         </View>
-        <View
-          style={{
-            padding: normalize(24),
-          }}>
+        <View style={styles.content}>
           <View style={styles.imageWrapper}>
-            <InviteFriend width={normalize(375)} height={normalize(280)} />
+            <Images.InviteFriends
+              width={normalize(375)}
+              height={normalize(280)}
+            />
           </View>
-          <View style={styles.copyWrapper}>
-            <AppText
-              textStyle="button2"
-              color={Colors.profileLink}
-              customStyle={styles.centerCopy}>
-              Let's grow our fun hustle community! Share the Servbees experience
-              with your friends, family, old and new contacts, and invite
-              everyone you know to get buzzy.
-            </AppText>
-          </View>
-          <AppButton
-            text="Send Invite"
+          <Text style={typography.body2}>
+            Let's grow our fun hustle community! Share the Servbees experience
+            with your friends, family, old and new contacts, and invite everyone
+            you know to get buzzy.
+          </Text>
+          <Button
+            onPress={handleOnSendInvitePress}
+            style={styles.button}
+            label="Send Invite"
             type="primary"
-            size="s"
-            height="xl"
-            onPress={handleSendInvite}
-            customStyle={{ width: '50%' }}
           />
         </View>
-      </SafeAreaView>
+      </View>
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  imageWrapper: {
-    marginBottom: normalize(16),
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: getStatusBarHeight(),
+  },
+  header: {
+    flexDirection: 'row',
+  },
+  backButton: {
+    padding: normalize(16),
+    zIndex: 2,
+  },
+  backArrowIcon: {
+    color: Colors.primaryMidnightBlue,
+  },
+  titleWrapper: {
+    flex: 1,
     alignItems: 'center',
-  },
-  copyWrapper: {
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginBottom: normalize(24),
+    width: '100%',
+    position: 'absolute',
+    paddingVertical: normalize(16),
   },
-  centerCopy: {
-    textAlign: 'left',
-    marginBottom: normalize(8),
+  content: {
+    flex: 1,
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(12),
+    alignItems: 'flex-start',
+  },
+  imageWrapper: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: normalize(30),
+    marginBottom: normalize(16),
+  },
+  button: {
+    marginTop: normalize(24),
+    width: normalize(150),
   },
 })
 
-export default InviteFriends
+export default InviteFriendsScreen

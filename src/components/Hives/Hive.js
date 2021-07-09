@@ -1,49 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text
-} from 'react-native';
-import { List, Avatar  } from 'react-native-paper';
-import Users from '@/assets/images/icons/users.svg';
-import Groups from '@/assets/images/icons/group.svg';
-import Lock from '@/assets/images/icons/private-lock.svg';
+import React, { useState, useEffect } from 'react'
+import { View, StyleSheet, Text } from 'react-native'
+import { List, Avatar } from 'react-native-paper'
+import Groups from '@/assets/images/icons/group.svg'
+import Lock from '@/assets/images/icons/private-lock.svg'
 
-import {AppText, AppButton} from '@/components';
-import { AppViewContainer } from '@/components';
-import { Colors } from '@/globals';
+import { AppText, AppButton } from '@/components'
+import { AppViewContainer } from '@/components'
+import { Colors } from '@/globals'
+import { Icons } from '@/assets/images/icons'
+import { iconSize } from '@/globals/Utils'
 
-
-const Hive = ({ }) => {
+const Hive = ({}) => {
   return (
     <>
-      <View style={{ flexDirection: 'row', alignContent: 'center',  alignItems: 'center', padding: 15 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignContent: 'center',
+          alignItems: 'center',
+          padding: 15,
+        }}>
         {/* <View> */}
-          <Avatar.Image 
-            source={require('../../assets/images/profile.png')} 
-          />
-          <View style={{ marginTop: 15, marginLeft: 15 }}>
-            <AppText textStyle="body1" >Tropang Woodlands</AppText>
-            <AppText textStyle="caption" color={Colors.contentPlaceholder}>Friends from Pioneer Woodlands</AppText>
-            <View style={{ flexDirection: 'row' }}>
-              <Users/>
-              {/* <AppText textStyle="eyebrow2">
+        <Avatar.Image source={require('../../assets/images/profile.png')} />
+        <View style={{ marginTop: 15, marginLeft: 15 }}>
+          <AppText textStyle="body1">Tropang Woodlands</AppText>
+          <AppText textStyle="caption" color={Colors.contentPlaceholder}>
+            Friends from Pioneer Woodlands
+          </AppText>
+          <View style={{ flexDirection: 'row' }}>
+            <Icons.Users style={{ color: Colors.icon }} {...iconSize(24)} />
+            {/* <AppText textStyle="eyebrow2">
                 
               </AppText> */}
-              <Groups/>
-              <View style={{ backgroundColor: Colors.neutralsZircon, borderRadius: 20, flexDirection: 'row', paddingHorizontal: 11, paddingVertical: 5, justifyContent: 'center', maxWidth: 130 }}>
-                <Lock/>
-                <AppText textStyle="caption" color={Colors.primaryMidnightBlue} customStyle={{ paddingLeft: 8 }}>Private Group</AppText>
-              </View>
+            <Groups />
+            <View
+              style={{
+                backgroundColor: Colors.neutralsZircon,
+                borderRadius: 20,
+                flexDirection: 'row',
+                paddingHorizontal: 11,
+                paddingVertical: 5,
+                justifyContent: 'center',
+                maxWidth: 130,
+              }}>
+              <Lock />
+              <AppText
+                textStyle="caption"
+                color={Colors.primaryMidnightBlue}
+                customStyle={{ paddingLeft: 8 }}>
+                Private Group
+              </AppText>
             </View>
           </View>
+        </View>
         {/* </View> */}
         <AppButton
           text="Join"
-          size={"sm"}
-          type={"primary"}
+          size={'sm'}
+          type={'primary'}
           customStyle={{ maxWidth: 100, paddingHorizontal: 0, marginLeft: 0 }}
-          height={"sm"}
+          height={'sm'}
         />
       </View>
       {/* <List.Item
@@ -78,7 +94,7 @@ const Hive = ({ }) => {
   )
 }
 
-export default Hive;
+export default Hive
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +102,6 @@ const styles = StyleSheet.create({
     // alignItems: 'stretch',
     alignContent: 'center',
     justifyContent: 'center',
-    height: 'auto'
-  }
+    height: 'auto',
+  },
 })

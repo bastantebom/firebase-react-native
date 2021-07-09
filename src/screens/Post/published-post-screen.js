@@ -458,11 +458,14 @@ const PublishedPostScreen = ({ navigation, route }) => {
 
   const handleUserPress = () => {
     if (userInfo?.uid === post.current.uid) {
-      navigation.navigate('TabStack', { screen: 'You' })
+      navigation.push('TabStack', { screen: 'You' })
     } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: post.current.uid },
+      navigation.push('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'profile',
+          params: { uid: post.current.uid },
+        },
       })
     }
   }
@@ -565,7 +568,6 @@ const PublishedPostScreen = ({ navigation, route }) => {
           width,
           transform: [{ translateY }],
           zIndex: 3,
-          position: 'absolute',
           top: 0,
           overflow: 'hidden',
         }}>
@@ -2111,6 +2113,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
             [userInfo.uid]: true,
             [user.current.uid]: true,
           },
+          has_messages: false,
           participants: [userInfo.uid, user.current.uid],
           post_id: post.current.id,
           buyer_id: userInfo.uid,
@@ -2648,7 +2651,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: normalize(24),
     paddingVertical: normalize(6),
-    // alignItems: 'center',
     alignItems: 'flex-start',
   },
   categoriesNav: {

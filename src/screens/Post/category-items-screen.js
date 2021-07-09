@@ -281,6 +281,7 @@ const styles = StyleSheet.create({
   },
   linkIcon: {
     marginRight: normalize(8),
+    color: Colors.link,
   },
   optionsIcon: {
     color: Colors.primaryMidnightBlue,

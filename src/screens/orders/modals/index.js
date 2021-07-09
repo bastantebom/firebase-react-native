@@ -4,7 +4,7 @@ import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
 import { BottomSheetHeader } from '@/components'
 
-const ModalComponent = ({ children, isVisible, setIsVisible }) => {
+const ModalComponent = ({ children, isVisible, setIsVisible, ...props }) => {
   return (
     <Modal
       isVisible={isVisible}
@@ -21,7 +21,9 @@ const ModalComponent = ({ children, isVisible, setIsVisible }) => {
           onPress={() => setIsVisible(false)}>
           <View style={{ flex: 1, backgroundColor: 'black' }} />
         </TouchableWithoutFeedback>
-      }>
+      }
+      statusBarTranslucent
+      {...props}>
       <BottomSheetHeader />
       {children}
     </Modal>

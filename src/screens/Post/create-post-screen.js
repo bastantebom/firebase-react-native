@@ -1835,6 +1835,7 @@ const styles = StyleSheet.create({
   },
   linkIcon: {
     marginRight: normalize(8),
+    color: Colors.link,
   },
   buttonsWrapper: {
     marginTop: normalize(24),

@@ -626,12 +626,17 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           : orderData.buyerData.uid
       if (!uid) return
 
-      if (user.uid === uid) navigation.navigate('TabStack', { screen: 'You' })
-      else
-        navigation.navigate('NBTScreen', {
-          screen: 'OthersProfile',
-          params: { uid },
+      if (user?.uid === uid) {
+        navigation.navigate('TabStack', { screen: 'You' })
+      } else {
+        navigation.push('NBTScreen', {
+          screen: 'profile',
+          params: {
+            screen: 'profile',
+            params: { uid: uid },
+          },
         })
+      }
     }
 
     const handleOnPostTitlePress = () => {

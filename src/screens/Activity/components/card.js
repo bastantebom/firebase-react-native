@@ -103,9 +103,12 @@ const ActivitiesCard = ({ item }) => {
     if (user.uid === item.user.uid) {
       navigation.navigate('TabStack', { screen: 'You' })
     } else {
-      navigation.navigate('NBTScreen', {
-        screen: 'OthersProfile',
-        params: { uid: item.user.uid },
+      navigation.push('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'profile',
+          params: { uid: item.user.uid },
+        },
       })
     }
   }

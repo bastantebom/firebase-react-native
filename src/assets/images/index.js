@@ -13,8 +13,8 @@ import PolygonStatic from './polygon-static.svg'
 
 import ProfileHeaderDefault from './profile-header-default.svg'
 import NoPost from './NoPost.svg'
-import NoReview from './NoReview.svg'
-import NoInfo from './NoInfo.svg'
+import NoReview from './no-review.svg'
+import NoInfo from './no-info.svg'
 
 import IdSelfie from './IdSelfie.svg'
 import IdVerify from './IdVerify.svg'
@@ -30,13 +30,13 @@ import AboutServbeesImage from './Glyph-High-Five.svg'
 import DefaultNeed from './default-need.svg'
 import DefaultSell from './default-sell.svg'
 import DefaultService from './default-service.svg'
-import InviteFriend from './InviteFriends.svg'
+import InviteFriends from './InviteFriends.svg'
 import ContactUsImg from './ContactUsImg.svg'
 import ContactUsBee from './contact-bee.svg'
 import ContactSuccess from './contact-success.svg'
 import PaymentFees from './payment-fees.svg'
 
-import BodyTemp from './Body-Temp.svg'
+import BodyTemp from './body-temp.svg'
 
 import LogoGCash from './logo-GCash.svg'
 import LogoGrabPay from './logo-grabpay.svg'
@@ -83,6 +83,7 @@ import PoliceBeebo from './police-beebo.svg'
 import PinBee from './pin-bee.svg'
 import ReportPost from './report-post.svg'
 import ReportSuccess from './report-success.svg'
+import ReportProfile from './report-profile.svg'
 import Post from './post.svg'
 import Success from './success.svg'
 import Error from './error.svg'
@@ -90,9 +91,18 @@ import NoPosts from './no-posts.svg'
 import Image from './image.svg'
 import NoPayoutMethod from './no-payout-method.svg'
 import HelpCenter from './help-center.svg'
+import Newbee from './newbee.svg'
+import Beerified from './beerified.svg'
+import BossBee from './boss-bee.svg'
+import Unbeelievable from './unbeelievable.svg'
+import SingingBee from './singing-bee.svg'
+import RisingBee from './rising-bee.svg'
 
 import ChatGuest from './chat-guest.svg'
 import ChatEmptyState from './chat-empty-state.svg'
+
+import NoFollowing from './no-following.svg'
+import NoFollowers from './no-followers.svg'
 
 export {
   Guide,
@@ -111,7 +121,6 @@ export {
   PolygonStatic,
   ProfileHeaderDefault,
   NoPost,
-  NoReview,
   NoInfo,
   IdSelfie,
   IdVerify,
@@ -121,11 +130,9 @@ export {
   CoverPhoto,
   AboutServbeesImage,
   VerifySms,
-  InviteFriend,
   ContactUsImg,
   ContactUsBee,
   ContactSuccess,
-  BodyTemp,
   LogoPaypal,
   LogoGCash,
   LogoGrabPay,
@@ -179,4 +186,17 @@ export const Images = {
   Verify,
   Image,
   HelpCenter,
+  Newbee,
+  InviteFriends,
+  NoInfo,
+  BodyTemp,
+  NoReview,
+  ReportProfile,
+  NoFollowers,
+  NoFollowing,
+  Beerified,
+  BossBee,
+  Unbeelievable,
+  SingingBee,
+  RisingBee,
 }

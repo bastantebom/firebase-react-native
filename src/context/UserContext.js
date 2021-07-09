@@ -1,8 +1,13 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react'
 import auth from '@react-native-firebase/auth'
 import AsyncStorage from '@react-native-community/async-storage'
 import firestore from '@react-native-firebase/firestore'
-import Api from '@/services/Api'
 
 export const UserContext = createContext(null)
 export const UserContextProvider = ({ children }) => {
@@ -10,114 +15,98 @@ export const UserContextProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({})
   const [providerData, setProviderData] = useState({})
   const [token, setToken] = useState(null)
-  const [userStatus, setUserStatus] = useState({})
+  const [verificationStatus, setVerificationStatus] = useState({})
   const [unavailableNetwork, setUnavailableNetwork] = useState(false)
   const [counts, setCounts] = useState({})
+  const unsubscribe = useRef(null)
 
-  let unsubscribe
-  async function onAuthStateChanged(user) {
-    try {
-      if (user) {
-        const { uid, displayName, email, providerData } = user
-        setProviderData(providerData)
-        setUser({
-          uid: uid,
-          displayName: displayName,
-          email: email,
-          date_joined: new Date(user.metadata.creationTime).getTime(),
-        })
+  const onAuthStateChanged = useCallback(
+    async user => {
+      try {
+        if (user) {
+          const { uid, displayName, email, providerData } = user
+          setProviderData(providerData)
+          setUser({
+            uid: uid,
+            displayName: displayName,
+            email: email,
+          })
 
-        unsubscribe = unsubscribe?.()
-        const idToken = await auth().currentUser.getIdToken(true)
-        await AsyncStorage.setItem('token', idToken)
-        await AsyncStorage.setItem('uid', user.uid)
-        await AsyncStorage.setItem('token-timestamp', Date.now().toString())
-        setToken(idToken)
+          const idToken = await auth().currentUser.getIdToken(true)
+          await AsyncStorage.setItem('token', idToken)
+          await AsyncStorage.setItem('uid', user.uid)
+          await AsyncStorage.setItem('token-timestamp', Date.now().toString())
+          setToken(idToken)
+        }
+      } catch (error) {
+        console.log(error)
+        if (error.message.includes('auth/network-request-failed'))
+          setUnavailableNetwork(true)
       }
-    } catch (error) {
-      if (error.message.includes('auth/network-request-failed'))
-        setUnavailableNetwork(true)
-    }
-  }
+    },
+    [
+      setProviderData,
+      setUser,
+      setToken,
+      setUnavailableNetwork,
+      unsubscribe.current,
+    ]
+  )
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
-    return subscriber
+    return auth().onAuthStateChanged(onAuthStateChanged)
   }, [])
 
   useEffect(() => {
-    if (user && !unsubscribe) {
-      unsubscribe = firestore()
-        .doc(`users/${user.uid}`)
-        .onSnapshot(snap => {
-          if (snap?.data())
-            setUserInfo({
-              ...snap.data(),
-              date_joined: user.date_joined,
-            })
-        })
+    if (user && !unsubscribe.current) {
+      const subscribers = []
+      subscribers.push(
+        firestore()
+          .doc(`users/${user.uid}`)
+          .onSnapshot(snap => {
+            if (snap?.data()) setUserInfo(snap.data())
+          })
+      )
+
+      subscribers.push(
+        firestore()
+          .doc(`account_verifications/${user.uid}`)
+          .onSnapshot(snap => {
+            if (snap?.data()) setVerificationStatus(snap.data())
+          })
+      )
+
+      subscribers.push(
+        firestore()
+          .doc(`counts/${user.uid}`)
+          .onSnapshot(snap => {
+            setCounts(snap?.data() || {})
+          })
+      )
+
+      unsubscribe.current = () => {
+        subscribers.forEach(subscriber => subscriber())
+        return null
+      }
     }
-
-    if (userInfo?.uid && !userStatus?.verified) updateUserStatus()
-  }, [user])
-
-  useEffect(() => {
-    if (userInfo.uid) updateUserStatus()
-  }, [userInfo])
-
-  useEffect(() => {
-    if (token && userInfo.uid && !userStatus.verified) updateUserStatus()
-  }, [token])
-
-  const updateUserStatus = async () => {
-    if (!userInfo.uid) return
-    try {
-      if (token && !(await AsyncStorage.getItem('token')))
-        await AsyncStorage.setItem('token', token)
-
-      const response = await Api.getUserStatus({ uid: userInfo.uid })
-      if (response.success)
-        setUserStatus({
-          ...userStatus,
-          ...(response.status || {}),
-        })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const fetch = () => {
-    if (user) {
-      Api.getUser({ uid: user.uid }).then(response => {
-        setUserInfo({ ...userInfo, ...response.data })
-      })
-    }
-  }
+  }, [user, unsubscribe.current])
 
   const signOut = async () => {
     try {
-      await auth().signOut()
+      setToken(null)
       setUser(null)
       setUserInfo({})
-      setUserStatus({})
-      setToken(null)
-      await AsyncStorage.removeItem('token')
-      await AsyncStorage.removeItem('uid')
-      unsubscribe?.()
+      setVerificationStatus({})
+      unsubscribe.current?.()
+      await Promise.all([
+        auth().signOut(),
+        AsyncStorage.removeItem('token'),
+        AsyncStorage.removeItem('uid'),
+      ])
     } catch (error) {
       console.log(error.message)
     }
   }
-
-  useEffect(() => {
-    if (user)
-      return firestore()
-        .collection('counts')
-        .doc(user.uid)
-        .onSnapshot(snap => {
-          setCounts(snap?.data() || {})
-        })
-  }, [user])
 
   return (
     <UserContext.Provider
@@ -126,11 +115,9 @@ export const UserContextProvider = ({ children }) => {
         signOut,
         userInfo,
         setUserInfo,
-        userStatus,
-        fetch,
+        verificationStatus,
         token,
         providerData,
-        updateUserStatus,
         unavailableNetwork,
         counts,
       }}>
