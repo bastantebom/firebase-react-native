@@ -54,6 +54,8 @@ import LottieView from 'lottie-react-native'
 import assetLoader from '@/assets/animations/asset-loader.json'
 import Q from 'q'
 import { cloneDeep } from 'lodash'
+import Drawer from '@/components/drawer'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const { height, width } = Dimensions.get('window')
 const headerHeight = normalize(158)
@@ -130,6 +132,8 @@ const ProfileScreen = ({ navigation, route }) => {
     setConfirmUnfollowModalDeferred,
   ] = useState()
 
+  const [temperatureNoteVisible, setTemperatureNoteVisible] = useState(null)
+
   const [verificationStatus, setVerificationStatus] = useState({})
   const [pendingRequests, setPendingRequests] = useState({})
 
@@ -168,22 +172,17 @@ const ProfileScreen = ({ navigation, route }) => {
             uid: uid || userInfo.uid,
             ...filters,
           }),
-          Api.getCurrentTemperature({ uid: uid || userInfo.uid }),
         ]
 
         if (isOtherUser) {
           requests.push(Api.isFollowing({ uid }))
         }
 
-        const [
-          getPostsResponse,
-          getCurrentTemperatureResponse,
-          isFollowingResponse,
-        ] = await Promise.all(requests)
+        const [getPostsResponse, isFollowingResponse] = await Promise.all(
+          requests
+        )
 
         if (!getPostsResponse.success) throw new Error(getPostsResponse.message)
-        if (!getCurrentTemperatureResponse.success)
-          throw new Error(getCurrentTemperatureResponse.message)
 
         const { data, total_pages, total_posts, page } = getPostsResponse
         const newPosts = data
@@ -203,7 +202,6 @@ const ProfileScreen = ({ navigation, route }) => {
         setIsFollowing(isFollowingResponse?.is_following)
         setCurrentPage(page)
         setPosts(posts => ({ ...posts, ...newPosts }))
-        setCurrentTemperature(getCurrentTemperatureResponse.data)
       } catch (error) {
         console.log(error)
         Toast.show({
@@ -264,6 +262,19 @@ const ProfileScreen = ({ navigation, route }) => {
     subscribers.push(
       firebase
         .firestore()
+        .collection('temperatures')
+        .where('uid', '==', uid || userInfo.uid)
+        .orderBy('date', 'desc')
+        .limit(1)
+        .onSnapshot(snap => {
+          const data = snap?.docs[0]?.data?.()
+          if (data) setCurrentTemperature(data)
+        })
+    )
+
+    subscribers.push(
+      firebase
+        .firestore()
         .doc(`account_verifications/${uid || userInfo.uid}`)
         .onSnapshot(snap => {
           const data = snap?.data() || {}
@@ -287,8 +298,21 @@ const ProfileScreen = ({ navigation, route }) => {
         })
     )
 
+    if (userInfo?.uid && !uid) {
+      AsyncStorage.getItem('show-log-temperature').then(shouldShowLogTemp => {
+        if (!shouldShowLogTemp || shouldShowLogTemp !== 'false')
+          setTemperatureNoteVisible(true)
+      })
+    }
+
     return () => subscribers.forEach(unsubscribe => unsubscribe())
   }, [loadData])
+
+  useEffect(() => {
+    if (temperatureNoteVisible === false) {
+      AsyncStorage.setItem('show-log-temperature', 'false')
+    }
+  }, [temperatureNoteVisible])
 
   useEffect(() => {
     setVerifiedProgress(
@@ -467,12 +491,26 @@ const ProfileScreen = ({ navigation, route }) => {
   }, [navigation])
 
   const handleOnUpdateTemperaturePress = useCallback(async () => {
+    setTemperatureNoteVisible(false)
     navigation.push('NBTScreen', {
       screen: 'profile',
       params: {
         screen: 'temperature',
         params: {
           screen: 'update-temperature',
+        },
+      },
+    })
+  }, [navigation])
+
+  const handleOnTemperatureAboutPress = useCallback(async () => {
+    setTemperatureNoteVisible(false)
+    navigation.push('NBTScreen', {
+      screen: 'profile',
+      params: {
+        screen: 'temperature',
+        params: {
+          screen: 'temperature-about',
         },
       },
     })
@@ -951,6 +989,89 @@ const ProfileScreen = ({ navigation, route }) => {
     )
   }
 
+  const renderTemperatureNoteModal = () => {
+    return (
+      <Drawer
+        isVisible={!!temperatureNoteVisible}
+        hide={() => setTemperatureNoteVisible(false)}>
+        <View style={styles.temperatureNote}>
+          <Images.LogTemp width="100%" />
+          <View style={styles.temperatureNoteContent}>
+            <Text
+              style={[
+                typography.display5,
+                typography.textCenter,
+                { color: Colors.primaryMidnightBlue, marginTop: normalize(8) },
+              ]}>
+              Log your Temperature
+            </Text>
+            <Text
+              style={[
+                typography.body1,
+                typography.textCenter,
+                { marginTop: normalize(12) },
+              ]}>
+              Your safety and the safety of others is important to us. Let's
+              work together in keeping our Servbees community safe and healthy.
+            </Text>
+
+            <View
+              style={[
+                utilStyles.row,
+                utilStyles.alignCenter,
+                { marginTop: normalize(32) },
+              ]}>
+              <Icons.InfoCircle
+                style={{ color: Colors.icon, marginRight: normalize(6) }}
+                {...iconSize(16)}
+              />
+              <Text
+                style={[
+                  typography.body2,
+                  { color: Colors.contentPlaceholder },
+                ]}>
+                Things to note:
+              </Text>
+            </View>
+            <Text
+              style={[
+                typography.body2,
+                { color: Colors.contentPlaceholder, marginTop: normalize(6) },
+              ]}>
+              Your temperature will be publicly displayed on your profile so
+              your customers.
+            </Text>
+            <Text
+              style={[
+                typography.body2,
+                { color: Colors.contentPlaceholder, marginTop: normalize(6) },
+              ]}>
+              Need more info?{' '}
+              <Text
+                style={typography.link}
+                onPress={handleOnTemperatureAboutPress}>
+                Learn More
+              </Text>
+            </Text>
+            <View style={{ marginTop: normalize(40) }}>
+              <Button
+                onPress={handleOnUpdateTemperaturePress}
+                type="primary"
+                label="Log Temperature"
+              />
+              <Button
+                style={{ marginTop: normalize(8) }}
+                labelStyle={{ color: Colors.link }}
+                onPress={() => setTemperatureNoteVisible(false)}
+                label="I’ll do it later"
+              />
+            </View>
+          </View>
+        </View>
+      </Drawer>
+    )
+  }
+
   return (
     <>
       <View style={[utilStyles.flex1, { position: 'relative' }]}>
@@ -1091,7 +1212,11 @@ const ProfileScreen = ({ navigation, route }) => {
             )
           }
           ListFooterComponent={
-            !hasMorePost ? <ListFooter /> : isLoading && <ListLoader />
+            !hasMorePost && !isEmpty ? (
+              <ListFooter />
+            ) : (
+              isLoading && <ListLoader />
+            )
           }
           stickyHeaderIndices={[0]}
         />
@@ -1100,6 +1225,7 @@ const ProfileScreen = ({ navigation, route }) => {
       {renderConfirmReportUserModal()}
       {renderConfirmBlockUserModal()}
       {renderConfirmUnfollowUserModal()}
+      {renderTemperatureNoteModal()}
     </>
   )
 }
@@ -1108,7 +1234,7 @@ const ListFooter = () => {
   return (
     <View style={styles.listFooter}>
       <Text style={[typography.caption, { color: Colors.contentPlaceholder }]}>
-        No new more posts.
+        No more new posts.
       </Text>
     </View>
   )
@@ -1890,6 +2016,10 @@ class ProfileInfo extends PureComponent {
       outputRange: [0, 0, -1],
     })
 
+    const isOwn =
+      this.props.userInfo.uid &&
+      this.props.userInfo.uid === this.props.userData?.uid
+
     return (
       <>
         <View style={styles.counts}>
@@ -1986,21 +2116,101 @@ class ProfileInfo extends PureComponent {
               </Text>
             )}
           </View>
-          {!!this.props.currentTemperature && (
-            <View style={[styles.pill, styles.temperature]}>
-              <Icons.Temperature {...iconSize(16)} />
 
-              <Text style={[typography.caption, { marginLeft: normalize(4) }]}>
-                {parseFloat(this.props.currentTemperature.value)}
-                °C{' '}
-                {timePassed(
-                  Date.now() / 1000 -
-                    this.props.currentTemperature.date._seconds
-                )}{' '}
-                ago
-              </Text>
+          {isOwn && (
+            <View style={styles.profileButtons}>
+              {this.props.currentTemperature ? (
+                <TouchableOpacityGesture
+                  activeOpacity={0.7}
+                  onPress={this.props.onUpdateTemperaturePress}
+                  style={[
+                    styles.pill,
+                    styles.temperature,
+                    { marginRight: normalize(10) },
+                  ]}>
+                  <Icons.Temperature
+                    style={{ color: Colors.secondaryLavenderBlue }}
+                    {...iconSize(16)}
+                  />
+
+                  <Text
+                    style={[typography.caption, { marginLeft: normalize(4) }]}>
+                    <Text style={typography.medium}>
+                      {parseFloat(this.props.currentTemperature.value)}°
+                    </Text>
+                    <Text> at </Text>
+                    {timePassed(
+                      Date.now() / 1000 -
+                        this.props.currentTemperature.date._seconds
+                    )}
+                    <Text> ago </Text>
+                  </Text>
+                  <Text
+                    style={[
+                      typography.caption,
+                      typography.link,
+                      typography.medium,
+                    ]}>
+                    Update
+                  </Text>
+                </TouchableOpacityGesture>
+              ) : (
+                <>
+                  {this.props.currentTemperature !== null && (
+                    <Button
+                      type="secondary-outline"
+                      onPress={this.props.onUpdateTemperaturePress}
+                      style={[
+                        utilStyles.row,
+                        utilStyles.alignCenter,
+                        styles.profileButton,
+                        { marginRight: normalize(10) },
+                      ]}>
+                      <Icons.Temperature
+                        style={{
+                          color: Colors.primaryMidnightBlue,
+                          marginRight: normalize(4),
+                        }}
+                        {...iconSize(16)}
+                      />
+                      <Text
+                        style={[
+                          typography.caption,
+                          { color: Colors.primaryMidnightBlue },
+                        ]}>
+                        Log your temperature
+                      </Text>
+                    </Button>
+                  )}
+                </>
+              )}
+
+              <Button
+                type="secondary-outline"
+                onPress={this.props.onEditProfilePress}
+                style={[
+                  utilStyles.row,
+                  utilStyles.alignCenter,
+                  styles.profileButton,
+                ]}>
+                <Icons.PencilPaper
+                  style={{
+                    color: Colors.primaryMidnightBlue,
+                    marginRight: normalize(4),
+                  }}
+                  {...iconSize(16)}
+                />
+                <Text
+                  style={[
+                    typography.caption,
+                    { color: Colors.primaryMidnightBlue },
+                  ]}>
+                  Edit Profile
+                </Text>
+              </Button>
             </View>
           )}
+
           <View style={styles.divider} />
           <View
             style={[
@@ -2048,83 +2258,44 @@ class ProfileInfo extends PureComponent {
             )}
           </View>
 
-          {this.props.userInfo.uid &&
-            this.props.userInfo.uid === this.props.userData?.uid && (
-              <View style={styles.buttonsWrapper}>
-                <View
-                  style={{
-                    width: '50%',
-                    paddingRight: normalize(16),
-                  }}>
-                  <Button
-                    onPress={this.props.onEditProfilePress}
-                    type="secondary-outline"
-                    label="Edit Profile"
-                    size="small"
-                    style={{ borderWidth: normalize(1) }}
-                    labelStyle={[
-                      typography.medium,
-                      { color: Colors.primaryMidnightBlue },
+          {isOwn && this.props.verifiedProgress < 100 && (
+            <TouchableOpacity
+              onPress={this.props.onVerifyPress}
+              activeOpacity={0.7}
+              style={styles.verifiedStepsWrapper}>
+              <View style={styles.verifiedStepsContent}>
+                <View style={utilStyles.row}>
+                  <Icons.Verified {...iconSize(24)} />
+                  <View
+                    style={[
+                      utilStyles.flex1,
+                      { marginHorizontal: normalize(8) },
+                    ]}>
+                    <Text style={[typography.body2, typography.medium]}>
+                      Get bee-rified
+                    </Text>
+                    <Text
+                      style={[typography.caption, { marginTop: normalize(4) }]}>
+                      Safeguard your account and boost your credibility within
+                      the community.
+                    </Text>
+                  </View>
+                  <Icons.ChevronRight
+                    style={{ color: Colors.primaryMidnightBlue }}
+                    {...iconSize(16)}
+                  />
+                </View>
+                <View style={styles.verifiedProgressWrapper}>
+                  <View
+                    style={[
+                      styles.verifiedProgress,
+                      { width: `${this.props.verifiedProgress}%` },
                     ]}
                   />
                 </View>
-                <Button
-                  onPress={this.props.onUpdateTemperaturePress}
-                  style={{ borderWidth: normalize(1), width: '50%' }}
-                  type="secondary-outline"
-                  label="Update Temperature"
-                  size="small"
-                  labelStyle={[
-                    typography.medium,
-                    { color: Colors.primaryMidnightBlue },
-                  ]}
-                />
               </View>
-            )}
-
-          {this.props.userInfo.uid &&
-            this.props.userInfo.uid === this.props.userData?.uid &&
-            this.props.verifiedProgress < 100 && (
-              <TouchableOpacity
-                onPress={this.props.onVerifyPress}
-                activeOpacity={0.7}
-                style={styles.verifiedStepsWrapper}>
-                <View style={styles.verifiedStepsContent}>
-                  <View style={utilStyles.row}>
-                    <Icons.Verified {...iconSize(24)} />
-                    <View
-                      style={[
-                        utilStyles.flex1,
-                        { marginHorizontal: normalize(8) },
-                      ]}>
-                      <Text style={[typography.body2, typography.medium]}>
-                        Get bee-rified
-                      </Text>
-                      <Text
-                        style={[
-                          typography.caption,
-                          { marginTop: normalize(4) },
-                        ]}>
-                        Safeguard your account and boost your credibility within
-                        the community.
-                      </Text>
-                    </View>
-                    <Icons.ChevronRight
-                      style={{ color: Colors.primaryMidnightBlue }}
-                      {...iconSize(16)}
-                    />
-                  </View>
-                  <View style={styles.verifiedProgressWrapper}>
-                    <View
-                      style={[
-                        styles.verifiedProgress,
-                        { width: `${this.props.verifiedProgress}%` },
-                      ]}
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )}
+            </TouchableOpacity>
+          )}
         </Animated.View>
       </>
     )
@@ -2317,25 +2488,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   pill: {
-    paddingVertical: normalize(4),
+    paddingVertical: normalize(9),
     paddingHorizontal: normalize(8),
     flexDirection: 'row',
-    borderRadius: normalize(16),
+    borderRadius: normalize(4),
     alignItems: 'center',
   },
   temperature: {
     backgroundColor: Colors.secondarySolitude,
-    marginTop: normalize(4),
   },
   divider: {
     height: normalize(1),
     width: '100%',
     backgroundColor: Colors.neutralsZirconLight,
     marginVertical: normalize(16),
-  },
-  buttonsWrapper: {
-    flexDirection: 'row',
-    marginBottom: normalize(24),
   },
   badges: {
     flexDirection: 'row',
@@ -2480,6 +2646,25 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.secondarySolitude,
     marginTop: normalize(16),
     paddingTop: normalize(16),
+  },
+  profileButtons: {
+    marginTop: normalize(16),
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  profileButton: {
+    borderWidth: normalize(1),
+    paddingVertical: normalize(8),
+    minWidth: normalize(120),
+    justifyContent: 'center',
+  },
+  temperatureNote: {
+    backgroundColor: '#fff',
+  },
+  temperatureNoteContent: {
+    padding: normalize(24),
+    paddingTop: 0,
   },
 })
 

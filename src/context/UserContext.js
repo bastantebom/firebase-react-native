@@ -15,7 +15,7 @@ export const UserContextProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({})
   const [providerData, setProviderData] = useState({})
   const [token, setToken] = useState(null)
-  const [verificationStatus, setVerificationStatus] = useState({})
+  const [verificationStatus, setVerificationStatus] = useState(null)
   const [unavailableNetwork, setUnavailableNetwork] = useState(false)
   const [counts, setCounts] = useState({})
   const unsubscribe = useRef(null)
@@ -32,6 +32,7 @@ export const UserContextProvider = ({ children }) => {
             email: email,
           })
 
+          unsubscribe.current?.()
           const idToken = await auth().currentUser.getIdToken(true)
           await AsyncStorage.setItem('token', idToken)
           await AsyncStorage.setItem('uid', user.uid)
@@ -72,7 +73,7 @@ export const UserContextProvider = ({ children }) => {
         firestore()
           .doc(`account_verifications/${user.uid}`)
           .onSnapshot(snap => {
-            if (snap?.data()) setVerificationStatus(snap.data())
+            setVerificationStatus(snap.data() || {})
           })
       )
 
@@ -86,7 +87,7 @@ export const UserContextProvider = ({ children }) => {
 
       unsubscribe.current = () => {
         subscribers.forEach(subscriber => subscriber())
-        return null
+        unsubscribe.current = null
       }
     }
   }, [user, unsubscribe.current])
@@ -96,7 +97,7 @@ export const UserContextProvider = ({ children }) => {
       setToken(null)
       setUser(null)
       setUserInfo({})
-      setVerificationStatus({})
+      setVerificationStatus(null)
       unsubscribe.current?.()
       await Promise.all([
         auth().signOut(),

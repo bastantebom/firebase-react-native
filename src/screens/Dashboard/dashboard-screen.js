@@ -170,7 +170,7 @@ const DashboardScreen = ({ navigation }) => {
   }, [searchType])
 
   useEffect(() => {
-    const isVerified = Object.values(verificationStatus).every(status =>
+    const isVerified = Object.values(verificationStatus || {}).every(status =>
       ['completed', 'submitted'].includes(status)
     )
     setIsVerifyToastVisible(!!user && !isVerified && shouldShowVerifyToast)

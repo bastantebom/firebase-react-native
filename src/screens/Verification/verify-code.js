@@ -64,7 +64,10 @@ const VerifyCodeScreen = ({ navigation, route }) => {
     } catch (error) {
       console.log(error)
       Toast.show({
-        label: 'Oops, something went wrong',
+        label:
+          error.message === 'Invalid code'
+            ? error.mesage
+            : 'Oops, something went wrong',
         type: 'error',
         dismissible: true,
         screenId: 'verify-code',

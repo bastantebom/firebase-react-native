@@ -460,8 +460,8 @@ export default Routes = () => {
   const renderAuthScreens = () => {
     if (
       ![
-        verificationStatus.email?.status,
-        verificationStatus.phone_number?.status,
+        verificationStatus?.email?.status,
+        verificationStatus?.phone_number?.status,
       ].includes('completed')
     ) {
       const provider = userInfo.email?.length
@@ -514,9 +514,7 @@ export default Routes = () => {
 
       <Animated.View style={fadingContainerStyle}>
         <NavigationContainer ref={navigationRef}>
-          {token &&
-          userInfo?.uid &&
-          Object.values(verificationStatus).length ? (
+          {token && userInfo?.uid && verificationStatus ? (
             <Stack.Navigator
               headerMode="none"
               screenOptions={defaultScreenOptions}>
