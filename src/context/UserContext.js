@@ -73,7 +73,7 @@ export const UserContextProvider = ({ children }) => {
         firestore()
           .doc(`account_verifications/${user.uid}`)
           .onSnapshot(snap => {
-            setVerificationStatus(snap.data() || {})
+            setVerificationStatus(snap?.data() || {})
           })
       )
 
