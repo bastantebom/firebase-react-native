@@ -21,7 +21,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 const App = () => {
   useEffect(() => {
     SplashScreen.hide()
-
     if (APP_ENV === 'production')
       Sentry.init({
         dsn:

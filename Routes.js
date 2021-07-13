@@ -59,6 +59,14 @@ import {
 } from '@/assets/images/icons'
 import dynamicLinks from '@react-native-firebase/dynamic-links'
 import ProfileStack from '@/screens/Profile'
+import {
+  createPushNotificationChannels,
+  getDeviceToken,
+  initPushNotifications,
+  registerDeviceToken,
+  saveDeviceToken,
+} from '@/globals/push-notification-util'
+import { includes } from 'lodash'
 
 const defaultScreenOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -456,6 +464,24 @@ export default Routes = () => {
       linkingListener()
     }
   }, [])
+
+  useEffect(() => {
+    if (userInfo?.uid) {
+      preparePushNotification()
+    }
+  }, [userInfo.uid])
+
+  const preparePushNotification = async () => {
+    const token = await registerDeviceToken()
+    const userDeviceTokens = await getDeviceToken(userInfo)
+
+    if (!userDeviceTokens.some(({ id }) => id === token)) {
+      saveDeviceToken(token, userInfo)
+    }
+
+    initPushNotifications()
+    createPushNotificationChannels()
+  }
 
   const renderAuthScreens = () => {
     if (
