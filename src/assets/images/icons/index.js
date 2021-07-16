@@ -407,6 +407,10 @@ import MenuInfo from './menu-info.svg'
 import DoorOut from './door-out.svg'
 import Users from './users.svg'
 import CirclePending from './circle-pending.svg'
+import MapPinBase from './map-pin-base.svg'
+import MapPinSell from './map-pin-sell.svg'
+import MapPinService from './map-pin-service.svg'
+import MapPinNeed from './map-pin-need.svg'
 
 export {
   Trash,
@@ -832,4 +836,8 @@ export const Icons = {
   Users,
   VerifiedPending,
   CirclePending,
+  MapPinBase,
+  MapPinSell,
+  MapPinService,
+  MapPinNeed,
 }

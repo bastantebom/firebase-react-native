@@ -26,6 +26,7 @@ import ReportPostScreen from './report-post-screen'
 import GuestPostScreen from './guest-post-screen'
 import HiddenPostsScreen from './hidden-posts-screen'
 import ArchivedPostsScreen from './archived-posts-screen'
+import MapDirectionScreen from './map-direction-screen'
 
 const PostStack = () => {
   const Stack = createStackNavigator()
@@ -154,6 +155,11 @@ const PostStack = () => {
       <Stack.Screen
         name="archived-posts"
         component={ArchivedPostsScreen}
+        options={defaultScreenOptions}
+      />
+      <Stack.Screen
+        name="map-direction"
+        component={MapDirectionScreen}
         options={defaultScreenOptions}
       />
     </Stack.Navigator>

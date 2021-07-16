@@ -1383,11 +1383,9 @@ const PublishedPostScreen = ({ navigation, route }) => {
   }
 
   const handleOnViewMapPress = () => {
-    const { latitude, longitude } = post.current.location
-    openMap({
-      latitude,
-      longitude,
-      provider: Platform.OS === 'ios' ? 'apple' : 'google',
+    navigation.navigate('map-direction', {
+      data: post.current,
+      user: user.current,
     })
   }
 
