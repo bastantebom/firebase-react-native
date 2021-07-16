@@ -17,11 +17,15 @@ import typography from '@/globals/typography'
  * @param {boolean} props.displayLength
  * @param {boolean} props.autofocus
  * @param {boolean} props.filled
+ * @param {boolean} props.error
+ * @param {string} props.errorMessage
  * @param {() => React.Component} props.rightIcon
+ * @param {() => React.Component} props.leftIcon
  * @param {import('react-native').StyleProp<import('react-native').ViewStyle>} props.inputStyle
  * @param {import('react-native').StyleProp<import('react-native').TextStyle>} props.labelStyle
  * @param {import('react-native').StyleProp<import('react-native').ViewStyle>} props.containerStyle
  * @param {import('react-native').StyleProp<import('react-native').ViewStyle>} props.messageStyle
+ * @param {import('react-native').StyleProp<import('react-native').ViewStyle>} props.errorMessageStyle
  */
 const TextField = ({
   onFocus,
@@ -35,10 +39,14 @@ const TextField = ({
   displayLength,
   autofocus,
   filled,
+  error,
+  errorMessage,
   rightIcon,
+  leftIcon,
   children,
   message,
   messageStyle,
+  errorMessageStyle,
   autoHeight,
   minLines = 4,
   maxLines = 6,
@@ -46,11 +54,13 @@ const TextField = ({
 }) => {
   const labelPosition = useRef(
     new Animated.Value(
-      props.multiline &&
-      props.numberOfLines &&
-      (value?.length || props.placeholder?.length)
-        ? 8
-        : 11
+      normalize(
+        props.multiline &&
+          props.numberOfLines &&
+          (value?.length || props.placeholder?.length)
+          ? 8
+          : 12
+      )
     )
   ).current
   const [isFocused, setIsFocused] = useState(false)
@@ -87,7 +97,7 @@ const TextField = ({
         props.numberOfLines &&
         (value?.length || props.placeholder?.length)
         ? 8
-        : 11
+        : 12
     )
     if (!value?.length && !props.placeholder?.length) {
       Animated.parallel([
@@ -167,20 +177,39 @@ const TextField = ({
         ? 14
         : 16
     ),
-    color: isFocused ? Colors.contentOcean : Colors.contentPlaceholder,
+    color: error
+      ? Colors.secondaryBrinkPink
+      : isFocused
+      ? Colors.contentOcean
+      : Colors.contentPlaceholder,
   }
 
   const defaultInputStyle = !label?.length
     ? { marginTop: 0, height: '100%' }
     : {}
 
+  if (leftIcon?.()) {
+    defaultInputStyle.paddingLeft = normalize(48)
+  }
+  if (rightIcon?.()) {
+    defaultInputStyle.paddingRight = normalize(40)
+  }
+
   const defaultContainerStyle = {
-    borderColor: isFocused
+    borderColor: props.disabled
+      ? Colors.neutralGray
+      : error
+      ? Colors.secondaryBrinkPink
+      : isFocused
       ? Colors.contentOcean
       : value?.length || typeof value === 'number' || filled
       ? Colors.contentEbony
       : Colors.neutralGray,
     ...(!label?.length ? { justifyContent: 'center' } : {}),
+  }
+
+  if (props.disabled) {
+    defaultContainerStyle.backgroundColor = Colors.buttonDisable
   }
 
   useEffect(() => {
@@ -198,6 +227,8 @@ const TextField = ({
           : {})}>
         {label}
       </Animated.Text>
+
+      {leftIcon ? <View style={styles.leftIcon}>{leftIcon()}</View> : null}
 
       {isCurrency ? (
         <CurrencyInput
@@ -229,6 +260,19 @@ const TextField = ({
       {!!message?.length && (
         <View style={styles.messageWrapper}>
           <Text style={[typography.caption, messageStyle]}>{message}</Text>
+        </View>
+      )}
+
+      {!!errorMessage?.length && (
+        <View style={styles.errorMessageWrapper}>
+          <Text
+            style={[
+              typography.caption,
+              styles.errorMessage,
+              errorMessageStyle,
+            ]}>
+            {errorMessage}
+          </Text>
         </View>
       )}
 
@@ -279,8 +323,13 @@ const styles = StyleSheet.create({
   },
   rightIcon: {
     position: 'absolute',
-    right: 0,
     right: normalize(15),
+    top: normalize(15),
+    zIndex: 200,
+  },
+  leftIcon: {
+    position: 'absolute',
+    left: normalize(15),
     top: normalize(15),
     zIndex: 200,
   },
@@ -293,6 +342,14 @@ const styles = StyleSheet.create({
     bottom: normalize(-20),
     position: 'absolute',
     left: 0,
+  },
+  errorMessageWrapper: {
+    bottom: normalize(-20),
+    position: 'absolute',
+    left: 0,
+  },
+  errorMessage: {
+    color: Colors.secondaryBrinkPink,
   },
 })
 

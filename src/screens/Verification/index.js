@@ -179,9 +179,9 @@ const VerificationScreen = ({ navigation }) => {
               typography.body2,
               { marginBottom: normalize(24), color: Colors.contentPlaceholder },
             ]}>
-            Complete your profile and verification to validate your account and
-            ensure that only you can access your account. It will also make your
-            customer feel more secure during transactions.
+            Hey, Buzybee! Complete your profile and requirements to earn a
+            bee-rified badge today! This will help secure your personal data and
+            account.
           </Text>
 
           {verifications.filter(

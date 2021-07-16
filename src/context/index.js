@@ -21,7 +21,6 @@ export const ContextProvider = ({ children }) => {
 
   const [imageCurrent, setImageCurrent] = useState('')
   const [postCameraImage, setPostCameraImage] = useState([])
-  const [needsRefresh, setNeedsRefresh] = useState(true)
   const [createPostPopupVisible, setCreatePostPopupVisible] = useState(false)
 
   // Post Images states
@@ -175,8 +174,6 @@ export const ContextProvider = ({ children }) => {
         setUserPosts,
         otherUserPosts,
         setOtherUserPosts,
-        needsRefresh,
-        setNeedsRefresh,
         coverPhoto,
         setCoverPhoto,
         selected,

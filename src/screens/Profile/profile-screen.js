@@ -10,6 +10,8 @@ import {
   generateDynamicLink,
   getPreviewLinkData,
   iconSize,
+  isUrl,
+  parseSocialLink,
   shallowCompare,
   timePassed,
 } from '@/globals/Utils'
@@ -35,6 +37,7 @@ import {
   Platform,
   UIManager,
   RefreshControl,
+  Linking,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -267,8 +270,8 @@ const ProfileScreen = ({ navigation, route }) => {
         .orderBy('date', 'desc')
         .limit(1)
         .onSnapshot(snap => {
-          const data = snap?.docs[0]?.data?.()
-          if (data) setCurrentTemperature(data)
+          const data = snap?.docs?.[0]?.data?.()
+          setCurrentTemperature(data || undefined)
         })
     )
 
@@ -298,15 +301,17 @@ const ProfileScreen = ({ navigation, route }) => {
         })
     )
 
-    if (userInfo?.uid && !uid) {
+    return () => subscribers.forEach(unsubscribe => unsubscribe())
+  }, [])
+
+  useEffect(() => {
+    if (currentTemperature === undefined && userInfo?.uid && !uid) {
       AsyncStorage.getItem('show-log-temperature').then(shouldShowLogTemp => {
         if (!shouldShowLogTemp || shouldShowLogTemp !== 'false')
           setTemperatureNoteVisible(true)
       })
     }
-
-    return () => subscribers.forEach(unsubscribe => unsubscribe())
-  }, [loadData])
+  }, [currentTemperature])
 
   useEffect(() => {
     if (temperatureNoteVisible === false) {
@@ -1038,7 +1043,7 @@ const ProfileScreen = ({ navigation, route }) => {
                 typography.body2,
                 { color: Colors.contentPlaceholder, marginTop: normalize(6) },
               ]}>
-              Your temperature will be publicly displayed on your profile so
+              Your temperature will be publicly displayed on your profile for
               your customers.
             </Text>
             <Text
@@ -1268,6 +1273,46 @@ class ProfileMoreInfo extends PureComponent {
       this.props.verificationStatus
     ).some(verification => verification?.status === 'submitted')
 
+    const filteredLinks = (this.props.userData?.links || []).filter(link =>
+      isUrl(link)
+    )
+
+    const websites = filteredLinks.filter(
+      link => parseSocialLink(link) === 'website'
+    )
+
+    const iconStyle = { color: Colors.link }
+    const urlIcons = {
+      facebook: <Icons.SocialFacebook style={iconStyle} {...iconSize(24)} />,
+      twitter: <Icons.SocialTwitter style={iconStyle} {...iconSize(24)} />,
+      instagram: <Icons.SocialInstagram style={iconStyle} {...iconSize(24)} />,
+      youtube: <Icons.SocialYoutube style={iconStyle} {...iconSize(24)} />,
+      tiktok: <Icons.SocialTiktok style={iconStyle} {...iconSize(24)} />,
+      vimeo: <Icons.SocialVimeo style={iconStyle} {...iconSize(24)} />,
+      twitch: <Icons.SocialTwitch style={iconStyle} {...iconSize(24)} />,
+      dribbble: <Icons.SocialDribbble style={iconStyle} {...iconSize(24)} />,
+      medium: <Icons.SocialMedium style={iconStyle} {...iconSize(24)} />,
+      github: <Icons.SocialGithub style={iconStyle} {...iconSize(24)} />,
+      website: <Icons.Globe style={iconStyle} {...iconSize(24)} />,
+    }
+
+    const socialLinks = filteredLinks
+      .map(link => ({
+        type: parseSocialLink(link),
+        link,
+      }))
+      .filter(({ type }) => {
+        return !!type && type !== 'website'
+      })
+      .map(({ type, link }) => ({
+        link,
+        icon: urlIcons[type],
+      }))
+
+    const handleOnLinkPress = link => {
+      Linking.openURL(link)
+    }
+
     const renderEmptyState = () => {
       if (
         this.props.userData?.description?.length ||
@@ -1277,7 +1322,12 @@ class ProfileMoreInfo extends PureComponent {
         return
 
       return (
-        <View style={[utilStyles.justifyCenter, utilStyles.alignCenter]}>
+        <View
+          style={[
+            utilStyles.justifyCenter,
+            utilStyles.alignCenter,
+            { padding: normalize(8) },
+          ]}>
           <Images.NoInfo {...iconSize(140)} />
           <Text
             style={[
@@ -1337,7 +1387,7 @@ class ProfileMoreInfo extends PureComponent {
             {!!this.props.userData?.description?.length
               ? this.props.userData.description
               : isOwn
-              ? 'Tell us more about you'
+              ? 'Hey, Buzybee! Tell us more about you'
               : `No additional information about ${this.props.userData?.full_name}`}
           </Text>
 
@@ -1384,6 +1434,60 @@ class ProfileMoreInfo extends PureComponent {
             </View>
           </View>
         </View>
+      )
+    }
+
+    const renderLinks = () => {
+      return (
+        filteredLinks.length && (
+          <View style={styles.linksWrapper}>
+            {!!websites.length && (
+              <>
+                <Text
+                  style={[
+                    typography.subtitle2,
+                    { marginBottom: normalize(4) },
+                  ]}>
+                  {pluralize('Website', websites.length)}
+                </Text>
+                {websites.map((link, index) => (
+                  <Text
+                    key={index}
+                    style={[
+                      typography.subtitle2,
+                      typography.link,
+                      { marginTop: normalize(8) },
+                    ]}
+                    onPress={() => handleOnLinkPress(link)}>
+                    {link}
+                  </Text>
+                ))}
+              </>
+            )}
+            {!!socialLinks.length && (
+              <View style={styles.linksWrapper}>
+                <Text
+                  style={[
+                    typography.subtitle2,
+                    { marginBottom: normalize(12) },
+                  ]}>
+                  Social Links
+                </Text>
+                <View style={styles.socialLinks}>
+                  {socialLinks.map(({ link, icon }, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      activeOpacity={0.7}
+                      style={{ marginRight: normalize(16) }}
+                      onPress={() => handleOnLinkPress(link)}>
+                      {icon}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+        )
       )
     }
 
@@ -1508,6 +1612,7 @@ class ProfileMoreInfo extends PureComponent {
             ]}>
             {renderEmptyState()}
             {renderContent()}
+            {renderLinks()}
             {renderVerificationStatus()}
           </Animated.View>
         )}
@@ -2007,9 +2112,9 @@ class ProfileInfo extends PureComponent {
       ? moment(this.props.userData.date_joined).format('MMM YYYY')
       : null
 
-    const defaultAddress = (this.props.userData?.addresses || []).find(
-      address => address.default
-    )
+    const defaultAddress =
+      (this.props.userData?.addresses || []).find(address => address.default) ||
+      this.props.userData?.addresses?.[0]
 
     const translateY = this.props.scrollY.interpolate({
       inputRange: [0, headerHeight - 1, headerHeight],
@@ -2544,8 +2649,8 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   moreInfoWrapper: {
-    paddingHorizontal: normalize(28),
-    paddingTop: normalize(32),
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(24),
     paddingBottom: normalize(48),
     backgroundColor: '#fff',
     position: 'absolute',
@@ -2646,6 +2751,15 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.secondarySolitude,
     marginTop: normalize(16),
     paddingTop: normalize(16),
+  },
+  linksWrapper: {
+    borderTopWidth: normalize(1),
+    borderTopColor: Colors.secondarySolitude,
+    marginTop: normalize(16),
+    paddingTop: normalize(16),
+  },
+  socialLinks: {
+    flexDirection: 'row',
   },
   profileButtons: {
     marginTop: normalize(16),

@@ -178,7 +178,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
             typography.medium,
             { marginTop: normalize(16) },
           ]}>
-          You have no liked posts yet
+          Start heart-ing posts
         </Text>
         <Text
           style={[
@@ -186,7 +186,8 @@ const LikedPostsScreen = ({ navigation, route }) => {
             typography.textCenter,
             { color: Colors.contentPlaceholder, marginTop: normalize(8) },
           ]}>
-          Browse through and discover nearby services and products.
+          Get buzy discovering and liking the products, services, and deals you
+          love!
         </Text>
 
         <TouchableOpacity
@@ -199,7 +200,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
               typography.link,
               { marginTop: normalize(16) },
             ]}>
-            Explore Postings
+            Browse New Posts
           </Text>
         </TouchableOpacity>
       </View>

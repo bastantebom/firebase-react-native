@@ -477,3 +477,37 @@ export function shallowCompare(instance, nextProps, nextState) {
     !shallowEqual(instance.state, nextState)
   )
 }
+
+export function parseSocialLink(url) {
+  if (/^(?:(?:http|https):\/\/)?(?:www.)?(fb|facebook).(com|me)\//.test(url)) {
+    return 'facebook'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(twitter).(com)\//.test(url)) {
+    return 'twitter'
+  } else if (
+    /^(?:(?:http|https):\/\/)?(?:www.)?(instagram).(com)\//.test(url)
+  ) {
+    return 'instagram'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(youtube).(com)\//.test(url)) {
+    return 'youtube'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(tiktok).(com)\//.test(url)) {
+    return 'tiktok'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(vimeo).(com)\//.test(url)) {
+    return 'vimeo'
+  } else if (
+    /^(?:(?:http|https):\/\/)?(?:www.)?(twitch).(com|tv)\//.test(url)
+  ) {
+    return 'twitch'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(dribbble).(com)\//.test(url)) {
+    return 'dribbble'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(medium).(com)\//.test(url)) {
+    return 'medium'
+  } else if (/^(?:(?:http|https):\/\/)?(?:www.)?(github).(com)\//.test(url)) {
+    return 'github'
+  } else if (
+    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+      url
+    )
+  ) {
+    return 'website'
+  }
+}

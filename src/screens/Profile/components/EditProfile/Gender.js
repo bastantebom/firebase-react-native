@@ -18,8 +18,12 @@ const Gender = ({ onChange, value: _value, choices: _choices = [] }) => {
           value: 'Female',
         },
         {
-          label: 'Rather not say',
-          value: 'Rather not say',
+          label: 'Non-binary',
+          value: 'Non-binary',
+        },
+        {
+          label: 'Prefer not to say',
+          value: 'Prefer not to say',
         },
       ]
 
