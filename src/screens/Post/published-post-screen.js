@@ -1383,6 +1383,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
   }
 
   const handleOnViewMapPress = () => {
+    if (!userInfo?.uid || user.current.uid === userInfo?.uid) return
     navigation.navigate('map-direction', {
       data: post.current,
       user: user.current,

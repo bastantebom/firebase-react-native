@@ -272,6 +272,14 @@ const AvailPostScreen = ({ navigation, route }) => {
     }
   }
 
+  const handleOnViewMapPress = () => {
+    if (!userInfo?.uid || post.user.uid === userInfo?.uid) return
+    navigation.navigate('map-direction', {
+      data: post,
+      user: post.user,
+    })
+  }
+
   useEffect(() => {
     if (typeof onBackPress === 'function') {
       navigation.removeListener('beforeRemove', backPressHandler)
@@ -830,7 +838,10 @@ const AvailPostScreen = ({ navigation, route }) => {
         )}
 
         {!!initialRegion && (
-          <View style={styles.mapViewWrapper}>
+          <View
+            onPress={handleOnViewMapPress}
+            style={styles.mapViewWrapper}
+            activeOpacity={1}>
             <MapView
               ref={mapViewRef}
               style={styles.mapView}
@@ -845,7 +856,16 @@ const AvailPostScreen = ({ navigation, route }) => {
                   latitude: initialRegion.latitude,
                   longitude: initialRegion.longitude,
                 }}>
-                <Images.PinBee {...iconSize(56)} />
+                <View style={styles.pinContainer}>
+                  <View style={styles.avatarPin}>
+                    <Avatar
+                      style={styles.avatar}
+                      path={post.user.profile_photo}
+                      size="32x32"
+                    />
+                  </View>
+                  <Icons.MapPinBase {...iconSize(60)} />
+                </View>
               </Marker>
             </MapView>
           </View>
@@ -1518,6 +1538,22 @@ const styles = StyleSheet.create({
   },
   paymentMethodContent: {
     marginTop: normalize(12),
+  },
+  pinContainer: {
+    position: 'relative',
+  },
+  avatarPin: {
+    height: normalize(32),
+    width: normalize(32),
+    borderRadius: normalize(100),
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.neutralsZirconLight,
+    position: 'absolute',
+    zIndex: 2,
+    elevation: 2,
+    left: normalize(13),
+    top: normalize(6),
   },
 })
 
