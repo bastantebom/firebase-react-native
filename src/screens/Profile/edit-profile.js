@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Image,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Colors, normalize } from '@/globals'
