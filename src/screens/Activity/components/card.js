@@ -152,14 +152,14 @@ const ActivitiesCard = ({ item }) => {
                 <View style={styles.avatar}>
                   <Avatar
                     style={{ height: '100%', width: '100%' }}
-                    path={activity.user.profile_photo}
+                    path={activity?.user?.profile_photo}
                     size="64x64"
                   />
                 </View>
                 <AppText textStyle="body3" customStyle={styles.username}>
-                  {activity.user.display_name ||
-                    activity.user.full_name ||
-                    activity.user.username}
+                  {activity?.user?.display_name ||
+                    activity?.user?.full_name ||
+                    activity?.user?.username}
                 </AppText>
               </View>
             </TouchableOpacity>

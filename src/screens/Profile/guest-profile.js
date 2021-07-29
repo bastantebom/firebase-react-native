@@ -14,7 +14,7 @@ import {
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-export const GuestProfile = () => {
+const GuestProfileScreen = () => {
   const { setAuthType, openSlider } = useContext(Context)
   const handleOnJoinPress = () => {
     setAuthType('signup')
@@ -78,3 +78,5 @@ const styles = StyleSheet.create({
     marginTop: normalize(24),
   },
 })
+
+export default GuestProfileScreen

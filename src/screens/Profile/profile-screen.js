@@ -169,10 +169,10 @@ const ProfileScreen = ({ navigation, route }) => {
     async (filters = {}) => {
       setIsLoading(true)
       try {
-        const isOtherUser = uid && uid !== userInfo.uid
+        const isOtherUser = uid && uid !== userInfo?.uid
         const requests = [
           Api.getUserPosts({
-            uid: uid || userInfo.uid,
+            uid: uid || userInfo?.uid,
             ...filters,
           }),
         ]
@@ -239,7 +239,7 @@ const ProfileScreen = ({ navigation, route }) => {
       firebase
         .firestore()
         .collection('users')
-        .doc(uid || userInfo.uid)
+        .doc(uid || userInfo?.uid)
         .onSnapshot(async snap => {
           const data = snap?.data?.()
           setUserData(data || {})
@@ -250,7 +250,7 @@ const ProfileScreen = ({ navigation, route }) => {
       firebase
         .firestore()
         .collection('counts')
-        .doc(uid || userInfo.uid)
+        .doc(uid || userInfo?.uid)
         .onSnapshot(snap => {
           const data = snap?.data?.()
           if (!isNaN(data?.followers) && data.followers !== followersCount)
@@ -262,11 +262,12 @@ const ProfileScreen = ({ navigation, route }) => {
         })
     )
 
+    if (!userInfo?.uid) return
     subscribers.push(
       firebase
         .firestore()
         .collection('temperatures')
-        .where('uid', '==', uid || userInfo.uid)
+        .where('uid', '==', uid || userInfo?.uid)
         .orderBy('date', 'desc')
         .limit(1)
         .onSnapshot(snap => {
@@ -278,7 +279,7 @@ const ProfileScreen = ({ navigation, route }) => {
     subscribers.push(
       firebase
         .firestore()
-        .doc(`account_verifications/${uid || userInfo.uid}`)
+        .doc(`account_verifications/${uid || userInfo?.uid}`)
         .onSnapshot(snap => {
           const data = snap?.data() || {}
           const isVerified = [
@@ -373,7 +374,7 @@ const ProfileScreen = ({ navigation, route }) => {
     try {
       const url = await generateDynamicLink({
         type: 'profile',
-        params: { uid: userInfo.uid },
+        params: { uid: userInfo?.uid },
         social: await getPreviewLinkData({ type: 'user', data: userInfo }),
       })
       await Share.share({ url, message: url })
@@ -395,7 +396,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setIsFollowRequesting(true)
     try {
       const response = await Api[isFollowing ? 'unfollowUser' : 'followUser']({
-        uid: userData.uid,
+        uid: userData?.uid,
       })
       if (!response.success) throw new Error(response.message)
       setIsFollowing(!isFollowing)
@@ -432,7 +433,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setConfirmBlockUserModalVisible(false)
     setIsPageLoading(true)
     try {
-      const response = await Api.blockUser({ uid: userData.uid })
+      const response = await Api.blockUser({ uid: userData?.uid })
       if (!response.success) throw new Error(response.message)
       Toast.show({
         type: 'success',
@@ -442,7 +443,7 @@ const ProfileScreen = ({ navigation, route }) => {
         label: (
           <Text style={typography.body2}>
             You successfuly blocked{' '}
-            <Text style={typography.medium}>{userData.full_name}</Text>
+            <Text style={typography.medium}>{userData?.full_name}</Text>
           </Text>
         ),
       })
@@ -582,9 +583,9 @@ const ProfileScreen = ({ navigation, route }) => {
       const oldLikes = cloneDeep(post.likes || [])
       const newLikes = cloneDeep(post.likes || [])
 
-      const isLiked = oldLikes.includes(userInfo.uid)
-      if (isLiked) newLikes.splice(newLikes.indexOf(userInfo.uid), 1)
-      else newLikes.push(userInfo.uid)
+      const isLiked = oldLikes.includes(userInfo?.uid)
+      if (isLiked) newLikes.splice(newLikes.indexOf(userInfo?.uid), 1)
+      else newLikes.push(userInfo?.uid)
 
       try {
         if (pendingRequests[`${post.id}_like`]) return
@@ -674,12 +675,7 @@ const ProfileScreen = ({ navigation, route }) => {
           {!isFollowing ? 'Follow' : 'Unfollow'} @{userData?.username}
         </Text>
       ),
-      icon: (
-        <Icons.AddFriend
-          style={{ color: Colors.contentPlaceholder }}
-          {...iconSize(24)}
-        />
-      ),
+      icon: <Icons.AddFriend style={styles.iconsAddFriend} {...iconSize(24)} />,
       onPress: handleOnFollowPress,
     },
     {
@@ -694,12 +690,7 @@ const ProfileScreen = ({ navigation, route }) => {
           Report @{userData?.username}
         </Text>
       ),
-      icon: (
-        <Icons.Report
-          style={{ color: Colors.contentPlaceholder }}
-          {...iconSize(24)}
-        />
-      ),
+      icon: <Icons.Report style={styles.iconsAddFriend} {...iconSize(24)} />,
       onPress: () => {
         setOtherProfileMenuVisible(false)
         setConfirmReportUserModalVisible(true)
@@ -713,17 +704,12 @@ const ProfileScreen = ({ navigation, route }) => {
             typography.body1,
             typography.medium,
             styles.otherProfileMenuItemLabel,
-            { color: Colors.secondaryBrinkPink },
+            styles.brinkPink,
           ]}>
           Block @{userData?.username}
         </Text>
       ),
-      icon: (
-        <Icons.CircleBlock
-          style={{ color: Colors.secondaryBrinkPink }}
-          {...iconSize(24)}
-        />
-      ),
+      icon: <Icons.CircleBlock style={styles.brinkPink} {...iconSize(24)} />,
       onPress: () => {
         setOtherProfileMenuVisible(false)
         setConfirmBlockUserModalVisible(true)
@@ -751,7 +737,7 @@ const ProfileScreen = ({ navigation, route }) => {
               )
             })}
             <Button
-              style={{ marginTop: normalize(16) }}
+              style={styles.marginTopOnly}
               label="Cancel"
               type="disabled"
               onPress={() => setOtherProfileMenuVisible(false)}
@@ -769,71 +755,43 @@ const ProfileScreen = ({ navigation, route }) => {
         setIsVisible={setConfirmReportUserModalVisible}>
         {confirmReportUserModalVisible && userData && (
           <View style={styles.confirmReportUserModal}>
-            <View
-              style={{
-                height: normalize(44),
-                width: normalize(44),
-                borderRadius: normalize(24),
-                overflow: 'hidden',
-              }}>
+            <View style={styles.avatarContainer}>
               <Avatar
-                path={userData.profile_photo}
+                path={userData?.profile_photo}
                 size="64x64"
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  borderRadius: normalize(24),
-                }}
+                style={styles.avatarComponent}
               />
             </View>
-            <Text
-              style={[
-                typography.display6,
-                { color: Colors.primaryMidnightBlue, marginTop: normalize(16) },
-              ]}>
-              Report {(userData.full_name || '').split(' ')[0]}
+            <Text style={[typography.display6, styles.reportCopy]}>
+              Report {(userData?.full_name || '').split(' ')[0]}
             </Text>
             <Text
               style={[
                 typography.body2,
                 typography.textCenter,
-                { marginTop: normalize(8) },
+                styles.marginTopOneGrid,
               ]}>
-              Servbees won’t tell {(userData.full_name || '').split(' ')[0]}{' '}
+              Servbees won’t tell {(userData?.full_name || '').split(' ')[0]}{' '}
               that you reported her/him.
             </Text>
-            <View
-              style={[
-                styles.divider,
-                { backgroundColor: Colors.secondarySolitude },
-              ]}
-            />
+            <View style={[styles.divider, styles.solitudeColor]} />
             <Button
               style={[
                 utilStyles.row,
                 utilStyles.alignCenter,
                 utilStyles.justifyCenter,
-                { width: '100%', marginBottom: normalize(12) },
+                styles.buttonAdditionalStyle,
               ]}
               onPress={handleOnReportPress}>
-              <Icons.Report
-                style={{ color: Colors.secondaryBrinkPink }}
-                {...iconSize(24)}
-              />
+              <Icons.Report style={styles.brinkPink} {...iconSize(24)} />
               <Text
-                style={[
-                  typography.body2,
-                  {
-                    color: Colors.secondaryBrinkPink,
-                    marginLeft: normalize(8),
-                  },
-                ]}>
-                Report @{userData.username}
+                style={[typography.body2, styles.reportCopyAdditionalStyle]}>
+                Report @{userData?.username}
               </Text>
             </Button>
 
             <Button
-              style={{ width: '100%' }}
+              style={styles.fullButton}
               label="Cancel"
               type="disabled"
               onPress={() => setConfirmReportUserModalVisible(false)}
@@ -851,66 +809,44 @@ const ProfileScreen = ({ navigation, route }) => {
         setIsVisible={setConfirmBlockUserModalVisible}>
         {confirmBlockUserModalVisible && userData && (
           <View style={styles.confirmUnfollowUserModal}>
-            <View style={{ height: normalize(44), width: normalize(44) }}>
+            <View style={styles.blockContainer}>
               <Avatar
-                path={userData.profile_photo}
+                path={userData?.profile_photo}
                 size="64x64"
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  borderRadius: normalize(24),
-                }}
+                style={styles.avatarComponent}
               />
             </View>
             <Text
-              style={[
-                typography.display6,
-                { color: Colors.primaryMidnightBlue, marginTop: normalize(16) },
-              ]}>
-              Block {(userData.full_name || '').split(' ')[0]}
+              style={[typography.display6, styles.midnightBlueAndMarginTop]}>
+              Block {(userData?.full_name || '').split(' ')[0]}
             </Text>
             <Text
               style={[
                 typography.body2,
                 typography.textCenter,
-                { marginTop: normalize(8) },
+                styles.marginTopOneGrid,
               ]}>
               Once blocked, they won't be able to see your profile and posts.
               They will not receive any notifications that they have been
               blocked.
             </Text>
-            <View
-              style={[
-                styles.divider,
-                { backgroundColor: Colors.secondarySolitude },
-              ]}
-            />
+            <View style={[styles.divider, styles.brinkPink]} />
             <Button
               style={[
                 utilStyles.row,
                 utilStyles.alignCenter,
                 utilStyles.justifyCenter,
-                { width: '100%', marginBottom: normalize(12) },
+                styles.widthMarginLeft,
               ]}
               onPress={handleOnBlockPress}>
-              <Icons.Report
-                style={{ color: Colors.secondaryBrinkPink }}
-                {...iconSize(24)}
-              />
-              <Text
-                style={[
-                  typography.body2,
-                  {
-                    color: Colors.secondaryBrinkPink,
-                    marginLeft: normalize(8),
-                  },
-                ]}>
-                Block @{userData.username}
+              <Icons.Report style={styles.brinkPink} {...iconSize(24)} />
+              <Text style={[typography.body2, styles.brinkPinkAndLeft]}>
+                Block @{userData?.username}
               </Text>
             </Button>
 
             <Button
-              style={{ width: '100%' }}
+              style={styles.fullButton}
               label="Cancel"
               type="disabled"
               onPress={() => setConfirmBlockUserModalVisible(false)}
@@ -928,62 +864,36 @@ const ProfileScreen = ({ navigation, route }) => {
         setIsVisible={setConfirmUnfollowUserModalVisible}>
         {confirmUnfollowUserModalVisible && userData && (
           <View style={styles.confirmBlockUserModal}>
-            <View style={{ height: normalize(44), width: normalize(44) }}>
+            <View style={styles.blockContainer}>
               <Avatar
-                path={userData.profile_photo}
+                path={userData?.profile_photo}
                 size="64x64"
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  borderRadius: normalize(24),
-                }}
+                style={styles.avatarComponent}
               />
             </View>
-            <Text
-              style={[
-                typography.display6,
-                {
-                  color: Colors.primaryMidnightBlue,
-                  marginVertical: normalize(16),
-                },
-              ]}>
-              Unfollow {(userData.full_name || '').split(' ')[0]}
+            <Text style={[typography.display6, styles.brinkPinkVertical]}>
+              Unfollow {(userData?.full_name || '').split(' ')[0]}
             </Text>
-            <View
-              style={[
-                styles.divider,
-                { backgroundColor: Colors.secondarySolitude },
-              ]}
-            />
+            <View style={[styles.divider, styles.solitudeColor]} />
             <Button
               style={[
                 utilStyles.row,
                 utilStyles.alignCenter,
                 utilStyles.justifyCenter,
-                { width: '100%', marginBottom: normalize(12) },
+                styles.fullWidthBottom,
               ]}
               onPress={() => {
                 confirmUnfollowModalDeferred.resolve(true)
                 setConfirmUnfollowUserModalVisible(false)
               }}>
-              <Icons.CircleHide
-                style={{ color: Colors.secondaryBrinkPink }}
-                {...iconSize(24)}
-              />
-              <Text
-                style={[
-                  typography.body2,
-                  {
-                    color: Colors.secondaryBrinkPink,
-                    marginLeft: normalize(8),
-                  },
-                ]}>
-                Unfollow @{userData.username}
+              <Icons.CircleHide style={styles.brinkPink} {...iconSize(24)} />
+              <Text style={[typography.body2, styles.brinkPinkAndLeft]}>
+                Unfollow @{userData?.username}
               </Text>
             </Button>
 
             <Button
-              style={{ width: '100%' }}
+              style={styles.fullButton}
               label="Cancel"
               type="disabled"
               onPress={() => setConfirmUnfollowUserModalVisible(false)}
@@ -1006,7 +916,7 @@ const ProfileScreen = ({ navigation, route }) => {
               style={[
                 typography.display5,
                 typography.textCenter,
-                { color: Colors.primaryMidnightBlue, marginTop: normalize(8) },
+                styles.midnightBlueAndMarginTopOne,
               ]}>
               Log your Temperature
             </Text>
@@ -1190,7 +1100,7 @@ const ProfileScreen = ({ navigation, route }) => {
                 onPress={setSelectedNav}
               />
               <ProfileMoreInfo
-                hidden={selectedNav === 'posts'}
+                hidden={selectedNav === 'posts' ? true : false}
                 scrollY={scrollY}
                 onLayout={handleOnMoreInfoLayout}
                 onEditProfilePress={handleOnEditProfilePress}
@@ -1274,11 +1184,11 @@ class ProfileMoreInfo extends PureComponent {
     ).some(verification => verification?.status === 'submitted')
 
     const filteredLinks = (this.props.userData?.links || []).filter(link =>
-      isUrl(link)
+      isUrl(link.toLowerCase())
     )
 
     const websites = filteredLinks.filter(
-      link => parseSocialLink(link) === 'website'
+      link => parseSocialLink(link.toLowerCase()) === 'website'
     )
 
     const iconStyle = { color: Colors.link }
@@ -1298,7 +1208,7 @@ class ProfileMoreInfo extends PureComponent {
 
     const socialLinks = filteredLinks
       .map(link => ({
-        type: parseSocialLink(link),
+        type: parseSocialLink(link.toLowerCase()),
         link,
       }))
       .filter(({ type }) => {
@@ -1385,7 +1295,7 @@ class ProfileMoreInfo extends PureComponent {
           <Text style={typography.subtitle2}>About</Text>
           <Text style={[typography.body2, { marginTop: normalize(16) }]}>
             {!!this.props.userData?.description?.length
-              ? this.props.userData.description
+              ? this.props.userData?.description
               : isOwn
               ? 'Hey, Buzybee! Tell us more about you'
               : `No additional information about ${this.props.userData?.full_name}`}
@@ -1439,7 +1349,7 @@ class ProfileMoreInfo extends PureComponent {
 
     const renderLinks = () => {
       return (
-        filteredLinks.length && (
+        !!filteredLinks.length && (
           <View style={styles.linksWrapper}>
             {!!websites.length && (
               <>
@@ -1600,6 +1510,7 @@ class ProfileMoreInfo extends PureComponent {
 
     return (
       <>
+        {/* <Text>{typeof this.props.hidden}</Text> */}
         {!this.props.hidden && (
           <Animated.View
             onLayout={this.props.onLayout}
@@ -2122,8 +2033,8 @@ class ProfileInfo extends PureComponent {
     })
 
     const isOwn =
-      this.props.userInfo.uid &&
-      this.props.userInfo.uid === this.props.userData?.uid
+      this.props.userInfo?.uid &&
+      this.props.userInfo?.uid === this.props.userData?.uid
 
     return (
       <>
@@ -2779,6 +2690,64 @@ const styles = StyleSheet.create({
   temperatureNoteContent: {
     padding: normalize(24),
     paddingTop: 0,
+  },
+  iconsAddFriend: {
+    color: Colors.contentPlaceholder,
+  },
+  brinkPink: {
+    color: Colors.secondaryBrinkPink,
+  },
+  marginTopOnly: {
+    marginTop: normalize(16),
+  },
+  avatarContainer: {
+    height: normalize(44),
+    width: normalize(44),
+    borderRadius: normalize(24),
+    overflow: 'hidden',
+  },
+  avatarComponent: {
+    height: '100%',
+    width: '100%',
+    borderRadius: normalize(24),
+  },
+  reportCopy: {
+    color: Colors.primaryMidnightBlue,
+    marginTop: normalize(16),
+  },
+  marginTopOneGrid: {
+    marginTop: normalize(8),
+  },
+  solitudeColor: {
+    backgroundColor: Colors.secondarySolitude,
+  },
+  buttonAdditionalStyle: { width: '100%', marginBottom: normalize(12) },
+  reportCopyAdditionalStyle: {
+    color: Colors.secondaryBrinkPink,
+    marginLeft: normalize(8),
+  },
+  fullButton: { width: '100%' },
+  blockContainer: {
+    height: normalize(44),
+    width: normalize(44),
+  },
+  midnightBlueAndMarginTop: {
+    color: Colors.primaryMidnightBlue,
+    marginTop: normalize(16),
+  },
+  widthMarginLeft: { width: '100%', marginBottom: normalize(12) },
+  brinkPinkAndLeft: {
+    color: Colors.secondaryBrinkPink,
+    marginLeft: normalize(8),
+  },
+  brinkPinkVertical: {
+    color: Colors.primaryMidnightBlue,
+    marginVertical: normalize(16),
+  },
+  fullWidthBottom: { width: '100%', marginBottom: normalize(12) },
+  midnightBlueAndMarginTopOne: {
+    color: Colors.primaryMidnightBlue,
+    marginTop: normalize(8),
   },
 })
 

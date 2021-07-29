@@ -960,6 +960,8 @@ class LinksSection extends PureComponent {
                 }}
                 key={index}
                 onChangeText={url => this.props.onLinkChange(index, url)}
+                autoCapitalize="none"
+                autoCorrect={false}
                 value={link}
                 label={icon ? undefined : 'URL'}
                 leftIcon={() => icon}
