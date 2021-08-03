@@ -291,7 +291,6 @@ const PostCard = React.memo(
 
     return (
       <TouchableOpacity
-        disabled={!onCardPress}
         onPress={() => onCardPress?.()}
         activeOpacity={0.7}
         style={[styles.container, containerStyle]}>
