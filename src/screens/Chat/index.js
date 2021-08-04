@@ -317,16 +317,22 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
 
   const handlePostPress = () => {
     if (!post?.uid || !post?.id) return
-    navigation.navigate('NBTScreen', {
-      screen: 'posts',
-      params: {
-        screen: 'published-post',
+    if (post?.archived) {
+      navigation.push('NBTScreen', {
+        screen: 'unavailable-archive',
+      })
+    } else {
+      navigation.navigate('NBTScreen', {
+        screen: 'posts',
         params: {
-          id: post.id,
-          uid: post.uid,
+          screen: 'published-post',
+          params: {
+            id: post.id,
+            uid: post.uid,
+          },
         },
-      },
-    })
+      })
+    }
   }
 
   return (

@@ -555,17 +555,24 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           screen: 'OthersProfile',
           params: { uid: orderData.buyerData?.uid },
         })
-      else if (userType === 'buyer' && post?.id)
-        navigation.push('NBTScreen', {
-          screen: 'posts',
-          params: {
-            screen: 'published-post',
+      else if (userType === 'buyer' && post?.id) {
+        if (post?.archived) {
+          navigation.push('NBTScreen', {
+            screen: 'unavailable-archive',
+          })
+        } else {
+          navigation.push('NBTScreen', {
+            screen: 'posts',
             params: {
-              id: post?.id,
-              uid: post?.uid,
+              screen: 'published-post',
+              params: {
+                id: post?.id,
+                uid: post?.uid,
+              },
             },
-          },
-        })
+          })
+        }
+      }
     }
 
     if (userType === 'seller')
@@ -641,16 +648,22 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
     const handleOnPostTitlePress = () => {
       if (!post?.id) return
-      navigation.push('NBTScreen', {
-        screen: 'posts',
-        params: {
-          screen: 'published-post',
+      if (post?.archived) {
+        navigation.push('NBTScreen', {
+          screen: 'unavailable-archive',
+        })
+      } else {
+        navigation.push('NBTScreen', {
+          screen: 'posts',
           params: {
-            id: post?.id,
-            uid: post?.uid,
+            screen: 'published-post',
+            params: {
+              id: post?.id,
+              uid: post?.uid,
+            },
           },
-        },
-      })
+        })
+      }
     }
 
     const labels = {

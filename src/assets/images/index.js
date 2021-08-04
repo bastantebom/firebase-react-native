@@ -104,6 +104,7 @@ import ChatEmptyState from './chat-empty-state.svg'
 import NoFollowing from './no-following.svg'
 import NoFollowers from './no-followers.svg'
 import LogTemp from './log-temp.svg'
+import NotAvailableArchive from './not-available-archive.svg'
 
 export {
   Guide,
@@ -201,4 +202,5 @@ export const Images = {
   Success,
   Unbeelievable,
   Verify,
+  NotAvailableArchive,
 }

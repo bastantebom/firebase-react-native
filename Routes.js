@@ -37,6 +37,7 @@ import { OngoingItem } from '@/screens/Activity'
 import GuestActivity from '@/screens/Activity/components/guest-activity'
 import ChatHouse from '@/screens/Chat/chat-house'
 import PostChat from '@/screens/Chat/post-chat'
+import UnavailablePostScreen from '@/screens/Post/components/archived-post-unavailable'
 
 import {
   AlmostThere,
@@ -96,7 +97,6 @@ function NoBottomTabScreens() {
     <Stack.Navigator headerMode="none" screenOptions={defaultScreenOptions}>
       <Stack.Screen name="posts" component={PostStack} />
       <Stack.Screen name="profile" component={ProfileStack} />
-
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="Welcome" component={WelcomeStackScreen} />
       <Stack.Screen name="Badge" component={BadgeStackScreen} />
@@ -110,6 +110,10 @@ function NoBottomTabScreens() {
       <Stack.Screen name="OngoingItem" component={OngoingItem} />
       <Stack.Screen name="Past" component={Past} />
       <Stack.Screen name="unavailable-network" component={UnavailableNetwork} />
+      <Stack.Screen
+        name="unavailable-archive"
+        component={UnavailablePostScreen}
+      />
     </Stack.Navigator>
   )
 }
