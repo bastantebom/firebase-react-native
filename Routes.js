@@ -491,7 +491,7 @@ export default Routes = () => {
     if (
       ![
         verificationStatus?.email?.status,
-        verificationStatus?.phone_number?.status,
+        verificationStatus?.phone?.status,
       ].includes('completed')
     ) {
       const provider = userInfo.email?.length
