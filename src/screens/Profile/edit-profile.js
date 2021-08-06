@@ -50,6 +50,7 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise'
 import assetLoader from '@/assets/animations/asset-loader.json'
 import LottieView from 'lottie-react-native'
 import Toast from '@/components/toast'
+import ImagePicker from 'react-native-image-crop-picker'
 
 /**
  * @typedef {object} EditProfileScreenProps
