@@ -59,6 +59,7 @@ import Q from 'q'
 import { cloneDeep } from 'lodash'
 import Drawer from '@/components/drawer'
 import AsyncStorage from '@react-native-community/async-storage'
+import prependHttp from 'prepend-http'
 
 const { height, width } = Dimensions.get('window')
 const headerHeight = normalize(158)
@@ -648,14 +649,14 @@ const ProfileScreen = ({ navigation, route }) => {
   const containerStyle = {
     ...(selectedNav === 'info'
       ? {
-          height: normalize(
-            headerContentLayout.height
-              ? headerContentLayout.height +
-                  headerHeight -
-                  gap +
-                  (moreInfoLayout.height || 0)
-              : height
-          ),
+          // height: normalize(
+          //   headerContentLayout.height
+          //     ? headerContentLayout.height +
+          //         headerHeight -
+          //         gap +
+          //         (moreInfoLayout.height || 0)
+          //     : height
+          // ),
         }
       : {}),
     paddingTop: headerHeight,
@@ -1034,7 +1035,7 @@ const ProfileScreen = ({ navigation, route }) => {
         />
         <Animated.FlatList
           keyExtractor={item => item.id}
-          data={Object.values(posts)}
+          data={selectedNav === 'posts' ? Object.values(posts) : []}
           onEndReached={handleOnEndReached}
           renderItem={renderItem}
           ref={scrollViewRef}
@@ -1117,7 +1118,8 @@ const ProfileScreen = ({ navigation, route }) => {
           }
           ListHeaderComponentStyle={{ elevation: 1 }}
           ListEmptyComponent={
-            isEmpty && (
+            isEmpty &&
+            selectedNav === 'posts' && (
               <EmptyPostsState
                 onDiscoverPress={handleOnDiscoverPress}
                 onCreatePostPress={handleOnCreatePostPress}
@@ -1219,8 +1221,13 @@ class ProfileMoreInfo extends PureComponent {
         icon: urlIcons[type],
       }))
 
-    const handleOnLinkPress = link => {
-      Linking.openURL(link)
+    const handleOnLinkPress = async link => {
+      if (await Linking.canOpenURL(link)) {
+        Linking.openURL(link)
+      } else {
+        const transformedLink = prependHttp(link, { https: true })
+        Linking.openURL(transformedLink)
+      }
     }
 
     const renderEmptyState = () => {
@@ -1515,16 +1522,18 @@ class ProfileMoreInfo extends PureComponent {
           <Animated.View
             onLayout={this.props.onLayout}
             style={[
-              styles.moreInfoWrapper,
-              this.props.containerStyle,
+              // styles.moreInfoWrapper,
+              // this.props.containerStyle,
               {
                 transform: [{ translateY }],
               },
             ]}>
-            {renderEmptyState()}
-            {renderContent()}
-            {renderLinks()}
-            {renderVerificationStatus()}
+            <View style={styles.moreInfoInnerWrapper}>
+              {renderEmptyState()}
+              {renderContent()}
+              {renderLinks()}
+              {renderVerificationStatus()}
+            </View>
           </Animated.View>
         )}
       </>
@@ -2566,6 +2575,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     position: 'absolute',
     zIndex: 1,
+    width: '100%',
+  },
+  moreInfoInnerWrapper: {
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(24),
+    paddingBottom: normalize(24),
+    backgroundColor: Colors.neutralsWhite,
     width: '100%',
   },
   emptyPostsStateWrapper: {
