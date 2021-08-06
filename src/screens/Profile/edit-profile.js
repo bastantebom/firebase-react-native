@@ -299,7 +299,15 @@ const EditProfileScreen = ({ navigation, route }) => {
       })
       navigation.goBack()
     } catch (error) {
-      if (['phone number'].includes(error.message))
+      if (
+        error?.message &&
+        error.message.includes('phone number already exists')
+      )
+        setErrors({
+          ...errors,
+          phoneNumber: 'Mobile number is already registered',
+        })
+      else if (['phone number'].includes(error.message))
         setErrors({ ...errors, phoneNumber: 'Invalid phone number' })
       else console.log(error)
     }
