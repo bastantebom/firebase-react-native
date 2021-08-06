@@ -46,7 +46,9 @@ export const timePassed = seconds => {
   return
 }
 
-export const isUrl = str =>
+export const isUrl = str => !!str && /\w+:(\/?\/?)[^\s]+/gi.test(str)
+
+export const isUrlProfile = str =>
   !!str &&
   /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g.test(
     str

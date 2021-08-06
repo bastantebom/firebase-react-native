@@ -10,7 +10,7 @@ import {
   generateDynamicLink,
   getPreviewLinkData,
   iconSize,
-  isUrl,
+  isUrlProfile,
   parseSocialLink,
   shallowCompare,
   timePassed,
@@ -1184,7 +1184,7 @@ class ProfileMoreInfo extends PureComponent {
     ).some(verification => verification?.status === 'submitted')
 
     const filteredLinks = (this.props.userData?.links || []).filter(link =>
-      isUrl(link.toLowerCase())
+      isUrlProfile(link.toLowerCase())
     )
 
     const websites = filteredLinks.filter(
