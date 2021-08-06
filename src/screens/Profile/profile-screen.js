@@ -470,6 +470,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setIsPageLoading,
     setConfirmBlockUserModalVisible,
     setDashboardNeedsRefresh,
+    userData,
   ])
 
   const handleOnReportPress = useCallback(() => {
@@ -2746,6 +2747,8 @@ const styles = StyleSheet.create({
   blockContainer: {
     height: normalize(44),
     width: normalize(44),
+    borderRadius: normalize(44),
+    overflow: 'hidden',
   },
   midnightBlueAndMarginTop: {
     color: Colors.primaryMidnightBlue,

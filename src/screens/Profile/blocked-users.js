@@ -24,6 +24,7 @@ import {
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import ModalComponent from '../orders/modals'
+import EmptyBlockList from './empty-block-user'
 
 class BlockedUserItem extends PureComponent {
   render() {
@@ -278,7 +279,7 @@ const BlockedUsersScreen = ({ navigation }) => {
             data={Object.values(users)}
             renderItem={renderItem}
             initialNumToRender={20}
-            ListEmptyComponent={isEmpty && <EmptyState />}
+            ListEmptyComponent={isEmpty && <EmptyBlockList />}
             onMomentumScrollBegin={() => setIsScrolled(true)}
             onEndReached={handleOnEndReached}
             refreshControl={
