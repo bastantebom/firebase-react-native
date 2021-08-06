@@ -7,7 +7,6 @@ import {
 import { Colors, normalize } from '@/globals'
 import React, { useEffect, useRef, useState } from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   Text,
   View,
@@ -20,6 +19,7 @@ import { Icons } from '@/assets/images/icons'
 import { IdSelfie } from '@/assets/images'
 import { RNCamera } from 'react-native-camera'
 import Svg, { Defs, G, Mask, Path, Rect } from 'react-native-svg'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const { width, height } = Dimensions.get('window')
 
@@ -157,7 +157,7 @@ export const CaptureSelfieScreen = ({ navigation, route }) => {
   }, [navigation, selfie])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.root}>
       <TransitionIndicator loading={isCapturing} />
       <View style={[styles.header]}>
         <TouchableOpacity
@@ -352,6 +352,9 @@ const ConfirmCapturedSelfieFooter = ({ onRetake, onConfirm }) => {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   camera: {
     justifyContent: 'center',
     position: 'relative',

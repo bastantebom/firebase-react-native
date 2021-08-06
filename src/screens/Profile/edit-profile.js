@@ -296,7 +296,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         type: 'success',
         dismissible: true,
         timeout: 5000,
-        screenId: 'Notifications',
+        screenId: route?.params?.['prevScreen'],
       })
       navigation.goBack()
     } catch (error) {

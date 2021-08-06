@@ -107,6 +107,35 @@ const ContactUsSreen = ({ navigation }) => {
     return !Object.values(errors).some(error => error.length)
   }
 
+  const onPrivacyPress = () => {
+    const toInject = `
+        document.querySelector('.show-card-mobile').style.display = 'none';
+        document.querySelector('.cards-mobile').style.display = 'none';
+        document.querySelector('.header').style.display = 'none';
+        document.querySelector('.sub-title-holder').style.display = 'none';
+        document.querySelector('.banner-wrapper').style.display = 'none';
+        document.querySelector('.vector-dash').style.paddingTop = '0';
+        document.querySelector('.section-cta').style.display = 'none';
+        document.querySelector('.footer').style.display = 'none';
+        true;
+        `
+
+    navigation.navigate('NBTScreen', {
+      screen: 'profile',
+      params: {
+        screen: 'about',
+        params: {
+          screen: 'webview',
+          params: {
+            url: 'https://servbees.com/privacy/',
+            title: 'Privacy Policy',
+            injectedJavaScript: toInject,
+          },
+        },
+      },
+    })
+  }
+
   useEffect(() => {
     checkErrors()
   }, [formData])
@@ -277,7 +306,9 @@ const ContactUsSreen = ({ navigation }) => {
                   <Text
                     style={[typography.caption, { marginLeft: normalize(10) }]}>
                     By submitting, you agree to our{' '}
-                    <Text style={[typography.link, typography.medium]}>
+                    <Text
+                      style={[typography.link, typography.medium]}
+                      onPress={onPrivacyPress}>
                       Privacy Policy
                     </Text>
                   </Text>

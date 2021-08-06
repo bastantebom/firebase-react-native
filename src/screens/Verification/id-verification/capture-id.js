@@ -8,10 +8,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  SafeAreaView,
   StatusBar,
 } from 'react-native'
 import ImageEditor from '@react-native-community/image-editor'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { RNCamera } from 'react-native-camera'
 
 const { width } = Dimensions.get('screen')
@@ -68,7 +68,7 @@ const CaptureIdScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.root}>
       <TransitionIndicator loading={isCapturing} />
       {croppedImage ? (
         <View
@@ -232,6 +232,9 @@ const CameraOverlay = () => {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   overlayBorderTopLeft: {
     top: 0,
     left: 0,

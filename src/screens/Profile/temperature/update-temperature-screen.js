@@ -267,6 +267,7 @@ const UpdateTemperatureSreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacityGesture>
               <TextInput
+                maxLength={4}
                 containerStyle={[
                   { marginVertical: normalize(16) },
                   errors && isDirty

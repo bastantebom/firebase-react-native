@@ -494,6 +494,9 @@ const ProfileScreen = ({ navigation, route }) => {
       screen: 'profile',
       params: {
         screen: 'edit-profile',
+        params: {
+          prevScreen: 'profile',
+        },
       },
     })
   }, [navigation])

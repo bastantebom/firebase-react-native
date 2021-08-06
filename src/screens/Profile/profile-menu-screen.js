@@ -6,7 +6,7 @@ import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import { CommonActions } from '@react-navigation/native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {
   StatusBar,
   StyleSheet,
@@ -28,10 +28,11 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'ProfileMenuScreen'>} param0 */
 const ProfileMenuScreen = ({ navigation }) => {
-  const { signOut } = useContext(UserContext)
+  const { signOut, providerData } = useContext(UserContext)
   const [isLoading, setIsLoading] = useState(false)
+  const [hidePasswordMenuItem, setHidePasswordMenuItem] = useState(false)
 
-  const menuItems = [
+  const [menuItems, setMenuItems] = useState([
     {
       id: 'label:account',
       type: 'label',
@@ -57,7 +58,12 @@ const ProfileMenuScreen = ({ navigation }) => {
       onPress: () => {
         navigation.navigate('NBTScreen', {
           screen: 'profile',
-          params: { screen: 'edit-profile' },
+          params: {
+            screen: 'edit-profile',
+            params: {
+              prevScreen: 'profile-menu',
+            },
+          },
         })
       },
     },
@@ -223,7 +229,12 @@ const ProfileMenuScreen = ({ navigation }) => {
       onPress: () => {
         navigation.navigate('NBTScreen', {
           screen: 'profile',
-          params: { screen: 'about' },
+          params: {
+            screen: 'about',
+            params: {
+              screen: 'about',
+            },
+          },
         })
       },
     },
@@ -260,7 +271,32 @@ const ProfileMenuScreen = ({ navigation }) => {
         }
       },
     },
-  ]
+  ])
+
+  useEffect(() => {
+    if (providerData?.[0]) {
+      const providerId = providerData[0].providerId
+
+      if (providerId === 'phone' || providerId === 'password')
+        setHidePasswordMenuItem(false)
+      else setHidePasswordMenuItem(true)
+    }
+  }, [providerData])
+
+  useEffect(() => {
+    if (hidePasswordMenuItem) {
+      const passwordIndex = menuItems.findIndex(
+        menuItem => menuItem.id === 'change-password'
+      )
+
+      if (passwordIndex >= 0) {
+        setMenuItems(currentMenuItems => {
+          currentMenuItems.splice(passwordIndex, 1)
+          return currentMenuItems
+        })
+      }
+    }
+  }, [hidePasswordMenuItem])
 
   const renderItem = item => {
     if (item.type === 'label') {
@@ -295,6 +331,12 @@ const ProfileMenuScreen = ({ navigation }) => {
         translucent={true}
         barStyle="dark-content"
         backgroundColor="#fff"
+      />
+      <Toast
+        ref={ref => Toast.setRef(ref, 'profile-menu')}
+        containerStyle={{
+          marginTop: getStatusBarHeight() + normalize(8),
+        }}
       />
       <View style={styles.wrapper}>
         <View style={styles.header}>

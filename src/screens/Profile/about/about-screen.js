@@ -81,7 +81,7 @@ const AboutScreen = ({ navigation }) => {
               screen: 'webview',
               params: {
                 url: 'https://servbees.com/privacy/',
-                title: 'Servbees',
+                title: 'Privacy Policy',
                 injectedJavaScript: toInject,
               },
             },
@@ -110,7 +110,7 @@ const AboutScreen = ({ navigation }) => {
               screen: 'webview',
               params: {
                 url: 'https://servbees.com/terms/',
-                title: 'Servbees',
+                title: 'Terms of Use',
                 injectedJavaScript: toInject,
               },
             },
