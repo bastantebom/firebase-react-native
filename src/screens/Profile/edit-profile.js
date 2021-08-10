@@ -761,7 +761,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                 ? { borderColor: Colors.secondaryBrinkPink }
                 : {},
             ]}
-            inputStyle={{ marginLeft: normalize(32) }}>
+            inputStyle={styles.phoneNumberInputStyle}>
             <Text
               style={[
                 typography.body1,
@@ -1128,6 +1128,10 @@ const styles = StyleSheet.create({
   loaderIcon: {
     height: normalize(24),
     width: normalize(24),
+  },
+  phoneNumberInputStyle: {
+    marginLeft: normalize(35),
+    marginTop: normalize(Platform.select({ ios: -6 })),
   },
 })
 
