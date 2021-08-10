@@ -19,8 +19,12 @@ const ItemCard = ({ items, chats }) => {
 
   const getItemQuantity = order => {
     if (order.offer) return 1
-
-    return order?.items?.length
+    else {
+      return (totalQuantity = order?.items?.reduce(
+        (total, item) => total + (item.quantity || 1),
+        0
+      ))
+    }
   }
 
   const getTimeAgo = time => {
