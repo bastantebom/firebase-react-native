@@ -1131,7 +1131,7 @@ const styles = StyleSheet.create({
   },
   phoneNumberInputStyle: {
     marginLeft: normalize(35),
-    marginTop: normalize(Platform.select({ ios: -6 })),
+    marginTop: normalize(Platform.select({ ios: -6, android: 0 })),
   },
 })
 
