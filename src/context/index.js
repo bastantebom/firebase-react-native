@@ -4,6 +4,10 @@ export const Context = createContext()
 
 export const ContextProvider = ({ children }) => {
   const [dashboardNeedsRefresh, setDashboardNeedsRefresh] = useState(false)
+  const [
+    profileUserPostsNeedsRefresh,
+    setProfileUserPostsNeedsRefresh,
+  ] = useState(false)
   const [sliderState, setSliderState] = useState('')
   const [authenticationSheet, showAuthenticationSheet] = useState(false)
 
@@ -215,6 +219,8 @@ export const ContextProvider = ({ children }) => {
         setDashboardNeedsRefresh,
         createPostPopupVisible,
         setCreatePostPopupVisible,
+        profileUserPostsNeedsRefresh,
+        setProfileUserPostsNeedsRefresh,
       }}>
       {children}
     </Context.Provider>

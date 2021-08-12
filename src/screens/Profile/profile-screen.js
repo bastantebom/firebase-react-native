@@ -96,9 +96,11 @@ const configureAnimation = (duration = 120) => {
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'ProfileScreen'>} param0 */
 const ProfileScreen = ({ navigation, route }) => {
   const { userInfo } = useContext(UserContext)
-  const { setCreatePostPopupVisible, setDashboardNeedsRefresh } = useContext(
-    Context
-  )
+  const {
+    profileUserPostsNeedsRefresh,
+    setCreatePostPopupVisible,
+    setDashboardNeedsRefresh,
+  } = useContext(Context)
   const { uid } = route.params || {}
 
   const scrollViewRef = useRef(null)
@@ -390,6 +392,20 @@ const ProfileScreen = ({ navigation, route }) => {
     )
       confirmUnfollowModalDeferred?.resolve(false)
   }, [confirmUnfollowUserModalVisible])
+
+  useEffect(() => {
+    if (profileUserPostsNeedsRefresh) {
+      /**
+       * Delaying refresh for 500ms for now
+       * due to the Asynchronous timing from Post List
+       *
+       * The delay might be caused from writing in the Storage
+       */
+      setTimeout(() => {
+        handleOnRefresh()
+      }, 500)
+    }
+  }, [profileUserPostsNeedsRefresh])
 
   const getPostData = post => {
     return Promise.all([Api.getPostLikes({ pid: post.id })])
@@ -1161,10 +1177,14 @@ const ProfileScreen = ({ navigation, route }) => {
             )
           }
           ListFooterComponent={
-            !hasMorePost && !isEmpty ? (
-              <ListFooter />
+            selectedNav === 'posts' ? (
+              !hasMorePost && !isEmpty ? (
+                <ListFooter />
+              ) : (
+                isLoading && <ListLoader />
+              )
             ) : (
-              isLoading && <ListLoader />
+              <></>
             )
           }
           stickyHeaderIndices={[0]}

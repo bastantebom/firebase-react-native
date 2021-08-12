@@ -67,7 +67,10 @@ if (
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'CreatePostScreen'>} param0 */
 const CreatePostScreen = ({ navigation, route }) => {
   const { user, userInfo } = useContext(UserContext)
-  const { setDashboardNeedsRefresh } = useContext(Context)
+  const {
+    setDashboardNeedsRefresh,
+    setProfileUserPostsNeedsRefresh,
+  } = useContext(Context)
   const [postType, setPostType] = useState(route.params.type || 'sell')
   const existingData = route.params.data
 
@@ -439,6 +442,7 @@ const CreatePostScreen = ({ navigation, route }) => {
 
       if (!response.success) throw new Error(response.message)
       setDashboardNeedsRefresh(true)
+      setProfileUserPostsNeedsRefresh(true)
 
       navigation.removeListener('beforeRemove', backPressHandler)
       const state = navigation.dangerouslyGetState()
@@ -480,6 +484,9 @@ const CreatePostScreen = ({ navigation, route }) => {
           })
         )
       }
+
+      // Set value back to false
+      setProfileUserPostsNeedsRefresh(false)
     } catch (error) {
       console.log(error.message)
     }
