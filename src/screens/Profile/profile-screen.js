@@ -2045,13 +2045,18 @@ class ProfileInfo extends PureComponent {
       outputRange: [0, 0, -1],
     })
 
+    const countsOpacity = this.props.scrollY.interpolate({
+      inputRange: [gap / 2, gap],
+      outputRange: [1, 0],
+    })
+
     const isOwn =
       this.props.userInfo?.uid &&
       this.props.userInfo?.uid === this.props.userData?.uid
 
     return (
       <>
-        <View style={styles.counts}>
+        <Animated.View style={[styles.counts, { opacity: countsOpacity }]}>
           <View style={styles.count}>
             <Text
               style={[typography.subtitle1, { marginBottom: normalize(2) }]}>
@@ -2082,7 +2087,7 @@ class ProfileInfo extends PureComponent {
               Followers
             </Text>
           </TouchableOpacityGesture>
-        </View>
+        </Animated.View>
         <Animated.View
           style={[styles.profileInfo, { transform: [{ translateY }] }]}>
           <View style={[utilStyles.row, utilStyles.alignCenter]}>
@@ -2494,6 +2499,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginRight: normalize(6),
     marginTop: normalize(8),
+    zIndex: 10,
   },
   count: {
     alignItems: 'center',
