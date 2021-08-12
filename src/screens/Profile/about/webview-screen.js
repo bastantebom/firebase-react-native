@@ -2,7 +2,7 @@ import { Icons } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Dimensions,
   StatusBar,
@@ -35,6 +35,8 @@ const { height, width } = Dimensions.get('window')
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'WebviewScreen'>} param0 */
 const WebviewScreen = ({ navigation, route }) => {
   const { url: uri, title, injectedJavaScript } = route.params
+  const [webviewLoaded, setWebviewLoaded] = useState(false)
+
   return (
     <>
       <StatusBar
@@ -54,24 +56,37 @@ const WebviewScreen = ({ navigation, route }) => {
             <Text style={[typography.body2, typography.medium]}>{title}</Text>
           </View>
         </View>
+
         <View style={styles.content}>
-          <WebView
-            source={{ uri }}
-            startInLoadingState={true}
-            injectedJavaScript={injectedJavaScript}
-            onMessage={noop}
-            renderLoading={() => (
-              <View
-                style={[
-                  utilStyles.flex1,
-                  utilStyles.alignCenter,
-                  utilStyles.justifyCenter,
-                  styles.loader,
-                ]}>
-                <LottieView source={assetLoader} autoPlay />
-              </View>
-            )}
-          />
+          {!webviewLoaded && (
+            <View
+              style={[
+                utilStyles.flex1,
+                utilStyles.alignCenter,
+                utilStyles.justifyCenter,
+                styles.loader,
+              ]}>
+              <LottieView source={assetLoader} autoPlay />
+            </View>
+          )}
+
+          <View
+            style={{
+              display: webviewLoaded ? 'flex' : 'none',
+              flex: webviewLoaded ? 1 : 0,
+            }}>
+            <WebView
+              source={{ uri }}
+              injectedJavaScript={injectedJavaScript}
+              onMessage={noop}
+              javaScriptEnabled={true}
+              onLoadEnd={() => {
+                setTimeout(() => {
+                  setWebviewLoaded(true)
+                }, 250)
+              }}
+            />
+          </View>
         </View>
       </View>
     </>
