@@ -13,7 +13,7 @@ import {
   isUrlProfile,
   parseSocialLink,
   shallowCompare,
-  timePassed,
+  timePassedByDate,
 } from '@/globals/Utils'
 import Api from '@/services/Api'
 import React, {
@@ -60,6 +60,7 @@ import { cloneDeep } from 'lodash'
 import Drawer from '@/components/drawer'
 import AsyncStorage from '@react-native-community/async-storage'
 import prependHttp from 'prepend-http'
+import { useFocusEffect } from '@react-navigation/native'
 
 const { height, width } = Dimensions.get('window')
 const headerHeight = normalize(158)
@@ -163,6 +164,7 @@ const ProfileScreen = ({ navigation, route }) => {
       page: 0,
       limit: 5,
     })
+    getCurrentTemperature()
     setIsRefreshing(false)
   }
 
@@ -227,6 +229,7 @@ const ProfileScreen = ({ navigation, route }) => {
       setCurrentTemperature,
       setHasMorePost,
       setIsEmpty,
+      userInfo,
     ]
   )
 
@@ -263,7 +266,9 @@ const ProfileScreen = ({ navigation, route }) => {
         })
     )
 
-    if (!userInfo?.uid) return
+    if (!userInfo?.uid)
+      return () => subscribers.forEach(unsubscribe => unsubscribe())
+
     subscribers.push(
       firebase
         .firestore()
@@ -304,7 +309,30 @@ const ProfileScreen = ({ navigation, route }) => {
     )
 
     return () => subscribers.forEach(unsubscribe => unsubscribe())
-  }, [])
+  }, [userInfo])
+
+  const getCurrentTemperature = async () => {
+    try {
+      const querySnapshot = await firebase
+        .firestore()
+        .collection('temperatures')
+        .where('uid', '==', uid || userInfo?.uid)
+        .orderBy('date', 'desc')
+        .limit(1)
+        .get()
+
+      querySnapshot.forEach(snapshot => {
+        let latestTemperature = snapshot.data()
+        setCurrentTemperature(latestTemperature || undefined)
+      })
+    } catch (error) {}
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      getCurrentTemperature()
+    }, [])
+  )
 
   useEffect(() => {
     if (currentTemperature === undefined && userInfo?.uid && !uid) {
@@ -2172,12 +2200,11 @@ class ProfileInfo extends PureComponent {
                     <Text style={typography.medium}>
                       {parseFloat(this.props.currentTemperature.value)}°
                     </Text>
-                    <Text> at </Text>
-                    {timePassed(
-                      Date.now() / 1000 -
+                    <Text>
+                      {` ${timePassedByDate(
                         this.props.currentTemperature.date._seconds
-                    )}
-                    <Text> ago </Text>
+                      )} `}
+                    </Text>
                   </Text>
                   <Text
                     style={[

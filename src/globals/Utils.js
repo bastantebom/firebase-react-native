@@ -8,6 +8,8 @@ import Geolocation from 'react-native-geolocation-service'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
 import Geocoder from 'react-native-geocoding'
 
+import { intervalToDuration, differenceInWeeks } from 'date-fns'
+
 import axios from 'axios'
 import ImageApi from '@/services/image-api'
 import { formatNumber } from 'react-native-currency-input'
@@ -44,6 +46,25 @@ export const timePassed = seconds => {
   if (s >= 1) return sDisplay
 
   return
+}
+
+export const timePassedByDate = timeByseconds => {
+  const { years, months, days, hours, minutes, seconds } = intervalToDuration({
+    start: timeByseconds * 1000,
+    end: new Date(),
+  })
+
+  const weeks = differenceInWeeks(timeByseconds * 1000, new Date())
+
+  if (years >= 1) return years + 'y ago'
+  if (months >= 1) return months + 'mo ago'
+  if (weeks >= 1) return weeks + 'wk ago'
+  if (days >= 1) return days + 'd ago'
+  if (hours >= 1) return hours + 'h ago'
+  if (minutes >= 1) return minutes + 'min ago'
+  if (seconds >= 1) return seconds + 's ago'
+
+  return 'just now'
 }
 
 export const isUrl = str => !!str && /\w+:(\/?\/?)[^\s]+/gi.test(str)
