@@ -1,9 +1,6 @@
-name: Build apk for staging
+name: Build staging apk for crash issues
 
-on:
-  push:
-    branches:
-      - crash_issues
+on: workflow_dispatch
 
 jobs:
   build:
