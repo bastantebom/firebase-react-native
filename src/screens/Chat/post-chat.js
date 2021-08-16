@@ -212,7 +212,9 @@ const PostChat = ({ route }) => {
 
         <View style={[utilStyles.row, styles.postTitleWrapper]}>
           <Icons.PostChat style={styles.postTitleIcon} />
-          <Text style={[typography.body2, styles.postTitle]}>{post.title}</Text>
+          <Text style={[typography.body2, styles.postTitle]}>
+            {post?.title}
+          </Text>
         </View>
 
         <View style={styles.contentWrapper}>

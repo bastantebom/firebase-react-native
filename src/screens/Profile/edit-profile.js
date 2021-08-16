@@ -187,33 +187,6 @@ const EditProfileScreen = ({ navigation, route }) => {
     [errors]
   )
 
-  const handleOnUsernameChange = useCallback(
-    async username => {
-      setFormData(data => ({ ...data, username }))
-      setDirtyStates(dirtyStates => [...new Set([...dirtyStates, 'username'])])
-      let error = ''
-
-      setIsCheckingUsername(true)
-      const response = await validateUsername(username)
-
-      const { valid, message } = response
-      error = valid ? '' : message
-
-      setErrors(errors => {
-        errors.username = error
-        return errors
-      })
-      setIsCheckingUsername(false)
-    },
-    [
-      setErrors,
-      setFormData,
-      setDirtyStates,
-      validateUsername,
-      setIsCheckingUsername,
-    ]
-  )
-
   const validateUsername = useMemo(
     () =>
       AwesomeDebouncePromise(async username => {
@@ -242,6 +215,33 @@ const EditProfileScreen = ({ navigation, route }) => {
         }
       }, 240),
     []
+  )
+
+  const handleOnUsernameChange = useCallback(
+    async username => {
+      setFormData(data => ({ ...data, username }))
+      setDirtyStates(dirtyStates => [...new Set([...dirtyStates, 'username'])])
+      let error = ''
+
+      setIsCheckingUsername(true)
+      const response = await validateUsername(username)
+
+      const { valid, message } = response
+      error = valid ? '' : message
+
+      setErrors(errors => {
+        errors.username = error
+        return errors
+      })
+      setIsCheckingUsername(false)
+    },
+    [
+      setErrors,
+      setFormData,
+      setDirtyStates,
+      validateUsername,
+      setIsCheckingUsername,
+    ]
   )
 
   const handleOnSubmit = async () => {

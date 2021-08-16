@@ -44,7 +44,7 @@ const SetNewPasswordScreen = props => {
   }
 
   const navigation = useNavigation()
-  const { token, login } = props?.route?.params
+  const { token, login } = props?.route?.params || {}
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')

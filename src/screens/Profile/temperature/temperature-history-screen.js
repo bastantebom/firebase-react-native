@@ -55,40 +55,6 @@ const TemperatureHistoryScreen = ({ navigation }) => {
   const [hasMoreItems, setHasMoreItems] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
 
-  const handleOnRefresh = async () => {
-    setLastId(null)
-    setData([])
-    setIsRefreshing(true)
-    setHasMoreItems(true)
-    setIsEmpty(false)
-    await loadData({ data: [], filters: { ...filters } })
-    setIsRefreshing(false)
-  }
-
-  const handleOnEndReached = useCallback(() => {
-    if (!scrolled || isLoading || !hasMoreItems) return
-    setScrolled(false)
-    loadData({ data, filters: { ...filters, lastId } })
-  }, [
-    scrolled,
-    setScrolled,
-    lastId,
-    filters,
-    loadData,
-    setScrolled,
-    isLoading,
-    scrolled,
-    hasMoreItems,
-  ])
-
-  const renderItem = ({ item }) => {
-    return <TemperatureListItem item={item} onNotePress={handleOnNotePress} />
-  }
-
-  const handleOnNotePress = () => {
-    setHighTemperatureNoteVisible(true)
-  }
-
   const loadData = useCallback(async ({ data, filters }) => {
     setIsLoading(true)
     try {
@@ -133,6 +99,40 @@ const TemperatureHistoryScreen = ({ navigation }) => {
     }
     setIsLoading(false)
   }, [])
+
+  const handleOnRefresh = async () => {
+    setLastId(null)
+    setData([])
+    setIsRefreshing(true)
+    setHasMoreItems(true)
+    setIsEmpty(false)
+    await loadData({ data: [], filters: { ...filters } })
+    setIsRefreshing(false)
+  }
+
+  const handleOnEndReached = useCallback(() => {
+    if (!scrolled || isLoading || !hasMoreItems) return
+    setScrolled(false)
+    loadData({ data, filters: { ...filters, lastId } })
+  }, [
+    scrolled,
+    setScrolled,
+    lastId,
+    filters,
+    loadData,
+    setScrolled,
+    isLoading,
+    scrolled,
+    hasMoreItems,
+  ])
+
+  const renderItem = ({ item }) => {
+    return <TemperatureListItem item={item} onNotePress={handleOnNotePress} />
+  }
+
+  const handleOnNotePress = () => {
+    setHighTemperatureNoteVisible(true)
+  }
 
   useEffect(() => {
     loadData({ filters })

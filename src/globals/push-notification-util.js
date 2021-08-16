@@ -15,7 +15,7 @@ export const registerDeviceToken = async () => {
 
     return ''
   } catch (error) {
-    console.log(error || error.message)
+    console.log(error || error?.message)
   }
 }
 

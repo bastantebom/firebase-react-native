@@ -99,22 +99,6 @@ const BlockedUsersScreen = ({ navigation }) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [lastId, setLastId] = useState(false)
 
-  const handleOnRefresh = async () => {
-    if (isRefreshing) return
-    setIsRefreshing(true)
-    setUsers({})
-    setIsEmpty(false)
-    setHasMoreItems(true)
-    await loadData()
-    setIsRefreshing(false)
-  }
-
-  const handleOnEndReached = useCallback(() => {
-    if (!isScrolled || isLoading || !hasMoreItems) return
-    setIsScrolled(false)
-    loadData({ lastId })
-  }, [isScrolled, isLoading, hasMoreItems, setIsScrolled, loadData])
-
   const loadData = useCallback(
     async ({ lastId } = {}) => {
       setIsLoading(true)
@@ -152,6 +136,22 @@ const BlockedUsersScreen = ({ navigation }) => {
     },
     [setUsers, setLastId, setIsEmpty, setHasMoreItems, setIsLoading]
   )
+
+  const handleOnRefresh = async () => {
+    if (isRefreshing) return
+    setIsRefreshing(true)
+    setUsers({})
+    setIsEmpty(false)
+    setHasMoreItems(true)
+    await loadData()
+    setIsRefreshing(false)
+  }
+
+  const handleOnEndReached = useCallback(() => {
+    if (!isScrolled || isLoading || !hasMoreItems) return
+    setIsScrolled(false)
+    loadData({ lastId })
+  }, [isScrolled, isLoading, hasMoreItems, setIsScrolled, loadData])
 
   const handleOnUnblock = useCallback(async () => {
     setConfirmUnblockUserModalVisible(false)

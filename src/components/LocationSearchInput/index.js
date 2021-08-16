@@ -50,7 +50,7 @@ const GooglePlacesInput = ({
         onPress={(data, details = null) => {
           //let coordinates = data.geometry.location;
           //alert('asdsds');
-          onResultsClick(details.description)
+          onResultsClick(details?.description)
 
           //sendCoordinates(coordinates, {data, details});
         }}

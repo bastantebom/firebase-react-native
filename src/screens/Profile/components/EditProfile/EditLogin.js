@@ -63,7 +63,7 @@ const EditLogin = ({ toggleEditLogin, provider }) => {
           setEnabled(false)
         }
       } catch (error) {
-        triggerNotification(error || error.message, 'danger')
+        triggerNotification(error || error?.message, 'danger')
         setEnabled(false)
       }
     }
