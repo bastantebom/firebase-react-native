@@ -75,6 +75,7 @@ import NoSearch from './search-empty.svg'
 import BeeResponsible from './bee-responsible.svg'
 import PaymentFailed from './payment-failed.svg'
 import PaymentSuccess from './payment-success.svg'
+import PaymentProcessing from './payment-processing.svg'
 import IllustActivity from './activity-img1.svg'
 
 import NoInternet from './no-internet.svg'
@@ -203,4 +204,5 @@ export const Images = {
   Unbeelievable,
   Verify,
   NotAvailableArchive,
+  PaymentProcessing,
 }

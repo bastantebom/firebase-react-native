@@ -60,21 +60,16 @@ const PaymentStatusScreen = ({ navigation, route }) => {
       title: 'Payment Processing',
       description: (
         <Text>
-          We are currently processing your payment of ₱
-          <Text style={typography.medium}>
-            {formatNumber(amount, {
-              separator: '.',
-              precision: 2,
-              delimiter: ',',
-            })}
-          </Text>{' '}
-          to <Text style={typography.medium}>{sellerName}</Text>. We’ll let you
-          know once your payment has been processed or you can track the status
-          of your order by clicking the button below.
+          <Text style={[typography.medium, typography.body1]}>
+            Buzz, buzz. Payment is processing
+          </Text>
+          <Text style={typography.body2}>
+            Wait for the confirmation of your payment.
+          </Text>
         </Text>
       ),
       buttonLabel: 'Track your order',
-      image: <Images.PaymentSuccess />,
+      image: <Images.PaymentProcessing />,
     },
     failed: {
       title: 'Payment Unsuccessful',

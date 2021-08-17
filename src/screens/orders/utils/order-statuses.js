@@ -1,6 +1,7 @@
 import pending from '@/assets/animations/awaiting.json'
 import inProgress from '@/assets/animations/in-progress.json'
 import delivering from '@/assets/animations/delivering.json'
+import paymentProcessing from '@/assets/animations/payment-processing.json'
 
 import sellerOrderCompleted from '@/assets/animations/seller-order-completed.json'
 import customerOrderCompleted from '@/assets/animations/customer-order-completed.json'
@@ -53,7 +54,7 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
           userType === 'seller'
             ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
             : 'Thank you. We will buzz once payment is confirmed.',
-        animation: inProgress,
+        animation: paymentProcessing,
         withGradient: true,
       },
       paid: {
@@ -145,7 +146,7 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
           userType === 'seller'
             ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
             : 'Last step! Once the payment is complete the order will be processed.',
-        animation: inProgress,
+        animation: paymentProcessing,
         withGradient: true,
       },
       paid: {
@@ -216,7 +217,7 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
           userType === 'seller'
             ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
             : "Please wait a bit, we're working on it! ",
-        animation: inProgress,
+        animation: paymentProcessing,
         withGradient: true,
       },
       paid: {
