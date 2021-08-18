@@ -292,7 +292,7 @@ const ProfileMenuScreen = ({ navigation }) => {
       if (passwordIndex >= 0) {
         setMenuItems(currentMenuItems => {
           currentMenuItems.splice(passwordIndex, 1)
-          return currentMenuItems
+          return [...currentMenuItems]
         })
       }
     }
