@@ -491,14 +491,14 @@ const EditProfileScreen = ({ navigation, route }) => {
           />
         </View>
         <View>
-          <Text style={typography.caption}>
+          <Text style={[typography.caption, { marginBottom: normalize(18) }]}>
             Help people discover your account by using a name that describes you
             or your service. This could be the name of your business, or your
             nickname.{' '}
           </Text>
-          <Text style={[typography.caption, { marginVertical: normalize(18) }]}>
+          {/* <Text style={[typography.caption, { marginVertical: normalize(18) }]}>
             You can only change your Display Name twice every 14 days.
-          </Text>
+          </Text> */}
         </View>
 
         <View style={styles.inputWrapper}>

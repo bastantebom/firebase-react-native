@@ -255,12 +255,12 @@ const ProfileInformationScreen = ({ navigation }) => {
               you or your service. This could be the name of your business, or
               your nickname.
             </AppText>
-            <AppText
+            {/* <AppText
               textStyle="caption"
               color={Colors.contentPlaceholder}
               customStyle={{ marginBottom: 16 }}>
               You can only change your Display Name twice every 14 days.
-            </AppText>
+            </AppText> */}
             <FloatingAppInput
               label="Full name"
               value={formData.fullName}
