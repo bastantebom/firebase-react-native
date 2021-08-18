@@ -1,18 +1,16 @@
-import React from 'react'
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
+import LottieView from 'lottie-react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { noop } from 'lodash'
 
+import assetLoader from '@/assets/animations/asset-loader.json'
 import { AppText, ScreenHeaderTitle } from '@/components'
 import { Colors, normalize } from '@/globals'
+import utilStyles from '@/globals/util-styles'
 
-const PrivacyPolicy = ({ onClose }) => {
-  const webViewJs = `
+const webViewJs = `
   document.querySelector('.show-card-mobile').style.display = 'none';
   document.querySelector('.cards-mobile').style.display = 'none';
   document.querySelector('.header').style.display = 'none';
@@ -22,7 +20,10 @@ const PrivacyPolicy = ({ onClose }) => {
   document.querySelector('.section-cta').style.display = 'none';
   document.querySelector('.footer').style.display = 'none';
   true;
-  `
+`
+
+const PrivacyPolicy = ({ onClose }) => {
+  const [webviewLoaded, setWebviewLoaded] = useState(false)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -31,17 +32,38 @@ const PrivacyPolicy = ({ onClose }) => {
         title="Privacy Policy"
         paddingSize={3}
       />
-      <WebView
-        source={{ uri: 'https://servbees.com/privacy/' }}
-        injectedJavaScript={webViewJs}
-        startInLoadingState={true}
-        onMessage={event => {}}
-        renderLoading={() => (
-          <View style={{ flex: 1 }}>
-            <ActivityIndicator color={Colors.primaryYellow} />
+
+      <View style={styles.content}>
+        {!webviewLoaded && (
+          <View
+            style={[
+              utilStyles.flex1,
+              utilStyles.alignCenter,
+              utilStyles.justifyCenter,
+            ]}>
+            <LottieView source={assetLoader} autoPlay />
           </View>
         )}
-      />
+
+        <View
+          style={{
+            display: webviewLoaded ? 'flex' : 'none',
+            flex: webviewLoaded ? 1 : 0,
+          }}>
+          <WebView
+            source={{ uri: 'https://servbees.com/privacy/' }}
+            injectedJavaScript={webViewJs}
+            onMessage={noop}
+            javaScriptEnabled={true}
+            onLoadEnd={() => {
+              setTimeout(() => {
+                setWebviewLoaded(true)
+              }, 300)
+            }}
+          />
+        </View>
+      </View>
+
       <View style={styles.buttonWrapper}>
         <TouchableOpacity onPress={onClose}>
           <View style={styles.button}>
@@ -54,10 +76,12 @@ const PrivacyPolicy = ({ onClose }) => {
 }
 const styles = StyleSheet.create({
   buttonWrapper: {
-    padding: normalize(24),
+    paddingHorizontal: normalize(24),
     height: normalize(60),
   },
-
+  content: {
+    flex: 1,
+  },
   button: {
     height: normalize(49),
     borderColor: Colors.primaryMidnightBlue,
