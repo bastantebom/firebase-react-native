@@ -473,7 +473,7 @@ const DashboardScreen = ({ navigation }) => {
 
           {posts.length && totalPages !== Infinity ? (
             <FlatList
-              keyExtractor={item => item.id}
+              keyExtractor={item => item.uid + item.id}
               data={posts}
               onEndReached={handleOnEndReached}
               ListFooterComponent={

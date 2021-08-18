@@ -25,9 +25,9 @@ jobs:
         with:
           node-version: 12.x
 
-      - name: Decrypt Android keys 
-        run: sh ./.github/scripts/decrypt_android_release_keys.sh 
-        env: 
+      - name: Decrypt Android keys
+        run: sh ./.github/scripts/decrypt_android_release_keys.sh
+        env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
           RELEASE_KEYSTORE_PASSPHRASE: ${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}
 
@@ -71,12 +71,12 @@ jobs:
 
       - run: mkdir -p ./android/app/src/staging/assets
       - name: Compile android bundle
-        run: APP_ENV=production npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/release/assets/index.android.bundle
+        run: APP_ENV=production npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/release/assets/index.android.bundle --assets-dest android/app/src/release/res/
 
       - name: Build android apk
         run: APP_ENV=production ./gradlew :app:assembleRelease --no-daemon
         working-directory: android
-        
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:

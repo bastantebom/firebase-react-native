@@ -21,7 +21,7 @@ jobs:
 
       - name: Decrypt Android keys 
         run: sh ./.github/scripts/decrypt_android_staging_keys.sh 
-        env: 
+        env:
           STAGING_KEYSTORE: ${{ secrets.STAGING_KEYSTORE }}
           STAGING_KEYSTORE_PASSPHRASE: ${{ secrets.STAGING_KEYSTORE_PASSPHRASE }}
 
@@ -64,16 +64,16 @@ jobs:
 
       - run: mkdir -p ./android/app/src/staging/assets
       - name: Compile android bundle
-        run: APP_ENV=staging npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/staging/assets/index.android.bundle
+        run: APP_ENV=staging npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/staging/assets/index.android.bundle --assets-dest android/app/src/staging/res/
 
-      - name: stop existing gradle daemon 
+      - name: stop existing gradle daemon
         run: ./gradlew --stop
         working-directory: android
 
       - name: Build android apk
         run: APP_ENV=staging ./gradlew :app:assembleStaging  --no-daemon
         working-directory: android
-        
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
