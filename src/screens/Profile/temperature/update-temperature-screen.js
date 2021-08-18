@@ -43,7 +43,7 @@ export class TemperatureListItem extends PureComponent {
               typography.medium,
               isHigh ? { color: Colors.secondaryBrinkPink } : {},
             ]}>
-            {parseFloat(this.props.item.value).toFixed(2)}
+            {parseFloat(this.props.item.value).toFixed(1)}
             °C
           </Text>
           {isHigh && (
@@ -267,7 +267,6 @@ const UpdateTemperatureSreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacityGesture>
               <TextInput
-                maxLength={4}
                 containerStyle={[
                   { marginVertical: normalize(16) },
                   errors && isDirty
@@ -278,10 +277,14 @@ const UpdateTemperatureSreen = ({ navigation }) => {
                 value={temperature}
                 keyboardType="decimal-pad"
                 label="Body Temperature in °Celsius"
-                onChangeText={temperature => {
+                onChangeText={_ => {
                   setIsDirty(true)
-                  setTemperature(temperature)
                 }}
+                maxValue={41.0}
+                onChangeValue={value => setTemperature(value)}
+                isCurrency={true}
+                placeholder="00.0"
+                precision={1}
                 message={isDirty ? errors : ''}
                 messageStyle={{ color: Colors.secondaryBrinkPink }}
               />
