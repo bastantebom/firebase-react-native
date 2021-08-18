@@ -247,7 +247,10 @@ const SearchToolbar = ({
               onPress={() =>
                 navigation.navigate('NBTScreen', {
                   screen: 'profile',
-                  params: { screen: 'liked-posts' },
+                  params: {
+                    screen: 'liked-posts',
+                    params: { showNavigation: true },
+                  },
                 })
               }>
               <View style={styles.circleButton}>

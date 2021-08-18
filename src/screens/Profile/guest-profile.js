@@ -1,28 +1,39 @@
-import React, { useContext } from 'react'
+import React, { useContext, useCallback } from 'react'
 import Button from '@/components/Button'
 import { Context } from '@/context'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { OnboardingIllustration4 } from '@/assets/images'
-import {
-  Platform,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { useNavigation, useRoute } from '@react-navigation/native'
+
+import { PaddingView, ScreenHeaderTitle } from '@/components'
 
 const GuestProfileScreen = () => {
+  const navigation = useNavigation()
+  const { params } = useRoute()
+
   const { setAuthType, openSlider } = useContext(Context)
   const handleOnJoinPress = () => {
     setAuthType('signup')
     openSlider()
   }
 
+  const handleOnBackPress = useCallback(() => {
+    if (navigation.canGoBack()) {
+      navigation.goBack()
+    }
+  }, [navigation])
+
   return (
     <View style={styles.wrapper}>
+      {!!params?.showNavigation && (
+        <PaddingView paddingSize={3}>
+          <ScreenHeaderTitle title="" close={handleOnBackPress} />
+        </PaddingView>
+      )}
+
       <ScrollView contentContainerStyle={styles.scrollView}>
         <OnboardingIllustration4
           height={normalize(275)}
@@ -61,7 +72,7 @@ const GuestProfileScreen = () => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.neutralsWhite,
     marginTop: getStatusBarHeight(),
     paddingBottom: normalize(15),
   },

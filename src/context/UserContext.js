@@ -98,6 +98,7 @@ export const UserContextProvider = ({ children }) => {
       setUser(null)
       setUserInfo({})
       setVerificationStatus(null)
+      setCounts({})
       unsubscribe.current?.()
       await Promise.all([
         auth().signOut(),

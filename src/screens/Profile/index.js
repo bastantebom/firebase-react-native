@@ -19,7 +19,7 @@ import TemperatureStack from './temperature'
 import GuestProfileScreen from './guest-profile'
 import { UserContext } from '@/context/UserContext'
 
-const ProfileStack = () => {
+const ProfileStack = ({ route }) => {
   const { user } = useContext(UserContext)
   const Stack = createStackNavigator()
   const defaultScreenOptions = {
@@ -111,6 +111,7 @@ const ProfileStack = () => {
           name="profile"
           component={GuestProfileScreen}
           options={defaultScreenOptions}
+          initialParams={route?.params?.params || {}}
         />
       </Stack.Navigator>
     )
