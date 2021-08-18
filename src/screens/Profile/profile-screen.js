@@ -1,4 +1,4 @@
-import { Images, ProfileHeaderDefault } from '@/assets/images'
+import { Images } from '@/assets/images'
 import { Icons } from '@/assets/images/icons'
 import Loader from '@/components/loader'
 import Toast from '@/components/toast'
@@ -42,6 +42,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import HexagonImageMask from './components/hexagon-image-mask'
+import ProfileCoverPhoto from './components/profile-cover-photo'
 import moment from 'moment'
 import Button from '@/components/Button'
 import pluralize from 'pluralize'
@@ -1072,7 +1073,7 @@ const ProfileScreen = ({ navigation, route }) => {
           onQrPress={handleOnQrPress}
           onMenuPress={handleOnMenuPress}
           userInfo={userInfo}
-          uid={userData?.uid}
+          userData={userData}
           showFollowButton={isFollowing !== null}
           isFollowing={isFollowing}
           isFollowRequesting={isFollowRequesting}
@@ -1720,7 +1721,10 @@ class ProfileHeader extends PureComponent {
     })
 
     const isOwn =
-      this.props.userInfo?.uid && this.props.uid === this.props.userInfo.uid
+      this.props.userInfo?.uid &&
+      this.props.userData?.uid === this.props.userInfo.uid
+
+    const coverPhoto = this.props.userData?.cover_photo
 
     return (
       <>
@@ -1750,7 +1754,8 @@ class ProfileHeader extends PureComponent {
             style={{
               transform: [{ translateY: headerContentTranslateY }],
             }}>
-            <ProfileHeaderDefault
+            <ProfileCoverPhoto
+              path={coverPhoto}
               width={normalize(375 * 1.2)}
               height={normalize(158 * 1.2)}
             />
