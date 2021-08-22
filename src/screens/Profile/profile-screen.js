@@ -367,7 +367,7 @@ const ProfileScreen = ({ navigation, route }) => {
     Object.values(posts)
       .filter(post => !post.$promise)
       .forEach(async post => {
-        if (posts[post.id].$promise) return
+        if (posts[post.id]?.$promise) return
         setPosts(posts => ({
           ...posts,
           [post.id]: {
@@ -397,14 +397,14 @@ const ProfileScreen = ({ navigation, route }) => {
   useEffect(() => {
     if (profileUserPostsNeedsRefresh) {
       /**
-       * Delaying refresh for 500ms for now
+       * Delaying refresh for 1000ms for now
        * due to the Asynchronous timing from Post List
        *
        * The delay might be caused from writing in the Storage
        */
       setTimeout(() => {
         handleOnRefresh()
-      }, 500)
+      }, 1000)
     }
   }, [profileUserPostsNeedsRefresh])
 
@@ -1083,20 +1083,11 @@ const ProfileScreen = ({ navigation, route }) => {
           scrollY={scrollY}
         />
         <Animated.FlatList
-          keyExtractor={item => item.id}
-          data={selectedNav === 'posts' ? Object.values(posts) : []}
-          onEndReached={handleOnEndReached}
-          renderItem={renderItem}
-          ref={scrollViewRef}
           style={styles.wrapper}
           onScroll={onScroll}
-          bounces={false}
-          scrollEventThrottle={16}
-          overScrollMode="never"
-          showsVerticalScrollIndicator={false}
-          initialNumToRender={5}
+          nestedScrollEnabled={true}
           onMomentumScrollBegin={() => setScrolled(true)}
-          onEndReachedThreshold={0.1}
+          contentContainerStyle={containerStyle}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
@@ -1106,10 +1097,6 @@ const ProfileScreen = ({ navigation, route }) => {
               onRefresh={handleOnRefresh}
             />
           }
-          contentContainerStyle={containerStyle}
-          ItemSeparatorComponent={() => (
-            <View style={[styles.divider, { marginVertical: 0 }]} />
-          )}
           ListHeaderComponent={
             <View style={styles.content} onLayout={handleOnHeaderContentLayout}>
               <ProfileSecondaryHeader
@@ -1149,6 +1136,24 @@ const ProfileScreen = ({ navigation, route }) => {
                 selectedNav={selectedNav}
                 onPress={setSelectedNav}
               />
+              <ProfilePosts
+                scrollY={scrollY}
+                onLayout={handleOnMoreInfoLayout}
+                hidden={selectedNav === 'posts' ? false : true}
+                posts={posts}
+                handleOnEndReached={handleOnEndReached}
+                renderItem={renderItem}
+                isRefreshing={isRefreshing}
+                handleOnRefresh={handleOnRefresh}
+                containerStyle={containerStyle}
+                isEmpty={isEmpty}
+                handleOnDiscoverPress={handleOnDiscoverPress}
+                handleOnCreatePostPress={handleOnCreatePostPress}
+                userInfo={userInfo}
+                userData={userData}
+                hasMorePost={hasMorePost}
+                isLoading={isLoading}
+              />
               <ProfileMoreInfo
                 hidden={selectedNav === 'posts' ? true : false}
                 scrollY={scrollY}
@@ -1166,28 +1171,6 @@ const ProfileScreen = ({ navigation, route }) => {
             </View>
           }
           ListHeaderComponentStyle={{ elevation: 1 }}
-          ListEmptyComponent={
-            isEmpty &&
-            selectedNav === 'posts' && (
-              <EmptyPostsState
-                onDiscoverPress={handleOnDiscoverPress}
-                onCreatePostPress={handleOnCreatePostPress}
-                userInfo={userInfo}
-                userData={userData}
-              />
-            )
-          }
-          ListFooterComponent={
-            selectedNav === 'posts' ? (
-              !hasMorePost && !isEmpty ? (
-                <ListFooter />
-              ) : (
-                isLoading && <ListLoader />
-              )
-            ) : (
-              <></>
-            )
-          }
           stickyHeaderIndices={[0]}
         />
       </View>
@@ -1218,6 +1201,67 @@ const ListLoader = () => {
       </View>
     </View>
   )
+}
+
+class ProfilePosts extends PureComponent {
+  render() {
+    const translateY = this.props.scrollY.interpolate({
+      inputRange: [0, headerHeight - 1, headerHeight],
+      outputRange: [0, 0, -1],
+    })
+
+    return (
+      <>
+        {!this.props.hidden && (
+          <Animated.View
+            onLayout={this.props.onLayout}
+            style={[
+              // styles.moreInfoWrapper,
+              // this.props.containerStyle,
+              {
+                paddingBottom: normalize(24),
+                transform: [{ translateY }],
+              },
+            ]}>
+            <Animated.FlatList
+              keyExtractor={item => item.id}
+              data={Object.values(this.props.posts)}
+              onEndReached={this.props.handleOnEndReached}
+              renderItem={this.props.renderItem}
+              style={styles.wrapper}
+              bounces={false}
+              scrollEventThrottle={16}
+              overScrollMode="never"
+              showsVerticalScrollIndicator={false}
+              initialNumToRender={5}
+              onEndReachedThreshold={0.1}
+              contentContainerStyle={this.props.containerStyle}
+              ItemSeparatorComponent={() => (
+                <View style={[styles.divider, { marginVertical: 0 }]} />
+              )}
+              ListEmptyComponent={
+                this.props.isEmpty && (
+                  <EmptyPostsState
+                    onDiscoverPress={this.props.handleOnDiscoverPress}
+                    onCreatePostPress={this.props.handleOnCreatePostPress}
+                    userInfo={this.props.userInfo}
+                    userData={this.props.userData}
+                  />
+                )
+              }
+              ListFooterComponent={
+                !this.props.hasMorePost && !this.props.isEmpty ? (
+                  <ListFooter />
+                ) : (
+                  this.props.isLoading && <ListLoader />
+                )
+              }
+            />
+          </Animated.View>
+        )}
+      </>
+    )
+  }
 }
 
 class ProfileMoreInfo extends PureComponent {
@@ -1275,12 +1319,8 @@ class ProfileMoreInfo extends PureComponent {
       }))
 
     const handleOnLinkPress = async link => {
-      if (await Linking.canOpenURL(link)) {
-        Linking.openURL(link)
-      } else {
-        const transformedLink = prependHttp(link, { https: true })
-        Linking.openURL(transformedLink)
-      }
+      const transformedLink = prependHttp(link, { https: true })
+      Linking.openURL(transformedLink)
     }
 
     const renderEmptyState = () => {
@@ -1807,7 +1847,11 @@ class ProfileAvatar extends React.Component {
             transform: [
               {
                 translateY,
+              },
+              {
                 translateX,
+              },
+              {
                 scale,
               },
             ],
