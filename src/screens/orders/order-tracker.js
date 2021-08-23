@@ -278,10 +278,21 @@ const OrderTrackerScreen = ({ navigation, route }) => {
         })()
       )
 
+      promises.push(
+        (async () => {
+          const paymentDoc = firestore()
+            .collection('payments')
+            .where('order_id', '==', orderID)
+            .get()
+          const data = paymentDoc?.data
+          if (!data) return
+          setPaymentData(data)
+        })()
+      )
+
       await Promise.all(promises)
     } catch (error) {
       console.log(error)
-      Alert.alert('Error', 'Oops, something went wrong.')
     }
     setIsRefreshing(false)
     setIsLoading(false)
