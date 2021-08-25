@@ -762,17 +762,33 @@ const EditProfileScreen = ({ navigation, route }) => {
                 : {},
             ]}
             inputStyle={styles.phoneNumberInputStyle}>
-            <Text
-              style={[
-                typography.body1,
-                {
-                  color: Colors.icon,
-                  position: 'absolute',
-                  left: normalize(16),
-                },
-              ]}>
-              +63
-            </Text>
+            <View
+              style={{
+                position: 'absolute',
+                left: normalize(16),
+                top: 0,
+                bottom: 0,
+                height: normalize(54),
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={[
+                  typography.body1,
+                  {
+                    color: Colors.icon,
+                    lineHeight: Platform.select({
+                      android: normalize(24),
+                      ios: normalize(0),
+                    }),
+                    paddingBottom: Platform.select({
+                      android: normalize(2),
+                      ios: normalize(0),
+                    }),
+                  },
+                ]}>
+                +63
+              </Text>
+            </View>
           </TextInput>
         </View>
 
@@ -1131,7 +1147,10 @@ const styles = StyleSheet.create({
   },
   phoneNumberInputStyle: {
     marginLeft: normalize(35),
-    marginTop: normalize(Platform.select({ ios: -6, android: 0 })),
+    lineHeight: Platform.select({
+      android: normalize(24),
+      ios: normalize(0),
+    }),
   },
 })
 
