@@ -64,9 +64,8 @@ const WebviewScreen = ({ navigation, route }) => {
                 utilStyles.flex1,
                 utilStyles.alignCenter,
                 utilStyles.justifyCenter,
-                styles.loader,
               ]}>
-              <LottieView source={assetLoader} autoPlay />
+              <LottieView source={assetLoader} autoPlay style={styles.loader} />
             </View>
           )}
 
@@ -121,12 +120,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height,
-    width,
-    backgroundColor: '#fff',
+    width: normalize(32),
+    height: normalize(32),
   },
 })
 

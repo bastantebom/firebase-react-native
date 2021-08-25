@@ -41,7 +41,7 @@ const PrivacyPolicy = ({ onClose }) => {
               utilStyles.alignCenter,
               utilStyles.justifyCenter,
             ]}>
-            <LottieView source={assetLoader} autoPlay />
+            <LottieView source={assetLoader} autoPlay style={styles.loader} />
           </View>
         )}
 
@@ -89,6 +89,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loader: {
+    width: normalize(32),
+    height: normalize(32),
   },
 })
 export default PrivacyPolicy
