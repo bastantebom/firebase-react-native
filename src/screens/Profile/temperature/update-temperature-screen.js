@@ -9,6 +9,7 @@ import {
   RefreshControl,
   StatusBar,
   StyleSheet,
+  KeyboardAvoidingView,
   Text,
   TouchableOpacity,
   View,
@@ -25,6 +26,7 @@ import { UserContext } from '@/context/UserContext'
 import moment from 'moment'
 import ModalComponent from '@/screens/orders/modals'
 import { Images } from '@/assets/images'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export class TemperatureListItem extends PureComponent {
   render() {
@@ -197,7 +199,7 @@ const UpdateTemperatureSreen = ({ navigation }) => {
   }
 
   return (
-    <>
+    <SafeAreaView style={utilStyles.flex1} edges={['bottom']}>
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'update-temperature')}
@@ -228,85 +230,90 @@ const UpdateTemperatureSreen = ({ navigation }) => {
             <Text style={[typography.button2, typography.link]}>History</Text>
           </TouchableOpacityGesture>
         </View>
-        <ScrollView
-          contentContainerStyle={utilStyles.flex1}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              titleColor={Colors.primaryMidnightBlue}
-              tintColor={Colors.primaryYellow}
-              onRefresh={handleOnRefresh}
-            />
-          }>
-          <View style={styles.content}>
-            <View
-              style={[
-                styles.section,
-                styles.topSection,
-                !Object.values(recentRecords).length
-                  ? { ...styles.bottomSection, ...utilStyles.flex1 }
-                  : {},
-              ]}>
-              <Text style={typography.body1}>
-                What’s your body temperature today?
-              </Text>
-              <Text style={[typography.caption, { marginTop: normalize(8) }]}>
-                We prioritize health and safety. Please take your temperature
-                using a scanner or thermometer and log it down below.
-              </Text>
-              <TouchableOpacityGesture
-                activeOpacity={0.7}
-                onPress={handleOnTemperatureAboutPress}>
-                <Text
-                  style={[
-                    typography.caption,
-                    typography.link,
-                    { marginTop: normalize(8) },
-                  ]}>
-                  Why we’re asking this?
-                </Text>
-              </TouchableOpacityGesture>
-              <TextInput
-                containerStyle={[
-                  { marginVertical: normalize(16) },
-                  errors && isDirty
-                    ? { borderColor: Colors.secondaryBrinkPink }
-                    : {},
-                ]}
-                onBlur={() => setIsDirty(true)}
-                value={temperature}
-                keyboardType="decimal-pad"
-                label="Body Temperature in °Celsius"
-                onChangeText={_ => {
-                  setIsDirty(true)
-                }}
-                maxValue={41.0}
-                onChangeValue={value => setTemperature(value)}
-                isCurrency={true}
-                placeholder="00.0"
-                precision={1}
-                message={isDirty ? errors : ''}
-                messageStyle={{ color: Colors.secondaryBrinkPink }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={utilStyles.flex1}
+          keyboardVerticalOffset={normalize(32)}>
+          <ScrollView
+            contentContainerStyle={utilStyles.flex1}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                titleColor={Colors.primaryMidnightBlue}
+                tintColor={Colors.primaryYellow}
+                onRefresh={handleOnRefresh}
               />
-            </View>
-            {!!Object.values(recentRecords).length && (
+            }>
+            <View style={styles.content}>
               <View
                 style={[
                   styles.section,
-                  styles.bottomSection,
-                  utilStyles.flex1,
+                  styles.topSection,
+                  !Object.values(recentRecords).length
+                    ? { ...styles.bottomSection, ...utilStyles.flex1 }
+                    : {},
                 ]}>
-                <Text
-                  style={[
-                    typography.body2,
-                    { color: Colors.contentPlaceholder },
-                  ]}>
-                  Last 5 Entries
+                <Text style={typography.body1}>
+                  What’s your body temperature today?
                 </Text>
-                {Object.values(recentRecords).map(renderItem)}
+                <Text style={[typography.caption, { marginTop: normalize(8) }]}>
+                  We prioritize health and safety. Please take your temperature
+                  using a scanner or thermometer and log it down below.
+                </Text>
+                <TouchableOpacityGesture
+                  activeOpacity={0.7}
+                  onPress={handleOnTemperatureAboutPress}>
+                  <Text
+                    style={[
+                      typography.caption,
+                      typography.link,
+                      { marginTop: normalize(8) },
+                    ]}>
+                    Why we’re asking this?
+                  </Text>
+                </TouchableOpacityGesture>
+                <TextInput
+                  containerStyle={[
+                    { marginVertical: normalize(16) },
+                    errors && isDirty
+                      ? { borderColor: Colors.secondaryBrinkPink }
+                      : {},
+                  ]}
+                  onBlur={() => setIsDirty(true)}
+                  value={temperature}
+                  keyboardType="decimal-pad"
+                  label="Body Temperature in °Celsius"
+                  onChangeText={_ => {
+                    setIsDirty(true)
+                  }}
+                  maxValue={41.0}
+                  onChangeValue={value => setTemperature(value)}
+                  isCurrency={true}
+                  placeholder="00.0"
+                  precision={1}
+                  message={isDirty ? errors : ''}
+                  messageStyle={{ color: Colors.secondaryBrinkPink }}
+                />
               </View>
-            )}
-          </View>
+              {!!Object.values(recentRecords).length && (
+                <View
+                  style={[
+                    styles.section,
+                    styles.bottomSection,
+                    // utilStyles.flex1,
+                  ]}>
+                  <Text
+                    style={[
+                      typography.body2,
+                      { color: Colors.contentPlaceholder },
+                    ]}>
+                    Last 5 Entries
+                  </Text>
+                  {Object.values(recentRecords).map(renderItem)}
+                </View>
+              )}
+            </View>
+          </ScrollView>
           <View style={styles.buttonsWrapper}>
             <Button
               label="Save"
@@ -315,13 +322,13 @@ const UpdateTemperatureSreen = ({ navigation }) => {
               onPress={handleOnSubmit}
             />
           </View>
-        </ScrollView>
+        </KeyboardAvoidingView>
       </View>
       <HighTemperatureNote
         isVisible={highTemperatureNoteVisible}
         setIsVisible={setHighTemperatureNoteVisible}
       />
-    </>
+    </SafeAreaView>
   )
 }
 
@@ -423,6 +430,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     borderBottomEndRadius: 0,
     borderBottomStartRadius: 0,
+    paddingBottom: normalize(72),
   },
   highTemperatureNote: {
     backgroundColor: '#fff',
