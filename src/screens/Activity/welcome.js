@@ -24,11 +24,11 @@ const Welcome = () => {
         <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
         <View style={styles.contentWrapper}>
           <IllustHive />
-          <Text style={typography.display5}>Welcome to Servbees</Text>
+          <Text style={typography.display5}>Welcome to Servbees, Busybee</Text>
           <Text style={typography.body2}>
-            Get busy connecting with Buzzybees in your community, selling
-            products, offering your services, and scoring sweet deals. Start
-            with your first post today!
+            Create your first post today to get buzy hustling. Sell a product,
+            offer a service, look for sweet deals, or even just connect with
+            other buzybees. Have fun!
           </Text>
         </View>
         <View style={styles.buttonWrapper}>

@@ -38,9 +38,9 @@ const Welcome = ({ item, unreadNotification }) => {
         </View>
         <View style={styles.captionWrapper}>
           <AppText textStyle="caption">
-            Welcome to Servbees! Create your first post today to sell a product,
-            offer a service, or just find what you’re looking for nearby. This
-            is your first step to building your own business!
+            Welcome to Servbees, Busybee! Create your first post today to get
+            buzy hustling. Sell a product, offer a service, look for sweet
+            deals, or even just connect with other buzybees. Have fun!
           </AppText>
         </View>
       </View>
