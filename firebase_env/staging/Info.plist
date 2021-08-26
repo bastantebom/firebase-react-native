@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>${CURRENT_PROJECT_VERSION}</string>
 	<key>FacebookAppID</key>
 	<string>1251574315191207</string>
 	<key>FacebookDisplayName</key>
@@ -98,5 +98,7 @@
 	<false/>
 	<key>UIUserInterfaceStyle</key>
     <string>Light</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
