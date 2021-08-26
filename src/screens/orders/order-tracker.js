@@ -280,12 +280,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
       promises.push(
         (async () => {
-          const paymentDoc = firestore()
+          const paymentDoc = await firestore()
             .collection('payments')
             .where('order_id', '==', orderID)
             .get()
-          const data = paymentDoc?.data
-          if (!data) return
+
+          const data = paymentDoc.docs[0]
+          if (data) return
           setPaymentData(data)
         })()
       )
