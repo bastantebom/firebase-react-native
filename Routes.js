@@ -437,16 +437,23 @@ export default Routes = () => {
         const { id } = query
         const { data: post } = await Api.getPost({ pid: id })
 
-        navigate('NBTScreen', {
-          screen: 'posts',
-          params: {
-            screen: 'published-post',
+        if (post?.archived) {
+          navigate('NBTScreen', {
+            screen: 'unavailable-archive',
+          })
+        } else {
+          navigate('NBTScreen', {
+            screen: 'posts',
             params: {
-              id: post.id,
-              uid: post.uid,
+              screen: 'published-post',
+              params: {
+                id: post.id,
+                uid: post.uid,
+              },
             },
-          },
-        })
+          })
+        }
+        break
       }
       case '/order-tracker': {
         const { id } = query
@@ -457,6 +464,7 @@ export default Routes = () => {
             orderID: id,
           },
         })
+        break
       }
     }
   }

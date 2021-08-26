@@ -838,7 +838,7 @@ const AvailPostScreen = ({ navigation, route }) => {
         )}
 
         {!!initialRegion && (
-          <View
+          <TouchableOpacity
             onPress={handleOnViewMapPress}
             style={styles.mapViewWrapper}
             activeOpacity={1}>
@@ -868,7 +868,7 @@ const AvailPostScreen = ({ navigation, route }) => {
                 </View>
               </Marker>
             </MapView>
-          </View>
+          </TouchableOpacity>
         )}
 
         {!!notes.length && (
