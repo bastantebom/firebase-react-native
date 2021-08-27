@@ -89,6 +89,7 @@ import Post from './post.svg'
 import Success from './success.svg'
 import Error from './error.svg'
 import NoPosts from './no-activities.svg'
+import NoPostJar from './no-posts.svg'
 import Image from './image.svg'
 import NoPayoutMethod from './no-payout-method.svg'
 import HelpCenter from './help-center.svg'
@@ -124,6 +125,7 @@ export {
   PolygonStatic,
   ProfileHeaderDefault,
   NoPost,
+  NoPostJar,
   NoInfo,
   IdSelfie,
   IdVerify,
@@ -188,6 +190,7 @@ export const Images = {
   NoInternet,
   NoPayoutMethod,
   NoPosts,
+  NoPostJar,
   NoReview,
   PaymentFailed,
   PaymentFees,
