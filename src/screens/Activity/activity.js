@@ -17,7 +17,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { UserContext } from '@/context/UserContext'
 import { Icons } from '@/assets/images/icons'
-import { Images, NoInfo, NoPost } from '@/assets/images'
+import { Images, NoInfo } from '@/assets/images'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import utilStyles from '@/globals/util-styles'
@@ -25,11 +25,13 @@ import { TransitionIndicator } from '@/components'
 import ActivitiesCard from '@/screens/Activity/components/card'
 import ActivitySort from './components/sort-modal'
 import Api from '@/services/Api'
+import { HyperLink } from '@/components'
+import { Context } from '@/context'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Activity'>} param0 */
 const Activity = ({ navigation }) => {
   const { userInfo, counts } = useContext(UserContext)
-
+  const { setCreatePostPopupVisible } = useContext(Context)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [sortModal, setSortModal] = useState(false)
@@ -45,7 +47,7 @@ const Activity = ({ navigation }) => {
   const renderEmptyIcon = () => {
     switch (sort.value) {
       case 'all':
-        return <NoPost />
+        return <Images.NoPosts />
       case 'my offers':
       case 'my orders':
       case 'past':
@@ -58,7 +60,7 @@ const Activity = ({ navigation }) => {
   const renderEmptyHeadingText = () => {
     switch (sort.value) {
       case 'all':
-        return 'No activities yet'
+        return 'Start getting buzy'
       case 'my offers':
         return 'No offers yet'
       case 'my orders':
@@ -73,7 +75,7 @@ const Activity = ({ navigation }) => {
   const renderEmptyBodyText = () => {
     switch (sort.value) {
       case 'all':
-        return 'Now, is the best time to start selling, hustling, and checking the best deals in your community.'
+        return 'Nothing here yet, Buzybee! Sell, offer service, shop, or save the best deals near you.'
       case 'my offers':
         return 'Getting projects starts by making offers, Buzzybee!'
       case 'my orders':
@@ -303,6 +305,11 @@ const Activity = ({ navigation }) => {
             <Text style={[typography.body2, styles.emptyBodyText]}>
               {renderEmptyBodyText()}
             </Text>
+            <HyperLink
+              onPress={() => setCreatePostPopupVisible(true)}
+              style={[styles.createPostLink]}>
+              Create Post
+            </HyperLink>
           </View>
         )}
       </View>
@@ -385,6 +392,14 @@ const styles = StyleSheet.create({
   },
   emptyBodyText: {
     textAlign: 'center',
+  },
+  createPostLink: {
+    fontFamily: 'Rounded Mplus 1c',
+    fontSize: normalize(14),
+    fontWeight: '500',
+    color: '#3781FC',
+    letterSpacing: 0.25,
+    marginTop: 16,
   },
 })
 
