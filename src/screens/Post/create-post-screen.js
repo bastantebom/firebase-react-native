@@ -223,11 +223,11 @@ const CreatePostScreen = ({ navigation, route }) => {
                 typography.medium,
                 styles.noNumberTitle,
               ]}>
-              No mobile number added
+              Pzzt. Let your customers contact you easily
             </Text>
-            <Text style={typography.caption}>
+            {/* <Text style={typography.caption}>
               Add your mobile number to ensure customer service.
-            </Text>
+            </Text> */}
             <TouchableOpacity onPress={handleOnAddMobileNumberPress}>
               <Text style={[styles.noNumberAction, typography.medium]}>
                 Add and verify mobile number
@@ -1856,6 +1856,7 @@ const styles = StyleSheet.create({
   },
   noNumberTitle: {
     color: Colors.primaryMidnightBlue,
+    fontSize: 14,
   },
   noNumberAction: {
     paddingVertical: normalize(6),

@@ -1510,7 +1510,7 @@ class ProfileMoreInfo extends PureComponent {
             We’re reviewing your profile and documents.{' '}
           </Text>
           <Text style={[typography.caption, { marginTop: normalize(4) }]}>
-            You’ll get bee-rified soon!
+            You’ll get bee-rified soon! Yay!
           </Text>
           <View
             style={[
@@ -1520,23 +1520,6 @@ class ProfileMoreInfo extends PureComponent {
               { marginTop: normalize(16) },
             ]}>
             <View>
-              <View style={[utilStyles.row, utilStyles.alignCenter]}>
-                {this.props.verificationStatus.id?.status !== 'completed' ? (
-                  <Icons.CirclePending {...iconSize(24)} />
-                ) : (
-                  <Icons.CheckActive {...iconSize(24)} />
-                )}
-                <Text
-                  style={[
-                    typography.body2,
-                    {
-                      color: Colors.contentPlaceholder,
-                      marginLeft: normalize(8),
-                    },
-                  ]}>
-                  Government I.D.
-                </Text>
-              </View>
               <View
                 style={[
                   utilStyles.row,
@@ -1557,25 +1540,6 @@ class ProfileMoreInfo extends PureComponent {
                     },
                   ]}>
                   Email Address
-                </Text>
-              </View>
-            </View>
-            <View>
-              <View style={[utilStyles.row, utilStyles.alignCenter]}>
-                {this.props.verificationStatus.phone?.status !== 'completed' ? (
-                  <Icons.CirclePending {...iconSize(24)} />
-                ) : (
-                  <Icons.CheckActive {...iconSize(24)} />
-                )}
-                <Text
-                  style={[
-                    typography.body2,
-                    {
-                      color: Colors.contentPlaceholder,
-                      marginLeft: normalize(8),
-                    },
-                  ]}>
-                  Mobile Number
                 </Text>
               </View>
               <View
@@ -1600,6 +1564,53 @@ class ProfileMoreInfo extends PureComponent {
                     },
                   ]}>
                   Profile Info
+                </Text>
+              </View>
+            </View>
+            <View>
+              <View
+                style={[
+                  utilStyles.row,
+                  utilStyles.alignCenter,
+                  { marginTop: normalize(18) },
+                ]}>
+                {this.props.verificationStatus.phone?.status !== 'completed' ? (
+                  <Icons.CirclePending {...iconSize(24)} />
+                ) : (
+                  <Icons.CheckActive {...iconSize(24)} />
+                )}
+                <Text
+                  style={[
+                    typography.body2,
+                    {
+                      color: Colors.contentPlaceholder,
+                      marginLeft: normalize(8),
+                    },
+                  ]}>
+                  Mobile Number
+                </Text>
+              </View>
+
+              <View
+                style={[
+                  utilStyles.row,
+                  utilStyles.alignCenter,
+                  { marginTop: normalize(18) },
+                ]}>
+                {this.props.verificationStatus.id?.status !== 'completed' ? (
+                  <Icons.CirclePending {...iconSize(24)} />
+                ) : (
+                  <Icons.CheckActive {...iconSize(24)} />
+                )}
+                <Text
+                  style={[
+                    typography.body2,
+                    {
+                      color: Colors.contentPlaceholder,
+                      marginLeft: normalize(8),
+                    },
+                  ]}>
+                  Government I.D.
                 </Text>
               </View>
             </View>
@@ -1639,7 +1650,7 @@ class EmptyPostsState extends PureComponent {
     const isOwn = this.props.userData?.uid === this.props.userInfo?.uid
     return (
       <View style={styles.emptyPostsStateWrapper}>
-        <Images.NoPosts {...iconSize(140)} />
+        <Images.NoPostJar {...iconSize(140)} />
         <Text
           style={[
             typography.subtitle1,

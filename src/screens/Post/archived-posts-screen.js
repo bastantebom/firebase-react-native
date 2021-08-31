@@ -283,7 +283,7 @@ const ArchivedPostsScreen = ({ navigation, route }) => {
           justifyContent: 'center',
           paddingHorizontal: normalize(24),
         }}>
-        <Images.NoPosts {...iconSize(140)} />
+        <Images.NoPostJar {...iconSize(140)} />
         <Text
           style={[
             typography.subtitle1,
