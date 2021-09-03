@@ -290,7 +290,11 @@ const AvailPostScreen = ({ navigation, route }) => {
   }, [navigation])
 
   const canSubmit = () => {
-    return !!basket.paymentMethod
+    let hasSchedule = false
+    if (post.type === 'service') hasSchedule = !!basket?.bookingSchedule
+    else hasSchedule = true
+
+    return !!basket.paymentMethod && hasSchedule
   }
 
   const initLocation = async () => {
