@@ -842,10 +842,7 @@ const AvailPostScreen = ({ navigation, route }) => {
         )}
 
         {!!initialRegion && (
-          <TouchableOpacity
-            onPress={handleOnViewMapPress}
-            style={styles.mapViewWrapper}
-            activeOpacity={1}>
+          <View style={styles.mapViewWrapper}>
             <MapView
               ref={mapViewRef}
               style={styles.mapView}
@@ -854,7 +851,8 @@ const AvailPostScreen = ({ navigation, route }) => {
               pitchEnabled={false}
               rotateEnabled={false}
               zoomEnabled={false}
-              scrollEnabled={false}>
+              scrollEnabled={false}
+              onPress={handleOnViewMapPress}>
               <Marker
                 coordinate={{
                   latitude: initialRegion.latitude,
@@ -872,7 +870,7 @@ const AvailPostScreen = ({ navigation, route }) => {
                 </View>
               </Marker>
             </MapView>
-          </TouchableOpacity>
+          </View>
         )}
 
         {!!notes.length && (
