@@ -8,7 +8,7 @@
     "dev": "cd firebase_env && ./dev-env.sh && cd ../android && ./gradlew clean",
     "staging": "cd firebase_env && ./staging-env.sh && cd ../android && ./gradlew clean",
     "prod": "cd firebase_env && ./prod-env.sh && cd ../android && ./gradlew clean",
-    "start": "react-native start",
+    "start": "set port=3001 && react-native start",
     "test": "jest",
     "lint": "eslint .",
     "debug": "yarn android -- --variant=debug",

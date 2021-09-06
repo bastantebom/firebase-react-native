@@ -158,7 +158,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
                   typography.medium,
                   { flex: 1, color: Colors.contentEbony },
                 ]}>
-                Pickup
+                Pick-up
               </Text>
               <Text
                 style={[
