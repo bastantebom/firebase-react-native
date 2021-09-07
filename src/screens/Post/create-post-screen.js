@@ -1332,7 +1332,9 @@ const CreatePostScreen = ({ navigation, route }) => {
         renderIcon: () => (
           <Icons.Page style={styles.menuItemIcon} {...iconSize(24)} />
         ),
-        label: `${formData.notes?.length ? 'Edit' : 'Add'} Additional Notes`,
+        label: `${
+          formData.notes?.length ? 'Edit' : 'Add'
+        } Notes for your Customer`,
       },
     ]
 

@@ -991,7 +991,7 @@ const AvailPostScreen = ({ navigation, route }) => {
               typography.medium,
               utilStyles.flex1,
             ]}>
-            Select Payment Method
+            How do you want to pay?
           </Text>
         </View>
 
@@ -1057,7 +1057,7 @@ const AvailPostScreen = ({ navigation, route }) => {
               typography.medium,
               utilStyles.flex1,
             ]}>
-            Additional Notes
+            Any additional notes?
           </Text>
           <TouchableOpacity
             onPress={handleOnAddNotesPress}

@@ -63,11 +63,25 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
             <Text style={[typography.body2, typography.medium]}>
-              Additional Notes
+              Add Notes for your Customer
             </Text>
           </View>
         </View>
         <DismissKeyboardView style={styles.content} onLayout={handleOnLayout}>
+          <Text
+            style={[
+              typography.body2,
+              {
+                marginBottom: normalize(8),
+                color: Colors.primaryMidnightBlue,
+              },
+            ]}>
+            Got other details to highlight?
+          </Text>
+          <Text style={[typography.caption, { marginBottom: normalize(16) }]}>
+            Include your promos, discounts, and other information you want to
+            highlight.
+          </Text>
           {!!description?.length && (
             <Text style={[typography.body2, { marginBottom: normalize(16) }]}>
               {description}
@@ -76,6 +90,7 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
           <TextInput
             value={notes}
             label="Additional Notes"
+            placeholder="Add your returns and exchange policy, warranty notes, and other terms here."
             onChangeText={setNotes}
             multiline={true}
             numberOfLines={6}

@@ -34,6 +34,10 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
     close()
   }
 
+  const canSubmit = () => {
+    return !!data.schedule && (!!data.flexible || !!data.timeSlot)
+  }
+
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
   const [datePickerValue, setDatePickerValue] = useState(new Date())
 
@@ -51,9 +55,12 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
         <View style={styles.content}>
           <View style={styles.header}>
             <TouchableOpacity
-              style={{ marginTop: normalize(24) }}
+              style={{
+                marginTop: normalize(24),
+                zIndex: 10,
+              }}
               activeOpacity={0.7}
-              onPress={close}>
+              onPress={() => close()}>
               <Icons.Back
                 style={{ color: Colors.primaryMidnightBlue }}
                 {...iconSize(24)}
@@ -185,7 +192,12 @@ const BookingScheduleModal = ({ onSubmit, close, ...props }) => {
           </Checkbox>
 
           <View style={styles.buttonWrapper}>
-            <Button label="Book" type="primary" onPress={handleOnSubmit} />
+            <Button
+              label="Book"
+              type={!canSubmit() ? 'disabled' : 'primary'}
+              disabled={!canSubmit()}
+              onPress={handleOnSubmit}
+            />
           </View>
         </View>
       </View>

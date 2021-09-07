@@ -747,11 +747,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     if (!['sell', 'service'].includes(post.type)) return
     const label = post.type === 'sell' ? 'Shipping Details' : 'Service Details'
 
-    const handleOnViewMapPress = ({ latitude, longitude }) => {
-      openMap({
-        latitude,
-        longitude,
-        provider: Platform.OS === 'ios' ? 'apple' : 'google',
+    const handleOnViewMapPress = () => {
+      if (!user.uid) return
+      navigation.navigate('map-direction', {
+        data: post,
+        user:
+          userType === 'buyer' ? orderData?.buyerData : orderData?.sellerData,
       })
     }
 
@@ -889,12 +890,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     <Text style={{ color: Colors.neutralsIron }}> • </Text>
                     <Text
                       style={[typography.medium, typography.link]}
-                      onPress={() =>
-                        handleOnViewMapPress({
-                          latitude: post?.location?.latitude,
-                          longitude: post?.location?.longitude,
-                        })
-                      }>
+                      onPress={handleOnViewMapPress}>
                       View Map
                     </Text>
                   </Text>
@@ -936,12 +932,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       <Text style={{ color: Colors.neutralsIron }}> • </Text>
                       <Text
                         style={[typography.medium, typography.link]}
-                        onPress={() =>
-                          handleOnViewMapPress({
-                            latitude: orderData?.shipping_address?.latitude,
-                            longitude: orderData?.shipping_address?.longitude,
-                          })
-                        }>
+                        onPress={handleOnViewMapPress}>
                         View Map
                       </Text>
                     </Text>
@@ -975,12 +966,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     <Text style={{ color: Colors.neutralsIron }}> • </Text>
                     <Text
                       style={[typography.medium, typography.link]}
-                      onPress={() =>
-                        handleOnViewMapPress({
-                          latitude: post?.location?.latitude,
-                          longitude: post?.location?.longitude,
-                        })
-                      }>
+                      onPress={handleOnViewMapPress}>
                       View Map
                     </Text>
                   </Text>
@@ -1862,7 +1848,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           <Dialog
             Dialog
             title="Cancel Order"
-            description="Are you sure you want to cancel your order?">
+            description="Oh wait, sure you don’t want to proceed?">
             <Button
               label="No"
               type="primary"
@@ -1890,7 +1876,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           setIsVisible={setDeclineOrderModalVisible}>
           <Dialog
             title="Decline Order"
-            description="Are you sure you want to decline your order?">
+            description="Oh wait, sure you don’t want to accept?">
             <Button
               label="No"
               type="primary"
@@ -1913,15 +1899,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={confirmOrderModalVisible}
           setIsVisible={setConfirmOrderModalVisible}>
           <Dialog
-            title={`Confirm ${
+            title={
               post.type === 'sell'
-                ? 'Order'
+                ? 'Confirm Order'
                 : post.type === 'need'
-                ? 'Offer'
-                : 'Request'
-            }`}
-            description="Are you sure you want to proceed with
-            this order?">
+                ? 'Accept Offer'
+                : 'Confirm Booking'
+            }
+            description={
+              post.type === 'sell'
+                ? 'Yay! Ready to proceed?'
+                : post.type === 'need'
+                ? 'Yay! Sure with this one? Once accepted, all other offers will be declined.'
+                : 'Agree with the schedule? If not, message the customer to rebook on your available time.'
+            }>
             <Button
               label="Yes"
               type="primary"
@@ -1944,8 +1935,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={confirmDeliveryModalVisible}
           setIsVisible={setConfirmDeliveryModalVisible}>
           <Dialog
-            title="Confirm Delivery"
-            description="Order/s prepared and ready to be delivered? Please confirm.">
+            title="Ready to Deliver?"
+            description="Pzzt... Make sure order is prepared and good to go!">
             <Button
               label="Yes"
               type="primary"
@@ -1968,9 +1959,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={pickupOrderModalVisible}
           setIsVisible={setPickupOrderModalVisible}>
           <Dialog
-            title="Confirm Pick up"
-            description="Order/s prepared and ready for pick up?
-            Please confirm.">
+            title="Ready for Pick-up?"
+            description="Pzzt... Make sure order is prepared and good to go!">
             <Button
               label="Yes"
               type="primary"
@@ -1993,9 +1983,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={completeOrderModalVisible}
           setIsVisible={setCompleteOrderModalVisible}>
           <Dialog
-            title="Complete Order"
-            description="Are you sure you want to complete order?
-            Please confirm.">
+            title="Order Complete?"
+            description="Pzzt… Make sure you only confirm once customer receives the order.">
             <Button
               label="Yes"
               type="primary"
