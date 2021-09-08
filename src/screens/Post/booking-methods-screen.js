@@ -138,7 +138,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
               <TextInput
                 value={bookingMethods.appointment.notes}
                 onChangeText={setAppointmentNotes}
-                placeholder="Are there additional fees and options? (Optional)"
+                placeholder="Additional Notes (Optional)"
                 multiline={true}
                 numberOfLines={6}
                 textAlignVertical="top"

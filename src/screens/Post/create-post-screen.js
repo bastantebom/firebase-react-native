@@ -141,19 +141,31 @@ const CreatePostScreen = ({ navigation, route }) => {
       })
     }
 
+    const titleLabel = (() => {
+      if (postType === 'sell') return 'What are you selling?'
+      else if (postType === 'service') return `What's your service?`
+      else if (postType === 'need') return 'What do you need?'
+    })()
+
+    const titleDescription = (() => {
+      if (postType === 'sell') return 'Product details and specifications'
+      else if (postType === 'service') return 'Service details and inclusions'
+      else if (postType === 'need')
+        return `Details of the item or service you're looking for`
+    })()
+
     const titlePlaceholder = (() => {
       if (postType === 'sell') return 'e.g. Plants for Sale!'
-      else if (postType === 'service') return 'e.g. Online Tutor, Maintenance'
+      else if (postType === 'service') return 'e.g. Carpentry and Plumbing'
       else if (postType === 'need') return 'e.g. 45pcs Party Balloons'
     })()
 
     const descriptionPlaceholder = (() => {
-      if (postType === 'sell')
-        return 'Get more customers with detailed product information.'
+      if (postType === 'sell') return 'e.g. Indoor plants and herbs'
       else if (postType === 'service')
-        return 'Attract more bookings by specifying your qualifications.'
+        return 'e.g. Specializes in IKEA hacks and makeover'
       else if (postType === 'need')
-        return 'Get more offers by adding details and specifications.'
+        return '\ne.g. Rose gold "Happy Birthday" Ballons'
     })()
 
     return (
@@ -177,7 +189,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         <View style={[styles.formGroup, { marginBottom: normalize(24) }]}>
           <TextInput
             value={formData.title}
-            label="Post Title"
+            label={titleLabel}
             onChangeText={title => setFormData(data => ({ ...data, title }))}
             placeholder={titlePlaceholder}
             placeholderTextColor="#A8AAB7"
@@ -188,7 +200,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         <View style={styles.formGroup}>
           <TextInput
             value={formData.description}
-            label="Description"
+            label={titleDescription}
             onChangeText={description =>
               setFormData(data => ({ ...data, description }))
             }
@@ -906,11 +918,11 @@ const CreatePostScreen = ({ navigation, route }) => {
                   typography.medium,
                   styles.itemTypeLabel,
                 ]}>
-                {postType === 'sell' && 'List as Multiple Items'}
+                {postType === 'sell' && 'List Multiple Items'}
                 {postType === 'service' && 'List as Multiple Service'}
               </Text>
               <Text style={[typography.body2, styles.itemTypeDescription]}>
-                You can add more products and categories.
+                Add more products and categories under one post.
               </Text>
             </View>
           </RadioButton>
@@ -1279,7 +1291,7 @@ const CreatePostScreen = ({ navigation, route }) => {
                   typography.medium,
                   styles.sectionTitle,
                 ]}>
-                Additional Notes
+                Additional Notes?
               </Text>
               <Icons.ChevronRight style={{ color: Colors.icon }} />
             </View>
@@ -1325,7 +1337,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         renderIcon: () => (
           <Icons.Calendar style={styles.menuItemIcon} {...iconSize(24)} />
         ),
-        label: 'Add Store Schedule',
+        label: 'Add Store Hours',
       },
       {
         key: 'additional-notes',

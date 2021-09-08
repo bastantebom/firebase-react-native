@@ -252,7 +252,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
                   <TextInput
                     value={shippingMethods.delivery.courierNotes}
                     onChangeText={notes => setDeliveryNotes('courier', notes)}
-                    placeholder="Are there additional delivery fees and options? (Optional)"
+                    placeholder="Help your customers by offering booking assistance, landmarks, etc. (Optional)"
                     placeholderTextColor="#A8AAB7"
                     multiline={true}
                     numberOfLines={5}

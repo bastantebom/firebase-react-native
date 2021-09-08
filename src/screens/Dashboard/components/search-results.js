@@ -58,7 +58,9 @@ const SearchResults = ({
     return (
       <View>
         <AppText textStyle="subtitle1">
-          Your search “{searchValue}” did not match any {searchType}.{' '}
+          {searchType === 'post'
+            ? `Your search dfas ${searchValue} did not match any`
+            : 'dafa'}
         </AppText>
         <AppText textStyle="subtitle1">Try another search?</AppText>
         <View style={{ marginVertical: normalize(16) }}>

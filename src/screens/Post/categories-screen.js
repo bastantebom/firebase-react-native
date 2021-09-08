@@ -107,8 +107,7 @@ const CategoriesScreen = ({ navigation, route }) => {
                   typography.body2,
                   { color: Colors.contentPlaceholder },
                 ]}>
-                No specific category? The item will be automatically categorized
-                under "Others”.
+                Pzzt… Select or create a new category for this service.
               </Text>
             </View>
           </RadioButton>
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     flex: 1,
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',

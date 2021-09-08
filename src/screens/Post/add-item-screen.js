@@ -124,8 +124,7 @@ const AddItemScreen = ({ navigation, route }) => {
         ]}>
         <Text style={styles.categoriesTitle}>Categories</Text>
         <Text style={styles.categoriesSub}>
-          No specific category? The item will be automatically categorized under
-          “Others”.
+          Pzzt… Select or create a new category for this service.
         </Text>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -216,8 +215,7 @@ const AddItemScreen = ({ navigation, route }) => {
                   typography.body2,
                   { color: Colors.contentPlaceholder, marginTop: normalize(4) },
                 ]}>
-                Disable the toggle if item is not yet ready, unavailable, or out
-                of stock.
+                Disable toggle if service is unavailable.
               </Text>
             </View>
           </ToggleSwitch>

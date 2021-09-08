@@ -209,7 +209,7 @@ const AvailPostScreen = ({ navigation, route }) => {
   const handleOnAddNotesPress = () => {
     navigation.navigate('additional-notes', {
       notes: basket.notes,
-      description: 'Any instructions or notes you would like to add?',
+
       onSubmit: notes => {
         setBasket(basket => ({ ...basket, notes }))
       },
@@ -988,12 +988,14 @@ const AvailPostScreen = ({ navigation, route }) => {
           <Text
             style={[
               typography.body1narrow,
-              typography.medium,
               utilStyles.flex1,
+              typography.medium,
             ]}>
             How do you want to pay?
           </Text>
+          <Text style={[typography.display7, utilStyles.redColor]}>*</Text>
         </View>
+        
 
         <View style={styles.paymentMethods}>
           {paymentMethods.map(method => (
@@ -1057,7 +1059,7 @@ const AvailPostScreen = ({ navigation, route }) => {
               typography.medium,
               utilStyles.flex1,
             ]}>
-            Any additional notes?
+            Any Additional Notes?
           </Text>
           <TouchableOpacity
             onPress={handleOnAddNotesPress}

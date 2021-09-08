@@ -123,7 +123,7 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
         title: userType === 'seller' ? 'Requesting' : 'Awaiting Confirmation',
         message:
           userType === 'seller'
-            ? 'Confirm or decline booking...'
+            ? 'Accept or decline the booking request.'
             : 'Reviewing your booking request.',
         animation: pending,
       },

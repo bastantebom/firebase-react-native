@@ -89,8 +89,7 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
           )}
           <TextInput
             value={notes}
-            label="Additional Notes"
-            placeholder="Add your returns and exchange policy, warranty notes, and other terms here."
+            placeholder="Special requests, additional instructions, or any message here."
             onChangeText={setNotes}
             multiline={true}
             numberOfLines={6}

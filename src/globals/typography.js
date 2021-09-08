@@ -80,6 +80,16 @@ const typography = StyleSheet.create({
     letterSpacing: normalize(0.15),
     color: Colors.contentEbony,
   },
+  display7: {
+    fontFamily: 'Rounded Mplus 1c',
+    fontSize: normalize(16),
+    fontWeight: '500',
+    lineHeight: 24,
+    letterSpacing: normalize(0.02),
+    display: 'flex',
+    justifyContent: 'flex-start',
+    marginLeft: 5,
+  },
   eyebrow: {
     fontFamily: 'RoundedMplus1c-Regular',
     fontSize: normalize(10),

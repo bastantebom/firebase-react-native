@@ -20,8 +20,8 @@ const ConfirmExitModal = ({ close, editing, onConfirm }) => {
       </View>
       <View style={styles.content}>
         <Text style={[typography.body2, typography.textCenter]}>
-          You haven’t finished your post yet. Do you want to leave without
-          finishing?
+          Ooh, are you sure? All post details will be lost if you leave this
+          page.
         </Text>
         <View style={styles.buttonsWrapper}>
           <Button label="Yes" type="primary" onPress={onConfirm} />

@@ -99,8 +99,8 @@ const PhoneVerificationScreen = ({ navigation }) => {
                   Add and verify mobile number
                 </Text>
                 <Text style={[typography.body2, { marginTop: normalize(8) }]}>
-                  We’ll use this number for notifications, transaction updates,
-                  and log in help.
+                  No worries! Your number will only be used for added account
+                  security, app updates, and orders.
                 </Text>
                 <View style={[styles.formGroup, { marginTop: normalize(36) }]}>
                   <TextInput

@@ -88,9 +88,12 @@ const CategoriesModal = ({
               Others
             </Text>
             <Text
-              style={[typography.body2, { color: Colors.contentPlaceholder }]}>
-              No specific category? The item will be automatically categorized
-              under "Others”.
+              style={[
+                typography.body2,
+                { color: Colors.contentPlaceholder, fontSize: 14 },
+              ]}>
+              No specific category for this service? It’ll automatically be
+              under ‘Others’.
             </Text>
           </View>
         </RadioButton>
