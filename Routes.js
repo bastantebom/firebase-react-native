@@ -24,7 +24,7 @@ import UnavailableNetwork from '@/screens/Dashboard/components/unavailable-netwo
 import url from 'url'
 import Api from '@/services/Api'
 import CreatePostPopup from '@/screens/Post/components/create-post-popup'
-
+import messaging from '@react-native-firebase/messaging'
 import PostStack from '@/screens/Post'
 
 import { Past } from '@/screens/Activity'
@@ -38,6 +38,7 @@ import GuestActivity from '@/screens/Activity/components/guest-activity'
 import ChatHouse from '@/screens/Chat/chat-house'
 import PostChat from '@/screens/Chat/post-chat'
 import UnavailablePostScreen from '@/screens/Post/components/archived-post-unavailable'
+import firestore from '@react-native-firebase/firestore'
 
 import {
   AlmostThere,
@@ -378,6 +379,7 @@ export default Routes = () => {
     userInfo,
     verificationStatus,
     unavailableNetwork,
+    user,
   } = useContext(UserContext)
   const { addresses } = userInfo
 
@@ -421,9 +423,9 @@ export default Routes = () => {
       case '/profile': {
         const { uid } = query
         if (uid && uid === userInfo?.uid) {
-          navigation.navigate('TabStack', { screen: 'You' })
+          navigate('TabStack', { screen: 'You' })
         } else {
-          navigation.push('NBTScreen', {
+          navigate('NBTScreen', {
             screen: 'profile',
             params: {
               screen: 'profile',
@@ -482,6 +484,52 @@ export default Routes = () => {
       preparePushNotification()
     }
   }, [userInfo.uid])
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(remoteMessage => {})
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      handlePushNotificationClick(remoteMessage)
+    })
+
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          handlePushNotificationClick(remoteMessage)
+        }
+      })
+      .catch(error => {
+        console.log(error || error?.message)
+      })
+  }, [userInfo])
+
+  messaging().setBackgroundMessageHandler(remoteMessage => {})
+
+  const handlePushNotificationClick = async remoteMessage => {
+    const { receiver_id, sender_id, post_id } = remoteMessage?.data
+
+    const room = await firestore()
+      .collection('chat_rooms')
+      .where('members', '==', {
+        [receiver_id]: true,
+        [sender_id]: true,
+      })
+      .where('post_id', '==', post_id)
+      .get()
+
+    navigate('NBTScreen', {
+      screen: 'Chat',
+      params: {
+        channel: room.docs[0].data(),
+      },
+    })
+  }
 
   const preparePushNotification = async () => {
     const token = await registerDeviceToken()

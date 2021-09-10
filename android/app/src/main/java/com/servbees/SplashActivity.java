@@ -12,6 +12,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = new Intent(this, MainActivity.class);
+        Bundle extras = getIntent().getExtras();
+        intent.putExtras(getIntent().getExtras());
         startActivity(intent);
         finish();
     }
