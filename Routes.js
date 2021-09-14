@@ -512,23 +512,39 @@ export default Routes = () => {
   messaging().setBackgroundMessageHandler(remoteMessage => {})
 
   const handlePushNotificationClick = async remoteMessage => {
-    const { receiver_id, sender_id, post_id } = remoteMessage?.data
+    const { screen } = remoteMessage?.data
+    switch (screen) {
+      case 'Chat': {
+        const { receiver_id, sender_id, post_id } = remoteMessage?.data
+        const room = await firestore()
+          .collection('chat_rooms')
+          .where('members', '==', {
+            [receiver_id]: true,
+            [sender_id]: true,
+          })
+          .where('post_id', '==', post_id)
+          .get()
 
-    const room = await firestore()
-      .collection('chat_rooms')
-      .where('members', '==', {
-        [receiver_id]: true,
-        [sender_id]: true,
-      })
-      .where('post_id', '==', post_id)
-      .get()
+        navigate('NBTScreen', {
+          screen: 'Chat',
+          params: {
+            channel: room.docs[0].data(),
+          },
+        })
+        break
+      }
 
-    navigate('NBTScreen', {
-      screen: 'Chat',
-      params: {
-        channel: room.docs[0].data(),
-      },
-    })
+      case 'Order': {
+        const { order_id } = remoteMessage?.data
+        navigate('orders', {
+          screen: 'order-tracker',
+          params: {
+            orderID: order_id,
+          },
+        })
+        break
+      }
+    }
   }
 
   const preparePushNotification = async () => {
