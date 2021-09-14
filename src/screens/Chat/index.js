@@ -335,10 +335,25 @@ const ChatHeader = ({ navigation, user, showActiveStatus, post, userInfo }) => {
     }
   }
 
+  const handleBackPress = event => {
+    event && event.preventDefault()
+    navigation.removeListener('beforeRemove', handleBackPress)
+    if (!navigation.canGoBack()) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'TabStack' }],
+        })
+      )
+    } else {
+      navigation.goBack()
+    }
+  }
+
   return (
     <>
       <View style={styles.chatWrapper}>
-        <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
+        <TouchableOpacity onPress={handleBackPress} activeOpacity={0.7}>
           <Icons.Back
             style={styles.backButton}
             width={normalize(24)}
