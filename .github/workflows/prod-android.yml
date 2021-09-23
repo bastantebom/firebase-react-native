@@ -31,7 +31,6 @@ jobs:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
           RELEASE_KEYSTORE_PASSPHRASE: ${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}
 
-
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2
         with:
@@ -69,7 +68,7 @@ jobs:
         working-directory: android
         run: ./gradlew clean --no-daemon
 
-      - run: mkdir -p ./android/app/src/staging/assets
+      - run: mkdir -p ./android/app/src/release/assets
       - name: Compile android bundle
         run: APP_ENV=production npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/release/assets/index.android.bundle --assets-dest android/app/src/release/res/
 

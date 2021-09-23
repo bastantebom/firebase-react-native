@@ -62,5 +62,6 @@ buck-out/
 
 src/services/Api.js
 .env*
+!.env.template
 **/*/index.android.bundle
 .vs/slnx.sqlite
