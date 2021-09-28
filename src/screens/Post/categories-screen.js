@@ -27,6 +27,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
  * @property {Category} selectedCategory
  * @property {function} onSelect
  * @property {function} onCreatePress
+ * @property {string} postType
  */
 
 /**
@@ -36,7 +37,13 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'CategoriesScreen'>} param0 */
 const CategoriesScreen = ({ navigation, route }) => {
-  const { categories, selectedCategory, onSelect, onCreatePress } = route.params
+  const {
+    categories,
+    selectedCategory,
+    onSelect,
+    onCreatePress,
+    postType,
+  } = route.params
 
   return (
     <>
@@ -140,7 +147,9 @@ const CategoriesScreen = ({ navigation, route }) => {
             </Text>
             <Text
               style={[typography.body2, { color: Colors.contentPlaceholder }]}>
-              e.g. Burgers, Drinks, Desserts, Snacks
+              {postType === 'service'
+                ? 'e.g. Cleaning, Polishing, Restoration'
+                : 'e.g. Burgers, Drinks, Desserts, Snacks'}
             </Text>
           </TouchableOpacity>
         </View>

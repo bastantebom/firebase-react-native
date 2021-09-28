@@ -83,6 +83,7 @@ const AddItemScreen = ({ navigation, route }) => {
     else
       navigation.navigate('categories', {
         categories,
+        postType,
         onCreatePress: handleOnCreateCategoryPress,
         selectedCategory,
         onSelect: category => {
@@ -133,7 +134,6 @@ const AddItemScreen = ({ navigation, route }) => {
             <TextInput
               inputStyle={{ color: Colors.contentEbony }}
               label="Select Category"
-              disabled
               filled
               editable={false}
               value={selectedCategory}
@@ -315,6 +315,7 @@ const AddItemScreen = ({ navigation, route }) => {
           onCreatePress={handleOnCreateCategoryPress}
           onSelect={handleOnCategorySelect}
           selectedCategory={selectedCategory}
+          postType={postType}
         />
       </Modal>
     )

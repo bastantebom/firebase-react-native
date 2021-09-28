@@ -25,6 +25,7 @@ import { BottomSheetHeader } from '@/components'
  * @property {string} selectedCategory
  * @property {function} onSelect
  * @property {function} onCreatePress
+ * @property {string} postType
  *
  */
 const CategoriesModal = ({
@@ -32,6 +33,7 @@ const CategoriesModal = ({
   selectedCategory,
   onSelect,
   onCreatePress,
+  postType,
 }) => {
   return (
     <View style={styles.container}>
@@ -112,7 +114,9 @@ const CategoriesModal = ({
           </Text>
           <Text
             style={[typography.body2, { color: Colors.contentPlaceholder }]}>
-            e.g. Burgers, Drinks, Desserts, Snacks
+            {postType === 'service'
+              ? 'e.g. Cleaning, Polishing, Restoration'
+              : 'e.g. Burgers, Drinks, Desserts, Snacks'}
           </Text>
         </TouchableOpacity>
       </ScrollView>

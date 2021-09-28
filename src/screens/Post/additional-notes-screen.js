@@ -38,7 +38,7 @@ const DismissKeyboardView = ({ children, ...props }) => {
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'AdditionalNotesScreen'>} param0 */
 const AdditionalNotesScreen = ({ navigation, route }) => {
-  const { onSubmit, description } = route.params
+  const { onSubmit } = route.params
   const [notes, setNotes] = useState(route.params.notes || '')
   const handleOnSubmitPress = () => {
     onSubmit(notes)
@@ -63,30 +63,11 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
             <Text style={[typography.body2, typography.medium]}>
-              Add Notes for your Customer
+              Additional notes
             </Text>
           </View>
         </View>
         <DismissKeyboardView style={styles.content} onLayout={handleOnLayout}>
-          <Text
-            style={[
-              typography.body2,
-              {
-                marginBottom: normalize(8),
-                color: Colors.primaryMidnightBlue,
-              },
-            ]}>
-            Got other details to highlight?
-          </Text>
-          <Text style={[typography.caption, { marginBottom: normalize(16) }]}>
-            Include your promos, discounts, and other information you want to
-            highlight.
-          </Text>
-          {!!description?.length && (
-            <Text style={[typography.body2, { marginBottom: normalize(16) }]}>
-              {description}
-            </Text>
-          )}
           <TextInput
             value={notes}
             placeholder="Special requests, additional instructions, or any message here."
@@ -121,6 +102,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: normalize(24),
+    paddingTop: normalize(8),
   },
   header: {
     flexDirection: 'row',
