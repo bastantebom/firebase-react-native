@@ -149,7 +149,7 @@ const MapLocationScreen = ({ navigation, route }) => {
           </View>
         </View>
 
-        {!mapInitialized ? (
+        {!mapInitialized || !mapCoords.lat || !mapCoords.lng ? (
           <View style={[styles.loader]}>
             <ActivityIndicator
               color={Colors.primaryYellow}

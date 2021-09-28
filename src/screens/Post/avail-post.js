@@ -243,8 +243,8 @@ const AvailPostScreen = ({ navigation, route }) => {
       onPress: location => {
         setBasket(basket => ({
           ...basket,
-          selectedBookingAddress: location,
-          bookingAddress: location,
+          selectedBookingAddress: { ...location, _id: 'user-address' },
+          bookingAddress: { ...location, _id: 'user-address' },
         }))
       },
     })
@@ -360,6 +360,21 @@ const AvailPostScreen = ({ navigation, route }) => {
       (total, item) => total + item.price * (item.quantity || 1),
       0
     )
+
+  const isSameLocation = (loc1, loc2) => {
+    return isEqual(
+      {
+        latitude: loc1.latitude,
+        longitude: loc1.longitude,
+        id: loc1._id,
+      },
+      {
+        latitude: loc2.latitude,
+        longitude: loc2.longitude,
+        id: loc2._id,
+      }
+    )
+  }
 
   const renderTopSection = () => {
     return (
@@ -765,14 +780,17 @@ const AvailPostScreen = ({ navigation, route }) => {
             {basket.bookingMethod === 'appointment' && (
               <View style={{ marginBottom: normalize(16) }}>
                 <RadioButton
-                  value={isEqual(
+                  value={isSameLocation(
                     basket.selectedBookingAddress,
                     basket.bookingAddress
                   )}
                   onPress={() => {
                     setBasket(basket => ({
                       ...basket,
-                      bookingAddress: basket.selectedBookingAddress,
+                      bookingAddress: {
+                        ...basket.selectedBookingAddress,
+                        bookingAddressId: 'user-address',
+                      },
                     }))
                   }}>
                   <View style={{ flex: 1 }}>
@@ -812,7 +830,10 @@ const AvailPostScreen = ({ navigation, route }) => {
 
             <View style={{ marginBottom: normalize(16) }}>
               <RadioButton
-                value={isEqual(basket.bookingAddress, post.location)}
+                value={isSameLocation(basket.bookingAddress, {
+                  ...post.location,
+                  _id: 'post-location',
+                })}
                 disabled={basket.bookingMethod === 'walkin'}
                 radioStyle={
                   basket.bookingMethod === 'walkin' ? { display: 'none' } : {}
@@ -820,7 +841,10 @@ const AvailPostScreen = ({ navigation, route }) => {
                 onPress={() => {
                   setBasket(basket => ({
                     ...basket,
-                    bookingAddress: post.location,
+                    bookingAddress: {
+                      ...post.location,
+                      _id: 'post-location',
+                    },
                   }))
                 }}>
                 <View style={{ flex: 1 }}>
@@ -995,7 +1019,6 @@ const AvailPostScreen = ({ navigation, route }) => {
           </Text>
           <Text style={[typography.display7, utilStyles.redColor]}>*</Text>
         </View>
-        
 
         <View style={styles.paymentMethods}>
           {paymentMethods.map(method => (

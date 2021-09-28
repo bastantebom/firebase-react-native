@@ -42,7 +42,8 @@ const ChangeShippingMethodModal = ({ close, post }) => {
     if (post.type === 'sell') newBasket.shippingMethod = method
     else if (post.type === 'service') {
       newBasket.bookingMethod = method
-      if (method === 'walkin') newBasket.bookingAddress = post.location
+      if (method === 'walkin')
+        newBasket.bookingAddress = { ...post.location, _id: 'post-location' }
     }
 
     setBasket(newBasket)

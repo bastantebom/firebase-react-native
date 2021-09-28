@@ -229,7 +229,7 @@ export const getCurrentPosition = async () => {
 
     return { latitude, longitude }
   } catch (error) {
-    return ['ERR00', 1, 2].includes(error.code)
+    return ['ERR00', 1, 2, 3].includes(error.code)
       ? { longitude: 120.983207, latitude: 14.585322 }
       : {}
   }

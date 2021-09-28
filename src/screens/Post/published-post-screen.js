@@ -362,14 +362,18 @@ const PublishedPostScreen = ({ navigation, route }) => {
       })
     } else if (post.current.type === 'service') {
       if (basket.postId !== post.current.id || shouldReset) {
-        const bookingAddress = post.current.location
+        const bookingAddress = {
+          ...post.current.location,
+          _id: 'post-location',
+        }
         const newBasket = {
           postId: post.current.id,
           bookingMethod: Object.keys(post.current.booking_methods).sort()[0],
           bookingAddress,
-          selectedBookingAddress: userInfo.addresses.find(
-            address => address.default
-          ),
+          selectedBookingAddress: {
+            ...(userInfo.addresses.find(address => address.default) || {}),
+            _id: 'user-address',
+          },
           items: basket.items,
         }
 
