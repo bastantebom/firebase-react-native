@@ -39,30 +39,15 @@ const PaymentStatusScreen = ({ navigation, route }) => {
 
   const statusInfo = {
     paid: {
-      title: 'Payment Successful',
-      description: (
-        <Text>
-          You have paid ₱
-          <Text style={typography.medium}>
-            {formatNumber(amount, {
-              separator: '.',
-              precision: 2,
-              delimiter: ',',
-            })}
-          </Text>{' '}
-          to <Text style={typography.medium}>{sellerName}</Text>
-        </Text>
-      ),
-      buttonLabel: 'Back',
+      title: 'Yay! Payment successful!',
+      description: <Text>Your order is being prepared.</Text>,
+      buttonLabel: 'Track your order',
       image: <Images.PaymentSuccess />,
     },
     processing: {
-      title: 'Payment Processing',
+      title: 'Buzz, buzz. Payment is processing',
       description: (
         <Text>
-          <Text style={[typography.medium, typography.body1]}>
-            Buzz, buzz. Payment is processing
-          </Text>
           <Text style={typography.body2}>
             Wait for the confirmation of your payment.
           </Text>
@@ -74,7 +59,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
     failed: {
       title: 'Payment Unsuccessful',
       description: 'The transaction failed due to unspecified reasons.',
-      buttonLabel: 'Try again',
+      buttonLabel: 'Try other payment methods',
       image: <Images.PaymentFailed />,
     },
   }
