@@ -3,7 +3,6 @@ import firestore from '@react-native-firebase/firestore'
 
 import { Colors, normalize } from '@/globals'
 import { TransitionIndicator } from '@/components'
-import openMap from 'react-native-open-maps'
 import {
   Alert,
   LayoutAnimation,
@@ -749,10 +748,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
     const handleOnViewMapPress = () => {
       if (!user.uid) return
-      navigation.navigate('map-direction', {
-        data: post,
-        user:
-          userType === 'buyer' ? orderData?.buyerData : orderData?.sellerData,
+      navigation.navigate('NBTScreen', {
+        screen: 'posts',
+        params: {
+          screen: 'map-direction',
+          params: {
+            data: post,
+            user:
+              userType === 'buyer'
+                ? orderData?.buyerData
+                : orderData?.sellerData,
+          },
+        },
       })
     }
 
@@ -886,10 +893,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     {post?.location?.full_address
                       .split(', ')
                       .slice(0, -1)
-                      .join(', ')}{' '}
+                      .join(', ')}
                     <Text style={{ color: Colors.neutralsIron }}> • </Text>
                     <Text
-                      style={[typography.medium, typography.link]}
+                      style={[
+                        typography.medium,
+                        typography.link,
+                        { zIndex: 10 },
+                      ]}
                       onPress={handleOnViewMapPress}>
                       View Map
                     </Text>
@@ -928,10 +939,14 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                             .split(', ')
                             .slice(0, -1)
                             .join(', ')
-                        : ''}{' '}
+                        : ''}
                       <Text style={{ color: Colors.neutralsIron }}> • </Text>
                       <Text
-                        style={[typography.medium, typography.link]}
+                        style={[
+                          typography.medium,
+                          typography.link,
+                          { zIndex: 10 },
+                        ]}
                         onPress={handleOnViewMapPress}>
                         View Map
                       </Text>
@@ -958,14 +973,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     </Text>
                   </Text>
 
-                  <Text style={[typography.body2, { marginTop: normalize(4) }]}>
+                  <Text style={typography.body2}>
                     {post?.location?.full_address
                       .split(', ')
                       .slice(0, -1)
-                      .join(', ')}{' '}
+                      .join(', ')}
                     <Text style={{ color: Colors.neutralsIron }}> • </Text>
                     <Text
-                      style={[typography.medium, typography.link]}
+                      style={[
+                        typography.medium,
+                        typography.link,
+                        { zIndex: 10 },
+                      ]}
                       onPress={handleOnViewMapPress}>
                       View Map
                     </Text>
@@ -2230,6 +2249,12 @@ const styles = StyleSheet.create({
   outlineButton: {
     borderWidth: normalize(1),
     borderColor: Colors.contentEbony,
+  },
+  shippingInfoAddress: {
+    marginTop: normalize(4),
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
 })
 
