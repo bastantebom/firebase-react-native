@@ -769,99 +769,106 @@ const AvailPostScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
 
-            <Text
-              style={[
-                typography.body1narrow,
-                typography.medium,
-                { marginVertical: normalize(12) },
-              ]}>
-              Service Location
-            </Text>
-            {basket.bookingMethod === 'appointment' && (
-              <View style={{ marginBottom: normalize(16) }}>
-                <RadioButton
-                  value={isSameLocation(
-                    basket.selectedBookingAddress,
-                    basket.bookingAddress
-                  )}
-                  onPress={() => {
-                    setBasket(basket => ({
-                      ...basket,
-                      bookingAddress: {
-                        ...basket.selectedBookingAddress,
-                        bookingAddressId: 'user-address',
-                      },
-                    }))
-                  }}>
-                  <View style={{ flex: 1 }}>
-                    <Text
-                      style={[
-                        typography.body1narrow,
-                        typography.medium,
-                        { flex: 1 },
-                      ]}>
-                      {basket.selectedBookingAddress?.name || 'Home (Default)'}
-                    </Text>
-                    <Text
-                      style={[
-                        typography.body2,
-                        { marginVertical: normalize(4) },
-                      ]}
-                      numberOfLines={1}>
-                      {basket.selectedBookingAddress?.full_address}
-                    </Text>
+            {basket?.selectedBookingAddress && (
+              <>
+                <Text
+                  style={[
+                    typography.body1narrow,
+                    typography.medium,
+                    { marginVertical: normalize(12) },
+                  ]}>
+                  Service Location
+                </Text>
+                {basket.bookingMethod === 'appointment' && (
+                  <View style={{ marginBottom: normalize(16) }}>
+                    <RadioButton
+                      value={isSameLocation(
+                        basket.selectedBookingAddress,
+                        basket.bookingAddress
+                      )}
+                      onPress={() => {
+                        setBasket(basket => ({
+                          ...basket,
+                          bookingAddress: {
+                            ...basket.selectedBookingAddress,
+                            bookingAddressId: 'user-address',
+                          },
+                        }))
+                      }}>
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={[
+                            typography.body1narrow,
+                            typography.medium,
+                            { flex: 1 },
+                          ]}>
+                          {basket.selectedBookingAddress?.name ||
+                            'Home (Default)'}
+                        </Text>
+                        <Text
+                          style={[
+                            typography.body2,
+                            { marginVertical: normalize(4) },
+                          ]}
+                          numberOfLines={1}>
+                          {basket.selectedBookingAddress?.full_address}
+                        </Text>
+                      </View>
+                    </RadioButton>
+                    <TouchableOpacity
+                      onPress={handleOnChangeBookingAddressPress}
+                      activeOpacity={0.7}
+                      style={styles.linkWrapper}>
+                      <Text
+                        style={[
+                          typography.body2,
+                          typography.medium,
+                          typography.link,
+                        ]}>
+                        Change
+                      </Text>
+                    </TouchableOpacity>
                   </View>
-                </RadioButton>
-                <TouchableOpacity
-                  onPress={handleOnChangeBookingAddressPress}
-                  activeOpacity={0.7}
-                  style={styles.linkWrapper}>
-                  <Text
-                    style={[
-                      typography.body2,
-                      typography.medium,
-                      typography.link,
-                    ]}>
-                    Change
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+                )}
 
-            <View style={{ marginBottom: normalize(16) }}>
-              <RadioButton
-                value={isSameLocation(basket.bookingAddress, {
-                  ...post.location,
-                  _id: 'post-location',
-                })}
-                disabled={basket.bookingMethod === 'walkin'}
-                radioStyle={
-                  basket.bookingMethod === 'walkin' ? { display: 'none' } : {}
-                }
-                onPress={() => {
-                  setBasket(basket => ({
-                    ...basket,
-                    bookingAddress: {
+                <View style={{ marginBottom: normalize(16) }}>
+                  <RadioButton
+                    value={isSameLocation(basket.bookingAddress, {
                       ...post.location,
                       _id: 'post-location',
-                    },
-                  }))
-                }}>
-                <View style={{ flex: 1 }}>
-                  <Text
-                    style={[
-                      typography.body1narrow,
-                      typography.medium,
-                      { flex: 1 },
-                    ]}>
-                    Service Provider’s Address
-                  </Text>
-                  <Text style={typography.body2} numberOfLines={1}>
-                    {location.full_address}
-                  </Text>
+                    })}
+                    disabled={basket.bookingMethod === 'walkin'}
+                    radioStyle={
+                      basket.bookingMethod === 'walkin'
+                        ? { display: 'none' }
+                        : {}
+                    }
+                    onPress={() => {
+                      setBasket(basket => ({
+                        ...basket,
+                        bookingAddress: {
+                          ...post.location,
+                          _id: 'post-location',
+                        },
+                      }))
+                    }}>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={[
+                          typography.body1narrow,
+                          typography.medium,
+                          { flex: 1 },
+                        ]}>
+                        Service Provider’s Address
+                      </Text>
+                      <Text style={typography.body2} numberOfLines={1}>
+                        {location.full_address}
+                      </Text>
+                    </View>
+                  </RadioButton>
                 </View>
-              </RadioButton>
-            </View>
+              </>
+            )}
           </View>
         )}
 
