@@ -68,7 +68,6 @@ import {
   registerDeviceToken,
   saveDeviceToken,
 } from '@/globals/push-notification-util'
-import { includes } from 'lodash'
 
 const defaultScreenOptions = {
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -111,6 +110,7 @@ function NoBottomTabScreens() {
       <Stack.Screen name="OngoingItem" component={OngoingItem} />
       <Stack.Screen name="Past" component={Past} />
       <Stack.Screen name="unavailable-network" component={UnavailableNetwork} />
+      <Stack.Screen name="orders" component={OrdersStack} />
       <Stack.Screen
         name="unavailable-archive"
         component={UnavailablePostScreen}
@@ -536,10 +536,13 @@ export default Routes = () => {
 
       case 'Order': {
         const { order_id } = remoteMessage?.data
-        navigate('orders', {
-          screen: 'order-tracker',
+        navigate('NBTScreen', {
+          screen: 'orders',
           params: {
-            orderID: order_id,
+            screen: 'order-tracker',
+            params: {
+              orderID: order_id,
+            },
           },
         })
         break

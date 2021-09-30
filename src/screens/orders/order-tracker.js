@@ -1809,7 +1809,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           <TouchableOpacity
             style={styles.backButton}
             activeOpacity={0.7}
-            onPress={navigation.goBack}>
+            onPress={() =>
+              navigation.canGoBack()
+                ? navigation.goBack()
+                : navigation.navigate('TabStack', {
+                    screen: 'Servbees',
+                  })
+            }>
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
