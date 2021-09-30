@@ -63,7 +63,7 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
             <Text style={[typography.body2, typography.medium]}>
-              Additional notes
+              Additional Notes
             </Text>
           </View>
         </View>

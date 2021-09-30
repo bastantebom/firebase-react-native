@@ -23,12 +23,6 @@ const SearchItem = ({ value }) => {
         <AppText textStyle="subtitle1">
           Your search “{value}” did not match any post. Try another search?
         </AppText>
-        <View style={{ marginVertical: 15 }}>
-          <AppText textStyle="caption">
-            - Check if the spelling is correct
-          </AppText>
-          <AppText textStyle="caption">- Use different keywords</AppText>
-        </View>
       </View>
     </View>
   )

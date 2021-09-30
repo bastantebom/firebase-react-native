@@ -63,12 +63,6 @@ const SearchResults = ({
             : `Uh-oh, no match for “${searchValue}”. Check the spelling or try a different name.`}
         </AppText>
         <AppText textStyle="subtitle1">Try another search?</AppText>
-        <View style={{ marginVertical: normalize(16) }}>
-          <AppText textStyle="caption">
-            - Check if the spelling is correct
-          </AppText>
-          <AppText textStyle="caption">- Use different keywords</AppText>
-        </View>
       </View>
     )
   }
