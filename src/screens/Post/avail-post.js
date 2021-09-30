@@ -1016,8 +1016,14 @@ const AvailPostScreen = ({ navigation, route }) => {
               typography.medium,
             ]}>
             How do you want to pay?
+            <Text
+              style={[
+                typography.display7,
+                { color: Colors.secondaryBrinkPink },
+              ]}>
+              *
+            </Text>
           </Text>
-          <Text style={[typography.display7, utilStyles.redColor]}>*</Text>
         </View>
 
         <View style={styles.paymentMethods}>

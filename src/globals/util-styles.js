@@ -22,9 +22,6 @@ const utilStyles = StyleSheet.create({
   justifySpaceBetween: {
     justifyContent: 'space-between',
   },
-  redColor: {
-    color: 'red',
-  },
 })
 
 export default utilStyles
