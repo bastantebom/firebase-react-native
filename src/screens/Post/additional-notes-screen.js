@@ -28,7 +28,7 @@ const DismissKeyboardView = ({ children, ...props }) => {
  * @typedef {object} AdditionalNotesScreenProps
  * @property {function} onSubmit
  * @property {string} notes
- * @property {string} description
+ * @property {string} postType
  */
 
 /**
@@ -38,7 +38,7 @@ const DismissKeyboardView = ({ children, ...props }) => {
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'AdditionalNotesScreen'>} param0 */
 const AdditionalNotesScreen = ({ navigation, route }) => {
-  const { onSubmit } = route.params
+  const { onSubmit, postType } = route.params
   const [notes, setNotes] = useState(route.params.notes || '')
   const handleOnSubmitPress = () => {
     onSubmit(notes)
@@ -49,6 +49,26 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
   const handleOnLayout = event => {
     setMaxLines(~~(event.nativeEvent.layout.height / 24 - 3))
   }
+
+  const title = postType ? 'Add Notes for your Customer' : 'Additional Notes'
+
+  const label = postType
+    ? postType === 'need'
+      ? 'Share more details'
+      : 'Got other details to highlight?'
+    : null
+
+  const description = postType
+    ? postType === 'need'
+      ? "The more info you post about what you're looking for, the better your chances of finding it."
+      : 'Include your promos, discounts, and other information you want to highlight.'
+    : 'Any instructions or notes you would like to add?'
+
+  const placeholder = postType
+    ? postType === 'need'
+      ? 'Add more specific information about what you’re looking for. You can be as detailed as possible.'
+      : 'Add your returns and exchange policy, warranty notes, and other terms here.'
+    : 'Additional notes'
 
   return (
     <>
@@ -62,15 +82,32 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
           <View style={styles.titleWrapper}>
-            <Text style={[typography.body2, typography.medium]}>
-              Additional Notes
-            </Text>
+            <Text style={[typography.body2, typography.medium]}>{title}</Text>
           </View>
         </View>
         <DismissKeyboardView style={styles.content} onLayout={handleOnLayout}>
+          {label && (
+            <Text
+              style={[
+                typography.body1,
+                {
+                  marginBottom: normalize(8),
+                  color: Colors.primaryMidnightBlue,
+                },
+              ]}>
+              {label}
+            </Text>
+          )}
+          <Text
+            style={[
+              typography.body2,
+              { color: Colors.contentPlaceholder, marginBottom: normalize(16) },
+            ]}>
+            {description}
+          </Text>
           <TextInput
             value={notes}
-            placeholder="Special requests, additional instructions, or any message here."
+            placeholder={placeholder}
             onChangeText={setNotes}
             multiline={true}
             numberOfLines={6}

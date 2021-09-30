@@ -209,7 +209,6 @@ const AvailPostScreen = ({ navigation, route }) => {
   const handleOnAddNotesPress = () => {
     navigation.navigate('additional-notes', {
       notes: basket.notes,
-
       onSubmit: notes => {
         setBasket(basket => ({ ...basket, notes }))
       },

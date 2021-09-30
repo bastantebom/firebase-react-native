@@ -266,6 +266,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const showAdditionalNotesScreen = () => {
     navigation.navigate('additional-notes', {
       notes: formData.notes,
+      postType,
       onSubmit: notes => {
         setFormData(data => ({ ...data, notes }))
       },
