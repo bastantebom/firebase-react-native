@@ -840,6 +840,16 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       .split(', ')
                       .slice(0, -1)
                       .join(', ')}
+                    <Text style={{ color: Colors.neutralsIron }}> • </Text>
+                    <Text
+                      style={[
+                        typography.medium,
+                        typography.link,
+                        { zIndex: 10 },
+                      ]}
+                      onPress={handleOnViewMapPress}>
+                      View Map
+                    </Text>
                   </Text>
                 </View>
               </View>
@@ -868,6 +878,16 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                           .slice(0, -1)
                           .join(', ')
                       : ''}
+                    <Text style={{ color: Colors.neutralsIron }}> • </Text>
+                    <Text
+                      style={[
+                        typography.medium,
+                        typography.link,
+                        { zIndex: 10 },
+                      ]}
+                      onPress={handleOnViewMapPress}>
+                      View Map
+                    </Text>
                   </Text>
                 </View>
               </View>
