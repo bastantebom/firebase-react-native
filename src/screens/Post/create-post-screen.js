@@ -1338,7 +1338,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         renderIcon: () => (
           <Icons.Calendar style={styles.menuItemIcon} {...iconSize(24)} />
         ),
-        label: 'Add Schedule',
+        label: postType === 'sell' ? 'Add Store Hours' : 'Add Schedule',
       },
       {
         key: 'additional-notes',
