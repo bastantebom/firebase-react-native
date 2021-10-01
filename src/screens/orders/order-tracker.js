@@ -1751,7 +1751,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
       Linking.openURL('mailto:help@servbees.com')
     }
 
-    const rawSeconds = paymentData?.date_paid._seconds + 345600
+    const rawSeconds = paymentData?.date_paid?._seconds + 86400 * 3
     const now = new Date()
     const currentSeconds = Math.round(now.getTime() / 1000)
 
