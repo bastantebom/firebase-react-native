@@ -366,6 +366,22 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     try {
       const body = { status }
       if (status === 'cancelled') body.cancelled_by = userType
+      const orderRef = await firestore().doc(`orders/${orderID}`).get()
+      const order = orderRef.data()
+
+      if (
+        status === order.status ||
+        (status === 'confirmed' &&
+          order.history.some(_status => _status === 'confirmed')) ||
+        (status === 'cancelled' &&
+          order.history.some(_status => _status === 'cancelled')) ||
+        (status === 'declined' &&
+          order.history.some(_status => _status === 'declined')) ||
+        (status === 'completed' &&
+          order.history.some(_status => _status === 'completed'))
+      )
+        return setIsLoading(false)
+
       const response = await Api.updateOrder({
         uid: user.uid,
         id: orderData.id,
