@@ -1665,7 +1665,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                           orderData.payment_method !== 'cash')) && (
                         <Button
                           type="primary"
-                          onPress={() => setConfirmOrderModalVisible(true)}
+                          onPress={() => setConfirmDeliveryModalVisible(true)}
                           label="Confirm for Delivery"
                         />
                       )}
