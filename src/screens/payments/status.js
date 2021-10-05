@@ -67,12 +67,15 @@ const PaymentStatusScreen = ({ navigation, route }) => {
   const backPressHandler = event => {
     event.preventDefault()
     const parentState = navigation.dangerouslyGetParent().dangerouslyGetState()
-    const index = parentState.routes.findIndex(route => route.name === 'orders')
+
+    const index = parentState.routes.findIndex(
+      route => route.name === 'NBTScreen'
+    )
 
     navigation.removeListener('beforeRemove', backPressHandler)
     navigation.dispatch(
       CommonActions.reset({
-        index: 1,
+        index: index,
         routes: parentState.routes.slice(0, index + 1),
       })
     )
