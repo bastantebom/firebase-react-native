@@ -165,7 +165,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       else if (postType === 'service')
         return 'e.g. Specializes in IKEA hacks and makeover'
       else if (postType === 'need')
-        return '\ne.g. Rose gold "Happy Birthday" Ballons'
+        return 'e.g. Rose gold "Happy Birthday" Ballons'
     })()
 
     return (
