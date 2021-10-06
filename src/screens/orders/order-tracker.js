@@ -1712,6 +1712,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       'declined',
                       'pending',
                       'paid',
+                      'payment processing',
                     ].includes(orderData.status) && (
                       <TouchableOpacity
                         activeOpacity={0.7}
@@ -1743,10 +1744,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                   <Button
                     type="primary"
                     onPress={() => setCompleteOrderModalVisible(true)}
-                    label="Order Completed"
+                    label="Complete Order"
                   />
                 </View>
               )}
+
+            {post.type === 'service' && orderData.status === 'paid' && (
+              <View style={{ padding: normalize(16) }}>
+                <Button
+                  type="primary"
+                  onPress={() => setCompleteOrderModalVisible(true)}
+                  label="Booking Complete"
+                />
+              </View>
+            )}
 
             {post.type === 'need' && orderData.status === 'cancelled' && (
               <View style={{ padding: normalize(16) }}>
@@ -1908,7 +1919,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           setIsVisible={setCancelOrderModalVisible}>
           <Dialog
             Dialog
-            title="Cancel Order"
+            title={
+              post.type === 'sell'
+                ? 'Cancel Order'
+                : post.type === 'service'
+                ? 'Cancel Booking'
+                : 'Cancel Offer'
+            }
             description="Oh wait, sure you don’t want to proceed?">
             <Button
               label="No"
@@ -1936,8 +1953,18 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={declineOrderModalVisible}
           setIsVisible={setDeclineOrderModalVisible}>
           <Dialog
-            title="Decline Order"
-            description="Oh wait, sure you don’t want to accept?">
+            title={
+              post.type === 'sell'
+                ? 'Decline Order'
+                : post.type === 'service'
+                ? 'Decline Booking'
+                : 'Decline Offer'
+            }
+            description={
+              post.type === 'need'
+                ? 'Oh wait, sure you want to decline? You won’t be able to accept this offer anymore.'
+                : 'Oh wait, sure you don’t want to accept?'
+            }>
             <Button
               label="No"
               type="primary"
