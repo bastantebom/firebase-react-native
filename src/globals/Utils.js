@@ -536,12 +536,12 @@ export function parseSocialLink(url) {
   }
 }
 
-export const useInterval = (callback, delay) => {
+export const useInterval = (callback, delay, dependencies = []) => {
   const savedCallback = useRef(callback)
 
   useEffect(() => {
     savedCallback.current = callback
-  }, [callback])
+  }, [callback, ...dependencies])
 
   useEffect(() => {
     if (delay === null) return

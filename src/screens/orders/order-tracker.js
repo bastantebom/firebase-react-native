@@ -139,13 +139,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     subscribers.push(
       firestore()
         .collection('payments')
-        .where('status', '!=', 'cancelled ')
         .where('order_id', '==', orderID)
-        .orderBy('status', 'desc')
         .orderBy('date_created', 'desc')
+        .limit(1)
         .onSnapshot(snapshot => {
-          const data = snapshot?.docs?.[0]?.data()
-          setPaymentData(data)
+          const payments = snapshot?.docs?.map(doc => doc.data()) || []
+
+          setPaymentData(payments[0])
         })
     )
 
@@ -187,7 +187,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     },
     !allowRetryPayment && orderData?.status === 'payment processing'
       ? 1000
-      : null
+      : null,
+    [paymentData?.date_created, orderData.status]
   )
 
   const getTitle = () => {
@@ -298,14 +299,16 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
       promises.push(
         (async () => {
-          const paymentDoc = await firestore()
+          const snapshot = firestore()
             .collection('payments')
             .where('order_id', '==', orderID)
+            .orderBy('date_created', 'desc')
+            .limit(5)
             .get()
 
-          const data = paymentDoc.docs[0]
-          if (data) return
-          setPaymentData(data)
+          const payments = snapshot?.docs?.map(doc => doc.data()) || []
+
+          setPaymentData(payments[0])
         })()
       )
 
@@ -1249,7 +1252,10 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                     { marginTop: normalize(16) },
                   ]}>
                   <Icons.InfoCircle
-                    style={{ color: Colors.icon, marginRight: normalize(4) }}
+                    style={{
+                      color: Colors.icon,
+                      marginRight: normalize(4),
+                    }}
                     {...iconSize(16)}
                   />
                   <Text
@@ -1257,7 +1263,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                       typography.caption,
                       { color: Colors.contentPlaceholder },
                     ]}>
-                    Your payment is still processing.
+                    {userType === 'buyer'
+                      ? 'Your payment is still processing.'
+                      : 'Payment is still processing'}
                   </Text>
                 </View>
               )}
@@ -1969,7 +1977,13 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 ? 'Cancel Booking'
                 : 'Cancel Offer'
             }
-            description="Oh wait, sure you don’t want to proceed?">
+            description={
+              post.type === 'sell'
+                ? 'Oh wait, sure you don’t want to proceed?'
+                : post.type === 'service'
+                ? 'Oh no! Sure you want to cancel?'
+                : 'Oh wait, sure you want to cancel?'
+            }>
             <Button
               label="No"
               type="primary"
@@ -2114,8 +2128,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={completeOrderModalVisible}
           setIsVisible={setCompleteOrderModalVisible}>
           <Dialog
-            title="Order Complete?"
-            description="Pzzt… Make sure you only confirm once customer receives the order.">
+            title={
+              post.type === 'sell'
+                ? 'Order Complete?'
+                : post.type === 'service'
+                ? 'Complete Booking'
+                : 'Complete Offer?'
+            }
+            description={
+              post.type === 'sell'
+                ? 'Pzzt… Make sure you only confirm once customer receives the order.'
+                : post.type === 'service'
+                ? 'Good job! Sure all service inclusions are done?'
+                : 'Is your transaction settled and complete?'
+            }>
             <Button
               label="Yes"
               type="primary"

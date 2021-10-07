@@ -68,8 +68,8 @@ const PaymentStatusScreen = ({ navigation, route }) => {
     event.preventDefault()
     const parentState = navigation.dangerouslyGetParent().dangerouslyGetState()
 
-    const index = parentState.routes.findIndex(
-      route => route.name === 'NBTScreen'
+    const index = parentState.routes.findIndex(route =>
+      ['NBTScreen', 'orders'].includes(route.name)
     )
 
     navigation.removeListener('beforeRemove', backPressHandler)
