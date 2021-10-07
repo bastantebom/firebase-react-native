@@ -4,9 +4,9 @@ import { View, StyleSheet, Text, Animated } from 'react-native'
 import { normalize, Colors } from '@/globals'
 import utilStyles from '@/globals/util-styles'
 
-const Dialog = ({ children, title, description }) => {
+const Dialog = ({ children, title, description, ...props }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, props.containerStyle]}>
       <Animated.View style={styles.animatedView}>
         <View
           style={[

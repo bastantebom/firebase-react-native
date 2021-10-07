@@ -14,6 +14,7 @@ import axios from 'axios'
 import ImageApi from '@/services/image-api'
 import { formatNumber } from 'react-native-currency-input'
 import { FIREBASE_API_KEY, GOOGLE_MAPS_API_KEY } from '@env'
+import { useEffect, useRef } from 'react'
 
 Geocoder.init(GOOGLE_MAPS_API_KEY)
 
@@ -533,4 +534,18 @@ export function parseSocialLink(url) {
   ) {
     return 'website'
   }
+}
+
+export const useInterval = (callback, delay) => {
+  const savedCallback = useRef(callback)
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    if (delay === null) return
+    const id = setInterval(() => savedCallback.current(), delay)
+    return () => clearInterval(id)
+  }, [delay])
 }

@@ -12,7 +12,13 @@ import orderDeclined from '@/assets/animations/order-declined.json'
 import bookingScheduled from '@/assets/animations/booking-scheduled.json'
 import sellerServiceCancelled from '@/assets/animations/seller-service-cancelled.json'
 
-export const getStatusData = ({ userType, postType, orderData, past }) => {
+export const getStatusData = ({
+  userType,
+  postType,
+  orderData,
+  past,
+  allowRetryPayment,
+}) => {
   const statuses = {
     sell: {
       pending: {
@@ -43,16 +49,22 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
               ? 'Bee ready! '
               : 'Bee ready! Your order is now being processed.'
             : userType === 'seller'
-            ? 'Just waiting for the customer to  complete the payment.'
+            ? 'Just waiting for the customer to complete the payment.'
             : 'Last step! Once the payment is complete the order will be processed.',
         animation: inProgress,
         withGradient: true,
       },
       ['payment processing']: {
-        title: past ? 'Payment Completed' : 'Payment Processing',
+        title: past
+          ? 'Payment Completed'
+          : allowRetryPayment
+          ? 'Pending payment'
+          : 'Payment Processing',
         message:
           userType === 'seller'
             ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
+            : allowRetryPayment
+            ? 'Once the payment is complete the order will be processed.'
             : 'Thank you. We will buzz once payment is confirmed.',
         animation: paymentProcessing,
         withGradient: true,
@@ -141,11 +153,17 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
         animation: bookingScheduled,
       },
       ['payment processing']: {
-        title: past ? 'Payment Completed' : 'Payment Processing',
+        title: past
+          ? 'Payment Completed'
+          : allowRetryPayment
+          ? 'Pending payment'
+          : 'Payment Processing',
         message:
           userType === 'seller'
             ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
-            : 'Last step! Once the payment is complete the order will be processed.',
+            : allowRetryPayment
+            ? 'Once the payment is complete the order will be processed.'
+            : 'Thank you. We will buzz once payment is confirmed.',
         animation: paymentProcessing,
         withGradient: true,
       },
@@ -212,11 +230,17 @@ export const getStatusData = ({ userType, postType, orderData, past }) => {
         animation: pending,
       },
       ['payment processing']: {
-        title: past ? 'Payment Completed' : 'Payment Processing',
+        title: past
+          ? 'Payment Completed'
+          : allowRetryPayment
+          ? 'Pending payment'
+          : 'Payment Processing',
         message:
           userType === 'seller'
             ? "Please wait a little bit. We'll buzz once the customer's payment has been processed. "
-            : "Please wait a bit, we're working on it! ",
+            : allowRetryPayment
+            ? 'Once the payment is complete the order will be processed.'
+            : 'Thank you. We will buzz once payment is confirmed.',
         animation: paymentProcessing,
         withGradient: true,
       },

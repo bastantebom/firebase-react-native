@@ -7,7 +7,7 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native'
  *
  * @param {object} props
  * @param {string} props.label
- * @param {'disabled'|'primary'|'danger'|'primary-outline'|'secondary-outline'} props.type
+ * @param {'disabled'|'primary'|'danger'|'neutral'|'primary-outline'|'secondary-outline'} props.type
  * @param {'huge'|'large'|'medium'|'small'} props.size
  * @param {boolean} props.disalbed
  * @param {import('react-native').StyleProp<import('react-native').TextStyle>} props.labelStyle
@@ -37,6 +37,7 @@ const Button = ({
     secondary: Colors.primaryMidnightBlue,
     disabled: Colors.Gainsboro,
     danger: Colors.secondaryBrinkPink,
+    neutral: Colors.neutralsZirconLight,
   }
 
   const defaultTextStyles = {

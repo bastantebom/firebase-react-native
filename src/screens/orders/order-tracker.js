@@ -28,7 +28,7 @@ import LottieView from 'lottie-react-native'
 import getStatusColor from './utils/order-status-color'
 
 import moment from 'moment'
-import { iconSize, parseTime } from '@/globals/Utils'
+import { iconSize, parseTime, useInterval } from '@/globals/Utils'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
 import { formatNumber } from 'react-native-currency-input'
@@ -97,6 +97,8 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   const [orderStatusHistory, setOrderStatusHistory] = useState([])
   const [isRefreshing, setIsRefreshing] = useState(false)
 
+  const [allowRetryPayment, setAllowRetryPayment] = useState(false)
+
   useEffect(() => {
     handleRefresh(false)
     const subscribers = []
@@ -116,6 +118,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 userType: data.seller_id === user.uid ? 'seller' : 'buyer',
                 postType: post.type,
                 orderData: data,
+                allowRetryPayment,
               })
               setOrderStatus(statusData)
             }
@@ -136,11 +139,12 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     subscribers.push(
       firestore()
         .collection('payments')
+        .where('status', '!=', 'cancelled ')
         .where('order_id', '==', orderID)
+        .orderBy('status', 'desc')
         .orderBy('date_created', 'desc')
         .onSnapshot(snapshot => {
           const data = snapshot?.docs?.[0]?.data()
-          if (!data) return
           setPaymentData(data)
         })
     )
@@ -171,6 +175,20 @@ const OrderTrackerScreen = ({ navigation, route }) => {
     )
       setOrderStatusHistory(orderData.history)
   }, [orderData])
+
+  useInterval(
+    () => {
+      if (
+        paymentData &&
+        orderData.status === 'payment processing' &&
+        Date.now() / 1000 - paymentData.date_created._seconds > 60 * 2
+      )
+        setAllowRetryPayment(true)
+    },
+    !allowRetryPayment && orderData?.status === 'payment processing'
+      ? 1000
+      : null
+  )
 
   const getTitle = () => {
     const status = orderData.status
@@ -272,6 +290,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               userType: data.seller_id === user.uid ? 'seller' : 'buyer',
               postType: postData.type,
               orderData: data,
+              allowRetryPayment,
             })
           )
         })()
@@ -450,6 +469,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           userType,
           postType: post.type,
           orderData,
+          allowRetryPayment,
         })
       : {}
     return (
@@ -489,6 +509,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 userType,
                 postType: post.type,
                 orderData: { status: 'pending' },
+                allowRetryPayment,
               }).animation
             }
             autoPlay
@@ -528,6 +549,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
                 postType: post.type,
                 past: true,
                 orderData: { status },
+                allowRetryPayment,
               })
 
               return (
@@ -1219,6 +1241,26 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           </View>
           {paymentData && (
             <>
+              {orderData.status === 'payment processing' && (
+                <View
+                  style={[
+                    utilStyles.row,
+                    utilStyles.alignCenter,
+                    { marginTop: normalize(16) },
+                  ]}>
+                  <Icons.InfoCircle
+                    style={{ color: Colors.icon, marginRight: normalize(4) }}
+                    {...iconSize(16)}
+                  />
+                  <Text
+                    style={[
+                      typography.caption,
+                      { color: Colors.contentPlaceholder },
+                    ]}>
+                    Your payment is still processing.
+                  </Text>
+                </View>
+              )}
               {!!paymentData?.payment_id && (
                 <>
                   <Text
@@ -1506,7 +1548,9 @@ const OrderTrackerScreen = ({ navigation, route }) => {
               </>
             )}
 
-            {orderData.status === 'confirmed' &&
+            {(orderData.status === 'confirmed' ||
+              (orderData.status === 'payment processing' &&
+                allowRetryPayment)) &&
               post.type !== 'need' &&
               orderData.payment_method !== 'cash' && (
                 <Button
@@ -1918,7 +1962,6 @@ const OrderTrackerScreen = ({ navigation, route }) => {
           isVisible={cancelOrderModalVisible}
           setIsVisible={setCancelOrderModalVisible}>
           <Dialog
-            Dialog
             title={
               post.type === 'sell'
                 ? 'Cancel Order'

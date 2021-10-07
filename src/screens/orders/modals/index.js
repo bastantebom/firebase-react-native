@@ -4,7 +4,13 @@ import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
 import { BottomSheetHeader } from '@/components'
 
-const ModalComponent = ({ children, isVisible, setIsVisible, ...props }) => {
+const ModalComponent = ({
+  children,
+  isVisible,
+  setIsVisible,
+  swipeable = true,
+  ...props
+}) => {
   return (
     <Modal
       isVisible={isVisible}
@@ -12,8 +18,8 @@ const ModalComponent = ({ children, isVisible, setIsVisible, ...props }) => {
       animationOut="slideOutDown"
       animationInTiming={250}
       animationOutTiming={200}
-      style={styles.modal}
-      swipeDirection="down"
+      style={[styles.modal, props.containerStyle]}
+      swipeDirection={swipeable ? 'down' : null}
       onSwipeComplete={() => setIsVisible(false)}
       customBackdrop={
         <TouchableWithoutFeedback
@@ -24,7 +30,7 @@ const ModalComponent = ({ children, isVisible, setIsVisible, ...props }) => {
       }
       statusBarTranslucent
       {...props}>
-      <BottomSheetHeader />
+      {swipeable && <BottomSheetHeader />}
       {children}
     </Modal>
   )
