@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
+  Keyboard,
   StatusBar,
   StyleSheet,
   Text,
@@ -115,6 +116,10 @@ const PaymentStatusScreen = ({ navigation, route }) => {
         },
       })
   }, [])
+
+  useEffect(() => {
+    Keyboard.dismiss()
+  })
 
   return (
     <>

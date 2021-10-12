@@ -76,6 +76,10 @@ jobs:
         run: ./gradlew --stop
         working-directory: android
 
+      - name: remove .gradle folder
+        run: rm -rf ./gradle
+        working-directory: android
+
       - name: Build android apk
         run: APP_ENV=staging ./gradlew :app:assembleStaging  --no-daemon
         working-directory: android
