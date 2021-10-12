@@ -209,7 +209,7 @@ const CreditCardScreen = ({ navigation, route }) => {
         navigation.navigate('payment-status', {
           status: 'processing',
           amount: totalPrice,
-          paymentId: response.data.id,
+          paymentId: response.payment.id,
           sellerName: seller.display_name || seller.full_name,
         })
       } else if (response.data.attributes.status === 'awaiting_next_action') {
@@ -221,7 +221,7 @@ const CreditCardScreen = ({ navigation, route }) => {
             navigation.navigate('payment-status', {
               status: 'processing',
               amount: totalPrice,
-              paymentId: response.data.id,
+              paymentId: response.payment.id,
               sellerName: seller.display_name || seller.full_name,
             })
           },

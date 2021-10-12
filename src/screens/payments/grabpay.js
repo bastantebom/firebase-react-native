@@ -61,7 +61,7 @@ const GrabPayScreen = ({ navigation, route }) => {
           amount: totalPrice,
           title: 'GrabPay',
           sourceId: response.data.id,
-          type: 'grabpay',
+          type: 'grab_pay',
         },
       })
     } catch (error) {

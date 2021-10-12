@@ -15,16 +15,19 @@ import Button from '@/components/Button'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { CommonActions } from '@react-navigation/native'
-import { formatNumber } from 'react-native-currency-input'
 import { format } from 'date-fns'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
+import Loader from '@/components/loader'
+import Api from '@/services/Api'
 
 /**
  * @typedef {object} PaymentStatusProps
  * @property {string} status
+ * @property {string} orderId
+ * @property {string} sellerName
  * @property {number} amount
- * @property {object} paymentData
+ * @property {object} data
  */
 
 /**
@@ -34,7 +37,7 @@ import { iconSize } from '@/globals/Utils'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'PaymentStatus'>} param0 */
 const PaymentStatusScreen = ({ navigation, route }) => {
-  const { status, amount, paymentId, sellerName } = route.params
+  const { status, paymentId, orderId, data = {} } = route.params
   const [paymentData, setPaymentData] = useState({ status })
 
   const statusInfo = {
@@ -102,10 +105,30 @@ const PaymentStatusScreen = ({ navigation, route }) => {
       })
   }, [])
 
+  useEffect(() => {
+    if (data.paymentId && data.payerId)
+      Api.executePaypalPayment({
+        body: {
+          id: data.paymentId,
+          payer_id: data.payerId,
+          order_id: orderId,
+        },
+      })
+  }, [])
+
   return (
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <View style={styles.wrapper}>
+        <Loader
+          visible={
+            !(
+              paymentData?.payment_id ||
+              paymentData?.src_id ||
+              paymentData?.intent_id
+            )
+          }
+        />
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
@@ -114,80 +137,84 @@ const PaymentStatusScreen = ({ navigation, route }) => {
             <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
           </TouchableOpacity>
         </View>
-        <View style={styles.contentWrapper}>
-          <View style={styles.content}>
-            {statusInfo[paymentData.status]?.image}
-            <View style={styles.infoWrapper}>
-              <Text
-                style={[
-                  typography.body1,
-                  typography.medium,
-                  typography.textCenter,
-                ]}>
-                {statusInfo[paymentData.status]?.title}
-              </Text>
-              <Text
-                style={[
-                  typography.body2,
-                  typography.textCenter,
-                  { marginTop: normalize(8) },
-                ]}>
-                {statusInfo[paymentData.status]?.description}
-              </Text>
+        {(paymentData?.payment_id ||
+          paymentData?.src_id ||
+          paymentData?.intent_id) && (
+          <View style={styles.contentWrapper}>
+            <View style={styles.content}>
+              {statusInfo[paymentData.status]?.image}
+              <View style={styles.infoWrapper}>
+                <Text
+                  style={[
+                    typography.body1,
+                    typography.medium,
+                    typography.textCenter,
+                  ]}>
+                  {statusInfo[paymentData.status]?.title}
+                </Text>
+                <Text
+                  style={[
+                    typography.body2,
+                    typography.textCenter,
+                    { marginTop: normalize(8) },
+                  ]}>
+                  {statusInfo[paymentData.status]?.description}
+                </Text>
 
-              {paymentData.status === 'paid' && (
-                <>
-                  <Text
-                    style={[
-                      typography.body2,
-                      typography.textCenter,
-                      {
-                        color: Colors.contentPlaceholder,
-                        marginTop: normalize(24),
-                      },
-                    ]}>
-                    Payment Reference ID:
-                  </Text>
-                  {!!paymentData?.payment_id ? (
+                {paymentData.status === 'paid' && (
+                  <>
                     <Text
                       style={[
                         typography.body2,
-                        typography.medium,
                         typography.textCenter,
                         {
                           color: Colors.contentPlaceholder,
-                          marginVertical: normalize(4),
+                          marginTop: normalize(24),
                         },
                       ]}>
-                      {paymentData?.payment_id}
+                      Payment Reference ID:
                     </Text>
-                  ) : (
-                    <ActivityIndicator
-                      style={{ marginVertical: normalize(4) }}
-                      size="small"
-                      color={Colors.contentOcean}
-                    />
-                  )}
-                  <Text
-                    style={[
-                      typography.body2,
-                      typography.textCenter,
-                      { color: Colors.contentPlaceholder },
-                    ]}>
-                    {date}
-                  </Text>
-                </>
-              )}
+                    {!!paymentData?.payment_id ? (
+                      <Text
+                        style={[
+                          typography.body2,
+                          typography.medium,
+                          typography.textCenter,
+                          {
+                            color: Colors.contentPlaceholder,
+                            marginVertical: normalize(4),
+                          },
+                        ]}>
+                        {paymentData?.payment_id}
+                      </Text>
+                    ) : (
+                      <ActivityIndicator
+                        style={{ marginVertical: normalize(4) }}
+                        size="small"
+                        color={Colors.contentOcean}
+                      />
+                    )}
+                    <Text
+                      style={[
+                        typography.body2,
+                        typography.textCenter,
+                        { color: Colors.contentPlaceholder },
+                      ]}>
+                      {date}
+                    </Text>
+                  </>
+                )}
+              </View>
+            </View>
+            <View style={styles.buttonWrapper}>
+              <Button
+                type="primary"
+                label={statusInfo[paymentData.status]?.buttonLabel}
+                onPress={navigation.goBack}
+              />
             </View>
           </View>
-          <View style={styles.buttonWrapper}>
-            <Button
-              type="primary"
-              label={statusInfo[paymentData.status]?.buttonLabel}
-              onPress={navigation.goBack}
-            />
-          </View>
-        </View>
+        )}
       </View>
     </>
   )

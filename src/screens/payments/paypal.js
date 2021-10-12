@@ -65,17 +65,21 @@ const PaypalScreen = ({ navigation, route }) => {
         },
       })
 
-      if (response.success)
+      if (response.success) {
+        const link = response.data.links.find(
+          link => link.rel === 'approval_url'
+        )?.href
+
         navigation.navigate('payments', {
           screen: 'payment-webview',
           params: {
             orderId: orderData.id,
-            link: response.data.links[1].href,
+            link,
             amount: totalPrice,
             title: 'PayPal',
           },
         })
-      else throw new Error(response.message)
+      } else throw new Error(response.message)
     } catch (error) {
       console.log(error.message)
       Alert.alert('Error', 'Oops, something went wrong.')
