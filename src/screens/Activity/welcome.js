@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-} from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -13,13 +7,14 @@ import { ScreenHeaderTitle } from '@/components'
 import IllustHive from '@/assets/images/hive-img1.svg'
 import { normalize } from '@/globals'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 const Welcome = () => {
   const navigation = useNavigation()
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
         <View style={styles.contentWrapper}>

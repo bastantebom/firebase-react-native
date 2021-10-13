@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
   Alert,
   Text,
 } from 'react-native'
@@ -18,6 +17,7 @@ import ActivitiesCard from './components/card'
 import ItemCard from '@/screens/Activity/components/item-card'
 import Api from '@/services/Api'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 const OngoingItem = ({ route, navigation }) => {
   const { activity } = route.params
@@ -98,7 +98,7 @@ const OngoingItem = ({ route, navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView>
         <View style={styles.headerWrapper}>
           <ScreenHeaderTitle

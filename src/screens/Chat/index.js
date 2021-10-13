@@ -1,11 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-} from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import {
   GiftedChat,
   InputToolbar,
@@ -26,6 +20,7 @@ import { TransitionIndicator, AppText } from '@/components'
 import Avatar from '@/components/Avatar/avatar'
 import PostImage from '@/components/Post/post-image'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {Object} ChatChannel
@@ -170,7 +165,7 @@ const ChatScreen = ({ route, navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <TransitionIndicator
           loading={isLoading}

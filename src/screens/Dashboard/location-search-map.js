@@ -8,7 +8,6 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Alert,
-  StatusBar,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Geocoder from 'react-native-geocoding'
@@ -28,6 +27,7 @@ import { PaddingView, AppText, MapComponent, AppButton } from '@/components'
 import GooglePlacesInput from '@/components/LocationSearchInput'
 import { RangeSlider } from '@/components/Slider/RangeSlider'
 import { GOOGLE_MAPS_API_KEY } from '@env'
+import StatusBar from '@/components/StatusBar'
 
 const DismissKeyboard = ({ children, isFocused }) => {
   const onDismissPress = () => {
@@ -216,7 +216,7 @@ const LocationSearchMapScreen = ({ navigation, route }) => {
           <StatusBar
             translucent
             barStyle="dark-content"
-            backgroundColor={'#fff'}
+            backgroundColor="#fff"
           />
           <View style={{ flex: 1, marginTop: getStatusBarHeight() }}>
             <LinearGradient colors={['#ECEFF8', '#F8F9FC']}>

@@ -1,13 +1,12 @@
 import { Icons } from '@/assets/images/icons'
-import { Colors, GlobalStyle, normalize } from '@/globals'
+import StatusBar from '@/components/StatusBar'
+import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React, { useRef, useState } from 'react'
 import {
   Dimensions,
   Keyboard,
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -124,7 +123,7 @@ const PostLocationScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <DismissKeyboardView style={{ flex: 1 }}>
           <View style={styles.header}>

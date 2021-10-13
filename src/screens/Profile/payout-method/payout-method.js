@@ -1,13 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
@@ -16,6 +10,7 @@ import Button from '@/components/Button'
 import Loader from '@/components/loader'
 import Api from '@/services/Api'
 import { useFocusEffect } from '@react-navigation/native'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} PayoutMethodScreenProps
@@ -74,7 +69,7 @@ const PayoutMethodScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader style={{ backgroundColor: '#fff' }} visible={isLoading} />
       <View style={styles.wrapper}>
         <View style={styles.header}>

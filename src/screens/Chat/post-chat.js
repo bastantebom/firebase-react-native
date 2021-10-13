@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, useContext } from 'react'
 import {
   StyleSheet,
   View,
-  StatusBar,
   Text,
   TouchableOpacity,
   Alert,
@@ -21,6 +20,7 @@ import { BlueDot, Icons } from '@/assets/images/icons'
 import Avatar from '@/components/Avatar/avatar'
 import Api from '@/services/Api'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 const PostChat = ({ route }) => {
   const post = route?.params?.post
@@ -202,7 +202,7 @@ const PostChat = ({ route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScreenHeaderTitle
           title="Post Chats"

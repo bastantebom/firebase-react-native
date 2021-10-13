@@ -1,15 +1,10 @@
 import { Icons } from '@/assets/images/icons'
+import StatusBar from '@/components/StatusBar'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React from 'react'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -122,11 +117,7 @@ const AboutScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

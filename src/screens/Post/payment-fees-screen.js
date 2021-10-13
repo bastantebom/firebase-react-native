@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   ScrollView,
@@ -8,16 +7,15 @@ import {
   Text,
   LayoutAnimation,
   UIManager,
-  StatusBar,
 } from 'react-native'
-import { Guide, Images } from '@/assets/images'
+import { Images } from '@/assets/images'
 import { Colors, normalize } from '@/globals'
 import { Icons } from '@/assets/images/icons'
-import Svg, { Circle } from 'react-native-svg'
 import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -39,7 +37,7 @@ if (
 const PaymentFeesScreen = ({ navigation }) => {
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -311,7 +309,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   header: {
     flexDirection: 'row',

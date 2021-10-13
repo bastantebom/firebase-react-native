@@ -10,7 +10,6 @@ import ImageApi from '@/services/image-api'
 import { UserContext } from '@/context/UserContext'
 import {
   Platform,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -51,6 +50,7 @@ import assetLoader from '@/assets/animations/asset-loader.json'
 import LottieView from 'lottie-react-native'
 import Toast from '@/components/toast'
 import ImagePicker from 'react-native-image-crop-picker'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} EditProfileScreenProps
@@ -884,7 +884,7 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
       <View style={styles.wrapper}>
         <View style={styles.header}>

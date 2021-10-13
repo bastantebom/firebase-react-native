@@ -1,5 +1,4 @@
 import { Colors, normalize } from '@/globals'
-import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
 import CameraRoll from '@react-native-community/cameraroll'
 import React, {
@@ -14,8 +13,6 @@ import {
   Animated,
   Dimensions,
   FlatList,
-  Platform,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -27,6 +24,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import pluralize from 'pluralize'
 import Svg, { Path } from 'react-native-svg'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 const { width, height } = Dimensions.get('window')
 

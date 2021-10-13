@@ -1,16 +1,17 @@
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity, StatusBar } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { AppText, ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
+import StatusBar from '@/components/StatusBar'
 
 const NotVerified = ({ navigation, route }) => {
   const { date, reasons } = route.params.item
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={2} />
         <View style={styles.contentWrapper}>

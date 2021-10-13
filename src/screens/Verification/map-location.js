@@ -4,7 +4,6 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
-  StatusBar,
   Text,
 } from 'react-native'
 import Geocoder from 'react-native-geocoding'
@@ -17,6 +16,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import typography from '@/globals/typography'
 import Button from '@/components/Button'
 import { GOOGLE_MAPS_API_KEY } from '@env'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {Object} Address
@@ -129,7 +129,7 @@ const MapLocationScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
 
       <View style={styles.wrapper}>
         <View style={{ padding: normalize(24) }}>

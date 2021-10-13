@@ -1,20 +1,19 @@
 import { Icons } from '@/assets/images/icons'
 import Button from '@/components/Button'
 import Checkbox from '@/components/checkbox'
+import StatusBar from '@/components/StatusBar'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
 import {
   LayoutAnimation,
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   Text,
   TouchableOpacity,
   UIManager,
   View,
-  StatusBar,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -202,7 +201,7 @@ const PaymentMethodsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

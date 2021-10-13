@@ -19,10 +19,10 @@ import {
 import IdTypeScreen from './id-type'
 import CaptureIdScreen from './capture-id'
 import { CaptureSelfieInfoScreen, CaptureSelfieScreen } from './capture-selfie'
+import { RequestSentScreen } from './request-sent'
 import storage from '@react-native-firebase/storage'
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
-import { RequestSentScreen } from './request-sent'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'IdVerification'>} param0 */
 const IdVerificationScreen = ({ navigation }) => {

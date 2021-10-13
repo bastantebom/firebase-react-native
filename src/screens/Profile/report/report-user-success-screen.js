@@ -3,18 +3,13 @@ import { Colors } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize, normalize } from '@/globals/Utils'
 import React, { useEffect } from 'react'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Button from '@/components/Button'
 import { Images } from '@/assets/images'
 import { CommonActions } from '@react-navigation/native'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} ReportUserSuccessScreenProps
@@ -53,11 +48,7 @@ const ReportUserSuccessScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

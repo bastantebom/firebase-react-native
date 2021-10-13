@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   Text,
 } from 'react-native'
 import { TransitionIndicator } from '@/components'
@@ -18,6 +17,7 @@ import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Toast from '@/components/toast'
+import StatusBar from '@/components/StatusBar'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'PhoneVerification'>} param0 */
 const PhoneVerificationScreen = ({ navigation }) => {
@@ -69,87 +69,90 @@ const PhoneVerificationScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.wrapper}>
+    <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: normalize(8) }}
         ref={ref => Toast.setRef(ref, 'phone-verification')}
       />
-      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
-      <TransitionIndicator loading={isSubmitting} />
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={{ padding: normalize(24) }}>
-          <View style={{ justifyContent: 'space-between', height: '100%' }}>
-            <View style={styles.modalHeader}>
-              <TouchableOpacity
-                onPress={navigation.goBack}
-                activeOpacity={0.7}
-                style={{ position: 'absolute', left: 0 }}>
-                <Icons.Back
-                  style={{
-                    width: normalize(24),
-                    height: normalize(24),
-                    color: Colors.primaryMidnightBlue,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-            <>
-              <View style={{ flex: 1, marginTop: normalize(24) }}>
-                <Text style={[typography.body1, typography.medium]}>
-                  Add and verify mobile number
-                </Text>
-                <Text style={[typography.body2, { marginTop: normalize(8) }]}>
-                  No worries! Your number will only be used for added account
-                  security, app updates, and orders.
-                </Text>
-                <View style={[styles.formGroup, { marginTop: normalize(36) }]}>
-                  <TextInput
-                    value={phoneNumber}
-                    selectTextOnFocus={false}
-                    placeholder="10 digit number"
-                    placeholderTextColor="#A8AAB7"
-                    onChangeText={handlePhoneNumberChange}
-                    keyboardType="phone-pad"
-                    returnKeyType="done"
-                    message={error}
-                    maxLength={10}
-                    messageStyle={{
-                      color: Colors.secondaryBrinkPink,
+      <View style={styles.wrapper}>
+        <TransitionIndicator loading={isSubmitting} />
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={{ padding: normalize(24) }}>
+            <View style={{ justifyContent: 'space-between', height: '100%' }}>
+              <View style={styles.modalHeader}>
+                <TouchableOpacity
+                  onPress={navigation.goBack}
+                  activeOpacity={0.7}
+                  style={{ position: 'absolute', left: 0 }}>
+                  <Icons.Back
+                    style={{
+                      width: normalize(24),
+                      height: normalize(24),
+                      color: Colors.primaryMidnightBlue,
                     }}
-                    containerStyle={[
-                      error.length
-                        ? { borderColor: Colors.secondaryBrinkPink }
-                        : {},
-                    ]}
-                    inputStyle={{
-                      marginLeft: normalize(40),
-                    }}>
-                    <Text
-                      style={[
-                        typography.body1,
-                        {
-                          color: Colors.icon,
-                          position: 'absolute',
-                          left: normalize(16),
-                        },
-                      ]}>
-                      +63
-                    </Text>
-                  </TextInput>
-                </View>
+                  />
+                </TouchableOpacity>
               </View>
-              <Button
-                label="Verify"
-                type="primary"
-                size="huge"
-                disalbed={!!error.length}
-                onPress={handleSubmit}
-              />
-            </>
+              <>
+                <View style={{ flex: 1, marginTop: normalize(24) }}>
+                  <Text style={[typography.body1, typography.medium]}>
+                    Add and verify mobile number
+                  </Text>
+                  <Text style={[typography.body2, { marginTop: normalize(8) }]}>
+                    No worries! Your number will only be used for added account
+                    security, app updates, and orders.
+                  </Text>
+                  <View
+                    style={[styles.formGroup, { marginTop: normalize(36) }]}>
+                    <TextInput
+                      value={phoneNumber}
+                      selectTextOnFocus={false}
+                      placeholder="10 digit number"
+                      placeholderTextColor="#A8AAB7"
+                      onChangeText={handlePhoneNumberChange}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
+                      message={error}
+                      maxLength={10}
+                      messageStyle={{
+                        color: Colors.secondaryBrinkPink,
+                      }}
+                      containerStyle={[
+                        error.length
+                          ? { borderColor: Colors.secondaryBrinkPink }
+                          : {},
+                      ]}
+                      inputStyle={{
+                        marginLeft: normalize(40),
+                      }}>
+                      <Text
+                        style={[
+                          typography.body1,
+                          {
+                            color: Colors.icon,
+                            position: 'absolute',
+                            left: normalize(16),
+                          },
+                        ]}>
+                        +63
+                      </Text>
+                    </TextInput>
+                  </View>
+                </View>
+                <Button
+                  label="Verify"
+                  type="primary"
+                  size="huge"
+                  disalbed={!!error.length}
+                  onPress={handleSubmit}
+                />
+              </>
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </>
   )
 }
 

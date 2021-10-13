@@ -8,7 +8,6 @@ import Api from '@/services/Api'
 import React, { useContext, useEffect, useState } from 'react'
 import {
   Keyboard,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,6 +18,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import TextInput from '@/components/textinput'
 import Toast from '@/components/toast'
 import { UserContext } from '@/context/UserContext'
+import StatusBar from '@/components/StatusBar'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -148,16 +148,12 @@ const ChangePasswordScreen = ({ navigation }) => {
 
   return (
     <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'change-password')}
       />
       <Loader visible={isLoading} />
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -4,7 +4,6 @@ import typography from '@/globals/typography'
 import {
   Image,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,6 +12,7 @@ import {
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} BanksScreenProps
@@ -217,7 +217,7 @@ const BanksScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

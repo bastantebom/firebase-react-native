@@ -3,22 +3,14 @@ import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
-import {
-  Dimensions,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import WebView from 'react-native-webview'
 import LottieView from 'lottie-react-native'
 import assetLoader from '@/assets/animations/asset-loader.json'
 import utilStyles from '@/globals/util-styles'
 import { noop } from 'lodash'
-
-const { height, width } = Dimensions.get('window')
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} WebviewScreenProps
@@ -39,11 +31,7 @@ const WebviewScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

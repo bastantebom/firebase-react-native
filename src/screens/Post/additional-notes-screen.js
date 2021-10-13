@@ -1,5 +1,6 @@
 import { Icons } from '@/assets/images/icons'
 import Button from '@/components/Button'
+import StatusBar from '@/components/StatusBar'
 import TextInput from '@/components/textinput'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
@@ -7,7 +8,6 @@ import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
 import {
   Keyboard,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -72,7 +72,7 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

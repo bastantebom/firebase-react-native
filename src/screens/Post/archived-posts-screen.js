@@ -6,14 +6,11 @@ import { iconSize, normalize } from '@/globals/Utils'
 import Modal from 'react-native-modal'
 import React, { useContext, useEffect, useState } from 'react'
 import {
-  Platform,
-  StatusBar,
   TouchableOpacity,
   StyleSheet,
   View,
   Text,
   ActivityIndicator,
-  Alert,
   TouchableWithoutFeedback,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -27,6 +24,7 @@ import { Context } from '@/context'
 import ConfirmModal from './modals/confirm'
 import Drawer from './modals/drawer'
 import { Images } from '@/assets/images'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {Object} ArchivedPostsScreenProps
@@ -179,7 +177,7 @@ const ArchivedPostsScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setConfirmModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -210,7 +208,7 @@ const ArchivedPostsScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setStatusModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -382,7 +380,7 @@ const ArchivedPostsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

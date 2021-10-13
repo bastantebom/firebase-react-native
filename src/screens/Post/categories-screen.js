@@ -1,13 +1,12 @@
 import { Icons } from '@/assets/images/icons'
 import RadioButton from '@/components/radio-button'
+import StatusBar from '@/components/StatusBar'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React from 'react'
 import {
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -47,7 +46,7 @@ const CategoriesScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
-  Text,
-} from 'react-native'
+import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Api from '@/services/Api'
 
@@ -18,6 +11,7 @@ import Loader from '@/components/loader'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} PaypalProps

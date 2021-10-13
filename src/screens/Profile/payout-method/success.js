@@ -1,19 +1,14 @@
 import React, { useEffect } from 'react'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import { SuccessPayout } from '@/assets/images'
 import Button from '@/components/Button'
 import { CommonActions } from '@react-navigation/routers'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} PayoutMethodSuccessProps
@@ -51,7 +46,7 @@ const PayoutMethodSuccess = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

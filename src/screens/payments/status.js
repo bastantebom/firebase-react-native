@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Keyboard,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,6 +20,7 @@ import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import Loader from '@/components/loader'
 import Api from '@/services/Api'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} PaymentStatusProps
@@ -123,7 +123,7 @@ const PaymentStatusScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <Loader
           visible={

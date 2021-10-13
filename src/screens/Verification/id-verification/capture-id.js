@@ -7,10 +7,9 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  View,
   StatusBar,
+  View,
 } from 'react-native'
-import ImageEditor from '@react-native-community/image-editor'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { RNCamera } from 'react-native-camera'
 

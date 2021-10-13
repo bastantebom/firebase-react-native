@@ -1,12 +1,6 @@
 import { Colors, normalize } from '@/globals'
 import React, { useContext, useEffect } from 'react'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -17,6 +11,7 @@ import url from 'url'
 import { CommonActions } from '@react-navigation/routers'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} PaymentWebViewProps
@@ -111,7 +106,7 @@ const PaymentWebView = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

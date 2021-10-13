@@ -1,6 +1,7 @@
 import { Images } from '@/assets/images'
 import { Icons } from '@/assets/images/icons'
 import Button from '@/components/Button'
+import StatusBar from '@/components/StatusBar'
 import { UserContext } from '@/context/UserContext'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
@@ -10,14 +11,7 @@ import {
   iconSize,
 } from '@/globals/Utils'
 import React, { useContext } from 'react'
-import {
-  StyleSheet,
-  StatusBar,
-  View,
-  TouchableOpacity,
-  Text,
-  Share,
-} from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Share } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 /**
@@ -59,11 +53,7 @@ const InviteFriendsScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

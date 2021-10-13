@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
   UIManager,
   Text,
   TouchableWithoutFeedback,
@@ -35,6 +34,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import RadioButton from '@/components/radio-button'
 import BookingScheduleModal from './modals/booking-schedule'
 import Toast from '@/components/toast'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -1289,7 +1289,7 @@ const AvailPostScreen = ({ navigation, route }) => {
         onSwipeComplete={() => setShippingMethodModalVisible(false)}
         propagateSwipe
         onBackButtonPress={() => setShippingMethodModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1323,7 +1323,7 @@ const AvailPostScreen = ({ navigation, route }) => {
         onSwipeComplete={() => setBookingScheduleModalVisible(false)}
         propagateSwipe
         onBackButtonPress={() => setBookingScheduleModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1342,7 +1342,7 @@ const AvailPostScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
       <View style={styles.wrapper}>
         <View style={styles.header}>

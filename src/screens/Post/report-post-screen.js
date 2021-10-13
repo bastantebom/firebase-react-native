@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  StatusBar,
-  Alert,
-} from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Alert } from 'react-native'
 import TextInput from '@/components/textinput'
-import { Guide, Images } from '@/assets/images'
+import { Images } from '@/assets/images'
 import { Colors, normalize } from '@/globals'
 import { Icons } from '@/assets/images/icons'
-import Svg, { Circle } from 'react-native-svg'
 import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import Api from '@/services/Api'
 import Loader from '@/components/loader'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} ReportPostScreenProps
@@ -104,7 +97,7 @@ const ReportPostScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
       <View style={styles.wrapper}>
         <View style={styles.header}>

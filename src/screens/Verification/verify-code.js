@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Keyboard,
   Text,
-  StatusBar,
 } from 'react-native'
 import { ScreenHeaderTitle, TransitionIndicator } from '@/components'
 import AppColor from '@/globals/Colors'
@@ -19,6 +18,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Toast from '@/components/toast'
 import { isEmail } from '@/globals/Utils'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {Object} VerifyCodeProps
@@ -146,68 +146,74 @@ const VerifyCodeScreen = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.wrapper}>
+    <>
       <Toast
         containerStyle={{ marginTop: normalize(16) }}
         ref={ref => Toast.setRef(ref, 'verify-code')}
       />
       <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
-      <View style={{ padding: normalize(24) }}>
-        <ScreenHeaderTitle close={() => onBackPress?.()} />
-      </View>
-      <View style={styles.container}>
-        <TransitionIndicator loading={isLoading} />
-        <View style={styles.alignCenter}>
-          <VerifySms />
+      <View style={styles.wrapper}>
+        <View style={{ padding: normalize(24) }}>
+          <ScreenHeaderTitle close={() => onBackPress?.()} />
         </View>
-        <View style={[styles.alignCenter, styles.spacingBottom]}>
-          <Text style={[typography.display5]}>Enter Your Verification</Text>
-        </View>
-        <View style={[styles.alignCenter, styles.spacingBottomx2]}>
-          <Text style={typography.body2narrow}>
-            A 4-digit code has been sent to{' '}
-            <Text style={typography.medium}>
-              {isEmail(login) ? login : `+63${login.slice(-10)}`}
+        <View style={styles.container}>
+          <TransitionIndicator loading={isLoading} />
+          <View style={styles.alignCenter}>
+            <VerifySms />
+          </View>
+          <View style={[styles.alignCenter, styles.spacingBottom]}>
+            <Text style={[typography.display5]}>Enter Your Verification</Text>
+          </View>
+          <View style={[styles.alignCenter, styles.spacingBottomx2]}>
+            <Text style={typography.body2narrow}>
+              A 4-digit code has been sent to{' '}
+              <Text style={typography.medium}>
+                {isEmail(login) ? login : `+63${login.slice(-10)}`}
+              </Text>
             </Text>
-          </Text>
+          </View>
+          <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
+            {code.map((input, index) => (
+              <TextInput
+                key={index}
+                ref={textInputsRef[index]}
+                style={[styles.inputVerification, getInputStyle(index)]}
+                keyboardType="number-pad"
+                value={code[index]}
+                autoFocus={!index}
+                onChangeText={value => handleInputChange(value, index)}
+                onKeyPress={event => handelInputKeyPress(event, index)}
+                maxLength={1}
+                fontFamily={'RoundedMplus1c-Regular'}
+                theme={{
+                  colors: {
+                    primary: AppColor.contentOcean,
+                  },
+                  fonts: {
+                    regular: '',
+                  },
+                }}
+              />
+            ))}
+          </View>
+          <View style={{ ...styles.alignCenter, ...styles.spacingBottom }}>
+            <Text style={typography.body2}>Didn’t receive a code?</Text>
+          </View>
+          <TouchableOpacity
+            customStyle={styles.alignCenter}
+            onPress={handleResendCode}>
+            <Text
+              style={[
+                typography.body2,
+                typography.link,
+                typography.textCenter,
+              ]}>
+              Resend code
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View style={[styles.verificationWrapper, styles.spacingBottomx4]}>
-          {code.map((input, index) => (
-            <TextInput
-              key={index}
-              ref={textInputsRef[index]}
-              style={[styles.inputVerification, getInputStyle(index)]}
-              keyboardType="number-pad"
-              value={code[index]}
-              autoFocus={!index}
-              onChangeText={value => handleInputChange(value, index)}
-              onKeyPress={event => handelInputKeyPress(event, index)}
-              maxLength={1}
-              fontFamily={'RoundedMplus1c-Regular'}
-              theme={{
-                colors: {
-                  primary: AppColor.contentOcean,
-                },
-                fonts: {
-                  regular: '',
-                },
-              }}
-            />
-          ))}
-        </View>
-        <View style={{ ...styles.alignCenter, ...styles.spacingBottom }}>
-          <Text style={typography.body2}>Didn’t receive a code?</Text>
-        </View>
-        <TouchableOpacity
-          customStyle={styles.alignCenter}
-          onPress={handleResendCode}>
-          <Text
-            style={[typography.body2, typography.link, typography.textCenter]}>
-            Resend code
-          </Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </>
   )
 }
 

@@ -1,11 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  View,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-} from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { ScreenHeaderTitle } from '@/components'
@@ -15,13 +9,14 @@ import typography from '@/globals/typography'
 import { VerifiedIllustration } from '@/assets/images/icons'
 import { UserContext } from '@/context/UserContext'
 import Button from '@/components/Button'
+import StatusBar from '@/components/StatusBar'
 
 const Verified = ({ navigation }) => {
   const { userInfo } = useContext(UserContext)
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScreenHeaderTitle close={() => navigation.goBack()} paddingSize={3} />
         <View style={styles.contentWrapper}>

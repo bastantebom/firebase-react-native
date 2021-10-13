@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  StatusBar,
   Text,
   Keyboard,
 } from 'react-native'
@@ -27,6 +26,7 @@ import Button from '@/components/Button'
 import { formatNumber } from 'react-native-currency-input'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { PAYMONGO_SECRET_KEY } from '@env'
+import StatusBar from '@/components/StatusBar'
 
 const DismissKeyboardView = ({ children, ...props }) => {
   return (
@@ -254,7 +254,7 @@ const CreditCardScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
       <View style={styles.wrapper}>
         <View style={styles.header}>

@@ -6,13 +6,13 @@ import { View } from 'native-base'
 import React from 'react'
 import {
   ActivityIndicator,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
 } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} WebviewScreenProps
@@ -30,7 +30,7 @@ const WebviewScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  StatusBar,
   ScrollView,
   TouchableOpacity,
 } from 'react-native'
@@ -16,6 +15,7 @@ import { Colors, normalize } from '@/globals'
 import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
 import { Icons } from '@/assets/images/icons'
+import StatusBar from '@/components/StatusBar'
 
 const CancelOrderTextareaScreen = ({ navigation, route }) => {
   const { handleCancel } = route.params
@@ -30,7 +30,7 @@ const CancelOrderTextareaScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -1,17 +1,12 @@
 import React from 'react'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import { ScrollView } from 'react-native-gesture-handler'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} SelectPayoutMethodScreenProps
@@ -59,7 +54,7 @@ const SelectPayoutMethodScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

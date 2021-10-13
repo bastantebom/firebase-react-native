@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-  View,
-  StyleSheet,
-  Alert,
-  StatusBar,
-  TouchableOpacity,
-  Text,
-} from 'react-native'
+import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native'
 import Api from '@/services/Api'
 
 import { Colors, normalize } from '@/globals'
@@ -18,6 +11,7 @@ import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
 import Loader from '@/components/loader'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} GCashProps
@@ -74,7 +68,7 @@ const GCashScreen = ({ navigation, route }) => {
   return (
     <>
       <StatusBar
-        translucent={true}
+        translucent
         barStyle="dark-content"
         backgroundColor="#EDF0F8"
       />

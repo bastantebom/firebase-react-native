@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
-  StatusBar,
 } from 'react-native'
 import { Guide } from '@/assets/images'
 import { Colors, normalize } from '@/globals'
@@ -15,6 +14,7 @@ import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} CoverPhotoGuidelinesScreenProps
@@ -42,7 +42,7 @@ const CoverPhotoGuidelinesScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: getStatusBarHeight()
+    marginTop: getStatusBarHeight(),
   },
   titleWrapper: { alignItems: 'center' },
   title: {

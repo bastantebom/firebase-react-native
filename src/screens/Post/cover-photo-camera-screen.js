@@ -12,7 +12,6 @@ import {
   Image,
   PermissionsAndroid,
   Platform,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,7 +19,8 @@ import {
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import { PERMISSIONS, check, request, RESULTS } from 'react-native-permissions'
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
+import StatusBar from '@/components/StatusBar'
 
 const { height } = Dimensions.get('window')
 

@@ -14,7 +14,7 @@ const Loader = ({ visible, ...props }) => {
     <Modal
       style={[styles.wrapper, props.style]}
       isVisible={visible}
-      statusBarTranslucent={true}
+      statusBarTranslucent
       animationIn="fadeIn"
       animationOut="fadeOut">
       <View style={styles.spinnerWrapper}>

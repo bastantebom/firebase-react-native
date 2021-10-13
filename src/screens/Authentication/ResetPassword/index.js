@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, Keyboard, StatusBar, Text } from 'react-native'
+import { View, TouchableOpacity, Keyboard, Text } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Toast from '@/components/toast'
 
@@ -14,6 +14,7 @@ import styles from './resetPassword.scss'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
+import StatusBar from '@/components/StatusBar'
 
 const ResetPassword = ({ navigation }) => {
   const [email, setEmail] = useState('')

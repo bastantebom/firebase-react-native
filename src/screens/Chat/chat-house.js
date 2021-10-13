@@ -4,7 +4,6 @@ import {
   FlatList,
   View,
   TouchableOpacity,
-  StatusBar,
   TouchableWithoutFeedback,
   Text,
   Alert,
@@ -30,6 +29,7 @@ import typography from '@/globals/typography'
 import pluralize from 'pluralize'
 
 import EmptyState from './components/empty-state'
+import StatusBar from '@/components/StatusBar'
 
 const ChatHouse = () => {
   const navigation = useNavigation()
@@ -594,7 +594,7 @@ const ChatHouse = () => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.bodyWrapper}>
           <TouchableOpacity
@@ -646,7 +646,7 @@ const ChatHouse = () => {
         animationOutTiming={180}
         swipeDirection="down"
         propagateSwipe
-        statusBarTranslucent={true}
+        statusBarTranslucent
         onBackButtonPress={() => setSortModal(false)}
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => setSortModal(false)}>

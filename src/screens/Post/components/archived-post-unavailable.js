@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  StyleSheet,
-  StatusBar,
-  View,
-  TouchableOpacity,
-  Text,
-  Linking,
-} from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Linking } from 'react-native'
 import { Images } from '@/assets/images'
 import { Colors, normalize } from '@/globals'
 import { Icons } from '@/assets/images/icons'
@@ -14,6 +7,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { useNavigation } from '@react-navigation/native'
 import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
+import StatusBar from '@/components/StatusBar'
 
 const UnavailablePostScreen = () => {
   const navigation = useNavigation()

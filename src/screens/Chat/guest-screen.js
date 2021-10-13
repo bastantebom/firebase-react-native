@@ -1,16 +1,17 @@
 import React from 'react'
-import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import Button from '@/components/Button'
 import { Images } from '@/assets/images'
+import StatusBar from '@/components/StatusBar'
 
 const GuestScreen = ({ navigation }) => {
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScrollView
           showsVerticalScrollIndicator={false}

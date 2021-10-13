@@ -1,19 +1,13 @@
 import { Icons } from '@/assets/images/icons'
 import { Colors, normalize } from '@/globals'
 import React, { useState } from 'react'
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} Category
@@ -46,7 +40,7 @@ const CreateCategoryScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-  View,
-  StyleSheet,
-  Alert,
-  StatusBar,
-  TouchableOpacity,
-  Text,
-} from 'react-native'
+import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native'
 import Api from '@/services/Api'
 
 import { Colors, normalize } from '@/globals'
@@ -18,6 +11,7 @@ import { iconSize } from '@/globals/Utils'
 import typography from '@/globals/typography'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { formatNumber } from 'react-native-currency-input'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} GrabPayProps

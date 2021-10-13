@@ -12,7 +12,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { PureComponent } from 'react'
 import {
   StyleSheet,
-  StatusBar,
   View,
   Text,
   Platform,
@@ -31,6 +30,7 @@ import Q from 'q'
 import Toast from '@/components/toast'
 import { Context } from '@/context'
 import Loader from '@/components/loader'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -855,11 +855,7 @@ const FollowersScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
       <View style={styles.wrapper}>
         <View style={styles.header}>

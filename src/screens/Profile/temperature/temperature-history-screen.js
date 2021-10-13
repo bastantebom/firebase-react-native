@@ -14,7 +14,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {
   RefreshControl,
   SectionList,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -27,6 +26,7 @@ import {
 } from './update-temperature-screen'
 import LottieView from 'lottie-react-native'
 import assetLoader from '@/assets/animations/asset-loader.json'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} TemperatureHistoryScreenProps
@@ -140,11 +140,7 @@ const TemperatureHistoryScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -1,5 +1,6 @@
-import { ArchivePostMenu, Icons, LikedPostMenu } from '@/assets/images/icons'
+import { Icons } from '@/assets/images/icons'
 import Loader from '@/components/loader'
+import StatusBar from '@/components/StatusBar'
 import Toast from '@/components/toast'
 import { UserContext } from '@/context/UserContext'
 import { Colors, normalize } from '@/globals'
@@ -7,13 +8,7 @@ import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import { CommonActions } from '@react-navigation/native'
 import React, { useContext, useState, useEffect } from 'react'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -327,11 +322,7 @@ const ProfileMenuScreen = ({ navigation }) => {
   return (
     <>
       <Loader visible={isLoading} />
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         ref={ref => Toast.setRef(ref, 'profile-menu')}
         containerStyle={{

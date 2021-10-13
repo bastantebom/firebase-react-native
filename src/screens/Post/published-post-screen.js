@@ -14,7 +14,6 @@ import {
   Linking,
   Platform,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -58,6 +57,7 @@ import Q from 'q'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Toast from '@/components/toast'
 import { CommonActions, useFocusEffect } from '@react-navigation/native'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -875,7 +875,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setPostDescriptionModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -905,7 +905,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setImageModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1121,7 +1121,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setMenuDrawerVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1188,7 +1188,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setMakeOfferModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1244,7 +1244,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setAddToBasketModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1288,7 +1288,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setConfirmResetBasketVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1320,7 +1320,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setConfirmModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -2349,7 +2349,7 @@ const PublishedPostScreen = ({ navigation, route }) => {
         ref={ref => Toast.setRef(ref, 'published-post')}
       />
       <StatusBar
-        translucent={true}
+        translucent
         barStyle={Platform.select({
           ios: 'dark-content',
           android: 'light-content',

@@ -1,9 +1,10 @@
 import { Images } from '@/assets/images'
 import Button from '@/components/Button'
+import StatusBar from '@/components/StatusBar'
 import typography from '@/globals/typography'
 import { normalize } from '@/globals/Utils'
 import React from 'react'
-import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
@@ -20,11 +21,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 const TemperatureAboutScreen = ({ navigation }) => {
   return (
     <>
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScrollView contentContainerStyle={styles.content}>
           <Images.BodyTemp

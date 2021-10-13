@@ -3,23 +3,17 @@ import IllustHive from '@/assets/images/hive-img1.svg'
 import Button from '@/components/Button'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
-import {
-  Platform,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { useNavigation } from '@react-navigation/native'
+import StatusBar from '@/components/StatusBar'
 
 const Hive = () => {
   const navigation = useNavigation()
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           <IllustHive />

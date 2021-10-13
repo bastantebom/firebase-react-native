@@ -26,7 +26,6 @@ import {
   Platform,
   ScrollView,
   TouchableWithoutFeedback,
-  StatusBar,
 } from 'react-native'
 import Svg, { Circle } from 'react-native-svg'
 import Modal from 'react-native-modal'
@@ -43,6 +42,7 @@ import Api from '@/services/Api'
 import Loader from '@/components/loader'
 import { Context } from '@/context'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 const { width } = Dimensions.get('window')
 
@@ -1363,7 +1363,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         style={styles.drawer}
         swipeDirection="down"
         onSwipeComplete={() => setMoreOptionsVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}
@@ -1396,7 +1396,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         style={styles.modal}
         swipeDirection="down"
         onSwipeComplete={() => setConfirmExitModalVisible(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback
             style={{ flex: 1 }}

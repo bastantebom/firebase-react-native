@@ -7,7 +7,6 @@ import { iconSize, normalize } from '@/globals/Utils'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {
   RefreshControl,
-  StatusBar,
   StyleSheet,
   KeyboardAvoidingView,
   Text,
@@ -27,6 +26,7 @@ import moment from 'moment'
 import ModalComponent from '@/screens/orders/modals'
 import { Images } from '@/assets/images'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import StatusBar from '@/components/StatusBar'
 
 export class TemperatureListItem extends PureComponent {
   render() {
@@ -200,16 +200,12 @@ const UpdateTemperatureSreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={utilStyles.flex1} edges={['bottom']}>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'update-temperature')}
       />
       <Loader visible={isLoading} />
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

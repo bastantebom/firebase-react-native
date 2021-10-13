@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
 } from 'react-native'
 import Posts from '../Dashboard/components/posts'
@@ -16,6 +15,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize } from '@/globals/Utils'
 import { Images } from '@/assets/images'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {Object} LikedPostsProps
@@ -227,7 +227,7 @@ const LikedPostsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

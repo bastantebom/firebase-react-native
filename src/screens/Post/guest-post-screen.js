@@ -1,17 +1,11 @@
 import { Images } from '@/assets/images'
 import Button from '@/components/Button'
+import StatusBar from '@/components/StatusBar'
 import { Context } from '@/context'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
 import React, { useContext } from 'react'
-import {
-  Platform,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 const GuestPostScreen = () => {
@@ -23,7 +17,7 @@ const GuestPostScreen = () => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Images.Post height={normalize(275)} width={normalize(375)} />

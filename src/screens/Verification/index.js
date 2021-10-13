@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Icons } from '@/assets/images/icons'
 import { AppText, TransitionIndicator } from '@/components'
 import { Colors, normalize } from '@/globals'
@@ -9,7 +9,6 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack'
 import {
-  StatusBar,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -28,6 +27,7 @@ import VerifyCodeScreen from './verify-code'
 import IdVerificationScreen from './id-verification'
 import MapLocationScreen from './map-location'
 import firestore from '@react-native-firebase/firestore'
+import StatusBar from '@/components/StatusBar'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Verification'>} param0 */
 const VerificationScreen = ({ navigation }) => {
@@ -146,7 +146,7 @@ const VerificationScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <TransitionIndicator
         loading={isLoading}
         backdropStyle={{ backgroundColor: '#fff' }}

@@ -1,13 +1,11 @@
 import { Icons } from '@/assets/images/icons'
 import Button from '@/components/Button'
 import ToggleSwitch from '@/components/toggle'
-import { UserContext } from '@/context/UserContext'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import TextInput from '@/components/textinput'
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   Text,
@@ -15,10 +13,10 @@ import {
   View,
   UIManager,
   LayoutAnimation,
-  StatusBar,
 } from 'react-native'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -194,7 +192,7 @@ const BookingMethodsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

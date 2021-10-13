@@ -5,7 +5,6 @@ import {
   View,
   StyleSheet,
   RefreshControl,
-  StatusBar,
   Alert,
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -27,6 +26,7 @@ import { UserContext } from '@/context/UserContext'
 import { useNavigation } from '@react-navigation/native'
 import Api from '@/services/Api'
 import moment from 'moment'
+import StatusBar from '@/components/StatusBar'
 
 const Notifications = () => {
   const navigation = useNavigation()
@@ -259,7 +259,7 @@ const Notifications = () => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'Notifications')}

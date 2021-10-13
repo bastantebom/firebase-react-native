@@ -25,7 +25,6 @@ import React, {
 } from 'react'
 import {
   Dimensions,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -62,6 +61,7 @@ import Drawer from '@/components/drawer'
 import AsyncStorage from '@react-native-community/async-storage'
 import prependHttp from 'prepend-http'
 import { useFocusEffect } from '@react-navigation/native'
+import StatusBar from '@/components/StatusBar'
 
 const { height, width } = Dimensions.get('window')
 const headerHeight = normalize(158)
@@ -1039,18 +1039,18 @@ const ProfileScreen = ({ navigation, route }) => {
 
   return (
     <>
+      <StatusBar
+        translucent
+        barStyle="light-content"
+        backgroundColor="transparent"
+      />
+      <Toast
+        ref={ref => Toast.setRef(ref, 'profile')}
+        containerStyle={{
+          marginTop: getStatusBarHeight() + normalize(8),
+        }}
+      />
       <View style={[utilStyles.flex1, { position: 'relative' }]}>
-        <StatusBar
-          translucent={true}
-          barStyle="light-content"
-          backgroundColor="transparent"
-        />
-        <Toast
-          ref={ref => Toast.setRef(ref, 'profile')}
-          containerStyle={{
-            marginTop: getStatusBarHeight() + normalize(8),
-          }}
-        />
         <Loader style={{ zIndex: 1 }} visible={isPageLoading} />
         <LinearGradient
           style={{

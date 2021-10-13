@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
   Dimensions,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,6 +15,7 @@ import MoreIdTypes from './modals/more-id-types'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
+import StatusBar from '@/components/StatusBar'
 /**
  * @typedef {Object} IdTypeProps
  * @property {string} type

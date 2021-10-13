@@ -4,7 +4,6 @@ import typography from '@/globals/typography'
 import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
 import {
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,12 +11,12 @@ import {
   View,
 } from 'react-native'
 import { formatNumber } from 'react-native-currency-input'
-import FastImage from 'react-native-fast-image'
 import Modal from 'react-native-modal'
 import CategoryOptionsModal from './modals/category-options'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { FlatList } from 'react-native-gesture-handler'
 import PostImage from '@/components/Post/post-image'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} PostItem
@@ -156,7 +155,7 @@ const CategoryItemsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

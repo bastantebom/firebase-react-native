@@ -9,9 +9,7 @@ import Modal from 'react-native-modal'
 
 import {
   LayoutAnimation,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,11 +17,11 @@ import {
   UIManager,
   View,
 } from 'react-native'
-import { BottomSheetHeader } from '@/components'
 import SetTimeModal from './modals/set-time'
 import { capitalize } from 'lodash'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -265,7 +263,7 @@ const StoreScheduleScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
 
       <View style={styles.wrapper}>
         <View style={styles.header}>

@@ -1,18 +1,19 @@
 import React from 'react'
-import { StatusBar, View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 import ItemCard from '@/screens/Activity/components/item-card'
 
 import { ScreenHeaderTitle } from '@/components'
 import { normalize } from '@/globals'
+import StatusBar from '@/components/StatusBar'
 
 const Past = ({ route, navigation }) => {
   const { item } = route.params
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.safeAreaView}>
         <View style={styles.headerWrapper}>
           <ScreenHeaderTitle

@@ -3,6 +3,7 @@ import { Icons } from '@/assets/images/icons'
 import Avatar from '@/components/Avatar/avatar'
 import Button from '@/components/Button'
 import Loader from '@/components/loader'
+import StatusBar from '@/components/StatusBar'
 import Toast from '@/components/toast'
 import { Context } from '@/context'
 import { UserContext } from '@/context/UserContext'
@@ -15,7 +16,6 @@ import React, { useState, useContext, useEffect, useCallback } from 'react'
 import { PureComponent } from 'react'
 import {
   View,
-  StatusBar,
   TouchableOpacity,
   StyleSheet,
   Text,
@@ -248,16 +248,12 @@ const BlockedUsersScreen = ({ navigation }) => {
 
   return (
     <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() }}
         ref={ref => Toast.setRef(ref, 'blocked-users')}
       />
       <Loader visible={isPageLoading} />
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

@@ -9,7 +9,6 @@ import {
   Platform,
   RefreshControl,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -43,6 +42,7 @@ import { Images } from '@/assets/images'
 import ModalComponent from './modals'
 import Dialog from '@/screens/orders/modals/components/dialog'
 import { useFocusEffect } from '@react-navigation/native'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -1916,7 +1916,7 @@ const OrderTrackerScreen = ({ navigation, route }) => {
   return (
     <>
       <StatusBar
-        translucent={true}
+        translucent
         barStyle="dark-content"
         backgroundColor="#EDF0F8"
       />

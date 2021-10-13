@@ -5,7 +5,6 @@ import {
   ScrollView,
   Linking,
   TouchableOpacity,
-  StatusBar,
   Text,
 } from 'react-native'
 
@@ -27,6 +26,7 @@ import utilStyles from '@/globals/util-styles'
 import TextInput from '@/components/textinput'
 import Button from '@/components/Button'
 import Toast from '@/components/toast'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} ContactUsSreenProps
@@ -141,12 +141,8 @@ const ContactUsSreen = ({ navigation }) => {
   }, [formData])
   return (
     <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

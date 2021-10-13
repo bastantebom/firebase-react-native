@@ -13,13 +13,13 @@ import {
   View,
   UIManager,
   LayoutAnimation,
-  StatusBar,
   Platform,
 } from 'react-native'
 import Checkbox from '@/components/checkbox'
 import { iconSize } from '@/globals/Utils'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -298,7 +298,7 @@ const ShippingMethodsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

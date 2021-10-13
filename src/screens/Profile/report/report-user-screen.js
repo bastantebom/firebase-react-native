@@ -4,13 +4,7 @@ import { Colors } from '@/globals'
 import typography from '@/globals/typography'
 import { iconSize, normalize } from '@/globals/Utils'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Button from '@/components/Button'
@@ -20,6 +14,7 @@ import TouchableOpacityGesture from 'react-native-gesture-handler/touchables/Tou
 import Api from '@/services/Api'
 import { UserContext } from '@/context/UserContext'
 import Toast from '@/components/toast'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} User
@@ -126,11 +121,7 @@ const ReportUserScreen = ({ navigation, route }) => {
   return (
     <>
       <Loader visible={isLoading} />
-      <StatusBar
-        translucent={true}
-        barStyle="dark-content"
-        backgroundColor="#fff"
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

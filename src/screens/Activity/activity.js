@@ -9,7 +9,6 @@ import {
   FlatList,
   Alert,
   RefreshControl,
-  StatusBar,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import firestore from '@react-native-firebase/firestore'
@@ -27,6 +26,7 @@ import ActivitySort from './components/sort-modal'
 import Api from '@/services/Api'
 import { HyperLink } from '@/components'
 import { Context } from '@/context'
+import StatusBar from '@/components/StatusBar'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<{}, 'Activity'>} param0 */
 const Activity = ({ navigation }) => {
@@ -227,7 +227,7 @@ const Activity = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <TransitionIndicator loading={isLoading} />
       <View style={styles.contentWrapper}>
         <View style={[utilStyles.row, styles.headerWrapper]}>
@@ -325,7 +325,7 @@ const Activity = ({ navigation }) => {
         swipeDirection="down"
         propagateSwipe
         onBackButtonPress={() => setSortModal(false)}
-        statusBarTranslucent={true}
+        statusBarTranslucent
         customBackdrop={
           <TouchableWithoutFeedback onPress={() => setSortModal(false)}>
             <View style={{ flex: 1, backgroundColor: 'black' }} />

@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  StatusBar,
   UIManager,
   Text,
   FlatList,
@@ -19,6 +18,7 @@ import { UserContext } from '@/context/UserContext'
 import PostCard from './components/post-card'
 import PostCardSkeleton from './components/post-card-skeleton'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import StatusBar from '@/components/StatusBar'
 
 if (
   Platform.OS === 'android' &&
@@ -117,7 +117,7 @@ const SelectPostScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

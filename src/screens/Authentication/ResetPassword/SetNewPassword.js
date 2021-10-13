@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Text,
-  StatusBar,
 } from 'react-native'
 import TextInput from '@/components/textinput'
 
@@ -21,6 +20,7 @@ import Loader from '@/components/loader'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import Button from '@/components/Button'
 import Toast from '@/components/toast'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} SetNewPasswordScreenProps
@@ -151,12 +151,12 @@ const SetNewPasswordScreen = props => {
 
   return (
     <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'SetNewPassword')}
       />
       <Loader visible={isLoading} />
-      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <TouchableOpacity

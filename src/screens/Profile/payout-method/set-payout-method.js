@@ -1,13 +1,7 @@
 import React, { useState } from 'react'
 import { Colors, normalize } from '@/globals'
 import typography from '@/globals/typography'
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { Icons } from '@/assets/images/icons'
 import { iconSize, isEmail } from '@/globals/Utils'
@@ -16,6 +10,7 @@ import Button from '@/components/Button'
 import Api from '@/services/Api'
 import Toast from '@/components/toast'
 import Loader from '@/components/loader'
+import StatusBar from '@/components/StatusBar'
 
 /**
  * @typedef {object} SetPayoutMethodScreenProps
@@ -100,7 +95,7 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Loader visible={isLoading} />
       <Toast
         containerStyle={{ marginTop: normalize(8) }}

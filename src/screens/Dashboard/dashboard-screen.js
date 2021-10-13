@@ -9,7 +9,6 @@ import {
   Animated,
   TouchableWithoutFeedback,
   FlatList,
-  StatusBar,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import LinearGradient from 'react-native-linear-gradient'
@@ -31,6 +30,7 @@ import Filters from './components/filters'
 import Api from '@/services/Api'
 import { Context } from '@/context'
 import Toast from '@/components/toast'
+import StatusBar from '@/components/StatusBar'
 
 const SEARCH_TOOLBAR_HEIGHT = 70
 const SEARCH_USER_TOOLBAR_HEIGHT = 120
@@ -367,11 +367,11 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
       <Toast
         containerStyle={{ marginTop: getStatusBarHeight() + normalize(8) }}
         ref={ref => Toast.setRef(ref, 'dashboard')}
       />
-      <StatusBar translucent barStyle="dark-content" backgroundColor={'#fff'} />
       <View style={styles.safeArea}>
         {isVerifyToastVisible && (
           <VerifyNotification
