@@ -77,6 +77,7 @@ const PaypalScreen = ({ navigation, route }) => {
             link,
             amount: totalPrice,
             title: 'PayPal',
+            type: 'paypal',
           },
         })
       } else throw new Error(response.message)

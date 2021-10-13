@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 
 import { Colors, normalize } from '@/globals'
@@ -42,6 +42,7 @@ import Button from '@/components/Button'
 import { Images } from '@/assets/images'
 import ModalComponent from './modals'
 import Dialog from '@/screens/orders/modals/components/dialog'
+import { useFocusEffect } from '@react-navigation/native'
 
 if (
   Platform.OS === 'android' &&
@@ -99,62 +100,64 @@ const OrderTrackerScreen = ({ navigation, route }) => {
 
   const [allowRetryPayment, setAllowRetryPayment] = useState(false)
 
-  useEffect(() => {
-    handleRefresh(false)
-    const subscribers = []
+  useFocusEffect(
+    useCallback(() => {
+      handleRefresh(false)
+      const subscribers = []
 
-    subscribers.push(
-      firestore()
-        .doc(`orders/${orderID}`)
-        .onSnapshot(async snapshot => {
-          if (!snapshot?.data() || !user) return
-          Platform.OS === 'android' && setIsLoading(true)
-          try {
-            const data = snapshot.data()
-            setOrderData(orderData => ({ ...orderData, ...data }))
+      subscribers.push(
+        firestore()
+          .doc(`orders/${orderID}`)
+          .onSnapshot(async snapshot => {
+            if (!snapshot?.data() || !user) return
+            Platform.OS === 'android' && setIsLoading(true)
+            try {
+              const data = snapshot.data()
+              setOrderData(orderData => ({ ...orderData, ...data }))
 
-            if (orderData.status !== data.status && post.type) {
-              const statusData = getStatusData({
-                userType: data.seller_id === user.uid ? 'seller' : 'buyer',
-                postType: post.type,
-                orderData: data,
-                allowRetryPayment,
+              if (orderData.status !== data.status && post.type) {
+                const statusData = getStatusData({
+                  userType: data.seller_id === user.uid ? 'seller' : 'buyer',
+                  postType: post.type,
+                  orderData: data,
+                  allowRetryPayment,
+                })
+                setOrderStatus(statusData)
+              }
+            } catch (error) {
+              console.log(error)
+              Toast.show({
+                label: 'Oops! Something went wrong.',
+                type: 'error',
+                dismissible: true,
+                timeout: 5000,
+                screenId: 'order-tracker',
               })
-              setOrderStatus(statusData)
             }
-          } catch (error) {
-            console.log(error)
-            Toast.show({
-              label: 'Oops! Something went wrong.',
-              type: 'error',
-              dismissible: true,
-              timeout: 5000,
-              screenId: 'order-tracker',
-            })
-          }
-          Platform.OS === 'android' && setIsLoading(false)
-        })
-    )
+            Platform.OS === 'android' && setIsLoading(false)
+          })
+      )
 
-    subscribers.push(
-      firestore()
-        .collection('payments')
-        .where('order_id', '==', orderID)
-        .orderBy('date_created', 'desc')
-        .limit(1)
-        .onSnapshot(snapshot => {
-          const payments = snapshot?.docs?.map(doc => doc.data()) || []
+      subscribers.push(
+        firestore()
+          .collection('payments')
+          .where('order_id', '==', orderID)
+          .orderBy('date_created', 'desc')
+          .limit(1)
+          .onSnapshot(snapshot => {
+            const payments = snapshot?.docs?.map(doc => doc.data()) || []
 
-          setPaymentData(payments[0])
-        })
-    )
+            setPaymentData(payments[0])
+          })
+      )
 
-    return () => {
-      for (const subscriber of subscribers) {
-        subscriber()
+      return () => {
+        for (const subscriber of subscribers) {
+          subscriber()
+        }
       }
-    }
-  }, [])
+    }, [navigation, orderID])
+  )
 
   useEffect(() => {
     const newUserType = orderData.seller_id === user.uid ? 'seller' : 'buyer'
