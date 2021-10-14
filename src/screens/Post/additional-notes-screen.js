@@ -8,6 +8,8 @@ import { iconSize } from '@/globals/Utils'
 import React, { useState } from 'react'
 import {
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -73,54 +75,61 @@ const AdditionalNotesScreen = ({ navigation, route }) => {
   return (
     <>
       <StatusBar translucent barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.wrapper}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            activeOpacity={0.7}
-            onPress={navigation.goBack}>
-            <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
-          </TouchableOpacity>
-          <View style={styles.titleWrapper}>
-            <Text style={[typography.body2, typography.medium]}>{title}</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.select({ ios: 'padding', android: null })}>
+        <View style={styles.wrapper}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              activeOpacity={0.7}
+              onPress={navigation.goBack}>
+              <Icons.Back style={styles.backArrowIcon} {...iconSize(24)} />
+            </TouchableOpacity>
+            <View style={styles.titleWrapper}>
+              <Text style={[typography.body2, typography.medium]}>{title}</Text>
+            </View>
           </View>
-        </View>
-        <DismissKeyboardView style={styles.content} onLayout={handleOnLayout}>
-          {label && (
+          <DismissKeyboardView style={styles.content} onLayout={handleOnLayout}>
+            {label && (
+              <Text
+                style={[
+                  typography.body1,
+                  {
+                    marginBottom: normalize(8),
+                    color: Colors.primaryMidnightBlue,
+                  },
+                ]}>
+                {label}
+              </Text>
+            )}
             <Text
               style={[
-                typography.body1,
+                typography.body2,
                 {
-                  marginBottom: normalize(8),
-                  color: Colors.primaryMidnightBlue,
+                  color: Colors.contentPlaceholder,
+                  marginBottom: normalize(16),
                 },
               ]}>
-              {label}
+              {description}
             </Text>
-          )}
-          <Text
-            style={[
-              typography.body2,
-              { color: Colors.contentPlaceholder, marginBottom: normalize(16) },
-            ]}>
-            {description}
-          </Text>
-          <TextInput
-            value={notes}
-            placeholder={placeholder}
-            onChangeText={setNotes}
-            multiline={true}
-            numberOfLines={6}
-            textAlignVertical="top"
-            autoHeight
-            minLines={4}
-            maxLines={maxLines}
-          />
-        </DismissKeyboardView>
-        <View style={styles.buttonWrapper}>
-          <Button label="Save" type="primary" onPress={handleOnSubmitPress} />
+            <TextInput
+              value={notes}
+              placeholder={placeholder}
+              onChangeText={setNotes}
+              multiline={true}
+              numberOfLines={6}
+              textAlignVertical="top"
+              autoHeight
+              minLines={4}
+              maxLines={maxLines}
+            />
+          </DismissKeyboardView>
+          <View style={styles.buttonWrapper}>
+            <Button label="Save" type="primary" onPress={handleOnSubmitPress} />
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </>
   )
 }
