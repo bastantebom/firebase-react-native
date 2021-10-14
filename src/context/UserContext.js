@@ -93,8 +93,10 @@ export const UserContextProvider = ({ children }) => {
   }, [user, unsubscribe.current])
 
   useEffect(() => {
-    return unsubscribe.current
-  })
+    return () => {
+      unsubscribe.current?.()
+    }
+  }, [])
 
   const signOut = async () => {
     try {
