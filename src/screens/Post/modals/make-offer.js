@@ -156,7 +156,7 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
             </View>
             <View style={styles.formGroup}>
               <TextInput
-                placeholder="Some text here saying they could add more information about their offer"
+                placeholder="Add more offer details."
                 placeholderTextColor="#A8AAB7"
                 label="Message (Optional)"
                 value={basket.message}
@@ -171,16 +171,16 @@ const MakeOfferModal = ({ budget, onAttachPostPress, onSubmit }) => {
             {!!postCount && (
               <View>
                 <Text
-                  style={[typography.body1, { marginBottom: normalize(3) }]}>
-                  <Text style={typography.medium}>
-                    You can also send your post
-                  </Text>
-                  <Text> (Optional)</Text>
+                  style={[
+                    typography.body1,
+                    typography.medium,
+                    { marginBottom: normalize(3) },
+                  ]}>
+                  Share an existing post? (Optional)
                 </Text>
                 <Text
                   style={[typography.body2, { marginBottom: normalize(16) }]}>
-                  If you posted about this product/service, send it along with
-                  your offer.{' '}
+                  Give more details through a post.
                 </Text>
 
                 <TouchableOpacity
