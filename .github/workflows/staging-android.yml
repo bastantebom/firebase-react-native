@@ -72,14 +72,6 @@ jobs:
       - name: Compile android bundle
         run: APP_ENV=staging npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/staging/assets/index.android.bundle --assets-dest android/app/src/staging/res/
 
-      - name: stop existing gradle daemon
-        run: ./gradlew --stop
-        working-directory: android
-
-      - name: remove .gradle folder
-        run: rm -rf ./gradle
-        working-directory: android
-
       - name: Build android apk
         run: APP_ENV=staging ./gradlew :app:assembleStaging  --no-daemon
         working-directory: android

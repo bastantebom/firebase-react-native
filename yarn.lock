@@ -1344,38 +1344,38 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-4.2.2.tgz#e05d618829c589284326896c806200af90ae0986"
   integrity sha512-XBAO/9gV0pb6VAqbaobdJp6slTgmf8TOAnIbERO1pKjIXoj2OrKYcma2VPB/02wzEzu7TE8jcbt3u6BT4fpXxA==
 
-"@react-native-firebase/app@^10.8.0":
-  version "10.8.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-10.8.1.tgz#3455f491a5fc3d91677fd69e70b006a68fb7ca5c"
-  integrity sha512-EHbFGCbRdZMxSbdq5YCc47E9C+ckzsMeZdknJbSddTYJ9JxPDiorUyoHFOUCAHS2ZoklhpdlrU5zGNzxpBgDUw==
+"@react-native-firebase/app@10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.4.0.tgz#f0de2117ac36f58abb690c7b0560207b42d80482"
+  integrity sha512-X+4VS3AlLs1TwQLjFZAfT6SbjeWoSsxf5P+21fJWriHNo3Qv3k8G8TgqXjiNZizWW1FUlhJdVKb+v38yrudjag==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/auth@^10.8.0":
-  version "10.8.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-10.8.1.tgz#b2dccd03b982b67d077cc8397b5fa6869c788ca4"
-  integrity sha512-qxnmIuPGPqiCujYqtLEdcSp/07H9zJ8yMOcrZ1v/ELcBqRldiKOK1YebZkAnwNcvcRqJXKwyeTamp6PAaVaZpg==
+"@react-native-firebase/auth@10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-10.4.0.tgz#de7d41936f09ec218f44c5bbcf10ce726b36aea9"
+  integrity sha512-/Cn6obmMz4kRMtaonUf6xiLA/Gd75f+fRxwALPdevJMJgisyyK4P2MiWlP3xKaMGQjy3eUp2xdeXQ6NHSkY3KA==
 
-"@react-native-firebase/dynamic-links@^10.8.0":
-  version "10.8.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/dynamic-links/-/dynamic-links-10.8.1.tgz#cee7142f59da314c69787e751d70ab724acba6a5"
-  integrity sha512-9kIXYqJeVYKaquTeOiqw6OzKs630KBWUAtw1LC27XDYAuwQdVD/+92x9Ka0qV3vvIEH4YdXb2B2TC4yUb1wBVQ==
+"@react-native-firebase/dynamic-links@10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/dynamic-links/-/dynamic-links-10.4.0.tgz#c33f11c22164de281e2d53118d48f460a7b30d41"
+  integrity sha512-ygcDI1YhO8/0YwGDlJKxyImBryY/3mBtZjHvsOqC11IJFoiAecPnBrD7vCV19VHTuxFKiiqDadgifv041PpQsw==
 
-"@react-native-firebase/firestore@^10.8.0":
-  version "10.8.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-10.8.1.tgz#0a48d68eb717e7841411bd1d48b734c794b0a9cf"
-  integrity sha512-ua3NJF/Z2dU2x3IXOHYB7fqo1bjIAPQ94zFPT2/shWbxRj8rjti1VNwb1Pp3qO/Qe6IOy8w5QVeje+E+v/cytA==
+"@react-native-firebase/firestore@10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-10.4.0.tgz#83d7bb13404d4266f2cad6bf5a0ad889805bd608"
+  integrity sha512-y9F2mJVfbLUDxGZ/HdmY95wDuHNJb7aGcFSb8HuJaXNWXrF28ebeI1AhAM4FICWGunrzYIDl7UXYyeONl+aitg==
 
-"@react-native-firebase/messaging@^10.8.0":
-  version "10.8.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-10.8.1.tgz#da9e0db91645e70e7853e5b91c06771fffbea8bb"
-  integrity sha512-DVgibb4XERG+5TQQiHKJ1qF+5cbpfiKGRFze9WcbE+FxSYwNMIzyt6u3l7WMBLz6wXcqAq3zLRo6SBbSt37uDw==
+"@react-native-firebase/messaging@10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-10.4.0.tgz#d9153bf73f097a67043ac122a70667147125be70"
+  integrity sha512-iHCymfU6m3Z70RJJTwpM92wx5sQJAsVZF0NAOV4Zugt6OoDegau2VtZ0PxlwkJSfj43drCj0uYyWVuvoyxCUZw==
 
-"@react-native-firebase/storage@^10.8.0":
-  version "10.8.1"
-  resolved "https://registry.npmjs.org/@react-native-firebase/storage/-/storage-10.8.1.tgz#16f833995c4f3315752de354e5e9e24674bd5a67"
-  integrity sha512-1Db87rh7DekGxynnbVo0jU+/LokJ8G0v5NWbVYyU0C2LOFjjuaODkQG4hYQKD/Pr85n5w0kD8P9k9HRRWbH9eQ==
+"@react-native-firebase/storage@10.4.0":
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-10.4.0.tgz#b56d62050b8f172bac8e89d554af45f24e532855"
+  integrity sha512-kVQotHz5Sy0YQJkdghZ4zD0FaIh8JgkdW51wvQZ35xqDb1tckHJvjCXC1ImRl2jy4OFQ2UBaMsGOOjYcT8m2dA==
 
 "@react-native-picker/picker@^1.9.4":
   version "1.16.8"
