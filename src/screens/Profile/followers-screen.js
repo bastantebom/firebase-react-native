@@ -31,6 +31,8 @@ import Toast from '@/components/toast'
 import { Context } from '@/context'
 import Loader from '@/components/loader'
 import StatusBar from '@/components/StatusBar'
+import { CommonActions } from '@react-navigation/routers'
+import { useFocusEffect } from '@react-navigation/native'
 
 if (
   Platform.OS === 'android' &&
@@ -169,6 +171,13 @@ const FollowersScreen = ({ navigation, route }) => {
     else setIsFollowingLoading(false)
   }
 
+  const backPressHandler = event => {
+    event.preventDefault()
+    navigation.removeListener('beforeRemove', backPressHandler)
+    if (navigation.canGoBack()) navigation.goBack()
+    else navigation.navigate('TabStack', { screen: 'You' })
+  }
+
   const handleOnRefresh = useCallback(async () => {
     if (isRefreshing) return
     setIsRefreshing(true)
@@ -210,6 +219,15 @@ const FollowersScreen = ({ navigation, route }) => {
       Api.isFollowing({ uid: user.id }),
     ])
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.removeListener('beforeRemove', backPressHandler)
+      navigation.addListener('beforeRemove', backPressHandler)
+
+      return () => navigation.removeListener('beforeRemove', backPressHandler)
+    }, [navigation])
+  )
 
   useEffect(() => {
     Object.values(followers)
@@ -309,6 +327,10 @@ const FollowersScreen = ({ navigation, route }) => {
     )
       confirmReportUserModalDeferred?.resolve(false)
   }, [confirmReportUserModalVisible])
+
+  useEffect(() => {
+    console.log({ user })
+  }, [])
 
   const selectedNavItemLayout =
     navLayouts[selectedNav] || navLayouts['followers']

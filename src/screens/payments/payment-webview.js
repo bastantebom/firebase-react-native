@@ -1,5 +1,5 @@
 import { Colors, normalize } from '@/globals'
-import React, { useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -12,6 +12,7 @@ import { CommonActions } from '@react-navigation/routers'
 import firestore from '@react-native-firebase/firestore'
 import { UserContext } from '@/context/UserContext'
 import StatusBar from '@/components/StatusBar'
+import { useFocusEffect } from '@react-navigation/native'
 
 /**
  * @typedef {object} PaymentWebViewProps
@@ -97,12 +98,14 @@ const PaymentWebView = ({ navigation, route }) => {
     )
   }
 
-  useEffect(() => {
-    navigation.removeListener('beforeRemove', backPressHandler)
-    navigation.addListener('beforeRemove', backPressHandler)
+  useFocusEffect(
+    useCallback(() => {
+      navigation.removeListener('beforeRemove', backPressHandler)
+      navigation.addListener('beforeRemove', backPressHandler)
 
-    return () => navigation.removeListener('beforeRemove', backPressHandler)
-  }, [navigation])
+      return () => navigation.removeListener('beforeRemove', backPressHandler)
+    }, [navigation])
+  )
 
   return (
     <>

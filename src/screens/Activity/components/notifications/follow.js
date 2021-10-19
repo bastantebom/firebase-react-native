@@ -11,6 +11,7 @@ import { AppText } from '@/components'
 import Toast from '@/components/toast'
 import Avatar from '@/components/Avatar/avatar'
 import typography from '@/globals/typography'
+import pluralize from 'pluralize'
 
 const Follow = ({ unreadNotification, item, followings }) => {
   const navigation = useNavigation()
@@ -24,7 +25,7 @@ const Follow = ({ unreadNotification, item, followings }) => {
 
     navigation.navigate('NBTScreen', {
       screen: 'OthersProfile',
-      params: { uid: item.follower_uid },
+      params: { uid: item.followers?.[0]?.id },
     })
   }
 
@@ -33,7 +34,9 @@ const Follow = ({ unreadNotification, item, followings }) => {
 
     try {
       if (isFollower) {
-        const response = await Api.unfollowUser({ uid: item.follower_uid })
+        const response = await Api.unfollowUser({
+          uid: item.followers?.[0]?.id,
+        })
 
         if (!response.success) throw new Error(response.message)
 
@@ -47,7 +50,7 @@ const Follow = ({ unreadNotification, item, followings }) => {
 
         setIsFollower(false)
       } else {
-        const response = await Api.followUser({ uid: item.follower_uid })
+        const response = await Api.followUser({ uid: item.followers?.[0]?.id })
 
         if (!response.success) throw new Error(response.message)
 
@@ -75,7 +78,7 @@ const Follow = ({ unreadNotification, item, followings }) => {
 
   const loadUser = async () => {
     try {
-      const response = await Api.getUser({ uid: item.follower_uid })
+      const response = await Api.getUser({ uid: item.followers?.[0]?.id })
 
       if (!response.success) throw new Error(response.message)
 
@@ -86,13 +89,48 @@ const Follow = ({ unreadNotification, item, followings }) => {
     }
   }
 
+  const getNotificationTitle = item => {
+    let content
+    if (item.followers.length === 3) {
+      content = (
+        <>
+          <Text style={typography.medium}>{item.followers[0].name}</Text>,
+          <Text style={typography.medium}>{item.followers[1].name}</Text>, and{' '}
+          {item.followers.length - 2}{' '}
+          {pluralize('other', item.follwers_count - 2)}
+          followed you
+        </>
+      )
+    } else if (item.followers.length === 2) {
+      content = (
+        <>
+          <Text style={typography.medium}>{item.followers[0].name}</Text>
+          {' and '}
+          <Text style={typography.medium}>{item.followers[1].name}</Text>
+          followed you
+        </>
+      )
+    } else if (item.followers.length === 1) {
+      content = (
+        <>
+          <Text style={typography.medium}>{item.followers[0].name}</Text>
+          followed you
+        </>
+      )
+    }
+
+    return content ? (
+      <Text style={typography.caption}>{content}</Text>
+    ) : undefined
+  }
+
   useEffect(() => {
     loadUser()
   }, [])
 
   useEffect(() => {
     setIsFollower(
-      followings.some(following => following.uid === item.follower_uid)
+      followings.some(following => following.uid === item.followers?.[0]?.id)
     )
   }, [followings])
 
@@ -111,12 +149,7 @@ const Follow = ({ unreadNotification, item, followings }) => {
           />
         </View>
         <View style={styles.captionWrapper}>
-          <Text style={typography.caption}>
-            <Text style={typography.medium}>{`${
-              follower.display_name || follower.full_name || ''
-            } `}</Text>
-            followed you
-          </Text>
+          <Text style={typography.caption}>{getNotificationTitle(item)}</Text>
         </View>
       </View>
       <View style={styles.notificationFooter}>

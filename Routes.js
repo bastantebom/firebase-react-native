@@ -534,7 +534,7 @@ export default Routes = () => {
         break
       }
 
-      case 'Order': {
+      case 'order-tracker': {
         const { order_id } = remoteMessage?.data
         navigate('NBTScreen', {
           screen: 'orders',
@@ -546,6 +546,29 @@ export default Routes = () => {
           },
         })
         break
+      }
+
+      case 'followers': {
+        const { uid, notificationId } = remoteMessage?.data || {}
+
+        const ref = firestore()
+          .collection('activities')
+          .doc(uid)
+          .collection('notifications')
+          .doc(notificationId)
+        await ref.update({ read: true })
+        const userRef = await firestore().collection('users').doc(uid).get()
+        const user = userRef.data()
+
+        navigate('NBTScreen', {
+          screen: 'profile',
+          params: {
+            screen: 'followers',
+            params: {
+              user,
+            },
+          },
+        })
       }
     }
   }
