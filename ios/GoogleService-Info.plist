@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>960850345935-8tdibatrapubbdd04mprfqtulc0h3bai.apps.googleusercontent.com</string>
+	<string>746436195177-uici9ld18f9bacegc1i5o5sji6qine35.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.960850345935-8tdibatrapubbdd04mprfqtulc0h3bai</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>960850345935-qds3cmcsqsjl6b1tad8aaul59sn8ec2n.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.746436195177-uici9ld18f9bacegc1i5o5sji6qine35</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDzsKehm9KqRb5TYgT_nQZXYC-vCvNTYl8</string>
+	<string>AIzaSyD1F7e_J7d3nlFS4HdTAgKKv6srJ2eu25I</string>
 	<key>GCM_SENDER_ID</key>
-	<string>960850345935</string>
+	<string>746436195177</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.servbees.appservbees</string>
 	<key>PROJECT_ID</key>
-	<string>codes-servbees</string>
+	<string>servbees-staging</string>
 	<key>STORAGE_BUCKET</key>
-	<string>codes-servbees.appspot.com</string>
+	<string>servbees-staging.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:960850345935:ios:0226b3b3d61d6ab8079cba</string>
-	<key>DATABASE_URL</key>
-	<string>https://codes-servbees.firebaseio.com</string>
+	<string>1:746436195177:ios:8c72467b2cc004066503f8</string>
 </dict>
 </plist>
