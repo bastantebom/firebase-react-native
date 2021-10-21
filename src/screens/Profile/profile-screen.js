@@ -1130,7 +1130,9 @@ const ProfileScreen = ({ navigation, route }) => {
                 verified={isVerified}
                 pendingVerified={isPendingVerified}
               />
+              {/* Hide for now
               <Badges items={userData?.badges} scrollY={scrollY} />
+               */}
               <ProfileNav
                 scrollY={scrollY}
                 selectedNav={selectedNav}
