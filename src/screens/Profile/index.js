@@ -11,12 +11,13 @@ import EditProfileScreen from './edit-profile'
 import FollowersScreen from './followers-screen'
 import InviteFriendsScreen from './invite-friends'
 import LikedPostsScreen from './liked-posts-screen'
-import PayoutMethodScreen from './payout-method/payout-method'
+import PayoutMethodStack from './payout-method'
 import ProfileMenuScreen from './profile-menu-screen'
 import ProfileScreen from './profile-screen'
 import ReportStack from './report'
 import TemperatureStack from './temperature'
 import GuestProfileScreen from './guest-profile'
+import OtpScreen from './otp'
 import { UserContext } from '@/context/UserContext'
 
 const ProfileStack = ({ route }) => {
@@ -75,7 +76,7 @@ const ProfileStack = ({ route }) => {
         />
         <Stack.Screen
           name="payout-methods"
-          component={PayoutMethodScreen}
+          component={PayoutMethodStack}
           options={defaultScreenOptions}
         />
         <Stack.Screen
@@ -96,6 +97,11 @@ const ProfileStack = ({ route }) => {
         <Stack.Screen
           name="followers"
           component={FollowersScreen}
+          options={defaultScreenOptions}
+        />
+        <Stack.Screen
+          name="otp"
+          component={OtpScreen}
           options={defaultScreenOptions}
         />
       </Stack.Navigator>

@@ -120,7 +120,9 @@ const ProfileMenuScreen = ({ navigation }) => {
       label: 'Payout Method',
       icon: <Icons.PayoutWallet {...iconSize(24)} />,
       onPress: () => {
-        navigation.navigate('payout-methods')
+        navigation.navigate('payout-methods', {
+          screen: 'payout-method',
+        })
       },
     },
     {

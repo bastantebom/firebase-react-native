@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/stack'
 import PayoutMethodScreen from './payout-method'
 import SetPayoutMethodScreen from './set-payout-method'
-import SelectPayoutMethodScreen from './select-payout-method'
+import AddPayoutMethodScreen from './add-payout-method'
 import BanksScreen from './banks'
 import PayoutMethodSuccess from './success'
 
@@ -29,8 +29,8 @@ const PayoutMethodStack = () => {
         options={defaultScreenOptions}
       />
       <Stack.Screen
-        name="select-payout-method"
-        component={SelectPayoutMethodScreen}
+        name="add-payout-method"
+        component={AddPayoutMethodScreen}
         options={defaultScreenOptions}
       />
       <Stack.Screen

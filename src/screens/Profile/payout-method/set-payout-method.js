@@ -11,10 +11,20 @@ import Api from '@/services/Api'
 import Toast from '@/components/toast'
 import Loader from '@/components/loader'
 import StatusBar from '@/components/StatusBar'
+import { CommonActions } from '@react-navigation/routers'
+
+/**
+ * @typedef {object} PayoutMethodData
+ * @property {string} bank
+ * @property {string} account_name
+ * @property {string} account_number
+ * @property {string} email_address
+ */
 
 /**
  * @typedef {object} SetPayoutMethodScreenProps
  * @property {string} method
+ * @property {PayoutMethodData} payoutMethodData
  */
 
 /**
@@ -24,13 +34,13 @@ import StatusBar from '@/components/StatusBar'
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'SetPayoutMethodScreen'>} param0 */
 const SetPayoutMethodScreen = ({ navigation, route }) => {
-  const { method } = route.params
+  const { method, payoutMethodData } = route.params
   const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState({
-    account_number: '',
-    account_name: '',
-    bank: '',
-    email_address: '',
+  const [formData, setFormData] = useState({
+    account_number: payoutMethodData?.account_number || '',
+    account_name: payoutMethodData?.account_name || '',
+    bank: payoutMethodData?.bank || '',
+    email_address: payoutMethodData?.email_address || '',
   })
 
   const title = {
@@ -40,7 +50,7 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
   }
 
   const label = {
-    gcash: 'Enter your GCash mobile number',
+    gcash: 'Enter your GCash account details',
     bank: 'Enter your Bank account details',
     paypal: 'Enter your PayPal account details',
   }
@@ -48,11 +58,37 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
   const handleOnSubmit = async () => {
     setIsLoading(true)
     try {
-      const response = await Api.savePayoutMethod({ body: { ...data, method } })
+      const body = {}
+      const { account_number, account_name, email_address, bank } = formData
+      body.account_name = account_name
+      if (method === 'gcash') {
+        body.account_number = account_number
+      } else if (method === 'bank') {
+        body.account_number = account_number
+        body.bank = bank
+      } else if (method === 'paypal') {
+        body.email_address = email_address
+      }
+      body.method = method
+
+      const response = await Api.savePayoutMethod({ body })
       if (!response.success) throw new Error(response.message)
 
       setIsLoading(false)
-      navigation.navigate('success')
+      navigation.navigate('NBTScreen', {
+        screen: 'profile',
+        params: {
+          screen: 'otp',
+          params: {
+            otpId: response.otp_id,
+            sentTo: response.sent_to,
+            onSuccess: () => {
+              navigation.goBack()
+              navigation.navigate('success')
+            },
+          },
+        },
+      })
     } catch (error) {
       console.log(error)
       Toast.show({
@@ -69,7 +105,7 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
   const handleOnSelectBankPress = () => {
     navigation.navigate('banks', {
       onSelect: bank => {
-        setData(data => ({ ...data, bank }))
+        setFormData(formData => ({ ...formData, bank }))
         navigation.goBack()
       },
     })
@@ -77,15 +113,15 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
 
   const canSubmit = () => {
     if (method === 'gcash') {
-      if (!/^\d{10}$/.test(data.account_number)) return false
+      if (!/^\d{10}$/.test(formData.account_number)) return false
     } else if (method === 'paypal') {
-      if (!isEmail(data.email_address) || !data.account_name.length)
+      if (!isEmail(formData.email_address) || !formData.account_name.length)
         return false
     } else if (method === 'bank') {
       if (
-        !data.account_name.length ||
-        !data.account_number.length ||
-        !data.bank.length
+        !formData.account_name.length ||
+        !formData.account_number.length ||
+        !formData.bank.length
       )
         return false
     }
@@ -119,25 +155,27 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
           <Text style={[typography.body2, typography.medium]}>
             {label[method]}
           </Text>
-          <Text
-            style={[
-              typography.caption,
-              { color: Colors.contentPlaceholder, marginTop: normalize(8) },
-            ]}>
-            This is where your future payouts will be deposited weekly on
-            Thursday for payments made using credit/debit, e-wallets, and
-            PayPal.
-          </Text>
 
           {method === 'gcash' && (
             <>
               <TextInput
-                value={data.account_number}
+                value={formData.account_name}
+                label="Account Name"
+                onChangeText={account_name =>
+                  setFormData({
+                    ...formData,
+                    account_name,
+                  })
+                }
+                containerStyle={{ marginTop: normalize(16) }}
+              />
+              <TextInput
+                value={formData.account_number}
                 selectTextOnFocus={false}
                 placeholder="10 digit number"
                 onChangeText={account_number =>
-                  setData(data => ({
-                    ...data,
+                  setFormData(formData => ({
+                    ...formData,
                     account_number,
                   }))
                 }
@@ -147,9 +185,7 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
                 containerStyle={{
                   marginTop: normalize(16),
                 }}
-                inputStyle={{
-                  marginLeft: normalize(40),
-                }}>
+                inputStyle={{ marginLeft: normalize(36) }}>
                 <Text
                   style={[
                     typography.body1,
@@ -168,22 +204,22 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
           {method === 'paypal' && (
             <>
               <TextInput
-                value={data.account_name}
+                value={formData.account_name}
                 label="Account Name"
                 onChangeText={account_name =>
-                  setData({
-                    ...data,
+                  setFormData({
+                    ...formData,
                     account_name,
                   })
                 }
                 containerStyle={{ marginTop: normalize(16) }}
               />
               <TextInput
-                value={data.email_address}
+                value={formData.email_address}
                 label="Email Address"
                 onChangeText={email_address =>
-                  setData({
-                    ...data,
+                  setFormData({
+                    ...formData,
                     email_address,
                   })
                 }
@@ -199,7 +235,7 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
                 activeOpacity={0.7}
                 onPress={handleOnSelectBankPress}>
                 <TextInput
-                  value={data.bank}
+                  value={formData.bank}
                   label="Select Bank"
                   disabled={true}
                   editable={false}
@@ -213,11 +249,11 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
               <TextInput
-                value={data.account_name}
+                value={formData.account_name}
                 label="Account Name"
                 onChangeText={account_name =>
-                  setData({
-                    ...data,
+                  setFormData({
+                    ...formData,
                     account_name,
                   })
                 }
@@ -225,11 +261,11 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
               />
 
               <TextInput
-                value={data.account_number}
+                value={formData.account_number}
                 label="Account Number"
                 onChangeText={account_number =>
-                  setData({
-                    ...data,
+                  setFormData({
+                    ...formData,
                     account_number,
                   })
                 }
@@ -255,7 +291,7 @@ const SetPayoutMethodScreen = ({ navigation, route }) => {
                 typography.caption,
                 { color: Colors.contentPlaceholder },
               ]}>
-              Review all account details before you save.
+              Make sure your account details are correct.
             </Text>
           </View>
           <Button

@@ -34,7 +34,7 @@ import StatusBar from '@/components/StatusBar'
  **/
 
 /** @param {import('@react-navigation/stack').StackScreenProps<RootProps, 'VerifyCode'>} param0 */
-const VerifyCodeScreen = ({ navigation, route }) => {
+const VerifyCodeScreen = ({ route }) => {
   const { user } = useContext(UserContext)
 
   const { provider, login, onSubmit, onBackPress } = route.params
@@ -64,10 +64,7 @@ const VerifyCodeScreen = ({ navigation, route }) => {
     } catch (error) {
       console.log(error)
       Toast.show({
-        label:
-          error.message === 'Invalid code'
-            ? error.mesage
-            : 'Oops, something went wrong',
+        label: 'Oops, something went wrong',
         type: 'error',
         dismissible: true,
         screenId: 'verify-code',
@@ -94,7 +91,10 @@ const VerifyCodeScreen = ({ navigation, route }) => {
     } catch (error) {
       console.log(error.message || error)
       Toast.show({
-        label: 'Oops, something went wrong',
+        label:
+          error.message === 'Invalid code'
+            ? error.mesage
+            : 'Oops, something went wrong',
         type: 'error',
         dismissible: true,
         screenId: 'verify-code',

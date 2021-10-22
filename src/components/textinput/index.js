@@ -190,6 +190,7 @@ const TextField = ({
 
   if (leftIcon?.()) {
     defaultInputStyle.paddingLeft = normalize(48)
+    defaultLabelStyle.paddingLeft = normalize(48)
   }
   if (rightIcon?.()) {
     defaultInputStyle.paddingRight = normalize(40)
