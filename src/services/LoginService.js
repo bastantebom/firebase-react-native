@@ -9,7 +9,8 @@ import Api from '@/services/Api'
 import { GOOGLE_WEB_CLIENT_ID } from '@env'
 
 GoogleSignin.configure({
-  webClientId: GOOGLE_WEB_CLIENT_ID,
+  webClientId:
+    '746436195177-q0633aa886fhqo9i5rcqmdu6t854u7dj.apps.googleusercontent.com',
 })
 
 const loginMobile = payload => {

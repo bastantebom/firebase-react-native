@@ -841,7 +841,7 @@
 				CODE_SIGN_ENTITLEMENTS = servbees/servbees.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution: 360Pixels Pte Ltd (UWT7PLWR5Q)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 116;
+				CURRENT_PROJECT_VERSION = 120;
 				DEVELOPMENT_TEAM = UWT7PLWR5Q;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -851,7 +851,7 @@
 				INFOPLIST_FILE = servbees/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2.116;
+				MARKETING_VERSION = 1.2.120;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -878,12 +878,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 116;
+				CURRENT_PROJECT_VERSION = 120;
 				DEVELOPMENT_TEAM = UWT7PLWR5Q;
 				INFOPLIST_FILE = servbees/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2.116;
+				MARKETING_VERSION = 1.2.120;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
